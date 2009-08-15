@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<retEnviNFe>
+    <versao>1.00</versao>
+    <tpAmb>2</tpAmb>
+    <verAplic>10.12a</verAplic>
+    <cStat>103</cStat>
+    <xMotivo>Lote recebido com sucesso</xMotivo>
+    <cUF>35</cUF>
+    <infRec>
+        <nRec>123456789012345</nRec>
+        <dhRecbto>2009-06-25T12:01:45</dhRecbto>
+        <tMed>1</tMed>
+    </infRec>
+</retEnviNFe>

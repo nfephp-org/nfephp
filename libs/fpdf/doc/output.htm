@@ -1,0 +1,42 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Output</title>
+<link type="text/css" rel="stylesheet" href="fpdf.css">
+</head>
+<body>
+<h1>Output</h1>
+<code><b>string</b> Output([<b>string</b> name, <b>string</b> dest])</code>
+<h2>Descrição</h2>
+Envia o documento para o destino informado: string, arquivo local ou browser. No último caso,
+o plug-in será usado (se presente) ou um download (caixa de diálogo "Salvar como") será mostrada.
+<br>
+O método chama primeiro a função Close() se necessário para finalizar o documento.
+<h2>Parâmetros</h2>
+<dl class="param">
+<dt><code>name</code></dt>
+<dd>
+O nome do arquivo. Se não for informado, o documento vai ser enviado para o browser
+(destino <code>I</code>) com o nome <code>doc.pdf</code>.
+</dd>
+<dt><code>dest</code></dt>
+<dd>
+Destino para onde o documento será enviado. Pode ser um dos seguintes valores:
+<ul>
+<li><code>I</code>: envia o arquivo diretamente para o browser. Se o plug-in estiver instalado ele será usado.
+O nome indicado pelo por <code>name</code> e á usado quando se usa a opço "Salvar destino como" no
+link que gera o PDF.
+<li><code>D</code>: envia para o browser e força o download do arquivo com o nome indicado por
+<code>name</code>.
+<li><code>F</code>: salva em um arquivo local com o nome informado em <code>name</code>.
+<li><code>S</code>: retorna o documento como uma string. o <code>name</code> é ignorado.
+</ul>
+</dd>
+</dl>
+<h2>Veja também</h2>
+<a href="close.htm">Close()</a>.
+<hr style="margin-top:1.5em">
+<div style="text-align:center"><a href="index.htm">Índice</a></div>
+</body>
+</html>

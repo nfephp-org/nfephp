@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<retCancNFe>
+    <versao>1.07</versao>
+    <infCanc Id="">
+       <tpAmb>2</tpAmb>
+        <verAplic>1.2</verAplic>
+        <cStat>105</cStat>
+        <xMotivo>Cancelamento aceito</xMotivo>
+        <cUF>35</cUF>
+        <chNFe>35080599999090910270550010000000015180051273</chNFe>
+        <dhRecbto>2009-06-25T16:22:30</dhRecbto>
+        <nProt>123456789012345</nProt>
+    </infCanc>
+    <Signature></Signature>
+</retCancNFe>

@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>AddFont</title>
+<link type="text/css" rel="stylesheet" href="fpdf.css">
+</head>
+<body>
+<h1>AddFont</h1>
+<code>AddFont(<b>string</b> family [, <b>string</b> style [, <b>string</b> file]])</code>
+<h2>Descrição</h2>
+Importa uma fonte TrueType ou Type1 e a deixa disponível. Antes, é preciso gerar
+um arquivo de definição de fonte com a ferramenta makefont.php.
+<br>
+O arquivo de definição (e o próprio arquivo de fonte quando estiver embutido)
+precisam estar presentes no diretório de fontes. Se não for encontrado, o erro
+"Could not include font definition file" (Não foi possível incluir o arquivo de
+definição de fonte) é gerado.
+<h2>Parâmetros</h2>
+<dl class="param">
+<dt><code>family</code></dt>
+<dd>
+Família da fonte. O nome pode ser escolhido arbitrariamente. Se for um nome de família padrão
+ele irá sobrepor a fonte correspondente.
+</dd>
+<dt><code>style</code></dt>
+<dd>
+Estilo da fonte. Os valores possíveis são (maiúsculas e minúsculas são diferenciadas):
+<ul>
+<li>empty string: regular</li>
+<li><code>B</code>: bold</li>
+<li><code>I</code>: italic</li>
+<li><code>BI</code> ou <code>IB</code>: bold italic</li>
+</ul>
+O valor padrão é regular.
+</dd>
+<dt><code>file</code></dt>
+<dd>
+O arquivo de definição da fonte.
+<br>
+Por padrão, o nome é composto pelo nome da fonte e o estilo, em minúsculas sem espaços.
+</dd>
+</dl>
+<h2>Exemplo</h2>
+<div class="doc-source">
+<pre><code>$pdf-&gt;AddFont('Comic','I');</code></pre>
+</div>
+é equivalente a:
+<div class="doc-source">
+<pre><code>$pdf-&gt;AddFont('Comic','I','comici.php');</code></pre>
+</div>
+<h2>Veja também</h2>
+<a href="setfont.htm">SetFont()</a>.
+<hr style="margin-top:1.5em">
+<div style="text-align:center"><a href="index.htm">Índice</a></div>
+</body>
+</html>

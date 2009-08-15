@@ -1,0 +1,52 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Write</title>
+<link type="text/css" rel="stylesheet" href="fpdf.css">
+</head>
+<body>
+<h1>Write</h1>
+<code>Write(<b>float</b> h, <b>string</b> txt [, <b>mixed</b> link])</code>
+<h2>Descrição</h2>
+Este método imprime um texto a partir da posição atual. Quando a margem direita é atingida
+(ou o caracter \n é encontrado) uma quebra de linha ocorre e o texto continua a partir da
+margem esquerda. Quando o método finalizar, a posição atual será imediatamente à esquerda
+do final do texto.
+<br>
+É possível colocar um link no texto.
+<h2>Parâmetros</h2>
+<dl class="param">
+<dt><code>h</code></dt>
+<dd>
+Altura da linha.
+</dd>
+<dt><code>txt</code></dt>
+<dd>
+Texto a ser impresso.
+</dd>
+<dt><code>link</code></dt>
+<dd>
+URL ou identificador retornado por AddLink().
+</dd>
+</dl>
+<h2>Exemplo</h2>
+<div class="doc-source">
+<pre><code>//Iniciando com fonte normal
+$pdf-&gt;SetFont('Arial','',14);
+$pdf-&gt;Write(5,'Visit ');
+//Colocando um link azul sublinhado
+$pdf-&gt;SetTextColor(0,0,255);
+$pdf-&gt;SetFont('','U');
+$pdf-&gt;Write(5,'www.fpdf.org','http://www.fpdf.org');</code></pre>
+</div>
+<h2>Veja também</h2>
+<a href="setfont.htm">SetFont()</a>,
+<a href="settextcolor.htm">SetTextColor()</a>,
+<a href="addlink.htm">AddLink()</a>,
+<a href="multicell.htm">MultiCell()</a>,
+<a href="setautopagebreak.htm">SetAutoPageBreak()</a>.
+<hr style="margin-top:1.5em">
+<div style="text-align:center"><a href="index.htm">Índice</a></div>
+</body>
+</html>

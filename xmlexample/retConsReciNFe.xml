@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<retConsReciNFe>
+    <versao>1.10</versao>
+    <tpAmb>2</tpAmb>
+    <verAplic>10.02a</verAplic>
+    <nRec>123456789012345</nRec>
+    <cStat>104</cStat>
+    <xMotivo>Lote Aprovado</xMotivo>
+    <cUF>35</cUF>
+    <protNFe>
+        <versao>1.10</versao>
+        <infProt>
+            <Id>ID</Id>
+            <tpAmb>2</tpAmb>
+            <verAplic>10.02a</verAplic>
+            <chNFe>35080599999090910270550010000000015180051273</chNFe>
+            <dhRecbto>2009-06-25T13:22:02</dhRecbto>
+            <nProt>135091204156788</nProt>
+            <digVal>rua1jEb+ekuJUlMQ8cFDpkokbOo=</digVal>
+            <cStat>100</cStat>
+            <xMotivo>Autorizado o uso da NF-e</xMotivo>
+        </infProt>
+        <Signature>ksljslkjslkjskjskjskjsjsksksj</Signature>
+    </protNFe>
+    <protNFe>
+        <versao>1.10</versao>
+        <infProt>
+            <Id>ID</Id>
+            <tpAmb>2</tpAmb>
+            <verAplic>10.02a</verAplic>
+            <chNFe>350805999990908478238550010000022225333351273</chNFe>
+            <dhRecbto>2009-06-25T13:22:02</dhRecbto>
+            <nProt>135091204156788</nProt>
+            <digVal>rua1jEb+ekuJUlMQ8cFDpkokbOo=</digVal>
+            <cStat>208</cStat>
+            <xMotivo>Rejeição: CNPJ do destinatário inválido</xMotivo>
+        </infProt>
+        <Signature>ksljslkjslkjskjskjskjsjsksksj</Signature>
+    </protNFe>
+    <protNFe>
+        <versao>1.10</versao>
+        <infProt>
+            <Id>ID</Id>
+            <tpAmb>2</tpAmb>
+            <verAplic>10.02a</verAplic>
+            <chNFe>35080599949380910270550010078647015180053333</chNFe>
+            <dhRecbto>2009-06-25T13:22:02</dhRecbto>
+            <nProt>135091204156788</nProt>
+            <digVal>rua1jEb+ekuJUlMQ8cFDpkokbOo=</digVal>
+            <cStat>272</cStat>
+            <xMotivo>Rejeição: Código Município do Emitente: dígito inválido</xMotivo>
+        </infProt>
+        <Signature>ksljslkjslkjskjskjskjsjsksksj</Signature>
+    </protNFe>
+</retConsReciNFe>
