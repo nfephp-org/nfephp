@@ -177,7 +177,10 @@ class danfe {
         $veicTransp = $dom->getElementsByTagName("veicTransp")->item(0);
         $vols       = $dom->getElementsByTagName("vol");
         $infAdic    = $dom->getElementsByTagName("infAdic")->item(0);
-
+		$infProt    = $dom->getElementsByTagName("infProt"); //TODO VEREFICAR SE TA CERTO
+		$infAdicFisco = $dom->getElementsByTagName("infAdFisco");
+		$ISSQNOT    = $dom->getElementsByTagName("ISSQNOT");
+		
         if ($this->canhoto) {
             // canhoto
             $this->linha(8.5, 150.0,  10.0,  4.8, "TBRL", "RECEBI(EMOS) DE ".utf8_decode($emit->getElementsByTagName("xNome")->item(0)->nodeValue).", OS PRODUTOS CONSTANTE DA NOTA FISCAL ELETRÔNICA INDICADA AO LADO,");
@@ -204,7 +207,8 @@ class danfe {
         }
 
 
-        $chave_acesso = str_replace('NFe', '', $infNFe->getAttribute("Id"));
+        //$chave_acesso = str_replace('NFe', '', $infNFe->getAttribute("Id"));
+		$chave_acesso = $infProt->getAttribute("chNFe");//alterado para pegar diretamente a chave de acesso [Beto eu em 18/08]
         $this->pdf->SetFillColor(0,0,0);
         $this->pdf->Code128(125, 26.8, $chave_acesso, 70, 12);
 
@@ -292,7 +296,8 @@ class danfe {
         $this->linha( 8.5,  91.0,  10.0,  94.3,  "BTRL", "ENDEREÇO","",          $dest_ender);
         $this->linha( 8.5,  45.0, 101.0,  94.3,  "BTRL", "BAIRRO/DISTRITO","",   utf8_decode($enderDest->getElementsByTagName("xBairro")->item(0)->nodeValue));
         $this->linha( 8.5,  25.0, 146.0,  94.3,  "BTRL", "CEP","",               utf8_decode($enderDest->getElementsByTagName("CEP")->item(0)->nodeValue));
-        $this->linha( 8.5,  29.0,   171,  94.3, "BTRLN", "DATA DA SAÍDA/ENTRADA","",dmy2ymd($ide->getElementsByTagName("dSaiEnt")->item(0)->nodeValue));
+        $dt_Sai_Ent = " "; if (isset($ide->getElementsByTagName("dSaiEnt")->item(0)->nodeValue)}{ dt_Sai_Ent = dmy2ymd($ide->getElementsByTagName("dSaiEnt")->item(0)->nodeValue));}
+		$this->linha( 8.5,  29.0,   171,  94.3, "BTRLN", "DATA DA SAÍDA/ENTRADA","",$dt_Sai_Ent);//Alterado pq nao é toda nota q tem data de saida
         $this->linha( 8.5,  64.0,  10.0, 102.8,  "BTRL", "MUNICÍPIO","",         utf8_decode($enderDest->getElementsByTagName("xMun")->item(0)->nodeValue));
         $this->linha( 8.5,  35.0,  74.0, 102.8,  "BTRL", "FONE/FAX","",          utf8_decode($enderDest->getElementsByTagName("fone")->item(0)->nodeValue));
         $this->linha( 8.5,  11.0, 109.0, 102.8,  "BTRL", "UF","",                utf8_decode($enderDest->getElementsByTagName("UF")->item(0)->nodeValue));
@@ -302,13 +307,15 @@ class danfe {
         // faturas/duplicatas
         $this->linha( 4.2,    10,  10.0, 111.9,      "", "FATURA/DUPLICATAS", "Courier,B,6,L");
         // TODO: melhorar fatura aqui tb
-        $dups = "";
-        foreach ($dup as $k => $d) {
-            $dups.= $dup->item($k)->getElementsByTagName('nDup')->item(0)->nodeValue." - ";
-            $dups.= dmy2ymd($dup->item($k)->getElementsByTagName('dVenc')->item(0)->nodeValue);
-            $dups.= " - R$ ".number_format($dup->item($k)->getElementsByTagName('vDup')->item(0)->nodeValue, 2, ",", ".")."    ";
-        }
-        $this->linha( 8.5, 190.0,  10.0, 115.1,  "BTRL", "", "", utf8_decode($dups));
+		//DESDOBRAMENTO MOVIDO PARA CAMPO DADOS ADICIONAIS -- BETO EU
+		
+		$Fat_Ind = " "; if (isset($ide->getElementsByTagName("indPag")->item(0)->nodeValue){$Fat_Ind = $ide->getElementsByTagName("indPag")->item(0)->nodeValue ;}
+		if ( $Fat_Ind == 0 ){ $Fat_IndTe = 'PAGAMENTO A VISTA';} else if ( $Fat_Ind == 1){ $Fat_IndTe = 'PAGAMENTO A PRAZO';} else {$Fat_IndTe ='OUTROS';}
+		$Fat_nFat = " ";if (isset($fat->getElementsByTagName("nFat")->item(0)->nodeValue){ $Fat_nFat = $fat->getElementsByTagName("nFat")->item(0)->nodeValue; }
+		$Fat_vOrig = " ";if (isset($fat->getElementsByTagNamev("Orig")->item(0)->nodeValue){ $Fat_vOrig = $fat->getElementsByTagNamev("Orig")->item(0)->nodeValue; }
+		$Fat_vLiq = " ";if (isset($fat->getElementsByTagName("vLiq")->item(0)->nodeValue){ $Fat_vLiq = $fat->getElementsByTagName("vLiq")->item(0)->nodeValue; }
+        $fatura = "PAGAMENTO A ".$Fat_IndTe." /NUMERO :".$Fat_nFat."/V. ORIG:".$Fat_vOrig."/V.LIQ: ".$Fat_vLiq;
+		$this->linha( 8.5, 190.0,  10.0, 115.1,  "BTRL", "", "", utf8_decode($fatura));
 
         // calculo do imposto
         $this->linha( 4.2,    56,  10.0, 124.6,      "", "CÁLCULO DO IMPOSTO", "Courier,B,6,L");
@@ -423,11 +430,18 @@ class danfe {
 
         if ($this->issqn) {
             // calculo do issqn
+			$Issqm_IM = " "; If(isset($emit->getElementsByTagName("IM")->item(0)->nodeValue)){$Issqm_IM = $emit->getElementsByTagName("IM")->item(0)->nodeValue;}
+			$Issqm_VTS = " ";If(isset($ISSQNOT->getElementsByTagName("vServ")->item(0)->nodeValue)){$Issqm_VTS = $ISSQNOT->getElementsByTagName("vServ")->item(0)->nodeValue;}
+			$Issqm_BCI = " ";If(isset($ISSQNOT->getElementsByTagName("vBC")->item(0)->nodeValue)){$Issqm_BCI = $ISSQNOT->getElementsByTagName("vBC")->item(0)->nodeValue;}
+			$Issqm_VTI = " ";If(isset($ISSQNOT->getElementsByTagName("vISS")->item(0)->nodeValue)){$Issqm_VTI = $ISSQNOT->getElementsByTagName("vISS")->item(0)->nodeValue;}
+			//TODO: COLOCAR VALORES NOS CAMPOS
             $this->linha(4.2, 23.0,  10.0, 244.3+$extra,     "", "CÁLCULO DO ISSQN", "Courier,B,6,L");
             $this->linha(8.5, 46.0,  10.0, 247.9+$extra, "BTRL", "INSCRIÇÃO MUNICIPAL");
             $this->linha(8.5, 47.0,  56.0, 247.9+$extra, "BTRL", "VALOR TOTAL DOS SERVIÇOS");
             $this->linha(8.5, 47.0, 103.0, 247.9+$extra, "BTRL", "BASE DE CÁLCULO DO ISSQN");
             $this->linha(8.5, 50.0, 150.0, 247.9+$extra, "BTRL", "VALOR DO ISSQN");
+
+			
         }
 
         // dados adicionais
@@ -462,6 +476,16 @@ class danfe {
                 $l++;
             }
         }
+        /*	TODO: VERFICAR COMO MELHOR POSICAO 
+				        $dups = "";
+        foreach ($dup as $k => $d) {
+            $dups.= $dup->item($k)->getElementsByTagName('nDup')->item(0)->nodeValue." - ";
+            $dups.= dmy2ymd($dup->item($k)->getElementsByTagName('dVenc')->item(0)->nodeValue);
+            $dups.= " - R$ ".number_format($dup->item($k)->getElementsByTagName('vDup')->item(0)->nodeValue, 2, ",", ".")."    ";
+        }
+		*/
+
+		
 
         // IMPRIME infAdFisco
         $l = 0;
