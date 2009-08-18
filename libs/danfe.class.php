@@ -37,6 +37,9 @@ class danfe {
     var $pdf;       // objeto fpdf()
     var $xml;       // string XML NFe
     var $logo;      // path para logomarca
+    var $array_uf;  // usado para obter código do estado do destinatario qdo em contingencia
+    var $protocolo; // protocolo de autorizacao deve sair em infCpl
+    var $data_hora; // data e hora de autorizacao devem sair em infCpl
 
 
     function __construct($xml, $formato="P") {
@@ -44,7 +47,8 @@ class danfe {
         $this->issqn     = false;
         $this->pdf       = new PDF_Code128($formato, 'mm', 'A4');
         $this->xml       = $xml;
-        $this->logomarca = '../../image/companhia/logomarca.jpg';
+        $this->logomarca = 'logomarca.jpg';
+        $this->array_uf  = array('SP' => 35);
     }
 
 
@@ -55,6 +59,41 @@ class danfe {
 
     function mask_cpf($c) {
         return sprintf("%s.%s.%s-%s", $c[0].$c[1].$c[2], $c[3].$c[4].$c[5], $c[6].$c[7].$c[8], $c[9].$c[10]);
+    }
+
+
+    function mask_nnf($n) {
+        $n = sprintf("%09s", $n);
+        return sprintf("%s.%s.%s", $n[0].$n[1].$n[2], $n[3].$n[4].$n[5], $n[6].$n[7].$n[8]);
+    }
+
+    function mask_chave($c) {
+        for ($i=0; $i<=strlen($c); ++$i) {
+            $cf.= $c[$i-1];
+            if ($i % 4 == 0) {
+                $cf.= " ";
+            }
+        }
+        return $cf;
+    }
+
+
+    function calcula_dv($chave35) {
+        $multiplicadores = array(2,3,4,5,6,7,8,9);
+        $i = 34;
+        while ($i >= 0) {
+            for ($m=0; $m<count($multiplicadores) && $i>=0; $m++) {
+                $soma_ponderada+= $chave35[$i] * $multiplicadores[$m];
+                $i--;
+            }
+        }
+        $resto = $soma_ponderada % 11;
+        if ($resto == '0' || $resto == '1') {
+            $dv = 0;
+        } else {
+            $dv = 11 - $resto;
+        }
+        return $dv;
     }
 
 
@@ -136,7 +175,8 @@ class danfe {
         $transp     = $dom->getElementsByTagName("transp")->item(0);
         $transporta = $dom->getElementsByTagName("transporta")->item(0);
         $veicTransp = $dom->getElementsByTagName("veicTransp")->item(0);
-        $vols       = $dom->getelementsByTagName("vol");
+        $vols       = $dom->getElementsByTagName("vol");
+        $infAdic    = $dom->getElementsByTagName("infAdic")->item(0);
 
         if ($this->canhoto) {
             // canhoto
@@ -151,7 +191,7 @@ class danfe {
             $this->pdf->setXY(161, 17);
             $this->pdf->Cell(15, 0, "SÉRIE");
 
-            $this->linha(8.5, 20, 168,  6.7, "", "", "", sprintf("%09s", $ide->getElementsByTagName('nNF')->item(0)->nodeValue),   "Courier,B,9,L");
+            $this->linha(8.5, 20, 168,  6.7, "", "", "", $this->mask_nnf($ide->getElementsByTagName('nNF')->item(0)->nodeValue),   "Courier,B,9,L");
             $this->linha(8.5, 20, 172, 11.9, "", "", "", $ide->getElementsByTagName('serie')->item(0)->nodeValue, "Courier,B,9,L");
 
             $this->linha(8.5,    40, 10.0, 13.3, "TBRL", "DATA DE RECEBIMENTO");
@@ -170,7 +210,9 @@ class danfe {
 
         // dados da nfe
         $this->linha(39.2,  84.6,  10.0, 25.4, "B");    // identificacao emitente/logo
-        $this->pdf->Image($this->logomarca, 11, 28-$extra, 0, 10, 'jpeg');
+        if (!empty($this->logomarca) && is_file($this->logomarca)) {
+            $this->pdf->Image($this->logomarca, 11, 28-$extra, 0, 10, 'jpeg');
+        }
         $this->linha( 5.0,  84.6,  10.0, 40.0, "", "", "", utf8_decode($emit->getElementsByTagName("xNome")->item(0)->nodeValue), "Courier,B,7,L");
         $endereco_emitente = $enderEmit->getElementsByTagName("xLgr")->item(0)->nodeValue;
         $endereco_emitente.= (!empty($enderEmit->getElementsByTagName("nro")->item(0)->nodeValue)) ? ", ".$enderEmit->getElementsByTagName("nro")->item(0)->nodeValue : null;
@@ -181,6 +223,36 @@ class danfe {
         $endereco_emitente2.= (!empty($enderEmit->getElementsByTagName("UF")->item(0)->nodeValue)) ? "/".$enderEmit->getElementsByTagName("UF")->item(0)->nodeValue : null;
         $this->linha( 5.0,  84.6,  10.0, 46.0, "", "", "", utf8_decode($endereco_emitente2));
         $this->linha( 5.0,  84.6,  10.0, 49.0, "", "", "", "CEP: ".utf8_decode($emit->getElementsByTagName("CEP")->item(0)->nodeValue)." - FONE: ".utf8_decode($emit->getElementsByTagName("fone")->item(0)->nodeValue));
+        
+
+        // contingencia
+        if ($ide->getElementsByTagName("tpEmis")->item(0)->nodeValue != 1) {
+            $this->pdf->SetTextColor(170,170,170);
+            $this->linha( 5.0, 190.0,  10.0, 120.0, "", "", "", "DANFE em Contingência",   "Courier,B,30,C");
+            $this->linha( 5.0, 190.0,  10.0, 140.0, "", "", "", "Impresso em decorrência", "Courier,B,30,C");
+            $this->linha( 5.0, 190.0,  10.0, 160.0, "", "", "", "de problemas técnicos",   "Courier,B,30,C");
+            $this->pdf->SetTextColor(0,0,0);
+
+            $dados_nfe = $this->array_uf[$enderDest->getElementsByTagName("UF")->item(0)->nodeValue];
+            $dados_nfe.= $ide->getElementsByTagName("tpEmis")->item(0)->nodeValue;
+            $dados_nfe.= $dest->getElementsByTagName("CNPJ")->item(0)->nodeValue;
+            $dados_nfe.= sprintf("%014s", str_replace(',', '', number_format($ICMSTot->getElementsByTagName("vNF")->item(0)->nodeValue, 2, ",", "")));
+            $dados_nfe.= 1; // ICMSp
+            $dados_nfe.= 2; // ICMSs
+            $data_emissao = dmy2ymd($ide->getElementsByTagName("dEmi")->item(0)->nodeValue);
+            $dados_nfe.= $data_emissao[0].$data_emissao[1];
+            $dados_nfe.= $this->calcula_dv($dados_nfe);
+
+            $this->pdf->Code128(125, 51.2, $dados_nfe, 70, 12);
+        }
+
+        // se for ambiente de homologação, escreve SEM VALOR FISCAL
+        if ($ide->getElementsByTagName("tpAmb")->item(0)->nodeValue == 2) {
+            $this->pdf->SetTextColor(170,170,170);
+            $this->linha( 5.0, 190.0,  10.0, 210.0, "", "", "", "SEM VALOR FISCAL", "Courier,B,50,C");
+            $this->pdf->SetTextColor(0,0,0);
+        }
+
 
 
         $this->linha(39.2,  25.4,  94.6,  25.4,  "BTRL", "DANFE",              "Courier,B,12,C"); // DANFE
@@ -195,15 +267,15 @@ class danfe {
         $this->linha(39.2,  25.4,  95.6,    52,      "", "No.",   "Courier,B,6,L");
         $this->linha(39.2,  25.4,  95.6,    56,      "", "SÉRIE", "Courier,B,5,L");
         $this->linha(39.2,  25.4,  95.6,    60,      "", "FOLHA", "Courier,B,5,L");
-        $this->linha(39.2,  25.4,   102,  48.5,      "", "", "", $ide->getElementsByTagName('nNF')->item(0)->nodeValue);
+        $this->linha(39.2,  25.4,   101,  48.5,      "", "", "", $this->mask_nnf($ide->getElementsByTagName('nNF')->item(0)->nodeValue));
         $this->linha(39.2,  25.4,   102,  52.2,      "", "", "", $ide->getElementsByTagName('serie')->item(0)->nodeValue);
         $this->linha(39.2,  25.4,   102,  56.0,      "", "", "", "1/1");
 
         $this->linha(14.8,    80, 120.0,  25.4,  "BTRL"); // codigo de barras da chave
-        $this->linha( 9.6,    80, 120.0,  40.2,  "BTRL",  "CHAVE DE ACESSO", "", $chave_acesso);
+        $this->linha( 9.6,    80, 120.0,  40.2,  "BTRL",  "CHAVE DE ACESSO", "", $this->mask_chave($chave_acesso), "Courier,B,6.5,L");
         $this->linha(14.8,    80, 120.0,  49.8,  "BTRL"); // codigo de barras dos dados
         $this->linha( 8.5, 110.0,  10.0,  64.6,  "BTRL",  "NATUREZA DA OPERAÇÃO", "", utf8_decode($ide->getElementsByTagName("natOp")->item(0)->nodeValue));
-        $this->linha( 8.5,    80, 120.0,  64.6,  "BTRL",  "DADOS DA NF-e");
+        $this->linha( 8.5,    80, 120.0,  64.6,  "BTRL",  "DADOS DA NF-e", "", $this->mask_chave($dados_nfe), "Courier,B,6.5,L");
 
         $this->linha( 8.5,  63.4,  10.0,  73.1,  "BTRL", "INSCRIÇÃO ESTADUAL", "", utf8_decode($emit->getElementsByTagName("IE")->item(0)->nodeValue));
         $this->linha( 8.5,  63.3,  73.4,  73.1,  "BTRL", "INSCRIÇÃO ESTADUAL DO SUBST. TRIB.", "", utf8_decode($emit->getElementsByTagName("IEST")->item(0)->nodeValue));
@@ -296,8 +368,8 @@ class danfe {
         $this->linha( 8.5,  27.0,  36.0,   166,  "BTRL", "ESPÉCIE",             "", utf8_decode($esp));
         $this->linha( 8.5,  27.0,  63.0,   166,  "BTRL", "MARCA",               "", utf8_decode($marca));
         $this->linha( 8.5,  46.0,  90.0,   166,  "BTRL", "NUMERAÇÃO",           "", utf8_decode($nVol));
-        $this->linha( 8.5,  32.0,   136,   166,  "BTRL", "PESO BRUTO",          "", number_format($pesoB, 2, ",", "."), "Courier,,7,R");
-        $this->linha( 8.5,  32.0, 168.0,   166,  "BTRL", "PESO LÍQUIDO",        "", number_format($pesoL, 2, ",", "."), "Courier,,7,R");
+        $this->linha( 8.5,  32.0,   136,   166,  "BTRL", "PESO BRUTO",          "", number_format($pesoB, 3, ",", "."), "Courier,,7,R");
+        $this->linha( 8.5,  32.0, 168.0,   166,  "BTRL", "PESO LÍQUIDO",        "", number_format($pesoL, 3, ",", "."), "Courier,,7,R");
 
         $issqn_extra = 0;
         if (!$this->issqn) {
@@ -310,18 +382,18 @@ class danfe {
         $this->linha(2.6, 190.0, 10.0, 178.7, "BTRL",  "");
         $this->linha(65.0+$extra+$issqn_extra,  15.0,  10.0, 178.7, "BTRL", "CÓDIGO",    "Courier,,5,C");
         $this->linha(65.0+$extra+$issqn_extra,  62.0,  25.0, 178.7, "BTRL", "DESCRIÇÃO", "Courier,,5,C");
-        $this->linha(65.0+$extra+$issqn_extra,   9.0,  87.0, 178.7, "BTRL", "NCM/SH",    "Courier,,5,C");
-        $this->linha(65.0+$extra+$issqn_extra,   5.0,  96.0, 178.7, "BTRL", "CST",       "Courier,,5,C");
-        $this->linha(65.0+$extra+$issqn_extra,   6.0, 101.0, 178.7, "BTRL", "CFOP",      "Courier,,5,C");
-        $this->linha(65.0+$extra+$issqn_extra,   6.0, 107.0, 178.7, "BTRL", "UN.",       "Courier,,5,C");
-        $this->linha(65.0+$extra+$issqn_extra,  12.0, 113.0, 178.7, "BTRL", "QUANT.",    "Courier,,5,C");
-        $this->linha(65.0+$extra+$issqn_extra,  12.0, 125.0, 178.7, "BTRL", "V.UNIT.",   "Courier,,5,C");
-        $this->linha(65.0+$extra+$issqn_extra,  14.0, 137.0, 178.7, "BTRL", "V.TOTAL",   "Courier,,5,C");
-        $this->linha(65.0+$extra+$issqn_extra,  11.0, 151.0, 178.7, "BTRL", "BC.ICMS",   "Courier,,5,C");
-        $this->linha(65.0+$extra+$issqn_extra,  11.0, 162.0, 178.7, "BTRL", "V.ICMS",    "Courier,,5,C");
-        $this->linha(65.0+$extra+$issqn_extra,  11.0, 173.0, 178.7, "BTRL", "V.IPI",     "Courier,,5,C");
-        $this->linha(65.0+$extra+$issqn_extra,   8.0, 184.0, 178.7, "BTRL", "%ICMS",     "Courier,,5,C");
-        $this->linha(65.0+$extra+$issqn_extra,   8.0, 192.0, 178.7, "BTRL", "%IPI",      "Courier,,5,C");
+        $this->linha(65.0+$extra+$issqn_extra,   9.5,  87.0, 178.7, "BTRL", "NCM/SH",    "Courier,,5,C");
+        $this->linha(65.0+$extra+$issqn_extra,   4.5,  96.5, 178.7, "BTRL", "CST",       "Courier,,5,L");
+        $this->linha(65.0+$extra+$issqn_extra,   5.5, 101.0, 178.7, "BTRL", "CFOP",      "Courier,,5,L");
+        $this->linha(65.0+$extra+$issqn_extra,   5.0, 106.5, 178.7, "BTRL", " UN.",      "Courier,,5,C");
+        $this->linha(65.0+$extra+$issqn_extra,  13.0, 111.5, 178.7, "BTRL", "QUANT.",    "Courier,,5,C");
+        $this->linha(65.0+$extra+$issqn_extra,  13.0, 124.5, 178.7, "BTRL", "V.UNIT.",   "Courier,,5,C");
+        $this->linha(65.0+$extra+$issqn_extra,  14.0, 137.5, 178.7, "BTRL", "V.TOTAL",   "Courier,,5,C");
+        $this->linha(65.0+$extra+$issqn_extra,  12.5, 151.5, 178.7, "BTRL", "BC.ICMS",   "Courier,,5,C");
+        $this->linha(65.0+$extra+$issqn_extra,  11.0, 164.0, 178.7, "BTRL", "V.ICMS",    "Courier,,5,C");
+        $this->linha(65.0+$extra+$issqn_extra,  11.0, 175.0, 178.7, "BTRL", "V.IPI",     "Courier,,5,C");
+        $this->linha(65.0+$extra+$issqn_extra,   7.0, 186.0, 178.7, "BTRL", "%ICMS",     "Courier,,5,C");
+        $this->linha(65.0+$extra+$issqn_extra,   7.0, 193.0, 178.7, "BTRL", "%IPI",      "Courier,,5,C");
 
         $i = 0;
         foreach ($det as $d) {
@@ -332,20 +404,20 @@ class danfe {
             $IPI  = $imposto->getElementsByTagName("IPI")->item(0);
 
             $i++;
-            $this->linha(65.0+$extra+$issqn_extra,  15.0,  10.0, 178.9+($i*2.3), "", utf8_decode($prod->getElementsByTagName("cProd")->item(0)->nodeValue), "Courier,,5,L");
-            $this->linha(65.0+$extra+$issqn_extra,  62.0,  25.0, 178.9+($i*2.3), "", utf8_decode($prod->getElementsByTagName("xProd")->item(0)->nodeValue), "Courier,,5,L");
-            $this->linha(65.0+$extra+$issqn_extra,   9.0,  87.0, 178.9+($i*2.3), "", $prod->getElementsByTagName("NCM")->item(0)->nodeValue, "Courier,,5,L");
-            $this->linha(65.0+$extra+$issqn_extra,   5.0,  96.0, 178.9+($i*2.3), "", $ICMS->getElementsByTagName("orig")->item(0)->nodeValue.$ICMS->getElementsByTagName("CST")->item(0)->nodeValue, "Courier,,5,C");
-            $this->linha(65.0+$extra+$issqn_extra,   6.0, 101.0, 178.9+($i*2.3), "", $prod->getElementsByTagName("CFOP")->item(0)->nodeValue, "Courier,,5,C");
-            $this->linha(65.0+$extra+$issqn_extra,   6.0, 107.0, 178.9+($i*2.3), "", utf8_decode($prod->getElementsByTagName("uCom")->item(0)->nodeValue), "Courier,,5,C");
-            $this->linha(65.0+$extra+$issqn_extra,  12.0, 113.0, 178.9+($i*2.3), "", number_format($prod->getElementsByTagName("qCom")->item(0)->nodeValue, 4, ",", "."), "Courier,,5,R");
-            $this->linha(65.0+$extra+$issqn_extra,  12.0, 125.0, 178.9+($i*2.3), "", number_format($prod->getElementsByTagName("vUnCom")->item(0)->nodeValue, 4, ",", "."), "Courier,,5,R");
-            $this->linha(65.0+$extra+$issqn_extra,  14.0, 137.0, 178.9+($i*2.3), "", number_format($prod->getElementsByTagName("vProd")->item(0)->nodeValue, 2, ",", "."), "Courier,,5,R");
-            $this->linha(65.0+$extra+$issqn_extra,  11.0, 151.0, 178.9+($i*2.3), "", number_format($ICMS->getElementsByTagName("vBC")->item(0)->nodeValue, 2, ",", "."), "Courier,,5,R");
-            $this->linha(65.0+$extra+$issqn_extra,  11.0, 162.0, 178.9+($i*2.3), "", number_format($ICMS->getElementsByTagName("vICMS")->item(0)->nodeValue, 2, ",", "."), "Courier,,5,R");
-            $this->linha(65.0+$extra+$issqn_extra,  11.0, 173.0, 178.9+($i*2.3), "", number_format($IPI->getElementsByTagName("vIPI")->item(0)->nodeValue, 2, ",", "."), "Courier,,5,R");
-            $this->linha(65.0+$extra+$issqn_extra,   8.0, 184.0, 178.9+($i*2.3), "", number_format($ICMS->getElementsByTagName("pICMS")->item(0)->nodeValue, 2, ",", "."), "Courier,,5,R");
-            $this->linha(65.0+$extra+$issqn_extra,   8.0, 192.0, 178.9+($i*2.3), "", number_format($IPI->getElementsByTagName("pIPI")->item(0)->nodeValue, 2, ",", "."), "Courier,,5,R");
+            $this->linha(65.0+$extra+$issqn_extra,  15.0,  10.0, 178.9+($i*2.3), "", utf8_decode($prod->getElementsByTagName("cProd")->item(0)->nodeValue),     "Courier,,5,L");
+            $this->linha(65.0+$extra+$issqn_extra,  62.0,  25.0, 178.9+($i*2.3), "", utf8_decode($prod->getElementsByTagName("xProd")->item(0)->nodeValue),     "Courier,,5,L");
+            $this->linha(65.0+$extra+$issqn_extra,   9.5,  87.0, 178.9+($i*2.3), "", $prod->getElementsByTagName("NCM")->item(0)->nodeValue,                    "Courier,,5,L");
+            $this->linha(65.0+$extra+$issqn_extra,   4.5,  96.5, 178.9+($i*2.3), "", $ICMS->getElementsByTagName("orig")->item(0)->nodeValue.$ICMS->getElementsByTagName("CST")->item(0)->nodeValue, "Courier,,5,L");
+            $this->linha(65.0+$extra+$issqn_extra,   5.5, 101.0, 178.9+($i*2.3), "", $prod->getElementsByTagName("CFOP")->item(0)->nodeValue,                               "Courier,,5,L");
+            $this->linha(65.0+$extra+$issqn_extra,   5.0, 106.5, 178.9+($i*2.3), "", utf8_decode($prod->getElementsByTagName("uCom")->item(0)->nodeValue),                  "Courier,,5,C");
+            $this->linha(65.0+$extra+$issqn_extra,  13.5, 111.5, 178.9+($i*2.3), "", number_format($prod->getElementsByTagName("qCom")->item(0)->nodeValue, 4, ",", "."),   "Courier,,5,R");
+            $this->linha(65.0+$extra+$issqn_extra,  13.5, 124.5, 178.9+($i*2.3), "", number_format($prod->getElementsByTagName("vUnCom")->item(0)->nodeValue, 4, ",", "."), "Courier,,5,R");
+            $this->linha(65.0+$extra+$issqn_extra,  14.5, 137.5, 178.9+($i*2.3), "", number_format($prod->getElementsByTagName("vProd")->item(0)->nodeValue, 2, ",", "."),  "Courier,,5,R");
+            $this->linha(65.0+$extra+$issqn_extra,  13.0, 151.5, 178.9+($i*2.3), "", number_format($ICMS->getElementsByTagName("vBC")->item(0)->nodeValue, 2, ",", "."),    "Courier,,5,R");
+            $this->linha(65.0+$extra+$issqn_extra,  11.5, 164.0, 178.9+($i*2.3), "", number_format($ICMS->getElementsByTagName("vICMS")->item(0)->nodeValue, 2, ",", "."),  "Courier,,5,R");
+            $this->linha(65.0+$extra+$issqn_extra,  11.5, 175.0, 178.9+($i*2.3), "", number_format($IPI->getElementsByTagName("vIPI")->item(0)->nodeValue, 2, ",", "."),    "Courier,,5,R");
+            $this->linha(65.0+$extra+$issqn_extra,   7.5, 186.0, 178.9+($i*2.3), "", number_format($ICMS->getElementsByTagName("pICMS")->item(0)->nodeValue, 2, ",", "."),  "Courier,,5,R");
+            $this->linha(65.0+$extra+$issqn_extra,   7.5, 193.0, 178.9+($i*2.3), "", number_format($IPI->getElementsByTagName("pIPI")->item(0)->nodeValue, 2, ",", "."),    "Courier,,5,R");
         }
 
 
@@ -360,8 +432,50 @@ class danfe {
 
         // dados adicionais
         $this->linha( 4.2,  23.0,  10.0, 257.4+$extra,      "", "DADOS ADICIONAIS", "Courier,B,6,L");
+
         $this->linha(30.7, 113.0,  10.0, 260.6+$extra,  "BTRL", "INFORMAÇÕES COMPLEMENTARES");
         $this->linha(30.7,  77.0, 123.0, 260.6+$extra,  "BTRL", "RESERVADO AO FISCO");
+
+
+        $this->pdf->setFont("Courier", "", "6");
+        $this->pdf->SetAutopagebreak(false); 
+
+
+        if (!empty($this->protocolo)) {
+            $infCpl = "Número do protocolo: ".$this->protocolo.". ";
+        }
+        if (!empty($this->data_hora)) {
+            $infCpl.= "Data de autorização: ".$this->data_hora.". ";
+        }
+        if (is_object($infAdic)) {
+            $infCpl    .= $infAdic->getElementsByTagName("infCpl")->item(0)->nodeValue;
+            $infAdFisco = $infAdic->getElementsByTagName("infAdFisco")->item(0)->nodeValue;
+        }
+
+        // IMPRIME infCpl
+        for ($i=0; $i<=strlen($infCpl); $i++) {
+            $txt.= $infCpl[$i];
+            if ($this->pdf->GetStringWidth($txt) >= 110 || $i >= strlen($infCpl)) {
+                $this->pdf->setXY(10, 265+$extra+($l*3));
+                $this->pdf->Cell(113, 0, $txt, 0, 0, 'L');
+                $txt = '';
+                $l++;
+            }
+        }
+
+        // IMPRIME infAdFisco
+        $l = 0;
+        for ($i=0; $i<=strlen($infAdFisco); $i++) {
+            $txt.= $infAdFisco[$i];
+            if ($this->pdf->GetStringWidth($txt) >= 74 || $i >= strlen($infAdFisco)) {
+                $this->pdf->setXY(123, 265+$extra+($l*3));
+                $this->pdf->Cell(77, 0, $txt, 0, 0, 'L');
+                $txt = '';
+                $l++;
+            }
+        }
+        
+
 
         //$this->pdf->SetDisplayMode(70);
         //$this->pdf->Output("danfe.pdf", "I");
@@ -369,9 +483,5 @@ class danfe {
     }
 
 }
-
-
-//$danfe = new danfe($xml, "P");
-//$danfe->gera();
 
 ?>
