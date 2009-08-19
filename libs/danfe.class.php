@@ -225,8 +225,10 @@ class danfe {
         $this->linha( 5.0,  84.6,  10.0, 49.0, "", "", "", "CEP: ".utf8_decode($emit->getElementsByTagName("CEP")->item(0)->nodeValue)." - FONE: ".utf8_decode($emit->getElementsByTagName("fone")->item(0)->nodeValue));
         
 
-        // contingencia
         if ($ide->getElementsByTagName("tpEmis")->item(0)->nodeValue != 1) {
+
+            // contingencia
+
             $this->pdf->SetTextColor(170,170,170);
             $this->linha( 5.0, 190.0,  10.0, 120.0, "", "", "", "DANFE em Contingência",   "Courier,B,30,C");
             $this->linha( 5.0, 190.0,  10.0, 140.0, "", "", "", "Impresso em decorrência", "Courier,B,30,C");
@@ -243,8 +245,23 @@ class danfe {
             $dados_nfe.= $data_emissao[0].$data_emissao[1];
             $dados_nfe.= $this->calcula_dv($dados_nfe);
 
-            $this->pdf->Code128(125, 51.2, $dados_nfe, 70, 12);
+            $this->pdf->Code128(125, 51.2, $dados_nfe, 70, 12); // codigo de barras
+
+            $this->linha(14.8,    80, 120.0,  49.8,  "BTRL", ""); // codigo de barras dos dados
+            $this->linha( 8.5,    80, 120.0,  64.6,  "BTRL",  "DADOS DA NF-e", "", $this->mask_chave($dados_nfe), "Courier,B,6.5,L");
+
+        } else {
+
+            // normal
+
+            $prot_data_hora = $this->protocolo." ".$this->data_hora;
+            $this->linha(14.8,    80, 120.0,  49.8,  "BTRL", "", "", "Consulta de autenticidade no portal nacional");
+            $this->linha(14.8,    80, 120.0,  52.8,      "", "", "", "da NF-e www.nfe.fazenda.gov.br/portal ou");
+            $this->linha(14.8,    80, 120.0,  55.8,      "", "", "", "no site da Sefaz Autorizadora");
+            $this->linha( 8.5,    80, 120.0,  64.6,  "BTRL",  "PROTOCOLO DE AUTORIZAÇÃO DE USO", "", $prot_data_hora, "Courier,B,7,C");
+        
         }
+
 
         // se for ambiente de homologação, escreve SEM VALOR FISCAL
         if ($ide->getElementsByTagName("tpAmb")->item(0)->nodeValue == 2) {
@@ -252,7 +269,6 @@ class danfe {
             $this->linha( 5.0, 190.0,  10.0, 210.0, "", "", "", "SEM VALOR FISCAL", "Courier,B,50,C");
             $this->pdf->SetTextColor(0,0,0);
         }
-
 
 
         $this->linha(39.2,  25.4,  94.6,  25.4,  "BTRL", "DANFE",              "Courier,B,12,C"); // DANFE
@@ -273,9 +289,7 @@ class danfe {
 
         $this->linha(14.8,    80, 120.0,  25.4,  "BTRL"); // codigo de barras da chave
         $this->linha( 9.6,    80, 120.0,  40.2,  "BTRL",  "CHAVE DE ACESSO", "", $this->mask_chave($chave_acesso), "Courier,B,6.5,L");
-        $this->linha(14.8,    80, 120.0,  49.8,  "BTRL"); // codigo de barras dos dados
         $this->linha( 8.5, 110.0,  10.0,  64.6,  "BTRL",  "NATUREZA DA OPERAÇÃO", "", utf8_decode($ide->getElementsByTagName("natOp")->item(0)->nodeValue));
-        $this->linha( 8.5,    80, 120.0,  64.6,  "BTRL",  "DADOS DA NF-e", "", $this->mask_chave($dados_nfe), "Courier,B,6.5,L");
 
         $this->linha( 8.5,  63.4,  10.0,  73.1,  "BTRL", "INSCRIÇÃO ESTADUAL", "", utf8_decode($emit->getElementsByTagName("IE")->item(0)->nodeValue));
         $this->linha( 8.5,  63.3,  73.4,  73.1,  "BTRL", "INSCRIÇÃO ESTADUAL DO SUBST. TRIB.", "", utf8_decode($emit->getElementsByTagName("IEST")->item(0)->nodeValue));
@@ -444,14 +458,8 @@ class danfe {
         $this->pdf->SetAutopagebreak(false); 
 
 
-        if (!empty($this->protocolo)) {
-            $infCpl = "NÚMERO DO PROTOCOLO: ".$this->protocolo.". ";
-        }
-        if (!empty($this->data_hora)) {
-            $infCpl.= "DATA DE AUTORIZAÇÃO: ".$this->data_hora.". ";
-        }
         if (is_object($infAdic)) {
-            $infCpl    .= $infAdic->getElementsByTagName("infCpl")->item(0)->nodeValue;
+            $infCpl     = $infAdic->getElementsByTagName("infCpl")->item(0)->nodeValue;
             $infAdFisco = $infAdic->getElementsByTagName("infAdFisco")->item(0)->nodeValue;
         }
 
