@@ -7,22 +7,21 @@
  * AGRADECIMENTOS
  *      Sr. Dajalma Fadel Junior (por suas valiosas contribuições ao desenvolvimento deste projeto)
  *
- * ================================================
- * Assinador funcional 2009-07-04
- * Carga do certificado funcional 2009-07-22
- *
- * ================================================
  * Dependências
-
+ *
  *      module PHP5-curl
  *      module OpenSSL
  *      class NUSoap
  *      class FPDF
+ *      class danfe.class
  *
+ * @name NFeTools
+ * @version  0.1
+ * @package NFePHP
+ * @todo
+ * @copyright 2009 Roberto L. Machado
  * @author   Roberto L. Machado <roberto.machado@superig.com.br>
- *
  * @license  http://www.opensource.org/licenses/bsd-license.php  BSD License
- * @version  $Id:
  * @access   public
 **/
 
@@ -553,14 +552,19 @@ class NFEtools {
 
     /**
      * Método construtor da classe
-     *
-     * TODO
      * verificar se existe o arquivo de configuração inicial
      * se existir carregas as variáveis de ambiente apartir desse arquivo
      * A ideia (iniciada pelo Djalma) é de não necessitar setar todas as variáveis
      * importantes toda vez que a classe seja invocada. Essas variáveis seriam setadas uma
      * vez e gravadas no diretorio a partir de uma função da classe, tipo um config_inc.php
      *
+     * @name __construct
+     * @version 1.0
+     * @package classNFeTools
+     * @todo
+     * @param boolean none
+     * @return none
+     * @access Pivate
      */
     function __construct(){
 
@@ -600,9 +604,13 @@ class NFEtools {
      * Deve ser invocada pelo menos uma vez.
      * Para seu uso deve-se antes instanciar todas as propriedades importantes da classe
      *
-     * @param boolean $bSave se TRUE salva as propriedades em um arquivo para uso interno da classe
-     *                       se FALSE remove o arquivo
+     * @name fixConfig
+     * @version 1.0
+     * @package NFePHP
+     * @todo 
+     * @param boolean $bSave se TRUE salva as propriedades em um arquivo para uso interno da classe se FALSE remove o arquivo
      * @return boolean TRUE se sucesso ou FALSE se falhou
+     * @access Public
      */
     function fixConfig($bSave=TRUE){
         $texto = '<?php '."\n";
@@ -654,6 +662,11 @@ class NFEtools {
      *   $this->nameCert
      *   $this->passKey
      * FUNCIONAL !!
+     *
+     * @name carregaCert
+     * @version 1.0
+     * @package NFePHP
+     * @todo
      * @param	none
      * @return	boolean TRUE se o certificado foi carregado e FALSE se nao
      * @access  public
@@ -751,6 +764,11 @@ class NFEtools {
      * esta informacao pode ser utilizada para a gestao dos
      * certificados de forma a garantir que sempre estejam validos
      * FUNCIONAL !!
+     *
+     * @name validCert
+     * @version 1.0
+     * @package NFePHP
+     * @todo
      * @param	string  $cert Certificado digital no formato pem
      * @return	boolean	True se o certificado estiver dentro do prazo de validade, e False se nao
      * @access  public
@@ -800,11 +818,16 @@ class NFEtools {
      *      O arquivo tem sua denominação estabelecida como :
      *      ID-NFe.xml
      *  Onde o ID é o identificador de 44 digitos numéricos da NFe (sem a sigla NFe)
-     *          ex. 35090671780456000160550010000000010000000017-NFe.xml
+     *          ex. 35090671780456000160550010000000010000000017-nfe.xml
      *
      * Dependência
      *      carregaCert()
-     * @param	string $nfe
+     *
+     * @name assina
+     * @version 1.1
+     * @package NFePHP
+     * @todo
+     * @param	string $docxml
      * @param   string $tagid TAG que devera ser assinada
      * @return	mixed FALSE se houve erro ou string com o XML assinado
      * @access  public
@@ -898,14 +921,24 @@ class NFEtools {
             $X509Data->appendChild($newNode);
             //grava na string o objeto DOM
             $docxml = $xmldoc->saveXML();
+            //verifica o tipo de arquivo para assinar e estabelece o sulfixo para gravar o xml
+            if ($tagid == 'infNFe'){
+                $sulfix = '-nfe.xml';
+            } else {
+                if ($tagid == 'infInut') {
+                    $sulfix = '-pedinut.xml';
+                } else {
+                    $sulfix = '-pedcanc.xml';
+                }
+            }
             //se for passado parametro de destino salvar o xml como arquvo
             if ($outDir != ''){
-                $outname = $outDir.$idnome.'-NFe.xml';
+                $outname = $outDir.$idnome.$sulfix;
                 $ret = $xmldoc->save($outname);
             } else {
                 //verificar a propriedade da classe assinadasNF
                 if ($this->assinadasNF != ''){
-                    $outname = $this->assinadasNF.$idnome.'-NFe.xml';
+                    $outname = $this->assinadasNF.$idnome.$sulfix;
                     $ret = $xmldoc->save($outname);
                 }
             }
@@ -914,18 +947,23 @@ class NFEtools {
 
 
     
-    /**********************************************
+    /**
      * Verificaçao da NF com base no xsd
      * Há um bug no libxml2 para versões anteriores a 2.7.3
      * que causa um falso erro na validação da NFe devido ao
      * uso de uma marcação no arquivo tiposBasico_v1.02.xsd
      * onde se le {0 , } substituir por *
      * FUNCIONAL !!
+     *
+     * @name validaXML
+     * @version 1.0
+     * @package NFePHP
+     * @todo
      * @param	string  $docxml  string contendo o arquivo xml a ser avaliado
      * @param   string  $xsdfile Path completo para o arquivo xsd
      * @return	boolean TRUE se passou ou FALSE se foram detectados erros
      * @access  public
-     ***********************************************/
+    **/
     public function validaXML($docxml, $xsdfile){
         
         // Habilita a manipulaçao de erros da libxml
@@ -983,7 +1021,7 @@ class NFEtools {
 
 
 
-    /**********************************************
+    /**
      * Verifica o status do servico da SEFAZ
      * 
      * Este metodo carrega a variavel
@@ -994,10 +1032,15 @@ class NFEtools {
      * 
      *
      * FUNCIONAL !!
+     *
+     * @name statusServico
+     * @version 1.0
+     * @package NFePHP
+     * @todo
      * @param	boolean $bSave Indica se o xml da resposta deveser salvo em arquivo
      * @return	boolean True se operacional e False se nao
      * @access  public
-     ***********************************************/
+    **/
     public function statusServico($bSave=TRUE){
         //retorno da funçao 
         $bRet = FALSE;
@@ -1044,7 +1087,7 @@ class NFEtools {
             }
             if ($bSave){
                 //nome do arquivo de retorno da função SOAP
-                $nome = $this->temporarioNF.date('Ymd').'T'.date('His').'-ret_sta.xml';
+                $nome = $this->temporarioNF.date('Ymd').'T'.date('His').'-sta.xml';
                 //salva o xml retornado na pasta temporarioNF
                 $doc->save($nome);
             }
@@ -1059,6 +1102,11 @@ class NFEtools {
     /**
      * Solicita dados de situaçao de Cadastro
      * Não FUNCIONA !! Não sei porque
+     *
+     * @name consultaCadastro
+     * @version 1.1
+     * @package NFePHP
+     * @todo Verificar o motivo da falha na obtenção de resposta da SEFAZ
      * @param	string  $UF
      * @param   string  $IE
      * @param   string  $CNPJ
@@ -1066,9 +1114,6 @@ class NFEtools {
      * @param   boolean $bSave indica se o xml retornado deve ser salvo em arquivo
      * @return	boolean TRUE se sucesso ou FALSE se falha
      * @access  public
-     * TODO
-     * descobrir motivo da falha
-     *
      **/
     public function consultaCadastro($UF,$IE='',$CNPJ='',$CPF='',$bSave=TRUE){
         //variavel de retorno do metodo
@@ -1188,9 +1233,13 @@ class NFEtools {
     }
 
 
-    /**********************************************
+    /**
      * Envia lote de Notas Fiscais
-     * 
+     *
+     * @name enviaNF
+     * @version 1.0
+     * @package NFePHP
+     * @todo
      * @param	array   $aNFe notas fiscais em xml uma em cada campo de uma string
      * @param   integer $idLote o id do lote e um numero que deve ser gerado pelo sistema
      *                          a cada envio mesmo que seja de apenas uma NFe usar banco
@@ -1198,7 +1247,7 @@ class NFEtools {
      * @param   boolean $bSave indica se o xml de retorno deve ser salvo em arquivo
      * @return	boolean	True se aceito o lote ou False de rejeitado
      * @access  public
-     ************************************************/
+    **/
     public function enviaNF($aNFe=array(),$idLote='1',$bSave=TRUE){
         //variavel de retorno do metodo
         $bRet = false;
@@ -1268,7 +1317,7 @@ class NFEtools {
             }
             if ($bSave){
                 //salvar o xml retornado do SEFAZ
-                $nome = $this->enviadasNF.$idLote.'-reclote.xml';
+                $nome = $this->enviadasNF.$idLote.'-rec.xml';
                 $nome = $doc->save($nome);
             }
         } else {
@@ -1279,15 +1328,20 @@ class NFEtools {
         return $bRet;
     }
     
-    /**********************************************
+    /**
      * Solicita resposta do lote de Notas Fiscais
      * FUNCIONAL!!
      * Caso $this->cStat == 105 Tentar novamente mais tarde
+     *
+     * @name retornoNF
+     * @version 1.0
+     * @package NFePHP
+     * @todo
      * @param	string   $recibo numero do recibo do envio do lote
      * @param   boolean  $bSave indica se o xml de retorno deve ser salvo em arquivo
      * @return	boolean  True se sucesso false se falha
      * @access  public
-     ************************************************/
+    **/
     public function retornoNF($recibo, $bSave=TRUE){
 
         //variavel de retorno do metodo
@@ -1363,7 +1417,7 @@ class NFEtools {
             }
             if ($bSave){
                 //salvar o xml retornado do SEFAZ
-                $nome = $this->validadasNF.$recibo.'-prot-rec.'.$terminacao;
+                $nome = $this->validadasNF.$recibo.'-prot.'.$terminacao;
                 $nome = $doc->save($nome);
             }
         }  else {
@@ -1373,18 +1427,22 @@ class NFEtools {
         return $bRet;
     }
 
-    /**********************************************
+    /**
      * Solicita inutilizaçao de uma serie de numeros de NF
+     * FUNCIONAL !!
      *
+     * @name inutilizaNF
+     * @version 1.0
+     * @package NFePHP
+     * @todo
      * @param	string  $ano
      * @param   string  $nfSerie
      * @param   integer $numIni
      * @param   integer $numFim
      * @param   boolean $bSave
      * @return	boolean TRUE se sucesso FALSE se falha
-     * FUNCIONAL !!
      * @access  public
-     ************************************************/
+    **/
     public function inutilizaNF($ano,$nfSerie,$modelo,$numIni,$numFim,$xJust,$bSave=TRUE){
         //variavel de retorno
         $bRet = FALSE;
@@ -1451,7 +1509,7 @@ class NFEtools {
 
             if ($bSave){
                 //salvar o xml retornado do SEFAZ
-                $nome = $this->inutilizadasNF.$id.'-INUT.xml';
+                $nome = $this->inutilizadasNF.$id.'-inut.xml';
                 $nome = $doc->save($nome);
             }
 
@@ -1462,16 +1520,20 @@ class NFEtools {
         return $bRet;
     }
 
-    /**********************************************
+    /**
      * Solicita o cancelamento de NF enviada
+     * FUNCIONAL !!!
      *
+     * @name cancelaNF
+     * @version 1.0
+     * @package NFePHP
+     * @todo
      * @param	string  $idNFe ID da NFe com 44 digitos (sem o NFe na frente dos numeros)
      * @param   string  $protId Numero do protocolo de aceitaçao da NFe enviado anteriormente pelo SEFAZ
      * @param   boolean $bSave
      * @return	boolean TRUE se sucesso ou FALSE se falha
-     * FUNCIONAL !!!
      * @access  public
-     ************************************************/
+    **/
     public function cancelaNF($idNFe,$protId, $xJust, $bSave=TRUE){
         //variavel de retorno
         $bRet = FALSE;
@@ -1527,7 +1589,7 @@ class NFEtools {
 
             if($bSave){
                 //salvar o xml retornado do SEFAZ
-                $nome = $this->inutilizadasNF.$id.'-INUT.xml';
+                $nome = $this->canceladasNF.$id.'-canc.xml';
                 $nome = $doc->save($nome);
             }
 
@@ -1541,6 +1603,11 @@ class NFEtools {
     /**
      * Solicita dados de situaçao de NF
      * FUNCIONAL !!
+     *
+     * @name consultaNF
+     * @version 1.0
+     * @package NFePHP
+     * @todo
      * @param	string   $idNFe numerico com 44 digitos
      * @param   boolean  $bSave
      * @return	mixed	response from SOAP call
@@ -1591,7 +1658,7 @@ class NFEtools {
             }
             if($bSave){
                 //salvar o xml retornado do SEFAZ
-                $nome = $this->consultadasNF.$idNFe.'-PROT.xml';
+                $nome = $this->consultadasNF.$idNFe.'-sit.xml';
                 $nome = $doc->save($nome);
             }
         } else {
@@ -1604,16 +1671,29 @@ class NFEtools {
 
     /**
      * Gera arquivo pdf para impressao de NF-e
-     * @param	string   $xml
-     * @param   string   $formato P=portrait L=landscape
+     * Requer danfe.class.php
+     *
+     * @name imprimeNF
+     * @version 1.0
+     * @package NFePHP
+     * @todo
+     * @param	string  $xml
+     * @param   string  $formato P=portrait L=landscape
+     * @param   sring   $path_logomarca
+     * @param   string  $protocolo
+     * @param   string  $data_hora
      * @return
      * @access  public
      * @author Djalma Fadel Junior
-     *
      **/
-    public function imprimeNF($xml, $formato="P"){
+    public function imprimeNF($xml, $formato="P", $path_logomarca="", $protocolo="", $data_hora=""){
         include_once ('danfe.class.php');
         $danfe = new danfe($xml, $formato);
+        $danfe->protocolo = $protocolo;
+        $danfe->data_hora = $data_hora;
+        if (!empty($path_logomarca)) {
+            $danfe->logomarca = $path_logomarca;
+        }
         return $danfe->gera();
     }
 
@@ -1624,7 +1704,12 @@ class NFEtools {
 
     /**
      * Estabelece comunicaçao com servidor SOAP
-     * FUNCIONAL !!! 
+     * FUNCIONAL !!!
+     * 
+     * @name sendSOAP
+     * @version 1.0
+     * @package NFePHP
+     * @todo
      * @param    array   $param Matriz com o cabeçalho e os dados da mensagem soap
      * @param    string  $wsdl Designaçao do Serviço SOAP
      * @return   mixed  Array com a resposta do SOAP ou String do erro ou false
@@ -1674,6 +1759,10 @@ class NFEtools {
      * Converte o campo data time retornado pelo webservice
      * em um timestamp unix
      *
+     * @name convertTime
+     * @version 1.0
+     * @package NFePHP
+     * @todo
      * @param    string   $DH
      * @return   timestamp
      * @access   private
@@ -1691,7 +1780,11 @@ class NFEtools {
     /**
      * Retira as chaves de inicio e fim do certificado digital
      * para inclusão do mesmo na tag assinatura
-     * 
+     *
+     * @name limpaCert
+     * @version 1.0
+     * @package NFePHP
+     * @todo
      * @param    none
      * @return   string contendo a chave digital limpa
      * @access   private
