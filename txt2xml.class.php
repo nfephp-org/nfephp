@@ -9,16 +9,19 @@
  */
 
 //print_r("<pre>");
-header("Content-Type: text/xml");  
+//header("Content-Type: text/xml");  
 class NFeTxt2Xml{
 	var $xml;
 	
-	function __construct($arquivo=NULL){
+	function __construct($arquivo=NULL, $saida=NULL){
 		$handle = @fopen($arquivo, "r");
 		if ($handle) {
 			$dom = new DOMDocument('1.0', 'UTF-8');
 			$dom->formatOutput = true;
+			$NFe = $dom->createElement("NFe"); 
+			$NFe->setAttribute("xmlns", "http://www.portalfiscal.inf.br/nfe");
 
+			
 			while (!feof($handle)) {
 				$buffer = fgets($handle, 4096);
 				if(strpos($buffer, "|")===false)
@@ -32,8 +35,8 @@ class NFeTxt2Xml{
 						break;
 					case "A":
 						$infNFe = $dom->createElement("infNFe"); 
-						$infNFe->setAttribute("versao", $dados[1]);
-						$infNFe->setAttribute("Id", $dados[2]);
+						$infNFe->setAttribute("versao", trim($dados[1]));
+						$infNFe->setAttribute("Id", trim($dados[2]));
 						break;
 					case "B":
                         
@@ -47,8 +50,8 @@ class NFeTxt2Xml{
 							$B->appendChild($cNF);
 						}
 						if(!$this->vazio($dados[3])){
-							$natOp = $dom->createElement("natOp", $dados[3]); 
-							$B->appendChild($natOp);//alterado de NatOp para natOp conforme manual
+							$NatOp = $dom->createElement("natOp", $dados[3]); 
+							$B->appendChild($NatOp);
 						}
 						if(!$this->vazio($dados[4])){
 							$indPag = $dom->createElement("indPag", $dados[4]); 
@@ -98,10 +101,10 @@ class NFeTxt2Xml{
 							$tpAmb = $dom->createElement("tpAmb", $dados[15]); 
 							$B->appendChild($tpAmb);
 						}
-						if(!$this->vazio($dados[16])){
-							$finNFe = $dom->createElement("finNFe", $dados[16]);
-							$B->appendChild($finNFe);
-						}
+						
+						$finNFe = $dom->createElement("finNFe", $dados[16]);
+						$B->appendChild($finNFe);
+						
 						if(!$this->vazio($dados[17])){
 							$procEmi = $dom->createElement("procEmi", $dados[17]); 
 							$B->appendChild($procEmi);
@@ -112,71 +115,26 @@ class NFeTxt2Xml{
 						}
 						$infNFe->appendChild($B);
 						break;
-					case "B13":  //VEREFICAR
-					$enderEmi = $dom->createElement("enderEmi");
-						if(!$this->vazio($dados[1])){
-							$refNFe = $dom->createElement("refNFe", $dados[1]); 
-							$B13->appendChild($refNFe);
-						}
-						$infNFe->appendChild($B13);
-						break;
-						
-					case "B14": //VEREFICAR
-						$enderEmi = $dom->createElement("enderEmi");
-						if(!$this->vazio($dados[1])){
-							$cUF = $dom->createElement("cUF", $dados[1]); 
-							$B14->appendChild($cUF);
-						}
-						if(!$this->vazio($dados[2])){
-							$AAMM = $dom->createElement("AAMM", $dados[2]); 
-							$B14->appendChild($AAMM);
-						}
-						if(!$this->vazio($dados[3])){
-							$CNPJ = $dom->createElement("CNPJ", $dados[1]); 
-							$B14->appendChild($CNPJ);
-						}
-						if(!$this->vazio($dados[4])){
-							$mod = $dom->createElement("mod", $dados[4]); 
-							$B14->appendChild($mod);
-						}
-						if(!$this->vazio($dados[5])){
-							$serie = $dom->createElement("serie", $dados[1]); 
-							$B14->appendChild($serie);
-						}
-						if(!$this->vazio($dados[6])){
-							$nNF = $dom->createElement("nNF", $dados[1]); 
-							$B14->appendChild($nNF);
-						}
-						$infNFe->appendChild($B14);
-						break;
-						
 					case "C":
-						$C = $dom->createElement("emi");
+						$C = $dom->createElement("emit");
 						if(!$this->vazio($dados[1])){
 							$xNome = $dom->createElement("xNome", $dados[1]); 
-							$C->appendChild($xNome);
 						}
 						if(!$this->vazio($dados[2])){
 							$xFant = $dom->createElement("xFant", $dados[2]); 
-							$C->appendChild($xFant);
 						}
 						if(!$this->vazio($dados[3])){
 							$ie = $dom->createElement("IE", $dados[3]); 
-							$C->appendChild($ie);
 						}
 						if(!$this->vazio($dados[4])){
 							$iest = $dom->createElement("IEST", $dados[4]); 
-							$C->appendChild($iest);
 						}
 						if(!$this->vazio($dados[5])){
 							$im = $dom->createElement("IM", $dados[5]); 
-							$C->appendChild($im);
 						}
 						if(!$this->vazio($dados[6])){
 							$cnae = $dom->createElement("CNAE", $dados[6]); 
-							$C->appendChild($cnae);
 						}
-						$infNFe->appendChild($C);
 						break;
 					case "C02":
 						if(!$this->vazio($dados[1])){
@@ -193,7 +151,16 @@ class NFeTxt2Xml{
 						$infNFe->appendChild($C);
 						break;
 					case "C05":
-						$enderEmi = $dom->createElement("enderEmi");  
+						if(isset($xNome))
+							$C->appendChild($xNome);
+						if(isset($xFant))	
+							$C->appendChild($xFant);
+						if(isset($im))	
+							$C->appendChild($im);
+						if(isset($cnae))	
+							$C->appendChild($cnae);
+							
+						$enderEmi = $dom->createElement("enderEmit");  
 						if(!$this->vazio($dados[1])){
 							$xLgr = $dom->createElement("xLgr", $dados[1]);
 							$enderEmi->appendChild($xLgr);
@@ -235,23 +202,23 @@ class NFeTxt2Xml{
 							$enderEmi->appendChild($fone);
 						}
 						$C->appendChild($enderEmi);
+						if(isset($ie))
+							$C->appendChild($ie);
+						if(isset($iest))	
+							$C->appendChild($iest);
 						$infNFe->appendChild($C);
 						break;
 					case "E":
 						$E = $dom->createElement("dest");
 						if(!$this->vazio($dados[1])){
 							$xNome = $dom->createElement("xNome", $dados[1]); 
-							$E->appendChild($xNome);
 						}
 						if(!$this->vazio($dados[2])){
 							$IE = $dom->createElement("IE", $dados[2]); 
-							$E->appendChild($IE);
 						}
 						if(!$this->vazio($dados[3])){
 							$ISUF = $dom->createElement("ISUF", $dados[3]); 
-							$E->appendChild($ISUF);
 						}
-						$infNFe->appendChild($E);
 						break;
 					case "E02":
 						if(!$this->vazio($dados[1])){
@@ -268,6 +235,8 @@ class NFeTxt2Xml{
 						$infNFe->appendChild($E);
 						break;
 					case "E05":
+						if(isset($xNome))
+							$E->appendChild($xNome);
 						$enderDest = $dom->createElement("enderDest");
 						if(!$this->vazio($dados[1])){
 							$xLgr = $dom->createElement("xLgr", $dados[1]); 
@@ -314,6 +283,10 @@ class NFeTxt2Xml{
 							$enderDest->appendChild($fone);
 						}
 						$E->appendChild($enderDest);
+						if(isset($IE))	
+							$E->appendChild($IE);
+						if(isset($ISUF))	
+							$E->appendChild($ISUF);
 						$infNFe->appendChild($E);
 						break;
 					case "F":
@@ -400,77 +373,76 @@ class NFeTxt2Xml{
 						$infNFe->appendChild($H);
 						break;
 					case "I": 
+						$I = $dom->createElement("prod");
+						$H->appendChild($I);
 						if(!$this->vazio($dados[1])){
 							$cProd = $dom->createElement("cProd", $dados[1]); 
-							$H->appendChild($cProd);
+							$I->appendChild($cProd);
 						}
-						if(!$this->vazio($dados[2])){
-							$cENAN = $dom->createElement("cENAN", $dados[2]); 
-							$H->appendChild($cENAN);
-						}
+						// obrigatório				
+						$cEAN = $dom->createElement("cEAN", $dados[2]); 
+						$I->appendChild($cEAN);
 						if(!$this->vazio($dados[3])){
 							$xProd = $dom->createElement("xProd", $dados[3]); 
-							$H->appendChild($xProd);
+							$I->appendChild($xProd);
 						}
 						if(!$this->vazio($dados[4])){
 							$NCM = $dom->createElement("NCM", $dados[4]); 
-							$H->appendChild($NCM);
+							$I->appendChild($NCM);
 						}
 						if(!$this->vazio($dados[5])){
 							$EXTIPI = $dom->createElement("EXTIPI", $dados[5]); 
-							$H->appendChild($EXTIPI);
+							$I->appendChild($EXTIPI);
 						}
 						if(!$this->vazio($dados[6])){
 							$genero = $dom->createElement("genero", $dados[6]); 
-							$H->appendChild($genero);
+							$I->appendChild($genero);
 						}
 						if(!$this->vazio($dados[7])){
 							$CFOP = $dom->createElement("CFOP", $dados[7]); 
-							$H->appendChild($CFOP);
+							$I->appendChild($CFOP);
 						}
 						if(!$this->vazio($dados[8])){
 							$uCom = $dom->createElement("uCom", $dados[8]); 
-							$H->appendChild($uCom);
+							$I->appendChild($uCom);
 						}
 						if(!$this->vazio($dados[9])){
 							$qCom = $dom->createElement("qCom", $dados[9]); 
-							$H->appendChild($qCom);
+							$I->appendChild($qCom);
 						}
 						if(!$this->vazio($dados[10])){
 							$vUnCom = $dom->createElement("vUnCom", $dados[10]); 
-							$H->appendChild($vUnCom);
+							$I->appendChild($vUnCom);
 						}
 						if(!$this->vazio($dados[11])){
 							$vProd = $dom->createElement("vProd", $dados[11]); 
-							$H->appendChild($vProd);
+							$I->appendChild($vProd);
 						}
-						if(!$this->vazio($dados[12])){
-							$cEANTrib = $dom->createElement("cEANTrib", $dados[12]); 
-							$H->appendChild($cEANTrib);
-						}
+						$cEANTrib = $dom->createElement("cEANTrib", $dados[12]); 
+						$I->appendChild($cEANTrib);
 						if(!$this->vazio($dados[13])){
 							$uTrib = $dom->createElement("uTrib", $dados[13]); 
-							$H->appendChild($uTrib);
+							$I->appendChild($uTrib);
 						}
 						if(!$this->vazio($dados[14])){
 							$qTrib = $dom->createElement("qTrib", $dados[14]); 
-							$H->appendChild($qTrib);
+							$I->appendChild($qTrib);
 						}
 						if(!$this->vazio($dados[15])){
 							$vUnTrib = $dom->createElement("vUnTrib", $dados[15]); 
-							$H->appendChild($vUnTrib);
+							$I->appendChild($vUnTrib);
 						}
 						if(!$this->vazio($dados[16])){
 							$vFrete = $dom->createElement("vFrete", $dados[16]); 
-							$H->appendChild($vFrete);
+							$I->appendChild($vFrete);
 						}
 						if(!$this->vazio($dados[17])){
 							$vSeg = $dom->createElement("vSeg", $dados[17]); 
-							$H->appendChild($vSeg);
+							$I->appendChild($vSeg);
 						}
 						if(!$this->vazio($dados[18])){
 							$vDesc = $dom->createElement("vDesc", $dados[18]); 
-							$H->appendChild($vDesc);
+							$I->appendChild($vDesc);
 						}
 					case "I18":
 						$DI = $dom->createElement("DI");
@@ -520,6 +492,7 @@ class NFeTxt2Xml{
 						}
 						$DI->appendChild($adi);
 						break;
+						
 					case "J":
 						$veicProd = $dom->createElement("veicProd");
 						if(!$this->vazio($dados[1])){
@@ -626,17 +599,16 @@ class NFeTxt2Xml{
 							$dFab = $dom->createElement("dFab", $dados[3]); 
 							$med->appendChild($dFab);
 						}
-						if(!$this->vazio($dados[4])){
-							$dVal = $dom->createElement("nLote", $dados[4]); 
-							$med->appendChild($dVal);
-						}
+						
+						$dVal = $dom->createElement("dVal", $dados[4]); 
+						$med->appendChild($dVal);
+						
 						if(!$this->vazio($dados[5])){
 							$vPMC = $dom->createElement("vPMC", $dados[5]); 
 							$med->appendChild($vPMC);
 						}
-						$H->appendChild($med);
+						$I->appendChild($med);
 						break;
-
 					case "L":
 						$arma = $dom->createElement("arma");
 						if(!$this->vazio($dados[1])){
@@ -655,7 +627,7 @@ class NFeTxt2Xml{
 							$descr = $dom->createElement("descr", $dados[4]); 
 							$arma->appendChild($descr);
 						}
-						$H->appendChild($arma);
+						$I->appendChild($arma);
 						break;	
 					case "L01":
 						$comb = $dom->createElement("comb");
@@ -671,7 +643,7 @@ class NFeTxt2Xml{
 							$qTemp = $dom->createElement("qTemp", $dados[3]); 
 							$comb->appendChild($qTemp);
 						}
-						$H->appendChild($comb);
+						$I->appendChild($comb);
 						break;
 					case "L105":
 						$CIDE = $dom->createElement("CIDE");
@@ -687,7 +659,7 @@ class NFeTxt2Xml{
 							$vCIDE = $dom->createElement("vCIDE", $dados[3]); 
 							$CIDE->appendChild($vCIDE);
 						}
-						$H->appendChild($CIDE);
+						$I->appendChild($CIDE);
 						break;
 					case "L109":
 						$ICMSComb = $dom->createElement("ICMSComb");
@@ -703,11 +675,11 @@ class NFeTxt2Xml{
 							$vBCICMSST = $dom->createElement("vBCICMSST", $dados[3]); 
 							$ICMSComb->appendChild($vBCICMSST);
 						}
-						if(!$this->vazio($dados[4])){
-							$vICMSST = $dom->createElement("vICMSST", $dados[4]); 
-							$ICMSComb->appendChild($vICMSST);
-						}
-						$H->appendChild($ICMSComb);
+						
+						$vICMSST = $dom->createElement("vICMSST", $dados[4]); 
+						$ICMSComb->appendChild($vICMSST);
+					
+						$I->appendChild($ICMSComb);
 						break;	
 					case "L114":
 						$ICMSInter = $dom->createElement("ICMSInter");
@@ -715,11 +687,9 @@ class NFeTxt2Xml{
 							$vBCICMSSTDest = $dom->createElement("vBCICMSSTDest", $dados[1]); 
 							$ICMSInter->appendChild($vBCICMSSTDest);
 						}
-						if(!$this->vazio($dados[2])){
-							$vICMSSTDest = $dom->createElement("vICMSSTDest", $dados[2]); 
-							$ICMSInter->appendChild($vICMSSTDest);
-						}
-						$H->appendChild($ICMSInter);
+						$vICMSSTDest = $dom->createElement("vICMSSTDest", $dados[2]); 
+						$ICMSInter->appendChild($vICMSSTDest);
+						$I->appendChild($ICMSInter);
 						break;
 					case "L117":
 						$ICMSCons = $dom->createElement("ICMSCons");
@@ -727,15 +697,15 @@ class NFeTxt2Xml{
 							$vBCICMSSTCons = $dom->createElement("vBCICMSSTCons", $dados[1]); 
 							$ICMSCons->appendChild($vBCICMSSTCons);
 						}
-						if(!$this->vazio($dados[2])){
-							$vICMSSTCons = $dom->createElement("vICMSSTCons", $dados[2]); 
-							$ICMSCons->appendChild($vICMSSTCons);
-						}
+
+						$vICMSSTCons = $dom->createElement("vICMSSTCons", $dados[2]); 
+						$ICMSCons->appendChild($vICMSSTCons);
+						
 						if(!$this->vazio($dados[3])){
 							$UFcons = $dom->createElement("UFcons", $dados[3]); 
 							$ICMSCons->appendChild($UFcons);
 						}
-						$H->appendChild($ICMSCons);
+						$I->appendChild($ICMSCons);
 						break;
 					case "M":
 						$imposto = $dom->createElement("imposto");
@@ -819,43 +789,11 @@ class NFeTxt2Xml{
 							$pICMSST = $dom->createElement("pICMSST", $dados[11]);
 							$ICMS10->appendChild($pICMSST);
 						}
-						if(!$this->vazio($dados[12])){
-							$vICMSST = $dom->createElement("vICMSST", $dados[12]);
-							$ICMS10->appendChild($vICMSST);
-						}
+
+						$vICMSST = $dom->createElement("vICMSST", $dados[12]);
+						$ICMS10->appendChild($vICMSST);
+						
 						$ICMS->appendChild($ICMS10);
-						break;
-						case "N04"://vereficar cst20
-						$ICMS20 = $dom->createElement("ICMS20");
-						if(!$this->vazio($dados[1])){
-							$orig = $dom->createElement("orig", $dados[1]); 
-							$ICMS20->appendChild($orig);
-						}
-						if(!$this->vazio($dados[2])){
-							$CST = $dom->createElement("CST", $dados[2]); 
-							$ICMS20->appendChild($CST);
-						}
-						if(!$this->vazio($dados[3])){
-							$modBC = $dom->createElement("modBC", $dados[3]); 
-							$ICMS20->appendChild($modBC);
-						}
-						if(!$this->vazio($dados[4])){
-							$pRedBC = $dom->createElement("pRedBC", $dados[4]); 
-							$ICMS20->appendChild($pRedBC);
-						}
-						if(!$this->vazio($dados[5])){
-							$vBC = $dom->createElement("vBC", $dados[5]); 
-							$ICMS20->appendChild($vBC);
-						}
-						if(!$this->vazio($dados[6])){
-							$pICMS = $dom->createElement("pICMS", $dados[6]); 
-							$ICMS20->appendChild($pICMS);
-						}
-						if(!$this->vazio($dados[7])){
-							$vICMS = $dom->createElement("vICMS", $dados[7]);
-							$ICMS20->appendChild($vICMS);
-						}
-						$ICMS->appendChild($ICMS20);
 						break;
 					case "N05":
 						$ICMS30 = $dom->createElement("ICMS30");
@@ -887,10 +825,10 @@ class NFeTxt2Xml{
 							$pICMSST = $dom->createElement("pICMSST", $dados[7]); 
 							$ICMS30->appendChild($pICMSST);
 						}
-						if(!$this->vazio($dados[8])){
-							$vICMSST = $dom->createElement("vICMSST", $dados[8]); 
-							$ICMS30->appendChild($vICMSST);
-						}
+
+						$vICMSST = $dom->createElement("vICMSST", $dados[8]); 
+						$ICMS30->appendChild($vICMSST);
+
 						$ICMS->appendChild($ICMS30);
 						break;
 					case "N06":
@@ -951,122 +889,18 @@ class NFeTxt2Xml{
 							$vBCST = $dom->createElement("vBCST", $dados[3]); 
 							$ICMS60->appendChild($vBCST);
 						}
-						if(!$this->vazio($dados[4])){
-							$vICMSST = $dom->createElement("vICMSST", $dados[4]); 
-							$ICMS60->appendChild($vICMSST);
-						}
+
+						$vICMSST = $dom->createElement("vICMSST", $dados[4]); 
+						$ICMS60->appendChild($vICMSST);
+							
 						$ICMS->appendChild($ICMS60);
 						break;	
 					case "N09": //CST - 70 - Com redução de base de cálculo e cobrança do ICMS por substituição tributária
 						$ICMS70 = $dom->createElement("ICMS70");	
-						if(!$this->vazio($dados[1])){
-							$orig = $dom->createElement("orig", $dados[1]); 
-							$ICMS70->appendChild($orig);
-						}
-						if(!$this->vazio($dados[2])){
-							$CST = $dom->createElement("CST", $dados[2]); 
-							$ICMS70->appendChild($CST);
-						}
-						if(!$this->vazio($dados[3])){
-							$modBC = $dom->createElement("modBC", $dados[3]); 
-							$ICMS70->appendChild($modBC);
-						}
-						if(!$this->vazio($dados[4])){
-							$pRedBC = $dom->createElement("pRedBC", $dados[4]); 
-							$ICMS70->appendChild($pRedBC);
-						}
-						if(!$this->vazio($dados[5])){
-							$vBC = $dom->createElement("vBC", $dados[5]); 
-							$ICMS70->appendChild($vBC);
-						}
-						if(!$this->vazio($dados[6])){
-							$pICMS = $dom->createElement("pICMS", $dados[6]); 
-							$ICMS70->appendChild($pICMS);
-						}
-						if(!$this->vazio($dados[7])){
-							$vICMS = $dom->createElement("vICMS", $dados[7]); 
-							$ICMS70->appendChild($vICMS);
-						}
-						if(!$this->vazio($dados[8])){
-							$modBCST = $dom->createElement("modBCST", $dados[8]); 
-							$ICMS70->appendChild($modBCST);
-						}
-						if(!$this->vazio($dados[9])){
-							$pMVAST = $dom->createElement("pMVAST", $dados[9]); 
-							$ICMS70->appendChild($pMVAST);
-						}
-						if(!$this->vazio($dados[10])){
-							$pRedBCST = $dom->createElement("pRedBCST", $dados[10]); 
-							$ICMS70->appendChild($pRedBCSt);
-						}
-						if(!$this->vazio($dados[11])){
-							$vvBCST = $dom->createElement("vBCST", $dados[11]); 
-							$ICMS70->appendChild($vBCST);
-						}
-						if(!$this->vazio($dados[12])){
-							$pICMSST = $dom->createElement("pICMSST", $dados[12]); 
-							$ICMS70->appendChild($pICMSST);
-						}
-						if(!$this->vazio($dados[13])){
-							$vICMSST = $dom->createElement("vICMSST", $dados[13]); 
-							$ICMS70->appendChild($vICMSST);
-						}
 						$ICMS->appendChild($ICMS70);
 						break;
 					case "N10": //CST - 90 Outros
-						$ICMS90 = $dom->createElement("ICMS90");
-						if(!$this->vazio($dados[1])){
-							$orig = $dom->createElement("orig", $dados[1]); 
-							$ICMS90->appendChild($orig);
-						}
-						if(!$this->vazio($dados[2])){
-							$CST = $dom->createElement("CST", $dados[2]); 
-							$ICMS90->appendChild($CST);
-						}
-						if(!$this->vazio($dados[3])){
-							$modBC = $dom->createElement("modBC", $dados[3]); 
-							$ICMS90->appendChild($modBC);
-						}
-						if(!$this->vazio($dados[4])){
-							$pRedBC = $dom->createElement("pRedBC", $dados[4]); 
-							$ICMS90->appendChild($pRedBC);
-						}
-						if(!$this->vazio($dados[5])){
-							$vBC = $dom->createElement("vBC", $dados[5]); 
-							$ICMS90->appendChild($vBC);
-						}
-						if(!$this->vazio($dados[6])){
-							$pICMS = $dom->createElement("pICMS", $dados[6]); 
-							$ICMS90->appendChild($pICMS);
-						}
-						if(!$this->vazio($dados[7])){
-							$vICMS = $dom->createElement("vICMS", $dados[7]); 
-							$ICMS90->appendChild($vICMS);
-						}
-						if(!$this->vazio($dados[8])){
-							$modBCST = $dom->createElement("modBCST", $dados[8]); 
-							$ICMS90->appendChild($modBCST);
-						}
-						if(!$this->vazio($dados[9])){
-							$pMVAST = $dom->createElement("pMVAST", $dados[9]); 
-							$ICMS90->appendChild($pMVAST);
-						}
-						if(!$this->vazio($dados[10])){
-							$pRedBCST = $dom->createElement("pRedBCST", $dados[10]); 
-							$ICMS90->appendChild($pRedBCSt);
-						}
-						if(!$this->vazio($dados[11])){
-							$vvBCST = $dom->createElement("vBCST", $dados[11]); 
-							$ICMS90->appendChild($vBCST);
-						}
-						if(!$this->vazio($dados[12])){
-							$pICMSST = $dom->createElement("pICMSST", $dados[12]); 
-							$ICMS90->appendChild($pICMSST);
-						}
-						if(!$this->vazio($dados[13])){
-							$vICMSST = $dom->createElement("vICMSST", $dados[13]); 
-							$ICMS90->appendChild($vICMSST);
-						}						
+						$ICMS90 = $dom->createElement("ICMS90");	
 						$ICMS->appendChild($ICMS90);
 						break;
 					case "O":
@@ -1101,29 +935,22 @@ class NFeTxt2Xml{
 						}
 						if(!$this->vazio($dados[2])){
 							$vIPI = $dom->createElement("vIPI", $dados[2]); 
-							$IPITrib->appendChild($vIPI);
 						}
 						$IPI->appendChild($IPITrib);
 						break;
 					case "O10":	
-						if(!$this->vazio($dados[1])){
-							$vBC = $dom->createElement("vBC", $dados[1]); 
-							$IPITrib->appendChild($vBC);
-						}
-						if(!$this->vazio($dados[2])){
-							$pIPI = $dom->createElement("pIPI", $dados[2]); 
-							$IPITrib->appendChild($pIPI);
-						}
+						$vBC = $dom->createElement("vBC", $dados[1]); 
+						$IPITrib->appendChild($vBC);
+						$pIPI = $dom->createElement("pIPI", $dados[2]); 
+						$IPITrib->appendChild($pIPI);
+						$IPITrib->appendChild($vIPI);
 						break;
 					case "O11":	
-						if(!$this->vazio($dados[1])){
-							$vUnid = $dom->createElement("vUnid", $dados[1]); 
-							$IPITrib->appendChild($vUnid);
-						}
-						if(!$this->vazio($dados[2])){
-							$qUnid = $dom->createElement("qUnid", $dados[2]); 
-							$IPITrib->appendChild($qUnid);
-						}
+						$vUnid = $dom->createElement("vUnid", $dados[1]); 
+						$IPITrib->appendChild($vUnid);
+						$qUnid = $dom->createElement("qUnid", $dados[2]); 
+						$IPITrib->appendChild($qUnid);
+						$IPITrib->appendChild($vIPI);
 						break;
 					case "O08":
 						$IPINT = $dom->createElement("IPINT");
@@ -1155,11 +982,11 @@ class NFeTxt2Xml{
 						break;
 					case "Q":
 						$PIS = $dom->createElement("PIS");
-						$PISAliq = $dom->createElement("PISAliq");
-						$PIS->appendChild($PISAliq);
 						$imposto->appendChild($PIS);
 						break;
 					case "Q02":
+						$PISAliq = $dom->createElement("PISAliq");
+						$PIS->appendChild($PISAliq);
 						if(!$this->vazio($dados[1])){
 							$CST = $dom->createElement("CST", $dados[1]); 
 							$PISAliq->appendChild($CST);
@@ -1212,7 +1039,6 @@ class NFeTxt2Xml{
 						}
 						if(!$this->vazio($dados[2])){
 							$vPIS = $dom->createElement("vPIS", $dados[2]); 
-							$PISOutr->appendChild($vPIS);
 						}
 						$PIS->appendChild($PISOutr);
 						break;
@@ -1236,6 +1062,7 @@ class NFeTxt2Xml{
 							$vAliqProd = $dom->createElement("vAliqProd", $dados[2]); 
 							$PISOutr->appendChild($vAliqProd);
 						}
+						$PISOutr->appendChild($vPIS);
 						$PIS->appendChild($PISOutr);
 						break;
 					case "R":
@@ -1322,7 +1149,6 @@ class NFeTxt2Xml{
 						}
 						if(!$this->vazio($dados[2])){
 							$vCOFINS = $dom->createElement("vCOFINS", $dados[2]); 
-							$COFINSOutr->appendChild($vCOFINS);
 						}
 						$COFINS->appendChild($COFINSOutr);
 						break;
@@ -1345,6 +1171,7 @@ class NFeTxt2Xml{
 							$vAliqProd = $dom->createElement("vAliqProd", $dados[2]); 
 							$COFINSOutr->appendChild($vAliqProd);
 						}
+						$COFINSOutr->appendChild($vCOFINS);
 						break;
 					case "T": 	
 						$COFINSST = $dom->createElement("COFINSST");
@@ -1591,7 +1418,7 @@ class NFeTxt2Xml{
 						$lacres = $dom->createElement("lacres");
 						
 						$lacre = $dom->createElement("lacre", $dados[1]);
-						$lacres->appendChild($lacre);
+						$lacres->appendChild($placa);
 						
 						$vol->appendChild($lacres);
 						break;
@@ -1659,53 +1486,18 @@ class NFeTxt2Xml{
 						$infNFe->appendChild($obsCont);
 						break;
 						
-						case "Z10": //processo referenciado
-						$procRef = $dom->createElement("procRef");
-						if(!$this->vazio($dados[1])){
-							$nProc = $dom->createElement("nProc", $dados[1]);
-							$procRef->appendChild($nProc);
-						}
-						if(!$this->vazio($dados[2])){
-							$procRef = $dom->createElement("indProc", $dados[2]);
-							$procRef->appendChild($indProc);
-						}
-						//$infNFe->appendChild($proRef);// vereficar
-						$infAdic->appendChild($proRef);//
-						break;
-						case "ZA"://exportacao
-						$exporta = $dom->createElement("exportacao");
-						if(!$this->vazio($dados[1])){
-							$UFEmbarq = $dom->createElement("UFEmbarq", $dados[1]);
-							$exporta->appendChild($UFEmbraq);
-						}
-						if(!$this->vazio($dados[2])){
-							$xLocEmabarq = $dom->createElement("xLocEmabarq", $dados[2]);
-							$exporta->appendChild($xLocEmabarq);
-						}
-						$infNFe->appendChild($exporta);
-						break;
-						case "ZB": //compra
-						$compra = $dom->createElement("compra");
-						if(!$this->vazio($dados[1])){
-							$xNEmp = $dom->createElement("xNEmp", $dados[1]);
-							$compra->appendChild($xNEmp);
-						}
-						if(!$this->vazio($dados[2])){
-							$xPed = $dom->createElement("xPed", $dados[2]);
-							$compra->appendChild($xPed);
-						}
-						if(!$this->vazio($dados[3])){
-							$xCont = $dom->createElement("xCont", $dados[2]);
-							$compra->appendChild($xCont);
-						}
-						$infNFe->appendChild($compra);
-						break;
 				}
 				
 			}
 			
-			$dom->appendChild($infNFe);
+			$NFe->appendChild($infNFe);
+			$dom->appendChild($NFe);
 			$this->xml = $dom->saveXML();
+			if(!empty($saida)){
+				//print $saida;	
+				$dom->save($saida);
+			}
+			
 			fclose($handle);
 			
 			
@@ -1717,7 +1509,7 @@ class NFeTxt2Xml{
 	function getXML(){ // retorna o XML formatado
 		return $this->xml;
 	}
-	
+
 	function vazio($var){
 		$var = trim($var);
 		if(strlen($var)>0)
