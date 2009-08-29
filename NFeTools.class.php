@@ -1,6 +1,6 @@
-<?
+Ôªø<?
 /**
- * Conjunto de classes para manipulaÁ„o de NF-e
+ * Conjunto de classes para manipula√ß√£o de NF-e
  * baseado na NFEtools de Roberto L. Machado
  *
  * @author  Djalma Fadel Junior <dfadel@ferasoft.com.br>
@@ -14,10 +14,10 @@
  *
  *
  * TODO
- *       - verificaÁıes, validaÁıes e tratamento de erros
- *       - coment·rios para phpdoc
- *       - flexibilizaÁ„o para v·rias versıes de layout
- *       - separar em arquivos o config e cada conjunto de classes de um serviÁo web
+ *       - verifica√ß√µes, valida√ß√µes e tratamento de erros
+ *       - coment√°rios para phpdoc
+ *       - flexibiliza√ß√£o para v√°rias vers√µes de layout
+ *       - separar em arquivos o config e cada conjunto de classes de um servi√ßo web
  *       - fazer carregamento das URLs webservices conforme _NFE_TPAMB
  *
 **/
@@ -27,20 +27,20 @@
 /*************************************/
 /**
  * configNFe.inc.php
- * Arquivo de configuraÁıes da NF-e
+ * Arquivo de configura√ß√µes da NF-e
  * dfadel, 20.08.2009
 **/
 
-define ('_NFE_LIB_PATH',            './libs');                          // path do repositÛrio de libs (dependÍncias)
+define ('_NFE_LIB_PATH',            './libs');                          // path do reposit√≥rio de libs (depend√™ncias)
 
 define ('_NFE_TPAMB',               '2');                               // tipo de ambiente: 1-producao, 2-homologacao
-define ('_NFE_CUF',                 '35');                              // cÛdigo da UF do emitente
+define ('_NFE_CUF',                 '35');                              // c√≥digo da UF do emitente
 
 define ('_NFE_CERTIFICATE_FILE',    './certificate/XXXXXXXXX.p12');     // path/file do certificado p12 (pfx)
 define ('_NFE_PUBLICKEY_FILE',      './certificate/publickey.pem');     // path/file da chave publica
 define ('_NFE_PRIVATEKEY_FILE',     './certificate/privatekey.pem');    // path/file da chave privada
 define ('_NFE_PASSKEY',             'XXXXX');                           // senha da chave
-define ('_NFE_PASSPHRASE',          '');                                // senha de decriptacao (normalmente n„o usado)
+define ('_NFE_PASSPHRASE',          '');                                // senha de decriptacao (normalmente n√£o usado)
 
 
 // PATHS DOS XMLS GERADOS E RECEBIDOS
@@ -223,7 +223,7 @@ class assinatura {
     /**
      * @param   string XML
      * @param   string tagID
-     * @return  mixed (FALSE se erro, sen„o string XML assinado)
+     * @return  mixed (FALSE se erro, sen√£o string XML assinado)
     **/
     function assinaXML($sXML, $tagID) {
         $dom = new DOMDocument('1.0', 'utf-8');
@@ -479,15 +479,15 @@ class retEnvNFe {
 
 // ARQUIVO RETORNO NFE (INICIO) ************************************************
 
-// pag.70 - o manual È incoerente quanto ao salvamento do XML de retorno.
+// pag.70 - o manual √© incoerente quanto ao salvamento do XML de retorno.
 // pedido de resultado de processamento de lote - $nRec-ped-rec.xml
 // resultado de processamento de lote           - $nRec-pro-rec.xml
-// se uso == denegado                           - $chNFe-den.xml   ?????? mas È um lote! pode ter autorizada, rejeitada e denegada juntas
-// o manual n„o cita a gravaÁ„o do XML do protNFe individual, portanto adotei o seguinte para salvar o protocolo
+// se uso == denegado                           - $chNFe-den.xml   ?????? mas √© um lote! pode ter autorizada, rejeitada e denegada juntas
+// o manual n√£o cita a grava√ß√£o do XML do protNFe individual, portanto adotei o seguinte para salvar o protocolo
 // rejeitada:  $chNFe-rej.xml
 // denegada:   $chNFe-den.xml
 // autorizada: $chNFe-aut.xml
-// entretanto, podemos analisar a hipÛtese de n„o gravar rejeitadas.
+// entretanto, podemos analisar a hip√≥tese de n√£o gravar rejeitadas.
 
 class consReciNFe {
 
@@ -952,7 +952,7 @@ class procNFe {
         $NFe     = str_replace('<?xml version="1.0" encoding="utf-8"?>', '', $this->NFe);
         $protNFe = str_replace('<?xml version="1.0" encoding="utf-8"?>', '', $this->protNFe);
 
-        // N√O USADO DOM DEVIDO AO BUG NO PHP
+        // N√ÉO USADO DOM DEVIDO AO BUG NO PHP
         $nfeProc = '<nfeProc versao="'.$this->versao.'" xmlns="http://www.portalfiscal.inf.br/nfe">';
         $nfeProc.= $NFe;
         $nfeProc.= $protNFe;
@@ -1360,7 +1360,7 @@ class NFeTools {
             foreach ($aIntErrors as $intError){
                 switch ($intError->level) {
                     case LIBXML_ERR_WARNING:
-                        $erromsg .= " AtenÁ„o $intError->code: ";
+                        $erromsg .= " Aten√ß√£o $intError->code: ";
                         break;
                     case LIBXML_ERR_ERROR:
                         $erromsg .= " Erro $intError->code: ";
@@ -1540,7 +1540,7 @@ $retConsSit->gravaXML();
 /*
 // EXEMPLO: CONSULTA STATUS DO SERVICO
 $pedStatus = new consStatServ();        // novo objeto de consulta status consStatServ
-$retStatus = $pedStatus->sendSOAP();    // faz a consulta do status. o retorno È um objeto retConsStatServ
+$retStatus = $pedStatus->sendSOAP();    // faz a consulta do status. o retorno √© um objeto retConsStatServ
 $pedStatus->gravaXML();                 // grava consulta status
 $retStatus->gravaXML();                 // grava retorno status
 */
@@ -1549,7 +1549,7 @@ $retStatus->gravaXML();                 // grava retorno status
 
 /*
 // EXEMPLO: CONSULTA CADASTRO
-// N√O FUNCIONAL, POIS SEFAZ SP N√O RESPONDE CORRETAMENTE.
+// N√ÉO FUNCIONAL, POIS SEFAZ SP N√ÉO RESPONDE CORRETAMENTE.
 $pedConsCad = new consCad();
 $pedConsCad->UF = 'SP';
 $pedConsCad->IE = '182148522112';

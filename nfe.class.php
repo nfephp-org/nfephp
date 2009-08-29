@@ -40,6 +40,26 @@ if (!function_exists('set_error')) {
 /* NIVEL 0 ********************************************************************/
 
 include_once('classNFEtools.php');
+class situacao {
+
+    var $situacao_id;
+    var $descricao;
+
+    function __construct() {
+        global $con;
+        $this->fetch($con, 5); // 5 = em digitação
+    }
+
+    function fetch($con, $situacao_id) {
+        $sql = "SELECT * FROM situacao WHERE situacao_id = ".$situacao_id;
+        $qry = $con->query($sql);
+        if (!MDB2::isError($qry)) {
+            $row = $qry->fetchRow(MDB2_FETCHMODE_ASSOC);
+            $this->situacao_id = $row['situacao_id'];
+            $this->descricao   = $row['descricao'];
+        }
+    }
+}
 
 class NFe extends NFEtools {
 
@@ -48,7 +68,7 @@ class NFe extends NFEtools {
 
     function __construct() {
         $this->infNFe   = new infNFe;
-        $this->situacao = new NFe_Situacao;
+        $this->situacao = new situacao;
     }
 
     function get_xml() {
@@ -702,6 +722,331 @@ class NFe extends NFEtools {
             return false;
         } else {
             return true;
+        }
+    }
+}
+
+
+
+/* NIVEL 1 ********************************************************************/
+
+// A01
+class infNFe {
+
+    var $versao;        // A02 - versão do leiaute
+    var $Id;            // A03 - identificador da TAG a ser assinada
+    var $ide;           // B01 - grupo das informações de identificação da NFe
+    var $emit;          // C01 - grupo de identificação do emitente da NFe
+    var $avulsa;        // D01 - informações do fisco emitente
+    var $dest;          // E01 - grupo de identificação do destinatário da NFe
+    var $retirada;      // F01 - grupo de identificação do local de retirada
+    var $entrega;       // G01 - grupo de identificação do local de entrega
+    var $det;           // H01 - grupo do detalhamento de prod. e serv. da NFe
+    var $total;         // W01 - grupo de valores totais da NFe
+    var $transp;        // X01 - grupo de informação do transporte da NFe
+    var $cobr;          // Y01 - grupo de cobrança
+    var $infAdic;       // Z01 - grupo de informações adicionais
+    var $exporta;       // ZA01- grupo de exportação
+    var $compra;        // ZB01- grupo de compra
+    var $Signature;     // ZC01- assinatura XML da NFe segundo padrão digital
+
+    function __construct() {
+        $this->versao       = '1.10';
+        $this->ide          = new ide;
+        $this->emit         = new emit;
+        $this->avulsa       = null;
+        $this->dest         = new dest;
+        $this->retirada     = null;
+        $this->entrega      = null;
+        $this->det          = array();
+        $this->total        = new total;
+        $this->transp       = new transp;
+        $this->cobr         = null;
+        $this->infAdic      = null;
+        $this->exporta      = null;
+        $this->compra       = null;
+        $this->Signature    = new Signature;
+    }
+
+    function add_avulsa($obj_avulsa) {
+        if (!$this->avulsa) {
+            $this->avulsa = $obj_avulsa;
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    function add_retirada($obj_retirada) {
+        if (!$this->retirada) {
+            $this->retirada = $obj_retirada;
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    function add_entrega($obj_entrega) {
+        if (!$this->entrega) {
+            $this->entrega = $obj_entrega;
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    function add_det($obj_det) {
+        $this->det[] = $obj_det;
+        return true;
+    }
+
+    function add_cobr($obj_cobr) {
+        if (!$this->cobr) {
+            $this->cobr = $obj_cobr;
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    function add_infAdic($obj_infAdic) {
+        if (!$this->infAdic) {
+            $this->infAdic = $obj_infAdic;
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    function add_exporta($obj_exporta) {
+        if (!$this->exporta) {
+            $this->exporta = $obj_exporta;
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    function add_compra($obj_compra) {
+        if (!$this->compra) {
+            $this->compra = $obj_compra;
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Calcula digito verificador para chave de acesso de 43 dígitos
+     * conforme manual, pág. 72
+     */
+    function calcula_dv($chave43) {
+        $multiplicadores = array(2,3,4,5,6,7,8,9);
+        $i = 42;
+        while ($i >= 0) {
+            for ($m=0; $m<count($multiplicadores) && $i>=0; $m++) {
+                $soma_ponderada+= $chave43[$i] * $multiplicadores[$m];
+                $i--;
+            }
+        }
+        $resto = $soma_ponderada % 11;
+        if ($resto == '0' || $resto == '1') {
+            $this->ide->cDV = 0;
+        } else {
+            $this->ide->cDV = 11 - $resto;
+        }
+        return $this->ide->cDV;
+    }
+
+    function get_chave_acesso() {
+
+        // 02 - cUF  - código da UF do emitente do Documento Fiscal
+        $chave = sprintf("%02d", $this->ide->cUF);
+
+        // 04 - AAMM - Ano e Mes de emissão da NF-e
+        $chave.= sprintf("%04d", substr($this->ide->dEmi, 2, 2).substr($this->ide->dEmi, 5, 2));
+
+        // 14 - CNPJ - CNPJ do emitente
+        $chave.= sprintf("%014s", $this->emit->CNPJ);
+
+        // 02 - mod  - Modelo do Documento Fiscal
+        $chave.= sprintf("%02d", $this->ide->mod);
+
+        // 03 - serie - Série do Documento Fiscal
+        $chave.= sprintf("%03d", $this->ide->serie);
+
+        // 09 - nNF  - Número do Documento Fiscal
+        $chave.= sprintf("%09d", $this->ide->nNF);
+
+        // 09 - cNF  - Código Numérico que compõe a Chave de Acesso
+        $chave.= sprintf("%09d", $this->ide->cNF);
+
+        // 01 - cDV  - Dígito Verificador da Chave de Acesso
+        $chave.= $this->calcula_dv($chave);
+
+        return $chave;
+    }
+
+    function get_xml($dom) {
+        $A01 = $dom->appendChild($dom->createElement('infNFe'));
+        $A02 = $A01->appendChild($dom->createAttribute('versao'));
+               $A02->appendChild($dom->createTextNode($this->versao));
+        $A03 = $A01->appendChild($dom->createAttribute('Id'));
+               $A03->appendChild($dom->createTextNode($this->Id = "NFe".$this->get_chave_acesso()));
+
+        $B01 = $A01->appendChild($this->ide->get_xml($dom));
+        $C01 = $A01->appendChild($this->emit->get_xml($dom));
+        $D01 = (is_object($this->avulsa))   ? $A01->appendChild($this->avulsa->get_xml($dom))   : null;
+        $E01 = $A01->appendChild($this->dest->get_xml($dom));
+        $F01 = (is_object($this->retirada)) ? $A01->appendChild($this->retirada->get_xml($dom)) : null;
+        $G01 = (is_object($this->entrega))  ? $A01->appendChild($this->entrega->get_xml($dom))  : null;
+        for ($i=0; $i<count($this->det); $i++) {
+            $H01 = $A01->appendChild($this->det[$i]->get_xml($dom));
+        }
+        $W01 = $A01->appendChild($this->total->get_xml($dom));
+        $X01 = $A01->appendChild($this->transp->get_xml($dom));
+        $Y01 = (is_object($this->cobr))     ? $A01->appendChild($this->cobr->get_xml($dom))     : null;
+        $Z01 = (is_object($this->infAdic))  ? $A01->appendChild($this->infAdic->get_xml($dom))  : null;
+        $ZA01= (is_object($this->exporta))  ? $A01->appendChild($this->exporta->get_xml($dom))  : null;
+        $ZB01= (is_object($this->compra))   ? $A01->appendChild($this->compra->get_xml($dom))   : null;
+        // BUG: assinado posteriormente por NFe_utils
+        //$ZC01= (is_object($this->Signature) ? $A01->appendChild($this->Signature->get_xml($dom)) : null;
+        return $A01;
+    }
+
+    function insere($con, $NFe_id) {
+        $sql = "INSERT INTO infNFe VALUES (NULL";
+        $sql.= ", ".$con->quote($NFe_id);
+        $sql.= ", ".$con->quote($this->versao);
+        $sql.= ", ".$con->quote($this->Id = $this->get_chave_acesso());
+        $sql.= ")";
+
+        $qry = $con->query($sql);
+
+        if (MDB2::isError($qry)) {
+            set_error('Erro infNFe: '.$qry->getMessage());
+            return false;
+        } else {
+            $infNFe_id = $con->lastInsertID("infNFe", "infNFe_id");
+
+            $this->ide->insere($con, $infNFe_id);
+            $this->emit->insere($con, $infNFe_id);
+            (is_object($this->avulsa)) ? $this->avulsa->insere($con, $infNFe_id) : null;
+            $this->dest->insere($con, $infNFe_id);
+            (is_object($this->retirada)) ? $this->retirada->insere($con, $infNFe_id) : null;
+            (is_object($this->entrega)) ? $this->entrega->insere($con, $infNFe_id) : null;
+            for ($i=0; $i<count($this->det); $i++) {
+                $this->det[$i]->insere($con, $infNFe_id);
+            }
+            $this->total->insere($con, $infNFe_id);
+            $this->transp->insere($con, $infNFe_id);
+            (is_object($this->cobr)) ? $this->cobr->insere($con, $infNFe_id) : null;
+            (is_object($this->infAdic)) ? $this->infAdic->insere($con, $infNFe_id) : null;
+            (is_object($this->exporta)) ? $this->exporta->insere($con, $infNFe_id) : null;
+            (is_object($this->compra)) ? $this->compra->insere($con, $infNFe_id) : null;
+        }
+    }
+}
+
+
+
+/* NIVEL 2 ********************************************************************/
+
+// B01
+class ide {
+
+    var $cUF;       // B02 - código da UF do emitente
+    var $cNF;       // B03 - código numérico que compõe a chave de acesso;
+    var $natOp;     // B04 - descrição da natureza da operação
+    var $indPag;    // B05 - indicador da forma de pagamento
+    var $mod;       // B06 - código do modelo do documento fiscal
+    var $serie;     // B07 - série do documento fiscal
+    var $nNF;       // B08 - número do documento fiscal
+    var $dEmi;      // B09 - data de emissão do documento fiscal
+    var $dSaiEnt;   // B10 - data da saída ou da entrada da mercadoria/produto
+    var $tpNF;      // B11 - tipo do documento fiscal (0-entrada / 1-saida)
+    var $cMunFG;    // B12 - código do município de ocorrência do fato gerador
+    var $NFref;     // B12a- informação das NF/NFe referenciadas
+    var $tpImp;     // B21 - formato de impressão do DANFE
+    var $tpEmis;    // B22 - forma de emissão da NFe
+    var $cDV;       // B23 - dígito verificador da chave de acesso
+    var $tpAmb;     // B24 - identificação do ambiente
+    var $finNFe;    // B25 - finalidade de emissão da NFe
+    var $procEmi;   // B26 - processo de emissão da NFe
+    var $verProc;   // B27 - versão do processo de emissão da NFe
+
+    function __construct() {
+        $this->mod      = 55;               // NFe
+        $this->NFref    = array();
+        $this->procEmi  = 0;                // emissão de NFe com aplicativo do contribuinte
+
+    }
+
+    // NFe ou NF
+    function add_NFref($obj_NFref) {
+        $this->NFref[] = $obj_NFref;
+        return true;
+    }
+
+    function get_xml($dom) {
+        $B01 = $dom->appendChild($dom->createElement('ide'));
+        $B02 = $B01->appendChild($dom->createElement('cUF',     $this->cUF));
+        $B03 = $B01->appendChild($dom->createElement('cNF',     sprintf("%09d", $this->cNF)));
+        $B04 = $B01->appendChild($dom->createElement('natOp',   $this->natOp));
+        $B05 = $B01->appendChild($dom->createElement('indPag',  $this->indPag));
+        $B06 = $B01->appendChild($dom->createElement('mod',     $this->mod));
+        $B07 = $B01->appendChild($dom->createElement('serie',   $this->serie));
+        $B08 = $B01->appendChild($dom->createElement('nNF',     $this->nNF));
+        $B09 = $B01->appendChild($dom->createElement('dEmi',    $this->dEmi));
+        $B10 = (!empty($this->dSaiEnt)) ? $B01->appendChild($dom->createElement('dSaiEnt', $this->dSaiEnt)) : '';
+        $B11 = $B01->appendChild($dom->createElement('tpNF',    $this->tpNF));
+        $B12 = $B01->appendChild($dom->createElement('cMunFG',  $this->cMunFG));
+        for ($i=0; $i<count($this->NFref); $i++) {
+            $B12a= $B01->appendChild($this->NFref[$i]->get_xml($dom));
+        }
+        $B21 = $B01->appendChild($dom->createElement('tpImp',   $this->tpImp));
+        $B22 = $B01->appendChild($dom->createElement('tpEmis',  $this->tpEmis));
+        $B23 = $B01->appendChild($dom->createElement('cDV',     $this->cDV));
+        $B24 = $B01->appendChild($dom->createElement('tpAmb',   $this->tpAmb));
+        $B25 = $B01->appendChild($dom->createElement('finNFe',  $this->finNFe));
+        $B26 = $B01->appendChild($dom->createElement('procEmi', $this->procEmi));
+        $B27 = $B01->appendChild($dom->createElement('verProc', $this->verProc));
+        return $B01;
+    }
+
+    function insere($con, $infNFe_id) {
+        $sql = "INSERT INTO ide VALUES (NULL";
+        $sql.= ", ".$con->quote($infNFe_id);
+        $sql.= ", ".$con->quote($this->cUF);
+        $sql.= ", ".$con->quote($this->cNF);
+        $sql.= ", ".$con->quote($this->natOp);
+        $sql.= ", ".$con->quote($this->indPag);
+        $sql.= ", ".$con->quote($this->mod);
+        $sql.= ", ".$con->quote($this->serie);
+        $sql.= ", ".$con->quote($this->nNF);
+        $sql.= ", ".$con->quote($this->dEmi);
+        $sql.= ", ".$con->quote($this->dSaiEnt);
+        $sql.= ", ".$con->quote($this->tpNF);
+        $sql.= ", ".$con->quote($this->cMunFG);
+        $sql.= ", ".$con->quote($this->tpImp);
+        $sql.= ", ".$con->quote($this->tpEmis);
+        $sql.= ", ".$con->quote($this->cDV);
+        $sql.= ", ".$con->quote($this->tpAmb);
+        $sql.= ", ".$con->quote($this->finNFe);
+        $sql.= ", ".$con->quote($this->procEmi);
+        $sql.= ", ".$con->quote($this->verProc);
+        $sql.= ")";
+
+        $qry = $con->query($sql);
+
+        if (MDB2::isError($qry)) {
+            set_error('Erro ide: '.$qry->getMessage());
+            return false;
+        } else {
+            $ide_id = $con->lastInsertID("ide", "ide_id");
+            for ($i=0; $i<count($this->NFref); $i++) {
+                $this->NFref[$i]->insere($con, $ide_id);
+            }
         }
     }
 }
