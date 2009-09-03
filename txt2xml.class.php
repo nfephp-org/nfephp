@@ -11,12 +11,12 @@
  */
 
 //print_r("<pre>");
-//header("Content-Type: text/xml");  
+header("Content-Type: text/xml");  
 class NFeTxt2Xml{
 	var $xml;
-	$saida = 'teste.xml';
-	//function __construct($arquivo=NULL, $saida=NULL){
-        function __construct($arquivo=NULL){//para teste lembrar de apagar  essa linha e descomentar a de cima
+	
+	function __construct($arquivo=NULL, $saida=NULL){
+        //function __construct($arquivo=NULL){//para teste lembrar de apagar  essa linha e descomentar a de cima
 		$handle = @fopen($arquivo, "r");
 		if ($handle) {
 			$dom = new DOMDocument('1.0', 'UTF-8');
@@ -169,17 +169,17 @@ class NFeTxt2Xml{
 
                                                 }
 						if(!$this->vazio($dados[3])){
-							$ie = $dom->createElement("IE", $dados[3]); 
+							$IE = $dom->createElement("IE", $dados[3]);
 						$C->appendChild($IE);
 
                                                 }
 						if(!$this->vazio($dados[4])){
-							$iest = $dom->createElement("IEST", $dados[4]); 
+							$IEST = $dom->createElement("IEST", $dados[4]);
 						$C->appendChild($IEST);
 
                                                 }
 						if(!$this->vazio($dados[5])){
-							$im = $dom->createElement("IM", $dados[5]); 
+							$IM = $dom->createElement("IM", $dados[5]);
 						$C->appendChild($IM);
 
                                                 }
@@ -265,13 +265,16 @@ class NFeTxt2Xml{
 					case "E":   //DESTINATARIO
 						$E = $dom->createElement("dest");
 						if(!$this->vazio($dados[1])){
-							$xNome = $dom->createElement("xNome", $dados[1]); 
+							$xNome = $dom->createElement("xNome", $dados[1]);
+                                                        $E->appendChild($xNome);
 						}
 						if(!$this->vazio($dados[2])){
-							$IE = $dom->createElement("IE", $dados[2]); 
+							$IE = $dom->createElement("IE", $dados[2]);
+                                                        $E->appendChild($IE);
 						}
 						if(!$this->vazio($dados[3])){
-							$ISUF = $dom->createElement("ISUF", $dados[3]); 
+							$ISUF = $dom->createElement("ISUF", $dados[3]);
+                                                        $E->appendChild($ISUF);
 						}
 						break;
 					case "E02": //CASO DESTINATARIO PJ
@@ -428,7 +431,7 @@ class NFeTxt2Xml{
 						break;
 					case "I": //PRODUTO SERVICO
 						$I = $dom->createElement("prod");
-						$H->appendChild($I);
+						
 						if(!$this->vazio($dados[1])){
 							$cProd = $dom->createElement("cProd", $dados[1]); 
 							$I->appendChild($cProd);
@@ -498,6 +501,8 @@ class NFeTxt2Xml{
 							$vDesc = $dom->createElement("vDesc", $dados[18]); 
 							$I->appendChild($vDesc);
 						}
+                                                $H->appendChild($I);
+                                                break;
 					case "I18":// DECLARACAO DE IMPORTACAO
 						$DI = $dom->createElement("DI");
 						if(!$this->vazio($dados[1])){
@@ -761,15 +766,15 @@ class NFeTxt2Xml{
 						}
 						$I->appendChild($ICMSCons);
 						break;
-					case "M":
+					case "M"://GRUPO DE TRIBUTOS INCIDENTES NO PRODUTO SERVICO
 						$imposto = $dom->createElement("imposto");
 						$H->appendChild($imposto);
 						break;
-					case "N":
+					case "N"://IMCS
 						$ICMS = $dom->createElement("ICMS");
 						$imposto->appendChild($ICMS);
 						break;
-					case "N02":
+					case "N02"://CST 00 TRIBUTADO INTEGRALMENTE
 						$ICMS00 = $dom->createElement("ICMS00");
 						if(!$this->vazio($dados[1])){
 							$orig = $dom->createElement("orig", $dados[1]); 
@@ -797,7 +802,7 @@ class NFeTxt2Xml{
 						}
 						$ICMS->appendChild($ICMS00);
 						break;
-					case "N03":
+					case "N03"://CST 010 TRIBUTADO E COM COBRANCAO DE ICMS POR SUBSTUICAO TRIBUTARIA
 						$ICMS10 = $dom->createElement("ICMS10");
 						if(!$this->vazio($dados[1])){
 							$orig = $dom->createElement("orig", $dados[1]); 
@@ -843,13 +848,13 @@ class NFeTxt2Xml{
 							$pICMSST = $dom->createElement("pICMSST", $dados[11]);
 							$ICMS10->appendChild($pICMSST);
 						}
-
+                                                if(!$this->vazio($dados[12])){
 						$vICMSST = $dom->createElement("vICMSST", $dados[12]);
 						$ICMS10->appendChild($vICMSST);
-						
+                                                }
 						$ICMS->appendChild($ICMS10);
 						break;
-					case "N04"://vereficar cst20
+					case "N04"://CST 020 COM REDUCAO DE BASE DE CALCULO
 						$ICMS20 = $dom->createElement("ICMS20");
 						if(!$this->vazio($dados[1])){
 							$orig = $dom->createElement("orig", $dados[1]); 
@@ -881,7 +886,7 @@ class NFeTxt2Xml{
 						}
 						$ICMS->appendChild($ICMS20);
 						break;
-                                        case "N05":
+                                        case "N05"://CST 030 ISENTA OU NAO TRIBUTADO E COM COBRANCA DO ICMS POR ST
 						$ICMS30 = $dom->createElement("ICMS30");
 						if(!$this->vazio($dados[1])){
 							$orig = $dom->createElement("orig", $dados[1]); 
@@ -911,13 +916,13 @@ class NFeTxt2Xml{
 							$pICMSST = $dom->createElement("pICMSST", $dados[7]); 
 							$ICMS30->appendChild($pICMSST);
 						}
-
+                                                if(!$this->vazio($dados[8])){
 						$vICMSST = $dom->createElement("vICMSST", $dados[8]); 
 						$ICMS30->appendChild($vICMSST);
-
+                                                }
 						$ICMS->appendChild($ICMS30);
 						break;
-					case "N06":
+					case "N06":// CST 040 ISETA 41 NAO TRIBUTADO E 50 SUSPENSAO
 						$ICMS40 = $dom->createElement("ICMS40");
 						if(!$this->vazio($dados[1])){
 							$orig = $dom->createElement("orig", $dados[1]); 
@@ -929,7 +934,7 @@ class NFeTxt2Xml{
 						}
 						$ICMS->appendChild($ICMS40);
 						break;
-					case "N07":
+					case "N07": // CST 051 DIFERIMENTO - A EXIGENCIA DO PREECNCHIMENTO DAS INFORMAS DO ICMS DIFERIDO FICA A CRITERIO DE CADA UF
 						$ICMS51 = $dom->createElement("ICMS51");
 						if(!$this->vazio($dados[1])){
 							$orig = $dom->createElement("orig", $dados[1]); 
@@ -961,7 +966,7 @@ class NFeTxt2Xml{
 						}
 						$ICMS->appendChild($ICMS51);
 						break;
-					case "N08":
+					case "N08":// CST 060 ICMS COBRADO ANTERIORMENTE POR ST
 						$ICMS60 = $dom->createElement("ICMS60");
 						if(!$this->vazio($dados[1])){
 							$orig = $dom->createElement("orig", $dados[1]); 
@@ -975,10 +980,10 @@ class NFeTxt2Xml{
 							$vBCST = $dom->createElement("vBCST", $dados[3]); 
 							$ICMS60->appendChild($vBCST);
 						}
-
+                                                if(!$this->vazio($dados[4])){
 						$vICMSST = $dom->createElement("vICMSST", $dados[4]); 
 						$ICMS60->appendChild($vICMSST);
-							
+                                                }
 						$ICMS->appendChild($ICMS60);
 						break;	
 					case "N09": //CST - 70 - Com redução de base de cálculo e cobrança do ICMS por substituição tributária
@@ -1035,6 +1040,8 @@ class NFeTxt2Xml{
 							$vICMSST = $dom->createElement("vICMSST", $dados[13]);
 							$ICMS70->appendChild($vICMSST);
 						}
+                                                $ICMS->appendChild($ICMS70);
+                                                break;
 					case "N10": //CST - 90 Outros
 
 						$ICMS90 = $dom->createElement("ICMS90");
@@ -1092,7 +1099,7 @@ class NFeTxt2Xml{
 						}
 						$ICMS->appendChild($ICMS90);
 						break;
-					case "O":
+					case "O": //IPI INFORMAR QNDO O ITEM FOR SUJEITO AO IPI
 						$IPI = $dom->createElement("IPI");
 						if(!$this->vazio($dados[1])){
 							$clEnq = $dom->createElement("clEnq", $dados[1]); 
@@ -1116,7 +1123,7 @@ class NFeTxt2Xml{
 						}
 						$imposto->appendChild($IPI);
 						break;
-					case "O07":
+					case "O07":// IPI TRIBUTAVEL
 						$IPITrib = $dom->createElement("IPITrib");
 						if(!$this->vazio($dados[1])){
 							$CST = $dom->createElement("CST", $dados[1]); 
@@ -1127,21 +1134,29 @@ class NFeTxt2Xml{
 						}
 						$IPI->appendChild($IPITrib);
 						break;
-					case "O10":	
+					case "O10"://
+                                        if(!$this->vazio($dados[1])){
 						$vBC = $dom->createElement("vBC", $dados[1]); 
 						$IPITrib->appendChild($vBC);
+                                        }
+                                        if(!$this->vazio($dados[2])){
 						$pIPI = $dom->createElement("pIPI", $dados[2]); 
 						$IPITrib->appendChild($pIPI);
-						$IPITrib->appendChild($vIPI);
+                                        }
+						$IPI->appendChild($IPITrib);
 						break;
-					case "O11":	
+					case "O11":
+                                        if(!$this->vazio($dados[1])){
 						$vUnid = $dom->createElement("vUnid", $dados[1]); 
 						$IPITrib->appendChild($vUnid);
+                                        }
+                                        if(!$this->vazio($dados[2])){
 						$qUnid = $dom->createElement("qUnid", $dados[2]); 
 						$IPITrib->appendChild($qUnid);
-						$IPITrib->appendChild($vIPI);
+                                        }
+						$IPI->appendChild($IPITrib);
 						break;
-					case "O08":
+					case "O08"://IPI NAO TRIBUTAVEL
 						$IPINT = $dom->createElement("IPINT");
 						if(!$this->vazio($dados[1])){
 							$CST = $dom->createElement("CST", $dados[1]); 
@@ -1149,7 +1164,7 @@ class NFeTxt2Xml{
 						}
 						$IPI->appendChild($IPINT);
 						break;
-					case "P":
+					case "P"://INFORMAR APENAS QNDO O ITEM FOR SUJEITO A II
 						$II = $dom->createElement("II");
 						if(!$this->vazio($dados[1])){
 							$vBC = $dom->createElement("vBC", $dados[1]); 
@@ -1169,13 +1184,13 @@ class NFeTxt2Xml{
 						}
 						$imposto->appendChild($II);
 						break;
-					case "Q":
+					case "Q"://PIS
 						$PIS = $dom->createElement("PIS");
 						$imposto->appendChild($PIS);
 						break;
-					case "Q02":
+					case "Q02":// PIS GRUPO DE PIS TRIBUTADO PELA ALIQUOTA
 						$PISAliq = $dom->createElement("PISAliq");
-						$PIS->appendChild($PISAliq);
+						
 						if(!$this->vazio($dados[1])){
 							$CST = $dom->createElement("CST", $dados[1]); 
 							$PISAliq->appendChild($CST);
@@ -1192,7 +1207,9 @@ class NFeTxt2Xml{
 							$vPIS = $dom->createElement("vPIS", $dados[4]); 
 							$PISAliq->appendChild($vPIS);
 						}
-					case "Q03":
+                                                $PIS->appendChild($PISAliq);
+                                                break;
+					case "Q03"://GRUPO DE PIS TRIBUTADO POR QTDE
 						$PISQtde = $dom->createElement("PISQtde");
 						if(!$this->vazio($dados[1])){
 							$CST = $dom->createElement("CST", $dados[1]); 
@@ -1220,7 +1237,7 @@ class NFeTxt2Xml{
 						}
 						$PIS->appendChild($PISNT);
 						break;	
-					case "Q05":
+					case "Q05"://GRUPO DE PIS OUTRAS OPERACOES
 						$PISOutr = $dom->createElement("PISOutr");
 						if(!$this->vazio($dados[1])){
 							$CST = $dom->createElement("CST", $dados[1]); 
@@ -1254,7 +1271,7 @@ class NFeTxt2Xml{
 						$PISOutr->appendChild($vPIS);
 						$PIS->appendChild($PISOutr);
 						break;
-					case "R":
+					case "R": //SUBSTUITICAO TRIBUTARIA
 						$PISST = $dom->createElement("PISST");
 						if(!$this->vazio($dados[1])){
 							$vPIS = $dom->createElement("vPIS", $dados[1]); 
@@ -1271,18 +1288,20 @@ class NFeTxt2Xml{
 							$pPIS = $dom->createElement("pPIS", $dados[1]); 
 							$PISST->appendChild($pPIS);
 						}
+                                                $imposto->appendChild($PISST);
 						break;
 					case "R04":
 						if(!$this->vazio($dados[1])){
 							$qBCProd = $dom->createElement("qBCProd", $dados[1]); 
 							$PISST->appendChild($qBCProd);
 						}
+                                                $imposto->appendChild($PISST);
 						break;	
-					case "S":
+					case "S"://COFINS
 						$COFINS = $dom->createElement("COFINS");
 						$imposto->appendChild($COFINS);
 						break;
-					case "S02":
+					case "S02"://COFINS GRUPO TRIBUTABEL PELA ALIQUOTA
 						$COFINSAliq = $dom->createElement("COFINSAliq");
 						if(!$this->vazio($dados[1])){
 							$CST = $dom->createElement("CST", $dados[1]); 
@@ -1302,7 +1321,7 @@ class NFeTxt2Xml{
 						}
 						$COFINS->appendChild($COFINSAliq);
 						break;
-					case "S03":
+					case "S03"://GRUPO TRIBUTAVEL PELA QUANTIDDE
 						$COFINSQtde = $dom->createElement("COFINSQtde");
 						if(!$this->vazio($dados[1])){
 							$CST = $dom->createElement("CST", $dados[1]); 
@@ -1322,7 +1341,7 @@ class NFeTxt2Xml{
 						}
 						$COFINS->appendChild($COFINSQtde);
 						break;
-					case "S04":
+					case "S04"://GRUPO NAO TRIBUTADO
 						$COFINSNT = $dom->createElement("COFINSNT");
 						if(!$this->vazio($dados[1])){
 							$CST = $dom->createElement("CST", $dados[1]); 
@@ -1330,7 +1349,7 @@ class NFeTxt2Xml{
 						}
 						$COFINS->appendChild($COFINSNT);
 						break;
-					case "S05":
+					case "S05"://GRUPO TRIBUTADO POR OUTRAS OPERACOES
 						$COFINSOutr = $dom->createElement("COFINSOutr");
 						if(!$this->vazio($dados[1])){
 							$CST = $dom->createElement("CST", $dados[1]); 
@@ -1350,6 +1369,7 @@ class NFeTxt2Xml{
 							$pCOFINS = $dom->createElement("pCOFINS", $dados[4]); 
 							$COFINSOutr->appendChild($pCOFINS);
 						}
+                                                $COFINS->appendChild($COFINSOutr);
 						break;
 					case "S09":	
 						if(!$this->vazio($dados[1])){
@@ -1362,7 +1382,7 @@ class NFeTxt2Xml{
 						}
 						$COFINSOutr->appendChild($vCOFINS);
 						break;
-					case "T": 	
+					case "T": //COFINS ST
 						$COFINSST = $dom->createElement("COFINSST");
 						if(!$this->vazio($dados[1])){
 							$vCOFINS = $dom->createElement("vCOFINS", $dados[1]); 
@@ -1379,6 +1399,7 @@ class NFeTxt2Xml{
 							$pCOFINS = $dom->createElement("pCOFINS", $dados[2]); 
 							$COFINSST->appendChild($pCOFINS);
 						}
+                                                $imposto->appendChild($COFINSST);
 						break;
 					case "T04": 	
 						if(!$this->vazio($dados[1])){
@@ -1389,8 +1410,31 @@ class NFeTxt2Xml{
 							$vAliqProd = $dom->createElement("vAliqProd", $dados[2]);
 							$COFINSST->appendChild($vAliqProd);
 						}
+                                                $imposto->appendChild($COFINSST);
 						break;
-					case "U": // ISSQN
+					case "U": // ISS
+                                        	$ISSQN = $dom->createElement("ISSQN");
+                                                if(!$this->vazio($dados[1])){
+							$vBC = $dom->createElement("vBC", $dados[1]);
+							$ISSQN->appendChild($vBC);
+						}
+						if(!$this->vazio($dados[2])){
+							$vAliq = $dom->createElement("vAliq", $dados[2]);
+							$ISSQN->appendChild($vAliq);
+						}
+                                                if(!$this->vazio($dados[3])){
+							$vISSQN = $dom->createElement("vISSQN", $dados[3]);
+							$ISSQN->appendChild($vISSQN);
+						}
+                                                if(!$this->vazio($dados[4])){
+							$cMunFG = $dom->createElement("cMunFG", $dados[4]);
+							$ISSQN->appendChild($cMunFG);
+						}
+                                                if(!$this->vazio($dados[5])){
+							$cListServ = $dom->createElement("cListServ", $dados[5]);
+							$ISSQN->appendChild($cListServ);
+						}
+                                                $imposto->appendChild($ISSQN);
 						break;
 					case "W": // totais
 						$total = $dom->createElement("total");
@@ -1445,7 +1489,31 @@ class NFeTxt2Xml{
 						break;
 					case "W17": // TAG de grupo de Valores Totais referentes ao ISSQN
 						$ISSQNtot = $dom->createElement("ISSQNtot");
-						$total->appendChild($ISSQNtot);
+						if(!$this->vazio($dados[1])){
+							$vServ = $dom->createElement("vServ", $dados[1]);
+							$ISSQNtot->appendChild($vServ);
+						}
+                                                if(!$this->vazio($dados[2])){
+							$vBC = $dom->createElement("vBC", $dados[2]);
+							$ISSQNtot->appendChild($vBC);
+						}
+                                                if(!$this->vazio($dados[3])){
+							$vServ = $dom->createElement("vServ", $dados[3]);
+							$ISSQNtot->appendChild($vServ);
+						}
+                                                if(!$this->vazio($dados[4])){
+							$vISS = $dom->createElement("vISS", $dados[4]);
+							$ISSQNtot->appendChild($vISS);
+						}
+                                                if(!$this->vazio($dados[5])){
+							$vPIS = $dom->createElement("vPIS", $dados[5]);
+							$ISSQNtot->appendChild($vPIS);
+						}
+                                                if(!$this->vazio($dados[6])){
+							$vCOFINS = $dom->createElement("vCOFINS", $dados[6]);
+							$ISSQNtot->appendChild($vCOFINS);
+						}
+                                                $total->appendChild($ISSQNtot);
 						break;
 					case "W23": //TAG de grupo de Reten��es de Tributos
 						$retTrib = $dom->createElement("retTrib");
