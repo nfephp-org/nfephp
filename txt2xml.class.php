@@ -6,7 +6,7 @@
  *
  * @author  Daniel Batista Lemes <dlemes at gmail dot com >
  * @date    27/06/2009
- * @author Beto ( ees.beto gmail)
+ * @author Beto ( ees.beto at gmail)
  * @date 01/09/2009
  */
 
@@ -14,8 +14,9 @@
 //header("Content-Type: text/xml");  
 class NFeTxt2Xml{
 	var $xml;
-	
-	function __construct($arquivo=NULL, $saida=NULL){
+	$saida = 'teste.xml';
+	//function __construct($arquivo=NULL, $saida=NULL){
+        function __construct($arquivo=NULL){//para teste lembrar de apagar  essa linha e descomentar a de cima
 		$handle = @fopen($arquivo, "r");
 		if ($handle) {
 			$dom = new DOMDocument('1.0', 'UTF-8');
@@ -35,12 +36,12 @@ class NFeTxt2Xml{
 				switch (strtoupper(trim($dados[0]))) {
 					case "NOTA FISCAL": // primeiro elemento não faz nada aqui é informado o número de NF do TXT
 						break;
-					case "A":
+					case "A":  //ATRIBUDOTOS NFE
 						$infNFe = $dom->createElement("infNFe"); 
 						$infNFe->setAttribute("versao", trim($dados[1]));
 						$infNFe->setAttribute("Id", trim($dados[2]));
 						break;
-					case "B":
+					case "B"://IDENTIFICADORES DA NF-E
                         
 						$B = $dom->createElement("ide");
 						if(!$this->vazio($dados[1])){
@@ -117,60 +118,77 @@ class NFeTxt2Xml{
 						}
 						$infNFe->appendChild($B);
 						break;
-    					case "B13":  //VEREFICAR
-					//$enderEmi = $dom->createElement("enderEmi");
+    					case "B13": //INFORMACAO DAS NF-E REFERENCIADAS
+					
                                         $B13 = $dom->createElement("refNFe");
 						if(!$this->vazio($dados[1])){
 							$refNFe = $dom->createElement("refNFe", $dados[1]);
+                                                        $B13->appendChild($refNFe);
                                                 }
 						$ide->appendChild($B13);
 						break;
-					case "B14": //VEREFICAR
+					case "B14": //INFORMACAO DAS NF REFERENCIADA - IDEM ANTERIRO, REFERENCIANDO NF MODELO 1/1A NORMAL
 						$B14 = $dom->createElement("refNf");
 						if(!$this->vazio($dados[1])){
 							$cUF = $dom->createElement("cUF", $dados[1]);
-							}
+							$B14->appendChild($cUF);
+                                                                                                                }
 						if(!$this->vazio($dados[2])){
 							$AAMM = $dom->createElement("AAMM", $dados[2]);
-						
+                                                        $B14->appendChild($AAMM);
 						}
 						if(!$this->vazio($dados[3])){
 							$CNPJ = $dom->createElement("CNPJ", $dados[1]);
+                                                        $B14->appendChild($CNPJ);
 						}
 						if(!$this->vazio($dados[4])){
 							$mod = $dom->createElement("mod", $dados[4]);
-							}
+							$B14->appendChild($mod);
+                                                          }
 						if(!$this->vazio($dados[5])){
 							$serie = $dom->createElement("serie", $dados[1]);
-						
+						$B14->appendChild($serie);
 						}
 						if(!$this->vazio($dados[6])){
 							$nNF = $dom->createElement("nNF", $dados[1]);
-						
+						$B14->appendChild($nNF);
 						}
 						$ide->appendChild($B14);
 						break;
 
-                                                case "C":
+                                                case "C": //EMITENTE
 						$C = $dom->createElement("emit");
 						if(!$this->vazio($dados[1])){
 							$xNome = $dom->createElement("xNome", $dados[1]); 
-						}
+						$C->appendChild($xNome);
+
+                                                }
 						if(!$this->vazio($dados[2])){
 							$xFant = $dom->createElement("xFant", $dados[2]); 
-						}
+						$C->appendChild($xFant);
+
+                                                }
 						if(!$this->vazio($dados[3])){
 							$ie = $dom->createElement("IE", $dados[3]); 
-						}
+						$C->appendChild($IE);
+
+                                                }
 						if(!$this->vazio($dados[4])){
 							$iest = $dom->createElement("IEST", $dados[4]); 
-						}
+						$C->appendChild($IEST);
+
+                                                }
 						if(!$this->vazio($dados[5])){
 							$im = $dom->createElement("IM", $dados[5]); 
-						}
+						$C->appendChild($IM);
+
+                                                }
 						if(!$this->vazio($dados[6])){
 							$cnae = $dom->createElement("CNAE", $dados[6]); 
-						}
+						$C->appendChild($cnae);
+
+                                                }
+                                                $infNFe->appendChild($C);
 						break;
 					case "C02":
 						if(!$this->vazio($dados[1])){
@@ -186,7 +204,7 @@ class NFeTxt2Xml{
 						}
 						$infNFe->appendChild($C);
 						break;
-					case "C05":
+					case "C05"://ENDERECO DO EMITENTE
 						if(isset($xNome))
 							$C->appendChild($xNome);
 						if(isset($xFant))	
@@ -244,7 +262,7 @@ class NFeTxt2Xml{
 							$C->appendChild($iest);
 						$infNFe->appendChild($C);
 						break;
-					case "E":
+					case "E":   //DESTINATARIO
 						$E = $dom->createElement("dest");
 						if(!$this->vazio($dados[1])){
 							$xNome = $dom->createElement("xNome", $dados[1]); 
@@ -256,21 +274,21 @@ class NFeTxt2Xml{
 							$ISUF = $dom->createElement("ISUF", $dados[3]); 
 						}
 						break;
-					case "E02":
+					case "E02": //CASO DESTINATARIO PJ
 						if(!$this->vazio($dados[1])){
 							$CNPJ = $dom->createElement("CNPJ", $dados[1]); 
 							$E->appendChild($CNPJ);
 						}
 						$infNFe->appendChild($E);
 						break;
-					case "E03":
+					case "E03": //CASO DESTINATRIO PF
 						if(!$this->vazio($dados[1])){
 							$CPF = $dom->createElement("CPF", $dados[1]); 
 							$E->appendChild($CPF);
 						}
 						$infNFe->appendChild($E);
 						break;
-					case "E05":
+					case "E05"://ENDERECO DO DESTINATARIO
 						if(isset($xNome))
 							$E->appendChild($xNome);
 						$enderDest = $dom->createElement("enderDest");
@@ -325,7 +343,7 @@ class NFeTxt2Xml{
 							$E->appendChild($ISUF);
 						$infNFe->appendChild($E);
 						break;
-					case "F":
+					case "F": //LOCAL DE RETIRADA APENAS QNDO FOR DIFERENTE DO END EMITENTE
 						$retirada = $dom->createElement("retirada");
 						if(!$this->vazio($dados[1])){
 							$CNPJ = $dom->createElement("CNPJ", $dados[1]); 
@@ -362,7 +380,7 @@ class NFeTxt2Xml{
 						$E->appendChild($retirada);
 						$infNFe->appendChild($E);
 						break;	
-					case "G":
+					case "G"://LOCAL DE ENTREGA APENAS QNDO END DIF DO DESTINATARIO
 						$entrega = $dom->createElement("entrega");
 						if(!$this->vazio($dados[1])){
 							$CNPJ = $dom->createElement("CNPJ", $dados[1]); 
@@ -399,7 +417,7 @@ class NFeTxt2Xml{
 						$E->appendChild($entrega);
 						$infNFe->appendChild($E);
 						break;
-					case "H":
+					case "H":// DETALHEMENTO DE PRODUTOS E SERVICOS - MAXIMO 990
 						$H = $dom->createElement("det");
 						$H->setAttribute("nItem", $dados[1]);
 						if(!$this->vazio($dados[2])){
@@ -408,7 +426,7 @@ class NFeTxt2Xml{
 						}
 						$infNFe->appendChild($H);
 						break;
-					case "I": 
+					case "I": //PRODUTO SERVICO
 						$I = $dom->createElement("prod");
 						$H->appendChild($I);
 						if(!$this->vazio($dados[1])){
@@ -480,7 +498,7 @@ class NFeTxt2Xml{
 							$vDesc = $dom->createElement("vDesc", $dados[18]); 
 							$I->appendChild($vDesc);
 						}
-					case "I18":
+					case "I18":// DECLARACAO DE IMPORTACAO
 						$DI = $dom->createElement("DI");
 						if(!$this->vazio($dados[1])){
 							$nDi = $dom->createElement("nDi", $dados[1]); 
@@ -506,9 +524,9 @@ class NFeTxt2Xml{
 							$cExportador = $dom->createElement("cExportador", $dados[6]); 
 							$DI->appendChild($cExportador);
 						}
-						$H->appendChild($DI);
+						$I->appendChild($DI);// DECLARACAO DE IMPORTACAO FILHO DE PROD NAO DO DET
 						break;
-					case "I25":
+					case "I25":// ADICOES
 						$adi = $dom->createElement("adi");
 						if(!$this->vazio($dados[1])){
 							$nAdicao = $dom->createElement("nAdicao", $dados[1]); 
@@ -529,7 +547,7 @@ class NFeTxt2Xml{
 						$DI->appendChild($adi);
 						break;
 						
-					case "J":
+					case "J": //veiculos novos
 						$veicProd = $dom->createElement("veicProd");
 						if(!$this->vazio($dados[1])){
 							$tpOP = $dom->createElement("tpOp", $dados[1]); 
@@ -619,9 +637,9 @@ class NFeTxt2Xml{
 							$cMod = $dom->createElement("cMod", $dados[5]); 
 							$veicProd->appendChild($cMod);
 						}
-						$H->appendChild($veicProd);
+						$I->appendChild($veicProd);//elemento filho do prod
 						break;
-					case "K":
+					case "K"://medicamento
 						$med = $dom->createElement("med");
 						if(!$this->vazio($dados[1])){
 							$nLote = $dom->createElement("nLote", $dados[1]); 
@@ -645,7 +663,7 @@ class NFeTxt2Xml{
 						}
 						$I->appendChild($med);
 						break;
-					case "L":
+					case "L": //armamento
 						$arma = $dom->createElement("arma");
 						if(!$this->vazio($dados[1])){
 							$tpArma = $dom->createElement("tpArma", $dados[1]); 
