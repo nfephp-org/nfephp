@@ -1690,6 +1690,7 @@ class NFeTxt2Xml {
                     case "Y":
                         $cobr = $dom->createElement("cobr");
                         $infNFe->appendChild($cobr);
+                        break;
                     case "Y02"://TODO VEREFICAR PQ TAH CRIANDO TAG FEXADA ANTES DE ABRIR
                         $fat = $dom->createElement("fat");
                         if(!$this->vazio($dados[1])) {
