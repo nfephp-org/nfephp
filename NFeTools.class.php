@@ -1,24 +1,31 @@
 ﻿<?
 /**
+  *
  * Conjunto de classes para manipulação de NF-e
- * baseado na NFEtools de Roberto L. Machado
  *
- * @author  Djalma Fadel Junior <dfadel@ferasoft.com.br>
  * @author  Roberto L. Machado <roberto.machado@superig.com.br>
- *
- * @date    20/Agosto/2009
- *
- * @license Creative Commons
- *
+ * @author  Djalma Fadel Junior <dfadel@ferasoft.com.br>
+ * @name    NFeTools
  * @version $Id
+ * @license GNU/GPL v.3
  *
+ * Este arquivo é parte do projeto NFePHP <http://www.nfephp.org/>.
  *
- * TODO
- *       - verificações, validações e tratamento de erros
- *       - comentários para phpdoc
- *       - flexibilização para várias versões de layout
- *       - separar em arquivos o config e cada conjunto de classes de um serviço web
- *       - fazer carregamento das URLs webservices conforme _NFE_TPAMB
+ * Este programa é software livre : Você pode redistribui-lo e/ou modificar-lo sob os termos da
+ * Licença Publica GNU, publicada pela Free Software Foundation, utilizando a versão 3 dessa
+ * licença ou qualquer outra versão anterior.
+ *
+ * Este programa é distribuido no intuito de que seja útil, mas SEM NENHUMA GARANTIA;
+ * nem mesmo a garantia implícita de COMERCIABILIDADE ou ADEQUAÇÃO A UM DETERMINADO PROPÓSITO.
+ * Veja a Licença Publica GNU para maiores detalhes <http://www.fsfla.org/svnwiki/trad/GPLv3>.
+ * Você deve ter recebido uma cópia da Licensa Publica GNU junto com este programa. Caso contrario consulte <http://www.gnu.org/licenses/>.
+ *
+ * @todo verificações, validações e tratamento de erros
+ * @todo comentários para phpdoc
+ * @todo flexibilização para várias versões de layout
+ * @todo separar em arquivos o config e cada conjunto de classes de um serviço web
+ * @todo fazer carregamento das URLs webservices conforme _NFE_TPAMB
+ * @todo inclusão de comunicação com a contingência DPEC
  *
 **/
 
