@@ -24,7 +24,7 @@
 
 /**
  * situacao
- * Nível {1} :: {A01}
+ * Nível 0 :: 
  *
  * @author  Djalma Fadel Junior <dfadel@ferasoft.com.br>
  */

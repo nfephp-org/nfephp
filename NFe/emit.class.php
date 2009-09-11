@@ -24,7 +24,7 @@
 
 /**
  * emit
- * Nível {1} :: {A01}
+ * Nível 2 :: C01
  *
  * @author  Djalma Fadel Junior <dfadel@ferasoft.com.br>
  */

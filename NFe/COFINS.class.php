@@ -24,7 +24,7 @@
 
 /**
  * COFINS
- * Nível {1} :: {A01}
+ * Nível 4 :: S01
  *
  * @author  Djalma Fadel Junior <dfadel@ferasoft.com.br>
  */

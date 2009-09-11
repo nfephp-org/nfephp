@@ -24,7 +24,7 @@
 
 /**
  * obsFisco
- * Nível {1} :: {A01}
+ * Nível 3 :: Z07
  *
  * @author  Djalma Fadel Junior <dfadel@ferasoft.com.br>
  */

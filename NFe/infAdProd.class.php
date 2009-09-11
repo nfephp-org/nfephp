@@ -24,7 +24,7 @@
 
 /**
  * infAdProd
- * Nível {1} :: {A01}
+ * Nível 3 :: V01
  *
  * @author  Djalma Fadel Junior <dfadel@ferasoft.com.br>
  */

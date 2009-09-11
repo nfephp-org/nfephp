@@ -24,7 +24,7 @@
 
 /**
  * ISSQNtot
- * Nível {1} :: {A01}
+ * Nível 3 :: W17
  *
  * @author  Djalma Fadel Junior <dfadel@ferasoft.com.br>
  */

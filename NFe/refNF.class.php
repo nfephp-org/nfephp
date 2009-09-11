@@ -24,7 +24,7 @@
 
 /**
  * refNF
- * Nível {1} :: {A01}
+ * Nível 4 :: B14
  *
  * @author  Djalma Fadel Junior <dfadel@ferasoft.com.br>
  */

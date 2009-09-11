@@ -24,7 +24,7 @@
 
 /**
  * ICMSInter
- * Nível {1} :: {A01}
+ * Nível 5 :: L114
  *
  * @author  Djalma Fadel Junior <dfadel@ferasoft.com.br>
  */

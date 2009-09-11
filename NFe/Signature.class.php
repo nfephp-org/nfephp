@@ -24,7 +24,7 @@
 
 /**
  * Signature
- * Nível {1} :: {A01}
+ * Nível 2 :: ZC01
  *
  * @author  Djalma Fadel Junior <dfadel@ferasoft.com.br>
  */
