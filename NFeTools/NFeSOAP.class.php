@@ -65,9 +65,16 @@ class NFeTools_NFeSOAP {
         $client->certRequest['verifypeer']  = false;
         $client->certRequest['verifyhost']  = false;
         $client->certRequest['trace']       = 1;
-
-        $soapMsg['nfeCabecMsg'] = $this->getCabec($versao);
-        $soapMsg['nfeDadosMsg'] = $mensagem;
+        
+        //testar de URL é DPEC
+        if (strtoupper(substr($metodo,0,3)) == 'SCE') {
+            //a URL pertence a DPEC, alterar o padrão de comunicação
+            $soapMsg['sceCabecMsg'] = $this->getCabec($versao);
+            $soapMsg['sceDadosMsg'] = $mensagem;
+        } else {
+            $soapMsg['nfeCabecMsg'] = $this->getCabec($versao);
+            $soapMsg['nfeDadosMsg'] = $mensagem;
+        }
 
         $result = $client->call($metodo, $soapMsg);
 
