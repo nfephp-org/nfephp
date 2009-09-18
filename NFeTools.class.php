@@ -109,6 +109,31 @@ class NFeTools {
 
     }
 
+    function enviaDPEC($chNFe,$IE,$verProc,$destCNPJ,$destCPF,$vNF,$vICMS,$vST){
+
+        $envDPEC = new envDPEC();
+
+        $envDPEC->versao = "1.00";
+        $envDPEC->chNFe;      // id da NFe emitida em contingência DPEC - esta contido no xml da NFe 44 digitos
+        $envDPEC->IE;         // IE do emitente
+        $envDPEC->verProc;    //versão do programa que gera a NFe - esta dento do xml da NFe
+        $envDPEC->destCNPJ;   //CNPJ do destinatario
+        $envDPEC->destCPF;    // CFP do destinatario
+        $envDPEC->destUF;     // sigla da UF do destinatario
+        $envDPEC->vNF;        // valor da NF
+        $envDPEC->vICMS;      //valor do ICMS
+        $envDPEC->vST;         // valor total do ICMS retido com Substituicao tributaria      
+        
+        //$envDPEC->tpAmb;      //
+        //$envDPEC->id;         // ID = DPEC + CNPJ
+        //$envDPEC->CNPJ;       // CNPJ do emitente OBITIDO DO chNFe
+        //$envDPEC->cUF;        //codigo numerico da UF do emitente OBITIDO DO chNFe
+        
+        $envDPEC->sendSOAP();
+        
+        return $envDPEC;
+    }
+
     function imprimeNFe($xml, $formato="P", $path_logomarca="", $protocolo="", $data_hora=""){
         include_once ('danfe.class.php');
         $danfe = new danfe($xml, $formato);
