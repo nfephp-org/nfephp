@@ -20,11 +20,13 @@
  * @copyright 2009 &copy; NFePHP
  * @link      http://www.nfephp.org/
  * @author    Roberto L. Machado <roberto.machado@superig.com.br>
+ * 
+ * @todo Incluir condições para envio de várias NFe simultaneamente pelo DPEC
  */
 
 class NFeTools_envDPEC {
     public $versao;     // versao do layout
-    public $tpAmb;      //
+    public $tpAmb;      // tipo de ambiente
     public $id;         // ID = DPEC + CNPJ
     public $chNFe;      // id da NFe emitida em contingência DPEC - esta contido no xml da NFe 44 digitos
     public $CNPJ;       // CNPJ do emitente
@@ -47,7 +49,7 @@ class NFeTools_envDPEC {
     }
 
     function geraXML() {
-        $id = 'DPEC'.$this->CNPJ;
+        $this->id = 'DPEC'.$this->CNPJ;
         $this->cUF = substr($this->chNFe,0,2);
         $this->CNPJ = substr($this->chNFe,6,14);
 
@@ -114,7 +116,7 @@ class NFeTools_envDPEC {
     }
 
     function gravaXML($path=_NFE_ENVDEPC_PATH) {
-        $filePath = $path.'/'.$this->chNFe.'-env-depec.xml';
+        $filePath = $path.'/'.$this->chNFe.'-env-dpec.xml';
         file_put_contents($filePath, $this->XML);
         return $filePath;
     }
