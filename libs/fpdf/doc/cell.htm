@@ -1,0 +1,104 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Cell</title>
+<link type="text/css" rel="stylesheet" href="fpdf.css">
+</head>
+<body>
+<h1>Cell</h1>
+<code>Cell(<b>float</b> w [, <b>float</b> h [, <b>string</b> txt [, <b>mixed</b> border [, <b>int</b> ln [, <b>string</b> align [, <b>boolean</b> fill [, <b>mixed</b> link]]]]]]])</code>
+<h2>Descrição</h2>
+Imprime uma célula (área retangular) com bordas opcionais, cor de fundo e texto.
+O canto superior-esquerdo da célula corresponde à posição atual. O texto pode ser alinhado
+ou centralizado. Depois de chamada, a posição atual se move para a direita ou para a linha
+seguinte. É possível pôr um link no texto.
+<br>
+Se a quebra de página automática está habilitada e a pilha for além do limite, uma quebra de
+página é feita antes da impressão.
+<h2>Parâmetros</h2>
+<dl class="param">
+<dt><code>w</code></dt>
+<dd>
+Largura da célula. Se <code>0</code>, a célula se extende até a margem direita.
+</dd>
+<dt><code>h</code></dt>
+<dd>
+Altura da célula.
+Valor padrão: <code>0</code>.
+</dd>
+<dt><code>txt</code></dt>
+<dd>
+Texto a ser impresso.
+Valor padrão: texto vazio.
+</dd>
+<dt><code>border</code></dt>
+<dd>
+Indica se as bordas devem ser desenhadas em volta da célula. O valor deve ser um número:
+<ul>
+<li><code>0</code>: sem borda</li>
+<li><code>1</code>: com borda</li>
+</ul>
+ou um texto contendo alguns ou todos os seguintes caracteres (em qualquer ordem):
+<ul>
+<li><code>L</code>: esquerda</li>
+<li><code>T</code>: acima</li>
+<li><code>R</code>: direita</li>
+<li><code>B</code>: abaixo</li>
+</ul>
+Valor padrão: <code>0</code>.
+</dd>
+<dt><code>ln</code></dt>
+<dd>
+Indica onde a posição corrente deve ficar depois que a função for chamada. Os valores possíveis são:
+<ul>
+<li><code>0</code>: a direita</li>
+<li><code>1</code>: no início da próxima linha</li>
+<li><code>2</code>: abaixo</li>
+</ul>
+Usar o valor <code>1</code> é equivalente a usar <code>0</code> e chamar a função Ln() logo após.
+Valor padrão: <code>0</code>.
+</dd>
+<dt><code>align</code></dt>
+<dd>
+Permite centralizar ou alinhar o texto. Os valores possíveis são:
+<ul>
+<li><code>L</code> ou um texto vazio: alinhado à esquerda (valor padrão)</li>
+<li><code>C</code>: centralizado</li>
+<li><code>R</code>: alinhado à direita</li>
+</ul>
+</dd>
+<dt><code>fill</code></dt>
+<dd>
+Indica se o fundo da célula deve ser preenchido (<code>true</code>) ou transparente (<code>false</code>).
+Valor padrão: <code>false</code>.
+</dd>
+<dt><code>link</code></dt>
+<dd>
+URL ou identificador retornado por AddLink().
+</dd>
+</dl>
+<h2>Exemplo</h2>
+<div class="doc-source">
+<pre><code>//Escolhe a fonte
+$pdf-&gt;SetFont('Arial','B',16);
+//Move para 8 cm a direita
+$pdf-&gt;Cell(80);
+//Texto centralizado em uma célula de 20*10 mm com borda e quebra de linha
+$pdf-&gt;Cell(20,10,'Title',1,1,'C');</code></pre>
+</div>
+<h2>Veja também</h2>
+<a href="setfont.htm">SetFont()</a>,
+<a href="setdrawcolor.htm">SetDrawColor()</a>,
+<a href="setfillcolor.htm">SetFillColor()</a>,
+<a href="settextcolor.htm">SetTextColor()</a>,
+<a href="setlinewidth.htm">SetLineWidth()</a>,
+<a href="addlink.htm">AddLink()</a>,
+<a href="ln.htm">Ln()</a>,
+<a href="multicell.htm">MultiCell()</a>,
+<a href="write.htm">Write()</a>,
+<a href="setautopagebreak.htm">SetAutoPageBreak()</a>.
+<hr style="margin-top:1.5em">
+<div style="text-align:center"><a href="index.htm">Índice</a></div>
+</body>
+</html>

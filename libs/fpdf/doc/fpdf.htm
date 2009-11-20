@@ -1,0 +1,65 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>FPDF</title>
+<link type="text/css" rel="stylesheet" href="fpdf.css">
+</head>
+<body>
+<h1>FPDF</h1>
+<code>FPDF([<b>string</b> orientation [, <b>string</b> unit [, <b>mixed</b> format]]])</code>
+<h2>Descrição</h2>
+Esta é o construtor da classe. Ele permite que seja definido o formato da página, a orientação
+e a unidade de medida usada em todos os métodos (exeto para tamanhos de fonte).
+<h2>Parâmetros</h2>
+<dl class="param">
+<dt><code>orientation</code></dt>
+<dd>
+Orientação padrão da página. Os valores possíveis são (diferenciando maiúsculas e minúsculas):
+<ul>
+<li><code>P</code> ou <code>Retrato</code>
+<li><code>L</code> ou <code>Paisagem</code>
+</ul>
+O valor padrão é <code>P</code>.
+</dd>
+<dt><code>unit</code></dt>
+<dd>
+Unidade de medida do usuário. Os valores possíveis são:
+<ul>
+<li><code>pt</code>: pontos
+<li><code>mm</code>: millímetros
+<li><code>cm</code>: centímetros
+<li><code>in</code>: polegadas
+</ul>
+Um ponto é igual a 1/72 polegadas, isto é o mesmo que 0.35 mm (uma polegada são 2.54 cm).
+Isto é uma unidade muito comum em tipografia; os tamanhos das fontes são medidos por esta unidade.
+<br>
+<br>
+O valor padrão é <code>mm</code>.
+</dd>
+<dt><code>format</code></dt>
+<dd>
+O formato usado pelas páginas. Pode ser um dos seguintes valores (diferenciando maiúsculas e minúsculas):
+<ul>
+<li><code>A3</code>
+<li><code>A4</code>
+<li><code>A5</code>
+<li><code>Letter</code>
+<li><code>Legal</code>
+</ul>
+ou um valor personalizado na forma de um array com dois elementos contendo a largura e a
+altura (expressas na unidade obtida por <code>unit</code>).
+<br>
+<br>
+O valor padrão é <code>A4</code>.
+</dd>
+</dl>
+<h2>Exemplo</h2>
+Exemplo da criação de uma página de tamanho personalizado com 100x150 mm:
+<div class="doc-source">
+<pre><code>$pdf = new FPDF('P', 'mm', array(100,150));</code></pre>
+</div>
+<hr style="margin-top:1.5em">
+<div style="text-align:center"><a href="index.htm">Índice</a></div>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>AcceptPageBreak</title>
+<link type="text/css" rel="stylesheet" href="fpdf.css">
+</head>
+<body>
+<h1>AcceptPageBreak</h1>
+<code><b>boolean</b> AcceptPageBreak()</code>
+<h2>Descrição</h2>
+Sempre que uma condição de quebra de página é encontrada, o método é chamado, e a quebra
+ocorre ou não dependendo do valor retornado. A implementação padrão retorna um valor de acordo
+com o modo selecionado por SetAutoPageBreak().
+<br>
+Este método é chamado automaticamente e não deve ser chamado diretamente pela aplicação.
+<h2>Exemplo</h2>
+O método é sobreposto em uma classe herdada a fim obter um layout de 3 colunas:
+<div class="doc-source">
+<pre><code>class PDF extends FPDF
+{
+var $col=0;
+
+function SetCol($col)
+{
+    //Move a posição para a coluna especificada
+    $this-&gt;col=$col;
+    $x=10+$col*65;
+    $this-&gt;SetLeftMargin($x);
+    $this-&gt;SetX($x);
+}
+
+function AcceptPageBreak()
+{
+    if($this-&gt;col&lt;2)
+    {
+        //Vai para a próxima coluna
+        $this-&gt;SetCol($this-&gt;col+1);
+        $this-&gt;SetY(10);
+        return false;
+    }
+    else
+    {
+        //Volta para a primeira coluna e permite a quebra de página
+        $this-&gt;SetCol(0);
+        return true;
+    }
+}
+}
+
+$pdf=new PDF();
+$pdf-&gt;Open();
+$pdf-&gt;AddPage();
+$pdf-&gt;SetFont('Arial','',12);
+for($i=1;$i&lt;=300;$i++)
+    $pdf-&gt;Cell(0,5,&quot;Line $i&quot;,0,1);
+$pdf-&gt;Output();</code></pre>
+</div>
+<h2>Veja também</h2>
+<a href="setautopagebreak.htm">SetAutoPageBreak()</a>.
+<hr style="margin-top:1.5em">
+<div style="text-align:center"><a href="index.htm">Índice</a></div>
+</body>
+</html>
