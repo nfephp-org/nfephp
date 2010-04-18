@@ -27,18 +27,17 @@
 
 //carrega a classe nusoap para comunicação como o webservice
 require_once('NuSoap/nusoap.php');
-require_once('NFeSOAP2/NFeSOAP2.class.php');
-//require_once('libs/DanfeNFePHP.class.php');
-//require_once('libs/MailNFePHP.class.php');
-//define o caminho base da instalação do sistema
-define( 'PATH_ROOT', realpath( dirname( basename( $_SERVER[ 'SCRIPT_NAME' ] ) ) ) . DIRECTORY_SEPARATOR );
+//carrega a classe de conversões de txt para xml e vice-versa
+require_once('ConvertNFePHP.class.php');
 
+//define o caminho base da instalação do sistema
+//define( 'PATH_ROOT', dirname( __FILE__ ) . DIRECTORY_SEPARATOR );
 
 class ToolsNFePHP {
 
     // propriedades da classe
 
-    private $tpAmb='';
+    public $tpAmb='';
     public $arqDir='';
     public $pdfDir ='';
     public $entDir='';
@@ -345,9 +344,10 @@ class ToolsNFePHP {
      */
     function __construct() {
         //testa a existencia do arquivo de configuração
-        if ( is_file("config/config.php") ){
+        $P_ROOT = dirname(dirname( __FILE__ )) . DIRECTORY_SEPARATOR;
+        if ( is_file( $P_ROOT . "config/config.php") ){
             //carrega o arquivo de configuração
-            include("config/config.php");
+            include( $P_ROOT . "config/config.php");
             // carrega propriedades da classe com os dados de configuração
             // a sring $sAmb será utilizada para a construção dos diretorios
             // dos arquivos de operação do sistema
@@ -368,9 +368,9 @@ class ToolsNFePHP {
             //carrega propriedade com ano e mes ex. 200911
             $this->anoMes = date('Ym');
             //
-            $this->xsdDir = PATH_ROOT . 'schemes/';
+            $this->xsdDir = $P_ROOT . 'schemes/';
             //
-            $this->certsDir =  PATH_ROOT . 'certs/';
+            $this->certsDir = $P_ROOT . 'certs/';
             //
             $this->aCabec = array('versao'=>'1.02','xsd'=>'cabecMsg_v1.02.xsd');
             // monta a estrutura de diretorios utilizados na manipulação das NFe
@@ -435,7 +435,7 @@ class ToolsNFePHP {
                 mkdir($this->pdfDir, 0777);
             }
             //carregar a matriz com os dados para acesso aos WebServices SEFAZ
-            $this->aURL = $this->loadSEFAZ('config/urlWebServicesNFe.xml',$sAmb,$this->UF);
+            $this->aURL = $this->loadSEFAZ( $P_ROOT . 'config/urlWebServicesNFe.xml',$sAmb,$this->UF);
             //se houver erro no carregamento dos certificados
             if ( !$retorno = $this->loadCerts() ) {
                 $this->errStatus = true;
@@ -447,6 +447,44 @@ class ToolsNFePHP {
         }
 
     }
+
+    /**
+     * autoTXTtoXML
+     * Método para converter todas as nf em formato txt para o formato xml
+     * localizadas na pasta "entradas". Os arquivos txt apoś terem sido
+     * convertidos com sucesso são removidos da pasta.
+     * Os arquivos txt devem ser nomeados como "<qualquer coisa>-nfe.txt"
+     *
+     * @param none
+     * @return boolean TRUE sucesso FALSE Erro
+     */
+    public function autoTXTtoXML(){
+        //varre pasta "entradas" a procura de NFes em txt
+        $aName = $this->listDir($this->entDir,'-nfe.txt');
+        // se foi retornado algum arquivo
+        if ( count($aName ) > 0){
+            for ( $x=0; $x < count($aName); $x++ ) {
+                //carrega nfe em txt para converter em xml
+                $filename = $this->entDir.$aName[$x];
+                //instancia a classe de conversão
+                $oXML = new ConvertNFePHP;
+                //convere o arquivo
+                $xml = $oXML->nfetxt2xml($filename);
+                //salvar o xml
+                $xmlname = $this->entDir.$oXML->chave.'-nfe.xml';
+                if ( !file_put_contents($xmlname, $xml) ){
+                    $this->errStatus = TRUE;
+                    $this->errMsg .= 'FALHA na gravação da NFe em xml.';
+                    return FALSE;
+                } else {
+                    //remover o arquivo txt
+                    unlink($filename);
+                }
+            }
+        }
+        return TRUE;
+    } //fim autoTXTtoXML
+
 
     /**
      * autoAssinaNFe
@@ -461,7 +499,7 @@ class ToolsNFePHP {
      */
     public function autoAssinaNFe() {
         //varre pasta "entradas" a procura de NFes
-        $aName = $this->__listDir($this->entDir,'-nfe.xml');
+        $aName = $this->listDir($this->entDir,'-nfe.xml');
         // se foi retornado algum arquivo
         if ( count($aName ) > 0){
             for ( $x=0; $x < count($aName); $x++ ) {
@@ -507,7 +545,7 @@ class ToolsNFePHP {
      */
     public function autoValidNFe() {
         //varre pasta "assinadas"
-        $aName = $this->__listDir($this->assDir,'-nfe.xml');
+        $aName = $this->listDir($this->assDir,'-nfe.xml');
         // se foi retornado algum arquivo
         if ( count($aName) > 0 ){
             for ( $x=0; $x < count($aName); $x++ ) {
@@ -515,7 +553,7 @@ class ToolsNFePHP {
                 $filename = $this->assDir.$aName[$x];
                 if ( $nfefile = file_get_contents($filename) ) {
                     //validar
-                    if ( $this->__validXML($nfefile,$this->xsdDir . 'nfe_v1.10.xsd') ) {
+                    if ( $this->validXML($nfefile,$this->xsdDir . 'nfe_v1.10.xsd') ) {
                         // validado => transferir para pasta validados
                         $file = $this->valDir . $aName[$x];
                         if ( !file_put_contents($file, $nfefile) ) {
@@ -671,13 +709,13 @@ class ToolsNFePHP {
     }//fim da função
 
     /**
-     *
+     * autoPrintMail
      * @param <type> $para
      * @param <type> $contato
      * @param <type> $printer
      * @return <type>
      */
-    public function autoPrintSend($para='',$contato='',$printer=''){
+    public function autoPrintMail($para='',$contato='',$printer=''){
         //varre a pasta de enviadas/aprovadas
         $aNApr = $this->__listDir($this->aprDir,'-nfe.xml');
         //se houver algum arquivo *-nfe.xml continua, caso contrario sai
@@ -1200,7 +1238,7 @@ class ToolsNFePHP {
             $X509Data = $xmldoc->createElement('X509Data');
             $KeyInfo->appendChild($X509Data);
             //carrega o certificado sem as tags de inicio e fim
-            $cert = $this->limpaCert($this->certsDir.'publickey.pem');
+            $cert = $this->__cleanCerts($this->certsDir.'publickey.pem');
             //X509Certificate
             $newNode = $xmldoc->createElement('X509Certificate',$cert);
             $X509Data->appendChild($newNode);
@@ -1401,7 +1439,7 @@ class ToolsNFePHP {
     } //fim da função __getNFeProtocol
 
 
-       /**
+   /**
     * loadSEFAZ
     * Função para extrair o URL, nome do serviço e versão dos webservices das SEFAZ de
     * todos os Estados da Federação do arquivo urlWebServicesNFe.xml
@@ -1768,7 +1806,7 @@ class ToolsNFePHP {
     } //fim __sendSOAP
 
 
-      /**
+    /**
      * __getNumLot
      * Obtêm o numero do último lote de envio
      *
