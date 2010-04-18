@@ -16,7 +16,7 @@
  *
  * @package   NFePHP
  * @name      DanfeNFePHP.class.php
- * @version   1.2
+ * @version   1.3
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -159,8 +159,14 @@ class DanfeNFePHP {
                 $totPag = 2;
             } else {
                 //verifica o numero de páginas totais necessárias para a DANFE
-                //10 itne na prinmeira página e 23 em cadas pagina subsequente
-                $totPag = ($numItens - 10) % 23 ;
+                //10 itens na primeira página e 23 em cada pagina subsequente
+                $resto = ($numItens - 10) / 23 - round(($numItens - 10) / 23,0);
+                $pAdic = 0;
+                if ( $resto > 0 ){
+                    $pAdic = 1;
+                }
+                $totPag = round(($numItens - 10) / 23,0)+1+$pAdic;
+
             }
         } else {
             $totPag = 1;
@@ -185,8 +191,8 @@ class DanfeNFePHP {
         $y = $this->__canhotoDANFE($x,$y);
         // 10 itens na primeira página
         // 23 itens nas páginas subsequentes
+        $nInicial = 0;
         for ( $n = 2; $n <= $totPag; $n++ ) {
-            $nInicial = 0;
             if ( $n == 2 ) {
                 $nInicial += 10;
             }
@@ -314,14 +320,14 @@ class DanfeNFePHP {
         $fone1 = substr($fone,0,$foneLen-8);
         $fone = '(' . $fone1 . ') ' . substr($fone2,-4) . '-' . substr($fone,-4);
         $lgr = !empty($this->enderEmit->getElementsByTagName("xLgr")->item(0)->nodeValue) ? $this->enderEmit->getElementsByTagName("xLgr")->item(0)->nodeValue : '';
-		$nro = !empty($this->enderEmit->getElementsByTagName("nro")->item(0)->nodeValue) ? $this->enderEmit->getElementsByTagName("nro")->item(0)->nodeValue : '';
-		$cpl = !empty($this->enderEmit->getElementsByTagName("xCpl")->item(0)->nodeValue) ? $this->enderEmit->getElementsByTagName("xCpl")->item(0)->nodeValue : '';
-		$bairro = !empty($this->enderEmit->getElementsByTagName("xBairro")->item(0)->nodeValue) ? $this->enderEmit->getElementsByTagName("xBairro")->item(0)->nodeValue : '';
-		$CEP = !empty($this->enderEmit->getElementsByTagName("CEP")->item(0)->nodeValue) ? $this->enderEmit->getElementsByTagName("CEP")->item(0)->nodeValue : ' ';
-		$CEP = $this->__format($CEP,"#####-###"); 
-		$mun = !empty($this->enderEmit->getElementsByTagName("xMun")->item(0)->nodeValue) ? $this->enderEmit->getElementsByTagName("xMun")->item(0)->nodeValue : ''; 
-		$UF = !empty($this->enderEmit->getElementsByTagName("UF")->item(0)->nodeValue) ? $this->enderEmit->getElementsByTagName("UF")->item(0)->nodeValue : ''; 
-		$texto = $lgr . "," . $nro . "  " . $cpl . "\n" . $bairro . " - " . $CEP . "\n" . $mun . " - " . $UF . "\n" . "Fone/Fax: " . $fone;
+	$nro = !empty($this->enderEmit->getElementsByTagName("nro")->item(0)->nodeValue) ? $this->enderEmit->getElementsByTagName("nro")->item(0)->nodeValue : '';
+	$cpl = !empty($this->enderEmit->getElementsByTagName("xCpl")->item(0)->nodeValue) ? $this->enderEmit->getElementsByTagName("xCpl")->item(0)->nodeValue : '';
+	$bairro = !empty($this->enderEmit->getElementsByTagName("xBairro")->item(0)->nodeValue) ? $this->enderEmit->getElementsByTagName("xBairro")->item(0)->nodeValue : '';
+	$CEP = !empty($this->enderEmit->getElementsByTagName("CEP")->item(0)->nodeValue) ? $this->enderEmit->getElementsByTagName("CEP")->item(0)->nodeValue : ' ';
+	$CEP = $this->__format($CEP,"#####-###"); 
+	$mun = !empty($this->enderEmit->getElementsByTagName("xMun")->item(0)->nodeValue) ? $this->enderEmit->getElementsByTagName("xMun")->item(0)->nodeValue : ''; 
+	$UF = !empty($this->enderEmit->getElementsByTagName("UF")->item(0)->nodeValue) ? $this->enderEmit->getElementsByTagName("UF")->item(0)->nodeValue : ''; 
+	$texto = $lgr . "," . $nro . "  " . $cpl . "\n" . $bairro . " - " . $CEP . "\n" . $mun . " - " . $UF . "\n" . "Fone/Fax: " . $fone;
         $texto = utf8_decode($texto);
         $this->__textBox($x,$y1,$w,8,$texto,$aFont,'T','C',0,'');
 
@@ -432,9 +438,10 @@ class DanfeNFePHP {
             $texto = utf8_decode($this->nfeProc->getElementsByTagName("nProt")->item(0)->nodeValue);
             $tsHora = $this->__convertTime($this->nfeProc->getElementsByTagName("dhRecbto")->item(0)->nodeValue);
             $texto .= "  -  " . date('d/m/Y   H:i:s',$tsHora);
-			$cStat = $this->nfeProc->getElementsByTagName("cStat")->item(0)->nodeValue;
+            $cStat = $this->nfeProc->getElementsByTagName("cStat")->item(0)->nodeValue;
         } else {
             $texto = '';
+            $cStat = '';
         }
         $aFont = array('font'=>'Arial','size'=>10,'style'=>'B');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'B','C',0,'');
@@ -476,6 +483,7 @@ class DanfeNFePHP {
         //####################################################################################
         //Indicação de NF Homologação
         $tpAmb = $this->ide->getElementsByTagName('tpAmb')->item(0)->nodeValue;
+
         if ( $cStat == '101') {
             //101 Cancelamento
             $x = 5;
@@ -1183,7 +1191,7 @@ class DanfeNFePHP {
         // LOOP COM OS DADOS DOS PRODUTOS
         $i = 0;
         foreach ($this->det as $d) {
-            if ( $i >= $nInicio && $i < $max ) {
+            if ( $i >= $nInicio && $i <  $nInicio+$max ) {
                 $prod = $this->det->item($i)->getElementsByTagName("prod")->item(0);
 		$infAdProd = !empty($this->det->item($i)->getElementsByTagName("infAdProd")->item(0)->nodeValue) ? $this->det->item($i)->getElementsByTagName("infAdProd")->item(0)->nodeValue : '';
 		$imposto = $this->det->item($i)->getElementsByTagName("imposto")->item(0);
@@ -1265,7 +1273,7 @@ class DanfeNFePHP {
 
                 $i++;
 
-                if ( $i > ($max-1) ) {
+                if ( $i > ($nInicio+$max-1) ) {
                     //ultrapassa a capacidade para uma única página
                     //o restante dos dados serão usados nas proximas paginas
                     break;
@@ -1401,8 +1409,8 @@ class DanfeNFePHP {
      * @return string Retorna o campo formatado
      */
     private function __format($campo='',$mascara=''){
-        //remove qualque formatação que ainda exista
-        $sLimpo = preg_replace("/[' '-./ t]/",'',$campo);
+        //remove qualquer formatação que ainda exista
+        $sLimpo = ereg_replace("/[' '-./ t]/",'',$campo);
         // pega o tamanho da string e da mascara
         $tCampo = strlen($sLimpo);
         $tMask = strlen($mascara);
