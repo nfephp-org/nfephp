@@ -548,7 +548,11 @@ class DanfeNFePHP {
         $texto = utf8_decode('CNPJ / CPF');
         $aFont = array('font'=>'Arial','size'=>6,'style'=>'');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',1,'');
-        $texto = $this->__format(utf8_decode($this->dest->getElementsByTagName("CNPJ")->item(0)->nodeValue),"###.###.###/####-##");
+        if (!empty($this->dest->getElementsByTagName("CNPJ")->item(0)->nodeValue)) {
+            $texto = $this->__format(utf8_decode($this->dest->getElementsByTagName("CNPJ")->item(0)->nodeValue),"###.###.###/####-##");
+        } else {
+            $texto = $this->__format(utf8_decode($this->dest->getElementsByTagName("CPF")->item(0)->nodeValue),"###.###.###-##");
+        }
         $aFont = array('font'=>'Arial','size'=>10,'style'=>'B');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'B','C',0,'');
         //DATA DA EMISSÃO
@@ -880,7 +884,7 @@ class DanfeNFePHP {
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',1,'');
         $this->__textBox($x+1,$y+2,$w,$h-2,'0-EMITENTE',$aFont,'T','L',0,'');
         $this->__textBox($x+1,$y+4,$w,$h-4,'1-DESTINATARIO',$aFont,'T','L',0,'');
-        $texto = !empty($this->transp->getElementsByTagName("modFrete")->item(0)->nodeValue) ? $this->transp->getElementsByTagName("modFrete")->item(0)->nodeValue : '';
+        $texto = !empty($this->transp->getElementsByTagName("modFrete")->item(0)->nodeValue) ? $this->transp->getElementsByTagName("modFrete")->item(0)->nodeValue : '0';
         $aFont = array('font'=>'Arial','size'=>10,'style'=>'B');
         $this->__textBox($x+25,$y+1,5,5,$texto,$aFont,'C','C',1,'');
         //CÓDIGO ANTT
@@ -1193,7 +1197,7 @@ class DanfeNFePHP {
         foreach ($this->det as $d) {
             if ( $i >= $nInicio && $i <  $nInicio+$max ) {
                 $prod = $this->det->item($i)->getElementsByTagName("prod")->item(0);
-		$infAdProd = !empty($this->det->item($i)->getElementsByTagName("infAdProd")->item(0)->nodeValue) ? $this->det->item($i)->getElementsByTagName("infAdProd")->item(0)->nodeValue : '';
+		$infAdProd = substr(!empty($this->det->item($i)->getElementsByTagName("infAdProd")->item(0)->nodeValue) ? $this->det->item($i)->getElementsByTagName("infAdProd")->item(0)->nodeValue : '',0,120);
 		$imposto = $this->det->item($i)->getElementsByTagName("imposto")->item(0);
 		$ICMS = $imposto->getElementsByTagName("ICMS")->item(0);
 		$IPI  = $imposto->getElementsByTagName("IPI")->item(0);
@@ -1313,6 +1317,7 @@ class DanfeNFePHP {
         $aFont = array('font'=>'Arial','size'=>6,'style'=>'');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',1,'');
         $texto = !empty($this->infAdic->getElementsByTagName("infCpl")->item(0)->nodeValue) ? $this->infAdic->getElementsByTagName("infCpl")->item(0)->nodeValue : '';
+        $texto .= !empty($this->infAdic->getElementsByTagName("infAdFisco")->item(0)->nodeValue) ? ' Inf. fisco: '.$this->infAdic->getElementsByTagName("infAdFisco")->item(0)->nodeValue : '';
         $texto = utf8_decode($texto);
         $aFont = array('font'=>'Arial','size'=>8,'style'=>'');
         $this->__textBox($x,$y+3,$w,$h-3,$texto,$aFont,'T','L',0,'',FALSE);
