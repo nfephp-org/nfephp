@@ -18,7 +18,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   0.2
+ * @version   1.0
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -588,7 +588,7 @@ class ToolsNFePHP {
      */
     public function autoSendNFe(){
         //varre a pasta de validadas
-        $aName = $this->__listDir($this->valDir,'-nfe.xml');
+        $aName = $this->listDir($this->valDir,'-nfe.xml');
         //se houver algum arquivo *-nfe.xml continua, caso contrario sai
         $n = count($aName);
         if ( $n > 0 ) {
@@ -665,7 +665,7 @@ class ToolsNFePHP {
      */
     public function autoAuthNFe(){
         //varre a pasta de enviadas
-        $aName = $this->__listDir($this->envDir,'-nfe.xml');
+        $aName = $this->listDir($this->envDir,'-nfe.xml');
         //se houver algum arquivo *-nfe.xml continua, caso contrario sai
         if ( count($aName) > 0 ) {
             //para cada arquivo nesta pasta solicitar o protocolo
@@ -717,7 +717,7 @@ class ToolsNFePHP {
      */
     public function autoPrintMail($para='',$contato='',$printer=''){
         //varre a pasta de enviadas/aprovadas
-        $aNApr = $this->__listDir($this->aprDir,'-nfe.xml');
+        $aNApr = $this->listDir($this->aprDir,'-nfe.xml');
         //se houver algum arquivo *-nfe.xml continua, caso contrario sai
         $i = 0;
         if ( count($aNApr) > 0 ) {
@@ -1056,18 +1056,18 @@ class ToolsNFePHP {
             //cria tag protNFe
             $protNFe = $nfeProc->appendChild($procnfe->createElement('protNFe'));
             //estabele o atributo de versão
-                $protNFe_att1 = $protNFe->appendChild($procnfe->createAttribute('versao'));
-                $protNFe_att1->appendChild($procnfe->createTextNode('1.10'));
+            $protNFe_att1 = $protNFe->appendChild($procnfe->createAttribute('versao'));
+            $protNFe_att1->appendChild($procnfe->createTextNode('1.10'));
             //cria tag infProt
             $infProt = $protNFe->appendChild($procnfe->createElement('infProt'));
-                $infProt->appendChild($procnfe->createElement('tpAmb',$tpAmb));
-                $infProt->appendChild($procnfe->createElement('verAplic',$verAplic));
-                $infProt->appendChild($procnfe->createElement('chNFe',$chNFe));
-                $infProt->appendChild($procnfe->createElement('dhRecbto',$dhRecbto));
-                $infProt->appendChild($procnfe->createElement('nProt',$nProt));
-                $infProt->appendChild($procnfe->createElement('digVal',$digVal));
-                $infProt->appendChild($procnfe->createElement('cStat',$cStat));
-                $infProt->appendChild($procnfe->createElement('xMotivo',$xMotivo));
+            $infProt->appendChild($procnfe->createElement('tpAmb',$tpAmb));
+            $infProt->appendChild($procnfe->createElement('verAplic',$verAplic));
+            $infProt->appendChild($procnfe->createElement('chNFe',$chNFe));
+            $infProt->appendChild($procnfe->createElement('dhRecbto',$dhRecbto));
+            $infProt->appendChild($procnfe->createElement('nProt',$nProt));
+            $infProt->appendChild($procnfe->createElement('digVal',$digVal));
+            $infProt->appendChild($procnfe->createElement('cStat',$cStat));
+            $infProt->appendChild($procnfe->createElement('xMotivo',$xMotivo));
 
             return $procnfe->saveXML();
 
@@ -1253,7 +1253,8 @@ class ToolsNFePHP {
      * sendLot
      * Envia lote de Notas Fiscais para a SEFAZ.
      * Este método pode enviar uma ou mais NFe para o SEFAZ, desde que,
-     * o tamanho do arquivo de envio não ultrapasse 500kBytes
+     * o tamanho do arquivo de envio não ultrapasse 500kBytes é recomendável
+     * enviar no maximo 10 NFe por vez
      *
      * @name sendLot
      * @version 1.1
@@ -1272,9 +1273,9 @@ class ToolsNFePHP {
         $wsdl = 'NfeRecepcao';
         $cabecVer       = $this->aCabec['versao'];
         $cabecXsdfile   = $this->aCabec['xsd'];
-        $servURL        = $this->aURL[$wsl]['URL'];
-        $servName       = $this->aURL[$wsl]['service'];
-        $servVer        = $this->aURL[$wsl]['version'];
+        $servURL        = $this->aURL[$wsdl]['URL'];
+        $servName       = $this->aURL[$wsdl]['service'];
+        $servVer        = $this->aURL[$wsdl]['versao'];
 
         // limpa a variavel
         $sNFe = '';
@@ -1283,6 +1284,8 @@ class ToolsNFePHP {
         //remover <?xml version="1.0" encoding=... das NFe pois somente
         // uma dessas tags pode exitir na mensagem
         $sNFe = str_replace('<?xml version="1.0" encoding="utf-8"?>','',$sNFe);
+        $sNFe = str_replace('<?xml version="1.0" encoding="UTF-8"?>','',$sNFe);
+
         //ATENÇAO $sNFe nao pode ultrapassar 500kBytes
         if (strlen($sNFe) > 470000) {
             //indicar erro e voltar
@@ -1324,7 +1327,7 @@ class ToolsNFePHP {
             $this->errMsg = 'Nao houve retorno do NuSoap!!';
         }
         return $aRet;
-    }// fim da função __sendLot
+    }// fim sendLot
 
     /**
      * getProtocol
@@ -1344,13 +1347,13 @@ class ToolsNFePHP {
         $wsdl = 'NfeRetRecepcao';
         $cabecVer       = $this->aCabec['versao'];
         $cabecXsdfile   = $this->aCabec['xsd'];
-        $servURL        = $this->aURL[$wsl]['URL'];
-        $servName       = $this->aURL[$wsl]['service'];
-        $servVer        = $this->aURL[$wsl]['version'];
+        $servURL        = $this->aURL[$wsdl]['URL'];
+        $servName       = $this->aURL[$wsdl]['service'];
+        $servVer        = $this->aURL[$wsdl]['version'];
         //monta dados para comunicação SOAP
         $param = array(
             'nfeCabecMsg'=>'<?xml version="1.0" encoding="utf-8"?><cabecMsg versao="' . $cabecVer . '" xmlns="' . $this->URLnfe . '"><versaoDados>' . $servVer . '</versaoDados></cabecMsg>',
-            'nfeDadosMsg'=>'<consReciNFe xmlns:xsi="'. $this->URLxsi . '" xmlns:xsd="' . $this->URLxsd . '" versao="' . $servVer . '" xmlns="' . $this->URLnfe . '"><tpAmb>' . $this->ambiente . '</tpAmb><nRec>' . $recibo . '</nRec></consReciNFe>'
+            'nfeDadosMsg'=>'<consReciNFe xmlns:xsi="'. $this->URLxsi . '" xmlns:xsd="' . $this->URLxsd . '" versao="' . $servVer . '" xmlns="' . $this->URLnfe . '"><tpAmb>' . $this->tpAmb . '</tpAmb><nRec>' . $recibo . '</nRec></consReciNFe>'
         );
         $retorno = $this->__sendSOAP($param, $servURL, $servName);
         if (is_array($retorno)) {
@@ -1438,6 +1441,139 @@ class ToolsNFePHP {
         return $aRet;
     } //fim da função __getNFeProtocol
 
+
+     /**
+      * cancelNFe
+      * Solicita o cancelamento de NF enviada
+     *
+     * @name cancelNFe
+     * @version 1.1
+     * @package NFePHP
+     * @todo
+     * @param	string  $idNFe ID da NFe com 44 digitos (sem o NFe na frente dos numeros)
+     * @param   string  $protId Numero do protocolo de aceitaçao da NFe enviado anteriormente pelo SEFAZ
+     * @param   string  $xJust Descrição da justificativa para o cancelamento da NFe
+     * @return	Array   array('status'=>FALSE,'cStat'=>'','xMotivo'=>'');
+     * @access  public
+    **/
+    public function cancelNFe($idNFe,$protId, $xJust){
+        //variavel de retorno do metodo
+        $aRet = array('status'=>FALSE,'cStat'=>'','xMotivo'=>'');
+
+        // carga das variaveis da funçao do webservice
+        $wsdl = 'NfeCancelamento';
+        $cabecVer       = $this->aCabec['versao'];
+        $cabecXsdfile   = $this->aCabec['xsd'];
+        $servURL        = $this->aURL[$wsdl]['URL'];
+        $servName       = $this->aURL[$wsdl]['service'];
+        $servVer        = $this->aURL[$wsdl]['versao'];
+
+        $nfeDadosMsg = '<cancNFe xmlns="'.$this->URLnfe.'" versao="'.$servVer.'"><infCanc Id="ID'.$idNFe.'"><tpAmb>'.$this->tpAmb.'</tpAmb><xServ>CANCELAR</xServ><chNFe>'.$idNFe.'</chNFe><nProt>'.$protId.'</nProt><xJust>'.$xJust.'</xJust></infCanc></cancNFe>';
+        $nfeDadosMsg = $this->signXML($nfeDadosMsg, 'infCanc');
+
+        $param = array(
+            'nfeCabecMsg'=>'<?xml version="1.0" encoding="utf-8"?><cabecMsg versao="'.$cabecVer.'" xmlns="'.$this->URLnfe.'"><versaoDados>'.$servVer.'</versaoDados></cabecMsg>',
+            'nfeDadosMsg'=>$nfeDadosMsg
+        );
+
+        $retorno = $this->__sendSOAP($param, $servURL, $servName);
+        if (is_array($retorno)) {
+
+           $xmlresp = utf8_encode($retorno[$servName.'Result']);
+            if ($xmlresp == ''){
+                //houve uma falha na comunicação SOAP
+                $aRet['xMotivo'] = 'Houve uma falha na comunicação SOAP';
+                return $aRet;
+            }
+            // tratar dados de retorno
+            $doc = new DOMDocument(); //cria objeto DOM
+            $doc->formatOutput = false;
+            $doc->preserveWhiteSpace = false;
+            $doc->loadXML($xmlresp,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
+            $aRet['status'] = TRUE;
+            $aRet['cStat'] = $doc->getElementsByTagName('cStat')->item(0)->nodeValue;
+            $aRet['xMotivo'] = $doc->getElementsByTagName('xMotivo')->item(0)->nodeValue;
+            //salvar o xml retornado do SEFAZ
+            $nome = $this->temDir.$idNFe.'-canc.xml';
+            $nome = $doc->save($nome);
+        } else {
+            $this->errorStatus = true;
+            $this->errorMsg = 'Nao houve retorno do NuSoap!!';
+        }
+        return $aRet;
+    } //fim cancelNFe
+
+
+    /**
+     * inutNFe
+     * Solicita inutilizaçao de uma serie de numeros de NF
+     *
+     * @name inutNFe
+     * @version 1.2
+     * @package NFePHP
+     * @todo
+     * @param	string  $ano
+     * @param   string  $nfSerie
+     * @param   integer $numIni
+     * @param   integer $numFim
+     * @param   boolean $bSave
+     * @return	boolean TRUE se sucesso FALSE se falha
+     * @access  public
+    **/
+    public function inutNFe($ano,$nfSerie,$modelo,$numIni,$numFim,$xJust){
+        //variavel de retorno do metodo
+        $aRet = array('status'=>FALSE,'cStat'=>'','xMotivo'=>'');
+
+        // carga das variaveis da funçao do webservice
+        $wsdl = 'NfeInutilizacao';
+        $cabecVer       = $this->aCabec['versao'];
+        $cabecXsdfile   = $this->aCabec['xsd'];
+        $servURL        = $this->aURL[$wsdl]['URL'];
+        $servName       = $this->aURL[$wsdl]['service'];
+        $servVer        = $this->aURL[$wsdl]['versao'];
+
+        //Identificador da TAG a ser assinada formada
+        //com Código da UF + CNPJ + modelo + série +
+        //nro inicial e nro final precedida do literal “ID”
+        $id = 'ID'.$this->cUF.$this->CNPJ.$modelo.$nfSerie.$numIni.$numFim;
+        //dados da mensagem
+        $nfeDadosMsg = '<inutNFe xmlns="'.$this->URLnfe.'" versao="'.$servVer.'"><infInut Id="'.$id.'"><tpAmb>'.$this->tpAmb.'</tpAmb><xServ>INUTILIZAR</xServ><cUF>'.$this->cUF.'</cUF><ano>'.$ano.'</ano><CNPJ>'.$this->CNPJ.'</CNPJ><mod>'.$modelo.'</mod><serie>'.$nfSerie.'</serie><nNFIni>'.$numIni.'</nNFIni><nNFFin>'.$numFim.'</nNFFin><xJust>'.$xJust.'</xJust></infInut></inutNFe>';
+        //assinar a nfeDadosMsg
+        $nfeDadosMsg = $this->signXML($nfeDadosMsg, 'infInut');
+
+        $param = array(
+            'nfeCabecMsg'=>'<?xml version="1.0" encoding="utf-8"?><cabecMsg versao="'.$cabecVer.'" xmlns="'.$this->URLnfe.'"><versaoDados>'.$servVer.'</versaoDados></cabecMsg>',
+            'nfeDadosMsg'=>$nfeDadosMsg
+        );
+
+        $retorno = $this->__sendSOAP($param, $servURL, $servName);
+        if (is_array($retorno)) {
+
+           $xmlresp = utf8_encode($retorno[$servName.'Result']);
+            if ($xmlresp == ''){
+                //houve uma falha na comunicação SOAP
+                $aRet['xMotivo'] = 'Houve uma falha na comunicação SOAP';
+                return $aRet;
+            }
+            // tratar dados de retorno
+            $doc = new DOMDocument(); //cria objeto DOM
+            $doc->formatOutput = false;
+            $doc->preserveWhiteSpace = false;
+            $doc->loadXML($xmlresp,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
+            $aRet['status'] = TRUE;
+            $aRet['cStat'] = $doc->getElementsByTagName('cStat')->item(0)->nodeValue;
+            $aRet['xMotivo'] = $doc->getElementsByTagName('xMotivo')->item(0)->nodeValue;
+            //salvar o xml retornado do SEFAZ
+            $nome = $this->temDir.$idNFe.'-inut.xml';
+            $nome = $doc->save($nome);
+        } else {
+            $this->errorStatus = true;
+            $this->errorMsg = 'Nao houve retorno do NuSoap!!';
+        }
+        return $aRet;
+    } //fim inutNFe
+
+    
 
    /**
     * loadSEFAZ
@@ -1766,10 +1902,11 @@ class ToolsNFePHP {
      * parametrizadas na contrução da classe.
      *
      * @name __sendSOAP
-     * @version 2.0
+     * @version 1.2
      * @package NFePHP
      * @param    array   $param Matriz com o cabeçalho e os dados da mensagem soap
-     * @param    string  $wsdl Designaçao do Serviço SOAP
+     * @param    string  $urlsefaz Designaçao do URL do serviço SOAP
+     * @param    string  nome do método do serviço SOAP desejado
      * @return   array  Array com a resposta do SOAP ou String do erro ou false
      **/
     public function __sendSOAP($param,$urlsefaz,$service){
