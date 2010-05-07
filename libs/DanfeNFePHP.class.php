@@ -759,7 +759,7 @@ class DanfeNFePHP {
         $texto = utf8_decode('BASE DE CÁLCULO DO ICMS S.T.');
         $aFont = array('font'=>'Arial','size'=>6,'style'=>'');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',1,'');
-        $texto = number_format($this->ICMSTot->getElementsByTagName("vBCST")->item(0)->nodeValue, 2, ",", ".");
+        $texto = !empty($this->ICMSTot->getElementsByTagName("vBCST")->item(0)->nodeValue) ? number_format($this->ICMSTot->getElementsByTagName("vBCST")->item(0)->nodeValue, 2, ",", ".") : '0,00';
         $aFont = array('font'=>'Arial','size'=>10,'style'=>'B');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'B','R',0,'');
         //VALOR DO ICMS SUBSTITUIÇÃO
@@ -798,7 +798,7 @@ class DanfeNFePHP {
         $texto = utf8_decode('VALOR DO SEGURO');
         $aFont = array('font'=>'Arial','size'=>6,'style'=>'');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',1,'');
-        $texto = number_format($this->ICMSTot->getElementsByTagName("vSeg")->item(0)->nodeValue, 2, ",", ".");
+        $texto = !empty($this->ICMSTot->getElementsByTagName("vSeg")->item(0)->nodeValue) ? number_format($this->ICMSTot->getElementsByTagName("vSeg")->item(0)->nodeValue, 2, ",", ".") : '0,00';
         $aFont = array('font'=>'Arial','size'=>10,'style'=>'B');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'B','R',0,'');
         //DESCONTO
@@ -807,7 +807,7 @@ class DanfeNFePHP {
         $texto = utf8_decode('DESCONTO');
         $aFont = array('font'=>'Arial','size'=>6,'style'=>'');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',1,'');
-        $texto = number_format($this->ICMSTot->getElementsByTagName("vDesc")->item(0)->nodeValue, 2, ",", ".");
+        $texto = !empty($this->ICMSTot->getElementsByTagName("vDesc")->item(0)->nodeValue) ? number_format($this->ICMSTot->getElementsByTagName("vDesc")->item(0)->nodeValue, 2, ",", ".") : '0,00';
         $aFont = array('font'=>'Arial','size'=>10,'style'=>'B');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'B','R',0,'');
         //OUTRAS DESPESAS
@@ -816,7 +816,7 @@ class DanfeNFePHP {
         $texto = utf8_decode('OUTRAS DESPESAS');
         $aFont = array('font'=>'Arial','size'=>6,'style'=>'');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',1,'');
-        $texto = number_format($this->ICMSTot->getElementsByTagName("vOutro")->item(0)->nodeValue, 2, ",", ".");
+        $texto = !empty($this->ICMSTot->getElementsByTagName("vOutro")->item(0)->nodeValue) ? number_format($this->ICMSTot->getElementsByTagName("vOutro")->item(0)->nodeValue, 2, ",", ".") : '0,00';
         $aFont = array('font'=>'Arial','size'=>10,'style'=>'B');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'B','R',0,'');
         //VALOR TOTAL DO IPI
@@ -825,7 +825,7 @@ class DanfeNFePHP {
         $texto = utf8_decode('VALOR TOTAL DO IPI');
         $aFont = array('font'=>'Arial','size'=>6,'style'=>'');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',1,'');
-        $texto = number_format($this->ICMSTot->getElementsByTagName("vIPI")->item(0)->nodeValue, 2, ",", ".");
+        $texto = !empty($this->ICMSTot->getElementsByTagName("vIPI")->item(0)->nodeValue) ? number_format($this->ICMSTot->getElementsByTagName("vIPI")->item(0)->nodeValue, 2, ",", ".") : '0,00';
         $aFont = array('font'=>'Arial','size'=>10,'style'=>'B');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'B','R',0,'');
         //VALOR TOTAL DA NOTA
@@ -868,7 +868,7 @@ class DanfeNFePHP {
         $texto = utf8_decode('NOME / RAZÃO SOCIAL');
         $aFont = array('font'=>'Arial','size'=>6,'style'=>'');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',1,'');
-        if ( isset($this->transporta)) {
+        if ( isset($this->transporta) ) {
             $texto = !empty($this->transporta->getElementsByTagName("xNome")->item(0)->nodeValue) ? utf8_decode($this->transporta->getElementsByTagName("xNome")->item(0)->nodeValue) : '';
         } else {
             $texto = '';
@@ -924,7 +924,6 @@ class DanfeNFePHP {
         } else {
             $texto = '';
         }
-        
         $aFont = array('font'=>'Arial','size'=>10,'style'=>'B');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'B','C',0,'');
         //CNPJ / CPF
@@ -1262,7 +1261,11 @@ class DanfeNFePHP {
 
                 $x += $w;
                 $w = 13;
-                $texto = !empty($IPI->getElementsByTagName("vIPI")->item(0)->nodeValue) ? number_format($IPI->getElementsByTagName("vIPI")->item(0)->nodeValue, 2, ",", ".") :'';
+                if ( isset($IPI) ){
+                    $texto = !empty($IPI->getElementsByTagName("vIPI")->item(0)->nodeValue) ? number_format($IPI->getElementsByTagName("vIPI")->item(0)->nodeValue, 2, ",", ".") :'';
+                } else {
+                    $texto = '';
+                }
                 $this->__textBox($x,$y,$w,$h,$texto,$aFont,'C','R',0,'');
 
                 $x += $w;
@@ -1272,7 +1275,11 @@ class DanfeNFePHP {
 
                 $x += $w;
                 $w = 6;
-                $texto = !empty($IPI->getElementsByTagName("pIPI")->item(0)->nodeValue) ? number_format($IPI->getElementsByTagName("pIPI")->item(0)->nodeValue, 2, ",", ".") : '';
+                if ( isset($IPI) ){
+                    $texto = !empty($IPI->getElementsByTagName("pIPI")->item(0)->nodeValue) ? number_format($IPI->getElementsByTagName("pIPI")->item(0)->nodeValue, 2, ",", ".") : '';
+                } else {
+                    $texto = '';
+                }
                 $this->__textBox($x,$y,$w,$h,$texto,$aFont,'C','C',0,'');
 
                 $i++;
@@ -1329,7 +1336,31 @@ class DanfeNFePHP {
         $h = 25;
         $aFont = array('font'=>'Arial','size'=>6,'style'=>'');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',1,'');
-
+        //inserir texto informando caso de contingência
+        //1 – Normal – emissão normal;
+        //2 – Contingência FS – emissão em contingência com impressão do DANFE em Formulário de Segurança;
+        //3 – Contingência SCAN – emissão em contingência no Sistema de Contingência do Ambiente Nacional – SCAN;
+        //4 – Contingência DPEC - emissão em contingência com envio da Declaração Prévia de Emissão em Contingência – DPEC;
+        //5 – Contingência FS-DA - emissão em contingência com impressão do DANFE em Formulário de Segurança para Impressão de Documento Auxiliar de Documento Fiscal Eletrônico (FS-DA).
+        $tpEmis = $this->ide->getElementsByTagName("tpEmis")->item(0)->nodeValue;
+        $texto = '';
+        switch($tpEmis){
+            case 2:
+                $texto = 'CONTINGENCIA FS emissao em contingencia com impressao do DANFE em Formulario de Segurança';
+                break;
+            case 3:
+                $texto = 'CONTINGENCIA SCAN';
+                break;
+            case 4:
+                $texto = 'CONTINGENCIA DPEC';
+                break;
+            case 5:
+                $texto = 'CONTINGENCIA FSDA emissao em contingencia com impressao do DANFE em Formulario de Segurança para Impressao de Documento Auxiliar de Documento Fiscal Eletronico (FS-DA)';
+                break;
+        }
+        $texto = utf8_decode($texto);
+        $aFont = array('font'=>'Arial','size'=>8,'style'=>'');
+        $this->__textBox($x,$y+3,$w-2,$h-3,$texto,$aFont,'T','L',0,'',FALSE);
         return $y+$h;
     } //fim __dadosAdicionaisDANFE
 
