@@ -310,15 +310,19 @@ class DanfeNFePHP {
         $aFont = array('font'=>'Arial','size'=>8,'style'=>'B');
         $texto = utf8_decode($this->emit->getElementsByTagName("xNome")->item(0)->nodeValue);
         $y1 = 30;//$y+$imgH*1.5;
-        $this->__textBox($x,$y1,$w,8,$texto,$aFont,'T','C',0,'');
+        $this->__textBox($x,$y1,$w,8,$texto,$aFont,'T','C',0,'',FALSE);
         //endereço
-        $y1 = $y1+5;
+        $y1 = $y1+6;
         $aFont = array('font'=>'Arial','size'=>7,'style'=>'');
         $fone = !empty($this->enderEmit->getElementsByTagName("fone")->item(0)->nodeValue) ? $this->enderEmit->getElementsByTagName("fone")->item(0)->nodeValue : '';
         $foneLen = strlen($fone);
-        $fone2 = substr($fone,0,$foneLen-4);
-        $fone1 = substr($fone,0,$foneLen-8);
-        $fone = '(' . $fone1 . ') ' . substr($fone2,-4) . '-' . substr($fone,-4);
+        if ($foneLen > 0 ){
+            $fone2 = substr($fone,0,$foneLen-4);
+            $fone1 = substr($fone,0,$foneLen-8);
+            $fone = '(' . $fone1 . ') ' . substr($fone2,-4) . '-' . substr($fone,-4);
+        } else {
+            $fone = '';
+        }
         $lgr = !empty($this->enderEmit->getElementsByTagName("xLgr")->item(0)->nodeValue) ? $this->enderEmit->getElementsByTagName("xLgr")->item(0)->nodeValue : '';
 	$nro = !empty($this->enderEmit->getElementsByTagName("nro")->item(0)->nodeValue) ? $this->enderEmit->getElementsByTagName("nro")->item(0)->nodeValue : '';
 	$cpl = !empty($this->enderEmit->getElementsByTagName("xCpl")->item(0)->nodeValue) ? $this->enderEmit->getElementsByTagName("xCpl")->item(0)->nodeValue : '';
@@ -355,7 +359,7 @@ class DanfeNFePHP {
         $this->__textBox($x+2,$y1,$w,$h,$texto,$aFont,'T','L',0,'');
         //tipo de nF
         $aFont = array('font'=>'Arial','size'=>12,'style'=>'B');
-        $y1 = $y + 20;
+        $y1 = $y + 19;
         $h = 7;
         $texto = $this->ide->getElementsByTagName('tpNF')->item(0)->nodeValue;
         $this->__textBox($x+27,$y1,5,$h,$texto,$aFont,'C','C',1,'');
@@ -548,10 +552,10 @@ class DanfeNFePHP {
         $texto = utf8_decode('CNPJ / CPF');
         $aFont = array('font'=>'Arial','size'=>6,'style'=>'');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',1,'');
-        if (!empty($this->dest->getElementsByTagName("CNPJ")->item(0)->nodeValue)) {
+        if ( !empty($this->dest->getElementsByTagName("CNPJ")->item(0)->nodeValue) ) {
             $texto = $this->__format(utf8_decode($this->dest->getElementsByTagName("CNPJ")->item(0)->nodeValue),"###.###.###/####-##");
         } else {
-            $texto = $this->__format(utf8_decode($this->dest->getElementsByTagName("CPF")->item(0)->nodeValue),"###.###.###-##");
+            $texto = !empty($this->dest->getElementsByTagName("CPF")->item(0)->nodeValue) ? $this->__format(utf8_decode($this->dest->getElementsByTagName("CPF")->item(0)->nodeValue),"###.###.###-##") : '';
         }
         $aFont = array('font'=>'Arial','size'=>10,'style'=>'B');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'B','C',0,'');
@@ -1206,7 +1210,7 @@ class DanfeNFePHP {
                 $w = 14;
                 $h = 9;
                 $aFont = array('font'=>'Arial','size'=>7,'style'=>'');
-                $texto = $prod->getElementsByTagName("cProd")->item(0)->nodeValue;
+                $texto = (is_numeric($prod->getElementsByTagName("cProd")->item(0)->nodeValue)) ? abs($prod->getElementsByTagName("cProd")->item(0)->nodeValue) : $prod->getElementsByTagName("cProd")->item(0)->nodeValue;
                 $this->__textBox($x,$y,$w,$h,$texto,$aFont,'C','C',0,'');
 
                 $x += $w;
