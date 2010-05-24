@@ -1327,9 +1327,13 @@ class DanfeNFePHP {
         $h = 25;
         $aFont = array('font'=>'Arial','size'=>6,'style'=>'');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',1,'');
-        $texto = !empty($this->infAdic->getElementsByTagName("infCpl")->item(0)->nodeValue) ? $this->infAdic->getElementsByTagName("infCpl")->item(0)->nodeValue : '';
-        $texto .= !empty($this->infAdic->getElementsByTagName("infAdFisco")->item(0)->nodeValue) ? ' Inf. fisco: '.$this->infAdic->getElementsByTagName("infAdFisco")->item(0)->nodeValue : '';
-        $texto = utf8_decode($texto);
+        if (isset($this->infAdic)){
+            $texto = !empty($this->infAdic->getElementsByTagName("infCpl")->item(0)->nodeValue) ? $this->infAdic->getElementsByTagName("infCpl")->item(0)->nodeValue : '';
+            $texto .= !empty($this->infAdic->getElementsByTagName("infAdFisco")->item(0)->nodeValue) ? ' Inf. fisco: '.$this->infAdic->getElementsByTagName("infAdFisco")->item(0)->nodeValue : '';
+            $texto = utf8_decode($texto);
+        } else {
+            $texto = '';
+        }
         $aFont = array('font'=>'Arial','size'=>8,'style'=>'');
         $this->__textBox($x,$y+3,$w,$h-3,$texto,$aFont,'T','L',0,'',FALSE);
         //RESERVADO AO FISCO
@@ -1482,32 +1486,41 @@ class DanfeNFePHP {
             //inicia com a posição do ultimo digito da mascara
             $x = $tMask;
             $y = $tCampo;
+            $cI = 0;
             for ( $i = $tMaior-1; $i >= 0; $i-- ) {
-                // e o digito da mascara é # trocar pelo digito do campo
-                // se o inicio da string da mascara for atingido antes de terminar
-                // o campo considerar #
-                if ( $x > 0 ) {
-                    $digMask = $mascara[--$x];
-                } else {
-		    $digMask = '#';
-                }
-		//se o fim do campo for atingido antes do fim da mascara
-		//verificar se é ( se não for não use
-                if ( $digMask=='#' ) {
-                    if ( $y > 0 ) {
-                        $sRetorno[--$tRetorno] = $sLimpo[--$y];
+                if ($cI < $z){
+                    // e o digito da mascara é # trocar pelo digito do campo
+                    // se o inicio da string da mascara for atingido antes de terminar
+                    // o campo considerar #
+                    if ( $x > 0 ) {
+                        $digMask = $mascara[--$x];
                     } else {
-		        //$sRetorno[--$tRetorno] = '';
+                        $digMask = '#';
                     }
-                } else {
-                    if ( $y > 0 ) {
-                        $sRetorno[--$tRetorno] = $mascara[$x];
-                    } else {
-                        if ($mascara[$x] =='('){
-                            $sRetorno[--$tRetorno] = $mascara[$x];
+                    //se o fim do campo for atingido antes do fim da mascara
+                    //verificar se é ( se não for não use
+                    if ( $digMask=='#' ) {
+                        $cI++;
+                        if ( $y > 0 ) {
+                            $sRetorno[--$tRetorno] = $sLimpo[--$y];
+                        } else {
+                            //$sRetorno[--$tRetorno] = '';
                         }
+                    } else {
+                        if ( $y > 0 ) {
+                            $sRetorno[--$tRetorno] = $mascara[$x];
+                        } else {
+                            if ($mascara[$x] =='('){
+                                $sRetorno[--$tRetorno] = $mascara[$x];
+                            }
+                        }
+                        $i++;
                     }
-                    $i++;
+                }
+            }
+            if (!$flag){
+                if ($mascara[0]!='#'){
+                    $sRetorno = '(' . trim($sRetorno);
                 }
             }
             return trim($sRetorno);
