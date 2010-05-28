@@ -1097,7 +1097,7 @@ class ToolsNFePHP {
         $xmldoc = new DOMDocument();
         // carrega o xml
         $xml = $xmldoc->loadXML($docXml);
-        $erromsg='';
+        $errorMsg='';
         // valida o xml com o xsd
         if ( !$xmldoc->schemaValidate($xsdFile) ) {
             /**
@@ -1114,22 +1114,22 @@ class ToolsNFePHP {
             foreach ($aIntErrors as $intError){
                 switch ($intError->level) {
                     case LIBXML_ERR_WARNING:
-                        $erroMsg .= " Atençao $intError->code: ";
+                        $errorMsg .= " Atençao $intError->code: ";
                         break;
                     case LIBXML_ERR_ERROR:
-                        $erroMsg .= " Erro $intError->code: ";
+                        $errorMsg .= " Erro $intError->code: ";
                         break;
                     case LIBXML_ERR_FATAL:
-                        $erroMsg .= " Erro Fatal $intError->code: ";
+                        $errorMsg .= " Erro Fatal $intError->code: ";
                         break;
                 }
-                $erroMsg .= $intError->message . ';';
+                $errorMsg .= $intError->message . ';';
             }
         } else {
             $flagOK = TRUE;
             $errorMsg = '';
         }
-        return array('status'=>$flagOK, 'error'=>$erroMsg);
+        return array('status'=>$flagOK, 'error'=>$errorMsg);
     }
 
 
@@ -1168,7 +1168,7 @@ class ToolsNFePHP {
             $replace = '';
             $docxml = str_replace($order, $replace, $docxml);
             // carrega o documento no DOM
-            $xmldoc = new DOMDocument();
+            $xmldoc = new DOMDocument('1.0', 'utf-8');
             $xmldoc->preservWhiteSpace = FALSE; //elimina espaços em branco
             $xmldoc->formatOutput = FALSE;
             // muito importante deixar ativadas as opçoes para limpar os espacos em branco
