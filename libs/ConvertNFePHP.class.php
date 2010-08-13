@@ -17,7 +17,7 @@
  *
  * @package     NFePHP
  * @name        ConvertNFePHP
- * @version     0.1
+ * @version     1.1
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright   2009 &copy; NFePHP
  * @link        http://www.nfephp.org/
@@ -1788,17 +1788,18 @@ class ConvertNFePHP {
                         break;
                     case "Z04":
                         $obsCont = $dom->createElement("obsCont");
-                        if(!$this->vazio($dados[1])) {
-                            $xCampo = $dom->createElement("xCampo", trim($dados[1]));
-                            $obsCont->appendChild($xCampo);
-                        }
-                        if(!$this->vazio($dados[2])) {
-                            $xTexto = $dom->createElement("xTexto", trim($dados[2]));
-                            $obsCont->appendChild($xTexto);
-                        }
+                        $obsCont->setAttribute("xCampo", trim($dados[1]));
+                        $xTexto = $dom->createElement("xTexto", trim($dados[2]));
+                        $obsCont->appendChild($xTexto);
                         $infNFe->appendChild($obsCont);
                         break;
-
+                    case "Z07":
+                        $obsFisco = $dom->createElement("obsFisco");
+                        $obsFisco->setAttribute("xCampo", trim($dados[1]));
+                        $xTexto = $dom->createElement("xTexto", trim($dados[2]));
+                        $obsFisco->appendChild($xTexto);
+                        $infNFe->appendChild($obsFisco);
+                        break;
                     case "Z10": //processo referenciado
                         $procRef = $dom->createElement("procRef");
                         if(!$this->vazio($dados[1])) {
@@ -1870,14 +1871,17 @@ class ConvertNFePHP {
 
         //verificar se a string passada como parametro é um arquivo
         if ( is_file($arq) ){
-            $matriz[0] = array($arq);
+            $matriz[] = $arq;
+        } else {
+            if ( is_array($arq) ){
+                $matriz = $arq;
+            } else {
+                return FALSE;
+            }
         }
-        if ( is_array($arq) ){
-            $nnfematriz = count($arq);
-            $matriz = $arq;
-            $txt = "NOTA FISCAL|$nnfematriz\r\n";
-        }
-
+        
+        $nnfematriz = count($matriz);
+        $txt = "NOTA FISCAL|$nnfematriz\r\n";
         for ($x = 0; $x < $nnfematriz; $x++ ){
             //carregar o conteúdo do arquivo xml em uma string
             $xml = file_get_contents($matriz[$x]);
@@ -2089,6 +2093,7 @@ class ConvertNFePHP {
                 $COFINSST = $det->item($i)->getElementsByTagName("COFINSST")->item(0);
                 $ISSQN = $det->item($i)->getElementsByTagName("ISSQN")->item(0);
                 $i++;
+
                 //I|cProd|cEAN|xProd|NCM|EXTIPI|genero|CFOP|uCom|qCom|vUnCom|vProd|cEANTrib|uTrib|qTrib|vUnTrib|vFrete|vSeg|vDesc|
                 $cProd      =  !empty($prod->getElementsByTagName("cProd")->item(0)->nodeValue) ? $prod->getElementsByTagName("cProd")->item(0)->nodeValue : '';
                 $cEAN       =  !empty($prod->getElementsByTagName("cEAN")->item(0)->nodeValue) ? $prod->getElementsByTagName("cEAN")->item(0)->nodeValue : '';
@@ -2286,6 +2291,12 @@ class ConvertNFePHP {
                     $qSelo = !empty($IPI->getElementsByTagName("qSelo")->item(0)->nodeValue) ? $IPI->getElementsByTagName("qSelo")->item(0)->nodeValue : '';
                     $cEnq = !empty($IPI->getElementsByTagName("cEnq")->item(0)->nodeValue) ? $IPI->getElementsByTagName("cEnq")->item(0)->nodeValue : '';
                     $txt .= "O|$clEnq|$CNPJProd|$cSelo|$qSelo|$cEnq\r\n";
+                    //grupo de tributação de IPI NAO TRIBUTADO
+                    $IPINT = $IPI->getElementsByTagName("IPINT")->item(0);
+                    if ( isset($IPINT) ){
+                        $CST = (string) !empty($IPINT->getElementsByTagName("CST")->item(0)->nodeValue) ? $IPINT->getElementsByTagName("CST")->item(0)->nodeValue : '';
+                        $txtIPI = "O08|$CST\r\n";
+                    }
                     //grupo de tributação de IPI
                     $IPITrib = $IPI->getElementsByTagName("IPITrib")->item(0);
                     if ( isset($IPITrib) ){
@@ -2350,7 +2361,7 @@ class ConvertNFePHP {
                                 break;
                         } // fim switch
         		//
-                        if (substr($txtIPI,0,3) == 'O007' ) {
+                        if (substr($txtIPI,0,3) == 'O07' ) {
                              if ( $pIPI != '' ) {
                                  //O10|VBC|PIPI|
                                  $txtIPI .= "O10|$vBC|$pIPI\r\n";
