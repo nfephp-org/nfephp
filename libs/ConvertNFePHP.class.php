@@ -17,7 +17,7 @@
  *
  * @package     NFePHP
  * @name        ConvertNFePHP
- * @version     1.1
+ * @version     1.11
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright   2009 &copy; NFePHP
  * @link        http://www.nfephp.org/
@@ -1791,14 +1791,14 @@ class ConvertNFePHP {
                         $obsCont->setAttribute("xCampo", trim($dados[1]));
                         $xTexto = $dom->createElement("xTexto", trim($dados[2]));
                         $obsCont->appendChild($xTexto);
-                        $infNFe->appendChild($obsCont);
+                        $infAdic->appendChild($obsCont);
                         break;
                     case "Z07":
                         $obsFisco = $dom->createElement("obsFisco");
                         $obsFisco->setAttribute("xCampo", trim($dados[1]));
                         $xTexto = $dom->createElement("xTexto", trim($dados[2]));
                         $obsFisco->appendChild($xTexto);
-                        $infNFe->appendChild($obsFisco);
+                        $infAdic->appendChild($obsFisco);
                         break;
                     case "Z10": //processo referenciado
                         $procRef = $dom->createElement("procRef");
