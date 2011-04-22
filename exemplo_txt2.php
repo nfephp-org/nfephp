@@ -1,242 +1,270 @@
 <?php
 /**
- Exemplo de TXT para nota 2.0
- Régis Matos
- http://www.gestorcustom.com.br
- E-Mail/MSN = regismatos@douradosvirtual.com.br
- skype = regis_matos
+  Ultima atualização = 21/04/2011
+  Exemplo de TXT para nota 2.0
+ 
+  Régis Matos
+  Site       = http://www.gestorcustom.com.br
+  E-Mail/MSN = regismatos@douradosvirtual.com.br
+  skype      = regis_matos
 
 **/
 
-require_once("NFeTXT2.php");
+require_once("NFeTXT2.class.php");
    
 $nfe = new  NFeTXT2;
-$nfe->versao = "2.00";
+
+$nfe->setVersao("2.00");
 //$nfe->id = "NFe35101158716523000119550010000000011003000000"; // O id é calculado automaticamente
-$nfe->cUF = "35";
-$nfe->cNF = "00300000";
-$nfe->NatOp = "VENDA";
-$nfe->intPag = "0";
-$nfe->mod = "55";
-$nfe->serie = "1";
-$nfe->nNF = "1";
-$nfe->dEmi = "2010-11-02"; // ( aaaa-mm-dd ) ficar atento com o formato
-$nfe->dSaiEnt = "";
-$nfe->hSaiEnt = "";
-$nfe->tpNF = "1";
-$nfe->cMunFG = "3550308";
-$nfe->TpImp = "1";
-$nfe->TpEmis = "1";
-//$nfe->cDV = "0"; // é gerado automaticamente
-$nfe->tpAmb = "2"; // 1-Produção/ 2-Homologação
-$nfe->finNFe = "1";
-$nfe->procEmi = "3";
-$nfe->VerProc = "2.0.3";
-$nfe->dhCont = "";
-$nfe->xJust = "";
+$nfe->setCUF("35");
+$nfe->setCNF("00300000");
+$nfe->setNatOp("VENDA");
+$nfe->setIndPag("0");
+$nfe->setMod("55");
+$nfe->setSerie("1");
+$nfe->setNNF("1");
+$nfe->setDEmi("2010-11-02"); // ( aaaa-mm-dd ) ficar atento com o formato
+$nfe->setDSaiEnt("");
+$nfe->setHSaiEnt("");
+$nfe->setTpNF("1");
+$nfe->setCMunFG("3550308");
+$nfe->setTpImp("1");
+$nfe->setTpEmis("1");
+//$nfe->setCDV("0"); // é gerado automaticamente
+$nfe->setTpAmb("2"); // 1-Produção/ 2-Homologação
+$nfe->setFinNFe("1");
+$nfe->setProcEmi("3");
+$nfe->setVerProc("2.0.3");
+$nfe->setDhCont("");
+$nfe->setXJust("");
 
 //Dados do emitente
-$nfe->emi[XNome] = "FIMATEC TEXTIL LTDA";
-$nfe->emi[XFant] = "FIMATEC";
-$nfe->emi[IE] = "112006603110";
-$nfe->emi[IEST] = "";
-$nfe->emi[IM] = "95095870";
-$nfe->emi[CNAE] = "0131380";
-$nfe->emi[CRT] = "3";
-$nfe->emi[CNPJ] = "58716523000119";
-//$nfe->emi[CPF] = "";
-$nfe->emi[XLgr] = "RUA DOS PATRIOTAS";
-$nfe->emi[Nro] = "897";
-$nfe->emi[Cpl] = "ARMAZEM 42";
-$nfe->emi[Bairro] = "IPIRANGA";
-$nfe->emi[CMun] = "3550308";
-$nfe->emi[XMun] = "Sao Paulo";
-$nfe->emi[UF] = "SP";
-$nfe->emi[CEP] = "04207040";
-$nfe->emi[cPais] = "1058";
-$nfe->emi[xPais] = "BRASIL";
-$nfe->emi[fone] = "1120677300";
+$emi[XNome]  = "FIMATEC TEXTIL LTDA";
+$emi[XFant]  = "FIMATEC";
+$emi[IE] 	 = "112006603110";
+$emi[IEST]   = "";
+$emi[IM]     = "95095870";
+$emi[CNAE]   = "0131380";
+$emi[CRT]    = "3";
+$emi[CNPJ]   = "58716523000119";
+//$emi[CPF]  = "";
+$emi[xLgr]   = "RUA DOS PATRIOTAS";
+$emi[nro]    = "897";
+$emi[Cpl] 	 = "ARMAZEM 42";
+$emi[Bairro] = "IPIRANGA";
+$emi[CMun]   = "3550308";
+$emi[XMun]   = "Sao Paulo";
+$emi[UF]     = "SP";
+$emi[CEP]    = "04207040";
+$emi[cPais]  = "1058";
+$emi[xPais]  = "BRASIL";
+$emi[fone]   = "1120677300";
 
+$nfe->setEmi($emi);
 
 
 //destinatario
-$nfe->dest[xNome] = "WARDY CONFECCOES LTDA";
-$nfe->dest[IE] = "115399484115";
-$nfe->dest[ISUF] = "";
-$nfe->dest[email] = "wardy@wardy.com.br";
-$nfe->dest[CNPJ] = "02536490000170";
-//$nfe->dest[CPF] = "";
-$nfe->dest[xLgr] = "RUA PARAIBA";
-$nfe->dest[nro] = "73";
-$nfe->dest[xCpl] = "";
-$nfe->dest[xBairro] = "BRAS";
-$nfe->dest[cMun] = "3550308";
-$nfe->dest[xMun] = "Sao Paulo";
-$nfe->dest[UF] = "SP";
-$nfe->dest[CEP] = "03013030";
-$nfe->dest[cPais] = "1058";
-$nfe->dest[xPais] = "BRASIL";
-$nfe->dest[fone] = "1122910590";
+$dest[xNome]   = "WARDY CONFECCOES LTDA";
+$dest[IE]      = "115399484115";
+$dest[ISUF]    = "";
+$dest[email]   = "wardy@wardy.com.br";
+$dest[CNPJ]    = "02536490000170";
+//$dest[CPF]   = "";
+$dest[xLgr]    = "RUA PARAIBA";
+$dest[nro]     = "73";
+$dest[xCpl]    = "";
+$dest[xBairro] = "BRAS";
+$dest[cMun]    = "3550308";
+$dest[xMun]    = "Sao Paulo";
+$dest[UF]      = "SP";
+$dest[CEP]     = "03013030";
+$dest[cPais]   = "1058";
+$dest[xPais]   = "BRASIL";
+$dest[fone]    = "1122910590";
 
+$nfe->setDest($dest);
 
+/** // Informar apenas quando for diferente do endereço do remetente.
+$retirada[CNPJ] = "";
+$retirada[xLgr] = "";
+$retirada[nro] = "";
+$retirada[XCpl] = "";
+$retirada[XBairro] = "";
+$retirada[CMun] = "";
+$retirada[XMun] = "";
+$retirada[UF] = "";
 
-/* // Informar apenas quando for diferente do endereço do remetente.
-$nfe->retirada[CNPJ] = "";
-$nfe->retirada[XLgr] = "";
-$nfe->retirada[Nro] = "";
-$nfe->retirada[XCpl] = "";
-$nfe->retirada[XBairro] = "";
-$nfe->retirada[CMun] = "";
-$nfe->retirada[XMun] = "";
-$nfe->retirada[UF] = "";
-*/
+$nfe->setRetirada($retirada);
+**/
 
-/*//Informar apenas quando for diferente do endereço do destinatário.
-$nfe->entrega[CNPJ] = "";
-$nfe->entrega[XLgr] = "";
-$nfe->entrega[Nro] = "";
-$nfe->entrega[XCpl] = "";
-$nfe->entrega[XBairro] = "";
-$nfe->entrega[CMun] = "";
-$nfe->entrega[XMun] = "";
-$nfe->entrega[UF] = "";
-*/
+/** //Informar apenas quando for diferente do endereço do destinatário.
+$entrega[CNPJ] = "";
+$entrega[xLgr] = "";
+$entrega[nro] = "";
+$entrega[XCpl] = "";
+$entrega[XBairro] = "";
+$entrega[CMun] = "";
+$entrega[XMun] = "";
+$entrega[UF] = "";
+
+$nfe->setEntrega($entrega);
+**/
+
 
 
 //produtos
+//Obs. A variavel $i tem que ser iniciado com ( 0 ) zero 
 for ($i = 0; $i < 1; $i++){
-	$nfe->prod[$i][infAdProd] = "INFORMACOES ADICIONAIS DO PRODUTO";	
-	$nfe->prod[$i][CProd] = "2470BCB90";
-	$nfe->prod[$i][CEAN] = "";
-	$nfe->prod[$i][XProd] = "DELFOS SND TINTO COM AMACIANTE SO TECIDO 1,80M";
-	$nfe->prod[$i][NCM] = "60063200";
-	$nfe->prod[$i][EXTIPI] = "";
-	$nfe->prod[$i][CFOP] = "5122";
-	$nfe->prod[$i][UCom] = KG; 
-	$nfe->prod[$i][QCom] = "46.4800";
-	$nfe->prod[$i][VUnCom] = "19.0000000000";
-	$nfe->prod[$i][VProd] = "833.12";
-	$nfe->prod[$i][CEANTrib] = "";
-	$nfe->prod[$i][UTrib] = "KG";
-	$nfe->prod[$i][QTrib] = "46.4800";
-	$nfe->prod[$i][VUnTrib] = "19.0000000000";
-    $nfe->prod[$i][VFrete] = "";
-	$nfe->prod[$i][VSeg] 	= "";
-    $nfe->prod[$i][VDesc] 	= "";
-	$nfe->prod[$i][vOutro] 	= "";
-	$nfe->prod[$i][indTot] 	= "1";
-	$nfe->prod[$i][xPed] 	= "060110-1030";
-	$nfe->prod[$i][nItemPed] 	= "1";	
+    $prod[$i][infAdProd] = "INFORMACOES ADICIONAIS DO PRODUTO";
+    $prod[$i][CProd]     = "2470BCB90";
+    $prod[$i][CEAN]      = "";
+    $prod[$i][XProd]     = "DELFOS SND TINTO COM AMACIANTE SO TECIDO 1,80M";
+    $prod[$i][NCM]       = "60063200";
+    $prod[$i][EXTIPI]    = "";
+    $prod[$i][CFOP]      = "5122";
+    $prod[$i][UCom]      = "KG";
+    $prod[$i][QCom]      = "46.4800";
+    $prod[$i][VUnCom]    = "19.0000000000";
+    $prod[$i][VProd]     = "833.12";
+    $prod[$i][CEANTrib]  = "";
+    $prod[$i][UTrib]     = "KG";
+    $prod[$i][QTrib]     = "46.4800";
+    $prod[$i][VUnTrib]   = "19.0000000000";
+    $prod[$i][VFrete]    = "";
+    $prod[$i][VSeg] 	 = "";
+    $prod[$i][VDesc]     = "";
+    $prod[$i][vOutro] 	 = "";
+    $prod[$i][indTot] 	 = "1";
+    $prod[$i][xPed] 	 = "060110-1030";
+    $prod[$i][nItemPed]  = "1";
+
+    //icms
+    $icms[$i][Orig]    = "0";
+    $icms[$i][CST]     = "00";
+	//$icms[$i][CSOSN] = "101";
+	$icms[$i][ModBC]   = "3";
+    $icms[$i][VBC] 	   = "588.78";
+    $icms[$i][PICMS]   = "18.00";
+    $icms[$i][VICMS]   = "105.98";
 	
-	
-	//icms
-	$nfe->icms[$i][Orig] 	= "0";	
-	$nfe->icms[$i][CST] 	= "00";	
-	$nfe->icms[$i][ModBC] 	= "3";	
-	$nfe->icms[$i][VBC] 	= "588.78";	
-	$nfe->icms[$i][PICMS] 	= "18.00";	
-	$nfe->icms[$i][VICMS] 	= "105.98";	
-	
-	//ipi
-	$nfe->ipi[$i][ClEnq] 	 = "";	
-	$nfe->ipi[$i][CNPJProd] = "";	
-	$nfe->ipi[$i][CSelo] 	 = "";	
-	$nfe->ipi[$i][QSelo]  	 = "";	
-	$nfe->ipi[$i][CEnq] 	 = "999";	
-	$nfe->ipi[$i][CST]  = "52";
-	
-	//pis
-	$nfe->pis[$i][CST]  = "01";
-	$nfe->pis[$i][VBC]  = "883.12";
-	$nfe->pis[$i][PPIS]  = "1.65";
-	$nfe->pis[$i][VPIS]  = "14.57";
-	
-	
-	//cofins
-	$nfe->cofins[$i][CST]  = "01";
-	$nfe->cofins[$i][VBC]  = "883.12";
-	$nfe->cofins[$i][PCOFINS]  = "7.60";
-	$nfe->cofins[$i][VCOFINS]  = "67.11";
-	
-	//cofins st
-	$nfe->cofinsst[$i][VCOFINS] = "";
-	
-	$nfe->cofinsst[$i][VBC] = "";
-	$nfe->cofinsst[$i][PCOFINS] = "";
-	
-	$nfe->cofinsst[$i][QBCProd] = "";
-	$nfe->cofinsst[$i][VAliqProd] = "";
-	
-	
-	
+    //ipi
+    $ipi[$i][ClEnq]    = "";
+    $ipi[$i][CNPJProd] = "";
+    $ipi[$i][CSelo]    = "";
+    $ipi[$i][QSelo]    = "";
+    $ipi[$i][CEnq] 	   = "999";
+    $ipi[$i][CST]      = "52";
+
+    //pis
+    $pis[$i][CST]  = "01";
+    $pis[$i][VBC]  = "883.12";
+    $pis[$i][PPIS] = "1.65";
+    $pis[$i][VPIS] = "14.57";
+
+    //cofins
+    $cofins[$i][CST]     = "01";
+    $cofins[$i][VBC]     = "883.12";
+    $cofins[$i][PCOFINS] = "7.60";
+    $cofins[$i][VCOFINS] = "67.11";
+
+    //cofins st
+    $cofinsst[$i][VCOFINS]   = "";
+    $cofinsst[$i][VBC]       = "";
+    $cofinsst[$i][PCOFINS]   = "";
+    $cofinsst[$i][QBCProd]   = "";
+    $cofinsst[$i][VAliqProd] = "";
+
 } // fim dos produtos
 
+
+$nfe->setProd($prod);
+$nfe->setIcms($icms);
+$nfe->setIpi($ipi);
+$nfe->setPis($pis);
+$nfe->setCofins($cofins);
+$nfe->setCofinsst($cofinsst);
+
+
+
 //totais
-$nfe->total[vBC] = "588.78";
-$nfe->total[vICMS] = "105.98";
-$nfe->total[vBCST] = "0.00";
-$nfe->total[vST] = "0.00";
-$nfe->total[vProd] = "833.12";
-$nfe->total[vFrete] = "0.00";
-$nfe->total[vSeg] = "0.00";
-$nfe->total[vDesc] = "0.00";
-$nfe->total[vII] = "0.00";
-$nfe->total[vIPI] = "0.00";
-$nfe->total[vPIS] = "14.57";
-$nfe->total[vCOFINS] = "67.11";
-$nfe->total[vOutro] = "0.00";
-$nfe->total[vNF] = "833.12";
-//$nfe->total[VRetPIS] = "";
+$total[vBC]     = "588.78";
+$total[vICMS]   = "105.98";
+$total[vBCST]   = "0.00";
+$total[vST]     = "0.00";
+$total[vProd]   = "833.12";
+$total[vFrete]  = "0.00";
+$total[vSeg]    = "0.00";
+$total[vDesc]   = "0.00";
+$total[vII]     = "0.00";
+$total[vIPI]    = "0.00";
+$total[vPIS]    = "14.57";
+$total[vCOFINS] = "67.11";
+$total[vOutro]  = "0.00";
+$total[vNF]     = "833.12";
+//$total[VRetPIS] = "";
+
+$nfe->setTotal($total);
+
 
 // Transporte
-$nfe->transp[ModFrete] = "1";
-$nfe->transp[XNome] = "RETIRA";
-$nfe->transp[CNPJ] = "";
-//$nfe->transp[CPF] = "";
-$nfe->transp[IE] = "";
-$nfe->transp[XEnder] = "";
-$nfe->transp[UF] = "";
-$nfe->transp[XMun] = "";
+$transp[ModFrete] = "1";
+$transp[XNome]    = "RETIRA";
+$transp[CNPJ]     = "";
+//$transp[CPF]    = "";
+$transp[IE]       = "";
+$transp[XEnder]   = "";
+$transp[UF]       = "";
+$transp[XMun]     = "";
+$transp[QVol]     = "3";
+$transp[Esp]      = "VOLUMES";
+$transp[Marca]    = "";
+$transp[NVol]     = "";
+$transp[PesoL]    = "46.480";
+$transp[PesoB]    = "50.000";
 
-$nfe->transp[QVol] = "3";
-$nfe->transp[Esp] = "VOLUMES";
-$nfe->transp[Marca] = "";
-$nfe->transp[NVol] = "";
-$nfe->transp[PesoL] = "46.480";
-$nfe->transp[PesoB] = "50.000";
+$nfe->setTransp($transp);
+
+
 
 // dados da fatura
-$nfe->fatura[NFat] = "0001";
-$nfe->fatura[VOrig] = "883.12";
-$nfe->fatura[VDesc] = "";
-$nfe->fatura[VLiq] = "883.12";
+$fatura[NFat]  = "0001";
+$fatura[VOrig] = "883.12";
+$fatura[VDesc] = "";
+$fatura[VLiq]  = "883.12";
+
+$nfe->setFatura($fatura);
 
 
 // dados da duplicata(s)
 for ($i = 0; $i < 1; $i++){
-	$nfe->parcela[$i][NDup] = "0001-1";
-	$nfe->parcela[$i][DVenc] = "2010-12-20";
-	$nfe->parcela[$i][VDup] = "883.12";
+	$parcela[$i][NDup]  = "0001-1";
+	$parcela[$i][DVenc] = "2010-12-20";
+	$parcela[$i][VDup]  = "883.12";
 }
 
-$nfe->infoAdd[InfAdFisco] = "EMITIDO NOS TERMOS DO ARTIGO 400-C DO DECRETO 48042/03 SAIDA COM SUSPENSAO DO IPI CONFORME ART 29 DA LEI 10.637";
-$nfe->infoAdd[InfCpl] = "";
+$nfe->setParcela($parcela);
 
+
+$infoAdd[InfAdFisco] = "EMITIDO NOS TERMOS DO ARTIGO 400-C DO DECRETO 48042/03 SAIDA COM SUSPENSAO DO IPI CONFORME ART 29 DA LEI 10.637";
+$infoAdd[InfCpl] = "";
+
+$nfe->setInfoAdd($infoAdd);
 
 
 if ($nfe->validaTxt() != "OK"){
 
-//imprime o erro na tela
-print $nfe->validaTxt();
+    //imprime o erro na tela
+	//$erro = $nfe->validaTxt();
+    print $nfe->validaTxt();
 
 }
 else{
 
-	//print $nfe->montaTXT();
+    print $nfe->montaTXT();
 
-	//endereço onde o txt sera gravado
-	$path = "/var/www";
-	$nfe->geraArquivo($path);
+    //endereço onde o txt sera gravado
+    $path = "/var/www";
+    $nfe->geraArquivo($path);
 }	
 		
 		
