@@ -26,7 +26,7 @@
  *
  * @package     NFePHP
  * @name        ConvertNFePHP
- * @version     2.16
+ * @version     2.20
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2011 &copy; NFePHP
@@ -43,6 +43,7 @@
  *              Giovani Paseto <giovaniw2 at gmail dot com>
  *              Giuliano Nascimento <giusoft at hotmail dot com>
  *              Helder Ferreira <helder.mauricicio at gmail dot com>
+ *              João Eduardo Silva Corrêa <jscorrea2 at gmail dot com>
  *              Leandro C. Lopez <leandro.castoldi at gmail dot com>
  *              Leandro G. Santana <leandrosantana1 at gmail dot com>
  *              Roberto Spadim  <rspadim at gmail dot com>
@@ -85,6 +86,12 @@ class ConvertNFePHP {
      * @var boolean
      */
     public $errStatus=false;
+    /**
+     * tpAmb
+     * Tipo de ambiente
+     * @var string
+     */
+    public $tpAmb = '';
 
     /**
      * nfetxt2xml
@@ -92,11 +99,12 @@ class ConvertNFePHP {
      * especificações do Manual de Importação/Exportação TXT
      * Notas Fiscais eletrônicas versão 2.0.0 (24/08/2010)
      * Referente ao modelo de NFe contido na versão 4.0.1-NT2009.006
-     * de Dezembro de 2009 do manual de integração da NFe
+     * de Dezembro de 2009 do manual de integração da NFe, incluindo a 
+     * Nota Técnica 2011/002 de março de 2011
      *
      * @package NFePHP
      * @name nfetxt2xml
-     * @version 2.10
+     * @version 2.13
      * @param string $arq Path para o arquivo txt
      * @return string xml construido
      */
@@ -182,6 +190,8 @@ class ConvertNFePHP {
                     $CDV = $dom->createElement("cDV", $dados[15]);
                     $ide->appendChild($CDV);
                     $tpAmb = $dom->createElement("tpAmb", $dados[16]);
+                    //guardar a variavel para uso posterior
+                    $this->tpAmb = $dados[16];
                     $ide->appendChild($tpAmb);
                     $finNFe = $dom->createElement("finNFe", $dados[17]);
                     $ide->appendChild($finNFe);
@@ -215,7 +225,7 @@ class ConvertNFePHP {
                        $NFref = $dom->createElement("NFref");
                        $ide->appendChild($NFref);
                     }
-                    $refNF = $dom->createElement("refNf");
+                    $refNF = $dom->createElement("refNF");
                     $cUF = $dom->createElement("cUF", $dados[1]);
                     $refNF->appendChild($cUF);
                     $AAMM = $dom->createElement("AAMM", $dados[2]);
@@ -377,8 +387,8 @@ class ConvertNFePHP {
                     $dest = $dom->createElement("dest");
                     //se ambiente homologação preencher conforme NT2011.002
                     //válida a partir de 01/05/2011
-                    if ($tpAmb == '2' && date('Ymd') >= '20110501'){
-                        $xNome = $dom->createElement("xNome", 'NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO – SEM VALOR FISCAL');
+                    if ($this->tpAmb == '2'){
+                        $xNome = $dom->createElement("xNome", 'NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL');
                         $dest->appendChild($xNome);
                         $IE = $dom->createElement("IE", '');
                         $dest->appendChild($IE);
@@ -402,9 +412,9 @@ class ConvertNFePHP {
                 case "E02": //CNPJ [dest]
                     //se ambiente homologação preencher conforme NT2011.002,
                     //válida a partir de 01/05/2011
-                    if ($tpAmb == '2' && date('Ymd') >= '20110501'){
+                    if ($this->tpAmb == '2'){
                         if ($dados[1] != ''){
-                            //operação necional em ambiente homologação usar 99999999000191
+                            //operação nacional em ambiente homologação usar 99999999000191
                             $CNPJ = $dom->createElement("CNPJ", '99999999000191');
                         } else {
                             //operação com o exterior CNPJ vazio
@@ -412,13 +422,26 @@ class ConvertNFePHP {
                         }
                     } else {
                         $CNPJ = $dom->createElement("CNPJ", $dados[1]);
-                    }
+                    }//fim teste ambiente
                     $dest->insertBefore($dest->appendChild($CNPJ),$xNome);
                     break;
 
                 case "E03": //CPF [dest]
-                    $CPF = $dom->createElement("CPF", $dados[1]);
-                    $dest->insertBefore($dest->appendChild($CPF),$xNome);
+                    //se ambiente homologação preencher conforme NT2011.002,
+                    //válida a partir de 01/05/2011
+                    if ($this->tpAmb == '2'){
+                        if ($dados[1] != ''){
+                            //operação nacional em ambiente homologação usar 99999999000191
+                            $CNPJ = $dom->createElement("CNPJ", '99999999000191');
+                        } else {
+                            //operação com o exterior CNPJ vazio
+                            $CNPJ = $dom->createElement("CNPJ", '');
+                        }
+                        $dest->insertBefore($dest->appendChild($CNPJ),$xNome);
+                    } else {    
+                        $CPF = $dom->createElement("CPF", $dados[1]);
+                        $dest->insertBefore($dest->appendChild($CPF),$xNome);
+                    } //fim teste ambiente
                     break;
 
                 case "E05": //Grupo de endereço do Destinatário da NF-e [dest]
@@ -637,12 +660,12 @@ class ConvertNFePHP {
                     //I18|NDI|DDI|XLocDesemb|UFDesemb|DDesemb|CExportador|
                     $DI = $dom->createElement("DI");
                     if(!empty($dados[1])) {
-                        $nDi = $dom->createElement("nDi", $dados[1]);
-                        $DI->appendChild($nDi);
+                        $nDI = $dom->createElement("nDI", $dados[1]);
+                        $DI->appendChild($nDI);
                     }
                     if(!empty($dados[2])) {
-                        $dDi = $dom->createElement("dDi", $dados[2]);
-                        $DI->appendChild($dDi);
+                        $dDI = $dom->createElement("dDI", $dados[2]);
+                        $DI->appendChild($dDI);
                     }
                     if(!empty($dados[3])) {
                         $xLocDesemb = $dom->createElement("xLocDesemb", $dados[3]);
@@ -679,8 +702,8 @@ class ConvertNFePHP {
                         $adi->appendChild($cFabricante);
                     }
                     if(!empty($dados[4])) {
-                        $vDescDi = $dom->createElement("vDescDi", $dados[4]);
-                        $adi->appendChild($vDescDi);
+                        $vDescDI = $dom->createElement("vDescDI", $dados[4]);
+                        $adi->appendChild($vDescDI);
                     }
                     $DI->appendChild($adi);
                     break;
@@ -1904,9 +1927,9 @@ class ConvertNFePHP {
 
                     case "ZA": //Grupo de Exportação 0 ou 1 [infNFe]
                         //todos os campos são obrigatorios
-                        $exporta = $dom->createElement("exportacao");
+                        $exporta = $dom->createElement("exporta");
                         $UFEmbarq = $dom->createElement("UFEmbarq", $dados[1]);
-                        $exporta->appendChild($UFEmbraq);
+                        $exporta->appendChild($UFEmbarq);
                         $xLocEmbarq = $dom->createElement("xLocEmbarq", $dados[2]);
                         $exporta->appendChild($xLocEmbarq);
                         $infNFe->appendChild($exporta);
