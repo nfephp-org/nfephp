@@ -92,6 +92,7 @@ class DacteNFePHP {
     private $Comp;
     private $ICMS;
     private $infNF;
+    private $infNFe;
     private $compl;
 
     /**
@@ -143,8 +144,10 @@ class DacteNFePHP {
             $this->vPrest     = $this->dom->getElementsByTagName("vPrest")->item(0);
             $this->Comp       = $this->dom->getElementsByTagName("Comp");
             $this->infNF      = $this->dom->getElementsByTagName("infNF");
+            $this->infNFe      = $this->dom->getElementsByTagName("infNFe");
             $this->compl      = $this->dom->getElementsByTagName("compl");
             $this->ICMS = $this->dom->getElementsByTagName("ICMS")->item(0);
+            $this->imp  = $this->dom->getElementsByTagName("imp")->item(0);
 
             $toma = (!empty($this->ide->getElementsByTagName("toma")->item(0)->nodeValue)  || $this->ide->getElementsByTagName("toma")->item(0)->nodeValue==0 ) ? $this->ide->getElementsByTagName("toma")->item(0)->nodeValue : '';
             //0-Remetente;1-Expedidor;2-Recebedor;3-Destinatário;4 - Outros
@@ -643,7 +646,7 @@ class DacteNFePHP {
         $texto= 'Série';
         $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'I');
         $this->__textBox($xa,$y+1,$wa,$h,$texto,$aFont,'T','C',0,'');
-        $texto = !empty($this->ide->getElementsByTagName("serie")->item(0)->nodeValue) ? $this->ide->getElementsByTagName("serie")->item(0)->nodeValue : '';
+        $texto = ( !empty($this->ide->getElementsByTagName("serie")->item(0)->nodeValue) || $this->ide->getElementsByTagName("serie")->item(0)->nodeValue==0 )? $this->ide->getElementsByTagName("serie")->item(0)->nodeValue : '';
         $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
         $this->__textBox($xa,$y+5,$wa,$h,$texto,$aFont,'T','C',0,'');
         $this->pdf->Line($xa+$wa, $y, $xa+$wa, $y+$h);
@@ -1872,7 +1875,8 @@ class DacteNFePHP {
         
         $auxX = $oldX;
         $yIniDados += 4;
-        foreach ($this->infNF as $k => $d) {
+        if(count($this->infNFe) <= 0){
+           foreach ($this->infNF as $k => $d) {
              $tp = 'NOTA FISCAL'; // ????????????
              if ( !empty($this->rem->getElementsByTagName("CNPJ")->item(0)->nodeValue) ) {
                 $cnpj = $this->__format($this->rem->getElementsByTagName("CNPJ")->item(0)->nodeValue,"###.###.###/####-##");
@@ -1880,38 +1884,71 @@ class DacteNFePHP {
                 $cnpj = !empty($this->rem->getElementsByTagName("CPF")->item(0)->nodeValue) ? $this->__format($this->rem->getElementsByTagName("CPF")->item(0)->nodeValue,"###.###.###-##") : '';
             }
              $doc = $this->infNF->item($k)->getElementsByTagName('serie')->item(0)->nodeValue;
-             $doc.= '/'.$this->infNF->item($k)->getElementsByTagName('nDoc')->item(0)->nodeValue; 
-             
+             $doc.= '/'.$this->infNF->item($k)->getElementsByTagName('nDoc')->item(0)->nodeValue;
+
              if($auxX>$w*0.90){
                  $yIniDados = $yIniDados + 4;
                  $auxX = $oldX;
              }
-             
+
              $texto = $tp;
              $aFont = array('font'=>$this->fontePadrao,'size'=>8,'');
              $this->__textBox($auxX,$yIniDados,$w * 0.23,$h,$texto,$aFont,'T','L',0,'');
-             
+
              $auxX += $w * 0.23;
-             
+
              $texto = $cnpj;
              $aFont = array('font'=>$this->fontePadrao,'size'=>8,'');
              $this->__textBox($auxX,$yIniDados,$w * 0.13,$h,$texto,$aFont,'T','L',0,'');
-             
+
              $auxX += $w * 0.13;
-             
+
              $texto = $doc;
              $aFont = array('font'=>$this->fontePadrao,'size'=>8,'');
              $this->__textBox($auxX,$yIniDados,$w * 0.13,$h,$texto,$aFont,'T','L',0,'');
-             
+
              $auxX += $w * 0.13;
+           }
+        }else {
+           foreach ($this->infNFe as $k => $d) {
+             $tp = 'NF-E';
+
+             $chaveNFe = $this->infNFe->item($k)->getElementsByTagName('chave')->item(0)->nodeValue;
+             $numNFe = substr($chaveNFe, 25, 9);
+             $serieNFe = substr($chaveNFe, 24, 3);
+             $doc = $serieNFe.'/'.$numNFe;
+
+             if($auxX>$w*0.90){
+                 $yIniDados = $yIniDados + 4;
+                 $auxX = $oldX;
+             }
+
+             $texto = $tp;
+             $aFont = array('font'=>$this->fontePadrao,'size'=>8,'');
+             $this->__textBox($auxX,$yIniDados,$w * 0.23,$h,$texto,$aFont,'T','L',0,'');
+
+             $auxX += $w * 0.23;
+
+             $texto = $chaveNFe;
+             $aFont = array('font'=>$this->fontePadrao,'size'=>8,'');
+             $this->__textBox($auxX,$yIniDados,$w * 0.13,$h,$texto,$aFont,'T','L',0,'');
+
+             $auxX += $w * 0.13;
+
+             $texto = $doc;
+             $aFont = array('font'=>$this->fontePadrao,'size'=>8,'');
+             $this->__textBox($auxX,$yIniDados,$w * 0.13,$h,$texto,$aFont,'T','L',0,'');
+
+             $auxX += $w * 0.13;
+           }
         }
-        
-        
-        
-        
-        
+
+
+
+
+
     } //fim da função __componentesValorDACFE
-    
+
     /**
      * __documentosOriginariosDACFE
      * Monta o campo com os dados do remetente na DACFE. ( retrato  e paisagem  )
@@ -1946,8 +1983,12 @@ class DacteNFePHP {
              $xObs = $this->compl->item($k)->getElementsByTagName('xObs')->item(0)->nodeValue;
              $texto .=  "\r\n" . $xObs;
         }
+
+        $texto .= "\r\n".$this->imp->getElementsByTagName('infAdFisco')->item(0)->nodeValue;
         $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',0,'');
+
+
         
     } //fim da função __componentesValorDACFE
     
