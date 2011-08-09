@@ -1,8 +1,8 @@
 <?php
 
 /******* Exemplos de Uso *********/
-require_once('/var/www/nfephp/branches/2.0/libs/ToolsNFePHP.class.php');
-require_once('./NFeToSql.class.php');
+require_once('/var/www/html/nfephp/branches/2.0/libs/ToolsNFePHP.class.php');
+require_once('/var/www/html/nfephp/branches/2.0/libs/NFeToSql.class.php');
 
 $nfe = new ToolsNFePHP;
 

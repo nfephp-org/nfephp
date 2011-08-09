@@ -4,7 +4,7 @@
  * Esta classe permite transformar os dados de um XML de uma NFe em SQLs de inserção em um BD
  *
  * @name        NFeToSql
- * @version     1.0b
+ * @version     1.0c
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2011
@@ -14,16 +14,18 @@
  *
  * Obs:         Favor não rir do codigo, como todos nós, já foi bonito quando criança. :op
  *              Os códigos comentados foram deixados de propósito para eventual debug e/ou ver como funciona a classe (se é que funciona)
+ *              Ver na linha 187 a conexao com o Banco de Dados
  */
 
 error_reporting(E_ERROR | E_WARNING | E_PARSE);
 
 class NFeToSql {
     // Não pergunte, apenas use estas variáveis...
-    private $qv, $atrib, $conta, $nfR, $id_p, $id_pv, $nobs;
+    private $infNFe, $protNFe, $atrib, $conta, $nfR, $id_p, $id_pv, $nobs;
     private $sub1 = array('NFref', 'IPITrib', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'Outr', 'NT', 'Part', 'SN', 'Aliq', 'Qtde');
     private $sub2 = array('refNFe', 'IPI', '');
     private $q = array();
+    private $qv = array();
     public  $erro;
 
     private $pai = array('refNF' => 'ide',
@@ -58,7 +60,7 @@ class NFeToSql {
                          );
 
 
-    function geraSQL($nos){ // Codigo feito apos o 10o cafe, soh podia dar nisso...
+    private function geraSQL($nos){ // Codigo feito apos o 10o cafe, soh podia dar nisso...
        foreach($nos->childNodes as $node){
          if($node->childNodes->length == 1){
             foreach($node->childNodes as $node2){
@@ -147,7 +149,25 @@ class NFeToSql {
        }
     }
 
-    function insereBD($xml){
+    private function geraProtSQL($nos){
+      $this->q[0] = '';
+      $this->qv[0] = '';
+       foreach($nos->childNodes as $node){
+          if($node->nodeName == 'dhRecbto'){
+            $dhRecbto = explode('T', $node->nodeValue);
+            $this->q[0] .= ', `dRecbto`';
+            $this->qv[0] .= ", '".addslashes($dhRecbto[0])."'";
+
+            $this->q[0] .= ', `hRecbto`';
+            $this->qv[0] .= ", '".addslashes($dhRecbto[1])."'";
+          }else {
+            $this->q[0] .= ', `'.$node->nodeName.'`';
+            $this->qv[0] .= ", '".addslashes($node->nodeValue)."'";
+          }
+       }
+    }
+
+    public function insereBD($xml, $tpAmb){
          // Obrigatório instalação do PEAR MDB2
          require_once('MDB2.php');
 
@@ -157,8 +177,14 @@ class NFeToSql {
               // Funciona somente com os dados da NFe contidos no infNFe
               $this->infNFe  = $this->dom->getElementsByTagName("infNFe")->item(0);
 
+              if($tpAmb == 1){
+                $bd = 'nfephp';
+              }else {
+                $bd = 'nfephp_homolog';
+              }
+
               // Configure aqui a sua conexão com o BD
-              $con =& MDB2::factory('mysqli://login:senha@endereco.servidor:porta/nfephp');
+              $con =& MDB2::factory('mysqli://userBD:senhaBD@meuenderecoservidor:porta/'.$bd);
 
               if(PEAR::isError($con)) { $this->erro = date('d-m-Y H:i:s').": $xml -> ".$con->getMessage()."\n"; return false; }
 
@@ -174,7 +200,26 @@ class NFeToSql {
                 //echo $query."\n";
                 $i_nfe =& $con->exec($query);
 
-                if(PEAR::isError($i_nfe)) { $this->erro = date('d-m-Y H:i:s').": $xml = ".$query.' -> '.$i_nfe->getMessage()."\n"; return false; }
+                if(PEAR::isError($i_nfe)) {
+                   $this->erro = date('d-m-Y H:i:s').": $xml = ".$query.' -> '.$i_nfe->getMessage()."\n";
+
+                   if($i_nfe->getMessage() != "MDB2 Error: constraint violation"){
+                      return false;
+                   }else {
+                      $attr_campo = explode(',', $atri[0]);
+                      $attr_valor = explode(',', $atri[1]);
+
+                      $query2 = "delete from NFe where ".$attr_campo[0]." = ".$attr_valor[0]." and ".$attr_campo[1]." = ".$attr_valor[1];
+
+                      $del_nfe =& $con->exec($query2);
+
+                      if(PEAR::isError($del_nfe)) { $this->erro = date('d-m-Y H:i:s').": $xml = ".$query2.' -> '.$del_nfe->getMessage()."\n"; return false; }
+
+                      $i_nfe =& $con->exec($query);
+
+                      if(PEAR::isError($i_nfe)) { $this->erro = date('d-m-Y H:i:s').": $xml = ".$query.' -> '.$i_nfe->getMessage()."\n"; return false; }
+                   }
+                }
 
                 $id_nfe = $con->lastInsertID('NFe', 'NFe_id');
               }
@@ -234,6 +279,18 @@ class NFeToSql {
                   //echo $key.' --- '.$_key."...\n";
                   $this->paiv[$_key] = $con->lastInsertID($_key, $_key.'_id');
                 }
+              }
+
+              $this->protNFe  = $this->dom->getElementsByTagName("infProt")->item(0);
+              if($this->protNFe !== false) {
+                 $this->geraProtSQL($this->protNFe);
+
+                 $query = "insert into protNFe (`protNFe_id`, `NFe_id`".$this->q[0].") values('', '".$id_nfe."'".$this->qv[0].");";
+                 //echo $query."\n";
+
+                 $ret =& $con->exec($query);
+
+                 if(PEAR::isError($ret)) { $this->erro = date('d-m-Y H:i:s').": $xml = ".$query.' -> '.$ret->getMessage()."\n"; return false; }
               }
 
               $con->disconnect();
