@@ -23,7 +23,7 @@
  * 
  * @package   NFePHP
  * @name      MailNFePHPpear
- * @version   2.14
+ * @version   2.16
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license   http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright 2009-2011 &copy; NFePHP
@@ -31,8 +31,10 @@
  * @author    Roberto L. Machado <roberto.machado@superig.com.br>
  * 
  *          CONTRIBUIDORES (em ordem alfabetica):
+ *              Carlos Eduardo Pacheco <eduardo at onlyone dot com dot br>
  *              João Eduardo Silva Corrêa <jscorrea2 at gmail dot com>
  *              Leandro C. Lopez <leandro dot castoldi at gmail dot com>
+ * 
  *
  * NOTA: Esta classe requer a instalação do pacote pear Mail e suas dependencias
  * para isso instale php-pear e em seguida o comando 
@@ -49,7 +51,7 @@ class MailNFePHP {
 
     public $mailAuth='1';
     private $mailFROM='';
-    private $maillHOST='';
+    private $mailHOST='';
     private $mailUSER='';
     private $mailPASS='';
     public $mailERROR='';
@@ -59,7 +61,7 @@ class MailNFePHP {
         if (is_array($aConfig)){
             $this->mailAuth  = $aConfig['mailAuth'];
             $this->mailFROM  = $aConfig['mailFROM'];
-            $this->maillHOST = $aConfig['maillHOST'];
+            $this->mailHOST = $aConfig['mailHOST'];
             $this->mailUSER  = $aConfig['mailUSER'];
             $this->mailPASS  = $aConfig['mailPASS'];
         } else {
@@ -67,7 +69,7 @@ class MailNFePHP {
                 include(PATH_ROOT.'config/config.php');
                 $this->mailAuth  = $mailAuth;
                 $this->mailFROM  = $mailFROM;
-                $this->maillHOST = $maillHOST;
+                $this->mailHOST = $mailHOST;
                 $this->mailUSER  = $mailUSER;
                 $this->mailPASS  = $mailPASS;
             }
@@ -159,9 +161,9 @@ class MailNFePHP {
         $mailHead = $mime->headers($headers);
         //preparar o email para envio
 	if ($auth=='1' && $this->mailUSER!='' && $this->mailPASS!=''){
-            $mail = &Mail::factory('smtp',array ('host' => $this->maillHOST,'auth' => true,'username' => $this->mailUSER,'password' => $this->mailPASS));
+            $mail = &Mail::factory('smtp',array ('host' => $this->mailHOST,'auth' => true,'username' => $this->mailUSER,'password' => $this->mailPASS));
 	} else {
-            $mail = &Mail::factory('smtp',array ('host' => $this->maillHOST,'auth' => false));
+            $mail = &Mail::factory('smtp',array ('host' => $this->mailHOST,'auth' => false));
 	}
         // Enviar o email para o endereço indicado
         $mail->send($to, $mailHead, $mailBody);
@@ -243,9 +245,9 @@ class MailNFePHP {
         $mailHead = $mime->headers($headers);
         //preparar o email para envio
       	if ($auth=='1' && $this->mailUSER!='' && $this->mailPASS!=''){
-            $mail = &Mail::factory('smtp',array ('host' => $this->maillHOST,'auth' => true,'username' => $this->mailUSER,'password' => $this->mailPASS));
+            $mail = &Mail::factory('smtp',array ('host' => $this->mailHOST,'auth' => true,'username' => $this->mailUSER,'password' => $this->mailPASS));
 	} else {
-            $mail = &Mail::factory('smtp',array ('host' => $this->maillHOST,'auth' => false));
+            $mail = &Mail::factory('smtp',array ('host' => $this->mailHOST,'auth' => false));
 	}
         // Enviar o email para o endereço indicado
         $mail->send($to, $mailHead, $mailBody);
