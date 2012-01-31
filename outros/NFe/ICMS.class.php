@@ -28,6 +28,17 @@
  *
  * @author  Djalma Fadel Junior <dfadel@ferasoft.com.br>
  */
+
+ 
+/**
+ * Alteracao para atender ao Simples Nacional - NFe2.0 - 29/12/2011
+ *
+ * CSOSN - Tributação do ICMS pelo SIMPLES NACIONAL - CRT=1 (v.2.0)
+ * @author  Osmar de Oliveira Martins Filho <osmarfilho6@gmail.com>
+ * 
+ */
+ 
+ 
 class NFe_ICMS {
     var $orig;      // N11 - origem da mercadoria
     var $CST;       // N12 - tributação do ICMS
@@ -43,6 +54,15 @@ class NFe_ICMS {
     var $pICMSST;   // N22 - alíquota do imposto do ICMS ST
     var $vICMSST;   // N23 - valor do ICMS ST
 
+	
+    // Alteracao para atender ao Simples Nacional - NFe2.0 (Osmar 29/12/2011 osmarfilho6@gmail.com)                
+    var $CSOSN;			// N12a - Código de Situação da Operação – Simples Nacional
+    var $vBCSTRet;  	// N26  - Valor da BC do ICMS ST cobrado anteriormente por ST
+    var $vICMSSTRet;	// N27  - Valor do ICMS ST cobrado anteriormente por ST
+    var $pCredSN;		// N29	- Alíquota aplicável de cálculo do crédito (Simples Nacional).
+    var $vCredICMSSN;	// N30	- Valor crédito do ICMS que pode ser aproveitado nos termos do art. 23 da LC 123 (Simples Nacional)
+    
+	
     function __construct() {
     }
 
@@ -162,8 +182,86 @@ class NFe_ICMS {
                 $N23 = $N10->appendChild($dom->createElement('vICMSST',     number_format($this->vICMSST, 2, ".", "")));
                 break;
 
-        } // fim switch
+        } // fim switch CST
 
+		
+	    // Alteracao para atender ao Simples Nacional - NFe2.0 (Osmar 29/12/2011 osmarfilho6@gmail.com)                
+        switch ($this->CSOSN) {
+        	
+        	case '101' :
+                $N10c = $N01->appendChild($dom->createElement('ICMSSN101'));
+                $N11  = $N10c->appendChild($dom->createElement('orig',        $this->orig));
+                $N12a = $N10c->appendChild($dom->createElement('CSOSN',       sprintf("%02d", $this->CSOSN)));
+                $N29  = $N10c->appendChild($dom->createElement('pCredSN',     number_format($this->pCredSN, 2, ".", "")));
+                $N30  = $N10c->appendChild($dom->createElement('vCredICMSSN', number_format($this->vCredICMSSN, 2, ".", "")));
+                break;
+        
+            case '102' :
+            case '103' :
+            case '300' :
+            case '400' :
+                $N10d = $N01->appendChild($dom->createElement('ICMSSN102'));
+                $N11  = $N10d->appendChild($dom->createElement('orig',        $this->orig));
+                $N12a = $N10d->appendChild($dom->createElement('CSOSN',       sprintf("%02d", $this->CSOSN)));
+                break;
+                
+            case '201' :
+                $N10e = $N01->appendChild($dom->createElement('ICMSSN201'));
+                $N11  = $N10e->appendChild($dom->createElement('orig',        $this->orig));
+                $N12a = $N10e->appendChild($dom->createElement('CSOSN',       sprintf("%02d", $this->CSOSN)));
+                $N18  = $N10e->appendChild($dom->createElement('modBCST',     $this->modBCST));
+                $N19  = (isset($this->pMVAST))   ? $N10e->appendChild($dom->createElement('pMVAST',      number_format($this->pMVAST, 2, ".", "")))   : null;
+                $N20  = (isset($this->pRedBCST)) ? $N10e->appendChild($dom->createElement('pRedBCST',    number_format($this->pRedBCST, 2, ".", ""))) : null;
+                $N21  = $N10e->appendChild($dom->createElement('vBCST',       number_format($this->vBCST, 2, ".", "")));
+                $N22  = $N10e->appendChild($dom->createElement('pICMSST',     number_format($this->pICMSST, 2, ".", "")));
+                $N23  = $N10e->appendChild($dom->createElement('vICMSST',     number_format($this->vICMSST, 2, ".", "")));
+                $N29  = $N10e->appendChild($dom->createElement('pCredSN',     number_format($this->pCredSN, 2, ".", "")));
+                $N30  = $N10e->appendChild($dom->createElement('vCredICMSSN', number_format($this->vCredICMSSN, 2, ".", "")));
+                break;
+                
+            case '202' :
+                $N10f = $N01->appendChild($dom->createElement('ICMSSN202'));
+                $N11  = $N10f->appendChild($dom->createElement('orig',        $this->orig));
+                $N12a = $N10f->appendChild($dom->createElement('CSOSN',       sprintf("%02d", $this->CSOSN)));
+                $N18  = $N10f->appendChild($dom->createElement('modBCST',     $this->modBCST));
+                $N19  = (isset($this->pMVAST))   ? $N10f->appendChild($dom->createElement('pMVAST',      number_format($this->pMVAST, 2, ".", "")))   : null;
+                $N20  = (isset($this->pRedBCST)) ? $N10f->appendChild($dom->createElement('pRedBCST',    number_format($this->pRedBCST, 2, ".", ""))) : null;
+                $N21  = $N10f->appendChild($dom->createElement('vBCST',       number_format($this->vBCST, 2, ".", "")));
+                $N22  = $N10f->appendChild($dom->createElement('pICMSST',     number_format($this->pICMSST, 2, ".", "")));
+                $N23  = $N10f->appendChild($dom->createElement('vICMSST',     number_format($this->vICMSST, 2, ".", "")));
+                break;
+                
+            case '500' :
+                $N10g = $N01->appendChild($dom->createElement('ICMSSN500'));
+                $N11  = $N10g->appendChild($dom->createElement('orig',        $this->orig));
+                $N12a = $N10g->appendChild($dom->createElement('CSOSN',       sprintf("%02d", $this->CSOSN)));
+                $N26  = $N10g->appendChild($dom->createElement('vBCSTRet',    number_format($this->vBCSTRet, 2, ".", "")));
+                $N27  = $N10g->appendChild($dom->createElement('vICMSSTRet',  number_format($this->vICMSSTRet, 2, ".", "")));
+                break;
+                
+            case '900' :
+                $N10h = $N01->appendChild($dom->createElement('ICMSSN900'));
+                $N11  = $N10h->appendChild($dom->createElement('orig',        $this->orig));
+                $N12a = $N10h->appendChild($dom->createElement('CSOSN',       sprintf("%02d", $this->CSOSN)));
+                $N13  = $N10h->appendChild($dom->createElement('modBC',       $this->modBC));
+                $N15  = $N10h->appendChild($dom->createElement('vBC',         number_format($this->vBC, 2, ".", "")));
+                $N14  = (isset($this->pRedBC)) ? $N10h->appendChild($dom->createElement('pRedBC',      number_format($this->pRedBC, 2, ".", ""))) : null;
+                $N16  = $N10h->appendChild($dom->createElement('pICMS',       number_format($this->pICMS, 2, ".", "")));
+                $N17  = $N10h->appendChild($dom->createElement('vICMS',       number_format($this->vICMS, 2, ".", "")));
+                $N18  = $N10h->appendChild($dom->createElement('modBCST',     $this->modBCST));
+                $N19  = (isset($this->pMVAST))   ? $N10h->appendChild($dom->createElement('pMVAST',      number_format($this->pMVAST, 2, ".", "")))   : null;
+                $N20  = (isset($this->pRedBCST)) ? $N10h->appendChild($dom->createElement('pRedBCST',    number_format($this->pRedBCST, 2, ".", ""))) : null;
+                $N21  = $N10h->appendChild($dom->createElement('vBCST',       number_format($this->vBCST, 2, ".", "")));
+                $N22  = $N10h->appendChild($dom->createElement('pICMSST',     number_format($this->pICMSST, 2, ".", "")));
+                $N23  = $N10h->appendChild($dom->createElement('vICMSST',     number_format($this->vICMSST, 2, ".", "")));
+                $N29  = $N10h->appendChild($dom->createElement('pCredSN',     number_format($this->pCredSN, 2, ".", "")));
+                $N30  = $N10h->appendChild($dom->createElement('vCredICMSSN', number_format($this->vCredICMSSN, 2, ".", "")));
+                break;
+
+                
+
+        } // fim switch CSOSN
+		
         return $N01;
     }
 
