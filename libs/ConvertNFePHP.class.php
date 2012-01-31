@@ -26,7 +26,7 @@
  *
  * @package     NFePHP
  * @name        ConvertNFePHP
- * @version     2.27
+ * @version     2.28
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2011 &copy; NFePHP
@@ -39,19 +39,20 @@
  *              Alberto  Leal <ees.beto at gmail dot com>
  *              Andre Noel <andrenoel at ubuntu dot com>
  *              Clauber Santos <cload_info at yahoo dot com dot br>
- *		        Crercio <crercio at terra dot com dot br>
+ *		Crercio <crercio at terra dot com dot br>
  *              Diogo Mosela <diego dot caicai at gmail dot com>
- *				Eduardo Gusmão <eduardo dot intrasis at gmail dot com>
+ *		Eduardo Gusmão <eduardo dot intrasis at gmail dot com>
  *              Elton Nagai <eltaum at gmail dot com>
- *				Fabio Ananias Silva <binhoouropreto at gmail dot com>
+ *		Fabio Ananias Silva <binhoouropreto at gmail dot com>
  *              Giovani Paseto <giovaniw2 at gmail dot com>
  *              Giuliano Nascimento <giusoft at hotmail dot com>
  *              Helder Ferreira <helder.mauricicio at gmail dot com>
  *              João Eduardo Silva Corrêa <jscorrea2 at gmail dot com>
  *              Leandro C. Lopez <leandro.castoldi at gmail dot com>
  *              Leandro G. Santana <leandrosantana1 at gmail dot com>
+ *		Marcos Diez <marcos at unitron dot com dot br>
  *              Roberto Spadim  <rspadim at gmail dot com>
- *		        Rodrigo Rysdyk	<rodrigo_rysdyk at hotmail dot com>
+ *		Rodrigo Rysdyk	<rodrigo_rysdyk at hotmail dot com>
  *
  */
 
@@ -98,6 +99,7 @@ class ConvertNFePHP {
      */
     public $tpAmb = '';
 
+
     /**
      * nfetxt2xml
      * Método de conversão das NFe de txt para xml, conforme
@@ -114,12 +116,51 @@ class ConvertNFePHP {
      * @return string xml construido
      */
     function nfetxt2xml($arq) {
-        //verifica se o arquivo existe
         if ( !is_file($arq) ){
             return FALSE;
         }
-        //carregar o conteúdo do arquivo txt em uma string
-        $arquivo = file($arq);
+        $arrayComAsLinhasDoArquivo = file($arq);
+	return $this->nfetxt2xml_array_com_linhas( $arrayComAsLinhasDoArquivo );
+    }//fim nfetxt2xml
+
+    /**
+     * nfetxt2xml_string
+     * Método de conversão das NFe de txt para xml, conforme
+     * especificações do Manual de Importação/Exportação TXT
+     * Notas Fiscais eletrônicas versão 2.0.0 (24/08/2010)
+     * Referente ao modelo de NFe contido na versão 4.0.1-NT2009.006
+     * de Dezembro de 2009 do manual de integração da NFe, incluindo a 
+     * Nota Técnica 2011/002 de março de 2011
+     *
+     * @package NFePHP
+     * @name nfetxt2xml
+     * @version 2.15
+     * @author Marcos Diez 
+     * @param string $arq uma string contento o conteudo de um arquivo txt de nota fiscal
+     * @return string xml construido
+     */
+    function nfetxt2xml_string($contentString) {
+        $arrayComAsLinhasDoArquivo = explode("\n", $contentString);
+	return $this->nfetxt2xml_array_com_linhas( $arrayComAsLinhasDoArquivo );
+    }//fim nfetxt2xml_string
+
+    /**
+     * nfetxt2xml_arrayComLinhas
+     * Método de conversão das NFe de txt para xml, conforme
+     * especificações do Manual de Importação/Exportação TXT
+     * Notas Fiscais eletrônicas versão 2.0.0 (24/08/2010)
+     * Referente ao modelo de NFe contido na versão 4.0.1-NT2009.006
+     * de Dezembro de 2009 do manual de integração da NFe, incluindo a 
+     * Nota Técnica 2011/002 de março de 2011
+     *
+     * @package NFePHP
+     * @name nfetxt2xml
+     * @version 2.15
+     * @param string $arrayComAsLinhasDoArquivo Array de Strings onde cada elemento é uma linha do arquivo
+     * @return string xml construido
+     */
+    function nfetxt2xml_array_com_linhas($arrayComAsLinhasDoArquivo) {
+        $arquivo = $arrayComAsLinhasDoArquivo;
         //cria o objeto DOM para o xml
         $dom = new DOMDocument('1.0', 'UTF-8');
         $dom->formatOutput = true;
