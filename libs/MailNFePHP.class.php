@@ -23,11 +23,11 @@
  *
  * @package   NFePHP
  * @name      MailNFePHP
- * @version   2.22
+ * @version   2.24
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
- * @copyright 2011 &copy; NFePHP
+ * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
- * @author    Roberto L. Machado <roberto dot machado at superig dot com dot br>
+ * @author    Roberto L. Machado <linux dot rlm at gmail dot com>
  *
  *          CONTRIBUIDORES (em ordem alfabetica):
  *
@@ -35,6 +35,8 @@
  *              Elton Nagai <eltaum at gmail dot com>
  * 		Leandro C. Lopez <leandro dot castoldi at gmail dot com>
  *              João Eduardo Silva Corrêa <jscorrea2 at gmail dot com>
+ * 
+ * Esta classe presume que será usada a mesma conta de email para o envio e recebimento das NFe
  */
 //define o caminho base da instalação do sistema
 if (!defined('PATH_ROOT')) {
@@ -67,9 +69,9 @@ class MailNFePHP {
     
     /**
      * __contruct
-     * 
      * Construtor da classe MailNFePHP
-     *  
+     * @package NFePHP
+     * @author    Roberto L. Machado <linux dot rlm at gmail dot com> 
      */
     function __construct($aConfig=''){
         $this->mailERROR='';
@@ -122,6 +124,85 @@ class MailNFePHP {
         }     
     } // end__construct
 
+    
+    /**
+     * enviaMail 
+     * Função de envio de emails da NFe a partir dos endereços de email inclusos no próprio xml
+     *
+     * @package NFePHP
+     * @name    enviaMail
+     * @version 1.00
+     * @author  Roberto L. Machado <linux dot rlm at gmail dot com>
+     * @param   string $filename passar uma string com o caminho completo para o arquivo XML
+     * @return  boolean TRUE sucesso ou FALSE falha
+     */
+    public function enviaMail($filename=''){
+        if(is_file($filename)){
+            $retorno = true;
+            //quebra o path em um array usando o separador / ou \
+            $aFile = explode(DIRECTORY_SEPARATOR,$filename);
+            $nomeXML = $aFile[count($aFile)-1];
+            print_r($aFile).'<BR><BR><BR>';
+            $docXML = file_get_contents($filename);
+            $dom = new DomDocument;
+            $dom->loadXML($docXML);
+            $ide        = $dom->getElementsByTagName("ide")->item(0);
+            $emit       = $dom->getElementsByTagName("emit")->item(0);
+            $dest       = $dom->getElementsByTagName("dest")->item(0);
+            $obsCont    = $dom->getElementsByTagName("obsCont");
+            $ICMSTot    = $dom->getElementsByTagName("ICMSTot")->item(0);
+            $razao      = utf8_decode($dest->getElementsByTagName("xNome")->item(0)->nodeValue);
+            $numero     = str_pad($ide->getElementsByTagName('nNF')->item(0)->nodeValue, 9, "0", STR_PAD_LEFT);
+            $serie      = str_pad($ide->getElementsByTagName('serie')->item(0)->nodeValue, 3, "0", STR_PAD_LEFT);
+            $emitente   = utf8_decode($emit->getElementsByTagName("xNome")->item(0)->nodeValue);
+            $vtotal     = number_format($ICMSTot->getElementsByTagName("vNF")->item(0)->nodeValue, 2, ",", ".");
+            $email = array();
+            //buscar emails
+            $emailaddress = !empty($dest->getElementsByTagName("email")->item(0)->nodeValue) ? utf8_decode($dest->getElementsByTagName("email")->item(0)->nodeValue) : '';
+            if (strtoupper(trim($emailaddress)) == 'N/D' || strtoupper(trim($emailaddress)) == ''){
+                $emailaddress = '';
+            } else {
+                $emailaddress = trim($emailaddress);
+                $emailaddress = str_replace(';',',',$emailaddress);
+                $emailaddress = str_replace(':',',',$emailaddress);
+                $emailaddress = str_replace('/',',',$emailaddress);
+                $email[] = explode(',', $emailaddress);
+            }      
+            if (isset($obsCont)){
+                $i = 0;
+                foreach($obsCont as $obs){
+                    $campo =  $obsCont->item($i)->getAttribute("xCampo");
+                    $xTexto = !empty($obsCont->item($i)->getElementsByTagName("xTexto")->item(0)->nodeValue) ? $obsCont->item($i)->getElementsByTagName("xTexto")->item(0)->nodeValue : '';
+                    if (substr($campo, 0, 5) == 'email' && $xTexto != '') {
+                        $xTexto = str_replace(';',',',$xTexto);
+                        $xTexto = str_replace(':',',',$xTexto);
+                        $xTexto = str_replace('/',',',$xTexto);
+                        $aTexto = explode(',', $xTexto);
+                        foreach ($aTexto as $t){
+                            $email[] = $t;
+                        }    
+                    } //fim if
+                    $i++;
+                } //foreach($obsCont
+            }//fim if (isset($obsCont))
+            $aMail['contato'] = $razao;
+            $aMail['razao'] = $razao;
+            $aMail['numero'] = $numero;
+            $aMail['serie'] = $serie;
+            $aMail['emitente'] = $emitente;
+            $aMail['vtotal'] = $vtotal;
+            //para cada endereço de email encontrado na NFe
+            foreach($email as $mail){
+                $aMail['para'] = $mail;
+                if ( !$this->sendNFe($docXML,'',$nomeXML,'',$aMail,'1') ){
+                    $this->mailERROR .= 'Falha ao enviar para '.$mail.'!! ';
+                    $retorno = false;
+                }
+            } //fim foreach
+        } //fim if(is_file(
+        return $retorno;
+    }//fim enviaMail
+    
     /**
      * sendNFe
      * Função para envio da NF-e por email usando PHPMailer
@@ -129,7 +210,7 @@ class MailNFePHP {
      * @package NFePHP
      * @name sendNFe
      * @version 2.15
-     * @author    Roberto L. Machado <linux.rlm at gmail dot com>
+     * @author    Roberto L. Machado <linux dot rlm at gmail dot com>
      * @param string $docXML arquivo XML, é obrigatório
      * @param string $docPDF DANFE em formato PDF, se não quizer mandar o pdf deixe em branco
      * @param string $nomeXML Nome do arquivo XML, é obrigatório
@@ -231,13 +312,13 @@ class MailNFePHP {
 
     /**
      * sendCanc
-     * Função para envio do Cancelamento ad NF-e por email usando as classes Mail::Pear
+     * Função para envio do Cancelamento ad NF-e por email usando a classe PHPMailer
      *
      * @package NFePHP
      * @name sendCanc
      * @version 1.03
      * @author  João Eduardo Silva Corrêa <jscorrea2 at gmail dot com>
-     * @author  Roberto L. Machado <linux.rlm at gmail dot com>
+     * @author  Roberto L. Machado <linux dot rlm at gmail dot com>
      * @param string $docXML Conteúdo do arquivo XML
      * @param string $nomeXML Nome do arquivo XML
      * @param array $aMail Matriz com as informações necessárias para envio do email
@@ -327,7 +408,7 @@ class MailNFePHP {
      * @package NFePHP
      * @name __sendM
      * @version 1.01
-     * @author    Roberto L. Machado <linux.rlm at gmail dot com>
+     * @author    Roberto L. Machado <linux dot rlm at gmail dot com>
      * @param string $to            endereço de email do destinatário 
      * @param string $contato       Nome do contato - empresa
      * @param string $subject       Assunto
@@ -458,7 +539,7 @@ class MailNFePHP {
      *     baixado e colocado na pasta "recebidas", e o email será movido para
      *     uma subpasta denominada pelo ANOMES da NFe;
      * 2 - caso na caixa postal tenha email sem anexos, ou os anexos não 
-     *     sejam NFe (em xml) o emaill será simplesmente deletado;
+     *     sejam NFe (em xml) o email será simplesmente deletado;
      * 3 - caso na caixa postal tenha email com xml de NFe e não seja possivel 
      *     salvar o xml na pasta do sistema o email não será movido nem deletado    
      *       
@@ -615,7 +696,6 @@ class MailNFePHP {
                     'filename' => '',
                     'attachment' => ''
                 );
-
                 if($structure->parts[$i]->ifdparameters){
                     foreach($structure->parts[$i]->dparameters as $object){
                         if(strtolower($object->attribute) == 'filename'){
@@ -624,7 +704,6 @@ class MailNFePHP {
                         }
                     }//fim foreach
                 }//fim if
-
                 if($structure->parts[$i]->ifparameters){
                     foreach($structure->parts[$i]->parameters as $object){
                         if(strtolower($object->attribute) == 'name'){
@@ -633,7 +712,6 @@ class MailNFePHP {
                         }
                     }//fim foreach
                 }//fim if
-
                 if($structure->disposition == "attachment"){
                     $object = $structure->parameters[$i];
                     if(strtolower($object->attribute) == 'name'){
@@ -642,7 +720,6 @@ class MailNFePHP {
                         $structure->parts[$i] = $structure; //alteração para não ter que mexer nas linhas abaixo.
                     }
                 }//fim if
-                
                 if($attachments[$i]['is_attachment']) {
                     $attachments[$i]['attachment'] = imap_fetchbody($connection, $message_number, $i+1);
                     if($structure->parts[$i]->encoding == 3) { // 3 = BASE64

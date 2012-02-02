@@ -23,10 +23,10 @@
  * 
  * @package   NFePHP
  * @name      MailNFePHPpear
- * @version   2.18
+ * @version   2.24
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license   http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
- * @copyright 2009-2011 &copy; NFePHP
+ * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
  * @author    Roberto L. Machado <roberto.machado@superig.com.br>
  * 
@@ -38,7 +38,11 @@
  *
  * NOTA: Esta classe requer a instalação do pacote pear Mail e suas dependencias
  * para isso instale php-pear e em seguida o comando 
- * pear install --alldeps Mail (testado em Linux Debian e derivados)
+ * pear install --alldeps Mail (testado em Linux Debian e derivados), 
+ * haverão problemas na configuração em ambiente windows, devido a aos caminhos das pastas.
+ * NÃO É RECOMENDADO O USO DESSA CLASSE
+ * 
+ * Esta classe presume que será usada a mesma conta de email para o envio e recebimento das NFe
  */
 //define o caminho base da instalação do sistema
 if (!defined('PATH_ROOT')) {
@@ -50,11 +54,18 @@ require_once('Mail/mime.php');
 class MailNFePHP {
 
     public $mailAuth='1';
-    private $mailFROM='';
-    private $mailHOST='';
-    private $mailUSER='';
-    private $mailPASS='';
+    public $mailFROM='';
+    public $mailHOST='';
+    public $mailUSER='';
+    public $mailPASS='';
     public $mailERROR='';
+    public $mailIMAPhost = '';
+    public $mailIMAPport = '143';
+    public $mailIMAPsecurity = 'tls';
+    public $mailIMAPnocerts = 'novalidate-cert';
+    public $mailIMAPbox = 'INBOX';
+    public $recebidasDir ='';
+    public $CNPJ='';
 
 
     function __construct($aConfig=''){
@@ -65,6 +76,13 @@ class MailNFePHP {
             $this->mailHOST = $aConfig['mailHOST'];
             $this->mailUSER  = $aConfig['mailUSER'];
             $this->mailPASS  = $aConfig['mailPASS'];
+            $this->mailIMAPhost = $aConfig['mailIMAPhost'];
+            $this->mailIMAPport = $aConfig['mailIMAPport'];
+            $this->mailIMAPsecurity = $aConfig['mailIMAPsecurity'];
+            $this->mailIMAPnocerts = $aConfig['mailIMAPnocerts'];
+            $this->mailIMAPbox = $aConfig['mailIMAPbox'];
+            $this->recebidasDir = $aConfig['recebidasDir'];
+            $this->CNPJ = $aConfig['cnpj'];            
         } else {
             if ( is_file(PATH_ROOT.'config/config.php') ){
                 include(PATH_ROOT.'config/config.php');
@@ -73,10 +91,102 @@ class MailNFePHP {
                 $this->mailHOST = $mailHOST;
                 $this->mailUSER  = $mailUSER;
                 $this->mailPASS  = $mailPASS;
+                $this->mailIMAPhost = $mailIMAPhost;
+                $this->mailIMAPport = $mailIMAPport;
+                $this->mailIMAPsecurity = $mailIMAPsecurity;
+                $this->mailIMAPnocerts = $mailIMAPnocerts;
+                $this->mailIMAPbox = $mailIMAPbox;
+                if ($ambiente == 1){
+                    $caminho = '/producao/recebidas';
+                } else {
+                    $caminho = '/homologacao/recebidas';
+                }
+                $this->recebidasDir = "$arquivosDir$caminho";
+                $this->CNPJ = $cnpj;                
             }
         }     
     }
 
+    /**
+     * enviaMail 
+     * Função de envio de emails da NFe a partir dos endereços de email inclusos no próprio xml
+     *
+     * @package NFePHP
+     * @name    enviaMail
+     * @version 1.00
+     * @author  Roberto L. Machado <linux.rlm at gmail dot com>
+     * @param   string $filename passar uma string com o caminho completo para o arquivo XML
+     * @return  boolean TRUE sucesso ou FALSE falha
+     */
+    public function enviaMail($filename=''){
+        if(is_file($filename)){
+            $retorno = true;
+            //quebra o path em um array usando o separador / ou \
+            $aFile = explode(DIRECTORY_SEPARATOR,$filename);
+            $nomeXML = $aFile[count($aFile)-1];
+            print_r($aFile).'<BR><BR><BR>';
+            $docXML = file_get_contents($filename);
+            $dom = new DomDocument;
+            $dom->loadXML($docXML);
+            $ide        = $dom->getElementsByTagName("ide")->item(0);
+            $emit       = $dom->getElementsByTagName("emit")->item(0);
+            $dest       = $dom->getElementsByTagName("dest")->item(0);
+            $obsCont    = $dom->getElementsByTagName("obsCont");
+            $ICMSTot    = $dom->getElementsByTagName("ICMSTot")->item(0);
+            $razao      = utf8_decode($dest->getElementsByTagName("xNome")->item(0)->nodeValue);
+            $numero     = str_pad($ide->getElementsByTagName('nNF')->item(0)->nodeValue, 9, "0", STR_PAD_LEFT);
+            $serie      = str_pad($ide->getElementsByTagName('serie')->item(0)->nodeValue, 3, "0", STR_PAD_LEFT);
+            $emitente   = utf8_decode($emit->getElementsByTagName("xNome")->item(0)->nodeValue);
+            $vtotal     = number_format($ICMSTot->getElementsByTagName("vNF")->item(0)->nodeValue, 2, ",", ".");
+            $email = array();
+            //buscar emails
+            $emailaddress = !empty($dest->getElementsByTagName("email")->item(0)->nodeValue) ? utf8_decode($dest->getElementsByTagName("email")->item(0)->nodeValue) : '';
+            if (strtoupper(trim($emailaddress)) == 'N/D' || strtoupper(trim($emailaddress)) == ''){
+                $emailaddress = '';
+            } else {
+                $emailaddress = trim($emailaddress);
+                $emailaddress = str_replace(';',',',$emailaddress);
+                $emailaddress = str_replace(':',',',$emailaddress);
+                $emailaddress = str_replace('/',',',$emailaddress);
+                $email[] = explode(',', $emailaddress);
+            }      
+            if (isset($obsCont)){
+                $i = 0;
+                foreach($obsCont as $obs){
+                    $campo =  $obsCont->item($i)->getAttribute("xCampo");
+                    $xTexto = !empty($obsCont->item($i)->getElementsByTagName("xTexto")->item(0)->nodeValue) ? $obsCont->item($i)->getElementsByTagName("xTexto")->item(0)->nodeValue : '';
+                    if (substr($campo, 0, 5) == 'email' && $xTexto != '') {
+                        $xTexto = str_replace(';',',',$xTexto);
+                        $xTexto = str_replace(':',',',$xTexto);
+                        $xTexto = str_replace('/',',',$xTexto);
+                        $aTexto = explode(',', $xTexto);
+                        foreach ($aTexto as $t){
+                            $email[] = $t;
+                        }    
+                    }
+                    $i++;
+                } //foreach($obsCont
+            }//fim if (isset($obsCont))
+            $aMail['contato'] = $razao;
+            $aMail['razao'] = $razao;
+            $aMail['numero'] = $numero;
+            $aMail['serie'] = $serie;
+            $aMail['emitente'] = $emitente;
+            $aMail['vtotal'] = $vtotal;
+            //para cada endereço de email encontrado na NFe
+            foreach($email as $mail){
+                $aMail['para'] = $mail;
+                if ( !$this->sendNFe($docXML,'',$nomeXML,'',$aMail,'1') ){
+                    $this->mailERROR .= 'Falha ao enviar para '.$mail.'!! ';
+                    $retorno = false;
+                }
+            } //fim foreach
+            
+        } //fim if(is_file(
+        return $retorno;
+    }//fim enviaMail
+    
+   
     /**
      * sendNFe
      * Função para envio da NF-e por email usando as classes Mail::Pear
@@ -325,6 +435,216 @@ class MailNFePHP {
         }
         return $isValid;
     } //fim função validEmailAdd
-    
+
+    /**
+     * buscaEmail
+     * Método que recupera o XML da NFe do email e o coloca na pasta "recebidas"
+     * para posterior validação e aceitação via registro de evento na SEFAZ
+     * 1 - caso na caixa postal tenha email com xml de NFe, esse anexo será 
+     *     baixado e colocado na pasta "recebidas", e o email será movido para
+     *     uma subpasta denominada pelo ANOMES da NFe;
+     * 2 - caso na caixa postal tenha email sem anexos, ou os anexos não 
+     *     sejam NFe (em xml) o email será simplesmente deletado;
+     * 3 - caso na caixa postal tenha email com xml de NFe e não seja possivel 
+     *     salvar o xml na pasta do sistema o email não será movido nem deletado    
+     *       
+     * @package NFePHP
+     * @name buscaEmail
+     * @version 1.10
+     * @author  Roberto L. Machado <linux dot rlm at gmail dot com>
+     * @author  Leandro C. Lopez <leandro dot castoldi at gmail dot com> 
+     * @return boolean True se verdadeiro ou false caso haja algum erro 
+     */
+    public function buscaEmail(){
+        //abre a conexão IMAP
+        $porta = !empty($this->mailIMAPport) ? ':'.$this->mailIMAPport : ':143';
+        $security = !empty($this->mailIMAPsecurity) ? '/'.$this->mailIMAPsecurity : '';
+        $nocerts = !empty($this->mailIMAPnocerts) ? '/'.$this->mailIMAPnocerts : '';
+        $stream = "{".$this->mailIMAPhost.$porta.$security.$nocerts."}".$this->mailIMAPbox;
+        $objMail = imap_open($stream, $this->mailUSER, $this->mailPASS);
+        if($objMail === false){
+            $this->mailERROR = "Falha na conexão IMAP \n";
+            break;
+        } else {
+            //obter a lista de pastas existentes na caixa postal
+            $list =  imap_list($objMail, '{'.$this->mailIMAPhost.'}', "*");
+            if (is_array($list)) {
+                foreach ($list as $val) {
+                    $pasta = str_replace(array('{'.$this->mailIMAPhost.'}'.$this->mailIMAPbox.'.','{'.$this->mailIMAPhost.'}'.$this->mailIMAPbox), "", imap_utf7_decode($val));
+                    if ($pasta != '') {
+                        $folders[] = $pasta;
+                    }
+                }
+            } else {
+                $this->mailERROR = "Falha na listagem de pastas imap_list : " . imap_last_error() . "\n";
+            }
+            sort($folders);
+            //obter o total de mensagens na caixa de entrada 
+            $qtde = imap_num_msg($objMail);
+            for($i = 1; $i <= $qtde; $i++){
+                //obter o identificador de cada mensagem
+                $uid = imap_uid($objMail, $i);
+                //obter o resumo da mensagem
+                $result = imap_fetch_overview($objMail, $uid, FT_UID);
+                //pegar o numero da mensagem na caixa postal para buscar anexos
+                $msgno = $result[0]->msgno;
+                //marca sem xml em anexo
+                $flagXML = 0;
+                //marca xml como não salvo
+                $flagNFeSalva = 0;
+                //buscar os anexos da mensagem
+                $anexos = $this->__getAnexosXML($objMail, $msgno);
+                for($j = 0; $j < count($anexos); $j++){
+                    $dom = new DOMDocument(); //cria objeto DOM
+                    $dom->formatOutput = false;
+                    $dom->preserveWhiteSpace = false;
+                    $dom->loadXML($anexos[$j], LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
+                    $NFe = $dom->getElementsByTagName("NFe")->item(0);
+                    if(!is_null($NFe)){
+                        //é uma NFe 
+                        $infNFe = $dom->getElementsByTagName("infNFe")->item(0);
+                        $idNFe = str_replace('NFe', '', $infNFe->getAttribute("Id"));
+                        $protNFe = $dom->getElementsByTagName("protNFe")->item(0);
+                        $dEmi = $dom->getElementsByTagName("dEmi")->item(0)->nodeValue;
+                        if (isset($dEmi)){
+                            $anomes = substr(str_replace('-', '', $dEmi),0,6);
+                        }
+                        //verificar se é para a empresa
+                        $dest = $dom->getElementsByTagName("dest")->item(0);
+                        $destCNPJ = $dest->getElementsByTagName("CNPJ")->item(0)->nodeValue;
+                        if($destCNPJ == $CNPJ ){
+                            //sim essa NFe é endereçada a nós
+                            $flagXML = 1;
+                            $nfeXML = $dom->saveXML();
+                            $xmlname = $recebidasDir.'/'.$idNFe.'-nfe.xml';
+                            //salva o xml na pasta correta
+                            if (!file_put_contents($xmlname, $nfeXML)){
+                                $this->mailERROR = date("d-m-Y H:i:s").' - NFe - Falha ao salvar o arquivo na pasta. - '.utf8_decode($result[0]->from)."\n";
+                            } else {
+                                chmod($xmlname, 0755);
+                                $flagNFeSalva = 1;
+                            }    
+                        } //fim if cnpj
+                    }//fim if NFe
+                }//fim for enexos
+                if ($flagNFeSalva == 1){
+                    //a mensagem continha uma NFe válida e foi salva 
+                    //então mover o email para uma outra pasta $anomes
+                    //verificar se já existe a pasta $anomes
+                    $flagFolder = 0;
+                    foreach($folders as $f){
+                        if ($f == $anomes ){
+                         $flagFolder = 1;
+                        }
+                    }
+                    if (!$flagFolder){
+                        //criar uma pasta $anomes na caixa postal
+                        $stream = "{".$this->mailIMAPhost."}".$this->mailIMAPbox.'.'.$anomes;
+                        if (imap_createmailbox($objMail,imap_utf7_encode($stream))){
+                            $flagFolder = 1;
+                            $folders[]=$anomes;
+                            sort($folders);
+                        }        
+                    } else {
+                        //ou a pasta já existia ou foi agora criada
+                        //para permitir mover a mensagem para esta pasta
+                        if (imap_mail_move($objMail, "$msgno:$msgno","$this->mailIMAPbox.$anomes")){
+                            //imap_delete($objMail, $result[0]->uid, FT_UID);
+                            $this->mailERROR .= 'A mensagem '.$result[0]->msgno . ' enviada por ' . $result[0]->from . ' em ' .$result[0]->date . ' Assunto ' . $result[0]->subject . ". Foi movida para a caixa postal [ $anomes ] e o anexo foi salvo na pasta recebidas \n";  
+                        }    
+                    }
+                } else {
+                    if ($flagXML == 1){
+                        //a mensagem continha um xml de NFe válido mas falhou ao ser salva no diretorio
+                        //então manter a mensagem onde está
+                        $this->mailERROR .= 'A mensagem '.$result[0]->msgno . ' enviada por ' . $result[0]->from . ' em ' .$result[0]->date . ' Assunto ' . $result[0]->subject . ". Foi mantida na caixa postal por falha na gravação do xml \n";  
+                    } else {
+                        //a mensagem não continha um xml de NFe válido
+                        //então marcar para deletar a mensagem da caixa postal 
+                        if(imap_delete($objMail, $uid, FT_UID)){                    
+                            $this->mailERROR .= 'A mensagem '.$result[0]->msgno . ' enviada por ' . $result[0]->from . ' em ' .$result[0]->date . ' Assunto ' . $result[0]->subject . ". Foi apagada da caixa postal \n";  
+                        }    
+                    }
+                }//fim if
+            }//fim for mensagens
+            //apaga todas as mensagens marcadas para deleção
+            imap_expunge($objMail);
+            //fecha a conexão IMAP
+            imap_close($objMail);
+        }//fim if 
+     }//fim buscaMail    
+
+    /**
+     * __getAnexosXML
+     * Método que extrai os anexos xml do email e os retorna para posterior
+     * processamento e arquivo
+     * 
+     * @package NFePHP
+     * @name __getAnexosXML
+     * @version 1.11
+     * @author  Leandro C. Lopez <leandro dot castoldi at gmail dot com>
+     * @author  Roberto L. Machado <linux dot rlm at gmail dot com>
+     * @return mixed vazio ou array 
+     */
+    private function __getAnexosXML($connection, $message_number) {
+        $attachments = array();
+        $structure = imap_fetchstructure($connection, $message_number);
+        if(isset($structure->parts) && count($structure->parts || $structure->disposition == "attachment")){
+            if($structure->disposition == "attachment") {
+                $n = count($structure->parameters);
+            } else {
+                $n = count($structure->parts);
+            }        
+            for($i = 0; $i < $n; $i++){
+                $attachments[$i] = array(
+                    'is_attachment' => false,
+                    'filename' => '',
+                    'attachment' => ''
+                );
+                if($structure->parts[$i]->ifdparameters){
+                    foreach($structure->parts[$i]->dparameters as $object){
+                        if(strtolower($object->attribute) == 'filename'){
+                            $attachments[$i]['is_attachment'] = true;
+                            $attachments[$i]['filename'] = $object->value;
+                        }
+                    }//fim foreach
+                }//fim if
+                if($structure->parts[$i]->ifparameters){
+                    foreach($structure->parts[$i]->parameters as $object){
+                        if(strtolower($object->attribute) == 'name'){
+                            $attachments[$i]['is_attachment'] = true;
+                            $attachments[$i]['filename'] = $object->value;
+                        }
+                    }//fim foreach
+                }//fim if
+                if($structure->disposition == "attachment"){
+                    $object = $structure->parameters[$i];
+                    if(strtolower($object->attribute) == 'name'){
+                        $attachments[$i]['is_attachment'] = true;
+                        $attachments[$i]['filename'] = $object->value;
+                        $structure->parts[$i] = $structure; //alteração para não ter que mexer nas linhas abaixo.
+                    }
+                }//fim if
+                if($attachments[$i]['is_attachment']) {
+                    $attachments[$i]['attachment'] = imap_fetchbody($connection, $message_number, $i+1);
+                    if($structure->parts[$i]->encoding == 3) { // 3 = BASE64
+                        $attachments[$i]['attachment'] = base64_decode($attachments[$i]['attachment']);
+                    } elseif($structure->parts[$i]->encoding == 4){ // 4 = QUOTED-PRINTABLE
+                        $attachments[$i]['attachment'] = quoted_printable_decode($attachments[$i]['attachment']);
+                    }//fim if
+                }//fim if    
+            }//fim for
+        }//fim if
+        $j = 0;
+        for($i = 0; $i < $n; $i++){
+            //se o anexo existir e o arquivo tiver no final do seu nome .xml
+            if ($attachments[$i]['is_attachment'] && strtolower(substr($attachments[$i]['filename'], -4)) == '.xml') {
+                $anexos[$j] = $attachments[$i]['attachment'];
+                $j++;
+            }
+        }
+        return $anexos;
+    }//fim __getAnexosXML
+   
 }//fim classe MailNFePHP
 ?>
