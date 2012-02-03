@@ -26,7 +26,7 @@
  *
  * @package     NFePHP
  * @name        ConvertNFePHP
- * @version     2.28
+ * @version     2.30
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2011 &copy; NFePHP
@@ -661,11 +661,23 @@ class ConvertNFePHP {
                     $prod->appendChild($vProd);
                     $cEANTrib = $dom->createElement("cEANTrib", $dados[11]);
                     $prod->appendChild($cEANTrib);
-                    $uTrib = $dom->createElement("uTrib", $dados[12]);
+                    if(!empty($dados[12])) {
+                        $uTrib = $dom->createElement("uTrib", $dados[12]);
+                    } else {
+                        $uTrib = $dom->createElement("uTrib", $dados[7]);
+                    } 
                     $prod->appendChild($uTrib);
-                    $qTrib = $dom->createElement("qTrib", $dados[13]);
+                    if(!empty($dados[13])) {
+                        $qTrib = $dom->createElement("qTrib", $dados[13]);
+                    } else {
+                        $qTrib = $dom->createElement("qTrib", $dados[8]);
+                    }
                     $prod->appendChild($qTrib);
-                    $vUnTrib = $dom->createElement("vUnTrib", $dados[14]);
+                    if(!empty($dados[14])) {
+                        $vUnTrib = $dom->createElement("vUnTrib", $dados[14]);
+                    } else {
+                        $vUnTrib = $dom->createElement("vUnTrib", $dados[9]);
+                    }
                     $prod->appendChild($vUnTrib);
                     if(!empty($dados[15])) {
                         $vFrete = $dom->createElement("vFrete", $dados[15]);
@@ -729,7 +741,11 @@ class ConvertNFePHP {
                         $cExportador = $dom->createElement("cExportador", $dados[6]);
                         $DI->appendChild($cExportador);
                     }
-                    $prod->appendChild($DI);
+                    if (!isset($xPed)){
+                        $prod->appendChild($DI);
+                    } else {
+                        $prod->insertBefore($prod->appendChild($DI),$xPed);
+                    }
                     break;
 
                 case "I25": //Adições [DI]
