@@ -3539,17 +3539,17 @@ class ToolsNFePHP {
  * Remove algumas tags para adequar a comunicação
  * ao padrão "esquisito" utilizado pelas SEFAZ
  *
- * @version 1.3
+ * @version 1.4
  * @package NFePHP
  * @author  Roberto L. Machado <linux.rlm at gmail dot com>
  *
  */
 class NFeSOAP2Client extends SoapClient {
-    function __doRequest($request, $location, $action, $version) {
+    function __doRequest($request, $location, $action, $version,$one_way = 0) {
         $request = str_replace(':ns1', '', $request);
         $request = str_replace('ns1:', '', $request);
         $request = str_replace("\n", '', $request);
         $request = str_replace("\r", '', $request);
-        return parent::__doRequest($request, $location, $action, $version,$one_way = 0);
+        return parent::__doRequest($request, $location, $action, $version);
     }
 } //fim NFeSOAP2Client
