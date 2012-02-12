@@ -26,33 +26,33 @@
  *
  * @package     NFePHP
  * @name        ConvertNFePHP
- * @version     2.30
+ * @version     2.31
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2011 &copy; NFePHP
  * @link        http://www.nfephp.org/
  * @author      Roberto L. Machado <linux.rlm at gmail dot com>
- * @author      Daniel Batista Lemes <dlemes at gmail dot com >
+ * @author      Daniel Batista Lemes <dlemes at gmail dot com>
  *
  *
  *        CONTRIBUIDORES (em ordem alfabetica):
  *              Alberto  Leal <ees.beto at gmail dot com>
  *              Andre Noel <andrenoel at ubuntu dot com>
  *              Clauber Santos <cload_info at yahoo dot com dot br>
- *		Crercio <crercio at terra dot com dot br>
+ *              Crercio <crercio at terra dot com dot br>
  *              Diogo Mosela <diego dot caicai at gmail dot com>
- *		Eduardo Gusmão <eduardo dot intrasis at gmail dot com>
+ *              Eduardo Gusmão <eduardo dot intrasis at gmail dot com>
  *              Elton Nagai <eltaum at gmail dot com>
- *		Fabio Ananias Silva <binhoouropreto at gmail dot com>
+ *              Fabio Ananias Silva <binhoouropreto at gmail dot com>
  *              Giovani Paseto <giovaniw2 at gmail dot com>
  *              Giuliano Nascimento <giusoft at hotmail dot com>
  *              Helder Ferreira <helder.mauricicio at gmail dot com>
  *              João Eduardo Silva Corrêa <jscorrea2 at gmail dot com>
  *              Leandro C. Lopez <leandro.castoldi at gmail dot com>
  *              Leandro G. Santana <leandrosantana1 at gmail dot com>
- *		Marcos Diez <marcos at unitron dot com dot br>
- *              Roberto Spadim  <rspadim at gmail dot com>
- *		Rodrigo Rysdyk	<rodrigo_rysdyk at hotmail dot com>
+ *              Marcos Diez <marcos at unitron dot com dot br>
+ *              Roberto Spadim <rspadim at gmail dot com>
+ *              Rodrigo Rysdyk <rodrigo_rysdyk at hotmail dot com>
  *
  */
 
@@ -115,12 +115,12 @@ class ConvertNFePHP {
      * @param string $arq Path para o arquivo txt
      * @return string xml construido
      */
-    function nfetxt2xml($arq) {
+    public function nfetxt2xml($arq) {
         if ( !is_file($arq) ){
             return FALSE;
         }
         $arrayComAsLinhasDoArquivo = file($arq);
-	return $this->nfetxt2xml_array_com_linhas( $arrayComAsLinhasDoArquivo );
+        return $this->nfetxt2xml_array_com_linhas( $arrayComAsLinhasDoArquivo );
     }//fim nfetxt2xml
 
     /**
@@ -139,11 +139,74 @@ class ConvertNFePHP {
      * @param string $arq uma string contento o conteudo de um arquivo txt de nota fiscal
      * @return string xml construido
      */
-    function nfetxt2xml_string($contentString) {
+    public function nfetxt2xml_string($contentString) {
         $arrayComAsLinhasDoArquivo = explode("\n", $contentString);
-	return $this->nfetxt2xml_array_com_linhas( $arrayComAsLinhasDoArquivo );
+        return $this->nfetxt2xml_array_com_linhas( $arrayComAsLinhasDoArquivo );
     }//fim nfetxt2xml_string
-
+    
+    /**
+     *__calculaDV
+     * Função para o calculo o digito verificador da chave da NFe
+     * @param string $chave43
+     * @return string 
+     */
+    private function __calculaDV($chave43) {
+        $multiplicadores = array(2,3,4,5,6,7,8,9);
+        $i = 42;
+        $soma_ponderada=0;
+        while ($i >= 0) {
+            for ($m=0; $m<count($multiplicadores) && $i>=0; $m++) {
+                $soma_ponderada+= $chave43[$i] * $multiplicadores[$m];
+                $i--;
+            }
+        }
+        $resto = $soma_ponderada % 11;
+        if ($resto == '0' || $resto == '1') {
+            $cDV = 0;
+        } else {
+            $cDV = 11 - $resto;
+        }
+      return $cDV;
+    } //fim __calculaDV
+    
+    /**
+     * __calculaChave
+     * 
+     * @param object $dom 
+     */
+    private function __montaChaveXML($dom){
+        $ide    =  $dom->getElementsByTagName("ide")->item(0);
+        $emit   =  $dom->getElementsByTagName("emit")->item(0);
+        $cUF    = $ide->getElementsByTagName('cUF')->item(0)->nodeValue;
+        $dEmi   = $ide->getElementsByTagName('dEmi')->item(0)->nodeValue;
+        $CNPJ   = $emit->getElementsByTagName('CNPJ')->item(0)->nodeValue;
+        $mod    = $ide->getElementsByTagName('mod')->item(0)->nodeValue;
+        $serie  = $ide->getElementsByTagName('serie')->item(0)->nodeValue;
+        $nNF    = $ide->getElementsByTagName('nNF')->item(0)->nodeValue;
+        $tpEmis = $ide->getElementsByTagName('tpEmis')->item(0)->nodeValue;
+        $cNF    = $ide->getElementsByTagName('cNF')->item(0)->nodeValue;
+        if( strlen($cNF) != 8 ){
+            $cNF = $ide->getElementsByTagName('cNF')->item(0)->nodeValue = rand( 10000001 , 99999999 ); 
+        }        
+        $tempData =  $dt = explode("-", $dEmi);
+        $forma = "%02d%02d%02d%s%02d%03d%09d%01d%08d";//%01d";
+        $tempChave = sprintf($forma , 
+            $cUF ,
+            $tempData[0] - 2000 ,
+            $tempData[1] ,
+            $CNPJ ,
+            $mod ,
+            $serie ,
+            $nNF ,
+            $tpEmis ,
+            $cNF);
+            
+        $cDV    = $ide->getElementsByTagName('cDV')->item(0)->nodeValue  = $this->__calculaDV($tempChave);
+        $chave  = $tempChave .= $cDV;
+        $infNFe =  $dom->getElementsByTagName("infNFe")->item(0);
+        $infNFe->setAttribute("Id", "NFe" .  $chave);
+    } //fim __calculaChave
+    
     /**
      * nfetxt2xml_arrayComLinhas
      * Método de conversão das NFe de txt para xml, conforme
@@ -243,6 +306,9 @@ class ConvertNFePHP {
                     $ide->appendChild($finNFe);
                     $procEmi = $dom->createElement("procEmi", $dados[18]);
                     $ide->appendChild($procEmi);
+                    if( empty( $dados[19] ) ){
+                        $dados[19]="NfePHP";
+                    }
                     $verProc = $dom->createElement("verProc", $dados[19]);
                     $ide->appendChild($verProc);
                     if(!empty($dados[20])) {
@@ -662,19 +728,19 @@ class ConvertNFePHP {
                     $cEANTrib = $dom->createElement("cEANTrib", $dados[11]);
                     $prod->appendChild($cEANTrib);
                     if(!empty($dados[12])) {
-                        $uTrib = $dom->createElement("uTrib", $dados[12]);
+                    $uTrib = $dom->createElement("uTrib", $dados[12]);
                     } else {
                         $uTrib = $dom->createElement("uTrib", $dados[7]);
                     } 
                     $prod->appendChild($uTrib);
                     if(!empty($dados[13])) {
-                        $qTrib = $dom->createElement("qTrib", $dados[13]);
+                    $qTrib = $dom->createElement("qTrib", $dados[13]);
                     } else {
                         $qTrib = $dom->createElement("qTrib", $dados[8]);
                     }
                     $prod->appendChild($qTrib);
                     if(!empty($dados[14])) {
-                        $vUnTrib = $dom->createElement("vUnTrib", $dados[14]);
+                    $vUnTrib = $dom->createElement("vUnTrib", $dados[14]);
                     } else {
                         $vUnTrib = $dom->createElement("vUnTrib", $dados[9]);
                     }
@@ -698,14 +764,19 @@ class ConvertNFePHP {
                     if(!empty($dados[19]) || $dados[19] == 0) {
                         $indTot = $dom->createElement("indTot", $dados[19]);
                         $prod->appendChild($indTot);
+                    } else {
+                        $indTot = $dom->createElement("indTot", '0');
+                        $prod->appendChild($indTot);
                     }
-                    if(!empty($dados[20])) {
-                        $xPed = $dom->createElement("xPed", $dados[20]);
-                        $prod->appendChild($xPed);
-                    }
-                    if(!empty($dados[21])) {
-                        $nItemPed = $dom->createElement("nItemPed", $dados[21]);
-                        $prod->appendChild($nItemPed);
+                    if( sizeof($dados) > 19 ){
+                        if(!empty($dados[20])) {
+                            $xPed = $dom->createElement("xPed", $dados[20]);
+                            $prod->appendChild($xPed);
+                        }
+                        if(!empty($dados[21])) {
+                            $nItemPed = $dom->createElement("nItemPed", $dados[21]);
+                            $prod->appendChild($nItemPed);
+                        }
                     }
                     if (!isset($infAdProd)){
                         $det->appendChild($prod);
@@ -742,7 +813,7 @@ class ConvertNFePHP {
                         $DI->appendChild($cExportador);
                     }
                     if (!isset($xPed)){
-                        $prod->appendChild($DI);
+                    $prod->appendChild($DI);
                     } else {
                         $prod->insertBefore($prod->appendChild($DI),$xPed);
                     }
@@ -1500,7 +1571,7 @@ class ConvertNFePHP {
                         break;
 
                     case "Q05": //Grupo de PIS Outras Operações 0 ou 1 [PIS]
-			//Q05|CST|vPIS|
+                        //Q05|CST|vPIS|
                         $PISOutr = $dom->createElement("PISOutr");
                         $CST = $dom->createElement("CST", $dados[1]);
                         $PISOutr->appendChild($CST);
@@ -1511,7 +1582,7 @@ class ConvertNFePHP {
 
                     case "Q07": //Valor da Base de Cálculo do PIS e Alíquota do PIS (em percentual) 0 pu 1 [PISOutr]
                         // todos esses campos sao obrigatorios
-			//Q07|vBC|pPIS|
+                        //Q07|vBC|pPIS|
                         $vBC = $dom->createElement("vBC", $dados[1]);
                         $PISOutr->insertBefore($vBC,$vPIS);
                         $pPIS = $dom->createElement("pPIS", $dados[2]);
@@ -1520,7 +1591,7 @@ class ConvertNFePHP {
 
                     case "Q10": //Quantidade Vendida e Alíquota do PIS (em reais) 0 ou 1 [PISOutr]
                         // todos esses campos sao obrigatorios
-			//Q10|qBCProd|vAliqProd|
+                        //Q10|qBCProd|vAliqProd|
                         $qBCProd = $dom->createElement("qBCProd", $dados[1]);
                         $PISOutr->insertBefore($qBCProd,$vPIS);
                         $vAliqProd = $dom->createElement("vAliqProd", $dados[2]);
@@ -1593,7 +1664,7 @@ class ConvertNFePHP {
                         break;
 
                     case "S05"://Grupo de COFINS Outras Operações 0 ou 1 [COFINS]
-			//S05|CST|vCOFINS|
+                        //S05|CST|vCOFINS|
                         $COFINSOutr = $dom->createElement("COFINSOutr");
                         $CST = $dom->createElement("CST", $dados[1]);
                         $COFINSOutr->appendChild($CST);
@@ -1613,7 +1684,7 @@ class ConvertNFePHP {
                     case "S09": //Quantidade Vendida e Alíquota da COFINS (em reais) 0 ou 1 [COFINSOutr]
                         // todos esses campos sao obrigatorios
                         $qBCProd = $dom->createElement("qBCProd", $dados[1]);
-			$COFINSOutr->insertBefore($qBCProd,$vCOFINS);
+                        $COFINSOutr->insertBefore($qBCProd,$vCOFINS);
                         $vAliqProd = $dom->createElement("vAliqProd", $dados[2]);
                         $COFINSOutr->insertBefore($vAliqProd,$vCOFINS);
                         break;
@@ -2065,6 +2136,7 @@ class ConvertNFePHP {
         if(!empty($infNFe)){
             $NFe->appendChild($infNFe);
             $dom->appendChild($NFe);
+            $this->__montaChaveXML($dom);
             $xml = $dom->saveXML();
             $this->xml = $dom->saveXML();
             $xml = str_replace('<?xml version="1.0" encoding="UTF-8  standalone="no"?>','<?xml version="1.0" encoding="UTF-8"?>',$xml);
