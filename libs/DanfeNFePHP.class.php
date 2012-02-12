@@ -23,7 +23,7 @@
  *
  * @package     NFePHP
  * @name        DanfeNFePHP.class.php
- * @version     2.11
+ * @version     2.12
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2011 &copy; NFePHP
@@ -80,7 +80,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
     protected $destino = 'I'; //destivo do arquivo pdf I-borwser, S-retorna o arquivo, D-força download, F-salva em arquivo local
     protected $pdfDir=''; //diretorio para salvar o pdf com a opção de destino = F
     protected $fontePadrao='Times'; //Nome da Fonte para gerar o DANFE
-    protected $version = '2.11';
+    protected $version = '2.12';
     protected $textoAdic = '';
     protected $wAdic = 0;
     protected $wPrint; //largura imprimivel
@@ -408,7 +408,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
         $i = 0;
         $numlinhas = 0;
         $hUsado = $hCabecItens;
-		// $w2 = round($this->wPrint*0.356,0)-1;
+	// $w2 = round($this->wPrint*0.356,0)-1;
         $w2 = round($this->wPrint*0.31,0);
         while ($i < $this->det->length){
             $texto = $this->__descricaoProduto( $this->det->item($i) ) ;
@@ -797,7 +797,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
         $texto = 'INSCRIÇÃO ESTADUAL';
         $aFont = array('font'=>$this->fontePadrao,'size'=>6,'style'=>'');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',1,'');
-        $texto = $this->emit->getElementsByTagName("IE")->item(0)->nodeValue;
+        $texto = $this->__simpleGetValue( $this->emit , "IE");
         $aFont = array('font'=>$this->fontePadrao,'size'=>10,'style'=>'B');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'B','C',0,'');
         //INSCRIÇÃO ESTADUAL DO SUBST. TRIBUT.
@@ -1777,9 +1777,9 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
                 $x += $w3;
                 //CST
                 if ( isset($ICMS) ){
-                    $origem = $ICMS->getElementsByTagName("orig")->item(0)->nodeValue;
-                    $cst = !empty($ICMS->getElementsByTagName("CST")->item(0)->nodeValue) ? $ICMS->getElementsByTagName("CST")->item(0)->nodeValue : '';
-                    $csosn = !empty($ICMS->getElementsByTagName("CSOSN")->item(0)->nodeValue) ? $ICMS->getElementsByTagName("CSOSN")->item(0)->nodeValue : '';
+                    $origem =  $this->__simpleGetValue( $ICMS , "orig" );
+                    $cst =  $this->__simpleGetValue( $ICMS , "CST" );
+                    $csosn =  $this->__simpleGetValue( $ICMS , "CSOSN" );                    
                     $texto = $origem.$cst.$csosn;
                     $this->__textBox($x,$y,$w4,$h,$texto,$aFont,'T','C',0,'');
                 }
@@ -1940,8 +1940,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
      * @param number $h altura do campo
      * @return number Posição vertical final
      */
-    protected function __dadosAdicionaisDANFE($x,$y,$pag,$h){
-        $oldX = $x;
+    protected function __dadosAdicionaisDANFE($x,$y,$h){
         //##################################################################################
         //DADOS ADICIONAIS
         $texto = "DADOS ADICIONAIS";
