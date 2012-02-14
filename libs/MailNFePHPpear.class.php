@@ -23,7 +23,7 @@
  * 
  * @package   NFePHP
  * @name      MailNFePHPpear
- * @version   2.24
+ * @version   2.25
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license   http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright 2009-2012 &copy; NFePHP
@@ -34,6 +34,7 @@
  *              Carlos Eduardo Pacheco <eduardo at onlyone dot com dot br>
  *              João Eduardo Silva Corrêa <jscorrea2 at gmail dot com>
  *              Leandro C. Lopez <leandro dot castoldi at gmail dot com>
+ *              Rodrigo W Cardoso <rodrigogepem at gmail dot com>
  * 
  *
  * NOTA: Esta classe requer a instalação do pacote pear Mail e suas dependencias
@@ -643,6 +644,48 @@ class MailNFePHP {
                 $j++;
             }
         }
+	/*
+         Existiam outros tipos de anexo que não conseguiam ser lidos,
+	 Anexos interiores de uma mensagem com conteudo escrito,
+	 Seus anexos ficavam escondidos atrás de parts->parts->parts,
+	 Seus conteudos dentro do fetchbody se escondiam em subpartes da mensagem,
+	 Sendo assim, caso o sistema não encontre nenhum anexos ele checa se os anexos 
+         estão nessa situação.
+         Rodrigo W Cardoso <rodrigogepem at gmail dot com>  
+	*/
+	if (empty($anexos[0])) {
+            $a = 1;
+            $k = 1;
+            foreach($structure->parts as $part1) {
+                foreach($part1->parts as $part2) {
+                    $z = 1;
+                    foreach($part2->parts as $part3) {
+                        foreach($part3->parameters as $object) {
+                            if(((strtolower($object->attribute)) == 'name') || ((strtolower($object->attribute)) == 'filename')) {
+                                $attachments[$k]['is_attachment'] = true;
+                                $attachments[$k]['filename'] = $object->value;
+                                $attachments[$k]['parts'] = $a;
+                                $attachments[$k]['encoding'] = $part3->encoding;
+                                $anexo = ($a).'.'.($z+1);
+                                $attachments[$k]['attachment'] = imap_fetchbody($connection, $message_number, $anexo);
+                                if($attachments[$k]['encoding'] == 3) { // 3 = BASE64
+                                    $attachments[$k]['attachment'] = base64_decode($attachments[$k]['attachment']);
+                                } elseif($attachments[$k]['encoding'] == 4){ // 4 = QUOTED-PRINTABLE
+                                    $attachments[$k]['attachment'] = quoted_printable_decode($attachments[$k]['attachment']);
+                                }//fim if
+                                if ($attachments[$k]['is_attachment'] && strtolower(substr($attachments[$k]['filename'], -4)) == '.xml') {
+                                    $anexos[$j] = $attachments[$k]['attachment'];
+                                    $j++;
+                                }//fim if attachments	
+                                $z++;
+                                $k++;
+                            }//fim if attribute
+			}//fim foreach parameters
+                    }//fim foreach part3
+                }//fim foreach part2
+                $a++;
+            }//fim foreach part1
+        }//fim if anexos empty
         return $anexos;
     }//fim __getAnexosXML
    
