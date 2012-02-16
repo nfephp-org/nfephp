@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   2.80
+ * @version   2.81
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2011 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -2744,7 +2744,7 @@ class ToolsNFePHP {
      * verifyNFe
      * Verifica a validade da NFe recebida de terceiros
      *
-     * @version 1.03
+     * @version 1.04
      * @package NFePHP
      * @author Roberto L. Machado <linux dot rlm at gmail dot com>
      * @param string $file Path completo para o arquivo xml a ser verificado
@@ -2800,6 +2800,7 @@ class ToolsNFePHP {
                         } else {
                                 $this->errStatus = true;
                                 $this->errMsg = "A NFe enviada não contêm o protocolo de aceitação !!";
+                                return false;
                         }
                         //verifica o digest
                         if ($digestSefaz != $digest){
