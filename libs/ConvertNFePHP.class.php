@@ -203,6 +203,7 @@ class ConvertNFePHP {
             
         $cDV    = $ide->getElementsByTagName('cDV')->item(0)->nodeValue  = $this->__calculaDV($tempChave);
         $chave  = $tempChave .= $cDV;
+		$this->chave = $chave;
         $infNFe =  $dom->getElementsByTagName("infNFe")->item(0);
         $infNFe->setAttribute("Id", "NFe" .  $chave);
     } //fim __calculaChave
