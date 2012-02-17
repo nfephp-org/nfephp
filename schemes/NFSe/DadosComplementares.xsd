@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="https://nfse.sefaz.salvador.ba.gov.br/OnLine/XSD/DadosComplementares.xsd"
+    xmlns:tc="http://www.abrasf.org.br/ABRASF/arquivos/nfse.xsd"
+	xmlns:ts="http://www.abrasf.org.br/ABRASF/arquivos/nfse.xsd"
+    xmlns="https://nfse.sefaz.salvador.ba.gov.br/OnLine/XSD/DadosComplementares.xsd"
+    xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"
+    attributeFormDefault="unqualified"
+    elementFormDefault="qualified">
+    <xsd:import schemaLocation="nfse_salvador.xsd" namespace="http://www.abrasf.org.br/ABRASF/arquivos/nfse.xsd"/>
+    <xsd:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="xmldsig-core-schema20020212.xsd"/>
+    <xsd:element name="EnvioDadosComplementares">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element minOccurs="0" maxOccurs="1" name="DadosComplementares" type="tcDadosComplementares" />
+                <xsd:element minOccurs="0" maxOccurs="1" ref="dsig:Signature" />
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:complexType name="tcDadosComplementares">
+        <xsd:sequence>
+            <xsd:element minOccurs="0" maxOccurs="1" name="NumeroLote" type="xsd:string" />
+            <xsd:element minOccurs="0" maxOccurs="1" name="ListaRPSComplementar" type="ListaRPSComplementar" />
+        </xsd:sequence>
+        <xsd:attribute name="id" type="ts:tsIdTag"/>
+    </xsd:complexType>
+
+    <xsd:complexType name="ListaRPSComplementar">
+        <xsd:sequence>
+            <xsd:element minOccurs="0" maxOccurs="unbounded" name="RPSComplementar" nillable="true" type="tcRPSComplementar" />
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="tcRPSComplementar">
+        <xsd:sequence>
+            <xsd:element minOccurs="0" maxOccurs="1" name="InfRPSComplementar" type="tcInfRPSComplementar" />
+            <xsd:element minOccurs="0" maxOccurs="1" ref="dsig:Signature" />
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="tcInfRPSComplementar">
+        <xsd:sequence>
+            <xsd:element minOccurs="1" maxOccurs="1" name="IdentificacaoRps" type="tc:tcIdentificacaoRps" />
+            <xsd:choice>
+                <xsd:element minOccurs="1" maxOccurs="1" name="AtividadePortuaria" type="tcAtividadePortuaria" />
+                <xsd:element minOccurs="1" maxOccurs="1" name="ConstrucaoCivil" type="tcConstrucaoCivil" />
+            </xsd:choice>
+        </xsd:sequence>
+        <xsd:attribute name="id" type="ts:tsIdTag"/>
+    </xsd:complexType>
+
+    <xsd:complexType name="tcAtividadePortuaria">
+        <xsd:sequence>
+            <xsd:element minOccurs="0" maxOccurs="1" name="NomeRazaoSocialProprietarioRepresentante" type="xsd:string" />
+            <xsd:element minOccurs="0" maxOccurs="1" name="CpfCnpj" type="tc:tcCpfCnpj" />
+            <xsd:element minOccurs="0" maxOccurs="1" name="Endereco" type="tc:tcEndereco" />
+            <xsd:element minOccurs="1" maxOccurs="1" name="stProprietario" type="xsd:byte" />
+            <xsd:element minOccurs="0" maxOccurs="1" name="NomeEmbarcacao" type="xsd:string" />
+            <xsd:element minOccurs="0" maxOccurs="1" name="BandeiraEmbarcacao" type="xsd:string" />
+            <xsd:element minOccurs="0" maxOccurs="1" name="NomePorto" type="xsd:string" />
+            <xsd:element minOccurs="1" maxOccurs="1" name="DataEntrada" type="xsd:dateTime" />
+            <xsd:element minOccurs="1" maxOccurs="1" name="DataSaida" type="xsd:dateTime" />
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="tcConstrucaoCivil">
+        <xsd:sequence>
+            <xsd:element minOccurs="1" maxOccurs="1" name="NomeObra" type="xsd:string" />
+            <xsd:element minOccurs="1" maxOccurs="1" name="Endereco" type="tc:tcEndereco" />
+            <xsd:element minOccurs="1" maxOccurs="1" name="DeducaoMaterial" type="ts:tsValor" />
+            <xsd:element minOccurs="1" maxOccurs="1" name="DeducaoSubempreitada" type="ts:tsValor" />
+        </xsd:sequence>
+    </xsd:complexType>
+</xsd:schema>

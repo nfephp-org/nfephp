@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="https://nfse.sefaz.salvador.ba.gov.br/OnLine/XSD/ServicosComplementares.xsd"
+    xmlns:tc="http://www.abrasf.org.br/ABRASF/arquivos/nfse.xsd"
+	xmlns:ts="http://www.abrasf.org.br/ABRASF/arquivos/nfse.xsd"
+    xmlns="https://nfse.sefaz.salvador.ba.gov.br/OnLine/XSD/ServicosComplementares.xsd"
+    xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"
+    attributeFormDefault="unqualified"
+    elementFormDefault="qualified">
+    <xsd:import schemaLocation="nfse_salvador.xsd" namespace="http://www.abrasf.org.br/ABRASF/arquivos/nfse.xsd"/>
+    <xsd:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="xmldsig-core-schema20020212.xsd"/>
+
+    <xsd:element name="ConsultarSituacaoNfseEnvio">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="idNfse" type="tc:tcIdentificacaoNfse" minOccurs="1" maxOccurs="1"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="ConsultarSituacaoNfseResposta">
+        <xsd:complexType>
+            <xsd:choice>
+                <xsd:sequence>
+                    <xsd:element name="idNfse" type="tc:tcIdentificacaoNfse" minOccurs="1" maxOccurs="1"/>
+                    <xsd:element name="situacao" type="xsd:int" minOccurs="1" maxOccurs="1"/>
+                </xsd:sequence>
+                <xsd:element ref="tc:ListaMensagemRetorno" minOccurs="1" maxOccurs="1"/>
+            </xsd:choice>
+        </xsd:complexType>
+    </xsd:element>
+</xsd:schema>
