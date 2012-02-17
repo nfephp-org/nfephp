@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Este arquivo é parte do projeto NFePHP - Nota Fiscal eletrônica em PHP.
  *
@@ -40,51 +39,74 @@
  * ##### NÃO PRONTO PARA PRODUÇÃO #####
  */
 
+class NFSe {
 
-function geraNfse()
-    {
-        // Preparando...
-
+    public $idRPS='';
+    public $idLoteRPS='';
+    public $numeroLote='';
+    public $nomeFantasia='';
+    public $CNPJ='';
+    public $IM='';
+    public $numNFSe='';
+    public $numSerie='';
+    public $tipo='';
+    public $natOperacao='';
+    public $optanteSimplesNacional='';
+    public $incentivadorCultural='';
+    public $status='';
+    public $cMun='';
+    public $aItens=array();
+    public $tomaCPF='';
+    public $tomaCNPJ='';
+    public $tomaRazaoSocial='';
+    public $tomaEndLogradouro='';
+    public $tomaEndNumero='';
+    public $tomaEndComplemento='';
+    public $tomaEndBairro='';
+    public $tomaEndxMun='';
+    public $tomaEndcMun='';
+    public $tomaEndUF='';
+    public $tomaEndCep='';
+    public $tomaEmail='';
+    
+    public $nfsexml='';
+    public $arqtxt='';
+    
+    //valor,valorDeducoes,valorPis,valorCofins,valorIr,valorCsll,issRetido,valorIss,valorIssRetido,
+    //outrasRetencoes,baseCalculo,aliquota,valorLiquidoNfse,descontoIncondicionado,descontoCondicionado,
+    //itemListaServico,codigoCnae,discriminacao
+    
+    public function buildNFSe() {
         $idRps="rps1";
         $idLote="lote1";
         //cria o objeto DOM para o xml
         $dom = new DOMDocument('1.0', 'UTF-8');
         $dom->formatOutput = true;
         $dom->preserveWhiteSpace = false;
-
         $Rps=$dom->createElement("Rps");
-        //$Rps->setAttribute("xmlns", "http://www.portalfiscal.inf.br/nfe");
-        //$Rps->setAttribute("xmlns", "http://www.abrasf.org.br/ABRASF/arquivos/nfse.xsd");
-
         $infRps = $dom->createElement("InfRps");
-        $infRps->setAttribute("id", $idRps);
-
+        $infRps->setAttribute("id", $this->idRPS);
         // Identificação
         $IdentificacaoRps = $dom->createElement("IdentificacaoRps");
-        $Numero= $dom->createElement("Numero",$this->c['numeroNota']);
-        $Serie= $dom->createElement("Serie",$this->c['serie']);
-        $Tipo= $dom->createElement("Tipo",$this->c['tipo']);
+        $Numero= $dom->createElement("Numero",$this->numNFSe);
+        $Serie= $dom->createElement("Serie",$this->numSerie);
+        $Tipo= $dom->createElement("Tipo",$this->tipo);
         $IdentificacaoRps->appendChild($Numero);
         $IdentificacaoRps->appendChild($Serie);
         $IdentificacaoRps->appendChild($Tipo);
-
         $infRps->appendChild($IdentificacaoRps);
         $infRps->appendChild($dom->createElement("DataEmissao",date("Y-m-d")."T".date("H:i:s")));
-        $infRps->appendChild($dom->createElement("NaturezaOperacao",$this->c['naturezaOperacao']));
-        $infRps->appendChild($dom->createElement("OptanteSimplesNacional",$this->c['optanteSimplesNacional']));
-        $infRps->appendChild($dom->createElement("IncentivadorCultural",$this->c['incentivadorCultural']));
-        $infRps->appendChild($dom->createElement("Status",$this->c['status']));
+        $infRps->appendChild($dom->createElement("NaturezaOperacao",$this->natOperacao));
+        $infRps->appendChild($dom->createElement("OptanteSimplesNacional",$this->optanteSimplesNacional));
+        $infRps->appendChild($dom->createElement("IncentivadorCultural",$this->incentivadorCultural));
+        $infRps->appendChild($dom->createElement("Status",$this->status));
 
 
         $qtd=$v_total=$total_itens=$t_icms=$t_ipi=$total_pb=$total_pl=0;
         $temIcms=false;
-        foreach ($this->i as $item)
-        {
+        foreach ($this->aItens as $item) {
             $qtd++;
             $Servico= $dom->createElement("Servico");
-
-            // Valores
-
             $Valores=$dom->createElement("Valores");
             $ValorServicos=$dom->createElement("ValorServicos",number_format($item['valor'],2, '.', ''));
             $ValorDeducoes=$dom->createElement("ValorDeducoes",number_format($item['valorDeducoes'],2, '.', ''));
@@ -101,36 +123,19 @@ function geraNfse()
             $ValorLiquidoNfse=$dom->createElement("ValorLiquidoNfse",number_format($item['valorLiquidoNfse'],2, '.', ''));
             $DescontoIncondicionado=$dom->createElement("DescontoIncondicionado",number_format($item['descontoIncondicionado'],2, '.', ''));
             $DescontoCondicionado=$dom->createElement("DescontoCondicionado",number_format($item['descontoCondicionado'],2, '.', ''));
-
             $Valores->appendChild($ValorServicos);
             $Valores->appendChild($ValorDeducoes);
-            //$Valores->appendChild($ValorPis);
-            //$Valores->appendChild($ValorCofins);
-            //$Valores->appendChild($ValorIr);
-            //$Valores->appendChild($ValorCsll);
             $Valores->appendChild($IssRetido);
             $Valores->appendChild($ValorIss);
             $Valores->appendChild($ValorIssRetido);
-            //$Valores->appendChild($OutrasRetencoes);
             $Valores->appendChild($BaseCalculo);
             $Valores->appendChild($Aliquota);
-            //$Valores->appendChild($ValorLiquidoNfse);
-            //$Valores->appendChild($DescontoIncondicionado);
-            //$Valores->appendChild($DescontoCondicionado);
-
 
             // Detalhes do serviço
-
             $ItemListaServico=$dom->createElement("ItemListaServico",trim($item['itemListaServico']));
-            //$ItemListaServico=$dom->createElement("ItemListaServico",'11.4');
-
             $CodigoTributacaoMunicipio=$dom->createElement("CodigoCnae",trim($item['codigoCnae']));
-            //$CodigoTributacaoMunicipio=$dom->createElement("CodigoTributacaoMunicipio",$this->c['propriaEnderecoIbgeMunicipio']);
-            //$CodigoTributacaoMunicipio=$dom->createElement("CodigoTributacaoMunicipio","Codigo Tributario");
             $Discriminacao=$dom->createElement("Discriminacao",$this->tiraAcentos($item['discriminacao']));
-            //$CodigoMunicipio=$dom->createElement("CodigoMunicipio",$this->c['propriaEnderecoIbgeMunicipio']);
-            $CodigoMunicipio=$dom->createElement("CodigoMunicipio",'2927408');
-
+            $CodigoMunicipio=$dom->createElement("CodigoMunicipio",$this->cMun);
             $Servico->appendChild($Valores);
             $Servico->appendChild($ItemListaServico);
             $Servico->appendChild($CodigoTributacaoMunicipio);
@@ -138,95 +143,73 @@ function geraNfse()
             $Servico->appendChild($CodigoMunicipio);
             $infRps->appendChild($Servico);
 
-        }
+        } //fim foreach aItens
 
-        // Prestador
-
+        // Prestador do Serviço
         $Prestador=$dom->createElement("Prestador");
-        $Cnpj=$dom->createElement("Cnpj",$this->c['propriaCnpj']);
-        $InscricaoMunicipal=$dom->createElement("InscricaoMunicipal",$this->soNumerosIsento($this->tiraPontos($this->c['propriaInscricaoMunicipal'])));
-
+        $Cnpj=$dom->createElement("Cnpj",$this->CNPJ);
+        $InscricaoMunicipal=$dom->createElement("InscricaoMunicipal",$this->IM);
         $Prestador->appendChild($Cnpj);
         $Prestador->appendChild($InscricaoMunicipal);
 
-        // TSomador
+        // Tomador do Serviço
         $Tomador=$dom->createElement("Tomador");
         $IdentificacaoTomador=$dom->createElement("IdentificacaoTomador");
         $CpfCnpj=$dom->createElement("CpfCnpj");
-
-        $TomadorCpf=$dom->createElement("Cpf",$this->soNumeros($this->c['cpf']));
-        $TomadorCnpj=$dom->createElement("Cnpj",$this->soNumeros($this->c['cnpj']));
-        if ($this->c['cpf']<>"")
+        $TomadorCpf=$dom->createElement("Cpf",$this->tomaCPF);
+        $TomadorCnpj=$dom->createElement("Cnpj",$this->tomaCNPJ);
+        if ($this->tomaCPF != ''){
             $CpfCnpj->appendChild($TomadorCpf);
-        else
+        } else {
             $CpfCnpj->appendChild($TomadorCnpj);
+        }    
         $IdentificacaoTomador->appendChild($CpfCnpj);
-
-        $RazaoSocial=$dom->createElement("RazaoSocial",$this->tiraAcentos($this->c['razaoSocial']));
+        $RazaoSocial=$dom->createElement("RazaoSocial",$this->tomaRazaoSocial);
         $EEndereco=$dom->createElement("Endereco");
-        $Endereco=$dom->createElement("Endereco",$this->tiraAcentos(trim($this->c['endereco'])));
-        $Numero=$dom->createElement("Numero",$this->tiraAcentos(trim($this->c['enderecoNumero'])));
-        $Bairro=$dom->createElement("Bairro",$this->tiraAcentos(trim($this->c['enderecoBairro'])));
-        $CodigoMunicipio=$dom->createElement("CodigoMunicipio",$this->soNumeros($this->c['enderecoIbgeMunicipio']));
-        $Uf=$dom->createElement("Uf",trim($this->c['enderecoUf']));
-        $Cep=$dom->createElement("Cep",$this->soNumeros($this->c['enderecoCep']));
-
+        $Endereco=$dom->createElement("Endereco",$this->tomaEndLogradouro);
+        $Numero=$dom->createElement("Numero",$this->tomaEndNumero);
+        $Bairro=$dom->createElement("Bairro",$this->tomaEndBairro);
+        $CodigoMunicipio=$dom->createElement("CodigoMunicipio",$this->tomaEndcMun);
+        $Uf=$dom->createElement("Uf",$this->tomaEndUF);
+        $Cep=$dom->createElement("Cep",$this->tomaEndCep);
         $EEndereco->appendChild($Endereco);
         $EEndereco->appendChild($Numero);
         $EEndereco->appendChild($Bairro);
         $EEndereco->appendChild($CodigoMunicipio);
         $EEndereco->appendChild($Uf);
         $EEndereco->appendChild($Cep);
-
         $Tomador->appendChild($IdentificacaoTomador);
         $Tomador->appendChild($RazaoSocial);
         $Tomador->appendChild($EEndereco);
-        if ($this->c['email']<>"")
-        {
+        if ($this->tomaEmail != '') {
             $Contato=$dom->createElement("Contato");
-            $Email=$dom->createElement("Email",$this->tiraAcentos($this->c['email']));
+            $Email=$dom->createElement("Email",$this->tomaEmail);
             $Contato->appendChild($Email);
             $Tomador->appendChild($Contato);
         }
         $infRps->appendChild($Prestador);
         $infRps->appendChild($Tomador);
 
-
         // Serviços
-
         $Rps->appendChild($infRps);
-       
         $ListaRps=$dom->createElement("ListaRps");
         $ListaRps->appendChild($Rps);
-
         $LoteRps=$dom->createElement("LoteRps");
-        $LoteRps->setAttribute("id", $idLote);
-
-        $NumeroLote=$dom->createElement("NumeroLote",$this->c['numeroLote']);
+        $LoteRps->setAttribute("id", $this->idLoteRPS);
+        $NumeroLote=$dom->createElement("NumeroLote",$this->numeroLote);
         $QuantidadeRps=$dom->createElement("QuantidadeRps",1);
-        $Cnpj=$dom->createElement("Cnpj",$this->c['propriaCnpj']);
-        $InscricaoMunicipal=$dom->createElement("InscricaoMunicipal",$this->soNumerosIsento($this->tiraPontos($this->c['propriaInscricaoMunicipal'])));
-
+        $Cnpj=$dom->createElement("Cnpj",$this->CNPJ);
+        $InscricaoMunicipal=$dom->createElement("InscricaoMunicipal",$this->IM);
         $EnviarLoteRpsEnvio=$dom->createElement("EnviarLoteRpsEnvio");
-        //$EnviarLoteRpsEnvio->setAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
         $EnviarLoteRpsEnvio->setAttribute("xmlns", "http://www.abrasf.org.br/ABRASF/arquivos/nfse.xsd");
-
         $LoteRps->appendChild($NumeroLote);
         $LoteRps->appendChild($Cnpj);
         $LoteRps->appendChild($InscricaoMunicipal);
         $LoteRps->appendChild($QuantidadeRps);
         $LoteRps->appendChild($ListaRps);
-
         $EnviarLoteRpsEnvio->appendChild($LoteRps);
-
         $dom->appendChild($EnviarLoteRpsEnvio);
-
-
-        //$dom->appendChild($Rps);
-        //$dom->appendChild($infRps);
-
         $xml= $dom->saveXML();
-
         $xml = str_replace('<?xml version="1.0" encoding="UTF-8"?>','<?xml version="1.0" encoding="UTF-8" standalone="no"?>',$xml);
         $xml = str_replace('<?xml version="1.0" encoding="UTF-8" standalone="no"?>','',$xml);
         $xml = str_replace('<?xml version="1.0" encoding="UTF-8"?>','',$xml);
@@ -237,139 +220,123 @@ function geraNfse()
         $xml = str_replace("  "," ",$xml);
         $xml = str_replace("  "," ",$xml);
         $xml = str_replace("> <","><",$xml);
+        $this->nfsexml = $xml;
+        $this->signNFSe("InfRps");
+        $this->signNFSe("LoteRps");
+        $this->nfsexml=str_replace('<?xml version="1.0"?>','',$this->nfsexml);
+    } // fim 
 
-        $this->nfexml =$xml;
-        $this->assina("InfRps");
-        $this->assina("LoteRps");
-        $this->nfexml=str_replace('<?xml version="1.0"?>','',$this->nfexml);
-//echo "\n\n".$this->nfexml."\n\n";exit;
-        /*
-        $this->assina("InfRps");
-        $this->nfexml=str_replace('<?xml version="1.0"?>','',$this->nfexml);
-        $this->nfexml = '<?xml version="1.0" encoding="UTF-8"?><Rps>'.trim($this->nfexml)."</Rps>";
-         *
-         */
-    }
+    //Gera arquivo TXT para importação da SEFAZ
+    public function geraTxtNFSE() {
+        $hoje=date("Ymd");
+        $dataHora=date("YmdHis");
+        // REGISTRO 1 - Header do arquivo
+        $s="1"; // Tipo de Registro
+        $s.="103"; // Vesão do Layout
+        $s.=padrl($this->IM, 26, "r"); // Insc. Municipal do prestador
+        $s.="2"; // Indicador de CPF/CNPJ -> 1 = CPF , 2 = CNPJ
+        $s.=padrl($this->CNPJ, 14,"l"); // CPF / CNPJ do prestador
+        $s.=$this->optanteSimplesNacional ; // Optante pelo simples
+        $s.=$hoje; // Data de início do período
+        $s.=$hoje; // Data de fim do período
+        $s.=padrl("1", 5, "l", "0"); // Qtd de NFS-e informadas
+        $s.=padrl(" ", 324, "l"); // Preencher com 324 espações em branco
+        $s.=padrl($this->numeroLote, 8, "l","0"); // Sequencial do registro
+        $s.=NL;
+        foreach ($this->aItens as $item) {
+            // REGISTRO 2 - Cabeçalho da NFS-e
+            $s.="2"; // Tipo de registro
+            $s.=padrl($this->nfeid, 20, "l", "0"); // Sequencial da NFS-e
+            $s.=$dataHora; // Data e Hora da NFS-e
+            $s.=$item['tipoRecolhimento']; // Tipo de recolhimento (N - Normal ou R - Retido na fonte)
+            $s.="T"; // Situação da nota fiscal (T - I - F - C - E - J)
+            $s.=padrl(" ", 8, "r"," "); // Data de cancelamento
+            $s.=$this->cMun; // Codigo IBGE do municipio de prestação do serviço
+            $s.=padrl(number_format($item['valor'],2,"",""), 15, "l", "0"); // Valor do serviço
+            $s.=padrl(number_format($item['valorDeducoes'],2,"",""), 15, "l", "0"); // valor das deduções
+            $s.=padrl(number_format($item['valorIss'],2,"",""), 15, "l", "0"); // Valor da retenção do PIS
+            $s.=padrl(number_format($item['valorCofins'],2,"",""), 15, "l", "0"); // Valor da retenção do COFINS
+            $s.=padrl(number_format($item['valorInss'],2,"",""), 15, "l", "0"); // Valor da retenção do INSS
+            $s.=padrl(number_format($item['valorIr'],2,"",""), 15, "l", "0"); // Valor da retenção do IR
+            $s.=padrl(number_format($item['valorRetCsll'],2,"",""), 15, "l", "0"); // Valor da retenção do CSLL
+            $s.=padrl(number_format($item['valorIssqn'],2,"",""), 15, "l", "0"); // Valor do ISSQN
+            $s.=padrl(" ", 219, "l"); // Preencher com 219 espações em branco
+            $s.=padrl($this->numeroLote, 8, "l","0"); // Sequencial do registro
+            $s.=NL;
 
-        //Gera arquivo TXT para importação da SEFAZ
-        function geraTxtNFSE()
-        {
-                $hoje=date("Ymd");
-                $dataHora=date("YmdHis");
-               
-                // REGISTRO 1 - Header do arquivo
-                $s="1"; // Tipo de Registro
-                $s.="103"; // Vesão do Layout
-                $s.=padrl($this->c['propriaInscricaoMunicipal'], 26, "r"); // Insc. Municipal do prestador
-                $s.="2"; // Indicador de CPF/CNPJ -> 1 = CPF , 2 = CNPJ
-                $s.=padrl($this->c['propriaCnpj'], 14,"l"); // CPF / CNPJ do prestador
-                $s.=$this->c['propriaOptante'] ; // Optante pelo simples
-                $s.=$hoje; // Data de início do período
-                $s.=$hoje; // Data de fim do período
-                $s.=padrl("1", 5, "l", "0"); // Qtd de NFS-e informadas
-                $s.=padrl(" ", 324, "l"); // Preencher com 324 espações em branco
-                $s.=padrl($this->c['numeroLote'], 8, "l","0"); // Sequencial do registro
-                $s.=NL;
-                //var_dump($this->i);
-                foreach ($this->i as $item)
-        {
-                        // REGISTRO 2 - Cabeçalho da NFS-e
-                        $s.="2"; // Tipo de registro
-                        $s.=padrl($this->nfeid, 20, "l", "0"); // Sequencial da NFS-e
-                        $s.=$dataHora; // Data e Hora da NFS-e
-                        $s.=$item['tipoRecolhimento']; // Tipo de recolhimento (N - Normal ou R - Retido na fonte)
-                        $s.="T"; // Situação da nota fiscal (T - I - F - C - E - J)
-                        $s.=padrl(" ", 8, "r"," "); // Data de cancelamento
-                        $s.=$this->c['propriaEnderecoIbgeMunicipio']; // Codigo IBGE do municipio de prestação do serviço
-                        $s.=padrl(number_format($item['valor'],2,"",""), 15, "l", "0"); // Valor do serviço
-                        $s.=padrl(number_format($item['valorDeducoes'],2,"",""), 15, "l", "0"); // valor das deduções
-                        $s.=padrl(number_format($item['valorIss'],2,"",""), 15, "l", "0"); // Valor da retenção do PIS
-                        $s.=padrl(number_format($item['valorCofins'],2,"",""), 15, "l", "0"); // Valor da retenção do COFINS
-                        $s.=padrl(number_format($item['valorInss'],2,"",""), 15, "l", "0"); // Valor da retenção do INSS
-                        $s.=padrl(number_format($item['valorIr'],2,"",""), 15, "l", "0"); // Valor da retenção do IR
-                        $s.=padrl(number_format($item['valorRetCsll'],2,"",""), 15, "l", "0"); // Valor da retenção do CSLL
-                        $s.=padrl(number_format($item['valorIssqn'],2,"",""), 15, "l", "0"); // Valor do ISSQN
-                        $s.=padrl(" ", 219, "l"); // Preencher com 219 espações em branco
-                        $s.=padrl($this->c['numeroLote'], 8, "l","0"); // Sequencial do registro
-                        $s.=NL;
+            // REGISTRO 3 - Identificação do tomador da NFS-e
+            $s.="3"; // Tipo de registro
+            $s.=padrl($this->nfeid, 20, "r", "0"); // Sequencial da NFS-e
+            $s.="2"; // Indicador de CPF/CNPJ do Tomador
+            $s.=padrl($this->tomaCNPJ, 14,"l"); // CPF/CNPJ do tomador
+            $s.=padrl($this->tomaRazaoSocial, 50, "r"); // Nome do tomador (Nome ou razão social)
+            $s.=padrl($this->nomeFantasia, 50, "r"); // Nome fantasia
+            $s.=padrl(" ", 3, "l"); // Tipo de endereço do tomador
+            $s.=padrl($this->tomaEndLogradouro, 50, "r"); // Endereço do tomador
+            $s.=padrl($this->tomaEndNumero, 10, "l","0"); // Número do endereço do tomador
+            $s.=padrl($this->tomaEndComplemento, 20, "r"); // Complemento do endereço do tomador
+            $s.=padrl($this->tomaEndBairro, 30, "r"); // Bairro do tomador
+            $s.=padrl($this->tomaEndxMun, 50, "r"); // Cidade do tomador
+            $s.=padrl($this->tomaEndUF, 2, "r");; // UF do tomador
+            $s.=padrl($this->tomaEndCep, 8, "r"); // CEP do tomador
+            $s.=padrl($this->tomaEmail, 60, "r"); // Email do tomador
+            $s.=padrl(" ", 22, "l"); // Preencher com 22 espações em branco
+            $s.=padrl($this->numeroLote, 8, "l","0"); // Sequencial do registro
+            $s.=NL;
 
-                        // REGISTRO 3 - Identificação do tomador da NFS-e
-                        $s.="3"; // Tipo de registro
-                        $s.=padrl($this->nfeid, 20, "r", "0"); // Sequencial da NFS-e
-                        $s.="2"; // Indicador de CPF/CNPJ do Tomador
-                        $s.=padrl($this->soNumeros($this->c['cnpj']), 14,"l"); // CPF/CNPJ do tomador
-                        $s.=padrl($this->tiraAcentos($this->c['razaoSocial']), 50, "r"); // Nome do tomador (Nome ou razão social)
-                        $s.=padrl($this->tiraAcentos($this->c['empresa']), 50, "r"); // Nome fantasia
-                        $s.=padrl(" ", 3, "l"); // Tipo de endereço do tomador
-                        $s.=padrl($this->tiraAcentos($this->c['endereco']), 50, "r"); // Endereço do tomador
-                        $s.=padrl($this->c['enderecoNumero'], 10, "l","0"); // Número do endereço do tomador
-                        $s.=padrl($this->tiraAcentos($this->c['enderecoComplemento']), 20, "r"); // Complemento do endereço do tomador
-                        $s.=padrl($this->tiraAcentos($this->c['enderecoBairro']), 30, "r"); // Bairro do tomador
-                        $s.=padrl($this->tiraAcentos($this->c['enderecoCidade']), 50, "r"); // Cidade do tomador
-                        $s.=padrl($this->tiraAcentos($this->c['enderecoUf']), 2, "r");; // UF do tomador
-                        $s.=padrl($this->soNumeros($this->c['enderecoCep']), 8, "r"); // CEP do tomador
-                        $s.=padrl($this->tiraAcentos($this->c['email']), 60, "r"); // Email do tomador
-                        $s.=padrl(" ", 22, "l"); // Preencher com 22 espações em branco
-                        $s.=padrl($this->c['numeroLote'], 8, "l","0"); // Sequencial do registro
-                        $s.=NL;
+            // REGISTRO 4 - Descrição da NFS-e
+            $s.="4"; // Tipo de registro
+            $s.=padrl($this->nfseid, 20, "l", "0"); // Sequencial da NFS-e
+            $s.=padrl(" ", 255, "l"); // Descrição da nota
+            $s.=padrl(" ", 115, "l"); // Preencher com 22 espações em branco
+            $s.=padrl($this->numeroLote, 8, "l","0"); // Sequencial do registro
+            $s.=NL;
 
-                        // REGISTRO 4 - Descrição da NFS-e
-                        $s.="4"; // Tipo de registro
-                        $s.=padrl($this->nfeid, 20, "l", "0"); // Sequencial da NFS-e
-                        $s.=padrl(" ", 255, "l"); // Descrição da nota
-                        $s.=padrl(" ", 115, "l"); // Preencher com 22 espações em branco
-                        $s.=padrl($this->c['numeroLote'], 8, "l","0"); // Sequencial do registro
-                        $s.=NL;
-
-                        // REGISTRO 5 - Descrição do serviço realizado
-                        $s.="5"; // Tipo de registro
-                        $s.=padrl($this->nfeid, 20, "l", "0"); // Sequencial da NFS-e
-                        $s.=padrl($this->soNumeros($item['codigo']), 4, "l"); // Codigo do serviço pretasdo
-                        $s.=padrl($this->soNumeros($item['codigoMunicipio']), 20, "l"); // Código tributação município
-                        $s.=padrl(number_format($item['valor'],2,"",""), 15, "l", "0"); // Valor do serviço
-                        $s.=padrl(number_format($item['valorDeducoes'],2,"",""), 15, "l", "0"); // Valor dedução
-                        $s.=padrl(number_format($item['aliquota'],2,"",""), 4, "l", "0"); // Alíquota
-                        $s.=padrl($item['unidade'], 20, "l"); // Unidade
-                        $s.=padrl(number_format($item['quantidade'],2,"",""),8,"l","0"); // Quantidade
-                        $s.=padrl($this->tiraAcentos($item['discriminacao']), 255, "r"," "); // Descrição do serviço
-                        $s.=padrl(" ",20,"l"); // Alvará               
-                        $s.=padrl(" ", 9, "l"); // Preencher com 9 espações em branco
-                        $s.=padrl($this->c['numeroLote'], 8, "l","0"); // Sequencial do registro
-                        $s.=NL;
-                }
-                // REGISTRO 6 - Indicador de final de arquivo
-                $s.="6"; // Tipo de registro
-                $s.=padrl(" ", 390, "l"); // Preencher com 390 espações em branco
-                $s.=padrl($this->c['numeroLote'], 8, "l","0"); // Sequencial do registro
-                $s.=NL;
-               
-                $sql="update nfse set txt='$s' where id=".$this->nfeid;
-                gQuery($sql);
-               
-                $this->arqtxt=$s;
+            // REGISTRO 5 - Descrição do serviço realizado
+            $s.="5"; // Tipo de registro
+            $s.=padrl($this->nfseid, 20, "l", "0"); // Sequencial da NFS-e
+            $s.=padrl($this->soNumeros($item['codigo']), 4, "l"); // Codigo do serviço pretasdo
+            $s.=padrl($this->soNumeros($item['codigoMunicipio']), 20, "l"); // Código tributação município
+            $s.=padrl(number_format($item['valor'],2,"",""), 15, "l", "0"); // Valor do serviço
+            $s.=padrl(number_format($item['valorDeducoes'],2,"",""), 15, "l", "0"); // Valor dedução
+            $s.=padrl(number_format($item['aliquota'],2,"",""), 4, "l", "0"); // Alíquota
+            $s.=padrl($item['unidade'], 20, "l"); // Unidade
+            $s.=padrl(number_format($item['quantidade'],2,"",""),8,"l","0"); // Quantidade
+            $s.=padrl($this->tiraAcentos($item['discriminacao']), 255, "r"," "); // Descrição do serviço
+            $s.=padrl(" ",20,"l"); // Alvará               
+            $s.=padrl(" ", 9, "l"); // Preencher com 9 espações em branco
+            $s.=padrl($this->c['numeroLote'], 8, "l","0"); // Sequencial do registro
+            $s.=NL;
         }
+        
+        // REGISTRO 6 - Indicador de final de arquivo
+        $s.="6"; // Tipo de registro
+        $s.=padrl(" ", 390, "l"); // Preencher com 390 espações em branco
+        $s.=padrl($this->numeroLote, 8, "l","0"); // Sequencial do registro
+        $s.=NL;
+        
+        
+        //$sql="update nfse set txt='$s' where id=".$this->nfeid;
+        //gQuery($sql);
+               
+        $this->arqtxt=$s;
+    } //fim
 
-    function envelopa()
-    {
+    public function envelopa() {
         // Envelopa
         $idLote="1";
-
         // cria DOM pro nfexml
         $dom = new DOMDocument();
         $dom->formatOutput = true;
         $dom->preserveWhiteSpace = false;
         //echo $this->nfexml;exit;
-        $dom->loadXML($this->nfexml,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
-
+        $dom->loadXML($this->nfsexml,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
         //cria o objeto DOM para o novo xml
         $dom2 = new DOMDocument('1.0', 'UTF-8');
         $dom2->formatOutput = true;
         $dom2->preserveWhiteSpace = false;
-
-
         $node = $dom->getElementsByTagName("Rps")->item(0);
         $Rps=$node->C14N(FALSE,FALSE,NULL,NULL);
-       
         $l.='<LoteRps id="'.$idLote.'">';
         $l.='<NumeroLote>'.$this->c['numero'].'</NumeroLote>';
         $l.='<Cnpj>'.$this->c['propriaCnpj'].'</Cnpj>';
@@ -377,60 +344,48 @@ function geraNfse()
         $l.='<QuantidadeRps>1</QuantidadeRps>';
         $l.='<ListaRps>'.$Rps.'</ListaRps>';
         $l.='</LoteRps>';
-        $this->nfexml=$l;
-        $this->assina("LoteRps");
-        $this->nfexml=str_replace('<?xml version="1.0"?>','',$this->nfexml);
-        $this->nfexml='<?xml version="1.0" encoding="UTF-8"?><EnviarLoteRpsEnvio xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.abrasf.org.br/ABRASF/arquivos/nfse.xsd">'.$this->nfexml.'</EnviarLoteRpsEnvio>';
+        $this->nfsexml=$l;
+        $this->signNFSe("LoteRps");
+        $this->nfsexml=str_replace('<?xml version="1.0"?>','',$this->nfsexml);
+        $this->nfsexml='<?xml version="1.0" encoding="UTF-8"?><EnviarLoteRpsEnvio xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.abrasf.org.br/ABRASF/arquivos/nfse.xsd">'.$this->nfsexml.'</EnviarLoteRpsEnvio>';
 
-    }
+    } //fim 
                
-    function limpaNumero($num)
-    {
+    public function limpaNumero($num){
         return(str_replace(".00","",floatval($num)));
     }
 
     // Assina XML
-    function assina($tag='infNFe')
-    {
+    function signNFSe($tag='infNFe') {
         global $http_lib;
         $sai=false;
-        $nfefile=$this->nfexml;
-        //$nfefile = file_get_contents($this->arqxml);
+        $nfefile=$this->nfsexml;
         $this->nfeTools= new gNFeTools($this->config());
-        if ($tag=='infNFe')
-        {
-            if ($this->nfeTools->errMsg=="")
-            {
-                if ( $signn = $this->nfeTools->signXML($nfefile, $tag) )
-                {
+        if ($tag == 'infNFe') {
+            if ($this->nfeTools->errMsg=="") {
+                if ( $signn = $this->nfeTools->signXML($nfefile, $tag) ) {
                     unlink($this->arqxml);
-                    if ( !file_put_contents($this->arqxml , $signn) )
-                    {
+                    if ( !file_put_contents($this->arqxml , $signn) ) {
                         $this->erros[]=M."Houve uma falha ao salvar a NFe assinada.";
-                    } else
-                    {
-                        $this->nfexml=$signn;
+                    } else {
+                        $this->nfsexml=$signn;
                         $sai=true;
                     }
-                } else
-                {
+                } else {
                     $this->erros[]=M."Houve uma falha ao assinar a NFe.";
-                }
-            } else
-            {
+                } 
+            } else {
                 $this->erros[]=M.$this->nfeTools->errMsg." (".$this->nfeTools->cert.")";
             }
-        } else
-        {
+        } else {
             $this->nfexml=$this->nfeTools->__signXMLNFSe($nfefile, $tag);
         }
         return($sai);
-    }
+    } //fim 
 
 
     // Valida XML assinado
-    function valida($tipo="nfe")
-    {
+    function valida($tipo="nfe") {
         global $gPathLib,$gPathDefault;
         /*
         $this->nfeTools= new gNFeTools($this->c['propriaCnpj'].".pfx");
@@ -458,8 +413,7 @@ function geraNfse()
                 //echo $xsd;exit;
         //$sai=$nfe->validXML($this->nfexml, $xsd);
                 //echo var_dump($sai);exit;
-        if ($sai['error']<>'')
-        {
+        if ($sai['error']<>'') {
             $e=explode(";",$sai['error']);
             foreach ($e as $el)
                 $this->erros[]=trim($el);
@@ -469,69 +423,52 @@ function geraNfse()
 
 
     // Enviar para Sefaz
-    function envia($xml="",$numero="")
-    {
+    function envia($xml="",$numero="") {
         $sai=true;
-        if (!is_object($this->nfeTools))
-        {
+        if (!is_object($this->nfeTools)){
             $this->nfeTools= new gNFeTools($this->config());
         }
         $sql="select * from nfe_numeros where id_armazens=0"; // numero do lote
         $rs=gQuery($sql);
-        if ($rs->EOF)
-        {
+        if ($rs->EOF) {
             $sql="insert into nfe_numeros (id_armazens,numero) values (0,0)";
             gQuery($sql);
             $numeroLote=1;
-        } else
-        {
+        } else {
             $numeroLote=intval($rs->fields['numero'])+1;
         }
         $sql="update nfe_numeros set numero=$numeroLote where id_armazens=0";
         gQuery($sql);
-       
-        if ($xml=="")
-        {
+        if ($xml==""){
             $xml=$this->nfexml;
-           
         }
-        if ($ret = $this->nfeTools->sendLot(array($xml),$numeroLote))
-        {
-            if ($ret['cStat']=='103')
-            {
+        if ($ret = $this->nfeTools->sendLot(array($xml),$numeroLote)) {
+            if ($ret['cStat']=='103') {
                 $this->recibo=$ret['nRec'];
                 $this->dataRecibo=$ret['dhRecbto'];
-            } else
-            {
+            } else {
                 $this->erros[]=M.str_pad($ret['cStat'],10,' ')." ".$ret['xMotivo'];
                 $sai=false;
             }
         }
         return($sai);
-    }
+    } //fim
 
     // Enviar para Sefaz
-    function enviaNfse($xml="",$numero="")
-    {
+    function enviaNfse($xml="",$numero="") {
         $sai=true;
-        if (!is_object($this->nfeTools))
-        {
+        if (!is_object($this->nfeTools)) {
             $this->nfeTools= new gNFeTools($this->config());
         }
 
-        if ($xml=="")
-        {
+        if ($xml=="") {
             $xml=$this->nfexml;
-
         }
         //$xml=file_get_contents('/tmp/envio.xml');
         $xml=str_replace("\n",'',$xml);
-                //echo "<textarea rows='20' cols='80'>$xml<textarea><br><br>";
-        if ($ret = $this->nfeTools->sendRps($xml,$this->c['numeroLote']))
-        {
-                   
-            if ($ret['Protocolo']<>'')
-            {
+        //echo "<textarea rows='20' cols='80'>$xml<textarea><br><br>";
+        if ($ret = $this->nfeTools->sendRps($xml,$this->c['numeroLote'])) {
+            if ($ret['Protocolo']<>'') {
                 // Nova aceita... Salva no banco
                 $sql="update nfse_numeros set numero_nota=".$this->c['numeroNota']." where ambiente=".$this->c['ambiente']." and id_empresa=".$this->id_empresa;
                 gQuery($sql);
@@ -540,39 +477,33 @@ function geraNfse()
                 $this->protocolo=$ret['Protocolo'];
                 $this->numeroNota=$numeroNota;
                 $this->numeroLote=$numeroLote;
-            } else
-            {
+            } else {
                 $sql="update nfse set situacao='Rejeitada',xml='$xml',mensagens='Codigo ".$ret['Codigo']."<br>".$ret['Mensagem']."<br>".$ret['Correcao']."' where id=".$this->nfeid;
                 gQuery($sql);
                 $this->erros[]=str_pad($ret['Codigo'],10,' ')." ".$ret['Mensagem']."<br>".$ret['Correcao'];
                 $sai=false;
             }
-        } else
-                {
-                    $sql="update nfse set situacao='Nao enviada',xml='$xml',mensagens='Codigo ".$ret['Codigo']."<br>".$ret['Mensagem']."<br>".$ret['Correcao']."' where id=".$this->nfeid;
-                    gQuery($sql);
-                    $this->erros[]=str_pad('E000',10,' ')." Nao foi possivel enviar para a SEFAZ, provavelmente por problema no certificado.";
-                    $sai=false;
-                }
+        } else {
+              $sql="update nfse set situacao='Nao enviada',xml='$xml',mensagens='Codigo ".$ret['Codigo']."<br>".$ret['Mensagem']."<br>".$ret['Correcao']."' where id=".$this->nfeid;
+              gQuery($sql);
+              $this->erros[]=str_pad('E000',10,' ')." Nao foi possivel enviar para a SEFAZ, provavelmente por problema no certificado.";
+              $sai=false;
+        }
         return($sai);
-    }
+    } //fim 
 
-    function consultaRps($protocolo)
-    {
+    function consultaRps($protocolo) {
         $sai=true;
-        if (!is_object($this->nfeTools))
-        {
+        if (!is_object($this->nfeTools)) {
             $this->nfeTools= new gNFeTools($this->config());
         }
         $sai=$this->nfeTools->consultRps($this->c['propriaCnpj'],$this->soNumerosIsento($this->tiraPontos($this->c['propriaInscricaoMunicipal'])),trim($protocolo));
         return($sai);
     }
 
-    function consultaSituacaoRps($protocolo)
-    {
+    function consultaSituacaoRps($protocolo) {
         $sai=true;
-        if (!is_object($this->nfeTools))
-        {
+        if (!is_object($this->nfeTools)) {
             $this->nfeTools= new gNFeTools($this->config());
         }
         $sai=$this->nfeTools->consultSitRps($this->c['propriaCnpj'],$this->soNumerosIsento($this->tiraPontos($this->c['propriaInscricaoMunicipal'])),trim($protocolo));
@@ -584,6 +515,245 @@ Código de situação de lote de RPS
 4 – Processado com Sucesso
  */
         return($sai['Situacao']);
+    } //fim
+
+/**
+     * sendRps
+     * Envia lote de Notas Fiscais de Serviço para a SEFAZ.
+     * Este método pode enviar uma ou mais NFe para o SEFAZ, desde que,
+     * o tamanho do arquivo de envio não ultrapasse 500kBytes
+     * Este processo enviará somente até 50 NFe em cada Lote
+     *
+     * @name sendRps
+     * @version 1.0
+     * @package NFePHP
+     * @param    array   $aNFe notas fiscais em xml uma em cada campo do array unidimensional MAX 50
+     * @param   integer $idLote o id do lote e um numero que deve ser gerado pelo sistema
+     *                          a cada envio mesmo que seja de apenas uma NFe
+     * @return    mixed    False ou array ['cStat'=>103,','xMotivo'=>'Lote aceito']
+    **/
+    public function sendRps($aNFSe,$idLote) {
+
+        // carga das variaveis da funçao do webservice envio de Ne em lote
+        //identificação do serviço
+        $servico = 'EnvioLoteRPS';
+        //recuperação da versão
+        $versao = $this->mURL[$servico]['version'];
+        //recuperação da url do serviço
+        $urlservico = $this->mURL[$servico]['URL'];
+        //recuperação do método
+        $metodo = $this->mURL[$servico]['method'];
+
+        //montagem do namespace do serviço
+        $namespace = $this->URLPortal.'/wsdl/'.$servico;
+          $namespace = 'http://www.abrasf.org.br/ABRASF/arquivos/nfse.xsd';
+
+        // monta string com todas as NFe enviadas no array
+        //$sNFSe = implode('',$aNFSe);
+        //remover <?xml version="1.0" encoding=... das NFe pois somente uma dessas tags pode exitir na mensagem
+        $sNFSe = str_ireplace('<?xml version="1.0" encoding="utf-8"?>','',$aNFSe);
+        $sNFSe = str_ireplace('<?xml version="1.0" encoding="UTF-8" standalone="no"?>','',$sNFSe);
+
+        //envia dados via SOAP
+        //montagem do cabeçalho da comunicação SOAP
+        $cabec = '<cabecalho xmlns="'. $namespace . '"><versaoDados>' . $versao . '</versaoDados></cabecalho>';
+        //montagem dos dados da mensagem SOAP
+        $dados = trim(str_replace("\n","",$sNFSe));
+
+          $retorno = $this->__sendSOAPNFSe($urlservico, $cabec, $dados, $metodo);
+        if ($this->errStatus)
+        {
+            return;
+        }
+        if ( isset($retorno) ) {
+            //pega os dados do array retornado pelo NuSoap
+              $retorno=str_replace('&lt;','<',$retorno);
+              $retorno=str_replace('&gt;','>',$retorno);
+              $retorno=str_replace('<?xml version="1.0" encoding="utf-8"?>','',$retorno);
+            $xmlresp = utf8_encode($retorno);
+            if ($xmlresp == ''){
+                //houve uma falha na comunicação SOAP
+                $this->errStatus = true;
+                $this->errMsg = 'Houve uma falha na comunicação SOAP!!';
+                return FALSE;
+            }
+            //tratar dados de retorno
+            $doc = new DOMDocument(); //cria objeto DOM
+            $doc->formatOutput = false;
+            $doc->preserveWhiteSpace = false;
+            $doc->loadXML($retorno,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
+            // status do recebimento ou mensagem de erro
+            $aRet['DataRecebimento'] = $doc->getElementsByTagName('DataRecebimento')->item(0)->nodeValue;
+               
+            $aRet['Codigo'] = $doc->getElementsByTagName('Codigo')->item(0)->nodeValue;
+            $aRet['Mensagem'] = $doc->getElementsByTagName('Mensagem')->item(0)->nodeValue;
+            $aRet['Correcao'] = $doc->getElementsByTagName('Correcao')->item(0)->nodeValue;
+
+            $aRet['NumeroLote'] = $doc->getElementsByTagName('NumeroLote')->item(0)->nodeValue;
+            $aRet['Protocolo'] = $doc->getElementsByTagName('Protocolo')->item(0)->nodeValue;
+         } else {
+            $this->errStatus = true;
+            $this->errMsg = 'Nao houve retorno do SOAP!';
+            return FALSE;
+        }
+        // em caso de fracasso  cStat != 103
+        return $aRet;
+    }// fim sendLot
+
+
+       /**
+     * Consulta NFSe enviada po Lote
+     *
+     * @name cancelNFS
+     * @version 2.0
+     * @package NFePHP
+     * @param    string  $idNFe ID da NFe com 44 digitos (sem o NFe na frente dos numeros)
+     * @param   string  $protId Numero do protocolo de aceitaçao da NFe enviado anteriormente pelo SEFAZ
+     * @param   boolean $bSave
+     * @return    boolean TRUE se sucesso ou FALSE se falha
+    **/
+    public function consultRps($cnpj,$inscricaoMunicipal,$protocolo){
+        // carga das variaveis da funçao do webservice envio de Ne em lote
+        //identificação do serviço
+        $servico = 'ConsultaLoteRPS';
+        //recuperação da versão
+        $versao = $this->mURL[$servico]['version'];
+        //recuperação da url do serviço
+        $urlservico = $this->mURL[$servico]['URL'];
+        //recuperação do método
+        $metodo = $this->mURL[$servico]['method'];
+
+        //montagem do namespace do serviço
+        $namespace = $this->URLPortal.'/WSDL/'.$metodo;
+          $namespace = 'http://www.abrasf.org.br/ABRASF/arquivos/nfse.xsd';
+
+          $sNFSe = "<ConsultarLoteRpsEnvio xmlns=\"http://www.abrasf.org.br/ABRASF/arquivos/nfse.xsd\"><Prestador><Cnpj>$cnpj</Cnpj><InscricaoMunicipal>$inscricaoMunicipal</InscricaoMunicipal></Prestador><Protocolo>$protocolo</Protocolo></ConsultarLoteRpsEnvio>";
+        // monta string com todas as NFe enviadas no array
+        //$sNFSe = implode('',$aNFSe);
+        //remover <?xml version="1.0" encoding=... das NFe pois somente uma dessas tags pode exitir na mensagem
+
+          /*
+          $sNFSe = str_ireplace('<?xml version="1.0" encoding="utf-8"?>','',$aNFSe);
+        $sNFSe = str_ireplace('<?xml version="1.0" encoding="UTF-8" standalone="no"?>','',$sNFSe);
+          */
+        //envia dados via SOAP
+        //montagem do cabeçalho da comunicação SOAP
+        $cabec = '<?xml version="1.0" encoding="UTF-8"?><cabecalho xmlns="'. $namespace . '"><versaoDados>' . $versao . '</versaoDados></cabecalho>';
+        //montagem dos dados da mensagem SOAP
+        $dados = trim(str_replace("\n","",$sNFSe));
+          $retorno = $this->__sendSOAPNFSe($urlservico, $cabec, $dados, $metodo);
+
+        if ($this->errStatus)
+        {
+            return;
+        }
+        if ( isset($retorno) ) {
+            //pega os dados do array retornado pelo NuSoap
+              $retorno=str_replace('&lt;','<',$retorno);
+              $retorno=str_replace('&gt;','>',$retorno);
+              $retorno=str_replace('<?xml version="1.0" encoding="utf-8"?>','',$retorno);
+            $xmlresp = utf8_encode($retorno);
+            if ($xmlresp == ''){
+                //houve uma falha na comunicação SOAP
+                $this->errStatus = true;
+                $this->errMsg = 'Houve uma falha na comunicação SOAP!!';
+                return FALSE;
+            }
+            //tratar dados de retorno
+            $doc = new DOMDocument(); //cria objeto DOM
+            $doc->formatOutput = false;
+            $doc->preserveWhiteSpace = false;
+            $doc->loadXML($retorno,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
+            // status do recebimento ou mensagem de erro
+            $aRet['Numero'] = $doc->getElementsByTagName('Numero')->item(0)->nodeValue;
+
+            $aRet['CodigoVerificacao'] = $doc->getElementsByTagName('CodigoVerificacao')->item(0)->nodeValue;
+            $aRet['DataEmissao'] = $doc->getElementsByTagName('DataEmissao')->item(0)->nodeValue;
+         } else {
+            $this->errStatus = true;
+            $this->errMsg = 'Nao houve retorno do SOAP!';
+            return FALSE;
+        }
+        // em caso de fracasso  cStat != 103
+        return $aRet;
+    }
+
+
+
+
+       /**
+     * Consulta NFS enviada po Lote
+     *
+     * @name cancelNFS
+     * @version 2.0
+     * @package NFePHP
+     * @param    string  $idNFe ID da NFe com 44 digitos (sem o NFe na frente dos numeros)
+     * @param   string  $protId Numero do protocolo de aceitaçao da NFe enviado anteriormente pelo SEFAZ
+     * @param   boolean $bSave
+     * @return    boolean TRUE se sucesso ou FALSE se falha
+    **/
+    public function consultSitRps($cnpj,$inscricaoMunicipal,$protocolo){
+        // carga das variaveis da funçao do webservice envio de Ne em lote
+        //identificação do serviço
+        $servico = 'ConsultaSituacaoLoteRPS';
+        //recuperação da versão
+        $versao = $this->mURL[$servico]['version'];
+        //recuperação da url do serviço
+        $urlservico = $this->mURL[$servico]['URL'];
+        //recuperação do método
+        $metodo = $this->mURL[$servico]['method'];
+
+        //montagem do namespace do serviço
+        $namespace = $this->URLPortal.'/WSDL/'.$metodo;
+          $namespace = 'http://www.abrasf.org.br/ABRASF/arquivos/nfse.xsd';
+
+          $sNFSe = "<ConsultarSituacaoLoteRpsEnvio xmlns=\"http://www.abrasf.org.br/ABRASF/arquivos/nfse.xsd\"><Prestador><Cnpj>$cnpj</Cnpj><InscricaoMunicipal>$inscricaoMunicipal</InscricaoMunicipal></Prestador><Protocolo>$protocolo</Protocolo></ConsultarSituacaoLoteRpsEnvio>";
+        // monta string com todas as NFe enviadas no array
+        //$sNFSe = implode('',$aNFSe);
+        //remover <?xml version="1.0" encoding=... das NFe pois somente uma dessas tags pode exitir na mensagem
+
+          /*
+          $sNFSe = str_ireplace('<?xml version="1.0" encoding="utf-8"?>','',$aNFSe);
+        $sNFSe = str_ireplace('<?xml version="1.0" encoding="UTF-8" standalone="no"?>','',$sNFSe);
+          */
+        //envia dados via SOAP
+        //montagem do cabeçalho da comunicação SOAP
+        $cabec = '<?xml version="1.0" encoding="UTF-8"?><cabecalho xmlns="'. $namespace . '"><versaoDados>' . $versao . '</versaoDados></cabecalho>';
+        //montagem dos dados da mensagem SOAP
+        $dados = trim(str_replace("\n","",$sNFSe));
+          $retorno = $this->__sendSOAPNFSe($urlservico, $cabec, $dados, $metodo);
+
+        if ($this->errStatus)
+        {
+            return;
+        }
+        if ( isset($retorno) ) {
+            //pega os dados do array retornado pelo NuSoap
+              $retorno=str_replace('&lt;','<',$retorno);
+              $retorno=str_replace('&gt;','>',$retorno);
+              $retorno=str_replace('<?xml version="1.0" encoding="utf-8"?>','',$retorno);
+            $xmlresp = utf8_encode($retorno);
+            if ($xmlresp == ''){
+                //houve uma falha na comunicação SOAP
+                $this->errStatus = true;
+                $this->errMsg = 'Houve uma falha na comunicação SOAP!!';
+                return FALSE;
+            }
+            //tratar dados de retorno
+            $doc = new DOMDocument(); //cria objeto DOM
+            $doc->formatOutput = false;
+            $doc->preserveWhiteSpace = false;
+            $doc->loadXML($retorno,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
+            // status do recebimento ou mensagem de erro
+            $aRet['NumeroLote'] = $doc->getElementsByTagName('NumeroLote')->item(0)->nodeValue;
+            $aRet['Situacao'] = $doc->getElementsByTagName('Situacao')->item(0)->nodeValue;
+         } else {
+            $this->errStatus = true;
+            $this->errMsg = 'Nao houve retorno do SOAP!';
+            return FALSE;
+        }
+        // em caso de fracasso  cStat != 103
+        return $aRet;
     }
 
 
@@ -591,5 +761,150 @@ Código de situação de lote de RPS
 
 
 
+    /**
+     * __sendSOAPNFSe
+     * Estabelece comunicaçao com servidor SOAP 1.1 ou 1.2 da SEFAZ,
+     * usando as chaves publica e privada parametrizadas na contrução da classe.
+     * Conforme Manual de Integração Versão 4.0.1
+     *
+     * @name __sendSOAPNFSe
+     * @version 1.0
+     * @package NFePHP
+     * @param string $urlsefaz
+     * @param string $namespace
+     * @param string $cabecalho
+     * @param string $dados
+     * @param string $metodo
+     * @param numeric $ambiente
+     * @return mixed False se houve falha ou o retorno em xml do SEFAZ
+     */
+    public function __sendSOAPNFSe($urlsefaz,$cabecalho,$dados,$metodo,$ambiente){
+
+        use_soap_error_handler(true);
+        //ini_set("soap.wsdl_cache_enabled", "0");
+
+        if($ambiente == 1){
+         $ambiente = 'producao';
+        $URL = $urlsefaz.'?wsdl';
+        } else {
+        $ambiente = 'homologacao';
+        $URL = $urlsefaz.'?WSDL';
+        }
+        //completa a url do serviço
+        $soapver = SOAP_1_1;
+
+        $options = array(
+            'encoding'      => 'UTF-8',
+            'verifypeer'    => false,
+            'verifyhost'    => false,
+            'soap_version'  => $soapver,
+            'style'         => SOAP_DOCUMENT,
+            'use'           => SOAP_LITERAL,
+            'local_cert'    => $this->certKEY,
+            'trace'         => true,
+            'compression'   => 0,
+            'exceptions'    => true,
+            'cache_wsdl'    => WSDL_CACHE_NONE
+        );
+        //instancia a classe soap
+//echo "<pre>$URL\n\n";print_r($options);exit;
+        try{
+            $oSoapClient = new NFeSOAP2ClientNFSe($URL,$options);
+        } catch (Exception $e) {
+            $this->errStatus = True;
+            $this->errMsg = $e->__toString();
+            return false;
+        }
+       
+        /*
+            $varCabec = new SoapVar($cabecalho,XSD_ANYXML);
+            //$headerbody = array('cUF' => 35, 'versaoDados' => '2.00');
+            $header = new SoapHeader($namespace,'cabecalho',$varCabec);
+            $oSoapClient->__setSoapHeaders($header);
+            //monta o corpo da mensagem soap
+            $varBody = new SoapVar($dados,XSD_ANYXML);
+              $varCabec = new SoapVar($cabecalho,XSD_ANYXML);
+            $header = new SoapHeader($namespace,'cabecalho',$varCabec);
+            $oSoapClient->__setSoapHeaders($header);
+                $varBody=new SoapVar('<?xml version="1.0" encoding="utf-8"?>'.$dados,XSD_ANYXML);
+            //faz a chamada ao metodo do webservices
+            try{
+                $resp = $oSoapClient->__soapCall($metodo, array($varBody) );
+                $resposta = $oSoapClient->__getLastResponse();
+            } catch (Exception $e){
+                     echo "erro:\n<br>".$e->__toString();;
+                $this->errStatus = True;
+                $this->errMsg = $e->__toString();
+                return false;
+            }
+        */
+            //faz a chamada ao metodo do webservices
+            try{
+                 //$resp = $oSoapClient->$metodo($aBody);
+                 //$varBody = new SoapVar($dados,XSD_ANYXML);
+                /*
+                $varBody='<?xml version="1.0" encoding="utf-8"?>'.$cabecalho.$dados;
+                 *
+                 */
+                // não precisa enviar cabecalho...
+                $varBody=$dados;
+                //$varBody=file_get_contents("/tmp/servico_enviar_lote_rps_envio.xml");
+                $aBody = array("","loteXML"=>$varBody);
+                 $resp = $oSoapClient->__soapCall($metodo, $aBody);
+                 $resposta = $oSoapClient->__getLastResponse();
+                $this->soapRequest=$oSoapClient->soapRequest;
+            } catch (Exception $e){
+                $this->soapRequest=$oSoapClient->soapRequest;
+                $this->errStatus = True;
+                $this->errMsg = $e->__toString();
+                return false;
+            }
+
+        $this->soapDebug = $oSoapClient->__getLastRequestHeaders();
+        $this->soapDebug .= "\n" . $oSoapClient->__getLastRequest();
+        $this->soapDebug .= "\n" . $oSoapClient->__getLastResponseHeaders();
+        $this->soapDebug .= "\n" . $oSoapClient->__getLastResponse();
+//echo "<pre>";print_r($resposta);exit;
+        return $resposta;
+    } //fim __sendSOAPNFSe
+
+} //fim da classe
+
+/**
+ * Classe complementar
+ * necessária para a comunicação SOAP 1.2
+ * Remove algumas tags para adequar a comunicação
+ * ao padrão Ruindows utilizado
+ */
+class NFeSOAP2ClientNFSe extends SoapClient {
+    public $soapRequest;
+    function __doRequest($request, $location, $action, $version) {
+        $request = str_replace(':ns1', '', $request);
+        $request = str_replace('ns1:', '', $request);
+        $request = str_replace("\n", '', $request);
+        $request = str_replace("\r", '', $request);
+        if (strpos($request,"EnviarLoteRpsEnvio")!==false)
+        {
+            $request=str_replace("<EnviarLoteRPS/><param1>",'<EnviarLoteRPS xmlns="http://tempuri.org/"><loteXML>',$request);
+            $request=str_replace("</param1>","</loteXML></EnviarLoteRPS>",$request);
+        }
+        if (strpos($request,"ConsultarLoteRps")!==false)
+        {
+            $request=str_replace("<ConsultarLoteRPS/><param1>",'<ConsultarLoteRPS xmlns="http://tempuri.org/"><loteXML>',$request);
+            $request=str_replace("</param1>","</loteXML></ConsultarLoteRPS>",$request);
+        }
+        if (strpos($request,"ConsultarSituacaoLoteRps")!==false)
+        {
+            $request=str_replace("<ConsultarSituacaoLoteRPS/><param1>",'<ConsultarSituacaoLoteRPS xmlns="http://tempuri.org/"><loteXML>',$request);
+            $request=str_replace("</param1>","</loteXML></ConsultarSituacaoLoteRPS>",$request);
+        }
+        //$request=str_replace('&gt;','>',$request);
+        //$request=str_replace('&lt;','<',$request);
+
+//echo "<textarea style='width:100%; height: 200pt'>".($request)."</textarea>";exit;
+        $this->soapRequest=$request;
+        return (parent::__doRequest($request, $location, $action, $version));
+    }
+}
 
 ?>
