@@ -26,7 +26,7 @@
  *
  * @package     NFePHP
  * @name        ConvertNFePHP
- * @version     2.31
+ * @version     2.32
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2011 &copy; NFePHP
@@ -1646,13 +1646,13 @@ class ConvertNFePHP {
                         // todos esses campos sao obrigatorios
                         $COFINSQtde = $dom->createElement("COFINSQtde");
                         $CST = $dom->createElement("CST", $dados[1]);
-                        $COFINSAliq->appendChild($CST);
+                        $COFINSQtde->appendChild($CST);
                         $qBCProd = $dom->createElement("qBCProd", $dados[2]);
-                        $COFINSAliq->appendChild($qBCProd);
+                        $COFINSQtde->appendChild($qBCProd);
                         $vAliqProd = $dom->createElement("vAliqProd", $dados[3]);
-                        $COFINSAliq->appendChild($vAliqProd);
+                        $COFINSQtde->appendChild($vAliqProd);
                         $vCOFINS = $dom->createElement("vCOFINS", $dados[4]);
-                        $COFINSAliq->appendChild($vCOFINS);
+                        $COFINSQtde->appendChild($vCOFINS);
                         $COFINS->appendChild($COFINSQtde);
                         break;
 
