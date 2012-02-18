@@ -30,7 +30,7 @@
  * @author    Giuliano Nascimento <giusoft at hotmail dot com>
  *
  *        CONTRIBUIDORES (em ordem alfabetica):
- *
+ *              Roberto Leite Machado <linux dot rlm at gamil dot com>
  * 
  * 
  * TODO: Este arquivo está incompleto e deve ser completamente revisado foi postado apenas para permitir as contribuições de todos os interessados
@@ -290,17 +290,17 @@ class NFSe {
             // REGISTRO 5 - Descrição do serviço realizado
             $s.="5"; // Tipo de registro
             $s.=padrl($this->nfseid, 20, "l", "0"); // Sequencial da NFS-e
-            $s.=padrl($this->soNumeros($item['codigo']), 4, "l"); // Codigo do serviço pretasdo
-            $s.=padrl($this->soNumeros($item['codigoMunicipio']), 20, "l"); // Código tributação município
+            $s.=padrl($item['codigo'], 4, "l"); // Codigo do serviço pretasdo
+            $s.=padrl($item['codigoMunicipio'], 20, "l"); // Código tributação município
             $s.=padrl(number_format($item['valor'],2,"",""), 15, "l", "0"); // Valor do serviço
             $s.=padrl(number_format($item['valorDeducoes'],2,"",""), 15, "l", "0"); // Valor dedução
             $s.=padrl(number_format($item['aliquota'],2,"",""), 4, "l", "0"); // Alíquota
             $s.=padrl($item['unidade'], 20, "l"); // Unidade
             $s.=padrl(number_format($item['quantidade'],2,"",""),8,"l","0"); // Quantidade
-            $s.=padrl($this->tiraAcentos($item['discriminacao']), 255, "r"," "); // Descrição do serviço
+            $s.=padrl($item['discriminacao'], 255, "r"," "); // Descrição do serviço
             $s.=padrl(" ",20,"l"); // Alvará               
             $s.=padrl(" ", 9, "l"); // Preencher com 9 espações em branco
-            $s.=padrl($this->c['numeroLote'], 8, "l","0"); // Sequencial do registro
+            $s.=padrl($this->numeroLote, 8, "l","0"); // Sequencial do registro
             $s.=NL;
         }
         
