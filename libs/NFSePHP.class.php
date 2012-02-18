@@ -72,6 +72,7 @@ class NFSe {
     public $nfsexml='';
     public $arqtxt='';
     
+    //Conteudo do array aItens
     //valor,valorDeducoes,valorPis,valorCofins,valorIr,valorCsll,issRetido,valorIss,valorIssRetido,
     //outrasRetencoes,baseCalculo,aliquota,valorLiquidoNfse,descontoIncondicionado,descontoCondicionado,
     //itemListaServico,codigoCnae,discriminacao
@@ -100,8 +101,7 @@ class NFSe {
         $infRps->appendChild($dom->createElement("OptanteSimplesNacional",$this->optanteSimplesNacional));
         $infRps->appendChild($dom->createElement("IncentivadorCultural",$this->incentivadorCultural));
         $infRps->appendChild($dom->createElement("Status",$this->status));
-
-
+        //cria as variáveis zeradas    
         $qtd=$v_total=$total_itens=$t_icms=$t_ipi=$total_pb=$total_pl=0;
         $temIcms=false;
         foreach ($this->aItens as $item) {
@@ -130,7 +130,6 @@ class NFSe {
             $Valores->appendChild($ValorIssRetido);
             $Valores->appendChild($BaseCalculo);
             $Valores->appendChild($Aliquota);
-
             // Detalhes do serviço
             $ItemListaServico=$dom->createElement("ItemListaServico",trim($item['itemListaServico']));
             $CodigoTributacaoMunicipio=$dom->createElement("CodigoCnae",trim($item['codigoCnae']));
@@ -142,16 +141,13 @@ class NFSe {
             $Servico->appendChild($Discriminacao);
             $Servico->appendChild($CodigoMunicipio);
             $infRps->appendChild($Servico);
-
         } //fim foreach aItens
-
         // Prestador do Serviço
         $Prestador=$dom->createElement("Prestador");
         $Cnpj=$dom->createElement("Cnpj",$this->CNPJ);
         $InscricaoMunicipal=$dom->createElement("InscricaoMunicipal",$this->IM);
         $Prestador->appendChild($Cnpj);
         $Prestador->appendChild($InscricaoMunicipal);
-
         // Tomador do Serviço
         $Tomador=$dom->createElement("Tomador");
         $IdentificacaoTomador=$dom->createElement("IdentificacaoTomador");
@@ -189,7 +185,6 @@ class NFSe {
         }
         $infRps->appendChild($Prestador);
         $infRps->appendChild($Tomador);
-
         // Serviços
         $Rps->appendChild($infRps);
         $ListaRps=$dom->createElement("ListaRps");
@@ -338,9 +333,9 @@ class NFSe {
         $node = $dom->getElementsByTagName("Rps")->item(0);
         $Rps=$node->C14N(FALSE,FALSE,NULL,NULL);
         $l.='<LoteRps id="'.$idLote.'">';
-        $l.='<NumeroLote>'.$this->c['numero'].'</NumeroLote>';
-        $l.='<Cnpj>'.$this->c['propriaCnpj'].'</Cnpj>';
-        $l.='<InscricaoMunicipal>'.$this->soNumerosIsento($this->tiraPontos($this->c['propriaInscricaoMunicipal'])).'</InscricaoMunicipal>';
+        $l.='<NumeroLote>'.$this->numeroLote.'</NumeroLote>';
+        $l.='<Cnpj>'.$this->CNPJ.'</Cnpj>';
+        $l.='<InscricaoMunicipal>'.$this->IM.'</InscricaoMunicipal>';
         $l.='<QuantidadeRps>1</QuantidadeRps>';
         $l.='<ListaRps>'.$Rps.'</ListaRps>';
         $l.='</LoteRps>';
@@ -356,7 +351,7 @@ class NFSe {
     }
 
     // Assina XML
-    function signNFSe($tag='infNFe') {
+    public function signNFSe($tag='infNFe') {
         global $http_lib;
         $sai=false;
         $nfefile=$this->nfsexml;
@@ -381,68 +376,51 @@ class NFSe {
             $this->nfexml=$this->nfeTools->__signXMLNFSe($nfefile, $tag);
         }
         return($sai);
-    } //fim 
+    } //fim signNFSe
 
 
     // Valida XML assinado
     function valida($tipo="nfe") {
         global $gPathLib,$gPathDefault;
-        /*
-        $this->nfeTools= new gNFeTools($this->c['propriaCnpj'].".pfx");
-        $this->nfeTools->tpAmb=$this->c['ambiente'];
-        $this->nfeTools->empName=$this->c['propriaRazaoSocial'];
-        $this->nfeTools->cUF=$this->c['propriaEnderecoIbgeMunicipio'];
-        $this->nfeTools->UF=$this->c['propriaEnderecoMunicipio'];
-        $this->nfeTools->cnpj=$this->c['propriaCnpj'];
-        $this->nfeTools->keyPass=$this->c['senhaCertificado'];
-        */
-
-        if ($gPathLib<>"")
-        {
+        if ($gPathLib<>""){
             $arq=$gPathLib.NFEPHP."/schemes/";
-        } else
-        {
+        } else {
             $arq=$gPathDefault.NFEPHP."/schemes/";
         }
 
-        if ($tipo=="nfe")
+        if ($tipo=="nfe"){
             $xsd=$arq.$this->schemes.'/nfe_v2.00.xsd';
-        else
+        } else {
             $xsd=$arq.'/NFSE_SSA/nfse.xsd';
+        }    
         $sai=$this->nfeTools->validXML($this->nfexml, $xsd);
-                //echo $xsd;exit;
-        //$sai=$nfe->validXML($this->nfexml, $xsd);
-                //echo var_dump($sai);exit;
         if ($sai['error']<>'') {
             $e=explode(";",$sai['error']);
             foreach ($e as $el)
                 $this->erros[]=trim($el);
         }
         return($sai);
-    }
+    } //fim valida
 
 
     // Enviar para Sefaz
     function envia($xml="",$numero="") {
         $sai=true;
-        if (!is_object($this->nfeTools)){
-            $this->nfeTools= new gNFeTools($this->config());
-        }
-        $sql="select * from nfe_numeros where id_armazens=0"; // numero do lote
-        $rs=gQuery($sql);
-        if ($rs->EOF) {
-            $sql="insert into nfe_numeros (id_armazens,numero) values (0,0)";
-            gQuery($sql);
+        //$sql="select * from nfe_numeros where id_armazens=0"; // numero do lote
+        //$rs=gQuery($sql);
+        //if ($rs->EOF) {
+        //    $sql="insert into nfe_numeros (id_armazens,numero) values (0,0)";
+        //    gQuery($sql);
             $numeroLote=1;
-        } else {
-            $numeroLote=intval($rs->fields['numero'])+1;
-        }
-        $sql="update nfe_numeros set numero=$numeroLote where id_armazens=0";
-        gQuery($sql);
-        if ($xml==""){
-            $xml=$this->nfexml;
-        }
-        if ($ret = $this->nfeTools->sendLot(array($xml),$numeroLote)) {
+        //} else {
+        //    $numeroLote=intval($rs->fields['numero'])+1;
+        //}
+        //$sql="update nfe_numeros set numero=$numeroLote where id_armazens=0";
+        //gQuery($sql);
+        //if ($xml==""){
+        //    $xml=$this->nfexml;
+        //}
+        if ($ret = $this->sendLot(array($xml),$numeroLote)) {
             if ($ret['cStat']=='103') {
                 $this->recibo=$ret['nRec'];
                 $this->dataRecibo=$ret['dhRecbto'];
@@ -452,10 +430,10 @@ class NFSe {
             }
         }
         return($sai);
-    } //fim
+    } //fim envia
 
-    // Enviar para Sefaz
-    function enviaNfse($xml="",$numero="") {
+    
+    public function enviaNFSe($xml="",$numero="") {
         $sai=true;
         if (!is_object($this->nfeTools)) {
             $this->nfeTools= new gNFeTools($this->config());
@@ -467,74 +445,59 @@ class NFSe {
         //$xml=file_get_contents('/tmp/envio.xml');
         $xml=str_replace("\n",'',$xml);
         //echo "<textarea rows='20' cols='80'>$xml<textarea><br><br>";
-        if ($ret = $this->nfeTools->sendRps($xml,$this->c['numeroLote'])) {
+        if ($ret = $this->sendRps($xml,$this->numeroLote)) {
             if ($ret['Protocolo']<>'') {
                 // Nova aceita... Salva no banco
-                $sql="update nfse_numeros set numero_nota=".$this->c['numeroNota']." where ambiente=".$this->c['ambiente']." and id_empresa=".$this->id_empresa;
-                gQuery($sql);
-                $sql="update nfse set situacao='Aceita',xml='$xml',data_recibo='".$ret['DataRecebimento']."',protocolo='".$ret['Protocolo']."' where id=".$this->nfeid;
-                gQuery($sql);
+                //$sql="update nfse_numeros set numero_nota=".$this->c['numeroNota']." where ambiente=".$this->c['ambiente']." and id_empresa=".$this->id_empresa;
+                //gQuery($sql);
+                //$sql="update nfse set situacao='Aceita',xml='$xml',data_recibo='".$ret['DataRecebimento']."',protocolo='".$ret['Protocolo']."' where id=".$this->nfeid;
+                //gQuery($sql);
                 $this->protocolo=$ret['Protocolo'];
                 $this->numeroNota=$numeroNota;
                 $this->numeroLote=$numeroLote;
             } else {
-                $sql="update nfse set situacao='Rejeitada',xml='$xml',mensagens='Codigo ".$ret['Codigo']."<br>".$ret['Mensagem']."<br>".$ret['Correcao']."' where id=".$this->nfeid;
-                gQuery($sql);
+                //$sql="update nfse set situacao='Rejeitada',xml='$xml',mensagens='Codigo ".$ret['Codigo']."<br>".$ret['Mensagem']."<br>".$ret['Correcao']."' where id=".$this->nfeid;
+                //gQuery($sql);
                 $this->erros[]=str_pad($ret['Codigo'],10,' ')." ".$ret['Mensagem']."<br>".$ret['Correcao'];
                 $sai=false;
             }
         } else {
-              $sql="update nfse set situacao='Nao enviada',xml='$xml',mensagens='Codigo ".$ret['Codigo']."<br>".$ret['Mensagem']."<br>".$ret['Correcao']."' where id=".$this->nfeid;
-              gQuery($sql);
+              //$sql="update nfse set situacao='Nao enviada',xml='$xml',mensagens='Codigo ".$ret['Codigo']."<br>".$ret['Mensagem']."<br>".$ret['Correcao']."' where id=".$this->nfeid;
+              //gQuery($sql);
               $this->erros[]=str_pad('E000',10,' ')." Nao foi possivel enviar para a SEFAZ, provavelmente por problema no certificado.";
               $sai=false;
         }
         return($sai);
-    } //fim 
+    } //fim enviaNFSe
 
-    function consultaRps($protocolo) {
-        $sai=true;
-        if (!is_object($this->nfeTools)) {
-            $this->nfeTools= new gNFeTools($this->config());
+    public function consultaRps($protocolo) {
+        $sai=$this->__consultRps($this->CNPJ,$this->IM,trim($protocolo));
+        return $sai;
+    } //fim consultaRps
+
+
+    public function consultaSituacaoRps($protocolo) {
+        $sai=$this->__consultSitRps($this->CNPJ,$this->IM,trim($protocolo));
+        //Código de situação de lote de RPS
+        //1 – Não Recebido
+        //2 – Não Processado
+        //3 – Processado com Erro
+        //4 – Processado com Sucesso
+        $situacao = FALSE;
+        if ($sai){
+            $situacao = $sai['Situacao'];
         }
-        $sai=$this->nfeTools->consultRps($this->c['propriaCnpj'],$this->soNumerosIsento($this->tiraPontos($this->c['propriaInscricaoMunicipal'])),trim($protocolo));
-        return($sai);
-    }
+        return($situacao);
+    } //fim consultaSituacaoRps
 
-    function consultaSituacaoRps($protocolo) {
-        $sai=true;
-        if (!is_object($this->nfeTools)) {
-            $this->nfeTools= new gNFeTools($this->config());
-        }
-        $sai=$this->nfeTools->consultSitRps($this->c['propriaCnpj'],$this->soNumerosIsento($this->tiraPontos($this->c['propriaInscricaoMunicipal'])),trim($protocolo));
-/*
-Código de situação de lote de RPS
-1 – Não Recebido
-2 – Não Processado
-3 – Processado com Erro
-4 – Processado com Sucesso
- */
-        return($sai['Situacao']);
-    } //fim
-
-/**
+    /**
      * sendRps
-     * Envia lote de Notas Fiscais de Serviço para a SEFAZ.
-     * Este método pode enviar uma ou mais NFe para o SEFAZ, desde que,
-     * o tamanho do arquivo de envio não ultrapasse 500kBytes
-     * Este processo enviará somente até 50 NFe em cada Lote
+     * Envia lote de Notas Fiscais de Serviço 
      *
      * @name sendRps
-     * @version 1.0
      * @package NFePHP
-     * @param    array   $aNFe notas fiscais em xml uma em cada campo do array unidimensional MAX 50
-     * @param   integer $idLote o id do lote e um numero que deve ser gerado pelo sistema
-     *                          a cada envio mesmo que seja de apenas uma NFe
-     * @return    mixed    False ou array ['cStat'=>103,','xMotivo'=>'Lote aceito']
     **/
     public function sendRps($aNFSe,$idLote) {
-
-        // carga das variaveis da funçao do webservice envio de Ne em lote
         //identificação do serviço
         $servico = 'EnvioLoteRPS';
         //recuperação da versão
@@ -543,33 +506,20 @@ Código de situação de lote de RPS
         $urlservico = $this->mURL[$servico]['URL'];
         //recuperação do método
         $metodo = $this->mURL[$servico]['method'];
-
         //montagem do namespace do serviço
-        $namespace = $this->URLPortal.'/wsdl/'.$servico;
-          $namespace = 'http://www.abrasf.org.br/ABRASF/arquivos/nfse.xsd';
-
+        $namespace = 'http://www.abrasf.org.br/ABRASF/arquivos/nfse.xsd';
         // monta string com todas as NFe enviadas no array
-        //$sNFSe = implode('',$aNFSe);
-        //remover <?xml version="1.0" encoding=... das NFe pois somente uma dessas tags pode exitir na mensagem
         $sNFSe = str_ireplace('<?xml version="1.0" encoding="utf-8"?>','',$aNFSe);
         $sNFSe = str_ireplace('<?xml version="1.0" encoding="UTF-8" standalone="no"?>','',$sNFSe);
-
         //envia dados via SOAP
-        //montagem do cabeçalho da comunicação SOAP
-        $cabec = '<cabecalho xmlns="'. $namespace . '"><versaoDados>' . $versao . '</versaoDados></cabecalho>';
         //montagem dos dados da mensagem SOAP
         $dados = trim(str_replace("\n","",$sNFSe));
-
-          $retorno = $this->__sendSOAPNFSe($urlservico, $cabec, $dados, $metodo);
-        if ($this->errStatus)
-        {
-            return;
-        }
+        $retorno = $this->__sendSOAPNFSe($urlservico, $cabec, $dados, $metodo);
         if ( isset($retorno) ) {
             //pega os dados do array retornado pelo NuSoap
-              $retorno=str_replace('&lt;','<',$retorno);
-              $retorno=str_replace('&gt;','>',$retorno);
-              $retorno=str_replace('<?xml version="1.0" encoding="utf-8"?>','',$retorno);
+            $retorno=str_replace('&lt;','<',$retorno);
+            $retorno=str_replace('&gt;','>',$retorno);
+            $retorno=str_replace('<?xml version="1.0" encoding="utf-8"?>','',$retorno);
             $xmlresp = utf8_encode($retorno);
             if ($xmlresp == ''){
                 //houve uma falha na comunicação SOAP
@@ -584,11 +534,9 @@ Código de situação de lote de RPS
             $doc->loadXML($retorno,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
             // status do recebimento ou mensagem de erro
             $aRet['DataRecebimento'] = $doc->getElementsByTagName('DataRecebimento')->item(0)->nodeValue;
-               
             $aRet['Codigo'] = $doc->getElementsByTagName('Codigo')->item(0)->nodeValue;
             $aRet['Mensagem'] = $doc->getElementsByTagName('Mensagem')->item(0)->nodeValue;
             $aRet['Correcao'] = $doc->getElementsByTagName('Correcao')->item(0)->nodeValue;
-
             $aRet['NumeroLote'] = $doc->getElementsByTagName('NumeroLote')->item(0)->nodeValue;
             $aRet['Protocolo'] = $doc->getElementsByTagName('Protocolo')->item(0)->nodeValue;
          } else {
@@ -596,23 +544,16 @@ Código de situação de lote de RPS
             $this->errMsg = 'Nao houve retorno do SOAP!';
             return FALSE;
         }
-        // em caso de fracasso  cStat != 103
         return $aRet;
     }// fim sendLot
 
 
-       /**
+    /**
      * Consulta NFSe enviada po Lote
      *
-     * @name cancelNFS
-     * @version 2.0
      * @package NFePHP
-     * @param    string  $idNFe ID da NFe com 44 digitos (sem o NFe na frente dos numeros)
-     * @param   string  $protId Numero do protocolo de aceitaçao da NFe enviado anteriormente pelo SEFAZ
-     * @param   boolean $bSave
-     * @return    boolean TRUE se sucesso ou FALSE se falha
     **/
-    public function consultRps($cnpj,$inscricaoMunicipal,$protocolo){
+    private function __consultRps($cnpj,$inscricaoMunicipal,$protocolo){
         // carga das variaveis da funçao do webservice envio de Ne em lote
         //identificação do serviço
         $servico = 'ConsultaLoteRPS';
@@ -622,77 +563,53 @@ Código de situação de lote de RPS
         $urlservico = $this->mURL[$servico]['URL'];
         //recuperação do método
         $metodo = $this->mURL[$servico]['method'];
-
         //montagem do namespace do serviço
-        $namespace = $this->URLPortal.'/WSDL/'.$metodo;
-          $namespace = 'http://www.abrasf.org.br/ABRASF/arquivos/nfse.xsd';
-
-          $sNFSe = "<ConsultarLoteRpsEnvio xmlns=\"http://www.abrasf.org.br/ABRASF/arquivos/nfse.xsd\"><Prestador><Cnpj>$cnpj</Cnpj><InscricaoMunicipal>$inscricaoMunicipal</InscricaoMunicipal></Prestador><Protocolo>$protocolo</Protocolo></ConsultarLoteRpsEnvio>";
+        $namespace = 'http://www.abrasf.org.br/ABRASF/arquivos/nfse.xsd';
+        $sNFSe = "<ConsultarLoteRpsEnvio xmlns=\"http://www.abrasf.org.br/ABRASF/arquivos/nfse.xsd\"><Prestador><Cnpj>$cnpj</Cnpj><InscricaoMunicipal>$inscricaoMunicipal</InscricaoMunicipal></Prestador><Protocolo>$protocolo</Protocolo></ConsultarLoteRpsEnvio>";
         // monta string com todas as NFe enviadas no array
-        //$sNFSe = implode('',$aNFSe);
-        //remover <?xml version="1.0" encoding=... das NFe pois somente uma dessas tags pode exitir na mensagem
-
-          /*
-          $sNFSe = str_ireplace('<?xml version="1.0" encoding="utf-8"?>','',$aNFSe);
-        $sNFSe = str_ireplace('<?xml version="1.0" encoding="UTF-8" standalone="no"?>','',$sNFSe);
-          */
         //envia dados via SOAP
-        //montagem do cabeçalho da comunicação SOAP
-        $cabec = '<?xml version="1.0" encoding="UTF-8"?><cabecalho xmlns="'. $namespace . '"><versaoDados>' . $versao . '</versaoDados></cabecalho>';
         //montagem dos dados da mensagem SOAP
         $dados = trim(str_replace("\n","",$sNFSe));
-          $retorno = $this->__sendSOAPNFSe($urlservico, $cabec, $dados, $metodo);
-
-        if ($this->errStatus)
-        {
-            return;
-        }
-        if ( isset($retorno) ) {
+        $retorno = $this->__sendSOAPNFSe($urlservico, $cabec, $dados, $metodo);
+        if ( isset($retorno) || !$retorno ) {
             //pega os dados do array retornado pelo NuSoap
-              $retorno=str_replace('&lt;','<',$retorno);
-              $retorno=str_replace('&gt;','>',$retorno);
-              $retorno=str_replace('<?xml version="1.0" encoding="utf-8"?>','',$retorno);
+            $retorno=str_replace('&lt;','<',$retorno);
+            $retorno=str_replace('&gt;','>',$retorno);
+            $retorno=str_replace('<?xml version="1.0" encoding="utf-8"?>','',$retorno);
             $xmlresp = utf8_encode($retorno);
             if ($xmlresp == ''){
                 //houve uma falha na comunicação SOAP
-                $this->errStatus = true;
+                $this->errStatus = TRUE;
                 $this->errMsg = 'Houve uma falha na comunicação SOAP!!';
                 return FALSE;
             }
             //tratar dados de retorno
             $doc = new DOMDocument(); //cria objeto DOM
-            $doc->formatOutput = false;
-            $doc->preserveWhiteSpace = false;
+            $doc->formatOutput = FALSE;
+            $doc->preserveWhiteSpace = FALSE;
             $doc->loadXML($retorno,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
             // status do recebimento ou mensagem de erro
             $aRet['Numero'] = $doc->getElementsByTagName('Numero')->item(0)->nodeValue;
-
             $aRet['CodigoVerificacao'] = $doc->getElementsByTagName('CodigoVerificacao')->item(0)->nodeValue;
             $aRet['DataEmissao'] = $doc->getElementsByTagName('DataEmissao')->item(0)->nodeValue;
          } else {
-            $this->errStatus = true;
-            $this->errMsg = 'Nao houve retorno do SOAP!';
+            $this->errStatus = TRUE;
+            $this->errMsg .= 'Nao houve retorno do SOAP!';
             return FALSE;
         }
-        // em caso de fracasso  cStat != 103
         return $aRet;
-    }
+    } //fim consultRps
 
 
 
 
-       /**
+    /**
      * Consulta NFS enviada po Lote
      *
-     * @name cancelNFS
-     * @version 2.0
+     * @name 
      * @package NFePHP
-     * @param    string  $idNFe ID da NFe com 44 digitos (sem o NFe na frente dos numeros)
-     * @param   string  $protId Numero do protocolo de aceitaçao da NFe enviado anteriormente pelo SEFAZ
-     * @param   boolean $bSave
-     * @return    boolean TRUE se sucesso ou FALSE se falha
     **/
-    public function consultSitRps($cnpj,$inscricaoMunicipal,$protocolo){
+    private function __consultSitRps($cnpj,$inscricaoMunicipal,$protocolo){
         // carga das variaveis da funçao do webservice envio de Ne em lote
         //identificação do serviço
         $servico = 'ConsultaSituacaoLoteRPS';
@@ -702,63 +619,209 @@ Código de situação de lote de RPS
         $urlservico = $this->mURL[$servico]['URL'];
         //recuperação do método
         $metodo = $this->mURL[$servico]['method'];
-
         //montagem do namespace do serviço
-        $namespace = $this->URLPortal.'/WSDL/'.$metodo;
-          $namespace = 'http://www.abrasf.org.br/ABRASF/arquivos/nfse.xsd';
-
-          $sNFSe = "<ConsultarSituacaoLoteRpsEnvio xmlns=\"http://www.abrasf.org.br/ABRASF/arquivos/nfse.xsd\"><Prestador><Cnpj>$cnpj</Cnpj><InscricaoMunicipal>$inscricaoMunicipal</InscricaoMunicipal></Prestador><Protocolo>$protocolo</Protocolo></ConsultarSituacaoLoteRpsEnvio>";
-        // monta string com todas as NFe enviadas no array
-        //$sNFSe = implode('',$aNFSe);
-        //remover <?xml version="1.0" encoding=... das NFe pois somente uma dessas tags pode exitir na mensagem
-
-          /*
-          $sNFSe = str_ireplace('<?xml version="1.0" encoding="utf-8"?>','',$aNFSe);
-        $sNFSe = str_ireplace('<?xml version="1.0" encoding="UTF-8" standalone="no"?>','',$sNFSe);
-          */
+        $namespace = 'http://www.abrasf.org.br/ABRASF/arquivos/nfse.xsd';
+        $sNFSe = "<ConsultarSituacaoLoteRpsEnvio xmlns=\"http://www.abrasf.org.br/ABRASF/arquivos/nfse.xsd\"><Prestador><Cnpj>$cnpj</Cnpj><InscricaoMunicipal>$inscricaoMunicipal</InscricaoMunicipal></Prestador><Protocolo>$protocolo</Protocolo></ConsultarSituacaoLoteRpsEnvio>";
         //envia dados via SOAP
         //montagem do cabeçalho da comunicação SOAP
         $cabec = '<?xml version="1.0" encoding="UTF-8"?><cabecalho xmlns="'. $namespace . '"><versaoDados>' . $versao . '</versaoDados></cabecalho>';
         //montagem dos dados da mensagem SOAP
         $dados = trim(str_replace("\n","",$sNFSe));
-          $retorno = $this->__sendSOAPNFSe($urlservico, $cabec, $dados, $metodo);
-
-        if ($this->errStatus)
-        {
-            return;
-        }
-        if ( isset($retorno) ) {
+        $retorno = $this->__sendSOAPNFSe($urlservico, $cabec, $dados, $metodo);
+        //caso tenha ocorrido erro no envio
+        if ( isset($retorno) || !$retorno ) {
             //pega os dados do array retornado pelo NuSoap
-              $retorno=str_replace('&lt;','<',$retorno);
-              $retorno=str_replace('&gt;','>',$retorno);
-              $retorno=str_replace('<?xml version="1.0" encoding="utf-8"?>','',$retorno);
+            $retorno=str_replace('&lt;','<',$retorno);
+            $retorno=str_replace('&gt;','>',$retorno);
+            $retorno=str_replace('<?xml version="1.0" encoding="utf-8"?>','',$retorno);
             $xmlresp = utf8_encode($retorno);
             if ($xmlresp == ''){
                 //houve uma falha na comunicação SOAP
-                $this->errStatus = true;
+                $this->errStatus = TRUE;
                 $this->errMsg = 'Houve uma falha na comunicação SOAP!!';
                 return FALSE;
             }
             //tratar dados de retorno
             $doc = new DOMDocument(); //cria objeto DOM
-            $doc->formatOutput = false;
-            $doc->preserveWhiteSpace = false;
+            $doc->formatOutput = FALSE;
+            $doc->preserveWhiteSpace = FALSE;
             $doc->loadXML($retorno,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
             // status do recebimento ou mensagem de erro
             $aRet['NumeroLote'] = $doc->getElementsByTagName('NumeroLote')->item(0)->nodeValue;
             $aRet['Situacao'] = $doc->getElementsByTagName('Situacao')->item(0)->nodeValue;
          } else {
-            $this->errStatus = true;
-            $this->errMsg = 'Nao houve retorno do SOAP!';
+            $this->errStatus = TRUE;
+            $this->errMsg .= 'Nao houve retorno do SOAP!';
             return FALSE;
         }
-        // em caso de fracasso  cStat != 103
         return $aRet;
+    } //fim consultSitRps
+
+
+     protected function __sendCURLNFSe($urlsefaz,$namespace,$cabecalho,$dados,$metodo,$ambiente='',$UF=''){
+
+        if ($urlsefaz == ''){
+            //não houve retorno
+            $this->errMsg = "URL do webservice não disponível.\n";
+            $this->errStatus = true;
+        }
+        if ($ambiente == ''){
+            $ambiente = $this->tpAmb;
+        }
+        $data = '';
+        $data .= '<?xml version="1.0" encoding="utf-8"?>';
+        $data .= '<soap12:Envelope ';
+        $data .= 'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ';
+        $data .= 'xmlns:xsd="http://www.w3.org/2001/XMLSchema" ';
+        $data .= 'xmlns:soap12="http://www.w3.org/2003/05/soap-envelope">';
+        $data .= '<soap12:Header>';
+        $data .= $cabecalho;
+        $data .= '</soap12:Header>';
+        $data .= '<soap12:Body>';
+        $data .= $dados;
+        $data .= '</soap12:Body>';
+        $data .= '</soap12:Envelope>';
+        //[Informational 1xx]
+        $cCode['100']="Continue";
+        $cCode['101']="Switching Protocols";
+        //[Successful 2xx]
+        $cCode['200']="OK";
+        $cCode['201']="Created";
+        $cCode['202']="Accepted";
+        $cCode['203']="Non-Authoritative Information";
+        $cCode['204']="No Content";
+        $cCode['205']="Reset Content";
+        $cCode['206']="Partial Content";
+        //[Redirection 3xx]
+        $cCode['300']="Multiple Choices";
+        $cCode['301']="Moved Permanently";
+        $cCode['302']="Found";
+        $cCode['303']="See Other";
+        $cCode['304']="Not Modified";
+        $cCode['305']="Use Proxy";
+        $cCode['306']="(Unused)";
+        $cCode['307']="Temporary Redirect";
+        //[Client Error 4xx]
+        $cCode['400']="Bad Request";
+        $cCode['401']="Unauthorized";
+        $cCode['402']="Payment Required";
+        $cCode['403']="Forbidden";
+        $cCode['404']="Not Found";
+        $cCode['405']="Method Not Allowed";
+        $cCode['406']="Not Acceptable";
+        $cCode['407']="Proxy Authentication Required";
+        $cCode['408']="Request Timeout";
+        $cCode['409']="Conflict";
+        $cCode['410']="Gone";
+        $cCode['411']="Length Required";
+        $cCode['412']="Precondition Failed";
+        $cCode['413']="Request Entity Too Large";
+        $cCode['414']="Request-URI Too Long";
+        $cCode['415']="Unsupported Media Type";
+        $cCode['416']="Requested Range Not Satisfiable";
+        $cCode['417']="Expectation Failed";
+        //[Server Error 5xx]
+        $cCode['500']="Internal Server Error";
+        $cCode['501']="Not Implemented";
+        $cCode['502']="Bad Gateway";
+        $cCode['503']="Service Unavailable";
+        $cCode['504']="Gateway Timeout";
+        $cCode['505']="HTTP Version Not Supported";
+        $tamanho = strlen($data);
+        if($this->enableSCAN){
+            //monta a terminação do URL
+            switch ($metodo){
+                case 'nfeRecepcaoLote2':
+                    $servico = "NfeRecepcao";
+                    break;
+                case 'nfeRetRecepcao2':
+                    $servico = "NfeRetRecepcao";
+                    break;
+                case 'nfeCancelamentoNF2':
+                    $servico = "NfeCancelamento";
+                    break;
+                case 'nfeInutilizacaoNF2':
+                    $servico = "NfeInutilizacao";
+                    break;
+                case 'nfeConsultaNF2':
+                    $servico = "NfeConsulta";
+                    break;
+                case 'nfeStatusServicoNF2':
+                    $servico = "NfeStatusServico";
+                    break;
+                case 'consultaCadastro':
+                    $servico = "CadConsultaCadastro";
+                    break;
+            }
+            $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . "def_ws2.xml",$ambiente,'SCAN');
+            $urlsefaz = $aURL[$servico]['URL'];
+        } 
+        $parametros = Array('Content-Type: application/soap+xml;charset=utf-8;action="'.$namespace."/".$metodo.'"','SOAPAction: "'.$metodo.'"',"Content-length: $tamanho");
+        $_aspa = '"';
+        $oCurl = curl_init();
+        if(is_array($this->aProxy)){
+            curl_setopt($oCurl, CURLOPT_HTTPPROXYTUNNEL, 1);
+            curl_setopt($oCurl, CURLOPT_PROXYTYPE, "CURLPROXY_HTTP");
+            curl_setopt($oCurl, CURLOPT_PROXY, $this->aProxy['IP'].':'.$this->aProxy['PORT']);
+            if( $this->aProxy['PASS'] != '' ){
+                curl_setopt($oCurl, CURLOPT_PROXYUSERPWD, $this->aProxy['USER'].':'.$this->aProxy['PASS']);
+                curl_setopt($oCurl, CURLOPT_PROXYAUTH, "CURLAUTH_BASIC");
+            } //fim if senha proxy
+        }//fim if aProxy
+        curl_setopt($oCurl, CURLOPT_URL, $urlsefaz.'');
+        curl_setopt($oCurl, CURLOPT_PORT , 443);
+        curl_setopt($oCurl, CURLOPT_VERBOSE, 1);
+        curl_setopt($oCurl, CURLOPT_HEADER, 1); //retorna o cabeçalho de resposta
+        curl_setopt($oCurl, CURLOPT_SSLVERSION, 3);
+        curl_setopt($oCurl, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, 0);
+        curl_setopt($oCurl, CURLOPT_SSLCERT, $this->pubKEY);
+        curl_setopt($oCurl, CURLOPT_SSLKEY, $this->priKEY);
+        curl_setopt($oCurl, CURLOPT_POST, 1);
+        curl_setopt($oCurl, CURLOPT_POSTFIELDS, $data);
+        curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($oCurl, CURLOPT_HTTPHEADER,$parametros);
+        $__xml = curl_exec($oCurl);
+        $info = curl_getinfo($oCurl); //informações da conexão
+        $txtInfo ="";
+        $txtInfo .= "URL=$info[url]\n";
+        $txtInfo .= "Content type=$info[content_type]\n";
+        $txtInfo .= "Http Code=$info[http_code]\n";
+        $txtInfo .= "Header Size=$info[header_size]\n";
+        $txtInfo .= "Request Size=$info[request_size]\n";
+        $txtInfo .= "Filetime=$info[filetime]\n";
+        $txtInfo .= "SSL Verify Result=$info[ssl_verify_result]\n";
+        $txtInfo .= "Redirect Count=$info[redirect_count]\n";
+        $txtInfo .= "Total Time=$info[total_time]\n";
+        $txtInfo .= "Namelookup=$info[namelookup_time]\n";
+        $txtInfo .= "Connect Time=$info[connect_time]\n";
+        $txtInfo .= "Pretransfer Time=$info[pretransfer_time]\n";
+        $txtInfo .= "Size Upload=$info[size_upload]\n";
+        $txtInfo .= "Size Download=$info[size_download]\n";
+        $txtInfo .= "Speed Download=$info[speed_download]\n";
+        $txtInfo .= "Speed Upload=$info[speed_upload]\n";
+        $txtInfo .= "Download Content Length=$info[download_content_length]\n";
+        $txtInfo .= "Upload Content Length=$info[upload_content_length]\n";
+        $txtInfo .= "Start Transfer Time=$info[starttransfer_time]\n";
+        $txtInfo .= "Redirect Time=$info[redirect_time]\n";
+        $txtInfo .= "Certinfo=$info[certinfo]\n";
+        $n = strlen($__xml);
+        $x = stripos($__xml, "<");
+        $xml = substr($__xml, $x, $n-$x);
+        $this->soapDebug = $data."\n\n".$txtInfo."\n".$__xml;
+        if ($__xml === false){
+            //não houve retorno
+            $this->errMsg = curl_error($oCurl) . $info['http_code'] . $cCode[$info['http_code']]."\n";
+            $this->errStatus = true;
+        } else {
+            //houve retorno mas ainda pode ser uma mensagem de erro do webservice
+            $this->errMsg = $info['http_code'] . $cCode[$info['http_code']]."\n";
+            $this->errStatus = false;
+        }
+        curl_close($oCurl);
+        return $xml;
+        
     }
-
-
-
-
 
 
     /**
@@ -778,133 +841,88 @@ Código de situação de lote de RPS
      * @param numeric $ambiente
      * @return mixed False se houve falha ou o retorno em xml do SEFAZ
      */
-    public function __sendSOAPNFSe($urlsefaz,$cabecalho,$dados,$metodo,$ambiente){
-
-        use_soap_error_handler(true);
-        //ini_set("soap.wsdl_cache_enabled", "0");
-
+    private function __sendSOAPNFSe($urlwebservice,$cabecalho,$dados,$metodo,$ambiente){
+        use_soap_error_handler(TRUE);
         if($ambiente == 1){
-         $ambiente = 'producao';
-        $URL = $urlsefaz.'?wsdl';
+            $ambiente = 'producao';
+            $URL = $urlwebservice.'?wsdl';
         } else {
-        $ambiente = 'homologacao';
-        $URL = $urlsefaz.'?WSDL';
+            $ambiente = 'homologacao';
+            $URL = $urlwebservice.'?wsdl';
         }
-        //completa a url do serviço
         $soapver = SOAP_1_1;
-
         $options = array(
             'encoding'      => 'UTF-8',
-            'verifypeer'    => false,
-            'verifyhost'    => false,
+            'verifypeer'    => FALSE,
+            'verifyhost'    => FALSE,
             'soap_version'  => $soapver,
             'style'         => SOAP_DOCUMENT,
             'use'           => SOAP_LITERAL,
             'local_cert'    => $this->certKEY,
-            'trace'         => true,
+            'trace'         => TRUE,
             'compression'   => 0,
-            'exceptions'    => true,
+            'exceptions'    => TRUE,
             'cache_wsdl'    => WSDL_CACHE_NONE
         );
         //instancia a classe soap
-//echo "<pre>$URL\n\n";print_r($options);exit;
         try{
-            $oSoapClient = new NFeSOAP2ClientNFSe($URL,$options);
+            $oSoapClient = new NFSeSOAPClient($URL,$options);
         } catch (Exception $e) {
-            $this->errStatus = True;
+            $this->errStatus = TRUE;
             $this->errMsg = $e->__toString();
-            return false;
+            return FALSE;
         }
-       
-        /*
-            $varCabec = new SoapVar($cabecalho,XSD_ANYXML);
-            //$headerbody = array('cUF' => 35, 'versaoDados' => '2.00');
-            $header = new SoapHeader($namespace,'cabecalho',$varCabec);
-            $oSoapClient->__setSoapHeaders($header);
-            //monta o corpo da mensagem soap
-            $varBody = new SoapVar($dados,XSD_ANYXML);
-              $varCabec = new SoapVar($cabecalho,XSD_ANYXML);
-            $header = new SoapHeader($namespace,'cabecalho',$varCabec);
-            $oSoapClient->__setSoapHeaders($header);
-                $varBody=new SoapVar('<?xml version="1.0" encoding="utf-8"?>'.$dados,XSD_ANYXML);
-            //faz a chamada ao metodo do webservices
-            try{
-                $resp = $oSoapClient->__soapCall($metodo, array($varBody) );
-                $resposta = $oSoapClient->__getLastResponse();
-            } catch (Exception $e){
-                     echo "erro:\n<br>".$e->__toString();;
-                $this->errStatus = True;
-                $this->errMsg = $e->__toString();
-                return false;
-            }
-        */
-            //faz a chamada ao metodo do webservices
-            try{
-                 //$resp = $oSoapClient->$metodo($aBody);
-                 //$varBody = new SoapVar($dados,XSD_ANYXML);
-                /*
-                $varBody='<?xml version="1.0" encoding="utf-8"?>'.$cabecalho.$dados;
-                 *
-                 */
-                // não precisa enviar cabecalho...
-                $varBody=$dados;
-                //$varBody=file_get_contents("/tmp/servico_enviar_lote_rps_envio.xml");
-                $aBody = array("","loteXML"=>$varBody);
-                 $resp = $oSoapClient->__soapCall($metodo, $aBody);
-                 $resposta = $oSoapClient->__getLastResponse();
-                $this->soapRequest=$oSoapClient->soapRequest;
-            } catch (Exception $e){
-                $this->soapRequest=$oSoapClient->soapRequest;
-                $this->errStatus = True;
-                $this->errMsg = $e->__toString();
-                return false;
-            }
-
+        //faz a chamada ao metodo do webservices
+        try{
+            // não precisa enviar cabecalho...
+            $varBody=$dados;
+            $aBody = array("","loteXML"=>$varBody);
+            $resp = $oSoapClient->__soapCall($metodo, $aBody);
+            $resposta = $oSoapClient->__getLastResponse();
+            $this->soapRequest=$oSoapClient->soapRequest;
+        } catch (Exception $e){
+            $this->soapRequest=$oSoapClient->soapRequest;
+            $this->errStatus = TRUE;
+            $this->errMsg = $e->__toString();
+            return FALSE;
+        }
         $this->soapDebug = $oSoapClient->__getLastRequestHeaders();
         $this->soapDebug .= "\n" . $oSoapClient->__getLastRequest();
         $this->soapDebug .= "\n" . $oSoapClient->__getLastResponseHeaders();
         $this->soapDebug .= "\n" . $oSoapClient->__getLastResponse();
-//echo "<pre>";print_r($resposta);exit;
         return $resposta;
     } //fim __sendSOAPNFSe
 
-} //fim da classe
+} //fim da classe NFSe
 
 /**
  * Classe complementar
- * necessária para a comunicação SOAP 1.2
+ * necessária para a comunicação SOAP 
  * Remove algumas tags para adequar a comunicação
  * ao padrão Ruindows utilizado
  */
-class NFeSOAP2ClientNFSe extends SoapClient {
+class NFSeSOAPClient extends SoapClient {
     public $soapRequest;
-    function __doRequest($request, $location, $action, $version) {
+    public function __doRequest($request, $location, $action, $version) {
         $request = str_replace(':ns1', '', $request);
         $request = str_replace('ns1:', '', $request);
         $request = str_replace("\n", '', $request);
         $request = str_replace("\r", '', $request);
-        if (strpos($request,"EnviarLoteRpsEnvio")!==false)
-        {
+        if (strpos($request,"EnviarLoteRpsEnvio")! == FALSE) {
             $request=str_replace("<EnviarLoteRPS/><param1>",'<EnviarLoteRPS xmlns="http://tempuri.org/"><loteXML>',$request);
             $request=str_replace("</param1>","</loteXML></EnviarLoteRPS>",$request);
         }
-        if (strpos($request,"ConsultarLoteRps")!==false)
-        {
+        if (strpos($request,"ConsultarLoteRps") !== FALSE) {
             $request=str_replace("<ConsultarLoteRPS/><param1>",'<ConsultarLoteRPS xmlns="http://tempuri.org/"><loteXML>',$request);
             $request=str_replace("</param1>","</loteXML></ConsultarLoteRPS>",$request);
         }
-        if (strpos($request,"ConsultarSituacaoLoteRps")!==false)
-        {
+        if (strpos($request,"ConsultarSituacaoLoteRps") !== FALSE) {
             $request=str_replace("<ConsultarSituacaoLoteRPS/><param1>",'<ConsultarSituacaoLoteRPS xmlns="http://tempuri.org/"><loteXML>',$request);
             $request=str_replace("</param1>","</loteXML></ConsultarSituacaoLoteRPS>",$request);
         }
-        //$request=str_replace('&gt;','>',$request);
-        //$request=str_replace('&lt;','<',$request);
-
-//echo "<textarea style='width:100%; height: 200pt'>".($request)."</textarea>";exit;
         $this->soapRequest=$request;
         return (parent::__doRequest($request, $location, $action, $version));
     }
-}
+} //fim da classe NFSeSOAPClient
 
 ?>
