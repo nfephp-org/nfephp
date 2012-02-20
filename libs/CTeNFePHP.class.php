@@ -28,7 +28,7 @@
  * 
  * @package   NFePHP
  * @name      CTeNFePHP
- * @version   1.00
+ * @version   1.01
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2011 &copy; CTePHP
  * @link      http://www.nfephp.org/
@@ -37,12 +37,15 @@
  *
  *        CONTRIBUIDORES (em ordem alfabetica):
  * 
+ *          Fernando Mertins <fernando.mertins at gmail dot com>
  *          Rodrigo Rysdyk <rodrigo_rysdyk at hotmail dot com>
  * 
  *               
  */
 // Define o caminho base da instalação do sistema
-define('PATH_ROOT', dirname(dirname( __FILE__ )) . DIRECTORY_SEPARATOR);
+if (!defined('PATH_ROOT')) {
+    define('PATH_ROOT', dirname(dirname( __FILE__ )) . DIRECTORY_SEPARATOR);
+}
 
 /**
  * Classe principal "CORE class"
@@ -1395,20 +1398,33 @@ class CTeNFePHP {
      * Verifica o status do servico da SEFAZ
      *
      * $this->cStat = 107 OK
-     *        cStat = 108 sitema paralizado momentaneamente, aguardar retorno
+     *        cStat = 108 sistema paralizado momentaneamente, aguardar retorno
      *        cStat = 109 sistema parado sem previsao de retorno, verificar status SCAN
-     * se SCAN estiver ativado usar, caso caontrario aguardar pacientemente.
+     *                    se SCAN estiver ativado usar, caso contrário aguardar pacientemente.
      * @name statusServico
-     * @version 1.00
-     * @package CTePHP
+     * @version 1.01
+     * @package CTeNFePHP
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @author Fabricio Veiga <fabriciostuff at gmail dot com>
-     * @param	string $UF sigla da unidade da Federação
-     * @param   integer $tpAmb tipo de ambiente 1-produção e 2-homologação
-     * @param   integer 1 usa o __sendSOAP e 2 usa o __sendSOAP2
-     * @return	mixed false ou array ['bStat'=>boolean,'cStat'=>107,'tMed'=>1,'dhRecbto'=>'12/12/2009','xMotivo'=>'Serviço em operação','xObs'=>'']
+     * @author Fernando Mertins <fernando.mertins at gmail dot com>
+     * @param string $UF sigla da Unidade da Federação
+     * @param integer $tpAmb tipo de ambiente 1-produção e 2-homologação
+     * @param integer 1 usa o __sendSOAP e 2 usa o __sendSOAP2
+     * @return	mixed false ou array conforme exemplo abaixo:
+     * array(10) {
+     * ["bStat"]     =>  bool(true),
+     * ["cStat"]     =>  string(3)  "107",
+     * ["tMed"]      =>  string(1)  "1",
+     * ["dhRecbto"]  =>  string(19) "20/02/2012 15:47:34",
+     * ["xMotivo"]   =>  string(19) "Servico em Operacao",
+     * ["xObs"]      =>  string(0)  "",
+     * ["tpAmb"]     =>  string(1)  "1",
+     * ["verAplic"]  =>  string(16) "RS20111213141015",
+     * ["cUF"]       =>  string(2)  "43",
+     * ["dhRetorno"] =>  string(0)  ""
+     * }
     **/
-    public function statusServico($UF = '', $tpAmb = '', $modSOAP = '1') {
+    public function statusServico($UF = '', $tpAmb = '', $modSOAP = '2') {
         // Retorno da funçao
         $aRetorno = array('bStat' => false,'cStat' => '','tMed'  => '','dhRecbto' => '','xMotivo' => '','xObs' => '');
         // Caso o parametro tpAmb seja vazio
@@ -1422,13 +1438,13 @@ class CTeNFePHP {
         } else {
             if ($UF != $this->UF || $tpAmb != $this->tpAmb) {
                 // Recarrega as url referentes aos dados passados como parametros para a função
-                $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . "cte_ws2.xml", $tpAmb, $UF);
+                $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . "cte_ws1.xml", $tpAmb, $UF);
             }
         }
         // Busca o cUF
         $cUF = $this->cUFlist[$UF];
         // Identificação do serviço
-        $servico = 'CTeStatusServico';
+        $servico = 'CteStatusServico';
         // Recuperação da versão
         $versao = $aURL[$servico]['version'];
         // Recuperação da url do serviço
@@ -1438,9 +1454,9 @@ class CTeNFePHP {
         // Montagem do namespace do serviço
         $namespace = $this->URLPortal . '/wsdl/' . $servico;
         // Montagem do cabeçalho da comunicação SOAP
-        $cabec = '<cteCabecMsg xmlns="'. $namespace . '"><cuf>' . $cUF . '</cuf><versaoDados>' . $versao . '</versaoDados></cteCabecMsg>';
+        $cabec = '<cteCabecMsg xmlns="'. $namespace . '"><cUF>' . $cUF . '</cUF><versaoDados>' . $versao . '</versaoDados></cteCabecMsg>';
         // Montagem dos dados da mensagem SOAP
-        $dados = '<cteDadosMsg xmlns="' . $namespace . '"><consStatServ xmlns="' . $this->URLPortal . '" versao="' . $versao . '"><tpAmb>' . $tpAmb . '</tpAmb><cuf>' . $cUF . '</cuf><xServ>STATUS</xServ></consStatServ></cteDadosMsg>';
+        $dados = '<cteDadosMsg xmlns="' . $namespace . '"><consStatServCte xmlns="' . $this->URLPortal . '" versao="' . $versao . '"><tpAmb>' . $tpAmb . '</tpAmb><xServ>STATUS</xServ></consStatServCte></cteDadosMsg>';
         if ($modSOAP == '2') {
             $retorno = $this->__sendSOAP2($urlservico, $namespace, $cabec, $dados, $metodo, $tpAmb);
         } else {
@@ -1454,19 +1470,30 @@ class CTeNFePHP {
             $doc->preserveWhiteSpace = false;
             $doc->loadXML($retorno, LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
             $cStat = !empty($doc->getElementsByTagName('cStat')->item(0)->nodeValue) ? $doc->getElementsByTagName('cStat')->item(0)->nodeValue : '';
+            //certifica que existe o elemento "cStat" no XML de retortno da SEFAZ.
             if ($cStat == ''){
+                $this->errStatus = true;
+                $this->errMsg = 'Nao existe o elemento "cStat" no XML de retorno da SEFAZ, erro!!';
                 return false;
-            }    
+            }
             $aRetorno['bStat'] = ($cStat == '107');
+            // Tipo de ambiente
+            $aRetorno['tpAmb'] = $doc->getElementsByTagName('tpAmb')->item(0)->nodeValue;
+            // Versão do aplicativo da SEFAZ
+            $aRetorno['verAplic'] = $doc->getElementsByTagName('verAplic')->item(0)->nodeValue;
             // Status do serviço
             $aRetorno['cStat'] = $doc->getElementsByTagName('cStat')->item(0)->nodeValue;
-            // Tempo medio de resposta
-            $aRetorno['tMed'] = $doc->getElementsByTagName('tMed')->item(0)->nodeValue;
-            // Data e hora da mensagem (opcional)
-            $aRetorno['dhRecbto'] = !empty($doc->getElementsByTagName('dhRecbto')->item(0)->nodeValue) ? date("d/m/Y H:i", $this->__convertTime($doc->getElementsByTagName('dhRecbto')->item(0)->nodeValue)) : '';
-            // Motivo da resposta (opcional)
-            $aRetorno['xMotivo'] = !empty($doc->getElementsByTagName('xMotivo')->item(0)->nodeValue) ? $doc->getElementsByTagName('xMotivo')->item(0)->nodeValue : '';
-            // Obervaçoes (opcional)
+            // Motivo da resposta
+            $aRetorno['xMotivo'] = $doc->getElementsByTagName('xMotivo')->item(0)->nodeValue;
+            // Código da UF que atendeu a solicitação
+            $aRetorno['cUF'] = $doc->getElementsByTagName('cUF')->item(0)->nodeValue;
+            // Data e hora da mensagem
+            $aRetorno['dhRecbto'] = date('d/m/Y H:i:s', $this->__convertTime($doc->getElementsByTagName('dhRecbto')->item(0)->nodeValue));
+            // Tempo médio de resposta, em segundos (opcional)
+            $aRetorno['tMed'] = !empty($doc->getElementsByTagName('tMed')->item(0)->nodeValue) ? $doc->getElementsByTagName('tMed')->item(0)->nodeValue : '';
+            // Data e hora prevista para o retorno do webservice (opcional)
+            $aRetorno['dhRetorno'] = !empty($doc->getElementsByTagName('dhRetorno')->item(0)->nodeValue) ? date('d/m/Y H:i:s', $this->__convertTime($doc->getElementsByTagName('dhRetorno')->item(0)->nodeValue)) : '';
+            // Obervações (opcional)
             $aRetorno['xObs'] = !empty($doc->getElementsByTagName('xObs')->item(0)->nodeValue) ? $doc->getElementsByTagName('xObs')->item(0)->nodeValue : '';
         } else {
             $this->errStatus = true;
@@ -1483,7 +1510,7 @@ class CTeNFePHP {
      * retornados podem não ser os mais atuais. Não é recomendado seu uso ainda.
      *
      * @name consultaCadastro
-     * @version 1.00
+     * @version 1.01
      * @package CTePHP
      * @author Roberto L. Machado <linux.rlm at gmail dot com>      
      * @author Fabrício Veiga <fabriciostuff at gmail dot com>
@@ -1540,7 +1567,7 @@ class CTeNFePHP {
         // Caso a sigla do estado seja diferente do emitente ou o ambiente seja diferente
         if ($UF != $this->UF || $tpAmb != $this->tpAmb) {
             // Recarrega as url referentes aos dados passados como parametros para a função
-            $aURL = $this->loadSEFAZ($this->raizDir . 'config' . DIRECTORY_SEPARATOR . "cte_ws2.xml", $tpAmb, $UF);
+            $aURL = $this->loadSEFAZ($this->raizDir . 'config' . DIRECTORY_SEPARATOR . "cte_ws1.xml", $tpAmb, $UF);
         }
         // Busca o cUF
         $cUF = $this->cUFlist[$UF];
@@ -1560,7 +1587,7 @@ class CTeNFePHP {
             return false;
         }
         // Montagem do cabeçalho da comunicação SOAP
-        $cabec = '<cteCabecMsg xmlns="' . $namespace . '"><cuf>' . $cUF . '</cuf><versaoDados>' . $versao . '</versaoDados></cteCabecMsg>';
+        $cabec = '<cteCabecMsg xmlns="' . $namespace . '"><cUF>' . $cUF . '</cUF><versaoDados>' . $versao . '</versaoDados></cteCabecMsg>';
         // Montagem dos dados da mensagem SOAP
         $dados = '<cteDadosMsg xmlns="' . $namespace . '"><consCad xmlns="' . $this->URLcte . '" versao="' . $versao . '"><infCons><xServ>CONS-CAD</xServ><uf>' . $UF . '</uf>' . $filtro . '</infCons></consCad><cteDadosMsg>';
         // Envia a solicitação via SOAP
@@ -1598,7 +1625,7 @@ class CTeNFePHP {
             if (!$this->enableSCAN){
             $aURL = $this->aURL;
         } else {
-            $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . "cte_ws2.xml",$this->tpAmb,'SCAN');
+            $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . "cte_ws1.xml",$this->tpAmb,'SCAN');
         }
         // Identificação do serviço
         $servico = 'CteRecepcao';
@@ -1674,7 +1701,7 @@ class CTeNFePHP {
      * Caso $this->cStat == 105 Tentar novamente mais tarde
      *
      * @name getProtocol
-     * @version 1.00
+     * @version 1.01
      * @package CTePHP
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @author Fabrício Veiga <fabriciostuff at gmail dot com>
@@ -1685,7 +1712,6 @@ class CTeNFePHP {
      * @return	mixed     false ou array
     **/
     public function getProtocol($recibo = '', $chave = '', $tpAmb = '', $modSOAP = '2') {
-            
         // Carrega defaults
         $i = 0;
         $aRetorno = array('bStat' => false,'cStat' => '','xMotivo' => '','aProt' => '');
@@ -1693,7 +1719,7 @@ class CTeNFePHP {
         $UF = $this->UF;
         if ($tpAmb != '1' && $tpAmb != '2' ) {
             $tpAmb = '2';
-        }    
+        }
         $tpAmb = $this->tpAmb;
         $aURL = $this->aURL;
         // Verifica se a chave foi passada
@@ -1705,7 +1731,7 @@ class CTeNFePHP {
                 // Se não for o mesmo carregar a sigla
                 $UF = $this->UFList[$cUF];
                 // Recarrega as url referentes aos dados passados como parametros para a função
-                $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . "cte_ws2.xml", $tpAmb, $UF);
+                $aURL = $this->loadSEFAZ($this->raizDir . 'config' . DIRECTORY_SEPARATOR . "cte_ws1.xml", $tpAmb, $UF);
             }
         }
         if ($recibo == '' && $chave == '') {
@@ -1742,7 +1768,7 @@ class CTeNFePHP {
         if ($recibo == '' &&  $chave != '') {
             // Buscar o protocolo pelo numero da chave de acesso
             // Identificação do serviço
-            $servico = 'CTeConsultaProtocolo';
+            $servico = 'CteConsulta';
             // Recuperação da versão
             $versao = $aURL[$servico]['version'];
             // Recuperação da url do serviço
@@ -1752,7 +1778,7 @@ class CTeNFePHP {
             // Montagem do namespace do serviço
             $namespace = $this->URLPortal . '/wsdl/' . $servico;
             // Montagem do cabeçalho da comunicação SOAP
-            $cabec = '<cteCabecMsg xmlns="' . $namespace . '"><cuf>' . $cUF . '</cuf><versaoDados>' . $versao . '</versaoDados></cteCabecMsg>';
+            $cabec = '<cteCabecMsg xmlns="' . $namespace . '"><cUF>' . $cUF . '</cUF><versaoDados>' . $versao . '</versaoDados></cteCabecMsg>';
             // Montagem dos dados da mensagem SOAP
             $dados = '<cteDadosMsg xmlns="' . $namespace . '"><consSitCTe xmlns="' . $this->URLPortal . '" versao="' . $versao . '"><tpAmb>' . $tpAmb . '</tpAmb><xServ>CONSULTAR</xServ><chCTe>' . $chave . '</chCTe></consSitCTe></cteDadosMsg>';
         }
@@ -1890,7 +1916,7 @@ class CTeNFePHP {
         }
 
         // Verifica se o SCAN esta habilitado
-        $aURL = $this->loadSEFAZ($this->raizDir . 'config' . DIRECTORY_SEPARATOR . "cte_ws2.xml", $this->tpAmb, 'SCAN');
+        $aURL = $this->loadSEFAZ($this->raizDir . 'config' . DIRECTORY_SEPARATOR . "cte_ws1.xml", $this->tpAmb, 'SCAN');
         if (!$this->enableSCAN)
             $aURL = $this->aURL;
 
@@ -1955,13 +1981,13 @@ class CTeNFePHP {
         //     2      2       2       14       2     3        9       9            
         $id = 'ID' . $this->cUF . $nAno . $this->cnpj . '55' . str_pad($nSerie, 3, '0', STR_PAD_LEFT) . str_pad($nIni, 9, '0', STR_PAD_LEFT) . str_pad($nFin, 9, '0', STR_PAD_LEFT);
         // Montagem do cabeçalho da comunicação SOAP
-        $cabec = '<cteCabecMsg xmlns="' . $namespace . '"><cuf>' . $this->cUF . '</cuf><versaoDados>' . $versao . '</versaoDados></cteCabecMsg>';
+        $cabec = '<cteCabecMsg xmlns="' . $namespace . '"><cUF>' . $this->cUF . '</cUF><versaoDados>' . $versao . '</versaoDados></cteCabecMsg>';
         // Montagem do corpo da mensagem
         $dXML = '<inutCTe xmlns="' . $this->URLcte . '" versao="' . $versao . '">';
         $dXML .= '<infInut Id="' . $id . '">';
         $dXML .= '<tpAmb>' . $this->tpAmb . '</tpAmb>';
         $dXML .= '<xServ>INUTILIZAR</xServ>';
-        $dXML .= '<cuf>' . $this->cUF . '</cuf>';
+        $dXML .= '<cUF>' . $this->cUF . '</cUF>';
         $dXML .= '<ano>' . $nAno . '</ano>';
         $dXML .= '<CNPJ>' . $this->cnpj . '</CNPJ>';
         $dXML .= '<mod>55</mod>';
@@ -2051,7 +2077,7 @@ class CTeNFePHP {
             return $aRetorno;            
         }
         // Verifica se o SCAN esta habilitado
-        $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . "cte_ws2.xml", $this->tpAmb, 'SCAN');
+        $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . "cte_ws1.xml", $this->tpAmb, 'SCAN');
         if (!$this->enableSCAN){
             $aURL = $this->aURL;
         }    
@@ -2066,7 +2092,7 @@ class CTeNFePHP {
         // Montagem do namespace do serviço
         $namespace = $this->URLPortal . '/wsdl/' . $servico;
         // Montagem do cabeçalho da comunicação SOAP
-        $cabec = '<cteCabecMsg xmlns="' . $namespace . '"><cuf>' . $this->cUF . '</cuf><versaoDados>' . $versao . '</versaoDados></cteCabecMsg>';
+        $cabec = '<cteCabecMsg xmlns="' . $namespace . '"><cUF>' . $this->cUF . '</cUF><versaoDados>' . $versao . '</versaoDados></cteCabecMsg>';
         // Montagem dos dados da mensagem SOAP
         $dXML = '<cancCTe xmlns="' . $this->URLcte . '" versao="' . $versao . '">';
         $dXML .= '<infCanc Id="ID' . $id . '"><tpAmb>' . $this->tpAmb . '</tpAmb><xServ>CANCELAR</xServ><chCTe>' . $id . '</chCTe><nProt>' . $protId . '</nProt><xJust>' . $xJust . '</xJust></infCanc></cancCTe>';
@@ -2679,12 +2705,11 @@ class CTeNFePHP {
      * @return mixed false se houve falha ou o retorno em xml do SEFAZ
      */
     protected function __sendSOAP2($urlsefaz,$namespace,$cabecalho,$dados,$metodo,$ambiente,$UF=''){
-            if ($urlsefaz == ''){
+        if ($urlsefaz == ''){
             //não houve retorno
             $this->errMsg = 'URL do webservice não disponível.';
             $this->errStatus = true;
         }
-            echo $urlsefaz;
         $data = '';
         $data .= '<?xml version="1.0" encoding="utf-8"?>';
         $data .= '<soap12:Envelope ';
@@ -2788,17 +2813,17 @@ class CTeNFePHP {
         }//fim if aProxy
             
         curl_setopt($oCurl, CURLOPT_URL, $urlsefaz.'');
-	curl_setopt($oCurl, CURLOPT_PORT , 443);
-	curl_setopt($oCurl, CURLOPT_VERBOSE, 1);
-	curl_setopt($oCurl, CURLOPT_HEADER, 1); //retorna o cabeçalho de resposta
-	curl_setopt($oCurl, CURLOPT_SSLVERSION, 3);
+        curl_setopt($oCurl, CURLOPT_PORT , 443);
+        curl_setopt($oCurl, CURLOPT_VERBOSE, 1); //apresenta informações de conexão na tela
+        curl_setopt($oCurl, CURLOPT_HEADER, 1); //retorna o cabeçalho de resposta
+        curl_setopt($oCurl, CURLOPT_SSLVERSION, 3);
         curl_setopt($oCurl, CURLOPT_SSL_VERIFYHOST, 0);
-	curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, 0);
-	curl_setopt($oCurl, CURLOPT_SSLCERT, $this->pubKEY);
-	curl_setopt($oCurl, CURLOPT_SSLKEY, $this->priKEY);
-	curl_setopt($oCurl, CURLOPT_POST, 1);
-	curl_setopt($oCurl, CURLOPT_POSTFIELDS, $data);
-	curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, 0);
+        curl_setopt($oCurl, CURLOPT_SSLCERT, $this->pubKEY);
+        curl_setopt($oCurl, CURLOPT_SSLKEY, $this->priKEY);
+        curl_setopt($oCurl, CURLOPT_POST, 1);
+        curl_setopt($oCurl, CURLOPT_POSTFIELDS, $data);
+        curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($oCurl, CURLOPT_HTTPHEADER,$parametros);
         $__xml = curl_exec($oCurl);
         $info = curl_getinfo($oCurl); //informações da conexão
@@ -2834,7 +2859,7 @@ class CTeNFePHP {
             $this->errStatus = true;
         } else {
             //houve retorno mas ainda pode ser uma mensagem de erro do webservice
-            $this->errMsg = $info['http_code'] . $cCode[$info['http_code']];
+            $this->errMsg = $info['http_code'] . ' ' . $cCode[$info['http_code']];
             $this->errStatus = false;
         }
         curl_close($oCurl);
