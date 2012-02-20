@@ -1,122 +1,133 @@
 <?xml version="1.0" encoding="utf-8"?>
 <WS xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
-<!-- Correção da nomenclarura dos servicos -->
-<!-- Nota: URL homologacao SP colocados com letras maiusculas so para ficar igual ao site da SEFAZ -->
-<!-- Versão 20110322_1 -->
+
+<!--
+Versao AAAAMMDD_3
+Descrever aqui as alteracoes realizadas na versao 3.
+
+Versao 20120220_2
+Revisao de adequacao de maiusculas/minusculas nos nomes dos webservices e nomes dos
+metodos, utilizando "Cte" ao inves de "CTe", pois ocorria erro no estado do RS.
+
+Versao 20110322_1
+Correcao da nomenclarura dos servicos. Nota: URL homologacao SP colocados com letras
+maiusculas so para ficar igual ao site da SEFAZ.
+-->
+
 <UF>
     <sigla>MT</sigla>
     <homologacao>
-        <CTeRecepcao method='CTeRecepcao' version='1.03'>https://homologacao.sefaz.mt.gov.br/ctews/services/CteRecepcao</CTeRecepcao>
-        <CTeRetRecepcao method='CTeRetRecepcao' version='1.03'>https://homologacao.sefaz.mt.gov.br/ctews/services/CteRetRecepcao</CTeRetRecepcao>
-        <CTeCancelamento method='CTeCancelamento' version='1.03'>https://homologacao.sefaz.mt.gov.br/ctews/services/CteCancelamento</CTeCancelamento>
-        <CTeInutilizacao method='CTeInutilizacao' version='1.03'>https://homologacao.sefaz.mt.gov.br/ctews/services/CteInutilizacao</CTeInutilizacao>
-        <CTeConsultaProtocolo method='CTeConsultaProtocolo' version='1.03'>https://homologacao.sefaz.mt.gov.br/ctews/services/CteConsulta</CTeConsultaProtocolo>
-        <CTeStatusServico method='cteStatusServicoCT' version='1.03'>https://homologacao.sefaz.mt.gov.br/ctews/services/CteStatusServico</CTeStatusServico>
+        <CteRecepcao method='CTeRecepcao' version='1.04'>https://homologacao.sefaz.mt.gov.br/ctews/services/CteRecepcao</CteRecepcao>
+        <CteRetRecepcao method='CTeRetRecepcao' version='1.04'>https://homologacao.sefaz.mt.gov.br/ctews/services/CteRetRecepcao</CteRetRecepcao>
+        <CteCancelamento method='CTeCancelamento' version='1.04'>https://homologacao.sefaz.mt.gov.br/ctews/services/CteCancelamento</CteCancelamento>
+        <CteInutilizacao method='CTeInutilizacao' version='1.04'>https://homologacao.sefaz.mt.gov.br/ctews/services/CteInutilizacao</CteInutilizacao>
+        <CteConsultaProtocolo method='cteConsultaCT' version='1.04'>https://homologacao.sefaz.mt.gov.br/ctews/services/CteConsulta</CteConsultaProtocolo>
+        <CteStatusServico method='cteStatusServicoCT' version='1.04'>https://homologacao.sefaz.mt.gov.br/ctews/services/CteStatusServico</CteStatusServico>
     </homologacao>
     <producao>
-        <CTeRecepcao method='CTeRecepcao' version='1.03'>https://cte.sefaz.mt.gov.br/ctews/services/CteRecepcao</CTeRecepcao>
-        <CTeRetRecepcao method='CTeRetRecepcao' version='1.03'>https://cte.sefaz.mt.gov.br/ctews/services/CteRetRecepcao</CTeRetRecepcao>
-        <CTeCancelamento method='CTeCancelamento' version='1.03'>https://cte.sefaz.mt.gov.br/ctews/services/CteCancelamento</CTeCancelamento>
-        <CTeInutilizacao method='CTeInutilizacao' version='1.03'>https://cte.sefaz.mt.gov.br/ctews/services/CteInutilizacao</CTeInutilizacao>
-        <CTeConsultaProtocolo method='CTeConsultaProtocolo' version='1.03'>https://cte.sefaz.mt.gov.br/ctews/services/CteConsulta</CTeConsultaProtocolo>
-        <CTeStatusServico method='cteStatusServicoCT' version='1.03'>https://cte.sefaz.mt.gov.br/ctews/services/CteStatusServico</CTeStatusServico>
+        <CteRecepcao method='CTeRecepcao' version='1.04'>https://cte.sefaz.mt.gov.br/ctews/services/CteRecepcao</CteRecepcao>
+        <CteRetRecepcao method='CTeRetRecepcao' version='1.04'>https://cte.sefaz.mt.gov.br/ctews/services/CteRetRecepcao</CteRetRecepcao>
+        <CteCancelamento method='CTeCancelamento' version='1.04'>https://cte.sefaz.mt.gov.br/ctews/services/CteCancelamento</CteCancelamento>
+        <CteInutilizacao method='CTeInutilizacao' version='1.04'>https://cte.sefaz.mt.gov.br/ctews/services/CteInutilizacao</CteInutilizacao>
+        <CteConsultaProtocolo method='cteConsultaCT' version='1.04'>https://cte.sefaz.mt.gov.br/ctews/services/CteConsulta</CteConsultaProtocolo>
+        <CteStatusServico method='cteStatusServicoCT' version='1.04'>https://cte.sefaz.mt.gov.br/ctews/services/CteStatusServico</CteStatusServico>
     </producao>
 </UF>
 <UF>
     <sigla>MS</sigla>
     <homologacao>
-        <CTeRecepcao method='CTeRecepcao' version='1.03'>https://homologacao.cte.ms.gov.br/cteWEB/CteRecepcao.asmx</CTeRecepcao>
-        <CTeRetRecepcao method='CTeRetRecepcao' version='1.03'>https://homologacao.cte.ms.gov.br/cteWEB/CteRetRecepcao.asmx</CTeRetRecepcao>
-        <CTeCancelamento method='CTeCancelamento' version='1.03'>https://homologacao.cte.ms.gov.br/cteWEB/CteCancelamento.asmx</CTeCancelamento>
-        <CTeInutilizacao method='CTeInutilizacao' version='1.03'>https://homologacao.cte.ms.gov.br/cteWEB/CteInutilizacao.asmx</CTeInutilizacao>
-        <CTeConsultaProtocolo method='CTeConsultaProtocolo' version='1.03'>https://homologacao.cte.ms.gov.br/cteWEB/CteConsulta.asmx</CTeConsultaProtocolo>
-        <CTeStatusServico method='CTeStatusServico' version='1.03'>https://homologacao.cte.ms.gov.br/cteWEB/CteStatusServico.asmx</CTeStatusServico>
-        <CTeConsultaCadastro method='CTeConsultaCadastro' version='1.03'>https://homologacao.cte.ms.gov.br/cteWEB/CadConsultaCadastro.asmx</CTeConsultaCadastro>
+        <CteRecepcao method='CTeRecepcao' version='1.04'>https://homologacao.cte.ms.gov.br/cteWEB/CteRecepcao.asmx</CteRecepcao>
+        <CteRetRecepcao method='CTeRetRecepcao' version='1.04'>https://homologacao.cte.ms.gov.br/cteWEB/CteRetRecepcao.asmx</CteRetRecepcao>
+        <CteCancelamento method='CTeCancelamento' version='1.04'>https://homologacao.cte.ms.gov.br/cteWEB/CteCancelamento.asmx</CteCancelamento>
+        <CteInutilizacao method='CTeInutilizacao' version='1.04'>https://homologacao.cte.ms.gov.br/cteWEB/CteInutilizacao.asmx</CteInutilizacao>
+        <CteConsultaProtocolo method='cteConsultaCT' version='1.04'>https://homologacao.cte.ms.gov.br/cteWEB/CteConsulta.asmx</CteConsultaProtocolo>
+        <CteStatusServico method='CTeStatusServico' version='1.04'>https://homologacao.cte.ms.gov.br/cteWEB/CteStatusServico.asmx</CteStatusServico>
+        <CTeConsultaCadastro method='CTeConsultaCadastro' version='1.04'>https://homologacao.cte.ms.gov.br/cteWEB/CadConsultaCadastro.asmx</CTeConsultaCadastro>
     </homologacao>
     <producao>
-        <CTeRecepcao method='CTeRecepcao' version='1.03'>https://producao.cte.ms.gov.br/cteWEB/CteRecepcao.asmx</CTeRecepcao>
-        <CTeRetRecepcao method='CTeRetRecepcao' version='1.03'>https://producao.cte.ms.gov.br/cteWEB/CteRetRecepcao.asmx</CTeRetRecepcao>
-        <CTeCancelamento method='CTeCancelamento' version='1.03'>https://producao.cte.ms.gov.br/cteWEB/CteCancelamento.asmx</CTeCancelamento>
-        <CTeInutilizacao method='CTeInutilizacao' version='1.03'>https://producao.cte.ms.gov.br/cteWEB/CteInutilizacao.asmx</CTeInutilizacao>
-        <CTeConsultaProtocolo method='CTeConsultaProtocolo' version='1.03'>https://producao.cte.ms.gov.br/cteWEB/CteConsulta.asmx</CTeConsultaProtocolo>
-        <CTeStatusServico method='cteStatusServicoCT' version='1.03'>https://producao.cte.ms.gov.br/cteWEB/CteStatusServico.asmx</CTeStatusServico>
-        <CTeConsultaCadastro method='CTeConsultaCadastro' version='1.03'>https://producao.cte.ms.gov.br/cteWEB/CadConsultaCadastro.asmx</CTeConsultaCadastro>
+        <CteRecepcao method='CTeRecepcao' version='1.04'>https://producao.cte.ms.gov.br/cteWEB/CteRecepcao.asmx</CteRecepcao>
+        <CteRetRecepcao method='CTeRetRecepcao' version='1.04'>https://producao.cte.ms.gov.br/cteWEB/CteRetRecepcao.asmx</CteRetRecepcao>
+        <CteCancelamento method='CTeCancelamento' version='1.04'>https://producao.cte.ms.gov.br/cteWEB/CteCancelamento.asmx</CteCancelamento>
+        <CteInutilizacao method='CTeInutilizacao' version='1.04'>https://producao.cte.ms.gov.br/cteWEB/CteInutilizacao.asmx</CteInutilizacao>
+        <CteConsultaProtocolo method='cteConsultaCT' version='1.04'>https://producao.cte.ms.gov.br/cteWEB/CteConsulta.asmx</CteConsultaProtocolo>
+        <CteStatusServico method='cteStatusServicoCT' version='1.04'>https://producao.cte.ms.gov.br/cteWEB/CteStatusServico.asmx</CteStatusServico>
+        <CTeConsultaCadastro method='CTeConsultaCadastro' version='1.04'>https://producao.cte.ms.gov.br/cteWEB/CadConsultaCadastro.asmx</CTeConsultaCadastro>
     </producao>
 </UF>
 <UF>
     <sigla>MG</sigla>
     <homologacao>
-        <CTeRecepcao method='CTeRecepcao' version='1.03'>https://hcte.fazenda.mg.gov.br/cte/services/CteRecepcao</CTeRecepcao>
-        <CTeRetRecepcao method='CTeRetRecepcao' version='1.03'>https://hcte.fazenda.mg.gov.br/cte/services/CteRetRecepcao</CTeRetRecepcao>
-        <CTeCancelamento method='CTeCancelamento' version='1.03'>https://hcte.fazenda.mg.gov.br/cte/services/CteCancelamento</CTeCancelamento>
-        <CTeInutilizacao method='CTeInutilizacao' version='1.03'>https://hcte.fazenda.mg.gov.br/cte/services/CteInutilizacao</CTeInutilizacao>
-        <CTeConsultaProtocolo method='CTeConsultaProtocolo' version='1.03'>https://hcte.fazenda.mg.gov.br/cte/services/CteConsulta</CTeConsultaProtocolo>
-        <CTeStatusServico method='cteStatusServicoCT' version='1.03'>https://hcte.fazenda.mg.gov.br/cte/services/CteStatusServico</CTeStatusServico>
+        <CteRecepcao method='CTeRecepcao' version='1.04'>https://hcte.fazenda.mg.gov.br/cte/services/CteRecepcao</CteRecepcao>
+        <CteRetRecepcao method='CTeRetRecepcao' version='1.04'>https://hcte.fazenda.mg.gov.br/cte/services/CteRetRecepcao</CteRetRecepcao>
+        <CteCancelamento method='CTeCancelamento' version='1.04'>https://hcte.fazenda.mg.gov.br/cte/services/CteCancelamento</CteCancelamento>
+        <CteInutilizacao method='CTeInutilizacao' version='1.04'>https://hcte.fazenda.mg.gov.br/cte/services/CteInutilizacao</CteInutilizacao>
+        <CteConsultaProtocolo method='cteConsultaCT' version='1.04'>https://hcte.fazenda.mg.gov.br/cte/services/CteConsulta</CteConsultaProtocolo>
+        <CteStatusServico method='cteStatusServicoCT' version='1.04'>https://hcte.fazenda.mg.gov.br/cte/services/CteStatusServico</CteStatusServico>
     </homologacao>
     <producao>
-        <CTeRecepcao method='CTeRecepcao' version='1.03'>https://cte.fazenda.mg.gov.br/cte/services/CteRecepcao</CTeRecepcao>
-        <CTeRetRecepcao method='CTeRetRecepcao' version='1.03'>https://cte.fazenda.mg.gov.br/cte/services/CteRetRecepcao</CTeRetRecepcao>
-        <CTeCancelamento method='CTeCancelamento' version='1.03'>https://cte.fazenda.mg.gov.br/cte/services/CteCancelamento</CTeCancelamento>
-        <CTeInutilizacao method='CTeInutilizacao' version='1.03'>https://cte.fazenda.mg.gov.br/cte/services/CteInutilizacao</CTeInutilizacao>
-        <CTeConsultaProtocolo method='CTeConsultaProtocolo' version='1.03'>https://cte.fazenda.mg.gov.br/cte/services/CteConsulta</CTeConsultaProtocolo>
-        <CTeStatusServico method='CTeStatusServico' version='1.03'>https://cte.fazenda.mg.gov.br/cte/services/CteStatusServico</CTeStatusServico>
+        <CteRecepcao method='CTeRecepcao' version='1.04'>https://cte.fazenda.mg.gov.br/cte/services/CteRecepcao</CteRecepcao>
+        <CteRetRecepcao method='CTeRetRecepcao' version='1.04'>https://cte.fazenda.mg.gov.br/cte/services/CteRetRecepcao</CteRetRecepcao>
+        <CteCancelamento method='CTeCancelamento' version='1.04'>https://cte.fazenda.mg.gov.br/cte/services/CteCancelamento</CteCancelamento>
+        <CteInutilizacao method='CTeInutilizacao' version='1.04'>https://cte.fazenda.mg.gov.br/cte/services/CteInutilizacao</CteInutilizacao>
+        <CteConsultaProtocolo method='cteConsultaCT' version='1.04'>https://cte.fazenda.mg.gov.br/cte/services/CteConsulta</CteConsultaProtocolo>
+        <CteStatusServico method='cteStatusServicoCT' version='1.04'>https://cte.fazenda.mg.gov.br/cte/services/CteStatusServico</CteStatusServico>
     </producao>
 </UF>
 <UF>
     <sigla>RS</sigla>
     <homologacao>
-        <CTeRecepcao method='CTeRecepcao' version='1.03'>https://homologacao.cte.sefaz.rs.gov.br/ws/cterecepcao/CteRecepcao.asmx</CTeRecepcao>
-        <CTeRetRecepcao method='CTeRetRecepcao' version='1.03'>https://homologacao.cte.sefaz.rs.gov.br/ws/cteretrecepcao/cteRetRecepcao.asmx</CTeRetRecepcao>
-        <CTeCancelamento method='CTeCancelamento' version='1.03'>https://homologacao.cte.sefaz.rs.gov.br/ws/ctecancelamento/ctecancelamento.asmx</CTeCancelamento>
-        <CTeInutilizacao method='CTeInutilizacao' version='1.03'>https://homologacao.cte.sefaz.rs.gov.br/ws/cteinutilizacao/cteinutilizacao.asmx</CTeInutilizacao>
-        <CTeConsultaProtocolo method='CTeConsultaProtocolo' version='1.03'>https://homologacao.cte.sefaz.rs.gov.br/ws/cteconsulta/CteConsulta.asmx</CTeConsultaProtocolo>
-        <CTeStatusServico method='cteStatusServicoCT' version='1.03'>https://homologacao.cte.sefaz.rs.gov.br/ws/ctestatusservico/CteStatusServico.asmx</CTeStatusServico>
+        <CteRecepcao method='CTeRecepcao' version='1.04'>https://homologacao.cte.sefaz.rs.gov.br/ws/cterecepcao/CteRecepcao.asmx</CteRecepcao>
+        <CteRetRecepcao method='CTeRetRecepcao' version='1.04'>https://homologacao.cte.sefaz.rs.gov.br/ws/cteretrecepcao/cteRetRecepcao.asmx</CteRetRecepcao>
+        <CteCancelamento method='CTeCancelamento' version='1.04'>https://homologacao.cte.sefaz.rs.gov.br/ws/ctecancelamento/ctecancelamento.asmx</CteCancelamento>
+        <CteInutilizacao method='CTeInutilizacao' version='1.04'>https://homologacao.cte.sefaz.rs.gov.br/ws/cteinutilizacao/cteinutilizacao.asmx</CteInutilizacao>
+        <CteConsulta method='cteConsultaCT' version='1.04'>https://homologacao.cte.sefaz.rs.gov.br/ws/cteconsulta/CteConsulta.asmx</CteConsulta>
+        <CteStatusServico method='cteStatusServicoCT' version='1.04'>https://homologacao.cte.sefaz.rs.gov.br/ws/ctestatusservico/CteStatusServico.asmx</CteStatusServico>
     </homologacao>
     <producao>
-        <CTeRecepcao method='CTeRecepcao' version='1.03'>https://cte.sefaz.rs.gov.br/ws/cterecepcao/CteRecepcao.asmx</CTeRecepcao>
-        <CTeRetRecepcao method='CTeRetRecepcao' version='1.03'>https://cte.sefaz.rs.gov.br/ws/cteretrecepcao/cteRetRecepcao.asmx</CTeRetRecepcao>
-        <CTeCancelamento method='CTeCancelamento' version='1.03'>https://cte.sefaz.rs.gov.br/ws/ctecancelamento/ctecancelamento.asmx</CTeCancelamento>
-        <CTeInutilizacao method='CTeInutilizacao' version='1.03'>https://cte.sefaz.rs.gov.br/ws/cteinutilizacao/cteinutilizacao.asmx</CTeInutilizacao>
-        <CTeConsultaProtocolo method='CTeConsultaProtocolo' version='1.03'>https://cte.sefaz.rs.gov.br/ws/cteconsulta/CteConsulta.asmx</CTeConsultaProtocolo>
-        <CTeStatusServico method='CTeStatusServico' version='1.03'>https://cte.sefaz.rs.gov.br/ws/ctestatusservico/CteStatusServico.asmx</CTeStatusServico>
+        <CteRecepcao method='CTeRecepcao' version='1.04'>https://cte.sefaz.rs.gov.br/ws/cterecepcao/CteRecepcao.asmx</CteRecepcao>
+        <CteRetRecepcao method='CTeRetRecepcao' version='1.04'>https://cte.sefaz.rs.gov.br/ws/cteretrecepcao/cteRetRecepcao.asmx</CteRetRecepcao>
+        <CteCancelamento method='CTeCancelamento' version='1.04'>https://cte.sefaz.rs.gov.br/ws/ctecancelamento/ctecancelamento.asmx</CteCancelamento>
+        <CteInutilizacao method='CTeInutilizacao' version='1.04'>https://cte.sefaz.rs.gov.br/ws/cteinutilizacao/cteinutilizacao.asmx</CteInutilizacao>
+        <CteConsulta method='cteConsultaCT' version='1.04'>https://cte.sefaz.rs.gov.br/ws/cteconsulta/CteConsulta.asmx</CteConsulta>
+        <CteStatusServico method='cteStatusServicoCT' version='1.04'>https://cte.sefaz.rs.gov.br/ws/ctestatusservico/CteStatusServico.asmx</CteStatusServico>
     </producao>
 </UF>
 <UF>
     <sigla>SP</sigla>
     <homologacao>
-        <CTeRecepcao method='CTeRecepcao' version='1.03'>https://homologacao.nfe.fazenda.sp.gov.br/cteWEB/services/cteRecepcao.asmx</CTeRecepcao>
-        <CTeRetRecepcao method='CTeRetRecepcao' version='1.03'>https://homologacao.nfe.fazenda.sp.gov.br/cteWEB/services/cteRetRecepcao.asmx</CTeRetRecepcao>
-        <CTeCancelamento method='CTeCancelamento' version='1.03'>https://homologacao.nfe.fazenda.sp.gov.br/cteWEB/services/cteCancelamento.asmx</CTeCancelamento>
-        <CTeInutilizacao method='CTeInutilizacao' version='1.03'>https://homologacao.nfe.fazenda.sp.gov.br/cteWEB/services/cteInutilizacao.asmx</CTeInutilizacao>
-        <CTeConsultaProtocolo method='CTeConsultaProtocolo' version='1.03'>https://homologacao.nfe.fazenda.sp.gov.br/cteWEB/services/cteConsulta.asmx</CTeConsultaProtocolo>
-        <CTeStatusServico method='cteStatusServicoCT' version='1.03'>https://homologacao.nfe.fazenda.sp.gov.br/cteWEB/services/cteStatusServico.asmx</CTeStatusServico>        
+        <CteRecepcao method='CTeRecepcao' version='1.04'>https://homologacao.nfe.fazenda.sp.gov.br/cteWEB/services/cteRecepcao.asmx</CteRecepcao>
+        <CteRetRecepcao method='CTeRetRecepcao' version='1.04'>https://homologacao.nfe.fazenda.sp.gov.br/cteWEB/services/cteRetRecepcao.asmx</CteRetRecepcao>
+        <CteCancelamento method='CTeCancelamento' version='1.04'>https://homologacao.nfe.fazenda.sp.gov.br/cteWEB/services/cteCancelamento.asmx</CteCancelamento>
+        <CteInutilizacao method='CTeInutilizacao' version='1.04'>https://homologacao.nfe.fazenda.sp.gov.br/cteWEB/services/cteInutilizacao.asmx</CteInutilizacao>
+        <CteConsultaProtocolo method='cteConsultaCT' version='1.04'>https://homologacao.nfe.fazenda.sp.gov.br/cteWEB/services/cteConsulta.asmx</CteConsultaProtocolo>
+        <CteStatusServico method='cteStatusServicoCT' version='1.04'>https://homologacao.nfe.fazenda.sp.gov.br/cteWEB/services/cteStatusServico.asmx</CteStatusServico>        
     </homologacao>
     <producao>
-        <CTeRecepcao method='CTeRecepcao' version='1.03'>https://nfe.fazenda.sp.gov.br/cteWEB/services/cteRecepcao.asmx</CTeRecepcao>
-        <CTeRetRecepcao method='CTeRetRecepcao' version='1.03'>https://nfe.fazenda.sp.gov.br/cteWEB/services/cteRetRecepcao.asmx</CTeRetRecepcao>
-        <CTeCancelamento method='CTeCancelamento' version='1.03'>https://nfe.fazenda.sp.gov.br/cteWEB/services/cteCancelamento.asmx</CTeCancelamento>
-        <CTeInutilizacao method='CTeInutilizacao' version='1.03'>https://nfe.fazenda.sp.gov.br/cteWEB/services/cteInutilizacao.asmx</CTeInutilizacao>
-        <CTeConsultaProtocolo method='CTeConsultaProtocolo' version='1.03'>https://nfe.fazenda.sp.gov.br/cteWEB/services/cteConsulta.asmx</CTeConsultaProtocolo>
-        <CTeStatusServico method='cteStatusServicoCT' version='1.03'>https://nfe.fazenda.sp.gov.br/cteWEB/services/cteStatusServico.asmx</CTeStatusServico>
+        <CteRecepcao method='CTeRecepcao' version='1.04'>https://nfe.fazenda.sp.gov.br/cteWEB/services/cteRecepcao.asmx</CteRecepcao>
+        <CteRetRecepcao method='CTeRetRecepcao' version='1.04'>https://nfe.fazenda.sp.gov.br/cteWEB/services/cteRetRecepcao.asmx</CteRetRecepcao>
+        <CteCancelamento method='CTeCancelamento' version='1.04'>https://nfe.fazenda.sp.gov.br/cteWEB/services/cteCancelamento.asmx</CteCancelamento>
+        <CteInutilizacao method='CTeInutilizacao' version='1.04'>https://nfe.fazenda.sp.gov.br/cteWEB/services/cteInutilizacao.asmx</CteInutilizacao>
+        <CteConsultaProtocolo method='cteConsultaCT' version='1.04'>https://nfe.fazenda.sp.gov.br/cteWEB/services/cteConsulta.asmx</CteConsultaProtocolo>
+        <CteStatusServico method='cteStatusServicoCT' version='1.04'>https://nfe.fazenda.sp.gov.br/cteWEB/services/cteStatusServico.asmx</CteStatusServico>
     </producao>
 </UF>
 <UF>
     <sigla>SVRS</sigla>
     <homologacao>
-        <CTeRecepcao method='CTeRecepcao' version='1.03'>https://homologacao.cte.sefaz.rs.gov.br/ws/cterecepcao/CteRecepcao.asmx</CTeRecepcao>
-        <CTeRetRecepcao method='CTeRetRecepcao' version='1.03'>https://homologacao.cte.sefaz.rs.gov.br/ws/cteretrecepcao/CteRetRecepcao.asmx</CTeRetRecepcao>
-        <CTeCancelamento method='CTeCancelamento' version='1.03'>https://homologacao.cte.sefaz.rs.gov.br/ws/ctecancelamento/ctecancelamento.asmx</CTeCancelamento>
-        <CTeInutilizacao method='CTeInutilizacao' version='1.03'>https://homologacao.cte.sefaz.rs.gov.br/ws/cteinutilizacao/cteinutilizacao.asmx</CTeInutilizacao>
-        <CTeConsultaProtocolo method='CTeConsultaProtocolo' version='1.03'>https://homologacao.cte.sefaz.rs.gov.br/ws/cteconsulta/cteconsulta.asmx</CTeConsultaProtocolo>
-        <CTeStatusServico method='cteStatusServicoCT' version='1.03'>https://homologacao.cte.sefaz.rs.gov.br/ws/ctestatusservico/ctestatusservico.asmx</CTeStatusServico>
+        <CteRecepcao method='CTeRecepcao' version='1.04'>https://homologacao.cte.sefaz.rs.gov.br/ws/cterecepcao/CteRecepcao.asmx</CteRecepcao>
+        <CteRetRecepcao method='CTeRetRecepcao' version='1.04'>https://homologacao.cte.sefaz.rs.gov.br/ws/cteretrecepcao/CteRetRecepcao.asmx</CteRetRecepcao>
+        <CteCancelamento method='CTeCancelamento' version='1.04'>https://homologacao.cte.sefaz.rs.gov.br/ws/ctecancelamento/ctecancelamento.asmx</CteCancelamento>
+        <CteInutilizacao method='CTeInutilizacao' version='1.04'>https://homologacao.cte.sefaz.rs.gov.br/ws/cteinutilizacao/cteinutilizacao.asmx</CteInutilizacao>
+        <CteConsultaProtocolo method='cteConsultaCT' version='1.04'>https://homologacao.cte.sefaz.rs.gov.br/ws/cteconsulta/cteconsulta.asmx</CteConsultaProtocolo>
+        <CteStatusServico method='cteStatusServicoCT' version='1.04'>https://homologacao.cte.sefaz.rs.gov.br/ws/ctestatusservico/ctestatusservico.asmx</CteStatusServico>
     </homologacao>
     <producao>
-        <CTeRecepcao method='CTeRecepcao' version='1.03'>https://cte.sefaz.rs.gov.br/ws/cterecepcao/CteRecepcao.asmx</CTeRecepcao>
-        <CTeRetRecepcao method='CTeRetRecepcao' version='1.03'>https://cte.sefaz.rs.gov.br/ws/cteretrecepcao/CteRetRecepcao.asmx</CTeRetRecepcao>
-        <CTeCancelamento method='CTeCancelamento' version='1.03'>https://cte.sefaz.rs.gov.br/ws/ctecancelamento/ctecancelamento.asmx</CTeCancelamento>
-        <CTeInutilizacao method='CTeInutilizacao' version='1.03'>https://cte.sefaz.rs.gov.br/ws/cteinutilizacao/cteinutilizacao.asmx</CTeInutilizacao>
-        <CTeConsultaProtocolo method='CTeConsultaProtocolo' version='1.03'>https://cte.sefaz.rs.gov.br/ws/cteconsulta/cteconsulta.asmx</CTeConsultaProtocolo>
-        <CTeStatusServico method='cteStatusServicoCT' version='1.03'>https://cte.sefaz.rs.gov.br/ws/ctestatusservico/ctestatusservico.asmx</CTeStatusServico>
+        <CteRecepcao method='CTeRecepcao' version='1.04'>https://cte.sefaz.rs.gov.br/ws/cterecepcao/CteRecepcao.asmx</CteRecepcao>
+        <CteRetRecepcao method='CTeRetRecepcao' version='1.04'>https://cte.sefaz.rs.gov.br/ws/cteretrecepcao/CteRetRecepcao.asmx</CteRetRecepcao>
+        <CteCancelamento method='CTeCancelamento' version='1.04'>https://cte.sefaz.rs.gov.br/ws/ctecancelamento/ctecancelamento.asmx</CteCancelamento>
+        <CteInutilizacao method='CTeInutilizacao' version='1.04'>https://cte.sefaz.rs.gov.br/ws/cteinutilizacao/cteinutilizacao.asmx</CteInutilizacao>
+        <CteConsultaProtocolo method='cteConsultaCT' version='1.04'>https://cte.sefaz.rs.gov.br/ws/cteconsulta/cteconsulta.asmx</CteConsultaProtocolo>
+        <CteStatusServico method='cteStatusServicoCT' version='1.04'>https://cte.sefaz.rs.gov.br/ws/ctestatusservico/ctestatusservico.asmx</CteStatusServico>
     </producao>
 </UF>
 </WS>
