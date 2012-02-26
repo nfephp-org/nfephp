@@ -26,7 +26,7 @@
  * @version     2.14
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
- * @copyright   2009-2011 &copy; NFePHP
+ * @copyright   2009-2012 &copy; NFePHP
  * @link        http://www.nfephp.org/
  * @author      Roberto L. Machado <linux.rlm at gmail dot com>
  * @author      Marcos Diez <marcos at unitron dot com dot br>
