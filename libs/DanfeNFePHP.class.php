@@ -23,12 +23,13 @@
  *
  * @package     NFePHP
  * @name        DanfeNFePHP.class.php
- * @version     2.13
+ * @version     2.14
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2011 &copy; NFePHP
  * @link        http://www.nfephp.org/
  * @author      Roberto L. Machado <linux.rlm at gmail dot com>
+ * @author      Marcos Diez <marcos at unitron dot com dot br>
  *
  *        CONTRIBUIDORES (por ordem alfabetica):
  *              Abdenego Santos <abdenego at gmail dot com>
@@ -40,7 +41,6 @@
  *              Felipe Bonato <montanhats at gmail dot com>
  *              Guilherme Calabria Filho <guiga at gmail dot com>
  *              Leandro C. Lopez <leandro.castoldi at gmail dot com>
- *              Marcos Diez <marcos at unitron dot com dot br>
  *              Paulo Gabriel Coghi < paulocoghi at gmail dot com>
  *              Renato Zaccaron Gonzaga <renato at zaccaron dot com dot br>
  *              Vinicius Souza <vdssgmu at gmail dot com>
@@ -80,7 +80,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
     protected $destino = 'I'; //destivo do arquivo pdf I-borwser, S-retorna o arquivo, D-força download, F-salva em arquivo local
     protected $pdfDir=''; //diretorio para salvar o pdf com a opção de destino = F
     protected $fontePadrao='Times'; //Nome da Fonte para gerar o DANFE
-    protected $version = '2.13';
+    protected $version = '2.14';
     protected $textoAdic = '';
     protected $wAdic = 0;
     protected $wPrint; //largura imprimivel
@@ -395,12 +395,12 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
         $hfooter = 5;// para rodape
         $hCabecItens = 4;//cabeçalho dos itens
         //alturas disponiveis para os dados
+        $hDispo1 = $this->hPrint - ( $hcabecalho + $hdestinatario + ($linhasDup * $hduplicatas) + $himposto + $htransporte + ($linhaISSQN * $hissqn) + $hdadosadic + $hfooter + $hCabecItens + $this->__sizeExtraTextoFatura()    );        
         if( $this->orientacao == 'P' ){
             $hcanhoto = 23;//para canhoto
-            $hDispo1 = $this->hPrint - ($hcanhoto + $hcabecalho + $hdestinatario + ($linhasDup * $hduplicatas) + $himposto + $htransporte + ($linhaISSQN * $hissqn) + $hdadosadic + $hfooter + $hCabecItens);
+            $hDispo1 -= $hcanhoto;
         }else{
             $hcanhoto = $this->hPrint;//para canhoto
-            $hDispo1 = $this->hPrint - ( $hcabecalho + $hdestinatario + ($linhasDup * $hduplicatas) + $himposto + $htransporte + ($linhaISSQN * $hissqn) + $hdadosadic + $hfooter + $hCabecItens);
         }
         $hDispo2 = $this->hPrint - ($hcabecalho + $hfooter + $hCabecItens);
         //Contagem da altura ocupada para impressão dos itens
@@ -1052,6 +1052,57 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
         return ($y + $h);
     } //fim da função __destinatarioDANFE
 
+     /**
+     * __getTextoFatura
+     * Gera a String do Texto da Fatura
+     * @package NFePHP
+     * @name __getTextoFatura
+     * @version 1.0
+     * @author Marcos Diez
+     * @return a String com o texto ou "";
+     */
+    protected function __getTextoFatura(){
+        
+        if( isset( $this->cobr ) ) {
+            $fat = $this->cobr->getElementsByTagName("fat")->item(0);
+            if( isset( $fat ) ){
+            
+                $textoIndPag="";
+                $indPag = $this->__simpleGetValue( $this->ide , "indPag" );
+                if( $indPag == 0 ){
+                    $textoIndPag = "Pagamento à Vista - ";
+                }else if ( $indPag == 1 ){
+                    $textoIndPag = "Pagamento à Prazo - ";
+                }        
+                $nFat = $this->__simpleGetValue( $fat , "nFat" , "Fatura: " );
+                $vOrig = $this->__simpleGetValue( $fat , "vOrig" , " Valor Original: " );
+                $vDesc = $this->__simpleGetValue( $fat , "vDesc" , " Desconto: " );
+                $vLiq = $this->__simpleGetValue( $fat , "vLiq" , " Valor Líquido: " );
+                $texto = $textoIndPag . $nFat . $vOrig . $vDesc . $vLiq;
+                return $texto;
+            }
+        }
+        return "";    
+    } //fim __getTextoFatura
+    
+     /**
+     * __sizeExtraTextoFatura
+     * Calcula o espaço ocupado pelo texto da fatura. Este espaço só é utilizado quando não houver duplicata.
+     * @package NFePHP
+     * @name __sizeExtraTextoFatura
+     * @version 1.0
+     * @author Marcos Diez
+     * @return quanto o campo de fatura utiliza de espaco ( inteiro )
+     */
+    protected function __sizeExtraTextoFatura(){
+        $textoFatura = $this->__getTextoFatura();
+        //verificar se existem duplicatas
+        if ( $this->dup->length == 0 && $textoFatura !== "" ) {
+            return 10;
+        }    
+        return 0;
+    } //fim __sizeExtraTextoFatura
+    
     /**
      * __faturaDANFE
      * Monta o campo de duplicatas da DANFE ( retrato e paisagem )
@@ -1066,12 +1117,12 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
         $linha = 1;
         $h = 8+3;
         $oldx = $x;
+        $textoFatura = $this->__getTextoFatura();
         //verificar se existem duplicatas
-        if ( $this->dup->length > 0 ) {
+        if ( $this->dup->length > 0 || $textoFatura !== "" ) {
             //#####################################################################
             //FATURA / DUPLICATA
             $texto = "FATURA / DUPLICATA";
-            $texto = $texto;
             if( $this->orientacao == 'P' ){
                 $w = $this->wPrint;
             }else{
@@ -1084,6 +1135,16 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
             $dups = "";
             $dupcont = 0;
             $nFat = $this->dup->length;
+            if ( $this->dup->length == 0 && $textoFatura !== "" ) {
+                $myH=6;
+                $myW = $this->wPrint;
+                if( $this->orientacao == 'L' ){
+                    $myW -= $this->wCanhoto;
+                }                                
+                $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'');
+                $this->__textBox($x,$y,$myW,$myH,$textoFatura,$aFont,'C','L',1,'');
+                $y+=$myH+1;
+            }
             if( $this->orientacao == 'P' ){
                 $w = round($this->wPrint/7.018,0)-1;
             }else{
@@ -1492,6 +1553,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
                 $numero = $texto;
             }
 	}
+
         //#####################################################################
         //QUANTIDADE
         $y += $h;
@@ -1604,6 +1666,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
      * @package NFePHP
      * @name __itensDANFE
      * @version 1.8
+     * @author Roberto L. Machado
      * @param number $x Posição horizontal canto esquerdo
      * @param number $y Posição vertical canto superior
      * @param number $nInicio Número do item inicial
