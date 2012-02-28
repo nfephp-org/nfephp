@@ -26,7 +26,7 @@
  *
  * @package     NFePHP
  * @name        ConvertNFePHP
- * @version     2.32
+ * @version     2.33
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2011 &copy; NFePHP
@@ -1214,7 +1214,7 @@ class ConvertNFePHP {
                             $pRedBCST = $dom->createElement("pRedBCST", $dados[10]);
                             $ICMS70->appendChild($pRedBCST);
                         }
-                        $vvBCST = $dom->createElement("vBCST", $dados[11]);
+                        $vBCST = $dom->createElement("vBCST", $dados[11]);
                         $ICMS70->appendChild($vBCST);
                         $pICMSST = $dom->createElement("pICMSST", $dados[12]);
                         $ICMS70->appendChild($pICMSST);
