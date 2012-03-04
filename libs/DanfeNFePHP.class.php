@@ -23,7 +23,7 @@
  *
  * @package     NFePHP
  * @name        DanfeNFePHP.class.php
- * @version     2.14
+ * @version     2.15
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2012 &copy; NFePHP
@@ -80,7 +80,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
     protected $destino = 'I'; //destivo do arquivo pdf I-borwser, S-retorna o arquivo, D-força download, F-salva em arquivo local
     protected $pdfDir=''; //diretorio para salvar o pdf com a opção de destino = F
     protected $fontePadrao='Times'; //Nome da Fonte para gerar o DANFE
-    protected $version = '2.14';
+    protected $version = '2.15';
     protected $textoAdic = '';
     protected $wAdic = 0;
     protected $wPrint; //largura imprimivel
@@ -2093,7 +2093,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
      * Monta o canhoto da DANFE ( retrato e paisagem )
      * @package NFePHP
      * @name __canhotoDANFE
-     * @version 1.2
+     * @version 1.3
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @author Guilherme Calabria Filho <guiga86 at gmail dot com>
      * @param number $x Posição horizontal canto esquerdo
@@ -2154,8 +2154,14 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
         $numNF = str_pad($this->ide->getElementsByTagName('nNF')->item(0)->nodeValue, 9, "0", STR_PAD_LEFT);
         $serie = str_pad($this->ide->getElementsByTagName('serie')->item(0)->nodeValue, 3, "0", STR_PAD_LEFT);
         $texto = "RECEBEMOS DE ";
-        $texto .= $emitente;
-        $texto .= " OS PRODUTOS E/OU SERVIÇOS CONSTANTES DA NOTA FISCAL ELETRÔNICA INDICADA AO LADO. EMISSÃO: ";
+        $texto .= $emitente;        
+        $texto .= " OS PRODUTOS E/OU SERVIÇOS CONSTANTES DA NOTA FISCAL ELETRÔNICA INDICADA ";
+        if( $this->orientacao == 'P' ){
+            $texto .= "ABAIXO";
+        }else{
+            $texto .= "AO LADO";
+        }
+        $texto .= ". EMISSÃO: ";
         $texto .= $this->__ymd2dmy($this->ide->getElementsByTagName("dEmi")->item(0)->nodeValue) ." ";
         $texto .= "VALOR TOTAL: R$ ";
         $texto .= number_format($this->ICMSTot->getElementsByTagName("vNF")->item(0)->nodeValue, 2, ",", ".") . " ";
