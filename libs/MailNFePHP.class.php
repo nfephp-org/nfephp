@@ -23,7 +23,7 @@
  *
  * @package   NFePHP
  * @name      MailNFePHP
- * @version   2.25
+ * @version   2.26
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/

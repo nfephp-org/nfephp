@@ -23,7 +23,7 @@
  * 
  * @package   NFePHP
  * @name      MailNFePHPpear
- * @version   2.25
+ * @version   2.26
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license   http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright 2009-2012 &copy; NFePHP
@@ -451,12 +451,16 @@ class MailNFePHP {
      *       
      * @package NFePHP
      * @name buscaEmail
-     * @version 1.10
+     * @version 1.11
      * @author  Roberto L. Machado <linux dot rlm at gmail dot com>
      * @author  Leandro C. Lopez <leandro dot castoldi at gmail dot com> 
      * @return boolean True se verdadeiro ou false caso haja algum erro 
      */
     public function buscaEmail(){
+        if(!is_dir($this->recebidasDir) || $this->CNPJ == '' || $this->mailIMAPhost == '' || $this->mailUSER == '' || $this->mailPASS == '' ){
+            $this->mailERROR = "Faltam dados de configuração ou existem erros na configuração \n";
+            return FALSE;
+        }
         //abre a conexão IMAP
         $porta = !empty($this->mailIMAPport) ? ':'.$this->mailIMAPport : ':143';
         $security = !empty($this->mailIMAPsecurity) ? '/'.$this->mailIMAPsecurity : '';
@@ -465,7 +469,7 @@ class MailNFePHP {
         $objMail = imap_open($stream, $this->mailUSER, $this->mailPASS);
         if($objMail === false){
             $this->mailERROR = "Falha na conexão IMAP \n";
-            break;
+            return false;
         } else {
             //obter a lista de pastas existentes na caixa postal
             $list =  imap_list($objMail, '{'.$this->mailIMAPhost.'}', "*");
@@ -478,6 +482,7 @@ class MailNFePHP {
                 }
             } else {
                 $this->mailERROR = "Falha na listagem de pastas imap_list : " . imap_last_error() . "\n";
+                return false;
             }
             sort($folders);
             //obter o total de mensagens na caixa de entrada 
@@ -513,14 +518,15 @@ class MailNFePHP {
                         //verificar se é para a empresa
                         $dest = $dom->getElementsByTagName("dest")->item(0);
                         $destCNPJ = $dest->getElementsByTagName("CNPJ")->item(0)->nodeValue;
-                        if($destCNPJ == $CNPJ ){
+                        if($destCNPJ == $this->CNPJ ){
                             //sim essa NFe é endereçada a nós
                             $flagXML = 1;
                             $nfeXML = $dom->saveXML();
-                            $xmlname = $recebidasDir.'/'.$idNFe.'-nfe.xml';
+                            $xmlname = $this->recebidasDir.'/'.$idNFe.'-nfe.xml';
                             //salva o xml na pasta correta
                             if (!file_put_contents($xmlname, $nfeXML)){
                                 $this->mailERROR = date("d-m-Y H:i:s").' - NFe - Falha ao salvar o arquivo na pasta. - '.utf8_decode($result[0]->from)."\n";
+                                return false;
                             } else {
                                 chmod($xmlname, 0755);
                                 $flagNFeSalva = 1;
@@ -545,6 +551,13 @@ class MailNFePHP {
                             $flagFolder = 1;
                             $folders[]=$anomes;
                             sort($folders);
+                            if (imap_mail_move($objMail, "$msgno:$msgno","$this->mailIMAPbox.$anomes")){
+                                //imap_delete($objMail, $result[0]->uid, FT_UID);
+                                $this->mailERROR .= 'A mensagem '.$result[0]->msgno . ' enviada por ' . $result[0]->from . ' em ' .$result[0]->date . ' Assunto ' . $result[0]->subject . ". Foi movida para a caixa postal [ $anomes ] e o anexo foi salvo na pasta recebidas \n";  
+                            } else {
+                                $this->mailERROR .= 'A mensagem não foi movida para a pasta IMAP ANOMES '. imap_last_error() . "\n";
+                                return false;
+                            }      
                         }        
                     } else {
                         //ou a pasta já existia ou foi agora criada
@@ -552,7 +565,10 @@ class MailNFePHP {
                         if (imap_mail_move($objMail, "$msgno:$msgno","$this->mailIMAPbox.$anomes")){
                             //imap_delete($objMail, $result[0]->uid, FT_UID);
                             $this->mailERROR .= 'A mensagem '.$result[0]->msgno . ' enviada por ' . $result[0]->from . ' em ' .$result[0]->date . ' Assunto ' . $result[0]->subject . ". Foi movida para a caixa postal [ $anomes ] e o anexo foi salvo na pasta recebidas \n";  
-                        }    
+                        } else {
+                            $this->mailERROR .= 'A mensagem não foi movida para a pasta IMAP ANOMES '. imap_last_error() . "\n";
+                            return false;
+                        }      
                     }
                 } else {
                     if ($flagXML == 1){
@@ -564,6 +580,7 @@ class MailNFePHP {
                         //então marcar para deletar a mensagem da caixa postal 
                         if(imap_delete($objMail, $uid, FT_UID)){                    
                             $this->mailERROR .= 'A mensagem '.$result[0]->msgno . ' enviada por ' . $result[0]->from . ' em ' .$result[0]->date . ' Assunto ' . $result[0]->subject . ". Foi apagada da caixa postal \n";  
+                            return false;
                         }    
                     }
                 }//fim if
@@ -572,7 +589,8 @@ class MailNFePHP {
             imap_expunge($objMail);
             //fecha a conexão IMAP
             imap_close($objMail);
-        }//fim if 
+        }//fim if
+        return true;
      }//fim buscaMail    
 
     /**
@@ -582,7 +600,7 @@ class MailNFePHP {
      * 
      * @package NFePHP
      * @name __getAnexosXML
-     * @version 1.11
+     * @version 1.13
      * @author  Leandro C. Lopez <leandro dot castoldi at gmail dot com>
      * @author  Roberto L. Machado <linux dot rlm at gmail dot com>
      * @return mixed vazio ou array 
@@ -590,9 +608,11 @@ class MailNFePHP {
     private function __getAnexosXML($connection, $message_number) {
         $attachments = array();
         $structure = imap_fetchstructure($connection, $message_number);
-        if(isset($structure->parts) && count($structure->parts || $structure->disposition == "attachment")){
-            if($structure->disposition == "attachment") {
-                $n = count($structure->parameters);
+        if(isset($structure->parts) && count($structure->parts) || $structure->ifdisposition == TRUE){
+            if ($structure->ifdisposition && isset($structure->disposition)){
+                if($structure->disposition == "attachment") {
+                    $n = count($structure->parameters);
+                }    
             } else {
                 $n = count($structure->parts);
             }        
@@ -618,13 +638,15 @@ class MailNFePHP {
                         }
                     }//fim foreach
                 }//fim if
-                if($structure->disposition == "attachment"){
-                    $object = $structure->parameters[$i];
-                    if(strtolower($object->attribute) == 'name'){
-                        $attachments[$i]['is_attachment'] = true;
-                        $attachments[$i]['filename'] = $object->value;
-                        $structure->parts[$i] = $structure; //alteração para não ter que mexer nas linhas abaixo.
-                    }
+                if($structure->ifdisposition){
+                    if($structure->disposition == "attachment"){
+                        $object = $structure->parameters[$i];
+                        if(strtolower($object->attribute) == 'name'){
+                            $attachments[$i]['is_attachment'] = true;
+                            $attachments[$i]['filename'] = $object->value;
+                            $structure->parts[$i] = $structure; //alteração para não ter que mexer nas linhas abaixo.
+                        }
+                    }    
                 }//fim if
                 if($attachments[$i]['is_attachment']) {
                     $attachments[$i]['attachment'] = imap_fetchbody($connection, $message_number, $i+1);
@@ -650,8 +672,8 @@ class MailNFePHP {
 	 Seus anexos ficavam escondidos atrás de parts->parts->parts,
 	 Seus conteudos dentro do fetchbody se escondiam em subpartes da mensagem,
 	 Sendo assim, caso o sistema não encontre nenhum anexos ele checa se os anexos 
-         estão nessa situação.
-         Rodrigo W Cardoso <rodrigogepem at gmail dot com>  
+         estão nessa situação. 
+         Rodrigo W Cardoso <rodrigogepem at gmail dot com> 
 	*/
 	if (empty($anexos[0])) {
             $a = 1;
