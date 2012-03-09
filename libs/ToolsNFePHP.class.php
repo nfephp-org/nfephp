@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   2.81
+ * @version   2.82
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2011 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -2688,7 +2688,7 @@ class ToolsNFePHP {
      * verifySignatureXML
      * Verifica correção da assinatura no xml
      * 
-     * @version 1.01
+     * @version 1.2
      * @package NFePHP
      * @author Bernardo Silva <bernardo at datamex dot com dot br>
      * @param string $conteudoXML xml a ser verificado 
@@ -2699,13 +2699,12 @@ class ToolsNFePHP {
         $dom = new DOMDocument();
         $dom->preserveWhiteSpace = false;
         $dom->formatOutput = false;
-        $dom->loadXML($conteudoXML);
+        $dom->loadXML($conteudoXML,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
         $tagBase = $dom->getElementsByTagName($tag)->item(0);
-		$retXML = array(' xmlns:ds="http://www.w3.org/2000/09/xmldsig#"', ' xmlns:xsd="http://www.w3.org/2001/XMLSchema"', ' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"');
         // validar digest value 
-        $tagInf = $tagBase->C14N(false, false, null, null);
-        $tagInf = str_replace($retXML, '', $tagInf);
-        $digestCalculado = base64_encode(sha1($tagInf, true));
+        $tagInf = $tagBase->C14N(false, false, NULL, NULL);
+        $hashValue = hash('sha1',$tagInf,true);
+        $digestCalculado = base64_encode($hashValue);
         $digestInformado = $dom->getElementsByTagName('DigestValue')->item(0)->nodeValue;		
         if ($digestCalculado != $digestInformado){
             $this->errStatus = true;
