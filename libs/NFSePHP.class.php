@@ -68,9 +68,19 @@ class NFSe {
     public $tomaEndUF='';
     public $tomaEndCep='';
     public $tomaEmail='';
-    
     public $nfsexml='';
     public $arqtxt='';
+    public $errMsg='';
+    public $cert='';
+    public $errStatus=false;
+    public $priKey='';
+    public $pubKey='';
+    
+    
+    
+    function __construct(){
+        
+    }
     
     //Conteudo do array aItens
     //valor,valorDeducoes,valorPis,valorCofins,valorIr,valorCsll,issRetido,valorIss,valorIssRetido,
@@ -310,7 +320,6 @@ class NFSe {
         $s.=padrl($this->numeroLote, 8, "l","0"); // Sequencial do registro
         $s.=NL;
         
-        
         //$sql="update nfse set txt='$s' where id=".$this->nfeid;
         //gQuery($sql);
                
@@ -357,8 +366,8 @@ class NFSe {
         $nfefile=$this->nfsexml;
         $this->nfeTools= new gNFeTools($this->config());
         if ($tag == 'infNFe') {
-            if ($this->nfeTools->errMsg=="") {
-                if ( $signn = $this->nfeTools->signXML($nfefile, $tag) ) {
+            if ($this->errMsg=="") {
+                if ( $signn = $this->signXML($nfefile, $tag) ) {
                     unlink($this->arqxml);
                     if ( !file_put_contents($this->arqxml , $signn) ) {
                         $this->erros[]=M."Houve uma falha ao salvar a NFe assinada.";
@@ -370,13 +379,130 @@ class NFSe {
                     $this->erros[]=M."Houve uma falha ao assinar a NFe.";
                 } 
             } else {
-                $this->erros[]=M.$this->nfeTools->errMsg." (".$this->nfeTools->cert.")";
+                $this->erros[]=M.$this->errMsg." (".$this->cert.")";
             }
         } else {
-            $this->nfexml=$this->nfeTools->__signXMLNFSe($nfefile, $tag);
+            $this->nfexml=$this->signNFSe($nfefile, $tag);
         }
         return($sai);
     } //fim signNFSe
+
+    /**
+     * signXML
+     * Assinador TOTALMENTE baseado em PHP para arquivos XML
+     * este assinador somente utiliza comandos nativos do PHP para assinar
+     * os arquivos XML
+     *
+     * @name signXML
+     * @version 2.10
+     * @package NFePHP
+     * @author Roberto L. Machado <linux.rlm at gmail dot com>
+     * @param	string $docxml String contendo o arquivo XML a ser assinado
+     * @param   string $tagid TAG do XML que devera ser assinada
+     * @return	mixed false se houve erro ou string com o XML assinado
+     */
+    public function signXML($docxml, $tagid=''){
+            if ( $tagid == '' ){
+                $this->errMsg = "Uma tag deve ser indicada para que seja assinada!!\n";
+                $this->errStatus = true;
+                return false;
+            }
+            if ( $docxml == '' ){
+                $this->errMsg = "Um xml deve ser passado para que seja assinado!!\n";
+                $this->errStatus = true;
+                return false;
+            }
+            // obter o chave privada para a ssinatura
+            $fp = fopen($this->priKEY, "r");
+            $priv_key = fread($fp, 8192);
+            fclose($fp);
+            $pkeyid = openssl_get_privatekey($priv_key);
+            // limpeza do xml com a retirada dos CR, LF e TAB
+            $order = array("\r\n", "\n", "\r", "\t");
+            $replace = '';
+            $docxml = str_replace($order, $replace, $docxml);
+            // carrega o documento no DOM
+            $xmldoc = new DOMDocument();
+            $xmldoc->preservWhiteSpace = false; //elimina espaços em branco
+            $xmldoc->formatOutput = false;
+            // muito importante deixar ativadas as opçoes para limpar os espacos em branco
+            // e as tags vazias
+            $xmldoc->loadXML($docxml,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
+            $root = $xmldoc->documentElement;
+            //extrair a tag com os dados a serem assinados
+            $node = $xmldoc->getElementsByTagName($tagid)->item(0);
+            $id = trim($node->getAttribute("Id"));
+            $idnome = preg_replace('/[^0-9]/','', $id);
+            //extrai os dados da tag para uma string
+            $dados = $node->C14N(false,false,NULL,NULL);
+            //calcular o hash dos dados
+            $hashValue = hash('sha1',$dados,true);
+            //converte o valor para base64 para serem colocados no xml
+            $digValue = base64_encode($hashValue);
+            //monta a tag da assinatura digital
+            $Signature = $xmldoc->createElementNS($this->URLdsig,'Signature');
+            $root->appendChild($Signature);
+            $SignedInfo = $xmldoc->createElement('SignedInfo');
+            $Signature->appendChild($SignedInfo);
+            //Cannocalization
+            $newNode = $xmldoc->createElement('CanonicalizationMethod');
+            $SignedInfo->appendChild($newNode);
+            $newNode->setAttribute('Algorithm', $this->URLCanonMeth);
+            //SignatureMethod
+            $newNode = $xmldoc->createElement('SignatureMethod');
+            $SignedInfo->appendChild($newNode);
+            $newNode->setAttribute('Algorithm', $this->URLSigMeth);
+            //Reference
+            $Reference = $xmldoc->createElement('Reference');
+            $SignedInfo->appendChild($Reference);
+            $Reference->setAttribute('URI', '#'.$id);
+            //Transforms
+            $Transforms = $xmldoc->createElement('Transforms');
+            $Reference->appendChild($Transforms);
+            //Transform
+            $newNode = $xmldoc->createElement('Transform');
+            $Transforms->appendChild($newNode);
+            $newNode->setAttribute('Algorithm', $this->URLTransfMeth_1);
+            //Transform
+            $newNode = $xmldoc->createElement('Transform');
+            $Transforms->appendChild($newNode);
+            $newNode->setAttribute('Algorithm', $this->URLTransfMeth_2);
+            //DigestMethod
+            $newNode = $xmldoc->createElement('DigestMethod');
+            $Reference->appendChild($newNode);
+            $newNode->setAttribute('Algorithm', $this->URLDigestMeth);
+            //DigestValue
+            $newNode = $xmldoc->createElement('DigestValue',$digValue);
+            $Reference->appendChild($newNode);
+            // extrai os dados a serem assinados para uma string
+            $dados = $SignedInfo->C14N(false,false,NULL,NULL);
+            //inicializa a variavel que irá receber a assinatura
+            $signature = '';
+            //executa a assinatura digital usando o resource da chave privada
+            $resp = openssl_sign($dados,$signature,$pkeyid);
+            //codifica assinatura para o padrao base64
+            $signatureValue = base64_encode($signature);
+            //SignatureValue
+            $newNode = $xmldoc->createElement('SignatureValue',$signatureValue);
+            $Signature->appendChild($newNode);
+            //KeyInfo
+            $KeyInfo = $xmldoc->createElement('KeyInfo');
+            $Signature->appendChild($KeyInfo);
+            //X509Data
+            $X509Data = $xmldoc->createElement('X509Data');
+            $KeyInfo->appendChild($X509Data);
+            //carrega o certificado sem as tags de inicio e fim
+            $cert = $this->__cleanCerts($this->pubKEY);
+            //X509Certificate
+            $newNode = $xmldoc->createElement('X509Certificate',$cert);
+            $X509Data->appendChild($newNode);
+            //grava na string o objeto DOM
+            $docxml = $xmldoc->saveXML();
+            // libera a memoria
+            openssl_free_key($pkeyid);
+            //retorna o documento assinado
+            return $docxml;
+    } //fim signXML
 
 
     // Valida XML assinado
@@ -599,8 +725,6 @@ class NFSe {
         }
         return $aRet;
     } //fim consultRps
-
-
 
 
     /**
@@ -908,7 +1032,7 @@ class NFSeSOAPClient extends SoapClient {
         $request = str_replace('ns1:', '', $request);
         $request = str_replace("\n", '', $request);
         $request = str_replace("\r", '', $request);
-        if (strpos($request,"EnviarLoteRpsEnvio")! == FALSE) {
+        if (strpos($request,"EnviarLoteRpsEnvio") !== FALSE) {
             $request=str_replace("<EnviarLoteRPS/><param1>",'<EnviarLoteRPS xmlns="http://tempuri.org/"><loteXML>',$request);
             $request=str_replace("</param1>","</loteXML></EnviarLoteRPS>",$request);
         }
