@@ -23,7 +23,7 @@
  *
  * @package   NFePHP
  * @name      MailNFePHP
- * @version   2.26
+ * @version   2.29
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -68,13 +68,39 @@ class MailNFePHP {
     public $recebidasDir ='';
     public $CNPJ='';
     
+    protected $debugMode = 0;
+    /**
+     * "Layout Template" do corpo do email em html
+     * Os dados variáveis da mensagem html são :
+     * {numero}{serie}{emitente}{valor}{status}
+     * esses campos serão substituidos durante o envio do email   
+     * @var string 
+     */
+    protected $layouthtml = '';
+    
     /**
      * __contruct
      * Construtor da classe MailNFePHP
+     * @param array $aConfig Matriz com os dados de configuração
+     * @param number $mododebug (Optional) 1-SIM ou 0-NÃO (0 default)
      * @package NFePHP
-     * @author    Roberto L. Machado <linux dot rlm at gmail dot com> 
+     * @author  Roberto L. Machado <linux dot rlm at gmail dot com> 
      */
-    function __construct($aConfig=''){
+    function __construct($aConfig='',$mododebug=0){
+        if(is_numeric($mododebug)){
+            $this->debugMode = $mododebug;
+        }
+        if($this->debugMode){
+            //ativar modo debug
+            error_reporting(E_ALL);ini_set('display_errors', 'On');
+        } else {
+            //desativar modo debug
+            error_reporting(0);ini_set('display_errors', 'Off');
+        }
+        //verifica a existencia do layout alternativo
+        if (is_file('../config/layout_email.html')){
+            $this->layouthtml = file_get_contents('../config/layout_email.html');
+        }
         $this->mailERROR='';
         if (is_array($aConfig)){
             $this->mailAuth  = $aConfig['mailAuth'];
@@ -95,6 +121,11 @@ class MailNFePHP {
             $this->mailIMAPbox = $aConfig['mailIMAPbox'];
             $this->recebidasDir = $aConfig['recebidasDir'];
             $this->CNPJ = $aConfig['cnpj'];            
+            if($aConfig['mailLayoutFile'] != ''){
+                if (is_file(PATH_ROOT.'config/'.$aConfig['mailLayoutFile'])){
+                    $this->layouthtml = file_get_contents(PATH_ROOT.'config/'.$aConfig['mailLayoutFile']);
+                }    
+            }
         } else {
             if ( is_file(PATH_ROOT.'config/config.php') ){
                 include(PATH_ROOT.'config/config.php');
@@ -121,10 +152,14 @@ class MailNFePHP {
                 }
                 $this->recebidasDir = "$arquivosDir$caminho";
                 $this->CNPJ = $cnpj;
+                if($mailLayoutFile != ''){
+                    if (is_file(PATH_ROOT.'config/'.$mailLayoutFile)){
+                        $this->layouthtml = file_get_contents(PATH_ROOT.'config/'.$mailLayoutFile);
+                    }    
+                }
             }
         }     
     } // end__construct
-
     
     /**
      * enviaMail 
@@ -132,21 +167,23 @@ class MailNFePHP {
      *
      * @package NFePHP
      * @name    enviaMail
-     * @version 1.00
+     * @version 1.10
      * @author  Roberto L. Machado <linux dot rlm at gmail dot com>
      * @param   string $filename passar uma string com o caminho completo para o arquivo XML
+     * @param   string $para Força o envio da comunicação apenas para o email indicado
      * @return  boolean TRUE sucesso ou FALSE falha
      */
-    public function enviaMail($filename=''){
+    public function enviaMail($filename='',$sendto=''){
         if(is_file($filename)){
             $retorno = true;
             //quebra o path em um array usando o separador / ou \
             $aFile = explode(DIRECTORY_SEPARATOR,$filename);
             $nomeXML = $aFile[count($aFile)-1];
-            print_r($aFile).'<BR><BR><BR>';
             $docXML = file_get_contents($filename);
             $dom = new DomDocument;
             $dom->loadXML($docXML);
+            $nfeProc    = $dom->getElementsByTagName("nfeProc")->item(0);
+            $infNFe     = $dom->getElementsByTagName("infNFe")->item(0);
             $ide        = $dom->getElementsByTagName("ide")->item(0);
             $emit       = $dom->getElementsByTagName("emit")->item(0);
             $dest       = $dom->getElementsByTagName("dest")->item(0);
@@ -157,51 +194,62 @@ class MailNFePHP {
             $serie      = str_pad($ide->getElementsByTagName('serie')->item(0)->nodeValue, 3, "0", STR_PAD_LEFT);
             $emitente   = utf8_decode($emit->getElementsByTagName("xNome")->item(0)->nodeValue);
             $vtotal     = number_format($ICMSTot->getElementsByTagName("vNF")->item(0)->nodeValue, 2, ",", ".");
-            $email = array();
-            //buscar emails
-            $emailaddress = !empty($dest->getElementsByTagName("email")->item(0)->nodeValue) ? utf8_decode($dest->getElementsByTagName("email")->item(0)->nodeValue) : '';
-            if (strtoupper(trim($emailaddress)) == 'N/D' || strtoupper(trim($emailaddress)) == ''){
-                $emailaddress = '';
-            } else {
-                $emailaddress = trim($emailaddress);
-                $emailaddress = str_replace(';',',',$emailaddress);
-                $emailaddress = str_replace(':',',',$emailaddress);
-                $emailaddress = str_replace('/',',',$emailaddress);
-                $email[] = explode(',', $emailaddress);
-            }      
-            if (isset($obsCont)){
-                $i = 0;
-                foreach($obsCont as $obs){
-                    $campo =  $obsCont->item($i)->getAttribute("xCampo");
-                    $xTexto = !empty($obsCont->item($i)->getElementsByTagName("xTexto")->item(0)->nodeValue) ? $obsCont->item($i)->getElementsByTagName("xTexto")->item(0)->nodeValue : '';
-                    if (substr($campo, 0, 5) == 'email' && $xTexto != '') {
-                        $xTexto = str_replace(';',',',$xTexto);
-                        $xTexto = str_replace(':',',',$xTexto);
-                        $xTexto = str_replace('/',',',$xTexto);
-                        $aTexto = explode(',', $xTexto);
-                        foreach ($aTexto as $t){
-                            $email[] = $t;
-                        }    
-                    } //fim if
-                    $i++;
-                } //foreach($obsCont
-            }//fim if (isset($obsCont))
-            $aMail['contato'] = $razao;
-            $aMail['razao'] = $razao;
-            $aMail['numero'] = $numero;
-            $aMail['serie'] = $serie;
-            $aMail['emitente'] = $emitente;
-            $aMail['vtotal'] = $vtotal;
-            //para cada endereço de email encontrado na NFe
-            foreach($email as $mail){
-                $aMail['para'] = $mail;
-                if ( !$this->sendNFe($docXML,'',$nomeXML,'',$aMail,'1') ){
-                    $this->mailERROR .= 'Falha ao enviar para '.$mail.'!! ';
-                    $retorno = false;
-                }
-            } //fim foreach
-        } //fim if(is_file(
-        return $retorno;
+            $cStat      = $nfeProc->getElementsByTagName("cStat")->item(0)->nodeValue;
+            $chave      = str_replace('NFe', '', $infNFe->getAttribute("Id"));
+            if ($cStat == '100' || $cStat == '101'){
+                if ($sendto == ''){
+                    //buscar emails
+                    $emailaddress = !empty($dest->getElementsByTagName("email")->item(0)->nodeValue) ? utf8_decode($dest->getElementsByTagName("email")->item(0)->nodeValue) : '';
+                    if (strtoupper(trim($emailaddress)) == 'N/D' || strtoupper(trim($emailaddress)) == ''){
+                        $emailaddress = '';
+                    } else {
+                        $emailaddress = trim($emailaddress);
+                        $emailaddress = str_replace(';',',',$emailaddress);
+                        $emailaddress = str_replace(':',',',$emailaddress);
+                        $emailaddress = str_replace('/',',',$emailaddress);
+                        $email = explode(',', $emailaddress);
+                    }      
+                    if (isset($obsCont)){
+                        $i = 0;
+                        foreach($obsCont as $obs){
+                            $campo =  $obsCont->item($i)->getAttribute("xCampo");
+                            $xTexto = !empty($obsCont->item($i)->getElementsByTagName("xTexto")->item(0)->nodeValue) ? $obsCont->item($i)->getElementsByTagName("xTexto")->item(0)->nodeValue : '';
+                            if (substr($campo, 0, 5) == 'email' && $xTexto != '') {
+                                $xTexto = str_replace(';',',',$xTexto);
+                                $xTexto = str_replace(':',',',$xTexto);
+                                $xTexto = str_replace('/',',',$xTexto);
+                                $aTexto = explode(',', $xTexto);
+                                foreach ($aTexto as $t){
+                                    $email[] = $t;
+                                }    
+                            } //fim if
+                            $i++;
+                        } //foreach($obsCont
+                    }//fim if (isset($obsCont))
+                } else {
+                    $email[] = $sendto;
+                }    
+                $aMail['contato'] = '';
+                $aMail['razao'] = $razao;
+                $aMail['numero'] = $numero;
+                $aMail['serie'] = $serie;
+                $aMail['emitente'] = $emitente;
+                $aMail['vtotal'] = $vtotal;
+                $aMail['cStat'] = $cStat;
+                //para cada endereço de email encontrado na NFe
+                foreach($email as $mail){
+                    $aMail['para'] = $mail;
+                    if ( !$this->sendNFe($docXML,'',$nomeXML,'',$aMail,'1') ){
+                        $this->mailERROR .= 'Falha ao enviar para '.$mail.'!! ';
+                        $retorno = false;
+                    }
+                } //fim foreach
+            } //fim if(is_file(
+        } else {
+          $this->mailERROR .= 'Essa nota fiscal não está autorizada n.'. $numero . ' / ' . $serie.'!!';
+          $retorno = false;    
+        }//if cStat
+        return $retorno;        
     }//fim enviaMail
     
     /**
@@ -210,7 +258,7 @@ class MailNFePHP {
      *
      * @package NFePHP
      * @name sendNFe
-     * @version 2.15
+     * @version 2.16
      * @author    Roberto L. Machado <linux dot rlm at gmail dot com>
      * @param string $docXML arquivo XML, é obrigatório
      * @param string $docPDF DANFE em formato PDF, se não quizer mandar o pdf deixe em branco
@@ -221,7 +269,7 @@ class MailNFePHP {
      * @return boolean TRUE sucesso ou FALSE falha
      */
     public function sendNFe($docXML='',$docPDF='',$nomeXML='',$nomePDF='',$aMail,$auth='') {
-	//se não forem passados os parametros de envio sair
+        //se não forem passados os parametros de envio sair
         if (!is_array($aMail)){
             $this->mailERROR = 'Não foram passados parametros de envio!';
 	    return false;
@@ -256,8 +304,9 @@ class MailNFePHP {
         $numero = $aMail['numero'];
         $serie = $aMail['serie'];
         $emitente = $aMail['emitente'];
-        $vtotal = $aMail['vtotal'];
-	if ($contato==''){
+        $valor = $aMail['vtotal'];
+        $cStat = $aMail['cStat'];
+	if ($contato=='' || $contato == $razao){
             $contato = $razao;
 	} else {
             $contato .= ' - '.$razao;
@@ -272,28 +321,35 @@ class MailNFePHP {
         }
         // assunto email
         $subject = utf8_decode("NF-e Nota Fiscal Eletrônica - N.$numero - $emitente");
-        //mensagem no corpo do email em txt
-        $txt = "Prezado Sr(a) $contato,\n\r";
-        $txt .= "Você está recebendo a Nota Fiscal Eletrônica número $numero, série $serie de $emitente, no valor de R$ $vtotal. Junto com a mercadoria, você receberá também um DANFE (Documento Auxiliar da Nota Fiscal Eletrônica), que acompanha o trânsito das mercadorias.\n\r";
-        $txt .= "Podemos conceituar a Nota Fiscal Eletrônica como um documento de existência apenas digital, emitido e armazenado eletronicamente, com o intuito de documentar, para fins fiscais, uma operação de circulação de mercadorias, ocorrida entre as partes. Sua validade jurídica garantida pela assinatura digital do remetente (garantia de autoria e de integridade) e recepção, pelo Fisco, do documento eletrônico, antes da ocorrência do Fato Gerador.\n\r";
-        $txt .= "Os registros fiscais e contábeis devem ser feitos, a partir do próprio arquivo da NF-e, anexo neste e-mail, ou utilizando o DANFE, que representa graficamente a Nota Fiscal Eletrônica. A validade e autenticidade deste documento eletrônico pode ser verificada no site nacional do projeto (www.nfe.fazenda.gov.br), através da chave de acesso contida no DANFE.\n\r";
-        $txt .= "Para poder utilizar os dados descritos do DANFE na escrituração da NF-e, tanto o contribuinte destinatário, como o contribuinte emitente, terão de verificar a validade da NF-e. Esta validade está vinculada à efetiva existência da NF-e nos arquivos da SEFAZ, e comprovada através da emissão da Autorização de Uso.\n\r";
-        $txt .= "O DANFE não é uma nota fiscal, nem substitui uma nota fiscal, servindo apenas como instrumento auxiliar para consulta da NF-e no Ambiente Nacional.\n\r";
-        $txt .= "Para mais detalhes sobre o projeto, consulte: www.nfe.fazenda.gov.br\n\r";
-        $txt .= "Atenciosamente, $emitente \n\r";
-        //altera de utf8 para iso
-        $txt = utf8_decode($txt);
+         
         //mensagem no corpo do email em html
-        $msg = "<p><b>Prezado Sr(a) $contato,</b>";
-        $msg .= "<p>Você está recebendo a Nota Fiscal Eletrônica número $numero, série $serie de $emitente, no valor de R$ $vtotal. Junto com a mercadoria, você receberá também um DANFE (Documento Auxiliar da Nota Fiscal Eletrônica), que acompanha o trânsito das mercadorias.";
-        $msg .= "<p><i>Podemos conceituar a Nota Fiscal Eletrônica como um documento de existência apenas digital, emitido e armazenado eletronicamente, com o intuito de documentar, para fins fiscais, uma operação de circulação de mercadorias, ocorrida entre as partes. Sua validade jurídica garantida pela assinatura digital do remetente (garantia de autoria e de integridade) e recepção, pelo Fisco, do documento eletrônico, antes da ocorrência do Fato Gerador.</i>";
-        $msg .= "<p><i>Os registros fiscais e contábeis devem ser feitos, a partir do próprio arquivo da NF-e, anexo neste e-mail, ou utilizando o DANFE, que representa graficamente a Nota Fiscal Eletrônica. A validade e autenticidade deste documento eletrônico pode ser verificada no site nacional do projeto (www.nfe.fazenda.gov.br), através da chave de acesso contida no DANFE.</i>";
-        $msg .= "<p><i>Para poder utilizar os dados descritos do DANFE na escrituração da NF-e, tanto o contribuinte destinatário, como o contribuinte emitente, terão de verificar a validade da NF-e. Esta validade está vinculada à efetiva existência da NF-e nos arquivos da SEFAZ, e comprovada através da emissão da Autorização de Uso.</i>";
-        $msg .= "<p><b>O DANFE não é uma nota fiscal, nem substitui uma nota fiscal, servindo apenas como instrumento auxiliar para consulta da NF-e no Ambiente Nacional.</b>";
-        $msg .= "<p>Para mais detalhes sobre o projeto, consulte: <a href='http://www.nfe.fazenda.gov.br/portal/Default.aspx'>www.nfe.fazenda.gov.br</a>";
-        $msg .= "<p><p>Atenciosamente,<p>$emitente";
+        if ($this->layouthtml != ''){
+            $msg = $this->layouthtml;
+        } else {
+            $msg = "<p><b>Prezado Sr(a) {contato},</b><h2>{status}</h2></p>";
+            $msg .= "<p>Você está recebendo a Nota Fiscal Eletrônica número {numero}, série {serie} de $emitente, no valor de R$ {valor}. Junto com a mercadoria, você receberá também um DANFE (Documento Auxiliar da Nota Fiscal Eletrônica), que acompanha o trânsito das mercadorias.</p>";
+            $msg .= "<p><i>Podemos conceituar a Nota Fiscal Eletrônica como um documento de existência apenas digital, emitido e armazenado eletronicamente, com o intuito de documentar, para fins fiscais, uma operação de circulação de mercadorias, ocorrida entre as partes. Sua validade jurídica garantida pela assinatura digital do remetente (garantia de autoria e de integridade) e recepção, pelo Fisco, do documento eletrônico, antes da ocorrência do Fato Gerador.</i></p>";
+            $msg .= "<p><i>Os registros fiscais e contábeis devem ser feitos, a partir do próprio arquivo da NF-e, anexo neste e-mail, ou utilizando o DANFE, que representa graficamente a Nota Fiscal Eletrônica. A validade e autenticidade deste documento eletrônico pode ser verificada no site nacional do projeto (www.nfe.fazenda.gov.br), através da chave de acesso contida no DANFE.</i></p>";
+            $msg .= "<p><i>Para poder utilizar os dados descritos do DANFE na escrituração da NF-e, tanto o contribuinte destinatário, como o contribuinte emitente, terão de verificar a validade da NF-e. Esta validade está vinculada à efetiva existência da NF-e nos arquivos da SEFAZ, e comprovada através da emissão da Autorização de Uso.</i></p>";
+            $msg .= "<p><b>O DANFE não é uma nota fiscal, nem substitui uma nota fiscal, servindo apenas como instrumento auxiliar para consulta da NF-e no Ambiente Nacional.</b></p>";
+            $msg .= "<p>Para mais detalhes sobre o projeto, consulte: <a href='http://www.nfe.fazenda.gov.br/portal/Default.aspx'>www.nfe.fazenda.gov.br</a></p>";
+            $msg .= "<br /><p>Atenciosamente,<p>{emitente}</p>";
+        }
+        //substitui os campos variáveis {emitente}
+        $msg = str_replace('{contato}', $contato, $msg);
+        $msg = str_replace('{emitente}', $emitente, $msg);
+        $msg = str_replace('{numero}', $numero, $msg);
+        $msg = str_replace('{serie}', $serie, $msg);
+        $msg = str_replace('{valor}', $valor, $msg);
+        if ($cStat == '101' ){
+            $msg = str_replace('{status}', ' CANCELAMENTO ', $msg);
+        } else {
+            $msg = str_replace('{status}', '', $msg);
+        }
+        
         //corrige de utf8 para iso
         $msg = utf8_decode($msg);
+        $txt = $this->__html2txt($msg);
         // O email será enviado no formato HTML
         $htmlMessage = "<body bgcolor='#ffffff'>$msg</body>";
         //enviar o email
@@ -310,97 +366,6 @@ class MailNFePHP {
         }
         return $result; //retorno da função
     } //fim da função sendNFe
-
-    /**
-     * sendCanc
-     * Função para envio do Cancelamento ad NF-e por email usando a classe PHPMailer
-     *
-     * @package NFePHP
-     * @name sendCanc
-     * @version 1.03
-     * @author  João Eduardo Silva Corrêa <jscorrea2 at gmail dot com>
-     * @author  Roberto L. Machado <linux dot rlm at gmail dot com>
-     * @param string $docXML Conteúdo do arquivo XML
-     * @param string $nomeXML Nome do arquivo XML
-     * @param array $aMail Matriz com as informações necessárias para envio do email
-     * @return boolean TRUE sucesso ou FALSE falha
-     */
-    public function sendCanc($docXML='',$nomeXML='',$aMail='',$auth='') {
-        //retorna se não foi passada a matriz com os dados de envio
-        if (!is_array($aMail)){
-            $this->mailERROR = 'Não foram passados parametros de envio!';            
-	    return false;
-	}
-        //retorna se não foi passado o xml
-	if ($docXML != '' && $nomeXML != ''){
-            $fileXML = PATH_ROOT.$nomeXML;
-            //retorna false se houve erro na gravação
-            if ( !file_put_contents($fileXML,$docXML) ){
-                $this->mailERROR = 'Não foi possivel gravar o XML para envio. Permissão!';                
-                return false;
-            }
-	} else {
-            $this->mailERROR = 'Não foi passados o XML da NFe para envio. O XML é Obrigatório!';
-            return false;
-        }
-        if($auth == ''){
-            if(isset($this->mailAuth)){
-                $auth = $this->mailAuth;
-            } else {
-                $auth = '1';
-            }    
-        }
-        //validar o endereço de email passado
-        if (!$this->validEmailAdd($aMail['para'])){
-            $this->mailERROR .= 'O endereço informado não é valido! '.$aMail['para'];
-            return false;
-        }
-        $datat = date('d-m-Y H:i:s');
-        $to = $aMail['para'];
-        $contato = $aMail['contato'];
-        $razao = $aMail['razao'];
-        $numero = $aMail['numero'];
-        $serie = $aMail['serie'];
-        $emitente = $aMail['emitente'];
-        $chNFe = $aMail['chNFe'];
-	if ($contato == ''){
-            $contato = $razao;
-	} else {
-            $contato .= ' - '.$razao;
-	}
-        // assunto email
-        $subject = utf8_decode("NF-e Nota Fiscal Eletrônica - Cancelamento - " . $emitente);
-        //mensagem no corpo do email
-        $txt = "À $contato,\n\r";
-        $txt .= "Em  anexo você está recebendo o XML de cancelamento da Nota Fiscal Eletrônica número $numero, série $serie emitida por $emitente.\n\r";
-        $txt .= "A validade deste documento eletrônico pode ser verificada no site nacional do projeto http://www.nfe.fazenda.gov.br\n\r";
-        $txt .= "através da chave $chNFe\n\r";
-        $txt .= "\n\r\n\rAtenciosamente,$emitente.\n\r";
-        $txt .= "\n\r$datat";
-        $txt = utf8_decode($txt);
-        //mensagem no corpo do email
-        $msg = "<p><b>À $contato,</b>";
-        $msg .= "<p>Em anexo você está recebendo o XML de cancelamento da Nota Fiscal Eletrônica número $numero, série $serie emitida por $emitente.";
-        $msg .= "<p><i>A validade deste documento eletrônico pode ser verificada no site nacional do projeto <a href='http://www.nfe.fazenda.gov.br/portal/Default.aspx'>www.nfe.fazenda.gov.br</a>";
-        $msg .= " através da chave $chNFe</i>";
-        $msg .= "<p><p>Atenciosamente,<p>$emitente";
-        $msg .= "<p><p><i><small>$datat</small></i>";
-        //corrige de utf8 para iso
-        $msg = utf8_decode($msg);
-        // O email será enviado no formato HTML
-        $htmlMessage = "<body bgcolor='#ffffff'>$msg</body>";
-        //enviar o email
-        $filePDF = '';
-        if (!$result = $this->__sendM($to,$contato,$subject,$txt,$htmlMessage,$fileXML,$filePDF,$auth)){
-            //houve falha no envio reportar
-            $this->mailERROR = 'Houve erro no envio do email, DEBUGAR!! '.$this->mailERROR ; 
-        }    
-        //apagar os arquivos salvos temporariamente
-        if (is_file($fileXML)){
-            unlink($fileXML);
-        }
-        return $result; //retorno da função
-    } //fim do método sendCanc
 
     /**
      * __sendM
@@ -464,7 +429,6 @@ class MailNFePHP {
         }
         return $result;
     } //fim __sendM
-    
     
     /**
      * validEmailAdd
@@ -809,6 +773,22 @@ class MailNFePHP {
         }//fim if anexos empty
         return $anexos;
     }//fim __getAnexosXML
+    
+    /**
+     * Remove as tag html para deixar o texto puro
+     * @package NFePHP
+     * @name    html2txt
+     * @version 1.00
+     * @author  Roberto L. Machado <linux dot rlm at gmail dot com>
+     * @param   string $str
+     * @return  string texto puro sem as tags html
+     */
+    private function __html2txt($str=''){
+        //substituir todos os tags
+        $str = str_replace('</p>',"\n",$str);
+        $txt = strip_tags($str);
+        return $txt;
+    } //fim html2txt
     
 } //fim da classe
 ?>
