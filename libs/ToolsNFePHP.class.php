@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   2.82
+ * @version   2.85
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2011 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -45,27 +45,28 @@
  *              Diego Mosela <diego dot caicai at gmail dot com>
  *              Edilson Carlos Belluomini <edilson at maxihelp dot com dot br>
  *              Eduardo Pacheco <eduardo at onlyone dot com dot br>
- *		Fabio A. Silva <binhoouropreto at gmail dot com>
+ *              Fabio A. Silva <binhoouropreto at gmail dot com>
  *              Fabricio Veiga <fabriciostuff at gmail dot com>              
  *              Felipe Bonato <montanhats at gmail dot com>
  *              Fernando Mertins <fernando dot mertins at gmail dot com>
  *              Gilmar de Paula Fiocca <gilmar at tecnixinfo dot com dot br>
  *              Giovani Paseto <giovaniw2 at gmail dot com>
- *              Giuliano <giusoft at hotmail dot com>
- *              Glauber <glaubercini at gmail dot com>
+ *              Giuliano Nascimento <giusoft at hotmail dot com>
+ *              Glauber Cini <glaubercini at gmail dot com>
  *              Guilherme Filippo <guilherme at macromind dot com dot br>
  *              Jorge Luiz Rodrigues Tomé <jlrodriguestome at hotmail dot com>
  *              Leandro C. Lopez <leandro dot castoldi at gmail dot com>
  *              Odair Jose Santos Junior <odairsantosjunior at gmail dot com>
  *              Paulo Gabriel Coghi <paulocoghi at gmail dot com>
  *              Paulo Henrique Demori <phdemori at hotmail dot com>
- *              Vini Lazev <vinilazev at gmail dot com>
+ *              Vinicius L. Azevedo <vinilazev at gmail dot com>
  *              Walber da Silva Sales <eng dot walber at gmail dot com>
  *
  */
-
 //define o caminho base da instalação do sistema
-define('PATH_ROOT', dirname(dirname( __FILE__ )) . DIRECTORY_SEPARATOR);
+if (!defined('PATH_ROOT')) {
+   define('PATH_ROOT', dirname(dirname( __FILE__ )) . DIRECTORY_SEPARATOR);
+}
 //carrega a classe de conversões de txt para xml e vice-versa
 require_once('ConvertNFePHP.class.php');
 //carrega a classe de impressao da DANFE
@@ -416,14 +417,14 @@ class ToolsNFePHP {
      */
     public $soapDebug='';
     /**
-     * classDebug
-     * Mensagens de debug da classe
+     * debugMode
+     * Ativa ou desativa as mensagens de debug da classe
      * @var string
      */
-    public $classDebug='';
-    /**
+    protected $debugMode=0;
+     /**
      * URLxsi
-     * Instãncia do WebService
+     * Instância do WebService
      * @var string
      */
     private $URLxsi='http://www.w3.org/2001/XMLSchema-instance';
@@ -589,13 +590,24 @@ class ToolsNFePHP {
      * Este metodo pode estabelecer as configurações a partir do arquivo config.php ou 
      * através de um array passado na instanciação da classe.
      * 
-     * @version 2.13
+     * @version 2.14
      * @package NFePHP
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
-     * @param   array 
+     * @param array $aConfig Opcional dados de configuração
+     * @param number $mododebug Opcional 1-SIM ou 0-NÃO (0 default)
      * @return  boolean true sucesso false Erro
      */
-    function __construct($aConfig='') {
+    function __construct($aConfig='',$mododebug=0) {
+        if(is_numeric($mododebug)){
+            $this->debugMode = $mododebug;
+        }
+        if($mododebug){
+            //ativar modo debug
+            error_reporting(E_ALL);ini_set('display_errors', 'On');
+        } else {
+            //desativar modo debug
+            error_reporting(0);ini_set('display_errors', 'Off');
+        }
         //obtem o path da biblioteca
         $this->raizDir = dirname(dirname( __FILE__ )) . DIRECTORY_SEPARATOR;
         //verifica se foi passado uma matriz de configuração na inicialização da classe
@@ -1601,7 +1613,7 @@ class ToolsNFePHP {
      * os arquivos XML
      *
      * @name signXML
-     * @version 2.10
+     * @version 2.11
      * @package NFePHP
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @param	string $docxml String contendo o arquivo XML a ser assinado
@@ -1634,8 +1646,13 @@ class ToolsNFePHP {
             $xmldoc->formatOutput = false;
             // muito importante deixar ativadas as opçoes para limpar os espacos em branco
             // e as tags vazias
-            $xmldoc->loadXML($docxml,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
-            $root = $xmldoc->documentElement;
+            if ($xmldoc->loadXML($docxml,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG)){
+                $root = $xmldoc->documentElement;
+            } else {
+                $this->errMsg = "Erro ao carregar XML, provavel erro na passagem do parâmetro docXML!!\n";
+                $this->errStatus = true;
+                return false;
+            }
             //extrair a tag com os dados a serem assinados
             $node = $xmldoc->getElementsByTagName($tagid)->item(0);
             $id = trim($node->getAttribute("Id"));
