@@ -28,7 +28,7 @@
  * 
  * @package   NFePHP
  * @name      CTeNFePHP
- * @version   1.01
+ * @version   1.02
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2011 &copy; CTePHP
  * @link      http://www.nfephp.org/
@@ -2691,7 +2691,7 @@ class CTeNFePHP {
      * Conforme Manual de Integração Versão 4.0.1 Utilizando cURL e não o SOAP nativo
      *
      * @name __sendSOAP2
-     * @version 2.14
+     * @version 2.15
      * @package NFePHP
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @author Jorge Luiz Rodrigues Tomé <jlrodriguestome at hotmail dot com>
@@ -2723,6 +2723,8 @@ class CTeNFePHP {
         $data .= $dados;
         $data .= '</soap12:Body>';
         $data .= '</soap12:Envelope>';
+        //Tabela de codigos HTTP
+        $cCode['0']="Indefinido";
         //[Informational 1xx]
         $cCode['100']="Continue";
         $cCode['101']="Switching Protocols";
