@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   2.8.8
+ * @version   2.8.9
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -1424,7 +1424,7 @@ class ToolsNFePHP {
      * NT2012_002 -  Manifestação do destinatário
      *
      * @name sendEvent
-     * @version 1.1.0
+     * @version 1.1.1
      * @package NFePHP
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @param   array   $aEvento Matriz contendo os dados dos eventos
@@ -1440,7 +1440,7 @@ class ToolsNFePHP {
             $this->errMsg = "Dados dos eventos devem ser passados como array";            
             return false;
         }
-        //tipos de eventos
+        //tipos de eventos possíveis
         $aTEvent = array('110110'=>'Carta de Correcao',
                          '210200'=>'Confirmacao da Operacao',
                          '210210'=>'Ciencia da Operacao',
@@ -1489,9 +1489,10 @@ class ToolsNFePHP {
             //limpa a variável do evento
             $Ev="";
             //extrair os dados do array
-            $chNFe = $aEvento[$i]['chNFe'];
+            $chNFe = $aEvento[$i]['chNFe'];//chave da NFe referente ao evento
             $tpEvento = $aEvento[$i]['tpEvento'];
-            $xCorrecao = $aEvento[$i]['xCorrecao'];
+            $xCorrecao = $aEvento[$i]['xCorrecao']; //descrição da correção na carta de correção
+            $xJust = $aEvento[$i]['xJust']; //descrição da justificativa para outros eventos
             $nSeqEvento = $aEvento[$i]['nSeqEvento'];
             //verificar se a chave foi passada
             if ($chNFe == '' || strlen($chNFe) != 44){
@@ -1511,6 +1512,12 @@ class ToolsNFePHP {
                 $this->errMsg .= "Falta a descrição da correção a ser aplicada.";            
                 return false;
             }
+            //se não for carta de correção e a justificativa não for passada retorne false
+            if ($aTEvent[$tpEvento]!='Carta de Correcao' && $xJust == ''){
+                $this->errStatus = true;
+                $this->errMsg .= "Falta a justificativa para o evento.";            
+                return false;
+            }
             //se o numero sequencial do evento não foi informado ou se for maior que 1 digito
             if ($nSeqEvento == '' || strlen($nSeqEvento) > 2 || !is_numeric($nSeqEvento)){
                 $this->errStatus = true;
@@ -1521,7 +1528,7 @@ class ToolsNFePHP {
             // 2   +    6     +    44         +   2  = 54 digitos
             //“ID” + tpEvento + chave da NF-e + nSeqEvento
             
-            //garantir que existam 2 digitos em nSeqEvento
+            //garantir que existam 2 digitos em nSeqEvento para montar o ID com 54 digitos
             if (strlen(trim($nSeqEvento))==1){
                 $zenSeqEvento = str_pad(trim($nSeqEvento), 2, '0', 'STR_PAD_LEFT');
             } else {
@@ -1546,8 +1553,13 @@ class ToolsNFePHP {
             $Ev .= "<verEvento>$versao</verEvento>";
             $Ev .= "<detEvento versao=\"$verEvento\">";
             $Ev .= "<descEvento>$descEvento</descEvento>";
-            $Ev .= "<xCorrecao>$xCorrecao</xCorrecao>";
-            $Ev .= "<xCondUso>$xCondUso</xCondUso>";
+            //verifica se é carta de correção 
+            if($xCondUso == ''){
+                $Ev .= "<xJust>$xJust</xJust>";
+            } else {
+                $Ev .= "<xCorrecao>$xCorrecao</xCorrecao>";
+                $Ev .= "<xCondUso>$xCondUso</xCondUso>";
+            }    
             $Ev .= "</detEvento></infEvento></evento>";
             //assinatura dos dados
             $tagid = 'infEvento';
