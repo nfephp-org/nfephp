@@ -54,7 +54,7 @@ $ambiente=2;
 // esta variável contêm o nome do arquivo com todas as url dos webservices do sefaz
 // incluindo a versao dos mesmos, pois alguns estados não estão utilizando as
 // mesmas versões
-$arquivoURLxml='def_ws2.xml';
+$arquivoURLxml='nfe_ws2.xml';
 
 // Diretório onde serão mantidos os arquivos com as NFe em xml
 // a partir deste diretório serão montados todos os subdiretórios do sistema

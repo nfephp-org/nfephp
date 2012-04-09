@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   2.86
+ * @version   2.8.7
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -199,7 +199,7 @@ class ToolsNFePHP {
      * Arquivo xml com as URL do SEFAZ de todos dos Estados
      * @var string
      */
-    public $xmlURLfile='';
+    public $xmlURLfile='nfe_ws2.xml';
     /**
      * enableSCAN
      * Habilita o acesso ao serviço SCAN ao invés do webservice estadual
@@ -486,7 +486,8 @@ class ToolsNFePHP {
                              'SC'=>'42',
                              'SE'=>'28',
                              'SP'=>'35',
-                             'TO'=>'17');
+                             'TO'=>'17',
+                             'SVAN'=>'91');
     /**
      * cUFlist
      * Lista dos numeros identificadores dos estados
@@ -518,7 +519,8 @@ class ToolsNFePHP {
                           '50'=>'MS',
                           '51'=>'MT',
                           '52'=>'GO',
-                          '53'=>'DF');
+                          '53'=>'DF',
+                          '91'=>'SVAN');
     /**
      * aMail
      * Matriz com os dados para envio de emails
@@ -1136,7 +1138,7 @@ class ToolsNFePHP {
      *        cStat = 114 SCAN dasativado pela SEFAZ de origem    
      * se SCAN estiver ativado usar, caso contrario aguardar pacientemente.
      * @name statusServico
-     * @version 2.03
+     * @version 2.0.4
      * @package NFePHP
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @param	string $UF sigla da unidade da Federação
@@ -1159,9 +1161,9 @@ class ToolsNFePHP {
         $cUF = $this->cUFlist[$UF];
         //verifica se o SCAN esta habilitado
         if (!$this->enableSCAN){
-            $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . "def_ws2.xml",$tpAmb,$UF);
+            $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . $this->xmlURLfile,$tpAmb,$UF);
         } else {
-            $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . "def_ws2.xml",$tpAmb,'SCAN');
+            $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . $this->xmlURLfile,$tpAmb,'SCAN');
         }
         //identificação do serviço
         $servico = 'NfeStatusServico';
@@ -1223,7 +1225,7 @@ class ToolsNFePHP {
      * retornados podem não ser os mais atuais. Não é recomendado seu uso ainda.
      *
      * @name consultaCadastro
-     * @version 2.15
+     * @version 2.1.6
      * @package NFePHP
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @param	string  $UF
@@ -1278,7 +1280,7 @@ class ToolsNFePHP {
         // caso a sigla do estado seja diferente do emitente ou o ambiente seja diferente
         if ($UF != $this->UF || $tpAmb != $this->tpAmb){
             //recarrega as url referentes aos dados passados como parametros para a função
-            $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . "def_ws2.xml",$tpAmb,$UF);
+            $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . $this->xmlURLfile,$tpAmb,$UF);
         }
         //busca o cUF
         $cUF = $this->cUFlist[$UF];
@@ -1318,7 +1320,7 @@ class ToolsNFePHP {
      * Este processo enviará somente até 50 NFe em cada Lote
      *
      * @name sendLot
-     * @version 2.16
+     * @version 2.1.7
      * @package NFePHP
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @param	array   $aNFe notas fiscais em xml uma em cada campo do array unidimensional MAX 50
@@ -1335,7 +1337,7 @@ class ToolsNFePHP {
         if (!$this->enableSCAN){
             $aURL = $this->aURL;
         } else {
-            $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . "def_ws2.xml",$this->tpAmb,'SCAN');
+            $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . $this->xmlURLfile,$this->tpAmb,'SCAN');
         }
         //identificação do serviço
         $servico = 'NfeRecepcao';
@@ -1415,11 +1417,14 @@ class ToolsNFePHP {
     /**
      * sendEvent
      * Envia lote de eventos da Nota Fiscal para a SEFAZ.
-     * Este método pode enviar uma ou mais correções e um evento por vez
-     * até o limite de 20 correções
+     * Este método pode enviar uma ou mais correções 
+     * e/ou um ou mais eventos até o limite de 20 por lote
+     * Atualizado parcialmente com o 
+     * Manual de Orientação do Contribuinte v.5 e
+     * NT2012_002 -  Manifestação do destinatário
      *
      * @name sendEvent
-     * @version 1.01
+     * @version 1.1.0
      * @package NFePHP
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @param   array   $aEvento Matriz contendo os dados dos eventos
@@ -1436,12 +1441,16 @@ class ToolsNFePHP {
             return false;
         }
         //tipos de eventos
-        $aTEvent = array('10201'=>'Carta de Correcao',
-                         '10202'=>'Registros de saida',
-                         '10203'=>'Roubo de Carga',
-                         '30401'=>'Confirmacao de recebimento',
-                         '30402'=>'Desconhecimento da operacao',
-                         '30403'=>'Devolucao de mercadoria');
+        $aTEvent = array('110110'=>'Carta de Correcao',
+                         '210200'=>'Confirmacao da Operacao',
+                         '210210'=>'Ciencia da Operacao',
+                         '210220'=>'Desconhecimento da Operacao',
+                         '210240'=>'Operacao nao Realizada');
+                         //'10202'=>'Registros de saida',
+                         //'10203'=>'Roubo de Carga',
+                         //'30401'=>'Confirmacao de recebimento',
+                         //'30402'=>'Desconhecimento da operacao',
+                         //'30403'=>'Devolucao de mercadoria');
         if ($tpAmb == ''){
             $tpAmb = $this->tpAmb;
         }
@@ -1449,14 +1458,14 @@ class ToolsNFePHP {
         if (!$this->enableSCAN){
             $aURL = $this->aURL;
         } else {
-            $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . "def_ws2.xml",$this->tpAmb,'SCAN');
+            $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . $this->xmlURLfile,$this->tpAmb,'SCAN');
         }
         $numLote = substr(str_replace(',','',number_format(microtime(true)*1000000,0)),0,15);
         //Data e hora do evento no formato AAAA-MM-DDTHH:MM:SSTZD (UTC)
         $dhEvento = date('Y-m-d').'T'.date('H:i:s').$this->timeZone;
         //se o envio for para svan mudar o numero no orgão para 90
         if ($this->enableSVAN){
-            $cOrgao='90';
+            $cOrgao='91';
         } else {
             $cOrgao=$this->cUF;
         }
@@ -1490,30 +1499,37 @@ class ToolsNFePHP {
                 $this->errMsg = "Uma chave de NFe válida não foi passada como parâmetro.";
                 return false;
             }
-            //se o numero do evento informado não estiver na lista retorna false
+            //se o codigo do evento informado não estiver na lista retorna false
             if ($aTEvent[$tpEvento]==''){
                 $this->errStatus = true;
                 $this->errMsg .= "O Tipo de evento está vazio ou não foi encontrado [$tpEvento]";            
                 return false;
             }
             //se for carta de correção e a correção não foram passadas retorne false
-            if ($tpEvento=='10201' && $xCorrecao == ''){
+            if ($aTEvent[$tpEvento]=='Carta de Correcao' && $xCorrecao == ''){
                 $this->errStatus = true;
                 $this->errMsg .= "Falta a descrição da correção a ser aplicada.";            
                 return false;
             }
-            //se o numero sequencial do eveno não foi informado ou se for maior que 1 dgito
-            if ($nSeqEvento == '' || strlen($nSeqEvento) > 1 || !is_numeric($nSeqEvento)){
+            //se o numero sequencial do evento não foi informado ou se for maior que 1 digito
+            if ($nSeqEvento == '' || strlen($nSeqEvento) > 2 || !is_numeric($nSeqEvento)){
                 $this->errStatus = true;
-                $this->errMsg .= "Número sequencial do evento não encontrado ou é maior que 9 ou contêm caracteres não numéricos [$nSeqEvento]";            
+                $this->errMsg .= "Número sequencial do evento não encontrado ou é maior que 99 ou contêm caracteres não numéricos [$nSeqEvento]";            
                 return false;
             }
-            //de acordo com o manual da CC-e de junho 2010 54 digitos
-            // 2   +    5     +  2  +    44         +   1
-            //“ID” + tpEvento + cUF + chave da NF-e + nSeqEvento
-            $id = "ID$tpEvento$this->cUF$chNFe$nSeqEvento";
+            //de acordo com o manual versão 5 de março de 2012
+            // 2   +    6     +    44         +   2  = 54 digitos
+            //“ID” + tpEvento + chave da NF-e + nSeqEvento
+            
+            //garantir que existam 2 digitos em nSeqEvento
+            if (strlen(trim($nSeqEvento))==1){
+                $zenSeqEvento = str_pad(trim($nSeqEvento), 2, '0', 'STR_PAD_LEFT');
+            } else {
+                $zenSeqEvento = trim($nSeqEvento);
+            }
+            $id = "ID$tpEvento$chNFe$zenSeqEvento";
             $descEvento = $aTEvent[$tpEvento];
-            if ($tpEvento == '10201'){
+            if ($aTEvent[$tpEvento]=='Carta de Correcao'){
                 $xCondUso = 'A Carta de Correcao e disciplinada pelo paragrafo 1o-A do art. 7o do Convenio S/N, de 15 de dezembro de 1970 e pode ser utilizada para regularizacao de erro ocorrido na emissao de documento fiscal, desde que o erro nao esteja relacionado com: I - as variaveis que determinam o valor do imposto tais como: base de calculo, aliquota, diferenca de preco, quantidade, valor da operacao ou da prestacao; II - a correcao de dados cadastrais que implique mudanca do remetente ou do destinatario; III - a data de emissao ou de saida.';
             } else {
                 $xCondUso = '';
@@ -1556,6 +1572,7 @@ class ToolsNFePHP {
         $cabec = "<nfeCabecMsg xmlns=\"$namespace\"><cUF>$this->cUF</cUF><versaoDados>$versao</versaoDados></nfeCabecMsg>";
         $dados = "<nfeDadosMsg xmlns=\"$namespace\">$dados</nfeDadosMsg>";
         return $dados;
+        
         /**
         //envia dados via SOAP
         if ($modSOAP == '2'){
@@ -1626,7 +1643,7 @@ class ToolsNFePHP {
      * Caso $this->cStat == 105 Tentar novamente mais tarde
      *
      * @name getProtocol
-     * @version 2.28
+     * @version 2.2.9
      * @package NFePHP
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @param	string   $recibo numero do recibo do envio do lote
@@ -1657,12 +1674,12 @@ class ToolsNFePHP {
                 //se não for o mesmo carregar a sigla
                 $UF = $this->UFList[$cUF];
                 //recarrega as url referentes aos dados passados como parametros para a função
-                $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . "def_ws2.xml",$tpAmb,$UF);
+                $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . $this->xmlURLfile,$tpAmb,$UF);
             }
         }
         //verifica se o SCAN esta habilitado
         if ($this->enableSCAN){
-            $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . "def_ws2.xml",$tpAmb,'SCAN');
+            $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . $this->xmlURLfile,$tpAmb,'SCAN');
         }        
         if ($recibo == '' && $chave == '') {
             $this->errStatus = true;
@@ -1847,7 +1864,7 @@ class ToolsNFePHP {
      * Solicita inutilizaçao de uma serie de numeros de NF
      *
      * @name inutNF
-     * @version 2.15
+     * @version 2.1.6
      * @package NFePHP
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @param	string  $nAno       ano com 2 digitos
@@ -1871,7 +1888,7 @@ class ToolsNFePHP {
         if (!$this->enableSCAN){
             $aURL = $this->aURL;
         } else {
-            $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . "def_ws2.xml",$this->tpAmb,'SCAN');
+            $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . $this->xmlURLfile,$this->tpAmb,'SCAN');
         }
         // valida o campo ano
         if( strlen($nAno) > 2 ){
@@ -2004,7 +2021,7 @@ class ToolsNFePHP {
      * Solicita o cancelamento de NF enviada
      *
      * @name cancelNF
-     * @version 2.18
+     * @version 2.1.9
      * @package NFePHP
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @param	string  $id      ID da NFe com 44 digitos (sem o NFe na frente dos numeros)
@@ -2025,7 +2042,7 @@ class ToolsNFePHP {
         if (!$this->enableSCAN){
             $aURL = $this->aURL;
         } else {
-            $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . "def_ws2.xml",$this->tpAmb,'SCAN');
+            $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . $this->xmlURLfile,$this->tpAmb,'SCAN');
         }
         //identificação do serviço
         $servico = 'NfeCancelamento';
@@ -2102,7 +2119,7 @@ class ToolsNFePHP {
      * __verifySignatureXML
      * Verifica correção da assinatura no xml
      * 
-     * @version 1.21
+     * @version 1.2.1
      * @package NFePHP
      * @author Bernardo Silva <bernardo at datamex dot com dot br>
      * @param string $conteudoXML xml a ser verificado 
@@ -2157,7 +2174,7 @@ class ToolsNFePHP {
      * verifyNFe
      * Verifica a validade da NFe recebida de terceiros
      *
-     * @version 1.05
+     * @version 1.0.5
      * @package NFePHP
      * @author Roberto L. Machado <linux dot rlm at gmail dot com>
      * @param string $file Path completo para o arquivo xml a ser verificado
@@ -2245,7 +2262,7 @@ class ToolsNFePHP {
     /**
      * __splitLines
      * Divide a string do certificado publico em linhas com 76 caracteres (padrão original)
-     * @version 1.00
+     * @version 1.0.0
      * @package NFePHP
      * @author Bernardo Silva <bernardo at datamex dot com dot br>
      * @param string $cnt certificado
@@ -2278,7 +2295,7 @@ class ToolsNFePHP {
     * </WS>
     *
     * @name loadSEFAZ
-    * @version 1.12
+    * @version 1.1.2
     * @package NFePHP
     * @author Roberto L. Machado <linux.rlm at gmail dot com>
     * @param  string $spathXML  Caminho completo para o arquivo xml
@@ -2361,7 +2378,7 @@ class ToolsNFePHP {
      *   $this->passKey
      *
      * @name __loadCerts
-     * @version 2.11
+     * @version 2.1.1
      * @package NFePHP
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @param	none
@@ -2455,7 +2472,7 @@ class ToolsNFePHP {
     * certificados de forma a garantir que sempre estejam validos
     *
     * @name __validCerts
-    * @version  1.00
+    * @version  1.0.0
     * @package  NFePHP
     * @author Roberto L. Machado <linux.rlm at gmail dot com>
     * @param    string  $cert Certificado digital no formato pem
@@ -2503,7 +2520,7 @@ class ToolsNFePHP {
      * para inclusão do mesmo na tag assinatura do xml
      *
      * @name __cleanCerts
-     * @version 1.00
+     * @version 1.0.0
      * @package NFePHP
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @param    $certFile
@@ -2533,7 +2550,7 @@ class ToolsNFePHP {
     * em um timestamp unix
     *
     * @name __convertTime
-    * @version 1.00
+    * @version 1.0.0
     * @package NFePHP
     * @author Roberto L. Machado <linux.rlm at gmail dot com>
     * @param    string   $DH
@@ -2554,7 +2571,7 @@ class ToolsNFePHP {
      * listDir
      * Método para obter todo o conteúdo de um diretorio, e
      * que atendam ao critério indicado.
-     * @version 2.12
+     * @version 2.1.2
      * @package NFePHP
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @param string $dir Diretorio a ser pesquisado
@@ -2618,7 +2635,7 @@ class ToolsNFePHP {
      * Conforme Manual de Integração Versão 4.0.1 
      *
      * @name __sendSOAP
-     * @version 2.11
+     * @version 2.1.1
      * @package NFePHP
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @param string $urlsefaz
@@ -2723,7 +2740,7 @@ class ToolsNFePHP {
      * Conforme Manual de Integração Versão 4.0.1 Utilizando cURL e não o SOAP nativo
      *
      * @name __sendSOAP2
-     * @version 2.15
+     * @version 2.1.6
      * @package NFePHP
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @author Jorge Luiz Rodrigues Tomé <jlrodriguestome at hotmail dot com>
@@ -2826,11 +2843,8 @@ class ToolsNFePHP {
                 case 'nfeStatusServicoNF2':
                     $servico = "NfeStatusServico";
                     break;
-                case 'consultaCadastro':
-                    $servico = "CadConsultaCadastro";
-                    break;
             }
-            $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . "def_ws2.xml",$ambiente,'SCAN');
+            $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . $this->xmlURLfile,$ambiente,'SCAN');
             $urlsefaz = $aURL[$servico]['URL'];
         } 
         $parametros = Array('Content-Type: application/soap+xml;charset=utf-8;action="'.$namespace."/".$metodo.'"','SOAPAction: "'.$metodo.'"',"Content-length: $tamanho");
@@ -2903,7 +2917,7 @@ class ToolsNFePHP {
      * __getNumLot
      * Obtêm o numero do último lote de envio
      *  
-     * @version 1.01
+     * @version 1.0.1
      * @package NFePHP
      * @author    Roberto L. Machado <linux.rlm at gmail dot com>
      * @return numeric Numero do Lote
@@ -2925,7 +2939,7 @@ class ToolsNFePHP {
      * __putNumLot
      * Grava o numero do lote de envio usado
      *
-     * @version 1.02
+     * @version 1.0.2
      * @package NFePHP
      * @author    Roberto L. Machado <linux.rlm at gmail dot com>
      * @param numeric $num Inteiro com o numero do lote enviado
@@ -2953,7 +2967,7 @@ class ToolsNFePHP {
  * Remove algumas tags para adequar a comunicação
  * ao padrão "esquisito" utilizado pelas SEFAZ
  *
- * @version 1.4
+ * @version 1.0.4
  * @package NFePHP
  * @author  Roberto L. Machado <linux.rlm at gmail dot com>
  *
