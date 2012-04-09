@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   2.8.7
+ * @version   2.8.8
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -1225,7 +1225,7 @@ class ToolsNFePHP {
      * retornados podem não ser os mais atuais. Não é recomendado seu uso ainda.
      *
      * @name consultaCadastro
-     * @version 2.1.6
+     * @version 2.1.7
      * @package NFePHP
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @param	string  $UF
@@ -1285,7 +1285,7 @@ class ToolsNFePHP {
         //busca o cUF
         $cUF = $this->cUFlist[$UF];
         //identificação do serviço
-        $servico = 'NFeConsultaCadastro';
+        $servico = 'NfeConsultaCadastro';
         //recuperação da versão
         $versao = $aURL[$servico]['version'];
         //recuperação da url do serviço
