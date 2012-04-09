@@ -8,6 +8,7 @@
 <!-- Versão 20110731 Inclusao do serviço de RecepcaoEvento -->
 <!-- Versão 20111104 Incluidas as urls para CE e MT de RecepcaoEvento -->
 <!-- Versão 20111222 Corrigida a URL RecepcaoEvento de SP -->
+<!-- Versão 20120409 Inclusão dos novos webservices, *** ainda em testes NfeConsultaDest e NfeDownloadNF -->
   <UF>
     <sigla>AM</sigla>
     <homologacao>
@@ -19,6 +20,8 @@
       <NfeStatusServico method='nfeStatusServicoNF2' version='2.00'>https://homnfe.sefaz.am.gov.br/services2/services/NfeStatusServico2</NfeStatusServico>
       <NfeConsultaCadastro method='consultaCadastro2' version='2.00'>https://homnfe.sefaz.am.gov.br/services2/services/cadconsultacadastro2</NfeConsultaCadastro>
       <RecepcaoEvento method='nfeRecepcaoEvento' version='2.00'>https://homnfe.sefaz.am.gov.br/services2/services/RecepcaoEvento</RecepcaoEvento>            
+      <NfeConsultaDest method='nfeConsultaNFDest' version='2.00'></NfeConsultaDest>
+      <NfeDownloadNF method='nfeDownloadNF' version='2.00'></NfeDownloadNF>
     </homologacao>
     <producao>
       <NfeRecepcao method='nfeRecepcaoLote2' version='2.00'>https://nfe.sefaz.am.gov.br/services2/services/NfeRecepcao2</NfeRecepcao>
@@ -29,6 +32,8 @@
       <NfeStatusServico method='nfeStatusServicoNF2' version='2.00'>https://nfe.sefaz.am.gov.br/services2/services/NfeStatusServico2</NfeStatusServico>
       <NfeConsultaCadastro method='consultaCadastro2' version='2.00'></NfeConsultaCadastro>
       <RecepcaoEvento method='nfeRecepcaoEvento' version='2.00'>https://nfe.sefaz.am.gov.br/services2/services/RecepcaoEvento</RecepcaoEvento>
+      <NfeConsultaDest method='nfeConsultaNFDest' version='2.00'></NfeConsultaDest>
+      <NfeDownloadNF method='nfeDownloadNF' version='2.00'></NfeDownloadNF>
     </producao>
   </UF>
   <UF>
@@ -42,6 +47,8 @@
       <NfeStatusServico method='nfeStatusServicoNF2' version='2.00'>https://hnfe.sefaz.ba.gov.br/webservices/nfenw/NfeStatusServico2.asmx</NfeStatusServico>
       <NfeConsultaCadastro method='consultaCadastro2' version='2.00'>https://hnfe.sefaz.ba.gov.br/webservices/nfenw/CadConsultaCadastro2.asmx</NfeConsultaCadastro>
       <RecepcaoEvento method='nfeRecepcaoEvento' version='2.00'>https://hnfe.sefaz.ba.gov.br/webservices/sre/nferecepcaoevento.asmx</RecepcaoEvento>
+      <NfeConsultaDest method='nfeConsultaNFDest' version='2.00'></NfeConsultaDest>
+      <NfeDownloadNF method='nfeDownloadNF' version='2.00'></NfeDownloadNF>
     </homologacao>
     <producao>
       <NfeRecepcao method='nfeRecepcaoLote2' version='2.00'>https://nfe.sefaz.ba.gov.br/webservices/nfenw/NfeRecepcao.asmx</NfeRecepcao>
@@ -52,6 +59,8 @@
       <NfeStatusServico method='nfeStatusServicoNF2' version='2.00'>https://nfe.sefaz.ba.gov.br/webservices/nfenw/NfeStatusServico2.asmx</NfeStatusServico>
       <NfeConsultaCadastro method='consultaCadastro2' version='2.00'>https://nfe.sefaz.ba.gov.br/webservices/nfenw/CadConsultaCadastro2.asmx</NfeConsultaCadastro>
       <RecepcaoEvento method='nfeRecepcaoEvento' version='2.00'>https://nfe.sefaz.ba.gov.br/webservices/sre/nferecepcaoevento.asmx</RecepcaoEvento>
+      <NfeConsultaDest method='nfeConsultaNFDest' version='2.00'></NfeConsultaDest>
+      <NfeDownloadNF method='nfeDownloadNF' version='2.00'></NfeDownloadNF>
     </producao>
   </UF>
   <UF>
@@ -65,6 +74,8 @@
       <NfeStatusServico method='nfeStatusServicoNF2' version='2.00'>https://nfeh.sefaz.ce.gov.br/nfe2/services/NfeStatusServico2</NfeStatusServico>
       <NfeConsultaCadastro method='consultaCadastro2' version='2.00'>https://nfeh.sefaz.ce.gov.br/nfe2/services/CadConsultaCadastro2</NfeConsultaCadastro>
       <RecepcaoEvento method='nfeRecepcaoEvento' version='2.00'>https://nfeh.sefaz.ce.gov.br/nfe2/services/RecepcaoEvento</RecepcaoEvento>
+      <NfeConsultaDest method='nfeConsultaNFDest' version='2.00'></NfeConsultaDest>
+      <NfeDownloadNF method='nfeDownloadNF' version='2.00'></NfeDownloadNF>
     </homologacao>
     <producao>
       <NfeRecepcao method='nfeRecepcaoLote2' version='2.00'>https://nfe.sefaz.ce.gov.br/nfe2/services/NfeRecepcao2</NfeRecepcao>
@@ -75,6 +86,8 @@
       <NfeStatusServico method='nfeStatusServicoNF2' version='2.00'>https://nfe.sefaz.ce.gov.br/nfe2/services/NfeStatusServico2</NfeStatusServico>
       <NfeConsultaCadastro method='consultaCadastro2' version='2.00'>https://nfe.sefaz.ce.gov.br/nfe2/services/CadConsultaCadastro2</NfeConsultaCadastro>
       <RecepcaoEvento method='nfeRecepcaoEvento' version='2.00'>https://nfe.sefaz.ce.gov.br/nfe2/services/RecepcaoEvento</RecepcaoEvento>
+      <NfeConsultaDest method='nfeConsultaNFDest' version='2.00'></NfeConsultaDest>
+      <NfeDownloadNF method='nfeDownloadNF' version='2.00'></NfeDownloadNF>
     </producao>
   </UF>
   <UF>
@@ -86,8 +99,10 @@
       <NfeInutilizacao method='nfeInutilizacaoNF2' version='2.00'>https://homolog.sefaz.go.gov.br/nfe/services/v2/NfeInutilizacao2</NfeInutilizacao>
       <NfeConsulta method='nfeConsultaNF2' version='2.00'>https://homolog.sefaz.go.gov.br/nfe/services/v2/NfeConsulta2</NfeConsulta>
       <NfeStatusServico method='nfeStatusServicoNF2' version='2.00'>https://homolog.sefaz.go.gov.br/nfe/services/v2/NfeStatusServico2</NfeStatusServico>
-      <NfeConsultaCadastro method='consultaCadastro2' version='2.00'></NfeConsultaCadastro>
-      <RecepcaoEvento method='nfeRecepcaoEvento' version='2.00'></RecepcaoEvento>
+      <NfeConsultaCadastro method='consultaCadastro2' version='2.00'>https://homolog.sefaz.go.gov.br/nfe/services/v2/CadConsultaCadastro2?wsdl</NfeConsultaCadastro>
+      <RecepcaoEvento method='nfeRecepcaoEvento' version='2.00'>https://homolog.sefaz.go.gov.br/nfe/services/v2/NfeRecepcaoEvento?wsdl</RecepcaoEvento>
+      <NfeConsultaDest method='nfeConsultaNFDest' version='2.00'></NfeConsultaDest>
+      <NfeDownloadNF method='nfeDownloadNF' version='2.00'></NfeDownloadNF>
     </homologacao>
     <producao>
       <NfeRecepcao method='nfeRecepcaoLote2' version='2.00'>https://nfe.sefaz.go.gov.br/nfe/services/v2/NfeRecepcao2</NfeRecepcao>
@@ -96,8 +111,10 @@
       <NfeInutilizacao method='nfeInutilizacaoNF2' version='2.00'>https://nfe.sefaz.go.gov.br/nfe/services/v2/NfeInutilizacao2</NfeInutilizacao>
       <NfeConsulta method='nfeConsultaNF2' version='2.00'>https://nfe.sefaz.go.gov.br/nfe/services/v2/NfeConsulta2</NfeConsulta>
       <NfeStatusServico method='nfeStatusServicoNF2' version='2.00'>https://nfe.sefaz.go.gov.br/nfe/services/v2/NfeStatusServico2</NfeStatusServico>
-      <NfeConsultaCadastro method='consultaCadastro2' version='2.00'></NfeConsultaCadastro>
-      <RecepcaoEvento method='nfeRecepcaoEvento' version='2.00'></RecepcaoEvento>
+      <NfeConsultaCadastro method='consultaCadastro2' version='2.00'>https://nfe.sefaz.go.gov.br/nfe/services/v2/CadConsultaCadastro2?wsdl</NfeConsultaCadastro>
+      <RecepcaoEvento method='nfeRecepcaoEvento' version='2.00'>https://nfe.sefaz.go.gov.br/nfe/services/v2/NfeRecepcaoEvento?wsdl</RecepcaoEvento>
+      <NfeConsultaDest method='nfeConsultaNFDest' version='2.00'></NfeConsultaDest>
+      <NfeDownloadNF method='nfeDownloadNF' version='2.00'></NfeDownloadNF>
     </producao>
   </UF>
   <UF>
@@ -109,8 +126,10 @@
       <NfeInutilizacao method='nfeInutilizacaoNF2' version='2.00'>https://hnfe.fazenda.mg.gov.br/nfe2/services/NfeInutilizacao2</NfeInutilizacao>
       <NfeConsulta method='nfeConsultaNF2' version='2.00'>https://hnfe.fazenda.mg.gov.br/nfe2/services/NfeConsulta2</NfeConsulta>
       <NfeStatusServico method='nfeStatusServicoNF2' version='2.00'>https://hnfe.fazenda.mg.gov.br/nfe2/services/NfeStatus2</NfeStatusServico>
-      <NfeConsultaCadastro method='consultaCadastro2' version='2.00'></NfeConsultaCadastro>
-      <RecepcaoEvento method='nfeRecepcaoEvento' version='2.00'></RecepcaoEvento>
+      <NfeConsultaCadastro method='consultaCadastro2' version='2.00'>https://hnfe.fazenda.mg.gov.br/nfe2/services/cadconsultacadastro2</NfeConsultaCadastro>
+      <RecepcaoEvento method='nfeRecepcaoEvento' version='2.00'>https://hnfe.fazenda.mg.gov.br/nfe2/services/RecepcaoEvento</RecepcaoEvento>
+      <NfeConsultaDest method='nfeConsultaNFDest' version='2.00'></NfeConsultaDest>
+      <NfeDownloadNF method='nfeDownloadNF' version='2.00'></NfeDownloadNF>
     </homologacao>
     <producao>
       <NfeRecepcao method='nfeRecepcaoLote2' version='2.00'>https://nfe.fazenda.mg.gov.br/nfe2/services/NfeRecepcao2</NfeRecepcao>
@@ -119,8 +138,10 @@
       <NfeInutilizacao method='nfeInutilizacaoNF2' version='2.00'>https://nfe.fazenda.mg.gov.br/nfe2/services/NfeInutilizacao2</NfeInutilizacao>
       <NfeConsulta method='nfeConsultaNF2' version='2.00'>https://nfe.fazenda.mg.gov.br/nfe2/services/NfeConsulta2</NfeConsulta>
       <NfeStatusServico method='nfeStatusServicoNF2' version='2.00'>https://nfe.fazenda.mg.gov.br/nfe2/services/NfeStatusServico2</NfeStatusServico>
-      <NfeConsultaCadastro method='consultaCadastro2' version='2.00'></NfeConsultaCadastro>
-      <RecepcaoEvento method='nfeRecepcaoEvento' version='2.00'></RecepcaoEvento>
+      <NfeConsultaCadastro method='consultaCadastro2' version='2.00'>https://nfe.fazenda.mg.gov.br/nfe2/services/cadconsultacadastro2</NfeConsultaCadastro>
+      <RecepcaoEvento method='nfeRecepcaoEvento' version='2.00'>https://nfe.fazenda.mg.gov.br/nfe2/services/RecepcaoEvento</RecepcaoEvento>
+      <NfeConsultaDest method='nfeConsultaNFDest' version='2.00'></NfeConsultaDest>
+      <NfeDownloadNF method='nfeDownloadNF' version='2.00'></NfeDownloadNF>
     </producao>
   </UF>
   <UF>
@@ -133,7 +154,9 @@
       <NfeConsulta method='nfeConsultaNF2' version='2.00'>https://homologacao.nfe.ms.gov.br/homologacao/services2/NfeConsulta2</NfeConsulta>
       <NfeStatusServico method='nfeStatusServicoNF2' version='2.00'>https://homologacao.nfe.ms.gov.br/homologacao/services2/NfeStatusServico2</NfeStatusServico>
       <NfeConsultaCadastro method='consultaCadastro2' version='2.00'>https://homologacao.nfe.ms.gov.br/homologacao/services2/CadConsultaCadastro2</NfeConsultaCadastro>
-      <RecepcaoEvento method='nfeRecepcaoEvento' version='2.00'></RecepcaoEvento>
+      <RecepcaoEvento method='nfeRecepcaoEvento' version='2.00'>https://homologacao.nfe.ms.gov.br/homologacao/services2/RecepcaoEvento</RecepcaoEvento>
+      <NfeConsultaDest method='nfeConsultaNFDest' version='2.00'></NfeConsultaDest>
+      <NfeDownloadNF method='nfeDownloadNF' version='2.00'></NfeDownloadNF>
     </homologacao>
     <producao>
       <NfeRecepcao method='nfeRecepcaoLote2' version='2.00'>https://nfe.fazenda.ms.gov.br/producao/services2/NfeRecepcao2</NfeRecepcao>
@@ -144,6 +167,8 @@
       <NfeStatusServico method='nfeStatusServicoNF2' version='2.00'>https://nfe.fazenda.ms.gov.br/producao/services2/NfeStatusServico2</NfeStatusServico>
       <NfeConsultaCadastro method='consultaCadastro2' version='2.00'>https://nfe.fazenda.ms.gov.br/producao/services2/CadConsultaCadastro2</NfeConsultaCadastro>
       <RecepcaoEvento method='nfeRecepcaoEvento' version='2.00'>https://nfe.fazenda.ms.gov.br/producao/services2/NfeRecepcaoEvento</RecepcaoEvento>
+      <NfeConsultaDest method='nfeConsultaNFDest' version='2.00'></NfeConsultaDest>
+      <NfeDownloadNF method='nfeDownloadNF' version='2.00'></NfeDownloadNF>
     </producao>
   </UF>
   <UF>
@@ -157,6 +182,8 @@
       <NfeStatusServico method='nfeStatusServicoNF2' version='2.00'>https://homologacao.sefaz.mt.gov.br/nfews/v2/services/NfeStatusServico2</NfeStatusServico>
       <NfeConsultaCadastro method='consultaCadastro2' version='2.00'>https://homologacao.sefaz.mt.gov.br/nfews/v2/services/CadConsultaCadastro2</NfeConsultaCadastro>
       <RecepcaoEvento method='nfeRecepcaoEvento' version='2.00'>https://homologacao.sefaz.mt.gov.br/nfews/v2/services/RecepcaoEvento</RecepcaoEvento>
+      <NfeConsultaDest method='nfeConsultaNFDest' version='2.00'></NfeConsultaDest>
+      <NfeDownloadNF method='nfeDownloadNF' version='2.00'></NfeDownloadNF>
     </homologacao>
     <producao>
       <NfeRecepcao method='nfeRecepcaoLote2' version='2.00'>https://nfe.sefaz.mt.gov.br/nfews/v2/services/NfeRecepcao2</NfeRecepcao>
@@ -166,7 +193,9 @@
       <NfeConsulta method='nfeConsultaNF2' version='2.00'>https://nfe.sefaz.mt.gov.br/nfews/v2/services/NfeConsulta2</NfeConsulta>
       <NfeStatusServico method='nfeStatusServicoNF2' version='2.00'>https://nfe.sefaz.mt.gov.br/nfews/v2/services/NfeStatusServico2</NfeStatusServico>
       <NfeConsultaCadastro method='consultaCadastro2' version='2.00'>https://nfe.sefaz.mt.gov.br/nfews/v2/services/CadConsultaCadastro2</NfeConsultaCadastro>
-      <RecepcaoEvento method='nfeRecepcaoEvento' version='2.00'></RecepcaoEvento>
+      <RecepcaoEvento method='nfeRecepcaoEvento' version='2.00'>https://nfe.sefaz.mt.gov.br/nfews/v2/services/RecepcaoEvento</RecepcaoEvento>
+      <NfeConsultaDest method='nfeConsultaNFDest' version='2.00'></NfeConsultaDest>
+      <NfeDownloadNF method='nfeDownloadNF' version='2.00'></NfeDownloadNF>
     </producao>
   </UF>
   <UF>
@@ -190,6 +219,8 @@
       <NfeStatusServico method='nfeStatusServicoNF2' version='2.00'>https://nfe.sefaz.pe.gov.br/nfe-service/services/NfeStatusServico2</NfeStatusServico>
       <NfeConsultaCadastro method='consultaCadastro2' version='2.00'>https://nfe.sefaz.pe.gov.br/nfe-service/services/CadConsultaCadastro2</NfeConsultaCadastro>
       <RecepcaoEvento method='nfeRecepcaoEvento' version='2.00'>https://nfe.sefaz.pe.gov.br/nfe-service/services/RecepcaoEvento</RecepcaoEvento>
+      <NfeConsultaDest method='nfeConsultaNFDest' version='2.00'></NfeConsultaDest>
+      <NfeDownloadNF method='nfeDownloadNF' version='2.00'></NfeDownloadNF>
     </producao>
   </UF>
   <UF>
@@ -203,6 +234,8 @@
       <NfeStatusServico method='nfeStatusServicoNF2' version='2.00'>https://homologacao.nfe2.fazenda.pr.gov.br/nfe/NFeStatusServico2</NfeStatusServico>
       <NfeConsultaCadastro method='consultaCadastro2' version='2.00'></NfeConsultaCadastro>
       <RecepcaoEvento method='nfeRecepcaoEvento' version='2.00'></RecepcaoEvento>
+      <NfeConsultaDest method='nfeConsultaNFDest' version='2.00'></NfeConsultaDest>
+      <NfeDownloadNF method='nfeDownloadNF' version='2.00'></NfeDownloadNF>
     </homologacao>
     <producao>
       <NfeRecepcao method='nfeRecepcaoLote2' version='2.00'>https://nfe2.fazenda.pr.gov.br/nfe/NFeRecepcao2</NfeRecepcao>
@@ -213,6 +246,8 @@
       <NfeStatusServico method='nfeStatusServicoNF2' version='2.00'>https://nfe2.fazenda.pr.gov.br/nfe/NFeStatusServico2</NfeStatusServico>
       <NfeConsultaCadastro method='consultaCadastro2' version='2.00'></NfeConsultaCadastro>
       <RecepcaoEvento method='nfeRecepcaoEvento' version='2.00'></RecepcaoEvento>
+      <NfeConsultaDest method='nfeConsultaNFDest' version='2.00'></NfeConsultaDest>
+      <NfeDownloadNF method='nfeDownloadNF' version='2.00'></NfeDownloadNF>
     </producao>
   </UF>
   <UF>
@@ -226,6 +261,8 @@
       <NfeStatusServico method='nfeStatusServicoNF2' version='2.00'>https://homologacao.nfe.sefaz.rs.gov.br/ws/NfeStatusServico/NfeStatusServico2.asmx</NfeStatusServico>
       <NfeConsultaCadastro method='consultaCadastro2' version='2.00'></NfeConsultaCadastro>
       <RecepcaoEvento method='nfeRecepcaoEvento' version='2.00'>https://homologacao.nfe.sefaz.rs.gov.br/ws/recepcaoevento/recepcaoevento.asmx</RecepcaoEvento>
+      <NfeConsultaDest method='nfeConsultaNFDest' version='2.00'>https://homologacao.nfe.sefaz.rs.gov.br/ws/nfeConsultaDest/nfeConsultaDest.asmx</NfeConsultaDest>
+      <NfeDownloadNF method='nfeDownloadNF' version='2.00'>https://homologacao.nfe.sefaz.rs.gov.br/ws/nfeDownloadNF/nfeDownloadNF.asmx</NfeDownloadNF>
     </homologacao>
     <producao>
       <NfeRecepcao method='nfeRecepcaoLote2' version='2.00'>https://nfe.sefaz.rs.gov.br/ws/Nferecepcao/NFeRecepcao2.asmx</NfeRecepcao>
@@ -236,6 +273,8 @@
       <NfeStatusServico method='nfeStatusServicoNF2' version='2.00'>https://nfe.sefaz.rs.gov.br/ws/NfeStatusServico/NfeStatusServico2.asmx</NfeStatusServico>
       <NfeConsultaCadastro method='consultaCadastro2' version='2.00'>https://sef.sefaz.rs.gov.br/ws/cadconsultacadastro/cadconsultacadastro2.asmx</NfeConsultaCadastro>
       <RecepcaoEvento method='nfeRecepcaoEvento' version='2.00'>https://nfe.sefaz.rs.gov.br/ws/recepcaoevento/recepcaoevento.asmx</RecepcaoEvento>
+      <NfeConsultaDest method='nfeConsultaNFDest' version='2.00'></NfeConsultaDest>
+      <NfeDownloadNF method='nfeDownloadNF' version='2.00'></NfeDownloadNF>
     </producao>
   </UF>
   <UF>
@@ -249,6 +288,8 @@
       <NfeStatusServico method='nfeStatusServicoNF2' version='2.00'>https://homologacao.nfe.fazenda.sp.gov.br/nfeweb/services/NfeStatusServico2.asmx</NfeStatusServico>
       <NfeConsultaCadastro method='consultaCadastro2' version='2.00'>https://homologacao.nfe.fazenda.sp.gov.br/nfeweb/services/CadConsultaCadastro2.asmx</NfeConsultaCadastro>
       <RecepcaoEvento method='nfeRecepcaoEvento' version='2.00'>https://homologacao.nfe.fazenda.sp.gov.br/eventosWEB/services/RecepcaoEvento.asmx</RecepcaoEvento>
+      <NfeConsultaDest method='nfeConsultaNFDest' version='2.00'></NfeConsultaDest>
+      <NfeDownloadNF method='nfeDownloadNF' version='2.00'></NfeDownloadNF>
     </homologacao>
     <producao>
       <NfeRecepcao method='nfeRecepcaoLote2' version='2.00'>https://nfe.fazenda.sp.gov.br/nfeweb/services/nferecepcao2.asmx</NfeRecepcao>
@@ -259,6 +300,8 @@
       <NfeStatusServico method='nfeStatusServicoNF2' version='2.00'>https://nfe.fazenda.sp.gov.br/nfeweb/services/nfestatusservico2.asmx</NfeStatusServico>
       <NfeConsultaCadastro method='consultaCadastro2' version='2.00'>https://nfe.fazenda.sp.gov.br/nfeweb/services/cadconsultacadastro2.asmx</NfeConsultaCadastro>
       <RecepcaoEvento method='nfeRecepcaoEvento' version='2.00'>https://nfe.fazenda.sp.gov.br/eventosWEB/services/RecepcaoEvento.asmx</RecepcaoEvento>
+      <NfeConsultaDest method='nfeConsultaNFDest' version='2.00'></NfeConsultaDest>
+      <NfeDownloadNF method='nfeDownloadNF' version='2.00'></NfeDownloadNF>
     </producao>
   </UF>
   <UF>
@@ -273,6 +316,8 @@
       <NfeStatusServico method='nfeStatusServicoNF2' version='2.00'>https://hom.nfe.fazenda.gov.br/SCAN/NfeStatusServico2/NfeStatusServico2.asmx</NfeStatusServico>
       <NfeConsultaCadastro method='consultaCadastro2' version='2.00'></NfeConsultaCadastro>
       <RecepcaoEvento method='nfeRecepcaoEvento' version='2.00'></RecepcaoEvento>
+      <NfeConsultaDest method='nfeConsultaNFDest' version='2.00'></NfeConsultaDest>
+      <NfeDownloadNF method='nfeDownloadNF' version='2.00'></NfeDownloadNF>
     </homologacao>
     <producao>
       <NfeRecepcao method='nfeRecepcaoLote2' version='2.00'>https://www.scan.fazenda.gov.br/NfeRecepcao2/NfeRecepcao2.asmx</NfeRecepcao>
@@ -283,6 +328,8 @@
       <NfeStatusServico method='nfeStatusServicoNF2' version='2.00'>https://www.scan.fazenda.gov.br/NFeStatusServico2/NFeStatusServico2.asmx</NfeStatusServico>
       <NfeConsultaCadastro method='consultaCadastro2' version=''></NfeConsultaCadastro>
       <RecepcaoEvento method='nfeRecepcaoEvento' version='2.00'></RecepcaoEvento>
+      <NfeConsultaDest method='nfeConsultaNFDest' version='2.00'></NfeConsultaDest>
+      <NfeDownloadNF method='nfeDownloadNF' version='2.00'></NfeDownloadNF>
     </producao>
   </UF>
   <UF>
@@ -297,6 +344,8 @@
       <NfeStatusServico method='nfeStatusServicoNF2' version='2.00'>https://hom.sefazvirtual.fazenda.gov.br/NfeStatusServico2/NfeStatusServico2.asmx</NfeStatusServico>
       <NfeConsultaCadastro method='consultaCadastro2' version='2.00'></NfeConsultaCadastro>
       <RecepcaoEvento method='nfeRecepcaoEvento' version='2.00'>https://hom.sefazvirtual.fazenda.gov.br/RecepcaoEvento/RecepcaoEvento.asmx</RecepcaoEvento>
+      <NfeConsultaDest method='nfeConsultaNFDest' version='2.00'></NfeConsultaDest>
+      <NfeDownloadNF method='nfeDownloadNF' version='2.00'></NfeDownloadNF>
     </homologacao>
     <producao>
       <NfeRecepcao method='nfeRecepcaoLote2' version='2.00'>https://www.sefazvirtual.fazenda.gov.br/NfeRecepcao2/NfeRecepcao2.asmx</NfeRecepcao>
@@ -307,6 +356,8 @@
       <NfeStatusServico method='nfeStatusServicoNF2' version='2.00'>https://www.sefazvirtual.fazenda.gov.br/NFeStatusServico2/NFeStatusServico2.asmx</NfeStatusServico>
       <NfeConsultaCadastro method='consultaCadastro2' version='2.00'></NfeConsultaCadastro>
       <RecepcaoEvento method='nfeRecepcaoEvento' version='2.00'>https://www.sefazvirtual.fazenda.gov.br/RecepcaoEvento/RecepcaoEvento.asmx</RecepcaoEvento>
+      <NfeConsultaDest method='nfeConsultaNFDest' version='2.00'></NfeConsultaDest>
+      <NfeDownloadNF method='nfeDownloadNF' version='2.00'></NfeDownloadNF>
     </producao>
   </UF>
   <UF>
@@ -321,6 +372,8 @@
       <NfeStatusServico method='nfeStatusServicoNF2' version='2.00'>https://homologacao.nfe.sefazvirtual.rs.gov.br/ws/NfeStatusServico/NfeStatusServico2.asmx</NfeStatusServico>
       <NfeConsultaCadastro method='consultaCadastro2' version='2.00'></NfeConsultaCadastro>
       <RecepcaoEvento method='nfeRecepcaoEvento' version='2.00'>https://homologacao.nfe.sefazvirtual.rs.gov.br/ws/recepcaoevento/recepcaoevento.asmx</RecepcaoEvento>
+      <NfeConsultaDest method='nfeConsultaNFDest' version='2.00'></NfeConsultaDest>
+      <NfeDownloadNF method='nfeDownloadNF' version='2.00'></NfeDownloadNF>
     </homologacao>
     <producao>
       <NfeRecepcao method='nfeRecepcaoLote2' version='2.00'>https://nfe.sefazvirtual.rs.gov.br/ws/Nferecepcao/NFeRecepcao2.asmx</NfeRecepcao>
@@ -331,6 +384,8 @@
       <NfeStatusServico method='nfeStatusServicoNF2' version='2.00'>https://nfe.sefazvirtual.rs.gov.br/ws/NfeStatusServico/NfeStatusServico2.asmx</NfeStatusServico>
       <NfeConsultaCadastro method='consultaCadastro2' version='2.00'></NfeConsultaCadastro>
       <RecepcaoEvento method='nfeRecepcaoEvento' version='2.00'>https://nfe.sefazvirtual.rs.gov.br/ws/recepcaoevento/recepcaoevento.asmx</RecepcaoEvento>
+      <NfeConsultaDest method='nfeConsultaNFDest' version='2.00'></NfeConsultaDest>
+      <NfeDownloadNF method='nfeDownloadNF' version='2.00'></NfeDownloadNF>
     </producao>
   </UF>
   <UF>
