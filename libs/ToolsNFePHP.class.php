@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   2.8.9
+ * @version   2.9.2
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -1871,7 +1871,126 @@ class ToolsNFePHP {
         } //fim retorno
         return $aRetorno;
     } //fim getProtocol
-
+    
+    /**
+     * getList
+     * Consulta da Relação de Documentos Destinados 
+     * para um determinado CNPJ de destinatário informado na NF-e.
+     * 
+     * ESSE SEVIÇO NÃO ESTÁ AINDA OPERACIONAL EXISTE APENAS EM AMBIENTE DE HOMOLOCAÇÃO
+     * NO SEFAZ DO RS 
+     * 
+     * @param string $cnpj CNPJ do destinatário Opcional se não informado será usado o atual
+     * @param string $indNFe Indicador de NF-e consultada: 0=Todas as NF-e; 1=Somente as NF-e que ainda não tiveram manifestação do destinatário (Desconhecimento da operação, Operação não Realizada ou Confirmação da Operação); 2=Idem anterior, incluindo as NF-e que também não tiveram a Ciência da Operação
+     * @param string $indEmi Indicador do Emissor da NF-e: 0=Todos os Emitentes / Remetentes; 1=Somente as NF-e emitidas por emissores / remetentes que não tenham a mesma raiz do CNPJ do destinatário (para excluir as notas fiscais de transferência entre filiais).
+     * @param string $ultNSU Último NSU recebido pela Empresa. Caso seja informado com zero, ou com um NSU muito antigo, a consulta retornará unicamente as notas fiscais que tenham sido recepcionadas nos últimos 15 dias.
+     * @param string $tpAmb Tipo de ambiente 1=Produção /2=Homologação
+     * #param string $modSOAP
+     * @return mixed False ou array
+     */
+    public function getList($cnpj='',$indNFe='0',$indEmi='0',$ultNSU='0',$tpAmb='',$modSOAP='2'){
+        $aRetorno = false;
+        if ($cnpj == ''){
+            $cnpj = $this->cnpj;
+        } else {
+            //remover ./- do cnpj
+            $aS = array('.','/','-');
+            $aR = array('','','');
+            $cnpj = trim(str_replace($aS, $aR, $cnpj));
+        }
+        if($tpAmb == ''){
+            $tpAmb = $this->tpAmb;
+        }
+        //identificação do serviço
+        $servico = 'NfeConsultaDest';
+        //recuperação da versão
+        $versao = $aURL[$servico]['version'];
+        //recuperação da url do serviço
+        $urlservico = $aURL[$servico]['URL'];
+        //recuperação do método
+        $metodo = $aURL[$servico]['method'];
+        //montagem do namespace do serviço
+        $namespace = $this->URLPortal.'/wsdl/'.$servico.'2';
+        //montagem do cabeçalho da comunicação SOAP
+        $cabec = '<nfeCabecMsg xmlns="'. $namespace . '"><cUF>'.$cUF.'</cUF><versaoDados>'.$versao.'</versaoDados></nfeCabecMsg>';
+        //montagem dos dados da mensagem SOAP
+        $dados = '<nfeDadosMsg xmlns="'.$namespace.'"><consNFeDest xmlns="'.$this->URLPortal.'" versao="'.$versao.'"><tpAmb>'.$tpAmb.'</tpAmb><xServ>CONSULTAR NFE DEST</xServ><CNPJ>'.$cnpj .'</CNPJ><indNFe>'.$indNFe.'</indNFe><indEmi>'.$indEmi.'</indEmi><ultNSU>'.$ultNSU.'</ultNSU></consNFeDest></nfeDadosMsg>';
+        //retorno para testes
+        $aRetono = $cabec.$dados;
+        /*
+        if ($modSOAP == '2'){
+            $retorno = $this->__sendSOAP2($urlservico, $namespace, $cabec, $dados, $metodo, $tpAmb);
+        } else {
+            $retorno = $this->__sendSOAP($urlservico, $namespace, $cabec, $dados, $metodo, $tpAmb,$UF);
+        }
+        if($retorno){
+            //ler retorno de dados do SEFAZ
+        }
+         */
+        return $aRetorno;    
+    }//fim getList
+    
+    /**
+     * getNFe
+     * Download da NF-e para uma determinada Chave de Acesso informada, 
+     * para as NF-e confirmadas pelo destinatário.
+     * 
+     * ESSE SEVIÇO NÃO ESTÁ AINDA OPERACIONAL EXISTE APENAS EM AMBIENTE DE HOMOLOCAÇÃO
+     * NO SEFAZ DO RS 
+     * 
+     * @param string $cnpj
+     * @param string $chave
+     * @param string $tpAmb
+     * @param string $modSOAP
+     * @return mixed FALSE ou $array  
+     */
+    public function getNFe($cnpj='',$chNFe='',$tpAmb='',$modSOAP='2'){
+        $aRetorno = false;
+        if($chNFe == ''){
+            $this->errStatus = true;
+            $this->errMsg = 'Uma chave de NFe deve ser passada como parâmetro da função.';
+            return false;
+        }
+        if ($cnpj == ''){
+            $cnpj = $this->cnpj;
+        } else {
+            //remover ./- do cnpj
+            $aS = array('.','/','-');
+            $aR = array('','','');
+            $cnpj = trim(str_replace($aS, $aR, $cnpj));
+        }
+        if($tpAmb == ''){
+            $tpAmb = $this->tpAmb;
+        }
+        //identificação do serviço
+        $servico = 'NfeDownloadNF';
+        //recuperação da versão
+        $versao = $aURL[$servico]['version'];
+        //recuperação da url do serviço
+        $urlservico = $aURL[$servico]['URL'];
+        //recuperação do método
+        $metodo = $aURL[$servico]['method'];
+        //montagem do namespace do serviço
+        $namespace = $this->URLPortal.'/wsdl/'.$servico.'2';
+        //montagem do cabeçalho da comunicação SOAP
+        $cabec = '<nfeCabecMsg xmlns="'. $namespace . '"><cUF>'.$cUF.'</cUF><versaoDados>'.$versao.'</versaoDados></nfeCabecMsg>';
+        //montagem dos dados da mensagem SOAP
+        $dados = '<nfeDadosMsg xmlns="'.$namespace.'"><downloadNFe xmlns="'.$this->URLPortal.'" versao="'.$versao.'"><tpAmb>'.$tpAmb.'</tpAmb><xServ>DOWNLOAD NFE</xServ><CNPJ>'.$cnpj .'</CNPJ><chNFe>'.$chNFe.'</chNFe></downloadNFe></nfeDadosMsg>';
+        //retorno para testes
+        $aRetorno = $cabec.$dados;
+        /*
+        if ($modSOAP == '2'){
+            $retorno = $this->__sendSOAP2($urlservico, $namespace, $cabec, $dados, $metodo, $tpAmb);
+        } else {
+            $retorno = $this->__sendSOAP($urlservico, $namespace, $cabec, $dados, $metodo, $tpAmb,$UF);
+        }
+        if($retorno){
+            //ler retorno de dados do SEFAZ
+        } 
+         */
+        return $aRetorno; 
+    }//fim getNFe
+    
     /**
      * Solicita inutilizaçao de uma serie de numeros de NF
      *
