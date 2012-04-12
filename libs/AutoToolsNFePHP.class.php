@@ -25,7 +25,7 @@
  *
  * @package   NFePHP
  * @name      AutoToolsNFePHP
- * @version   1.00
+ * @version   1.01
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2011 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -643,8 +643,9 @@ class AutoToolsNFePHP extends ToolsNFePHP {
                         $this->errStatus = true;
                         return false;
                     }
-                    $aRet = $this->validXML($nfefile,$filexsd[0]);
-                    if ( $aRet['status'] ) {
+                    $aErro = '';
+                    $retorno = $this->validXML($nfefile,$filexsd[0],$aErro);
+                    if ( $retorno ) {
                         // validado => transferir para pasta validados
                         $file = $this->valDir . $aName[$x];
                         if ( !file_put_contents($file, $nfefile) ) {
@@ -656,7 +657,10 @@ class AutoToolsNFePHP extends ToolsNFePHP {
                         //NFe com erros transferir de pasta rejeitadas
                         $file = $this->rejDir . $aName[$x];
                         $this->errStatus = true;
-                        $this->errMsg .= $aName[$x].' ... '.$aRet['error']."\n";
+                        $this->errMsg .= $aName[$x].' ... ';
+                        foreach ($aErro as $er){
+                            $this->errMsg .= $er."\n";
+                        }
                        if ( !file_put_contents($file, $nfefile) ) {
                             $this->errStatus = true;
                         } else {
