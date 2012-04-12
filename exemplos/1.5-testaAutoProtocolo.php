@@ -24,7 +24,7 @@
  * 
  */
 error_reporting(E_ALL);
-require_once('../libs/ToolsNFePHP.class.php');
+require_once('../libs/AutoToolsNFePHP.class.php');
 $nfe = new ToolsNFePHP;
 if (!$nfe->autoProtNFe()){
     echo $nfe->errMsg;
