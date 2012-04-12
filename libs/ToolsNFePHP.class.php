@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   2.9.2
+ * @version   2.9.3
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -1225,7 +1225,7 @@ class ToolsNFePHP {
      * retornados podem não ser os mais atuais. Não é recomendado seu uso ainda.
      *
      * @name consultaCadastro
-     * @version 2.1.7
+     * @version 2.1.8
      * @package NFePHP
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @param	string  $UF
@@ -1238,7 +1238,7 @@ class ToolsNFePHP {
      **/
     public function consultaCadastro($UF,$CNPJ='',$IE='',$CPF='',$tpAmb='',$modSOAP='2'){
         //variavel de retorno do metodo
-        $aRetorno = array('bStat'=>false,'cStat'=>'','dados'=>array());
+        $aRetorno = array('bStat'=>false,'cStat'=>'','xMotivo'=>'','dados'=>array());
         $flagIE = false;
         $flagCNPJ = false;
         $flagCPF = false;
@@ -1285,7 +1285,7 @@ class ToolsNFePHP {
         //busca o cUF
         $cUF = $this->cUFlist[$UF];
         //identificação do serviço
-        $servico = 'NfeConsultaCadastro';
+        $servico = 'CadConsultaCadastro';
         //recuperação da versão
         $versao = $aURL[$servico]['version'];
         //recuperação da url do serviço
@@ -1302,13 +1302,62 @@ class ToolsNFePHP {
         //montagem do cabeçalho da comunicação SOAP
         $cabec = '<nfeCabecMsg xmlns="'. $namespace . '"><cUF>'.$cUF.'</cUF><versaoDados>'.$versao.'</versaoDados></nfeCabecMsg>';
         //montagem dos dados da mensagem SOAP
-        $dados = '<nfeDadosMsg xmlns="'. $namespace . '"><consCad xmlns="'.$this->URLnfe.'" versao="'.$versao.'"><infCons><xServ>CONS-CAD</xServ><UF>'.$UF.'</UF>'.$filtro.'</infCons></consCad><nfeDadosMsg>';
+        $dados = '<nfeDadosMsg xmlns="'. $namespace . '"><ConsCad xmlns="'.$this->URLnfe.'" versao="'.$versao.'"><infCons><xServ>CONS-CAD</xServ><UF>'.$UF.'</UF>'.$filtro.'</infCons></ConsCad></nfeDadosMsg>';
         //envia a solicitação via SOAP
         if ($modSOAP == 2){
             $retorno = $this->__sendSOAP2($urlservico, $namespace, $cabec, $dados, $metodo, $tpAmb);
         } else {
             $retorno = $this->__sendSOAP($urlservico, $namespace, $cabec, $dados, $metodo, $tpAmb,$UF);
         }
+        if($retorno){
+            //tratar dados de retorno
+            $doc = new DOMDocument(); //cria objeto DOM
+            $doc->formatOutput = false;
+            $doc->preserveWhiteSpace = false;
+            $doc->loadXML($retorno,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
+            $infCons = $doc->getElementsByTagName('infCons')->item(0);
+            if (isset($infCons)){
+                //foi retornado dados
+                $cStat = $infCons->getElementsByTagName('cStat')->item(0)->nodeValue;
+                $xMotivo = $infCons->getElementsByTagName('xMotivo')->item(0)->nodeValue;
+                $infCad = $infCons->getElementsByTagName('infCad');
+                if($cStat == '111' && isset($infCad) ){
+                    $aRetorno['bStat'] = true;
+                    //existem dados do cadastro e podem ser multiplos
+                    $i =0;
+                    foreach ($infCad as $dCad){
+                        $ender = $dCad->getElementsByTagName('ender')->item(0);
+                        $aCad[$i]['CNPJ'] = $dCad->getElementsByTagName('CNPJ')->item(0)->nodeValue;
+                        $aCad[$i]['IE'] = $dCad->getElementsByTagName('IE')->item(0)->nodeValue;
+                        $aCad[$i]['UF'] = $dCad->getElementsByTagName('UF')->item(0)->nodeValue;
+                        $aCad[$i]['cSit'] = $dCad->getElementsByTagName('cSit')->item(0)->nodeValue;
+                        $aCad[$i]['indCredNFe'] = $dCad->getElementsByTagName('indCredNFe')->item(0)->nodeValue;
+                        $aCad[$i]['indCredCTe'] = $dCad->getElementsByTagName('indCredCTe')->item(0)->nodeValue;
+                        $aCad[$i]['xNome'] = $dCad->getElementsByTagName('xNome')->item(0)->nodeValue;
+                        $aCad[$i]['xRegApur'] = $dCad->getElementsByTagName('xRegApur')->item(0)->nodeValue;
+                        $aCad[$i]['CNAE'] = $dCad->getElementsByTagName('CNAE')->item($i)->nodeValue;
+                        $aCad[$i]['dIniAtiv'] = $dCad->getElementsByTagName('dIniAtiv')->item(0)->nodeValue;
+                        $aCad[$i]['dUltSit'] = $dCad->getElementsByTagName('dUltSit')->item(0)->nodeValue;
+                        $aCad[$i]['xLgr'] = $ender->getElementsByTagName('xLgr')->item(0)->nodeValue;
+                        $aCad[$i]['nro'] = $ender->getElementsByTagName('nro')->item(0)->nodeValue;
+                        $aCad[$i]['xBairro'] = $ender->getElementsByTagName('xBairro')->item(0)->nodeValue;
+                        $aCad[$i]['cMun'] = $ender->getElementsByTagName('cMun')->item(0)->nodeValue;
+                        $aCad[$i]['xMun'] = $ender->getElementsByTagName('xMun')->item(0)->nodeValue;
+                        $aCad[$i]['CEP'] = $ender->getElementsByTagName('CEP')->item(0)->nodeValue;
+                    }
+                } else {
+                    //houve retorno de erro do SEFAZ
+                    $aRetorno['bStat'] = false;
+                }
+            }
+        } else {
+            $this->errStatus = true;
+            $this->errMsg = 'Não houve retorno da SEFAZ';
+            return false;
+        }
+        $aRetorno['cStat'] = $cStat;
+        $aRetorno['xMotivo'] = $xMotivo;
+        $aRetorno['dados'] = $aCad;
         return $aRetorno;
     } //fim consultaCadastro
 
