@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   2.9.3
+ * @version   2.9.4
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -869,25 +869,72 @@ class ToolsNFePHP {
     * que causa um falso erro na validação da NFe devido ao
     * uso de uma marcação no arquivo tiposBasico_v1.02.xsd
     * onde se le {0 , } substituir por *
-    *
+    * A validação não deve ser feita após a inclusão do protocolo !!!
     * @name validXML
-    * @version 2.02
+    * @version 3.00
     * @package NFePHP
     * @author Roberto L. Machado <linux.rlm at gmail dot com>
-    * @param    string  $docxml  string contendo o arquivo xml a ser validado
+    * @param    string  $xml  string contendo o arquivo xml a ser validado
     * @param    string  $xsdfile Path completo para o arquivo xsd
-    * @return   array   ['status','error']
+    * @param    array   $aError Variável passada como referencia irá conter as mensagens de erro se houverem 
+    * @return   boolean 
     */
-    public function validXML($docXml, $xsdFile){
+    public function validXML($xml='', $xsdFile='',&$aError=array()){
+        $flagOK = false;
         // Habilita a manipulaçao de erros da libxml
         libxml_use_internal_errors(true);
+        //verifica se foi passado o xml
+        if($xml==''){
+            $this->errStatus = true;
+            $this->errMsg = 'Você deve passar o conteudo do xml assinado como parâmetro.';
+            $aError[] = 'Você deve passar o conteudo do xml assinado como parâmetro.';
+            return false;
+        }
         // instancia novo objeto DOM
-        $xmldoc = new DOMDocument();
-        // carrega o xml
-        $xml = $xmldoc->loadXML($docXml);
-        $errorMsg='';
+        $dom = new DOMDocument('1.0', 'utf-8');
+        $dom->preservWhiteSpace = false; //elimina espaços em branco
+        $dom->formatOutput = false;
+        // carrega o xml tanto pelo string contento o xml como por um path
+        if (is_file($xml)){
+            $dom->load($xml,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
+        } else {
+            $dom->loadXML($xml,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
+        }
+        $errors = libxml_get_errors(); 
+        if (!empty($errors)) { 
+            //o dado passado como $docXml não é um xml
+            $this->errStatus = true;
+            $this->errMsg = 'O dado informado não é um XML ou não foi encontrado. Você deve passar o conteudo de um arquivo xml assinado como parâmetro.';
+            $aError[] = 'O dado informado não é um XML ou não foi encontrado. Você deve passar o conteudo de um arquivo xml assinado como parâmetro.';
+            return false;
+        }
+        //verificar se a nota contem o protocolo !!!
+        $nfeProc = $dom->getElementsByTagName('nfeProc')->item(0);
+        if (isset($nfeProc)){
+            $this->errMsg = "Essa NFe já contêm o protocolo. Não é possivel validar com o protocolo pois já foi validada anteriormente";
+            $aError[] = "";
+            $this->errStatus = true;
+            return true;
+        }
+        if($xsdFile==''){
+            //não foi passado o xsd então determinar qual o arquivo de schema válido 
+            //buscar o nome do scheme
+            //extrair a tag com o numero da versão da NFe
+            $node = $dom->getElementsByTagName('infNFe')->item(0);
+            //obtem a versão do layout da NFe
+            $ver = trim($node->getAttribute("versao"));
+            $aFile = $this->listDir($this->xsdDir . $this->schemeVer. DIRECTORY_SEPARATOR,'nfe_v*.xsd',true);
+            if (!$aFile[0]) {
+                $this->errMsg = "Erro na localização do schema xsd.\n";
+                $aError[] = "Erro na localização do schema xsd.";
+                $this->errStatus = true;
+                return false;
+            } else {
+                $xsdFile = $aFile[0];
+            }
+        }
         // valida o xml com o xsd
-        if ( !$xmldoc->schemaValidate($xsdFile) ) {
+        if ( !$dom->schemaValidate($xsdFile) ) {
             /**
              * Se não foi possível validar, você pode capturar
              * todos os erros em um array
@@ -901,22 +948,21 @@ class ToolsNFePHP {
             foreach ($aIntErrors as $intError){
                 switch ($intError->level) {
                     case LIBXML_ERR_WARNING:
-                        $errorMsg .= " Atençao $intError->code: ";
+                        $aError[] = " Atençao $intError->code: $intError->message";
                         break;
                     case LIBXML_ERR_ERROR:
-                        $errorMsg .= " Erro $intError->code: ";
+                        $aError[] = " Erro $intError->code: $intError->message";
                         break;
                     case LIBXML_ERR_FATAL:
-                        $errorMsg .= " Erro Fatal $intError->code: ";
+                        $aError[] = " Erro Fatal $intError->code: $intError->message";
                         break;
                 }
-                $errorMsg .= $intError->message . ';';
+                
             }
         } else {
             $flagOK = true;
-            $errorMsg = '';
         }
-        return array('status'=>$flagOK, 'error'=>$errorMsg);
+        return $flagOK;
     } //fim validXML
 	
     /**
