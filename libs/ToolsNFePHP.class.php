@@ -1750,7 +1750,7 @@ class ToolsNFePHP {
      * Caso $this->cStat == 105 Tentar novamente mais tarde
      *
      * @name getProtocol
-     * @version 2.2.9
+     * @version 2.2.10
      * @package NFePHP
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @param	string   $recibo numero do recibo do envio do lote
@@ -1951,8 +1951,12 @@ class ToolsNFePHP {
                     } //fim foreach
                 }//fim cStat
                 //converter o horário do recebimento retornado pela SEFAZ em formato padrão
-                foreach ($aProt as &$p){
-                    $p['dhRecbto'] = !empty($p['dhRecbto']) ? date("d/m/Y H:i:s",$this->__convertTime($p['dhRecbto'])) : '';
+                if (isset($aProt)) {
+                    foreach ($aProt as &$p){
+                        $p['dhRecbto'] = !empty($p['dhRecbto']) ? date("d/m/Y H:i:s",$this->__convertTime($p['dhRecbto'])) : '';
+                    }
+                } else {
+                    $aProt = array();
                 }
                 $aRetorno['aProt'] = $aProt; //passa o valor de $aProt para o array de retorno
                 $nomeArq = $recibo.'-recprot.xml';
