@@ -26,7 +26,7 @@
  *
  * @package     NFePHP
  * @name        ConvertNFePHP
- * @version     2.3.4
+ * @version     2.3.5
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2011 &copy; NFePHP
@@ -51,6 +51,7 @@
  *              Leandro C. Lopez <leandro.castoldi at gmail dot com>
  *              Leandro G. Santana <leandrosantana1 at gmail dot com>
  *              Marcos Diez <marcos at unitron dot com dot br>
+ *              Renato Ricci <renatoricci at singlesoftware dot com dot br>
  *              Roberto Spadim <rspadim at gmail dot com>
  *              Rodrigo Rysdyk <rodrigo_rysdyk at hotmail dot com>
  *
@@ -3007,9 +3008,10 @@ class ConvertNFePHP {
 
     /**
      * __limpaString
-     * Remove todos dos caracteres espceiais do texto e os acentos
+     * Remove todos dos caracteres especiais do texto e os acentos
+     * preservando apenas letras de A-Z numeros de 0-9 e os caracteres @ , - ; : / _
      *  
-     * @version 1.0.3
+     * @version 1.0.4
      * @package NFePHP
      * @author  Roberto L. Machado <linux.rlm at gmail dot com>
      * @return  string Texto sem caractere especiais
@@ -3018,7 +3020,7 @@ class ConvertNFePHP {
         $aFind = array('&','á','à','ã','â','é','ê','í','ó','ô','õ','ú','ü','ç','Á','À','Ã','Â','É','Ê','Í','Ó','Ô','Õ','Ú','Ü','Ç');
         $aSubs = array('e','a','a','a','a','e','e','i','o','o','o','u','u','c','A','A','A','A','E','E','I','O','O','O','U','U','C');
         $novoTexto = str_replace($aFind,$aSubs,$texto);
-        $novoTexto = preg_replace("/[^a-zA-Z0-9 @,-.;:\/]/", "", $novoTexto);
+        $novoTexto = preg_replace("/[^a-zA-Z0-9 @,-.;:\/_]/", "", $novoTexto);
         return $novoTexto;
     }//fim __limpaString
 
