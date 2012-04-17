@@ -23,7 +23,7 @@
  *
  * @package   NFePHP
  * @name      MailNFePHP
- * @version   2.29
+ * @version   2.2.10
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -258,7 +258,7 @@ class MailNFePHP {
      *
      * @package NFePHP
      * @name sendNFe
-     * @version 2.16
+     * @version 2.1.7
      * @author    Roberto L. Machado <linux dot rlm at gmail dot com>
      * @param string $docXML arquivo XML, é obrigatório
      * @param string $docPDF DANFE em formato PDF, se não quizer mandar o pdf deixe em branco
@@ -279,7 +279,7 @@ class MailNFePHP {
             $fileXML = PATH_ROOT.$nomeXML;
             //retorna false se houve erro na gravação
             if ( !file_put_contents($fileXML,$docXML) ){
-                $this->mailERROR = 'Não foi possivel gravar o XML para envio. Permissão!';
+                $this->mailERROR = "Não foi possivel gravar o XML para envio. Permissão Negada ao tentar gravar $fileXML!";
                 return false;
             }
 	} else {
