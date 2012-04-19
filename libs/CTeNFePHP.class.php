@@ -22,13 +22,12 @@
  * Está atualizada para :
  *      PHP 5.3
  *
- * Esta é a classe principal para a geraçã, controle e comunicação dos 
- * Conhecimentos de Transporte Eletrônicos segundo o 
- * 
+ * Esta é a classe principal para a geração, controle e comunicação dos 
+ * Conhecimentos de Transporte Eletrônicos CTe
  * 
  * @package   NFePHP
  * @name      CTeNFePHP
- * @version   1.02
+ * @version   1.10
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2011 &copy; CTePHP
  * @link      http://www.nfephp.org/
@@ -36,7 +35,8 @@
  * @author    Fabrício Veiga <fabriciostuff at gmail dot com>
  *
  *        CONTRIBUIDORES (em ordem alfabetica):
- * 
+ *          Bernardo Silva <bernardo at datamex dot com dot br>
+ *          Chrystian Toigo <ctoigo at gmail dot com>
  *          Fernando Mertins <fernando.mertins at gmail dot com>
  *          Rodrigo Rysdyk <rodrigo_rysdyk at hotmail dot com>
  * 
@@ -563,49 +563,6 @@ class CTeNFePHP {
         );
 
     /**
-     * __getNumLot
-     * Obtêm o numero do último lote de envio
-     *  
-     * @version 1.01
-     * @package NFePHP
-     * @author    Roberto L. Machado <linux.rlm at gmail dot com>
-     * @return numeric Numero do Lote
-     */
-    protected function __getNumLot(){
-         $lotfile = $this->raizDir . 'config\numloteCTE.xml';
-         $domLot = new DomDocument;
-         $domLot->load($lotfile);
-         $num = $domLot->getElementsByTagName('num')->item(0)->nodeValue;
-         if( is_numeric($num) ){
-            return $num;
-         } else {
-             //arquivo não existe suponho que o numero então seja 1
-             return 1;
-         }
-    }
-    /**
-     * __putNumLot
-     * Grava o numero do lote de envio usado
-     *
-     * @version 1.01
-     * @package NFePHP
-     * @author    Roberto L. Machado <linux.rlm at gmail dot com>
-     * @param numeric $num Inteiro com o numero do lote enviado
-     * @return boolean true sucesso ou FALSO erro
-     */
-    protected function __putNumLot($num){
-        if ( is_numeric($num) ){
-            $lotfile = $this->raizDir . 'config\numloteCTE.xml';
-            $numLot = '<?xml version="1.0" encoding="UTF-8"?><root><num>' . $num . '</num></root>';
-            if (!file_put_contents($lotfile,$numLot) ) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-    } //fim __putNumLot
-
-    /**
      * __construct
      * Método construtor da classe
      * Este método utiliza o arquivo de configuração localizado no diretorio config
@@ -618,9 +575,8 @@ class CTeNFePHP {
      * @version 1.00
      * @package NFePHP
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
-     * @author Fabrício Veiga <fabriciostuff at gmail dot com>
-     * @param   array 
-     * @return  boolean true sucesso false Erro
+     * @param  array 
+     * @return boolean true sucesso false Erro
      */
     public function __construct($aConfig = '') {
         // Obtem o path da biblioteca
@@ -825,298 +781,6 @@ class CTeNFePHP {
     } //fim __construct
 
 
-
-    /**
-     * autoSignCTe
-     * Método para assinatura em lote das CTe em XML
-     * Este método verifica todas as CTe existentes na pasta de ENTRADAS e as assina
-     * após a assinatura ser feita com sucesso o arquivo XML assinado é movido para a pasta
-     * ASSINADAS.
-     * IMPORTANTE : Em ambiente Linux manter os nomes dos arquivos e terminações em LowerCase.
-     *
-     * @version 1.00
-     * @package CTePHP
-     * @author    Roberto L. Machado <linux.rlm at gmail dot com>
-     * @author Fabrício Veiga <fabriciostuff at gmail dot com>
-     * @param  none
-     * @return boolean true sucesso false Erro
-     */
-    public function autoSignCTe() {
-        // Varre pasta "entradas" a procura de CTes
-        $aName = $this->listDir($this->entDir, '*-cte.xml', false);
-        // Se foi retornado algum arquivo
-        $contadorXML = count($aName);
-        if ($contadorXML > 0) {
-            for ($x = 0; $x < $contadorXML; $x++) {
-                // Carrega cte para assinar em uma strig
-                $filename = $this->entDir . $aName[$x];
-                // Mantenha desse jeito mesmo com um unico =
-                // a atribuição da variavel e o teste são simultâneos
-                if ($ctefile = file_get_contents($filename)) {
-                    // Assinador usando somente o PHP da classe classCTe
-                    // mantenha desse jeito mesmo com um unico =
-                    // a atribuição da variavel e o teste são simultâneos
-                    if ($signn = $this->signXML($ctefile, 'infCTe') ) {
-                        // XML retornado gravar
-                        $file = $this->assDir . $aName[$x];
-                        if (!file_put_contents($file, $signn)) {
-                            $this->errStatus = true;
-                            return false;
-                        } else {
-                            unlink($filename);
-                        } // Fim do teste de gravação
-                    } // Fim do teste da assinatura
-                } // Fim do teste de leitura
-            } // Fim do for
-        } // Fim do teste de contagem
-        return true;
-    } // Fim autoSignCTe
-
-    /**
-     * autoValidCTe
-     * Método validador em lote das CTe em XML já assinadas.
-     * As CTe são validadas somente após que a TAG assinatura seja postada no XML, caso contrario
-     * gerará um erro.
-     *
-     * As CTes, em principio podem ser assinadas sem grande perda de performance do sistema,
-     * desde que o numero de NFe geradas seja relativamente pequeno.
-     * Caso o numero seja muito grande (acima de 50 CTe de cada por minuto) talvez seja
-     * interessante fazer alterações no sistema para incluir a TAG de assinatura em branco
-     * e validar antes de assinar.
-     *
-     * Este método verifica todas as CTe que existem na pasta de ASSINADAS e processa a validação
-     * com o shema XSD. Caso a CTe seja valida será movida para a pasta VALIDADAS, caso contrario
-     * será movida para a pasta REPROVADAS.
-     *
-     * @version 1.00
-     * @package CTePHP
-     * @author  Roberto L. Machado <linux.rlm at gmail dot com>
-     * @author  Fabrício Veiga <fabriciostuff at gmail dot com>
-     * @param   none
-     * @return  boolean true sucesso false Erro
-     */
-    public function autoValidCTe() {
-        // Varre pasta "assinadas"
-        $aName = $this->listDir($this->assDir, '*-cte.xml', false);
-        // Se foi retornado algum arquivo
-        $contadorXML = count($aName);
-        if ($contadorXML > 0) {
-            for ($x = 0; $x < $contadorXML; $x++) {
-                // Carrega CTe para validar em uma string
-                $filename = $this->assDir . $aName[$x];
-                if ($ctefile = file_get_contents($filename)) {
-                    // Validar
-                    // Como os arquivos xsd são atualizados e tem sua versão alterada
-                    // devemos buscar este arquivo da versão correta
-                    // para isso temos que obter o numero da versão na própria nfe
-                    $xmldoc = new DOMDocument();
-                    $xmldoc->preservWhiteSpace = false; // Elimina espaços em branco
-                    $xmldoc->formatOutput = false;
-                    $xmldoc->loadXML($ctefile, LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
-                    $root = $xmldoc->documentElement;
-                    // Extrair a tag com o numero da versão da CTe
-                    $node = $xmldoc->getElementsByTagName('infCTe')->item(0);
-                    // Obtem a versão do layout da CTe
-                    $ver = trim($node->getAttribute("versao"));
-                    // Buscar o nome do scheme
-                    $filexsd = $this->listDir($this->xsdDir . $this->schemeVer . DIRECTORY_SEPARATOR, 'cte_v*.xsd', true);
-                    if (!$filexsd[0]) {
-                        $this->errMsg = 'Erro na localização do shema xsd';
-                        $this->errStatus = true;
-                        return false;
-                    }
-                    $aRet = $this->validXML($ctefile, $filexsd[0]);
-                    if ($aRet['status']) {
-                        // Validado => transferir para pasta validados
-                        $file = $this->valDir . $aName[$x];
-                        if (!file_put_contents($file, $nfefile))
-                            $this->errStatus = false;
-                        else
-                            unlink($filename);
-                    } else {
-                        // CTe com erros transferir de pasta rejeitadas
-                        $file = $this->rejDir . $aName[$x];
-                        $this->errStatus = true;
-                        $this->errMsg .= $aName[$x] . ' ... ' . $aRet['error'] . "\n";
-                        if (!file_put_contents($file, $ctefile))
-                            $this->errStatus = true;
-                        else
-                            unlink($filename);
-                        // Fim teste de gravação
-                        return false;
-                    } // Fim validação
-                } // Fim teste de leitura
-            } // Fim for
-        } // Fim do teste de contagem
-        return true;
-    } // Fim autoValidCTe
-
-    /**
-     * autoEnvCTe
-     * Este método procura por CTe's na pasta VALIDADAS, se houver alguma envia para a SEFAZ
-     * e em saso de sucesso no envio move o arquivo para a pasta das enviadas
-     * ATENÇÃO : Existe um limite para o tamanho do arquivo a ser enviado ao SEFAZ
-     *
-     * @version 1.00
-     * @package CTePHP
-     * @author  Roberto L. Machado <linux.rlm at gmail dot com>
-     * @author  Fabricio Veiga <fabriciostuff at gmail dot com>
-     * @param   none
-     * @return  mixed boolean false erro ou string $recibo
-     */
-    public function autoEnvCTe(){
-        // Varre a pasta de validadas
-        $aName = $this->listDir($this->valDir, '*-cte.xml', false);
-        // Se houver algum arquivo *-cte.xml continua, caso contrario sai
-        $n = count($aName);
-        if ($n > 0) {
-            // Determina o numero de grupos de envio com 10 notas por grupo
-            $k = ceil($n / 10);
-            // os conhecimentos localizados na pasta validadas serão enviadas em
-            // grupos de até 10 cte de cada vez, sim este é um valor arbritrario eu quis até 10
-            for ($i = 0 ; $i < $k ; $i++) {
-                //limpa a matriz com as notas fiscais
-                $aCTE= null;
-                for ($x = $i*10; $x < (($i+1)*10); $x++) {
-                    if ($x < $n ){
-                        $filename = $this->valDir . $aName[$x];
-                        $ctefile = file_get_contents($filename);
-                        $aCTE[] = $ctefile;
-                    }
-                }
-                // Criar o numero do lote baseado no microtime
-                $num = substr(str_replace(',','',number_format(microtime(true)*1000000,0)),0,15);
-                // Enviar os conhecimentos
-                if ($ret = $this->sendLot($aCTE, $num, $this->modSOAP)) {
-                    // ['bStat'=>false,'cStat'=>'','xMotivo'=>'','dhRecbto'=>'','nRec'=>'']                    
-                    // Verificar o status do envio
-                    if ($ret['bStat']){
-                        // Obter o numero do recibo da SEFAZ
-                        $recibo = $ret['nRec'];
-                        // Mover os conhecimentos do lote para o diretorio de enviados
-                        // para cada em $aNames[] mover para $this->envDir
-                        for ($x = $i*10 ; $x < (($i+1)*10); $x++) {
-                            if ($x < $n) {
-                               if(!rename($this->valDir . $aName[$x], $this->envDir . $aName[$x])) {
-                                    $this->errStatus = true;
-                                    $this->errMsg .= ' Falha na movimentação do CTe dos "validados" para "enviados"!! ';
-                                    return false;
-                                }
-                            }
-                        } // Fim for rename
-                    } else {
-                        $this->errStatus = true;
-                        return false;
-                    }
-                 } else {
-                    $this->errStatus = true;
-                    $this->errMsg .= ' Erro no envio do lote de CTe!! ';
-                    return false;
-                 }
-            }
-        } else {
-            $this->errStatus = true;
-            $this->errMsg = ' Não há CTe para enviar!! ';
-            return false;
-        }
-        return $recibo;
-    } // fim autoEnvCTe
-
-    /**
-     * autoProtCTe
-     * Este método localiza os CTe enviadas na pasta ENVIADAS e solicita o prococolo
-     * de autorização destes CTe's
-     *
-     * Caso haja resposta (aprovando, denegando ou rejeitando) o método usa os dados de
-     * retorno para localizar o CTe em xml na pasta de ENVIADAS e inclui no XML a tag cteProc com os dados
-     * do protocolo de autorização.
-     *  - Em caso de aprovação as coloca na subpasta APROVADAS e remove tanto o xml do CTe
-     *    da pasta ENVIADAS como o retorno da consulta em TEMPORARIAS.
-     *  - Em caso de rejeição coloca as coloca na subpasta REJEITADAS e remove da pasta ENVIADAS e TEMPORARIAS.
-     *  - Em caso de denegação coloca as coloca na subpasta DENEGADAS e remove da pasta ENVIADAS e TEMPORARIAS.
-     *
-     * Caso não haja resposta ainda não faz nada.
-     *
-     * @version 1.00
-     * @package CTePHP
-     * @author  Roberto L. Machado <linux.rlm at gmail dot com> 
-     * @author  Fabricio Veiga <fabriciostuff at gmail dot com>
-     * @param   none
-     * @return  array   [n]['cStat']['xMotivo']['ctepath']
-     */
-    public function autoProtCTe() {
-        //condição inicial da variável de retorno
-        $aRetorno = array(0=>array('cStat'=>'','xMotivo'=>'','nfepath'=>''));
-        $n = 0;
-        //varre a pasta de enviadas
-        $aName = $this->listDir($this->envDir,'*-cte.xml',false);
-        //se houver algum arquivo *-cte.xml continua, caso contrario sai
-        if ( count($aName) > 0 ) {
-            //para cada arquivo nesta pasta solicitar o protocolo
-            foreach ( $aName as $file ) {
-                $idCTe = substr($file,0,44);
-                $cteFile = $this->envDir.$file;
-                //primeiro verificar se o protocolo existe na pasta temporarias
-                $protFile = $this->temDir.$idNFe.'-cteprot.xml';
-                if (file_exists($protFile)){
-                    $docxml = file_get_contents($protFile);
-                    $dom = new DOMDocument(); //cria objeto DOM
-                    $dom->formatOutput = false;
-                    $dom->preserveWhiteSpace = false;
-                    $dom->loadXML($docxml);
-                    //pagar o cStat e xMotivo do protocolo
-                    $aRet['cStat'] = $dom->getElementsByTagName('cStat')->item(0)->nodeValue;
-                    $aRet['xMotivo'] = $dom->getElementsByTagName('xMotivo')->item(0)->nodeValue;
-                    $aRet['bStat'] = true;
-                } else {
-                    //caso não exista então buscar pela chave da NFe
-                    $aRet = $this->getProtocol('',$idCTe,$this->tpAmb,$this->modSOAP);
-                }    
-                if ( $aRet['cStat'] == 100) {
-                    //NFe aprovada
-                    $pasta = $this->aprDir;
-                }//endif
-                if ( $aRet['cStat'] == 110) {
-                    //NFe denegada
-                    $pasta = $this->denDir;
-                }//endif
-                if ( $aRet['cStat'] > 199 ) {
-                    //NFe reprovada
-                    $pasta = $this->repDir;
-                    //mover a NFe para a pasta repovadas
-                    rename($cteFile, $pasta.$idCTe.'-cte.xml');
-                }//endif
-                if ( $aRet['bStat'] ) {
-                    //montar a NFe com o protocolo
-                    if ( is_file($protFile) && is_file($cteFile) ) {
-                        //se aprovada ou denegada adicionar o protocolo e mover o arquivo
-                        if ($aRet['cStat'] == 100 || $aRet['cStat'] == 110 ) {
-                            $proccte = $this->addProt($cteFile,$protFile);
-                            //salvar a CTe com o protocolo na pasta
-                            if ( file_put_contents($pasta.$idCTe.'-cte.xml', $proccte) ) {
-                                //se o arquivo foi gravado na pasta destino com sucesso
-                                //remover os arquivos das outras pastas
-                                unlink($cteFile);
-                            } //endif
-                        }//endif cStat   
-                    } //endif is_file
-                } //endif bStat
-                $aRetorno[$n]['cStat'] = $aRet['cStat'];
-                $aRetorno[$n]['xMotivo'] = $aRet['xMotivo'];
-                $aRetorno[$n]['ctepath'] = $pasta.$idCTe.'-cte.xml';
-                $n++;
-            }//endforeach
-        } else {
-            //não há CTe para protocolar na pasta de enviadas
-            $this->errStatus = true;
-            $this->errMsg = ' Não existe CTe pronta para protocolar na pasta enviadas!! ';
-        }//endif
-        return $aRetorno;
-    }
-    // Fim autoProtCTe
-
-
-
    /**
     * validXML
     * Verifica o xml com base no xsd
@@ -1184,7 +848,6 @@ class CTeNFePHP {
      * @version 1.00
      * @package CTePHP
      * @author  Roberto L. Machado <linux.rlm at gmail dot com>
-     * @author  Fabricio Veiga <fabriciostuff at gmail dot com>
      * @param   string $ctefile path completo para o arquivo contendo a CTe
      * @param   string $protfile path completo para o arquivo contendo o protocolo
      * @return  mixed false se erro ou string Retorna a CTe com o protocolo
@@ -1405,7 +1068,6 @@ class CTeNFePHP {
      * @version 1.01
      * @package CTeNFePHP
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
-     * @author Fabricio Veiga <fabriciostuff at gmail dot com>
      * @author Fernando Mertins <fernando.mertins at gmail dot com>
      * @param string $UF sigla da Unidade da Federação
      * @param integer $tpAmb tipo de ambiente 1-produção e 2-homologação
@@ -1513,7 +1175,6 @@ class CTeNFePHP {
      * @version 1.01
      * @package CTePHP
      * @author Roberto L. Machado <linux.rlm at gmail dot com>      
-     * @author Fabrício Veiga <fabriciostuff at gmail dot com>
      * @param	string  $UF
      * @param   string  $IE
      * @param   string  $CNPJ
@@ -1610,7 +1271,6 @@ class CTeNFePHP {
      * @version 1.00
      * @package CTePHP
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
-     * @author Fabricio Veiga <fabriciostuff at gmail dot com>
      * @param	array   $aCTe conhecimento de transporte em xml uma em cada campo do array unidimensional MAX 50
      * @param   integer $id     id do lote e um numero que deve ser gerado pelo sistema
      *                          a cada envio mesmo que seja de apenas uma CTe
@@ -1704,7 +1364,6 @@ class CTeNFePHP {
      * @version 1.01
      * @package CTePHP
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
-     * @author Fabrício Veiga <fabriciostuff at gmail dot com>
      * @param	string   $recibo numero do recibo do envio do lote
      * @param	string   $chave  numero da chave da CTe de 44 digitos
      * @param   string   $tpAmb  numero do ambiente 1 - producao e 2 - homologação
@@ -1884,14 +1543,13 @@ class CTeNFePHP {
         return $aRetorno;
     } //fim getProtocol
 
-
     /**
      * Solicita inutilizaçao de uma serie de numeros de CT
      *
      * @name inutNF
      * @version 1.00
      * @package CTePHP
-     * @author Fabricio Veiga <fabriciostuff at gmail dot com>
+     * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @param	string  $nAno       ano com 2 digitos
      * @param   string  $nSerie     serie do CT 1 até 3 digitos
      * @param   integer $nIni       numero inicial 1 até 9 digitos zero a esq
@@ -2056,7 +1714,7 @@ class CTeNFePHP {
      * @name cancelCT
      * @version 1.00
      * @package CTePHP
-     * @author Fabricio Veiga <fabriciostuff at gmail dot com>
+     * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @param	string  $id      ID da CTe com 44 digitos (sem o CTe na frente dos numeros)
      * @param   string  $protId     Numero do protocolo de aceitaçao do lote de CTe enviado anteriormente pelo SEFAZ
      * @param   boolean $modSOAP    1 usa __sendSOAP e 2 usa __sendSOAP2
@@ -2200,7 +1858,94 @@ class CTeNFePHP {
         return true;
     } // fim verifySignatureXML
 
-
+    /**
+     * verifyCTe
+     * Verifica a validade da CTe recebida de terceiros
+     *
+     * @version 1.02
+     * @package NFePHP
+     * @author Roberto L. Machado <linux dot rlm at gmail dot com>
+     * @param string $file Path completo para o arquivo xml a ser verificado
+     * @return boolean false se nÃ£o confere e true se confere
+     */
+    public function verifyCTe($file) {
+        //verifica se o arquivo existe
+        if (file_exists($file)) {
+            //carrega a CTe
+            $xml = file_get_contents($file);
+            //testa a assinatura
+            if ($this->verifySignatureXML($xml, 'infCte')) {
+                //como a ssinatura confere, consultar o SEFAZ para verificar se a CT não foi cancelada ou é FALSA
+                //carrega o documento no DOM
+                $xmldoc = new DOMDocument();
+                $xmldoc->preservWhiteSpace = false; //elimina espaÃ§os em branco
+                $xmldoc->formatOutput = false;
+                $xmldoc->loadXML($xml, LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
+                $root = $xmldoc->documentElement;
+                $infCte = $xmldoc->getElementsByTagName('infCte')->item(0);
+                //extrair a tag com os dados a serem assinados
+                $id = trim($infCte->getAttribute("Id"));
+                $chave = preg_replace('/[^0-9]/', '', $id);
+                $digest = $xmldoc->getElementsByTagName('DigestValue')->item(0)->nodeValue;
+                //ambiente da CTe sendo consultada
+                $tpAmb = $infCte->getElementsByTagName('tpAmb')->item(0)->nodeValue;
+                //verifica se existe o protocolo
+                $protCTe = $xmldoc->getElementsByTagName('protCTe')->item(0);
+                if (isset($protCTe)) {
+                    $nProt = $xmldoc->getElementsByTagName('nProt')->item(0)->nodeValue;
+                } else {
+                    $nProt = '';
+                }
+                //busca o status da CTe na SEFAZ do estado do emitente
+                $resp = $this->getProtocol('', $chave, $tpAmb, '2');
+                if ($resp['cStat'] != '100') {
+                    //ERRO! ct não aprovada
+                    $this->errStatus = true;
+                    $this->errMsg = "CT não aprovada no SEFAZ!! cStat =" . $resp['cStat'] . ' - ' . $resp['xMotivo'];
+                    return false;
+                } else {
+                    if (is_array($resp['aProt'][0])) {
+                        $nProtSefaz = $resp['aProt'][0]['nProt'];
+                        $digestSefaz = $resp['aProt'][0]['digVal'];
+                        //verificar numero do protocolo
+                        if ($nProt != '') {
+                            if ($nProtSefaz != $nProt) {
+                                //ERRO !!!os numeros de protocolo não combinam
+                                $this->errStatus = true;
+                                $this->errMsg = "Os numeros dos protocolos não combinam!! nProtCT = " . $nProt . " <> nProtSefaz = " . $nProtSefaz;
+                                return false;
+                            } //fim teste do protocolo
+                        } else {
+                            $this->errStatus = true;
+                            $this->errMsg = "A CTe enviada não comtêm o protocolo de aceitação !!";
+                        }
+                        //verifica o digest
+                        if ($digestSefaz != $digest) {
+                            //ERRO !!!os numeros digest não combinam
+                            $this->errStatus = true;
+                            $this->errMsg = "Os numeros digest não combinam!! digValSEFAZ = " . $digestSefaz . " <> DigestValue = " . $digest;
+                            return false;
+                        } //fim teste do digest value
+                    } else {
+                        //o retorno veio como 100 mas por algum motivo sem o protocolo
+                        $this->errStatus = true;
+                        $this->errMsg = "Falha no retorno dos dados, retornado sem o protocolo !! ";
+                        return false;
+                    }
+                }
+            } else {
+                $this->errStatus = true;
+                $this->errMsg = " Assinatura não confere!!";
+                return false;
+            } //fim verificação da assinatura
+        } else {
+            $this->errStatus = true;
+            $this->errMsg = "Arquivo não localizado!!";
+            return false;
+        } //fim file_exists
+        return true;
+    } //fim verifyCTe
+    
     /**
      * __splitLines
      * Divide a string do certificado publico em linhas com 76 caracteres (padrão original)
@@ -2239,7 +1984,7 @@ class CTeNFePHP {
     * @name loadSEFAZ
     * @version 1.00
     * @package CTePHP
-    * @author Fabricio Veiga <fabriciostuff at gmail dot com>
+    * @author Roberto L. Machado <linux.rlm at gmail dot com>
     * @param  string $spathXML  Caminho completo para o arquivo xml
     * @param  string $tpAmb  Pode ser "2-homologacao" ou "1-producao"
     * @param  string $sUF       Sigla da Unidade da Federação (ex. SP, RS, etc..)
@@ -2287,7 +2032,6 @@ class CTeNFePHP {
         }
         return $aUrl;
     } // Fim loadSEFAZ
-
 
     /**
      * __loadCerts
@@ -2488,29 +2232,6 @@ class CTeNFePHP {
         return $data;
     }
 
-   /**
-    * __convertTime
-    * Converte o campo data time retornado pelo webservice
-    * em um timestamp unix
-    *
-    * @name __convertTime
-    * @version 1.00
-    * @package CTePHP
-    * @author Roberto L. Machado <linux.rlm at gmail dot com>
-    * @author Fabricio Veiga <fabriciostuff at gmail dot com>
-    * @param    string   $DH
-    * @return   timestamp
-    * @access   private
-    **/
-    protected function __convertTime($DH){
-        if ($DH) {
-            $aDH = explode('T', $DH);
-            $adDH = explode('-', $aDH[0]);
-            $atDH = explode(':', $aDH[1]);
-            $timestampDH = mktime($atDH[0], $atDH[1], $atDH[2], $adDH[1], $adDH[2], $adDH[0]);
-            return $timestampDH;
-        }
-    }
 
 
     /**
@@ -2670,8 +2391,6 @@ class CTeNFePHP {
         $varBody = new SoapVar($dados,XSD_ANYXML);
         //faz a chamada ao metodo do webservices
         $resp = $oSoapClient->__soapCall($metodo, array($varBody) );
-        
-            
             if (is_soap_fault($resp)) {
            $soapFault = "SOAP Fault: (faultcode: {$resp->faultcode}, faultstring: {$resp->faultstring})";
         }
@@ -2867,6 +2586,76 @@ class CTeNFePHP {
         curl_close($oCurl);
         return $xml;
     } //fim __sendSOAP2
+
+   /**
+    * __convertTime
+    * Converte o campo data time retornado pelo webservice
+    * em um timestamp unix
+    *
+    * @name __convertTime
+    * @version 1.00
+    * @package CTePHP
+    * @author Roberto L. Machado <linux.rlm at gmail dot com>
+    * @param    string   $DH
+    * @return   timestamp
+    * @access   private
+    **/
+    protected function __convertTime($DH){
+        if ($DH) {
+            $aDH = explode('T', $DH);
+            $adDH = explode('-', $aDH[0]);
+            $atDH = explode(':', $aDH[1]);
+            $timestampDH = mktime($atDH[0], $atDH[1], $atDH[2], $adDH[1], $adDH[2], $adDH[0]);
+            return $timestampDH;
+        }
+    } //fim __convertTime
+    
+    /**
+     * __getNumLot
+     * Obtêm o numero do último lote de envio
+     *  
+     * @version 1.01
+     * @package NFePHP
+     * @author  Roberto L. Machado <linux.rlm at gmail dot com>
+     * @return numeric Numero do Lote
+     */
+    protected function __getNumLot(){
+         $lotfile = $this->raizDir . 'config\numloteCTE.xml';
+         $domLot = new DomDocument;
+         $domLot->load($lotfile);
+         $num = $domLot->getElementsByTagName('num')->item(0)->nodeValue;
+         if( is_numeric($num) ){
+            return $num;
+         } else {
+             //arquivo não existe suponho que o numero então seja 1
+             return 1;
+         }
+    }//fim __getNumLot
+    
+    /**
+     * __putNumLot
+     * Grava o numero do lote de envio usado
+     *
+     * @version 1.01
+     * @package NFePHP
+     * @author  Roberto L. Machado <linux.rlm at gmail dot com>
+     * @param numeric $num Inteiro com o numero do lote enviado
+     * @return boolean true sucesso ou FALSO erro
+     */
+    protected function __putNumLot($num){
+        if ( is_numeric($num) ){
+            $lotfile = $this->raizDir . 'config\numloteCTE.xml';
+            $numLot = '<?xml version="1.0" encoding="UTF-8"?><root><num>' . $num . '</num></root>';
+            if (!file_put_contents($lotfile,$numLot) ) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    } //fim __putNumLot
+
+
+    
     
 } //fim classe ToolsNFePHP
 
@@ -2879,7 +2668,6 @@ class CTeNFePHP {
  * @version 1.2
  * @package CTePHP
  * @author  Roberto L. Machado <linux.rlm at gmail dot com>
- * @author  Fabricio Veiga <fabriciostuff at gmail dot com>
  *
  */
 class CTeSOAP2Client extends SoapClient {
