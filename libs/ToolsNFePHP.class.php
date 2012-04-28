@@ -23,13 +23,13 @@
  * Está atualizada para :
  *      PHP 5.3
  *      Versão 2 dos webservices da SEFAZ com comunicação via SOAP 1.2
- *      e conforme Manual de Integração Versão 4.0.1 NT2009.006 Dezembro 2009
+ *      e conforme Manual de Integração Versão 5
  *
  * Atenção: Esta classe não mantêm a compatibilidade com a versão 1.10 da SEFAZ !!!
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   2.9.4
+ * @version   2.9.5
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -574,7 +574,6 @@ class ToolsNFePHP {
      * @var string
      */
     public $danfeprinter = '';
-
 
 
     /**
@@ -1415,17 +1414,17 @@ class ToolsNFePHP {
      * Este processo enviará somente até 50 NFe em cada Lote
      *
      * @name sendLot
-     * @version 2.1.7
+     * @version 2.1.8
      * @package NFePHP
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
-     * @param	array   $aNFe notas fiscais em xml uma em cada campo do array unidimensional MAX 50
-     * @param   integer $id     id do lote e um numero que deve ser gerado pelo sistema
+     * @param	mixed    $mNFe string com uma nota fiscail em xml ou um array com as NFe em xml, uma em cada campo do array unidimensional MAX 50
+     * @param   integer $idLote     id do lote e um numero que deve ser gerado pelo sistema
      *                          a cada envio mesmo que seja de apenas uma NFe
      * @param   integer $modSOAP 1 usa __sendSOP e 2 usa __sendSOAP2
      * @return	mixed	false ou array ['bStat'=>false,'cStat'=>'','xMotivo'=>'','dhRecbto'=>'','nRec'=>'','tMed'=>'','tpAmb'=>'','verAplic'=>'','cUF'=>'']
      * @todo Incluir regra de validação para ambiente de homologação/produção vide NT2011.002
     **/
-    public function sendLot($aNFe,$id,$modSOAP='2') {
+    public function sendLot($mNFe,$idLote,$modSOAP='2') {
         //variavel de retorno do metodo
         $aRetorno = array('bStat'=>false,'cStat'=>'','xMotivo'=>'','dhRecbto'=>'','nRec'=>'','tMed'=>'','tpAmb'=>'','verAplic'=>'','cUF'=>'');
         //verifica se o SCAN esta habilitado
@@ -1446,21 +1445,25 @@ class ToolsNFePHP {
         $namespace = $this->URLPortal.'/wsdl/'.$servico.'2';
         // limpa a variavel
         $sNFe = '';
-        // verificar se foram passadas até 50 NFe
-        if ( count($aNFe) > 50 ) {
-            $this->errStatus = true;
-            $this->errMsg = "No maximo 50 NFe devem compor um lote de envio!!\n";
-            return false;
-        }
-        // monta string com todas as NFe enviadas no array
-        $sNFe = implode('',$aNFe);
+        if (is_array($aNFe)){
+            // verificar se foram passadas até 50 NFe
+            if ( count($mNFe) > 50 ) {
+                $this->errStatus = true;
+                $this->errMsg = "No maximo 50 NFe devem compor um lote de envio!!\n";
+                return false;
+            }
+            // monta string com todas as NFe enviadas no array
+            $sNFe = implode('',$mNFe);
+        } else {
+            $sNFe = $mNFe;
+        }    
         //remover <?xml version="1.0" encoding=... das NFe pois somente uma dessas tags pode exitir na mensagem
         $sNFe = str_replace(array('<?xml version="1.0" encoding="utf-8"?>','<?xml version="1.0" encoding="UTF-8"?>'),'',$sNFe);
         $sNFe = str_replace(array("\r","\n","\s"),"",$sNFe);
         //montagem do cabeçalho da comunicação SOAP
         $cabec = '<nfeCabecMsg xmlns="'.$namespace.'"><cUF>'.$this->cUF.'</cUF><versaoDados>'.$versao.'</versaoDados></nfeCabecMsg>';
         //montagem dos dados da mensagem SOAP
-        $dados = '<nfeDadosMsg xmlns="'.$namespace.'"><enviNFe xmlns="'.$this->URLPortal.'" versao="'.$versao.'"><idLote>'.$id.'</idLote>'.$sNFe.'</enviNFe></nfeDadosMsg>';
+        $dados = '<nfeDadosMsg xmlns="'.$namespace.'"><enviNFe xmlns="'.$this->URLPortal.'" versao="'.$versao.'"><idLote>'.$idLote.'</idLote>'.$sNFe.'</enviNFe></nfeDadosMsg>';
         //envia dados via SOAP
         if ($modSOAP == '2'){
             $retorno = $this->__sendSOAP2($urlservico, $namespace, $cabec, $dados, $metodo, $this->tpAmb);
