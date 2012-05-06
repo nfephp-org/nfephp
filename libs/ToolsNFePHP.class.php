@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   2.9.5
+ * @version   2.9.6
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -1267,10 +1267,10 @@ class ToolsNFePHP {
      * consultaCadastro
      * Solicita dados de situaçao de Cadastro, somente funciona para
      * cadastros de empresas localizadas no mesmo estado do solicitante e os dados
-     * retornados podem não ser os mais atuais. Não é recomendado seu uso ainda.
+     * retornados podem ser bastante incompletos. Não é recomendado seu uso.
      *
      * @name consultaCadastro
-     * @version 2.1.8
+     * @version 2.1.9
      * @package NFePHP
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @param	string  $UF
@@ -1289,19 +1289,19 @@ class ToolsNFePHP {
         $flagCPF = false;
         $marca = '';
         //selecionar o criterio de filtragem CNPJ ou IE ou CPF
-        if ($IE != ''){
-            $flagIE = true;
-            $marca = 'IE-'.$IE;
-            $filtro = "<IE>".$IE."</IE>";
-            $CNPJ = '';
-            $CPF = '';
-        }
         if ($CNPJ != '') {
             $flagCNPJ = true;
             $marca = 'CNPJ-'.$CNPJ;
             $filtro = "<CNPJ>".$CNPJ."</CNPJ>";
             $CPF = '';
             $IE = '';
+        }
+        if ($IE != ''){
+            $flagIE = true;
+            $marca = 'IE-'.$IE;
+            $filtro = "<IE>".$IE."</IE>";
+            $CNPJ = '';
+            $CPF = '';
         }
         if($CPF != '') {
             $flagCPF = true;
@@ -1314,7 +1314,7 @@ class ToolsNFePHP {
         if ( !($flagIE || $flagCNPJ || $flagCPF) ){
             //erro nao foi passado parametro de filtragem
             $this->errStatus = true;
-            $this->errMsg = "Uma opção deve ser indicada CNPJ, CPF ou IE !!!\n";
+            $this->errMsg = "Pelo menos uma e somente uma opção deve ser indicada CNPJ, CPF ou IE !!!\n";
             return false;
         }
         if ($tpAmb == '' ){
@@ -1341,7 +1341,7 @@ class ToolsNFePHP {
         $namespace = $this->URLPortal.'/wsdl/'.$servico.'2';
         if($urlservico==''){
             $this->errStatus = true;
-            $this->errMsg = "Este serviço não está disponível!!!\n";
+            $this->errMsg = "Este serviço não está disponível para a SEFAZ $UF!!!\n";
             return false;
         }
         //montagem do cabeçalho da comunicação SOAP
@@ -1361,7 +1361,7 @@ class ToolsNFePHP {
             $doc->preserveWhiteSpace = false;
             $doc->loadXML($retorno,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
             $infCons = $doc->getElementsByTagName('infCons')->item(0);
-            if (isset($infCons)){
+            if ( isset($infCons) ){
                 //foi retornado dados
                 $cStat = $infCons->getElementsByTagName('cStat')->item(0)->nodeValue;
                 $xMotivo = $infCons->getElementsByTagName('xMotivo')->item(0)->nodeValue;
@@ -1372,24 +1372,26 @@ class ToolsNFePHP {
                     $i =0;
                     foreach ($infCad as $dCad){
                         $ender = $dCad->getElementsByTagName('ender')->item(0);
-                        $aCad[$i]['CNPJ'] = $dCad->getElementsByTagName('CNPJ')->item(0)->nodeValue;
-                        $aCad[$i]['IE'] = $dCad->getElementsByTagName('IE')->item(0)->nodeValue;
-                        $aCad[$i]['UF'] = $dCad->getElementsByTagName('UF')->item(0)->nodeValue;
-                        $aCad[$i]['cSit'] = $dCad->getElementsByTagName('cSit')->item(0)->nodeValue;
-                        $aCad[$i]['indCredNFe'] = $dCad->getElementsByTagName('indCredNFe')->item(0)->nodeValue;
-                        $aCad[$i]['indCredCTe'] = $dCad->getElementsByTagName('indCredCTe')->item(0)->nodeValue;
-                        $aCad[$i]['xNome'] = $dCad->getElementsByTagName('xNome')->item(0)->nodeValue;
-                        $aCad[$i]['xRegApur'] = $dCad->getElementsByTagName('xRegApur')->item(0)->nodeValue;
-                        $aCad[$i]['CNAE'] = $dCad->getElementsByTagName('CNAE')->item($i)->nodeValue;
-                        $aCad[$i]['dIniAtiv'] = $dCad->getElementsByTagName('dIniAtiv')->item(0)->nodeValue;
-                        $aCad[$i]['dUltSit'] = $dCad->getElementsByTagName('dUltSit')->item(0)->nodeValue;
-                        $aCad[$i]['xLgr'] = $ender->getElementsByTagName('xLgr')->item(0)->nodeValue;
-                        $aCad[$i]['nro'] = $ender->getElementsByTagName('nro')->item(0)->nodeValue;
-                        $aCad[$i]['xBairro'] = $ender->getElementsByTagName('xBairro')->item(0)->nodeValue;
-                        $aCad[$i]['cMun'] = $ender->getElementsByTagName('cMun')->item(0)->nodeValue;
-                        $aCad[$i]['xMun'] = $ender->getElementsByTagName('xMun')->item(0)->nodeValue;
-                        $aCad[$i]['CEP'] = $ender->getElementsByTagName('CEP')->item(0)->nodeValue;
-                    }
+                        $aCad[$i]['CNPJ'] = !empty($dCad->getElementsByTagName('CNPJ')->item(0)->nodeValue) ? $dCad->getElementsByTagName('CNPJ')->item(0)->nodeValue : '';
+                        $aCad[$i]['IE'] = !empty($dCad->getElementsByTagName('IE')->item(0)->nodeValue) ? $dCad->getElementsByTagName('IE')->item(0)->nodeValue : '';
+                        $aCad[$i]['UF'] = !empty($dCad->getElementsByTagName('UF')->item(0)->nodeValue) ? $dCad->getElementsByTagName('UF')->item(0)->nodeValue : '';
+                        $aCad[$i]['cSit'] = !empty($dCad->getElementsByTagName('cSit')->item(0)->nodeValue) ? $dCad->getElementsByTagName('cSit')->item(0)->nodeValue : '';
+                        $aCad[$i]['indCredNFe'] = !empty($dCad->getElementsByTagName('indCredNFe')->item(0)->nodeValue) ? $dCad->getElementsByTagName('indCredNFe')->item(0)->nodeValue : '';
+                        $aCad[$i]['indCredCTe'] = !empty($dCad->getElementsByTagName('indCredCTe')->item(0)->nodeValue) ? $dCad->getElementsByTagName('indCredCTe')->item(0)->nodeValue : '';
+                        $aCad[$i]['xNome'] = !empty($dCad->getElementsByTagName('xNome')->item(0)->nodeValue) ? $dCad->getElementsByTagName('xNome')->item(0)->nodeValue : '';
+                        $aCad[$i]['xRegApur'] = !empty($dCad->getElementsByTagName('xRegApur')->item(0)->nodeValue) ? $dCad->getElementsByTagName('xRegApur')->item(0)->nodeValue : '';
+                        $aCad[$i]['CNAE'] = !empty($dCad->getElementsByTagName('CNAE')->item($i)->nodeValue) ? $dCad->getElementsByTagName('CNAE')->item($i)->nodeValue : '';
+                        $aCad[$i]['dIniAtiv'] = !empty($dCad->getElementsByTagName('dIniAtiv')->item(0)->nodeValue) ? $dCad->getElementsByTagName('dIniAtiv')->item(0)->nodeValue : '';
+                        $aCad[$i]['dUltSit'] = !empty($dCad->getElementsByTagName('dUltSit')->item(0)->nodeValue) ? $dCad->getElementsByTagName('dUltSit')->item(0)->nodeValue : '';
+                        if ( isset($ender) ){
+                            $aCad[$i]['xLgr'] = !empty($ender->getElementsByTagName('xLgr')->item(0)->nodeValue) ? $ender->getElementsByTagName('xLgr')->item(0)->nodeValue : '';
+                            $aCad[$i]['nro'] = !empty($ender->getElementsByTagName('nro')->item(0)->nodeValue) ? $ender->getElementsByTagName('nro')->item(0)->nodeValue : '';
+                            $aCad[$i]['xBairro'] = !empty($ender->getElementsByTagName('xBairro')->item(0)->nodeValue) ? $ender->getElementsByTagName('xBairro')->item(0)->nodeValue : '';
+                            $aCad[$i]['cMun'] = !empty($ender->getElementsByTagName('cMun')->item(0)->nodeValue) ? $ender->getElementsByTagName('cMun')->item(0)->nodeValue : '';
+                            $aCad[$i]['xMun'] = !empty($ender->getElementsByTagName('xMun')->item(0)->nodeValue) ? $ender->getElementsByTagName('xMun')->item(0)->nodeValue : '';
+                            $aCad[$i]['CEP'] = !empty($ender->getElementsByTagName('CEP')->item(0)->nodeValue) ? $ender->getElementsByTagName('CEP')->item(0)->nodeValue : '';
+                        }
+                    } //fim foreach
                 } else {
                     //houve retorno de erro do SEFAZ
                     $aRetorno['bStat'] = false;
