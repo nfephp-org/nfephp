@@ -27,7 +27,7 @@
  * 
  * @package   NFePHP
  * @name      CTeNFePHP
- * @version   1.10
+ * @version   1.11
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2011 &copy; CTePHP
  * @link      http://www.nfephp.org/
@@ -174,12 +174,6 @@ class CTeNFePHP {
      * @var string
      */
     public $xsdDir = '';
-    /**
-     * cteURLfile
-     * Arquivo xml com as URL do CTe do SEFAZ de todos dos Estados
-     * @var string
-     */
-    public $cteURLfile = '';
     /**
      * enableSCAN
      * Habilita o acesso ao serviço SCAN ao invés do webservice estadual
@@ -592,7 +586,6 @@ class CTeNFePHP {
             $this->keyPass = $aConfig['keyPass'];
             $this->passPhrase = $aConfig['passPhrase'];
             $this->arqDir = $aConfig['cteDir'];
-            $this->cteURLfile = $aConfig['cteURLxml'];
             $this->URLbase = $aConfig['baseurl'];
             $this->dactelogopath = $aConfig['dacteLogo'];
             $this->dactelogopos = $aConfig['dacteLogoPos'];
@@ -646,7 +639,6 @@ class CTeNFePHP {
                 $this->passPhrase = $passPhrase;
                 $this->cteDir = $cteDir;
                 $this->arqDir = $arquivosDir;
-                $this->cteURLfile = $cteURLxml;
                 $this->URLbase = $baseurl;
                 $this->dactelogopath = $dacteLogo;
                 $this->dactelogopos = $dacteLogoPos;
@@ -962,7 +954,6 @@ class CTeNFePHP {
                 $this->errStatus = true;
                 return false;
             }
-            	echo 'oioi';
             // obter o chave privada para a ssinatura
             $fp = fopen($this->priKEY, "r");
             $priv_key = fread($fp, 8192);
@@ -1557,7 +1548,7 @@ class CTeNFePHP {
      * @param   string  $xJust      justificativa 15 até 255 digitos
      * @param   integer $modSOAP    1 usa __sendSOAP e 2 usa __sendSOAP2
      * @return	mixed false ou array ['bStat'=>boolean,'cStat'=>'','xMotivo'=>'','dhRecbto'=>'','nProt'=>'']
-    **/
+     */
     public function inutCT($nAno = '', $nSerie = '1', $nIni = '', $nFin = '', $xJust = '', $modSOAP = '2') {
         // Variavel de retorno do metodo
         $aRetorno = array (
@@ -1982,7 +1973,7 @@ class CTeNFePHP {
     * </ws>
     *
     * @name loadSEFAZ
-    * @version 1.00
+    * @version 1.01
     * @package CTePHP
     * @author Roberto L. Machado <linux.rlm at gmail dot com>
     * @param  string $spathXML  Caminho completo para o arquivo xml
@@ -2012,7 +2003,6 @@ class CTeNFePHP {
             $sAmbiente = 'homologacao';
         }
         // Extrai a variável cUF do lista
-        $this->cUF = $this->cUFlist[$sUF];
         $alias = $this->aliaslist[$sUF];
         $this->enableSVAN = ($alias == 'SVAN');
         // Estabelece a expressão xpath de busca
@@ -2378,8 +2368,6 @@ class CTeNFePHP {
             'cache_wsdl'    => WSDL_CACHE_NONE 
         );
         //instancia a classe soap
-            
-            echo $cabecalho.'<br><br>';
             
         $oSoapClient = new CTeSOAP2Client($URL,$options);
         //monta o cabeçalho da mensagem
