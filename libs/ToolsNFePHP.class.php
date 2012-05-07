@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   2.9.6
+ * @version   2.9.7
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -2256,7 +2256,7 @@ class ToolsNFePHP {
      * Solicita o cancelamento de NF enviada
      *
      * @name cancelNF
-     * @version 2.1.9
+     * @version 2.1.10
      * @package NFePHP
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @param	string  $id      ID da NFe com 44 digitos (sem o NFe na frente dos numeros)
@@ -2336,12 +2336,12 @@ class ToolsNFePHP {
             $nome = $this->temDir.$id.'-canc.xml';
             $nome = $doc->save($nome);
             //anexa o protocolo e salva em canceladas
-            if ( file_put_contents($this->temDir.$id.'-procCancNFe.xml', $dXML) ) {
-                $protCan = $this->addProtCanc($this->temDir.$id.'-procCancNFe.xml', $this->temDir.$id.'-canc.xml');
-                if ( file_put_contents($this->canDir.$id.'-procCanc.xml', $protCan) ) {
-                    unlink($this->temDir.$id.'-procCancNFe.xml');
-                }
-            }
+            //if ( file_put_contents($this->temDir.$id.'-procCancNFe.xml', $dXML) ) {
+            //    $protCan = $this->addProtCanc($this->temDir.$id.'-procCancNFe.xml', $this->temDir.$id.'-canc.xml');
+            //    if ( file_put_contents($this->canDir.$id.'-procCanc.xml', $protCan) ) {
+            //        unlink($this->temDir.$id.'-procCancNFe.xml');
+            //    }
+            //}
         } else {
             $this->errStatus = true;
             $this->errMsg = "Nao houve retorno Soap verifique a mensagem de erro e o debug!!\n";
