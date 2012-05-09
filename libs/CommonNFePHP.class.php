@@ -23,10 +23,10 @@
  *
  * @package     NFePHP
  * @name        CommonNFePHP.class.php
- * @version     1.0
+ * @version     1.01
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
- * @copyright   2009-2011 &copy; NFePHP
+ * @copyright   2009-2012 &copy; NFePHP
  * @link        http://www.nfephp.org/
  * @author      Marcos Diez <marcos at unitron dot com dot br>
  *
@@ -83,17 +83,17 @@ class CommonNFePHP {
      * __simpleGetValue
      * Extrai o valor do node DOM
      * @package NFePHP
-     * @version 1.0
+     * @version 1.01
      * @author Marcos Diez
      * @param DOM $theObj
      * @param string $keyName identificador da TAG do xml
      * @param string $extraText prefixo do retorno
      * @return string
      */
-    protected function __simpleGetValue( $theObj , $keyName , $extraText = ""){
+    protected function __simpleGetValue( $theObj , $keyName , $extraBefore = "" , $extraTextAfter = ""){
         $vct = $theObj->getElementsByTagName( $keyName )->item(0);
         if( isset( $vct ) ){
-            return $extraText . trim($vct->nodeValue);
+            return $extraBefore . trim($vct->nodeValue) . $extraTextAfter;
         }
         return "";
     } //fim __simpleGetValue

@@ -23,7 +23,7 @@
  *
  * @package     NFePHP
  * @name        DanfeNFePHP.class.php
- * @version     2.1.7
+ * @version     2.1.8
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2012 &copy; NFePHP
@@ -81,7 +81,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
     protected $destino = 'I'; //destivo do arquivo pdf I-borwser, S-retorna o arquivo, D-força download, F-salva em arquivo local
     protected $pdfDir=''; //diretorio para salvar o pdf com a opção de destino = F
     protected $fontePadrao='Times'; //Nome da Fonte para gerar o DANFE
-    protected $version = '2.15';
+    protected $version = '2.1.8';
     protected $textoAdic = '';
     protected $wAdic = 0;
     protected $wPrint; //largura imprimivel
@@ -341,7 +341,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
             $txRetCNPJ = !empty($this->retirada->getElementsByTagName("CNPJ")->item(0)->nodeValue) ? $this->retirada->getElementsByTagName("CNPJ")->item(0)->nodeValue : '';
             $txRetxLgr = !empty($this->retirada->getElementsByTagName("xLgr")->item(0)->nodeValue) ? $this->retirada->getElementsByTagName("xLgr")->item(0)->nodeValue : '';
             $txRetnro = !empty($this->retirada->getElementsByTagName("nro")->item(0)->nodeValue) ? $this->retirada->getElementsByTagName("nro")->item(0)->nodeValue : 's/n';
-            $txRetxCpl = !empty($this->retirada->getElementsByTagName("xCpl")->item(0)->nodeValue) ? $this->retirada->getElementsByTagName("xCpl")->item(0)->nodeValue : '';
+            $txtRetxCpl = $this->__simpleGetValue( $this->retirada , "xCpl" , " - ");            
             $txRetxBairro = !empty($this->retirada->getElementsByTagName("xBairro")->item(0)->nodeValue) ? $this->retirada->getElementsByTagName("xBairro")->item(0)->nodeValue : '';
             $txRetxMun = !empty($this->retirada->getElementsByTagName("xMun")->item(0)->nodeValue) ? $this->retirada->getElementsByTagName("xMun")->item(0)->nodeValue : '';
             $txRetUF = !empty($this->retirada->getElementsByTagName("UF")->item(0)->nodeValue) ? $this->retirada->getElementsByTagName("UF")->item(0)->nodeValue : '';
@@ -352,7 +352,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
             $txRetCNPJ = !empty($this->entrega->getElementsByTagName("CNPJ")->item(0)->nodeValue) ? $this->entrega->getElementsByTagName("CNPJ")->item(0)->nodeValue : '';
             $txRetxLgr = !empty($this->entrega->getElementsByTagName("xLgr")->item(0)->nodeValue) ? $this->entrega->getElementsByTagName("xLgr")->item(0)->nodeValue : '';
             $txRetnro = !empty($this->entrega->getElementsByTagName("nro")->item(0)->nodeValue) ? $this->entrega->getElementsByTagName("nro")->item(0)->nodeValue : 's/n';
-            $txRetxCpl = !empty($this->entrega->getElementsByTagName("xCpl")->item(0)->nodeValue) ? $this->entrega->getElementsByTagName("xCpl")->item(0)->nodeValue : '';
+            $txRetxCpl = $this->__simpleGetValue( $this->entrega , "xCpl" , " - ");                        
             $txRetxBairro = !empty($this->entrega->getElementsByTagName("xBairro")->item(0)->nodeValue) ? $this->entrega->getElementsByTagName("xBairro")->item(0)->nodeValue : '';
             $txRetxMun = !empty($this->entrega->getElementsByTagName("xMun")->item(0)->nodeValue) ? $this->entrega->getElementsByTagName("xMun")->item(0)->nodeValue : '';
             $txRetUF = !empty($this->entrega->getElementsByTagName("UF")->item(0)->nodeValue) ? $this->entrega->getElementsByTagName("UF")->item(0)->nodeValue : '';
@@ -657,15 +657,17 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
         } else {
             $fone = '';
         }
-        $lgr = !empty($this->enderEmit->getElementsByTagName("xLgr")->item(0)->nodeValue) ? $this->enderEmit->getElementsByTagName("xLgr")->item(0)->nodeValue : '';
-        $nro = !empty($this->enderEmit->getElementsByTagName("nro")->item(0)->nodeValue) ? $this->enderEmit->getElementsByTagName("nro")->item(0)->nodeValue : '';
-        $cpl = !empty($this->enderEmit->getElementsByTagName("xCpl")->item(0)->nodeValue) ? $this->enderEmit->getElementsByTagName("xCpl")->item(0)->nodeValue : '';
-        $bairro = !empty($this->enderEmit->getElementsByTagName("xBairro")->item(0)->nodeValue) ? $this->enderEmit->getElementsByTagName("xBairro")->item(0)->nodeValue : '';
-        $CEP = !empty($this->enderEmit->getElementsByTagName("CEP")->item(0)->nodeValue) ? $this->enderEmit->getElementsByTagName("CEP")->item(0)->nodeValue : ' ';
+        
+        $lgr = $this->__simpleGetValue( $this->enderEmit , "xLgr" );
+        $nro = $this->__simpleGetValue( $this->enderEmit , "nro" );
+        $cpl = $this->__simpleGetValue( $this->enderEmit , "xCpl" , " - ");
+        $bairro = $this->__simpleGetValue( $this->enderEmit , "xBairro" );
+        $CEP = $this->__simpleGetValue( $this->enderEmit , "CEP" );
         $CEP = $this->__format($CEP,"#####-###");
-        $mun = !empty($this->enderEmit->getElementsByTagName("xMun")->item(0)->nodeValue) ? $this->enderEmit->getElementsByTagName("xMun")->item(0)->nodeValue : '';
-        $UF = !empty($this->enderEmit->getElementsByTagName("UF")->item(0)->nodeValue) ? $this->enderEmit->getElementsByTagName("UF")->item(0)->nodeValue : '';
-        $texto = $lgr . "," . $nro . "  " . $cpl . "\n" . $bairro . " - " . $CEP . "\n" . $mun . " - " . $UF . " " . "Fone/Fax: " . $fone;
+        $mun = $this->__simpleGetValue( $this->enderEmit , "xMun" );
+        $UF = $this->__simpleGetValue( $this->enderEmit , "UF" );
+        
+        $texto = $lgr . ", " . $nro . $cpl . "\n" . $bairro . " - " . $CEP . "\n" . $mun . " - " . $UF . " " . "Fone/Fax: " . $fone;
         $this->__textBox($x1,$y1,$tw,8,$texto,$aFont,'T','C',0,'');
 
         //####################################################################################
@@ -995,7 +997,8 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',1,'');
         $texto = $this->dest->getElementsByTagName("xLgr")->item(0)->nodeValue;
         $texto .= ', ' . $this->dest->getElementsByTagName("nro")->item(0)->nodeValue;
-        $texto .= " " . $this->__simpleGetValue( $this->dest , "xCpl");
+        $texto .= $this->__simpleGetValue( $this->dest , "xCpl" , " - ");
+                
         $aFont = array('font'=>$this->fontePadrao,'size'=>10,'style'=>'B');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'B','L',0,'',TRUE);
         //BAIRRO / DISTRITO
@@ -2143,7 +2146,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
             $emitente .= $this->dest->getElementsByTagName("xNome")->item(0)->nodeValue . " - ";
             $emitente .= $this->enderDest->getElementsByTagName("xLgr")->item(0)->nodeValue . ", ";
             $emitente .= $this->enderDest->getElementsByTagName("nro")->item(0)->nodeValue . " - ";
-            $emitente .= !empty($this->enderDest->getElementsByTagName("xCpl")->item(0)->nodeValue) ? $this->enderDest->getElementsByTagName("xCpl")->item(0)->nodeValue . " " : '';
+            $emitente .= $this->__simpleGetValue( $this->enderDest , "xCpl" , " - " , " ");      
             $emitente .= $this->enderDest->getElementsByTagName("xBairro")->item(0)->nodeValue . " ";
             $emitente .= $this->enderDest->getElementsByTagName("xMun")->item(0)->nodeValue . "-";
             $emitente .= $this->enderDest->getElementsByTagName("UF")->item(0)->nodeValue . "";
@@ -2154,8 +2157,8 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
             $destinatario = '';
             $destinatario .= $this->dest->getElementsByTagName("xNome")->item(0)->nodeValue . " - ";
             $destinatario .= $this->enderDest->getElementsByTagName("xLgr")->item(0)->nodeValue . ", ";
-            $destinatario .= $this->enderDest->getElementsByTagName("nro")->item(0)->nodeValue . " - ";
-            $destinatario .= !empty($this->enderDest->getElementsByTagName("xCpl")->item(0)->nodeValue) ? $this->enderDest->getElementsByTagName("xCpl")->item(0)->nodeValue . " " : '';
+            $destinatario .= $this->enderDest->getElementsByTagName("nro")->item(0)->nodeValue . " ";
+            $destinatario .= $this->__simpleGetValue( $this->enderDest , "xCpl" , " - " , " ");            
             $destinatario .= $this->enderDest->getElementsByTagName("xBairro")->item(0)->nodeValue . " ";
             $destinatario .= $this->enderDest->getElementsByTagName("xMun")->item(0)->nodeValue . "-";
             $destinatario .= $this->enderDest->getElementsByTagName("UF")->item(0)->nodeValue . " ";
