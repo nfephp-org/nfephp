@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   2.9.7
+ * @version   2.9.8
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -970,41 +970,100 @@ class ToolsNFePHP {
      * para impressão e envio ao destinatário.
      *
      * @name addProt
-     * @version 2.03
+     * @version 2.10
      * @package NFePHP
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @param string $nfefile path completo para o arquivo contendo a NFe
      * @param string $protfile path completo para o arquivo contendo o protocolo
      * @return string Retorna a NFe com o protocolo
      */
-    public function addProt($nfefile, $protfile) {
+    public function addProt($nfefile='', $protfile='') {
+            if($nfefile == '' || $protfile == ''){
+                $this->errStatus = true;
+                $this->errMsq = 'Para adicionar o protocolo, ambos os caminhos devem ser passados. Para a nota e para o protocolo!';
+                return false;
+            }
+            if(!is_file($nfefile) || !is_file($protfile) ){
+                $this->errStatus = true;
+                $this->errMsq = 'Algum dos arquivos não foi localizado no caminho indicado ! ' . $nfefile. ' ou ' .$protfile;
+                return false;
+            }
+            //carrega o arquivo na variável
+            $docnfe = new DOMDocument(); //cria objeto DOM
+            $docnfe->formatOutput = false;
+            $docnfe->preserveWhiteSpace = false;
+            $xmlnfe = file_get_contents($nfefile);
+            if (!$docnfe->loadXML($xmlnfe,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG)){
+                $this->errStatus = true;
+                $this->errMsq = 'O arquivo indicado como NFe não é um XML! ' . $nfefile;
+                return false;
+            }
+            $nfe = $docnfe->getElementsByTagName("NFe")->item(0);
+            if(!isset($nfe)){
+                $this->errStatus = true;
+                $this->errMsq = 'O arquivo indicado como NFe não é um xml de NFe! ' . $nfefile;
+                return false;
+            }
+            $infNFe = $docnfe->getElementsByTagName("infNFe")->item(0);
+            $versao = trim($infNFe->getAttribute("versao"));
+            $id = trim($infNFe->getAttribute("Id"));
+            $chave = preg_replace('/[^0-9]/','', $id);
+            $DigestValue = !empty($docnfe->getElementsByTagName('DigestValue')->item(0)->nodeValue) ? $docnfe->getElementsByTagName('DigestValue')->item(0)->nodeValue : '';
+            if ($DigestValue == ''){
+                $this->errStatus = true;
+                $this->errMsq = 'O XML da NFe não está assinado! ' . $nfefile;
+                return false;
+            }
+            //carrega o protocolo e seus dados
             //protocolo do lote enviado
             $prot = new DOMDocument(); //cria objeto DOM
             $prot->formatOutput = false;
             $prot->preserveWhiteSpace = false;
-            //NFe enviada
-            $docnfe = new DOMDocument(); //cria objeto DOM
-            $docnfe->formatOutput = false;
-            $docnfe->preserveWhiteSpace = false;
-            //carrega o arquivo na veriável
-            $xmlnfe = file_get_contents($nfefile);
-            $docnfe->loadXML($xmlnfe,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
-            $nfe = $docnfe->getElementsByTagName("NFe")->item(0);
-            $infNfe = $docnfe->getElementsByTagName("infNFe")->item(0);
-            $versao = trim($infNfe->getAttribute("versao"));
-            //carrega o protocolo e seus dados
             $xmlprot = file_get_contents($protfile);
-            $prot->loadXML($xmlprot,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
+            if (!$prot->loadXML($xmlprot,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG)){
+                $this->errStatus = true;
+                $this->errMsq = 'O arquivo indicado como Protocolo não é um XML! ' . $protfile;
+                return false;
+            }
+            //aqui pode ocorrer de existir tanto o protNFe como o retCancNFe
             $protNFe = $prot->getElementsByTagName("protNFe")->item(0);
-            $protver = trim($protNFe->getAttribute("versao"));
-            $tpAmb = $prot->getElementsByTagName("tpAmb")->item(0)->nodeValue;
-            $verAplic = $prot->getElementsByTagName("verAplic")->item(0)->nodeValue;
-            $chNFe=$prot->getElementsByTagName("chNFe")->item(0)->nodeValue;
-            $dhRecbto=$prot->getElementsByTagName("dhRecbto")->item(0)->nodeValue;
-            $nProt=$prot->getElementsByTagName("nProt")->item(0)->nodeValue;
-            $digVal=$prot->getElementsByTagName("digVal")->item(0)->nodeValue;
-            $cStat=$prot->getElementsByTagName("cStat")->item(0)->nodeValue;
-            $xMotivo=$prot->getElementsByTagName("xMotivo")->item(0)->nodeValue;
+            if (isset($protNFe)){
+                $protver     = trim($protNFe->getAttribute("versao"));
+                $tpAmb       = $protNFe->getElementsByTagName("tpAmb")->item(0)->nodeValue;
+                $verAplic    = $protNFe->getElementsByTagName("verAplic")->item(0)->nodeValue;
+                $chNFe       = $protNFe->getElementsByTagName("chNFe")->item(0)->nodeValue;
+                $dhRecbto    = $protNFe->getElementsByTagName("dhRecbto")->item(0)->nodeValue;
+                $nProt       = $protNFe->getElementsByTagName("nProt")->item(0)->nodeValue;
+                $digVal      = $protNFe->getElementsByTagName("digVal")->item(0)->nodeValue;
+                $cStat       = $protNFe->getElementsByTagName("cStat")->item(0)->nodeValue;
+                $xMotivo     = $protNFe->getElementsByTagName("xMotivo")->item(0)->nodeValue;
+            }    
+            $retCancNFe = $prot->getElementsByTagName("retCancNFe")->item(0);
+            if (isset($retCancNFe)){
+                $protver     = trim($retCancNFe->getAttribute("versao"));
+                $tpAmb       = $retCancNFe->getElementsByTagName("tpAmb")->item(0)->nodeValue;
+                $verAplic    = $retCancNFe->getElementsByTagName("verAplic")->item(0)->nodeValue;
+                $chNFe       = $retCancNFe->getElementsByTagName("chNFe")->item(0)->nodeValue;
+                $dhRecbto    = $retCancNFe->getElementsByTagName("dhRecbto")->item(0)->nodeValue;
+                $nProt       = $retCancNFe->getElementsByTagName("nProt")->item(0)->nodeValue;
+                $cStat       = $retCancNFe->getElementsByTagName("cStat")->item(0)->nodeValue;
+                $xMotivo     = $retCancNFe->getElementsByTagName("xMotivo")->item(0)->nodeValue;
+            }
+            if(!isset($protNFe) && !isset($retCancNFe)){
+                $this->errStatus = true;
+                $this->errMsq = 'O arquivo indicado como Protocolo não é um XML de protocolo de NFe! ' . $protfile;
+                return false;
+            }
+            if ($chNFe != $chave){
+                $this->errStatus = true;
+                $this->errMsq = 'O protocolo indicado pertence a outra NFe ... os numertos das chaves não combinam !';
+                return false;
+            }
+            if ($DigestValue != $digVal){
+                $this->errStatus = true;
+                $this->errMsq = 'Inconsistência! O DigestValue da NFe não combina com o do digVal do protocolo indicado!';
+                return false;
+            }
             //cria a NFe processada com a tag do protocolo
             $procnfe = new DOMDocument('1.0', 'utf-8');
             $procnfe->formatOutput = false;
@@ -1018,7 +1077,7 @@ class ToolsNFePHP {
             //estabelece o atributo xmlns
             $nfeProc_att2 = $nfeProc->appendChild($procnfe->createAttribute('xmlns'));
             $nfeProc_att2->appendChild($procnfe->createTextNode($this->URLnfe));
-            //inclui NFe
+            //inclui a tag NFe
             $node = $procnfe->importNode($nfe, true);
             $nfeProc->appendChild($node);
             //cria tag protNFe
@@ -1049,7 +1108,7 @@ class ToolsNFePHP {
             $procXML = str_replace('NFe xmlns="http://www.portalfiscal.inf.br/nfe" xmlns="http://www.w3.org/2000/09/xmldsig#"','NFe xmlns="http://www.portalfiscal.inf.br/nfe"',$procXML);
             return $procXML;
     } //fim addProt
-
+    
     /**
      * signXML
      * Assinador TOTALMENTE baseado em PHP para arquivos XML
