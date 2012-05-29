@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   2.9.8
+ * @version   2.9.9
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -223,14 +223,14 @@ class ToolsNFePHP {
      * Tipo de ambiente 1-produção 2-homologação
      * @var string
      */
-    private $tpAmb='';
+    protected $tpAmb='';
     /**
      * schemeVer
      * String com o nome do subdiretorio onde se encontram os schemas 
      * atenção é case sensitive
      * @var string
      */
-    private $schemeVer;
+    protected $schemeVer;
     /**
      * aProxy
      * Matriz com as informações sobre o proxy da rede para uso pelo SOAP
@@ -290,30 +290,30 @@ class ToolsNFePHP {
      * Razão social da Empresa
      * @var string
      */
-    private $empName='';
+    protected $empName='';
     /**
      * cnpj
      * CNPJ do emitente
      * @var string
      */
-    private $cnpj='';
+    protected $cnpj='';
     /**
      * cUF
      * Código da unidade da Federação IBGE
      * @var string
      */
-    private $cUF='';
+    protected $cUF='';
     /**
      * UF
      * Sigla da Unidade da Federação
      * @var string
      */
-    private $UF='';
+    protected $UF='';
     /**
      * timeZone
      * Zona de tempo GMT
      */
-    private $timeZone = '-03:00';
+    protected $timeZone = '-03:00';
     /**
      * anoMes
      * Variável que contem o ano com 4 digitos e o mes com 2 digitos
