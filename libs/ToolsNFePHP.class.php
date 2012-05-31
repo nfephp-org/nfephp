@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   2.9.9
+ * @version   2.9.10
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -2409,6 +2409,215 @@ class ToolsNFePHP {
         return $aRetorno;
     } // fim cancelNF
 
+    /**
+     * envCCe
+     * Envia carta de correção da Nota Fiscal para a SEFAZ.
+     *
+     * @name envCCe
+     * @version 0.1.0
+     * @package NFePHP
+     * @author Roberto L. Machado <linux.rlm at gmail dot com>
+     * @param   string $chNFe Chave da NFe
+     * @param   string $xCorrecao Descrição da Correção entre 15 e 1000 caracteres
+     * @param   string $nSeqEvento numero sequencial da correção d 1 até 20
+     *                             isso deve ser mantido na base de dados e 
+     *                             as correções consolidadas, isto é a cada nova correção 
+     *                             devem ser inclusas as anteriores no texto.
+     *                             O Web Service não permite a duplicidade de numeração 
+     *                             e nem controla a ordem crescente
+     * @param   integer $tpAmb Tipo de ambiente 
+     * @param   integer $modSOAP 1 usa __sendSOP e 2 usa __sendSOAP2
+     * @return	mixed false ou xml com a CCe
+     */
+    public function envCCe($chNFe='',$xCorrecao='',$nSeqEvento='1',$tpAmb='',$modSOAP='2'){
+        //testa se os dados da carta de correção foram passados
+        if ($chNFe == '' || $xCorrecao == '' ){
+            $this->errStatus = true;
+            $this->errMsg = "Dados para a carta de correção não podem ser vazios";            
+            return false;
+        }
+        if (strlen($chNFe) != 44){
+                $this->errStatus = true;
+                $this->errMsg = "Uma chave de NFe válida não foi passada como parâmetro.";
+                return false;
+        }
+        //se o numero sequencial do evento não foi informado ou se for maior que 1 digito
+        if ($nSeqEvento == '' || strlen($nSeqEvento) > 2 || !is_numeric($nSeqEvento)){
+            $this->errStatus = true;
+            $this->errMsg .= "Número sequencial da correção não encontrado ou é maior que 99 ou contêm caracteres não numéricos [$nSeqEvento]";            
+            return false;
+        }
+        if (strlen($xCorrecao) < 15 || strlen($xCorrecao) > 1000){
+            $this->errStatus = true;
+            $this->errMsg .= "O texto da correção deve ter entre 15 e 1000 caracteres!";            
+            return false;
+        }
+        //limpa o texto de correção para evitar surpresas
+        $xCorrecao = $this->__cleanString($xCorrecao);
+        //ajusta ambiente
+        if ($tpAmb == ''){
+            $tpAmb = $this->tpAmb;
+        }
+        //decompor a chNFe e pegar o tipo de emissão
+        $tpEmiss = substr($chNFe, 34, 1);
+        //verifica se o SCAN esta habilitado
+        if (!$this->enableSCAN){
+            $aURL = $this->aURL;
+        } else {
+            $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . $this->xmlURLfile,$this->tpAmb,'SCAN');
+        }
+        $numLote = substr(str_replace(',','',number_format(microtime(true)*1000000,0)),0,15);
+        //Data e hora do evento no formato AAAA-MM-DDTHH:MM:SSTZD (UTC)
+        $dhEvento = date('Y-m-d').'T'.date('H:i:s').$this->timeZone;
+        //se o envio for para svan mudar o numero no orgão para 90
+        if ($this->enableSVAN){
+            $cOrgao='91';
+        } else {
+            $cOrgao=$this->cUF;
+        }
+        //montagem do namespace do serviço
+        $servico = 'RecepcaoEvento';
+        //recuperação da versão
+        $versao = $aURL[$servico]['version'];
+        //recuperação da url do serviço
+        $urlservico = $aURL[$servico]['URL'];
+        //recuperação do método
+        $metodo = $aURL[$servico]['method'];
+        //montagem do namespace do serviço
+        $namespace = $this->URLPortal.'/wsdl/'.$servico;
+
+        $tpEvento = '110110';
+        //de acordo com o manual versão 5 de março de 2012
+        // 2   +    6     +    44         +   2  = 54 digitos
+        //“ID” + tpEvento + chave da NF-e + nSeqEvento
+        //garantir que existam 2 digitos em nSeqEvento para montar o ID com 54 digitos
+        if (strlen(trim($nSeqEvento))==1){
+            $zenSeqEvento = str_pad(trim($nSeqEvento), 2, '0', 'STR_PAD_LEFT');
+        } else {
+            $zenSeqEvento = trim($nSeqEvento);
+        }
+        $id = "ID$tpEvento$chNFe$zenSeqEvento";
+        $descEvento = 'Carta de Correcao';
+        $xCondUso = 'A Carta de Correcao e disciplinada pelo paragrafo 1o-A do art. 7o do Convenio S/N, de 15 de dezembro de 1970 e pode ser utilizada para regularizacao de erro ocorrido na emissao de documento fiscal, desde que o erro nao esteja relacionado com: I - as variaveis que determinam o valor do imposto tais como: base de calculo, aliquota, diferenca de preco, quantidade, valor da operacao ou da prestacao; II - a correcao de dados cadastrais que implique mudanca do remetente ou do destinatario; III - a data de emissao ou de saida.';
+        
+        $Ev='';
+        $Ev .= "<evento xmlns=\"$this->URLPortal\" versao=\"$versao\">";
+        $Ev .= "<infEvento Id=\"$id\">";
+        $Ev .= "<cOrgao>$cOrgao</cOrgao>";
+        $Ev .= "<tpAmb>$tpAmb</tpAmb>";
+        $Ev .= "<CNPJ>$this->cnpj</CNPJ>";
+        $Ev .= "<chNFe>$chNFe</chNFe>";
+        $Ev .= "<dhEvento>$dhEvento</dhEvento>";
+        $Ev .= "<tpEvento>$tpEvento$this->cUF</tpEvento>";
+        $Ev .= "<nSeqEvento>$nSeqEvento</nSeqEvento>";
+        $Ev .= "<verEvento>$versao</verEvento>";
+        $Ev .= "<detEvento versao=\"$versao\">";
+        $Ev .= "<descEvento>$descEvento</descEvento>";
+        $Ev .= "<xCorrecao>$xCorrecao</xCorrecao>";
+        $Ev .= "<xCondUso>$xCondUso</xCondUso>";
+        $Ev .= "</detEvento></infEvento></evento>";
+        //assinatura dos dados
+        $tagid = 'infEvento';
+        $Ev = $this->signXML($Ev, $tagid);
+        $Ev = str_replace('<?xml version="1.0"?>','', $Ev);
+        $Ev = str_replace('<?xml version="1.0" encoding="utf-8"?>','', $Ev);
+        $Ev = str_replace('<?xml version="1.0" encoding="UTF-8"?>','', $Ev);
+        $Ev = str_replace(array("\r","\n","\s"),"", $Ev);
+        //carrega uma matriz temporária com os eventos assinados
+        //montagem dos dados 
+        $dados = '';
+        $dados .= "<envEvento xmlns=\"$this->URLPortal\" versao=\"$versao\">";
+        $dados .= "<idLote>$numLote</idLote>";
+        $dados .= $Ev;
+        $dados .= "</envEvento>";
+        //montagem da mensagem
+        $cabec = "<nfeCabecMsg xmlns=\"$namespace\"><cUF>$this->cUF</cUF><versaoDados>$versao</versaoDados></nfeCabecMsg>";
+        $dados = "<nfeDadosMsg xmlns=\"$namespace\">$dados</nfeDadosMsg>";
+        //grava solicitação em temp
+        if (!file_put_contents($this->temDir."$chNFe-$nSeqEvento-envCCe.xml", '<?xml version="1.0" encoding="utf-8"?>'.$Ev)){
+            $this->errStatus = true;
+            $this->errMsg = "Falha na gravação da CCe!!\n";
+        }
+        //envia dados via SOAP
+        if ($modSOAP == '2'){
+            $retorno = $this->__sendSOAP2($urlservico, $namespace, $cabec, $dados, $metodo, $tpAmb);
+        } else {
+            $retorno = $this->__sendSOAP($urlservico, $namespace, $cabec, $dados, $metodo, $tpAmb,$this->UF);
+        }
+        //verifica o retorno
+        if (!$retorno){
+            //não houve retorno
+            $this->errStatus = true;
+            $this->errMsg = "Nao houve retorno Soap verifique a mensagem de erro e o debug!!\n";
+            return false;
+        }    
+        //tratar dados de retorno
+        $xmlretCCe = new DOMDocument(); //cria objeto DOM
+        $xmlretCCe->formatOutput = false;
+        $xmlretCCe->preserveWhiteSpace = false;
+        $xml = file_get_contents('retCCe.xml');
+        $xmlretCCe->loadXML($xml,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
+        $retEvento = $xmlretCCe->getElementsByTagName("retEvento")->item(0);
+        $cStat = !empty($xmlretCCe->getElementsByTagName('cStat')->item(0)->nodeValue) ? $xmlretCCe->getElementsByTagName('cStat')->item(0)->nodeValue : '';
+        $xMotivo = !empty($xmlretCCe->getElementsByTagName('xMotivo')->item(0)->nodeValue) ? $xmlretCCe->getElementsByTagName('xMotivo')->item(0)->nodeValue : '';
+        if ($cStat == ''){
+            //houve erro
+            $this->errStatus = true;
+            $this->errMsg = "cStat está em branco, houve erro na comunicação Soap verifique a mensagem de erro e o debug!!\n";
+            return false;
+        }
+        //erro no processamento cStat <> 128
+        if ($cStat != '128'){
+            //se cStat > 128 houve erro e o lote foi rejeitado
+            $this->errStatus = true;
+            $this->errMsg = "$xMotivo\n";
+            return false;
+        }
+        //a correção foi aceita cStat == 128
+        //carregar a CCe
+        $xmlenvCCe = new DOMDocument(); //cria objeto DOM
+        $xmlenvCCe->formatOutput = false;
+        $xmlenvCCe->preserveWhiteSpace = false;
+        $xmlenvCCe->loadXML('<?xml version="1.0" encoding="utf-8"?>'.$Ev,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
+        $evento = $xmlenvCCe->getElementsByTagName("evento")->item(0);
+        
+        //Processo completo solicitação + protocolo
+        $xmlprocCCe = new DOMDocument('1.0', 'utf-8');; //cria objeto DOM
+        $xmlprocCCe->formatOutput = false;
+        $xmlprocCCe->preserveWhiteSpace = false;
+        //cria a tag procEventoNFe
+        $procEventoNFe = $xmlprocCCe->createElement('procEventoNFe');
+        $xmlprocCCe->appendChild($procEventoNFe);
+        //estabele o atributo de versão
+        $eventProc_att1 = $procEventoNFe->appendChild($xmlprocCCe->createAttribute('versao'));
+        $eventProc_att1->appendChild($xmlprocCCe->createTextNode($versao));
+        //estabelece o atributo xmlns
+        $eventProc_att2 = $procEventoNFe->appendChild($xmlprocCCe->createAttribute('xmlns'));
+        $eventProc_att2->appendChild($xmlprocCCe->createTextNode($URLnfe));
+        //carrega o node evento
+        $node1 = $xmlprocCCe->importNode($evento, true);
+        $procEventoNFe->appendChild($node1);
+        //carrega o node retEvento
+        $node2 = $xmlprocCCe->importNode($retEvento, true);
+        $procEventoNFe->appendChild($node2);
+        //salva o xml como string em uma variável
+        $procXML = $xmlprocCCe->saveXML();
+        //remove as informações indesejadas
+        $procXML = str_replace("xmlns:default=\"http://www.w3.org/2000/09/xmldsig#\"",'',$procXML);
+        $procXML = str_replace('default:','',$procXML);
+        $procXML = str_replace(':default','',$procXML);
+        $procXML = str_replace("\n",'',$procXML);
+        $procXML = str_replace("\r",'',$procXML);
+        $procXML = str_replace("\s",'',$procXML);
+        //salva o arquivo xml
+        if (!file_put_contents("$chNFe-$nSeqEvento-procCCe.xml", $procXML)){
+            $this->errStatus = true;
+            $this->errMsg = "Falha na gravação da procCCe!!\n";
+        }
+        return $procXML;
+    }//fim envCCe
+    
+    
     /**
      * __verifySignatureXML
      * Verifica correção da assinatura no xml
