@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   2.9.10
+ * @version   2.9.11
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -1475,7 +1475,7 @@ class ToolsNFePHP {
      * Este processo enviará somente até 50 NFe em cada Lote
      *
      * @name sendLot
-     * @version 2.1.8
+     * @version 2.1.9
      * @package NFePHP
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @param	mixed    $mNFe string com uma nota fiscail em xml ou um array com as NFe em xml, uma em cada campo do array unidimensional MAX 50
@@ -1506,7 +1506,7 @@ class ToolsNFePHP {
         $namespace = $this->URLPortal.'/wsdl/'.$servico.'2';
         // limpa a variavel
         $sNFe = '';
-        if (is_array($aNFe)){
+        if (is_array($mNFe)){
             // verificar se foram passadas até 50 NFe
             if ( count($mNFe) > 50 ) {
                 $this->errStatus = true;
@@ -2414,7 +2414,7 @@ class ToolsNFePHP {
      * Envia carta de correção da Nota Fiscal para a SEFAZ.
      *
      * @name envCCe
-     * @version 0.1.1
+     * @version 0.1.2
      * @package NFePHP
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @param   string $chNFe Chave da NFe
@@ -2471,7 +2471,7 @@ class ToolsNFePHP {
         $dhEvento = date('Y-m-d').'T'.date('H:i:s').$this->timeZone;
         //se o envio for para svan mudar o numero no orgão para 90
         if ($this->enableSVAN){
-            $cOrgao='91';
+            $cOrgao='90';
         } else {
             $cOrgao=$this->cUF;
         }
@@ -2492,11 +2492,11 @@ class ToolsNFePHP {
         //“ID” + tpEvento + chave da NF-e + nSeqEvento
         //garantir que existam 2 digitos em nSeqEvento para montar o ID com 54 digitos
         if (strlen(trim($nSeqEvento))==1){
-            $zenSeqEvento = str_pad(trim($nSeqEvento), 2, '0', 'STR_PAD_LEFT');
+            $zenSeqEvento = str_pad($nSeqEvento, 2, "0", STR_PAD_LEFT);
         } else {
             $zenSeqEvento = trim($nSeqEvento);
         }
-        $id = "ID$tpEvento$chNFe$zenSeqEvento";
+        $id = "ID".$tpEvento.$chNFe.$zenSeqEvento;
         $descEvento = 'Carta de Correcao';
         $xCondUso = 'A Carta de Correcao e disciplinada pelo paragrafo 1o-A do art. 7o do Convenio S/N, de 15 de dezembro de 1970 e pode ser utilizada para regularizacao de erro ocorrido na emissao de documento fiscal, desde que o erro nao esteja relacionado com: I - as variaveis que determinam o valor do imposto tais como: base de calculo, aliquota, diferenca de preco, quantidade, valor da operacao ou da prestacao; II - a correcao de dados cadastrais que implique mudanca do remetente ou do destinatario; III - a data de emissao ou de saida.';
         
@@ -2508,7 +2508,7 @@ class ToolsNFePHP {
         $Ev .= "<CNPJ>$this->cnpj</CNPJ>";
         $Ev .= "<chNFe>$chNFe</chNFe>";
         $Ev .= "<dhEvento>$dhEvento</dhEvento>";
-        $Ev .= "<tpEvento>$tpEvento$this->cUF</tpEvento>";
+        $Ev .= "<tpEvento>$tpEvento</tpEvento>";
         $Ev .= "<nSeqEvento>$nSeqEvento</nSeqEvento>";
         $Ev .= "<verEvento>$versao</verEvento>";
         $Ev .= "<detEvento versao=\"$versao\">";
@@ -2538,6 +2538,7 @@ class ToolsNFePHP {
             $this->errStatus = true;
             $this->errMsg = "Falha na gravação da CCe!!\n";
         }
+        
         //envia dados via SOAP
         if ($modSOAP == '2'){
             $retorno = $this->__sendSOAP2($urlservico, $namespace, $cabec, $dados, $metodo, $tpAmb);
@@ -2550,16 +2551,16 @@ class ToolsNFePHP {
             $this->errStatus = true;
             $this->errMsg = "Nao houve retorno Soap verifique a mensagem de erro e o debug!!\n";
             return false;
-        }    
+        }
+        
         //tratar dados de retorno
         $xmlretCCe = new DOMDocument(); //cria objeto DOM
         $xmlretCCe->formatOutput = false;
         $xmlretCCe->preserveWhiteSpace = false;
-        $xml = file_get_contents('retCCe.xml');
-        $xmlretCCe->loadXML($xml,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
+        $xmlretCCe->loadXML($retorno,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
         $retEvento = $xmlretCCe->getElementsByTagName("retEvento")->item(0);
-        $cStat = !empty($xmlretCCe->getElementsByTagName('cStat')->item(0)->nodeValue) ? $xmlretCCe->getElementsByTagName('cStat')->item(0)->nodeValue : '';
-        $xMotivo = !empty($xmlretCCe->getElementsByTagName('xMotivo')->item(0)->nodeValue) ? $xmlretCCe->getElementsByTagName('xMotivo')->item(0)->nodeValue : '';
+        $cStat = !empty($retEvento->getElementsByTagName('cStat')->item(0)->nodeValue) ? $retEvento->getElementsByTagName('cStat')->item(0)->nodeValue : '';
+        $xMotivo = !empty($retEvento->getElementsByTagName('xMotivo')->item(0)->nodeValue) ? $retEvento->getElementsByTagName('xMotivo')->item(0)->nodeValue : '';
         if ($cStat == ''){
             //houve erro
             $this->errStatus = true;
@@ -2567,13 +2568,13 @@ class ToolsNFePHP {
             return false;
         }
         //erro no processamento cStat <> 128
-        if ($cStat != '128'){
-            //se cStat > 128 houve erro e o lote foi rejeitado
+        if ($cStat != 135 ){
+            //se cStat <> 135 houve erro e o lote foi rejeitado
             $this->errStatus = true;
-            $this->errMsg = "$xMotivo\n";
+            $this->errMsg = "$cStat - $xMotivo\n";
             return false;
         }
-        //a correção foi aceita cStat == 128
+        //a correção foi aceita cStat == 135
         //carregar a CCe
         $xmlenvCCe = new DOMDocument(); //cria objeto DOM
         $xmlenvCCe->formatOutput = false;
