@@ -2611,7 +2611,7 @@ class ToolsNFePHP {
         $procXML = str_replace("\r",'',$procXML);
         $procXML = str_replace("\s",'',$procXML);
         //salva o arquivo xml
-        if (!file_put_contents("$chNFe-$nSeqEvento-procCCe.xml", $procXML)){
+        if (!file_put_contents($this->temDir."$chNFe-$nSeqEvento-procCCe.xml", $procXML)){
             $this->errStatus = true;
             $this->errMsg = "Falha na gravação da procCCe!!\n";
         }
