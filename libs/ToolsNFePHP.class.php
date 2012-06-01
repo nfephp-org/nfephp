@@ -2414,7 +2414,7 @@ class ToolsNFePHP {
      * Envia carta de correção da Nota Fiscal para a SEFAZ.
      *
      * @name envCCe
-     * @version 0.1.0
+     * @version 0.1.1
      * @package NFePHP
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @param   string $chNFe Chave da NFe
@@ -2593,7 +2593,7 @@ class ToolsNFePHP {
         $eventProc_att1->appendChild($xmlprocCCe->createTextNode($versao));
         //estabelece o atributo xmlns
         $eventProc_att2 = $procEventoNFe->appendChild($xmlprocCCe->createAttribute('xmlns'));
-        $eventProc_att2->appendChild($xmlprocCCe->createTextNode($URLnfe));
+        $eventProc_att2->appendChild($xmlprocCCe->createTextNode($this->URLportal));
         //carrega o node evento
         $node1 = $xmlprocCCe->importNode($evento, true);
         $procEventoNFe->appendChild($node1);
