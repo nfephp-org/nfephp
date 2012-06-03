@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   2.9.11
+ * @version   2.9.12
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -769,96 +769,6 @@ class ToolsNFePHP {
         }
         return true;
     } //fim __construct
-
-    /**
-     * addProtCanc
-     * Este método adiciona a tag do protocolo a NFe cancelada,preparando a mesma
-     * para envio ao destinatário.
-     *
-     * @name addProtCanc, baseado na funcao addProt
-     * @version 1.1
-     * @package NFePHP
-     * @author Leandro C. Lopez <leandro dot castoldi at gmail dot com>
-     * @param string $nfefile path completo para o arquivo contendo os dados do cancelamento
-     * @param string $protfile path completo para o arquivo contendo o protocolo
-     * @return string Retorna a NFe de cancelamento com o protocolo
-    **/
-    public function addProtCanc($nfefile, $protfile) {
-        //protocolo do lote enviado
-        $prot = new DOMDocument(); //cria objeto DOM
-        $prot->formatOutput = false;
-        $prot->preserveWhiteSpace = false;
-        //NFe enviada
-        $docnfe = new DOMDocument(); //cria objeto DOM
-        $docnfe->formatOutput = false;
-        $docnfe->preserveWhiteSpace = false;
-        //carrega o arquivo na veriável
-        $xmlnfe = file_get_contents($nfefile);
-        $docnfe->loadXML($xmlnfe,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
-        $nfe = $docnfe->getElementsByTagName("cancNFe")->item(0);
-        $infNfe = $docnfe->getElementsByTagName("infCanc")->item(0);
-        $versao = trim($nfe->getAttribute("versao"));
-        //carrega o protocolo e seus dados
-        $xmlprot = file_get_contents($protfile);
-        $prot->loadXML($xmlprot,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
-        $protNFe = $prot->getElementsByTagName("retCancNFe")->item(0);
-        $protver = trim($protNFe->getAttribute("versao"));
-        $tpAmb = $prot->getElementsByTagName("tpAmb")->item(0)->nodeValue;
-        $verAplic = $prot->getElementsByTagName("verAplic")->item(0)->nodeValue;
-        $cUF = $prot->getElementsByTagName("cUF")->item(0)->nodeValue;
-        $chNFe=$prot->getElementsByTagName("chNFe")->item(0)->nodeValue;
-        $dhRecbto=$prot->getElementsByTagName("dhRecbto")->item(0)->nodeValue;
-        $nProt=$prot->getElementsByTagName("nProt")->item(0)->nodeValue;
-        $cStat=$prot->getElementsByTagName("cStat")->item(0)->nodeValue;
-        $xMotivo=$prot->getElementsByTagName("xMotivo")->item(0)->nodeValue;
-        //cria a NFe processada com a tag do protocolo
-        $procnfe = new DOMDocument('1.0', 'utf-8');
-        $procnfe->formatOutput = false;
-        $procnfe->preserveWhiteSpace = false;
-        //cria a tag nfeProc
-        $nfeProc = $procnfe->createElement('procCancNFe');
-        $procnfe->appendChild($nfeProc);
-        //estabele o atributo de versão
-        $nfeProc_att1 = $nfeProc->appendChild($procnfe->createAttribute('versao'));
-        $nfeProc_att1->appendChild($procnfe->createTextNode($protver));
-        //estabelece o atributo xmlns
-        $nfeProc_att2 = $nfeProc->appendChild($procnfe->createAttribute('xmlns'));
-        $nfeProc_att2->appendChild($procnfe->createTextNode($this->URLnfe));
-        //inclui NFe
-        $node = $procnfe->importNode($nfe, true);
-        $nfeProc->appendChild($node);
-        //cria tag protNFe
-        $protNFe = $procnfe->createElement('retCancNFe');
-        $nfeProc->appendChild($protNFe);
-        //estabele o atributo de versão
-        $protNFe_att1 = $protNFe->appendChild($procnfe->createAttribute('versao'));
-        $protNFe_att1->appendChild($procnfe->createTextNode($versao));
-        $protNFe_att2 = $protNFe->appendChild($procnfe->createAttribute('xmlns'));
-        $protNFe_att2->appendChild($procnfe->createTextNode($this->URLnfe));
-        //cria tag infProt
-        $infProt = $procnfe->createElement('infCanc');
-        $infProt_att1 = $infProt->appendChild($procnfe->createAttribute('Id'));
-        $infProt_att1->appendChild($procnfe->createTextNode('ID'.$nProt));
-        $protNFe->appendChild($infProt);
-        $infProt->appendChild($procnfe->createElement('tpAmb',$tpAmb));
-        $infProt->appendChild($procnfe->createElement('verAplic',$verAplic));
-        $infProt->appendChild($procnfe->createElement('cStat',$cStat));
-        $infProt->appendChild($procnfe->createElement('xMotivo',$xMotivo));
-        $infProt->appendChild($procnfe->createElement('cUF',$cUF));
-        $infProt->appendChild($procnfe->createElement('chNFe',$chNFe));
-        $infProt->appendChild($procnfe->createElement('dhRecbto',$dhRecbto));
-        $infProt->appendChild($procnfe->createElement('nProt',$nProt));
-        //salva o xml como string em uma variável
-        $procXML = $procnfe->saveXML();
-        //remove as informações indesejadas
-        $procXML = str_replace('default:','',$procXML);
-        $procXML = str_replace(':default','',$procXML);
-        $procXML = str_replace("\n",'',$procXML);
-        $procXML = str_replace("\r",'',$procXML);
-        $procXML = str_replace("\s",'',$procXML);
-        $procXML = str_replace('cancNFe xmlns="http://www.portalfiscal.inf.br/nfe" xmlns="http://www.w3.org/2000/09/xmldsig#"','cancNFe xmlns="http://www.portalfiscal.inf.br/nfe"',$procXML);
-        return $procXML;
-    } //fim addProtCanc
 
    /**
     * validXML
@@ -2153,12 +2063,12 @@ class ToolsNFePHP {
          */
         return $aRetorno; 
     }//fim getNFe
-    
+
     /**
      * Solicita inutilizaçao de uma serie de numeros de NF
-     *
+     * - o processo de inutilização será gravado na pasta Inutilizadas
      * @name inutNF
-     * @version 2.1.6
+     * @version 2.2.0
      * @package NFePHP
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @param	string  $nAno       ano com 2 digitos
@@ -2166,21 +2076,27 @@ class ToolsNFePHP {
      * @param   integer $nIni       numero inicial 1 até 9 digitos zero a esq
      * @param   integer $nFin       numero Final 1 até 9 digitos zero a esq
      * @param   string  $xJust      justificativa 15 até 255 digitos
+     * @param   string  $tpAmb      Tipo de ambiente 1-produção ou 2 homologação
      * @param   integer $modSOAP    1 usa __sendSOAP e 2 usa __sendSOAP2
-     * @return	mixed false ou array ['bStat'=>boolean,'cStat'=>'','xMotivo'=>'','dhRecbto'=>'','nProt'=>'']
+     * @return	mixed false ou string com o xml do processo de inutilização
     **/
-    public function inutNF($nAno='',$nSerie='1',$nIni='',$nFin='',$xJust='',$modSOAP='2'){
-        //variavel de retorno do metodo
-        $aRetorno = array('bStat'=>false,'cStat'=>'','xMotivo'=>'','dhRecbto'=>'','nProt'=>'');
+    public function inutNF($nAno='',$nSerie='1',$nIni='',$nFin='',$xJust='',$tpAmb='',$modSOAP='2'){
         //valida dos dados de entrada
         if($nAno == '' || $nIni == '' || $nFin == '' || $xJust == '' ){
             $this->errStatus = true;
             $this->errMsg = "Não foi passado algum dos parametos necessários ANO=$nAno inicio=$nIni fim=$nFin justificativa=$xJust.\n";
             return false;
         }
+        if($tpAmb == ''){
+            $tpAmb = $this->tpAmb;
+        }
         //verifica se o SCAN esta habilitado
         if (!$this->enableSCAN){
-            $aURL = $this->aURL;
+            if($tpAmb == $this->tpAmb){
+                $aURL = $this->aURL;
+            }else{
+                $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . $this->xmlURLfile,$tpAmb,$this->UF);
+            }    
         } else {
             $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . $this->xmlURLfile,$this->tpAmb,'SCAN');
         }
@@ -2249,7 +2165,7 @@ class ToolsNFePHP {
         //montagem do corpo da mensagem
         $dXML = '<inutNFe xmlns="'.$this->URLnfe.'" versao="'.$versao.'">';
         $dXML .= '<infInut Id="'.$id.'">';
-        $dXML .= '<tpAmb>'.$this->tpAmb.'</tpAmb>';
+        $dXML .= '<tpAmb>'.$tpAmb.'</tpAmb>';
         $dXML .= '<xServ>INUTILIZAR</xServ>';
         $dXML .= '<cUF>'.$this->cUF.'</cUF>';
         $dXML .= '<ano>'.$nAno.'</ano>';
@@ -2269,6 +2185,11 @@ class ToolsNFePHP {
         $dados = str_replace('<?xml version="1.0" encoding="utf-8"?>','', $dados);
         $dados = str_replace('<?xml version="1.0" encoding="UTF-8"?>','', $dados);
         $dados = str_replace(array("\r","\n","\s"),"", $dados);
+        //grava a solicitação de inutilização
+        if(!file_put_contents($this->temDir.$id.'-inut.xml', '<?xml version="1.0" encoding="utf-8"?>'.$dXML)){
+            $this->errStatus = true;
+            $this->errMsg = "Falha na gravação do pedido de inutilização!!\n";
+        }
         //envia a solicitação via SOAP
         if ($modSOAP == '2'){
             $retorno = $this->__sendSOAP2($urlservico, $namespace, $cabec, $dados, $metodo, $this->tpAmb);
@@ -2276,67 +2197,111 @@ class ToolsNFePHP {
             $retorno = $this->__sendSOAP($urlservico, $namespace, $cabec, $dados, $metodo, $this->tpAmb,$this->UF);
         }
         //verifica o retorno
-        if ($retorno){
-            //tratar dados de retorno
-            $doc = new DOMDocument(); //cria objeto DOM
-            $doc->formatOutput = false;
-            $doc->preserveWhiteSpace = false;
-            $doc->loadXML($retorno,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
-            $cStat = !empty($doc->getElementsByTagName('cStat')->item(0)->nodeValue) ? $doc->getElementsByTagName('cStat')->item(0)->nodeValue : '';
-            if ($cStat == ''){
-                //houve erro 
-                return false;
-            } else {
-                //verificar o status da solicitação
-                if ($cStat == '102'){
-                    $aRetorno['bStat'] = true;
-                }
-            }
-            // status do serviço se 102 inutilização aceita
-            $aRetorno['cStat'] = $doc->getElementsByTagName('cStat')->item(0)->nodeValue;
-            // motivo da resposta (opcional)
-            $aRetorno['xMotivo'] = !empty($doc->getElementsByTagName('xMotivo')->item(0)->nodeValue) ? $doc->getElementsByTagName('xMotivo')->item(0)->nodeValue : '';
-            // data e hora da mensagem (opcional)
-            $aRetorno['dhRecbto'] = !empty($doc->getElementsByTagName('dhRecbto')->item(0)->nodeValue) ? date("d/m/Y H:i:s",$this->__convertTime($doc->getElementsByTagName('dhRecbto')->item(0)->nodeValue)) : '';
-            // numero do protocolo de aceitação da inutilização (opcional)
-            $aRetorno['nProt'] = !empty($doc->getElementsByTagName('nProt')->item(0)->nodeValue) ? $doc->getElementsByTagName('nProt')->item(0)->nodeValue : '';
-            //gravar o retorno na pasta temp
-            $nome = $this->temDir.$id.'-inut.xml';
-            $nome = $doc->save($nome);
-        } else {
+        if (!$retorno){
             $this->errStatus = true;
             $this->errMsg = "Nao houve retorno Soap verifique o debug!!\n";
-            $aRetorno = false;
+            return false;
+        }    
+        //tratar dados de retorno
+        $doc = new DOMDocument(); //cria objeto DOM
+        $doc->formatOutput = false;
+        $doc->preserveWhiteSpace = false;
+        $doc->loadXML($retorno,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
+        $cStat = !empty($doc->getElementsByTagName('cStat')->item(0)->nodeValue) ? $doc->getElementsByTagName('cStat')->item(0)->nodeValue : '';
+        $xMotivo = !empty($doc->getElementsByTagName('xMotivo')->item(0)->nodeValue) ? $doc->getElementsByTagName('xMotivo')->item(0)->nodeValue : '';
+        if ($cStat == ''){
+            //houve erro 
+            $this->errStatus = true;
+            $this->errMsg = "Nao houve retorno Soap verifique o debug!!\n";
+            return false;
         }
-        return $aRetorno;
+        //verificar o status da solicitação
+        if ($cStat != '102'){
+            //houve erro 
+            $this->errStatus = true;
+            $this->errMsg = "$cStat - $xMotivo!!\n";
+            return false;
+        }    
+       //gravar o retorno na pasta temp
+       $nome = $this->temDir.$id.'-retinut.xml';
+       $nome = $doc->save($nome);
+       $retInutNFe = $doc->getElementsByTagName("retInutNFe")->item(0);
+       //preparar o processo de inutilização
+       $inut = new DOMDocument(); //cria objeto DOM
+       $inut->formatOutput = false;
+       $inut->preserveWhiteSpace = false;
+       $inut->loadXML('<?xml version="1.0" encoding="utf-8"?>'.$dXML,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
+       $inutNFe = $canc->getElementsByTagName("inutNFe")->item(0);
+       //Processo completo solicitação + protocolo
+       $procInut = new DOMDocument('1.0', 'utf-8');; //cria objeto DOM
+       $procInut->formatOutput = false;
+       $procInut->preserveWhiteSpace = false;
+       //cria a tag procInutNFe
+       $procInutNFe = $procCanc->createElement('procInutNFe');
+       $procInut->appendChild($procInutNFe);
+       //estabele o atributo de versão
+       $inutProc_att1 = $procInutNFe->appendChild($procInut->createAttribute('versao'));
+       $inutProc_att1->appendChild($procInut->createTextNode($versao));
+       //estabelece o atributo xmlns
+       $inutProc_att2 = $procInutNFe->appendChild($procInut->createAttribute('xmlns'));
+       $inutProc_att2->appendChild($procInut->createTextNode($this->URLPortal));
+       //carrega o node cancNFe
+       $node1 = $procInut->importNode($inutNFe, true);
+       $procInutNFe->appendChild($node1);
+       //carrega o node retEvento
+       $node2 = $procInut->importNode($retInutNFe, true);
+       $procInutNFe->appendChild($node2);
+       //salva o xml como string em uma variável
+       $procXML = $procInut->saveXML();
+       //remove as informações indesejadas
+       $procXML = str_replace("xmlns:default=\"http://www.w3.org/2000/09/xmldsig#\"",'',$procXML);
+       $procXML = str_replace('default:','',$procXML);
+       $procXML = str_replace(':default','',$procXML);
+       $procXML = str_replace("\n",'',$procXML);
+       $procXML = str_replace("\r",'',$procXML);
+       $procXML = str_replace("\s",'',$procXML);
+       //salva o arquivo xml
+       if (!file_put_contents($this->inuDir."$chNFe-procInut.xml", $procXML)){
+           $this->errStatus = true;
+           $this->errMsg = "Falha na gravação da procInut!!\n";
+       }
+       return $procXML;
     } //fim inutNFe
 
     /**
-     * Solicita o cancelamento de NF enviada
-     *
+     * Solicita o cancelamento de NFe autorizada
+     * - O xml do processo de cancelamento será salvo na pasta Canceladas
+     *      
      * @name cancelNF
-     * @version 2.1.10
+     * @version 2.2.0
      * @package NFePHP
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
-     * @param	string  $id      ID da NFe com 44 digitos (sem o NFe na frente dos numeros)
-     * @param   string  $protId     Numero do protocolo de aceitaçao do lote de NFe enviado anteriormente pelo SEFAZ
-     * @param   boolean $modSOAP    1 usa __sendSOAP e 2 usa __sendSOAP2
-     * @return	mixed false se falha ou array [
+     * @param	string  $chNFe   Chave da NFe com 44 digitos
+     * @param   string  $nProt   Numero do protocolo de aceitaçao do lote de NFe enviado anteriormente pelo SEFAZ
+     * @param   string  $xJust   Justificativa para o cancelamento 
+     * @param   string  $tpAmb   Tipo de ambiente 1-produção 2-homologação 
+     * @param   boolean $modSOAP 1 usa __sendSOAP e 2 usa __sendSOAP2
+     * @return	mixed   false se falha ou string com o xml do processo de cancelamento
     **/
-    public function cancelNF($id,$protId,$xJust,$modSOAP='2'){
-        //variável de retorno
-        $aRetorno = array('bStat'=>false,'cStat'=>'','xMotivo'=>'','dhRecbto'=>'','nProt'=>'');
+    public function cancelNF($chNFe='',$nProt='',$xJust='',$tpAmb='',$modSOAP='2'){
         //validação dos dados de entrada
-        if($id == '' || $protId == '' || $xJust == ''){
+        if($chNFe == '' || $nProt == '' || $xJust == ''){
             $this->errStatus = true;
             $this->errMsg = "Não foi passado algum dos parâmetros necessários ID=$id ou protocolo=$protId ou justificativa=$xJust.\n";
-            return $aRetorno;            
+            return false;
+        }
+        if($tpAmb == ''){
+            $tpAmb = $this->tpAmb;
         }
         //verifica se o SCAN esta habilitado
         if (!$this->enableSCAN){
-            $aURL = $this->aURL;
+            if ($tpAmb != $this->tpAmb){
+                $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . $this->xmlURLfile,$tpAmb,$this->UF);
+            } else {
+                $aURL = $this->aURL;
+            }    
         } else {
-            $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . $this->xmlURLfile,$this->tpAmb,'SCAN');
+            $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . $this->xmlURLfile,$tpAmb,'SCAN');
         }
         //identificação do serviço
         $servico = 'NfeCancelamento';
@@ -2352,7 +2317,7 @@ class ToolsNFePHP {
         $cabec = '<nfeCabecMsg xmlns="'. $namespace . '"><cUF>'.$this->cUF.'</cUF><versaoDados>'.$versao.'</versaoDados></nfeCabecMsg>';
         //montagem dos dados da mensagem SOAP
         $dXML = '<cancNFe xmlns="'.$this->URLnfe.'" versao="'.$versao.'">';
-        $dXML .= '<infCanc Id="ID'.$id.'"><tpAmb>'.$this->tpAmb.'</tpAmb><xServ>CANCELAR</xServ><chNFe>'.$id.'</chNFe><nProt>'.$protId.'</nProt><xJust>'.$xJust.'</xJust></infCanc></cancNFe>';
+        $dXML .= '<infCanc Id="ID'.$id.'"><tpAmb>'.$tpAmb.'</tpAmb><xServ>CANCELAR</xServ><chNFe>'.$chNFe.'</chNFe><nProt>'.$nProt.'</nProt><xJust>'.$xJust.'</xJust></infCanc></cancNFe>';
         //assinar a mensagem
         $dXML = $this->signXML($dXML, 'infCanc');
         $dados = '<nfeDadosMsg xmlns="'. $namespace . '">'.$dXML.'</nfeDadosMsg>';
@@ -2361,6 +2326,11 @@ class ToolsNFePHP {
         $dados = str_replace('<?xml version="1.0" encoding="utf-8"?>','', $dados);
         $dados = str_replace('<?xml version="1.0" encoding="UTF-8"?>','', $dados);
         $dados = str_replace(array("\r","\n","\s"),"", $dados);
+        //grava a solicitação na pasta Temporarias
+        if( !file_put_contents($this->temDir.$chNFe.'-pedCanc.xml', '<?xml version="1.0" encoding="utf-8"?>'.$dXML)){
+            $this->errStatus = true;
+            $this->errMsg = "Falha na gravação do pedido de cancelamento.\n";
+        }
         //envia a solicitação via SOAP
         if ($modSOAP == 2){
             $retorno = $this->__sendSOAP2($urlservico, $namespace, $cabec, $dados, $metodo, $this->tpAmb);
@@ -2368,45 +2338,73 @@ class ToolsNFePHP {
             $retorno = $this->__sendSOAP($urlservico, $namespace, $cabec, $dados, $metodo, $this->tpAmb,$this->UF);
         }
         //verifica o retorno
-        if ($retorno){
-            //tratar dados de retorno
-            $doc = new DOMDocument(); //cria objeto DOM
-            $doc->formatOutput = false;
-            $doc->preserveWhiteSpace = false;
-            $doc->loadXML($retorno,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
-            $cStat = !empty($doc->getElementsByTagName('cStat')->item(0)->nodeValue) ? $doc->getElementsByTagName('cStat')->item(0)->nodeValue : '';
-            if ($cStat == ''){
-                //houve erro
-                return false;
-            } else {
-                if ($cStat == '101'){
-                    $aRetorno['bStat'] = true;
-                }
-            }
-            // status do serviço se 101 cancelamento aceito
-            $aRetorno['cStat'] = $doc->getElementsByTagName('cStat')->item(0)->nodeValue;
-            // motivo da resposta (opcional)
-            $aRetorno['xMotivo'] = !empty($doc->getElementsByTagName('xMotivo')->item(0)->nodeValue) ? $doc->getElementsByTagName('xMotivo')->item(0)->nodeValue : '';
-            // data e hora da mensagem (opcional)
-            $aRetorno['dhRecbto'] = !empty($doc->getElementsByTagName('dhRecbto')->item(0)->nodeValue) ? date("d/m/Y H:i:s",$this->__convertTime($doc->getElementsByTagName('dhRecbto')->item(0)->nodeValue)) : '';
-            // numero do protocolo de cancelamento da NFe (opcional)
-            $aRetorno['nProt'] = !empty($doc->getElementsByTagName('nProt')->item(0)->nodeValue) ? $doc->getElementsByTagName('nProt')->item(0)->nodeValue : '';
-            //gravar o retorno na pasta temp
-            $nome = $this->temDir.$id.'-canc.xml';
-            $nome = $doc->save($nome);
-            //anexa o protocolo e salva em canceladas
-            //if ( file_put_contents($this->temDir.$id.'-procCancNFe.xml', $dXML) ) {
-            //    $protCan = $this->addProtCanc($this->temDir.$id.'-procCancNFe.xml', $this->temDir.$id.'-canc.xml');
-            //    if ( file_put_contents($this->canDir.$id.'-procCanc.xml', $protCan) ) {
-            //        unlink($this->temDir.$id.'-procCancNFe.xml');
-            //    }
-            //}
-        } else {
+        if (!$retorno){
             $this->errStatus = true;
             $this->errMsg = "Nao houve retorno Soap verifique a mensagem de erro e o debug!!\n";
-            $aRetorno = false;
+            return false;
+        }    
+        //tratar dados de retorno
+        $doc = new DOMDocument(); //cria objeto DOM
+        $doc->formatOutput = false;
+        $doc->preserveWhiteSpace = false;
+        $doc->loadXML($retorno,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
+        $cStat = !empty($doc->getElementsByTagName('cStat')->item(0)->nodeValue) ? $doc->getElementsByTagName('cStat')->item(0)->nodeValue : '';
+        $xMotivo = !empty($doc->getElementsByTagName('xMotivo')->item(0)->nodeValue) ? $doc->getElementsByTagName('xMotivo')->item(0)->nodeValue : '';
+        if ($cStat == ''){
+            //houve erro
+            $this->errStatus = true;
+            $this->errMsg = "Nao houve retorno Soap verifique a mensagem de erro e o debug!!\n";
+            return false;
+        } 
+        if ($cStat != '101'){
+            $this->errStatus = true;
+            $this->errMsg = "$cStat - $xMotivo\n";
+            return false;
         }
-        return $aRetorno;
+        //gravar o retorno na pasta temp
+        $nome = $this->temDir.$chNFe.'-retcanc.xml';
+        $nome = $doc->save($nome);
+        $retCancNFe = $doc->getElementsByTagName("retCancNFe")->item(0);
+        //preparar o processo de cancelamento
+        $canc = new DOMDocument(); //cria objeto DOM
+        $canc->formatOutput = false;
+        $canc->preserveWhiteSpace = false;
+        $canc->loadXML('<?xml version="1.0" encoding="utf-8"?>'.$dXML,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
+        $cancNFe = $canc->getElementsByTagName("cancNFe")->item(0);
+        //Processo completo solicitação + protocolo
+        $procCanc = new DOMDocument('1.0', 'utf-8');; //cria objeto DOM
+        $procCanc->formatOutput = false;
+        $procCanc->preserveWhiteSpace = false;
+        //cria a tag procCancNFe
+        $procCancNFe = $procCanc->createElement('procCancNFe');
+        $procCanc->appendChild($procCancNFe);
+        //estabele o atributo de versão
+        $cancProc_att1 = $procCancNFe->appendChild($procCanc->createAttribute('versao'));
+        $cancProc_att1->appendChild($procCanc->createTextNode($versao));
+        //estabelece o atributo xmlns
+        $cancProc_att2 = $procCancNFe->appendChild($procCanc->createAttribute('xmlns'));
+        $cancProc_att2->appendChild($procCanc->createTextNode($this->URLPortal));
+        //carrega o node cancNFe
+        $node1 = $procCanc->importNode($cancNFe, true);
+        $procCancNFe->appendChild($node1);
+        //carrega o node retEvento
+        $node2 = $procCanc->importNode($retCancNFe, true);
+        $procCancNFe->appendChild($node2);
+        //salva o xml como string em uma variável
+        $procXML = $procCanc->saveXML();
+        //remove as informações indesejadas
+        $procXML = str_replace("xmlns:default=\"http://www.w3.org/2000/09/xmldsig#\"",'',$procXML);
+        $procXML = str_replace('default:','',$procXML);
+        $procXML = str_replace(':default','',$procXML);
+        $procXML = str_replace("\n",'',$procXML);
+        $procXML = str_replace("\r",'',$procXML);
+        $procXML = str_replace("\s",'',$procXML);
+        //salva o arquivo xml
+        if (!file_put_contents($this->canDir."$chNFe-procCanc.xml", $procXML)){
+            $this->errStatus = true;
+            $this->errMsg = "Falha na gravação da procCanc!!\n";
+        }
+        return $procXML;
     } // fim cancelNF
 
     /**
