@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   2.9.13
+ * @version   2.9.14
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -2068,7 +2068,7 @@ class ToolsNFePHP {
      * Solicita inutilizaçao de uma serie de numeros de NF
      * - o processo de inutilização será gravado na pasta Inutilizadas
      * @name inutNF
-     * @version 2.2.0
+     * @version 2.2.1
      * @package NFePHP
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @param	string  $nAno       ano com 2 digitos
@@ -2087,19 +2087,19 @@ class ToolsNFePHP {
             $this->errMsg = "Não foi passado algum dos parametos necessários ANO=$nAno inicio=$nIni fim=$nFin justificativa=$xJust.\n";
             return false;
         }
-        if($tpAmb == ''){
-            $tpAmb = $this->tpAmb;
+        //valida justificativa
+        if (strlen($xJust) < 15){
+            $this->errStatus = true;
+            $this->errMsg = "A justificativa deve ter pelo menos 15 digitos!!\n";
+            return false;
         }
-        //verifica se o SCAN esta habilitado
-        if (!$this->enableSCAN){
-            if($tpAmb == $this->tpAmb){
-                $aURL = $this->aURL;
-            }else{
-                $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . $this->xmlURLfile,$tpAmb,$this->UF);
-            }    
-        } else {
-            $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . $this->xmlURLfile,$this->tpAmb,'SCAN');
+        if (strlen($xJust) > 255){
+            $this->errStatus = true;
+            $this->errMsg = "A justificativa deve ter no máximo 255 digitos!!\n";
+            return false;
         }
+        //remove acentos e outros caracteres da justificativa
+        $xJust = $this->__cleanString($xJust);
         // valida o campo ano
         if( strlen($nAno) > 2 ){
             $this->errStatus = true;
@@ -2130,18 +2130,19 @@ class ToolsNFePHP {
             $this->errMsg = "O campo numero final está errado: $nFin. Corrija e refaça o processo!!\n";
             return false; 
         }
-        //valida o campo justificativa
-        $nL = strlen($xJust);
-        if ($nL < 15 ) {
-            $this->errStatus = true;
-            $this->errMsg = "A justificativa é menor que o permitido, apenas $nL letras. Corrija e refaça o processo!!\n";
-            return false; 
+        //valida tipo de ambiente
+        if($tpAmb == ''){
+            $tpAmb = $this->tpAmb;
+        }
+        //verifica se o SCAN esta habilitado
+        if (!$this->enableSCAN){
+            if($tpAmb == $this->tpAmb){
+                $aURL = $this->aURL;
+            }else{
+                $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . $this->xmlURLfile,$tpAmb,$this->UF);
+            }    
         } else {
-            if ($nL > 255 ) {
-                $this->errStatus = true;
-                $this->errMsg = "A justificativa é maior que o permitido, $nL letras, no mácximo podem ser 255. Corrija e refaça o processo!!\n";
-                return false; 
-            }
+            $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . $this->xmlURLfile,$this->tpAmb,'SCAN');
         }
         //identificação do serviço
         $servico = 'NfeInutilizacao';
@@ -2273,7 +2274,7 @@ class ToolsNFePHP {
      * - O xml do processo de cancelamento será salvo na pasta Canceladas
      *      
      * @name cancelNF
-     * @version 2.2.0
+     * @version 2.2.1
      * @package NFePHP
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @param	string  $chNFe   Chave da NFe com 44 digitos
@@ -2287,12 +2288,23 @@ class ToolsNFePHP {
         //validação dos dados de entrada
         if($chNFe == '' || $nProt == '' || $xJust == ''){
             $this->errStatus = true;
-            $this->errMsg = "Não foi passado algum dos parâmetros necessários ID=$id ou protocolo=$protId ou justificativa=$xJust.\n";
+            $this->errMsg = "Não foi passado algum dos parâmetros necessários ID=$chNFe ou protocolo=$nProt ou justificativa=$xJust.\n";
             return false;
         }
         if($tpAmb == ''){
             $tpAmb = $this->tpAmb;
         }
+        if (strlen($xJust) < 15){
+            $this->errStatus = true;
+            $this->errMsg = "A justificativa deve ter pelo menos 15 digitos!!\n";
+            return false;
+        }
+        if (strlen($xJust) > 255){
+            $this->errStatus = true;
+            $this->errMsg = "A justificativa deve ter no máximo 255 digitos!!\n";
+            return false;
+        }
+        $xJust = $this->__cleanString($xJust);
         //verifica se o SCAN esta habilitado
         if (!$this->enableSCAN){
             if ($tpAmb != $this->tpAmb){
