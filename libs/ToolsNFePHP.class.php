@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   2.9.12
+ * @version   2.9.13
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -3460,6 +3460,24 @@ class ToolsNFePHP {
             }
         }
     } //fim __putNumLot
+    
+    /**
+     * __cleanString
+     * Remove todos dos caracteres espceiais do texto e os acentos
+     *  
+     * @version 1.0.3
+     * @package NFePHP
+     * @author  Roberto L. Machado <linux.rlm at gmail dot com>
+     * @return  string Texto sem caractere especiais
+     */
+     private function __cleanString($texto){
+        $aFind = array('&','á','à','ã','â','é','ê','í','ó','ô','õ','ú','ü','ç','Á','À','Ã','Â','É','Ê','Í','Ó','Ô','Õ','Ú','Ü','Ç');
+        $aSubs = array('e','a','a','a','a','e','e','i','o','o','o','u','u','c','A','A','A','A','E','E','I','O','O','O','U','U','C');
+        $novoTexto = str_replace($aFind,$aSubs,$texto);
+        $novoTexto = preg_replace("/[^a-zA-Z0-9 @,-.;:\/]/", "", $novoTexto);
+        return $novoTexto;
+    }//fim __cleanString
+    
     
 } //fim classe ToolsNFePHP
 
