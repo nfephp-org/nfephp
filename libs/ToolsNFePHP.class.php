@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   2.9.14
+ * @version   2.9.15
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -152,6 +152,12 @@ class ToolsNFePHP {
      */
     public $inuDir='';
     /**
+     * cccDir
+     * Diretorio onde são armazenados os pedidos das cartas de correção
+     * @var string
+     */
+    public $cccDir='';
+    /**
      * tempDir
      * Diretorio de arquivos temporarios ou não significativos para a operação do sistema
      * @var string
@@ -202,10 +208,16 @@ class ToolsNFePHP {
     public $xmlURLfile='nfe_ws2.xml';
     /**
      * enableSCAN
-     * Habilita o acesso ao serviço SCAN ao invés do webservice estadual
+     * Habilita contingência ao serviço SCAN ao invés do webservice estadual
      * @var boolean
      */
     public $enableSCAN=false;
+    /**
+     * enableDEPC
+     * Habilita contingência por serviço DPEC ao invés do webservice estadual
+     * @var boolean
+     */
+    public $enableDPEC=false;
     /**
      * enableSVAN
      * Indica o acesso ao serviço SVAN
@@ -454,7 +466,8 @@ class ToolsNFePHP {
                                'SE'=>'SVRS',
                                'SP'=>'SP',
                                'TO'=>'SVRS',
-                               'SCAN'=>'SCAN');
+                               'SCAN'=>'SCAN',
+                               'DEPC'=>'DPEC');
     /**
      * cUFlist
      * Lista dos numeros identificadores dos estados
@@ -586,7 +599,7 @@ class ToolsNFePHP {
      * Este metodo pode estabelecer as configurações a partir do arquivo config.php ou 
      * através de um array passado na instanciação da classe.
      * 
-     * @version 2.14
+     * @version 2.15
      * @package NFePHP
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @param array $aConfig Opcional dados de configuração
@@ -699,6 +712,8 @@ class ToolsNFePHP {
         $this->repDir=$this->envDir . 'reprovadas' . DIRECTORY_SEPARATOR;
         $this->canDir=$this->arqDir . $sAmb . DIRECTORY_SEPARATOR . 'canceladas' . DIRECTORY_SEPARATOR;
         $this->inuDir=$this->arqDir . $sAmb . DIRECTORY_SEPARATOR . 'inutilizadas' . DIRECTORY_SEPARATOR;
+        $this->cccDir=$this->arqDir . $sAmb . DIRECTORY_SEPARATOR . 'cartacorrecao' . DIRECTORY_SEPARATOR;
+        $this->dpcDir=$this->arqDir . $sAmb . DIRECTORY_SEPARATOR . 'dpec' . DIRECTORY_SEPARATOR;
         $this->temDir=$this->arqDir . $sAmb . DIRECTORY_SEPARATOR . 'temporarias' . DIRECTORY_SEPARATOR;
         $this->recDir=$this->arqDir . $sAmb . DIRECTORY_SEPARATOR . 'recebidas' . DIRECTORY_SEPARATOR;
         $this->conDir=$this->arqDir . $sAmb . DIRECTORY_SEPARATOR . 'consultadas' . DIRECTORY_SEPARATOR;
@@ -739,6 +754,12 @@ class ToolsNFePHP {
         }
         if ( !is_dir($this->inuDir) ){
             mkdir($this->inuDir, 0777);
+        }
+        if ( !is_dir($this->cccDir) ){
+            mkdir($this->cccDir, 0777);
+        }
+        if ( !is_dir($this->dpcDir) ){
+            mkdir($this->dpcDir, 0777);
         }
         if ( !is_dir($this->temDir) ){
             mkdir($this->temDir, 0777);
@@ -783,7 +804,7 @@ class ToolsNFePHP {
     * @version 3.00
     * @package NFePHP
     * @author Roberto L. Machado <linux.rlm at gmail dot com>
-    * @param    string  $xml  string contendo o arquivo xml a ser validado
+    * @param    string  $xml  string contendo o arquivo xml a ser validado ou seu path
     * @param    string  $xsdfile Path completo para o arquivo xsd
     * @param    array   $aError Variável passada como referencia irá conter as mensagens de erro se houverem 
     * @return   boolean 
@@ -820,7 +841,7 @@ class ToolsNFePHP {
         //verificar se a nota contem o protocolo !!!
         $nfeProc = $dom->getElementsByTagName('nfeProc')->item(0);
         if (isset($nfeProc)){
-            $this->errMsg = "Essa NFe já contêm o protocolo. Não é possivel validar com o protocolo pois já foi validada anteriormente";
+            $this->errMsg = "Essa NFe já contêm o protocolo. Não é possivel continuar, como alternativa use a verificação de notas completas.";
             $aError[] = "";
             $this->errStatus = true;
             return true;
@@ -1952,7 +1973,10 @@ class ToolsNFePHP {
      * 
      * ESSE SEVIÇO NÃO ESTÁ AINDA OPERACIONAL EXISTE APENAS EM AMBIENTE DE HOMOLOCAÇÃO
      * NO SEFAZ DO RS 
-     * 
+     * @name getList
+     * @version 0.1.0
+     * @package NFePHP
+     * @author Roberto L. Machado <linux.rlm at gmail dot com> 
      * @param string $cnpj CNPJ do destinatário Opcional se não informado será usado o atual
      * @param string $indNFe Indicador de NF-e consultada: 0=Todas as NF-e; 1=Somente as NF-e que ainda não tiveram manifestação do destinatário (Desconhecimento da operação, Operação não Realizada ou Confirmação da Operação); 2=Idem anterior, incluindo as NF-e que também não tiveram a Ciência da Operação
      * @param string $indEmi Indicador do Emissor da NF-e: 0=Todos os Emitentes / Remetentes; 1=Somente as NF-e emitidas por emissores / remetentes que não tenham a mesma raiz do CNPJ do destinatário (para excluir as notas fiscais de transferência entre filiais).
@@ -2010,7 +2034,10 @@ class ToolsNFePHP {
      * 
      * ESSE SEVIÇO NÃO ESTÁ AINDA OPERACIONAL EXISTE APENAS EM AMBIENTE DE HOMOLOCAÇÃO
      * NO SEFAZ DO RS 
-     * 
+     * @name getNFe
+     * @version 0.1.0
+     * @package NFePHP
+     * @author Roberto L. Machado <linux.rlm at gmail dot com> 
      * @param string $cnpj
      * @param string $chave
      * @param string $tpAmb
@@ -2424,7 +2451,7 @@ class ToolsNFePHP {
      * Envia carta de correção da Nota Fiscal para a SEFAZ.
      *
      * @name envCCe
-     * @version 0.1.2
+     * @version 0.1.3
      * @package NFePHP
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @param   string $chNFe Chave da NFe
@@ -2562,7 +2589,6 @@ class ToolsNFePHP {
             $this->errMsg = "Nao houve retorno Soap verifique a mensagem de erro e o debug!!\n";
             return false;
         }
-        
         //tratar dados de retorno
         $xmlretCCe = new DOMDocument(); //cria objeto DOM
         $xmlretCCe->formatOutput = false;
@@ -2591,7 +2617,6 @@ class ToolsNFePHP {
         $xmlenvCCe->preserveWhiteSpace = false;
         $xmlenvCCe->loadXML('<?xml version="1.0" encoding="utf-8"?>'.$Ev,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
         $evento = $xmlenvCCe->getElementsByTagName("evento")->item(0);
-        
         //Processo completo solicitação + protocolo
         $xmlprocCCe = new DOMDocument('1.0', 'utf-8');; //cria objeto DOM
         $xmlprocCCe->formatOutput = false;
@@ -2621,13 +2646,120 @@ class ToolsNFePHP {
         $procXML = str_replace("\r",'',$procXML);
         $procXML = str_replace("\s",'',$procXML);
         //salva o arquivo xml
-        if (!file_put_contents($this->temDir."$chNFe-$nSeqEvento-procCCe.xml", $procXML)){
+        if (!file_put_contents($this->cccDir."$chNFe-$nSeqEvento-procCCe.xml", $procXML)){
             $this->errStatus = true;
             $this->errMsg = "Falha na gravação da procCCe!!\n";
         }
         return $procXML;
     }//fim envCCe
     
+    /**
+     * DPEC
+     * 
+     *
+     */
+    private function __criaDPEC($aNFe='',$tpAmb='',$modSOAP='2'){
+        // Habilita a manipulaçao de erros da libxml
+        libxml_use_internal_errors(true);
+        if($aNFe == ''){
+            return false;
+        }
+        if (is_array($aNFe)){
+            $matriz = $aNFe;
+        } else {
+            $matriz[]=$aNFe;
+        }
+        $i = 0;
+        foreach($matriz as $n){
+            $errors = null;
+            $dom = null;
+            if (is_file($n)){
+                $dom->load($n,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
+            } else {
+                $dom->loadXML($n,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
+            }
+            $errors = libxml_get_errors(); 
+            if (!empty($errors)) { 
+                //o dado passado como $docXml não é um xml
+                $this->errStatus = true;
+                $this->errMsg = 'O dado informado não é um XML ou não foi encontrado. Você deve passar o conteudo de um arquivo xml assinado como parâmetro.';
+            } else {
+                //pegar os dados necessários para DPEC
+                $xtpAmb = $dom->getElementsByTagName("tpAmb")->item(0)->nodevalue;
+                $tpEmiss = $dom->getElementsByTagName("tpEmiss")->item(0)->nodevalue;
+                $dhCont = !empty($dom->getElementsByTagName("dhCont")->item(0)->nodevalue) ? $dom->getElementsByTagName("dhCont")->item(0)->nodevalue : '';
+                $xJust = !empty($dom->getElementsByTagName("xJust")->item(0)->nodevalue) ? $dom->getElementsByTagName("xJust")->item(0)->nodevalue : '';
+                if ($tpEmiss == '4' && $dhCont != '' && $xJust != '' ){
+                    $infNFe = $dom->getElementsByTagName("infNFe")->item(0);
+                    $chNFe = preg_replace('/[^0-9]/','', trim($infNFe->getAttribute("Id")));
+                    $dest = $dom->getElementsByTagName("dest")->item(0);
+                    $destCNPJ = !empty($dest->getElementsByTagName("CNPJ")->item(0)->nodevalue) ? $dest->getElementsByTagName("CNPJ")->item(0)->nodevalue : '';
+                    $destCPF  = !empty($dest->getElementsByTagName("CPF")->item(0)->nodevalue) ? $dest->getElementsByTagName("CPF")->item(0)->nodevalue : '';
+                    $destUF = !empty($dest->getElementsByTagName("UF")->item(0)->nodevalue) ? $dest->getElementsByTagName("UF")->item(0)->nodevalue : '';
+                    $ICMSTot = $dom->getElementsByTagName("ICMSTot")->item(0);
+                    $vNF = !empty($ICMSTot->getElementsByTagName("vNF")->item(0)->nodevalue) ? $ICMSTot->getElementsByTagName("vNF")->item(0)->nodevalue : '';
+                    $vICMS = !empty($ICMSTot->getElementsByTagName("vICMS")->item(0)->nodevalue) ? $ICMSTot->getElementsByTagName("vICMS")->item(0)->nodevalue : '';
+                    $vST = !empty($ICMSTot->getElementsByTagName("vST")->item(0)->nodevalue) ? $ICMSTot->getElementsByTagName("vST")->item(0)->nodevalue : '';
+                    $aD[$i]['tpAmb'] = $xtpAmb;
+                    $aD[$i]['tpEmiss'] = $tpEmiss;
+                    $aD[$i]['dhCont'] = $dhCont;
+                    $aD[$i]['xJust'] = $xJust;
+                    $aD[$i]['chNFe'] = $chNFe;
+                    $aD[$i]['CNPJ'] = $destCNPJ;
+                    $aD[$i]['CPF'] = $destCPF;
+                    $aD[$i]['UF'] = $destUF;
+                    $aD[$i]['vNF'] = $vNF;
+                    $aD[$i]['vICMS'] = $vICMS;
+                    $aD[$i]['vST'] = $vST;
+                    $i++;
+                } //fim tpEmiss &&    
+            } //fim errors
+        }//fim foreach
+        //com a matriz de dados montada criar o arquivo DPEC para as NFe que atendem os critérios
+        $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . $this->xmlURLfile,$this->tpAmb,'DPEC');
+        //identificação do serviço
+        $servico = 'SCERecepcaoRFB';
+        //recuperação da versão
+        $versao = $aURL[$servico]['version'];
+        //recuperação da url do serviço
+        $urlservico = $aURL[$servico]['URL'];
+        //recuperação do método
+        $metodo = $aURL[$servico]['method'];
+        //montagem do namespace do serviço
+        $namespace = $this->URLPortal.'/wsdl/'.$servico.'';        
+        $dpec = '';
+        $dpec .= "<envDPEC xmlns=\"$this->URLPortal\" versao=\"$versao\">";
+        $dpec .= "<infDPEC><id>DPEC$this->CNPJ</id>";
+        $dpec .= "<ideDec><cUF>$this->cUF</cUF><tpAmb>$this->tpAmb</tpAmb><verProc>$this->verProc</verProc><CNPJ>$this->CNPJ</CNPJ><IE>$this->IE</IE></ideDec>";
+        foreach($aD as $d){
+            if ($d['CPF'] != ''){
+                $cnpj = "<CPF>".$d['CPF']."</CPF>";
+            } else {
+                $cnpj = "<CNPJ>".$d['CNPJ']."</CNPJ>";
+            }
+            $dpec .= "<resNFe>".$d['chNFe']."<chNFe></chNFe>$cnpj<UF>".$d['UF']."</UF><vNF>".$d['vNF']."</vNF><vICMS>".$d['vICMS']."</vICMS><vST>".$d['vST']."</vST></resNFe>";
+        }
+        $dpec .= "</infDPEC></envDPEC>";
+        //assinar a mensagem
+        $dpec = $this->signXML($dpec, 'infDPEC');
+        //montagem do cabeçalho da comunicação SOAP
+        $cabec = '<sceCabecMsg xmlns="'. $namespace . '"><versaoDados>'.$versao.'</versaoDados></sceCabecMsg>';
+        //montagem dos dados da cumunicação SOAP
+        $dados = '<sceDadosMsg xmlns="'. $namespace . '">'.$dpec.'</sceDadosMsg>';
+        //remove as tags xml que porventura tenham sido inclusas ou quebas de linhas
+        $dados = str_replace('<?xml version="1.0"?>','', $dados);
+        $dados = str_replace('<?xml version="1.0" encoding="utf-8"?>','', $dados);
+        $dados = str_replace('<?xml version="1.0" encoding="UTF-8"?>','', $dados);
+        $dados = str_replace(array("\r","\n","\s"),"", $dados);
+        return $dados;
+        //grava a solicitação na pasta depec
+        if( !file_put_contents($this->dpcDir.$this->CNPJ.'-depc.xml', '<?xml version="1.0" encoding="utf-8"?>'.$dpec)){
+            $this->errStatus = true;
+            $this->errMsg = "Falha na gravação do pedido contingencia DPEC.\n";
+        }
+        //..... continua ainda falta bastante coisa
+        
+    }//fim __criaDPEC
     
     /**
      * __verifySignatureXML
