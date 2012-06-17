@@ -2664,6 +2664,9 @@ class ToolsNFePHP {
         if($aNFe == ''){
             return false;
         }
+        if($tpAmb == ''){
+            $tpAmb = $this->tpAmb;
+        }
         if (is_array($aNFe)){
             $matriz = $aNFe;
         } else {
@@ -2689,7 +2692,8 @@ class ToolsNFePHP {
                 $tpEmiss = $dom->getElementsByTagName("tpEmiss")->item(0)->nodevalue;
                 $dhCont = !empty($dom->getElementsByTagName("dhCont")->item(0)->nodevalue) ? $dom->getElementsByTagName("dhCont")->item(0)->nodevalue : '';
                 $xJust = !empty($dom->getElementsByTagName("xJust")->item(0)->nodevalue) ? $dom->getElementsByTagName("xJust")->item(0)->nodevalue : '';
-                if ($tpEmiss == '4' && $dhCont != '' && $xJust != '' ){
+                $verProc = !empty($dom->getElementsByTagName("verProc")->item(0)->nodevalue) ? $dom->getElementsByTagName("verProc")->item(0)->nodevalue : '';
+                if ($tpEmiss == '4' && $dhCont != '' && $xJust != '' && $verProc != '' && $xtpAmb == $tpAmb ){
                     $infNFe = $dom->getElementsByTagName("infNFe")->item(0);
                     $chNFe = preg_replace('/[^0-9]/','', trim($infNFe->getAttribute("Id")));
                     $dest = $dom->getElementsByTagName("dest")->item(0);
@@ -2716,7 +2720,7 @@ class ToolsNFePHP {
             } //fim errors
         }//fim foreach
         //com a matriz de dados montada criar o arquivo DPEC para as NFe que atendem os critérios
-        $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . $this->xmlURLfile,$this->tpAmb,'DPEC');
+        $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . $this->xmlURLfile,$tpAmb,'DPEC');
         //identificação do serviço
         $servico = 'SCERecepcaoRFB';
         //recuperação da versão
@@ -2730,7 +2734,7 @@ class ToolsNFePHP {
         $dpec = '';
         $dpec .= "<envDPEC xmlns=\"$this->URLPortal\" versao=\"$versao\">";
         $dpec .= "<infDPEC><id>DPEC$this->CNPJ</id>";
-        $dpec .= "<ideDec><cUF>$this->cUF</cUF><tpAmb>$this->tpAmb</tpAmb><verProc>$this->verProc</verProc><CNPJ>$this->CNPJ</CNPJ><IE>$this->IE</IE></ideDec>";
+        $dpec .= "<ideDec><cUF>$this->cUF</cUF><tpAmb>$tpAmb</tpAmb><verProc>$verProc</verProc><CNPJ>$this->CNPJ</CNPJ><IE>$this->IE</IE></ideDec>";
         foreach($aD as $d){
             if ($d['CPF'] != ''){
                 $cnpj = "<CPF>".$d['CPF']."</CPF>";
