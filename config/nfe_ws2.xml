@@ -10,6 +10,7 @@
 <!-- Versão 20111222 Corrigida a URL RecepcaoEvento de SP -->
 <!-- Versão 20120409 Inclusão dos novos webservices, *** ainda em testes NfeConsultaDest e NfeDownloadNF -->
 <!-- Versão 20120412 Correção do Webservice ConsultaCadastro -->
+<!-- Versão 20120617 Correção dos Webservices DPEC -->
   <UF>
     <sigla>AM</sigla>
     <homologacao>
@@ -307,7 +308,6 @@
   </UF>
   <UF>
     <sigla>SCAN</sigla>
-    <!--  SISTEMA DE CONTINGENCIA DO AMBIENTE NACIONAL -->
     <homologacao>
       <NfeRecepcao method='nfeRecepcaoLote2' version='2.00'>https://hom.nfe.fazenda.gov.br/SCAN/NfeRecepcao2/NfeRecepcao2.asmx</NfeRecepcao>
       <NfeRetRecepcao method='nfeRetRecepcao2' version='2.00'>https://hom.nfe.fazenda.gov.br/SCAN/NfeRetRecepcao2/NfeRetRecepcao2.asmx</NfeRetRecepcao>
@@ -335,7 +335,6 @@
   </UF>
   <UF>
     <sigla>SVAN</sigla>
-     <!--  SEFAZ VIRTUAL AMBIENTE NACIONAL -->
     <homologacao>
       <NfeRecepcao method='nfeRecepcaoLote2' version='2.00'>https://hom.sefazvirtual.fazenda.gov.br/NfeRecepcao2/NfeRecepcao2.asmx</NfeRecepcao>
       <NfeRetRecepcao method='nfeRetRecepcao2' version='2.00'>https://hom.sefazvirtual.fazenda.gov.br/NfeRetRecepcao2/NfeRetRecepcao2.asmx</NfeRetRecepcao>
@@ -363,7 +362,6 @@
   </UF>
   <UF>
     <sigla>SVRS</sigla>
-    <!--  SEFAZ VIRTUAL RIO GRANDE DO SUL  -->
     <homologacao>
       <NfeRecepcao method='nfeRecepcaoLote2' version='2.00'>https://homologacao.nfe.sefazvirtual.rs.gov.br/ws/Nferecepcao/NFeRecepcao2.asmx</NfeRecepcao>
       <NfeRetRecepcao method='nfeRetRecepcao2' version='2.00'>https://homologacao.nfe.sefazvirtual.rs.gov.br/ws/NfeRetRecepcao/NfeRetRecepcao2.asmx</NfeRetRecepcao>
@@ -391,11 +389,13 @@
   </UF>
   <UF>
     <sigla>DPEC</sigla>
-    <cUF></cUF>
-    <!-- SISTEMA DE CONTINGENCIA - Declaração Prévia de Emissão em Contingência -->
+    <homologacao>
+      <SCERecepcaoRFB method='sceRecepcaoDPEC' version='1.01'>https://hom.nfe.fazenda.gov.br/SCERecepcaoRFB/SCERecepcaoRFB.asmx</SCERecepcaoRFB>
+      <SCEConsultaRFB method='sceConsultaDPEC' version='1.01'>https://hom.nfe.fazenda.gov.br/SCEConsultaRFB/SCEConsultaRFB.asmx</SCEConsultaRFB>
+    </homologacao>    
     <producao>
-      <NfeRecepcaoDPEC>https://www.nfe.fazenda.gov.br/SCERecepcaoRFB/SCERecepcaoRFB2.asmx</NfeRecepcaoDPEC>
-      <ConsultaDPEC>https://www.nfe.fazenda.gov.br/SCEConsultaRFB/SCEConsultaRFB2.asmx</ConsultaDPEC>
+      <SCERecepcaoRFB method='sceRecepcaoDPEC' version='1.01'>https://www.nfe.fazenda.gov.br/SCERecepcaoRFB/SCERecepcaoRFB.asmx</SCERecepcaoRFB>
+      <SCEConsultaRFB method='sceConsultaDPEC' version='1.01'>https://www.nfe.fazenda.gov.br/SCEConsultaRFB/SCEConsultaRFB.asmx</SCEConsultaRFB>
     </producao>
   </UF>
 </WS>
