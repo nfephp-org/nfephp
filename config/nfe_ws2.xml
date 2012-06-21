@@ -11,6 +11,7 @@
 <!-- Versão 20120409 Inclusão dos novos webservices, *** ainda em testes NfeConsultaDest e NfeDownloadNF -->
 <!-- Versão 20120412 Correção do Webservice ConsultaCadastro -->
 <!-- Versão 20120617 Correção dos Webservices DPEC -->
+<!-- Versão 20120621 Correção do Webservice NfeRecepcao2.asmx BA - Contribuição de Gilmar de Paula <gilmarfiocca at gmail dot com> -->
   <UF>
     <sigla>AM</sigla>
     <homologacao>
@@ -53,7 +54,7 @@
       <NfeDownloadNF method='nfeDownloadNF' version='2.00'></NfeDownloadNF>
     </homologacao>
     <producao>
-      <NfeRecepcao method='nfeRecepcaoLote2' version='2.00'>https://nfe.sefaz.ba.gov.br/webservices/nfenw/NfeRecepcao.asmx</NfeRecepcao>
+      <NfeRecepcao method='nfeRecepcaoLote2' version='2.00'>https://nfe.sefaz.ba.gov.br/webservices/nfenw/NfeRecepcao2.asmx</NfeRecepcao>
       <NfeRetRecepcao method='nfeRetRecepcao2' version='2.00'>https://nfe.sefaz.ba.gov.br/webservices/nfenw/NfeRetRecepcao2.asmx</NfeRetRecepcao>
       <NfeCancelamento method='nfeCancelamentoNF2' version='2.00'>https://nfe.sefaz.ba.gov.br/webservices/nfenw/NfeCancelamento2.asmx</NfeCancelamento>
       <NfeInutilizacao method='nfeInutilizacaoNF2' version='2.00'>https://nfe.sefaz.ba.gov.br/webservices/nfenw/NfeInutilizacao2.asmx</NfeInutilizacao>
