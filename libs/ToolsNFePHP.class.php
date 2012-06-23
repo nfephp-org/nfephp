@@ -1991,9 +1991,7 @@ class ToolsNFePHP {
             $cnpj = $this->cnpj;
         } else {
             //remover ./- do cnpj
-            $aS = array('.','/','-');
-            $aR = array('','','');
-            $cnpj = trim(str_replace($aS, $aR, $cnpj));
+            $cnpj = preg_replace("/[^0-9]/", "", $cnpj);
         }
         if($tpAmb == ''){
             $tpAmb = $this->tpAmb;
@@ -2055,9 +2053,7 @@ class ToolsNFePHP {
             $cnpj = $this->cnpj;
         } else {
             //remover ./- do cnpj
-            $aS = array('.','/','-');
-            $aR = array('','','');
-            $cnpj = trim(str_replace($aS, $aR, $cnpj));
+            $cnpj = preg_replace("/[^0-9]/", "", $cnpj);
         }
         if($tpAmb == ''){
             $tpAmb = $this->tpAmb;
@@ -2859,7 +2855,7 @@ class ToolsNFePHP {
                     $nProt = '';
                 }
                 //busca o status da NFe na SEFAZ do estado do emitente
-                $resp = $this->getProtocol('',$chave,$tpAmb,'2');
+                $resp = $this->getProtocol('',$chave,$tpAmb);
                 if ($resp['cStat']!='100'){
                     //ERRO! nf não aprovada
                     $this->errStatus = true;
