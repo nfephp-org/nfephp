@@ -443,6 +443,7 @@ class ConvertNFePHP {
                     $enderEmi = $dom->createElement("enderEmit");
                     $xLgr = $dom->createElement("xLgr", $dados[1]);
                     $enderEmi->appendChild($xLgr);
+                    $dados[2]=abs((int)$dados[2]);
                     $nro = $dom->createElement("nro", $dados[2]);
                     $enderEmi->appendChild($nro);
                     if(!empty($dados[3])) {
