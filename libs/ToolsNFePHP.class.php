@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.0.1
+ * @version   3.0.2
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -804,7 +804,7 @@ class ToolsNFePHP {
     * A validação não deve ser feita após a inclusão do protocolo !!!
     * Caso seja passado uma NFe ainda não assinada a falta da assinatura será desconsiderada.
     * @name validXML
-    * @version 3.01
+    * @version 3.0.1
     * @package NFePHP
     * @author Roberto L. Machado <linux.rlm at gmail dot com>
     * @param    string  $xml  string contendo o arquivo xml a ser validado ou seu path
@@ -812,7 +812,7 @@ class ToolsNFePHP {
     * @param    array   $aError Variável passada como referencia irá conter as mensagens de erro se houverem 
     * @return   boolean 
     */
-    public function validXML($xml='', $xsdFile='',&$aError){
+    public function validXML($xml='', $xsdFile='', &$aError){
         $flagOK = false;
         // Habilita a manipulaçao de erros da libxml
         libxml_use_internal_errors(true);
@@ -833,6 +833,7 @@ class ToolsNFePHP {
         } else {
             $dom->loadXML($xml,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
         }
+
         $errors = libxml_get_errors(); 
         if (!empty($errors)) { 
             //o dado passado como $docXml não é um xml
@@ -843,6 +844,7 @@ class ToolsNFePHP {
         }
         //verificar se a nota contem o protocolo !!!
         $nfeProc = $dom->getElementsByTagName('nfeProc')->item(0);
+        $Signature = $dom->getElementsByTagName('Signature')->item(0);        
         if (isset($nfeProc)){
             $this->errMsg = "Essa NFe já contêm o protocolo. Não é possivel continuar, como alternativa use a verificação de notas completas.";
             $aError[] = "";
@@ -878,14 +880,16 @@ class ToolsNFePHP {
              */
             // carrega os erros em um array
             $aIntErrors = libxml_get_errors();
-            // remove o erro de falta de assinatura
-            foreach ($aIntErrors as $k=>$intError){
-                if(strpos($intError->message,'( {http://www.w3.org/2000/09/xmldsig#}Signature )')!==false){	
-                    // remove o erro da assinatura, se tiver outro meio melhor (atravez dos erros de codigo) e alguem souber como tratar por eles, por favor contribua...
-                    unset($aIntErrors[$k]);
-                }    
-	    }
-            reset($aIntErrors);            
+            if (!isset($Signature)){
+                // remove o erro de falta de assinatura
+                foreach ($aIntErrors as $k=>$intError){
+                    if(strpos($intError->message,'( {http://www.w3.org/2000/09/xmldsig#}Signature )')!==false){	
+                        // remove o erro da assinatura, se tiver outro meio melhor (atravez dos erros de codigo) e alguem souber como tratar por eles, por favor contribua...
+                        unset($aIntErrors[$k]);
+                    }    
+                }
+                reset($aIntErrors);            
+            }//fim teste Signature    
             $flagOK = false;
             foreach ($aIntErrors as $intError){
                 $en = array("{http://www.portalfiscal.inf.br/nfe}"
@@ -902,7 +906,9 @@ class ToolsNFePHP {
                             ,"is not a valid value of the local atomic type"
                             ,"is not a valid value of the atomic type"
                             ,"Missing child element(s). Expected is"
-                            ,"The document has no document element");
+                            ,"The document has no document element"
+                            ,"[facet 'enumeration']"
+                            ,"is not an element of the set");
               
                 $pt = array(""
                             ,"[Erro 'Layout']"
@@ -918,7 +924,9 @@ class ToolsNFePHP {
                             ,"não é um valor válido"
                             ,"não é um valor válido"
                             ,"Elemento filho faltando. Era esperado"
-                            ,"Falta uma tag no documento");
+                            ,"Falta uma tag no documento"
+                            ,"[Erro 'Conteúdo']"
+                            ,"não é um dos seguintes possiveis");
                 
                 switch ($intError->level) {
                     case LIBXML_ERR_WARNING:
@@ -931,6 +939,7 @@ class ToolsNFePHP {
                         $aError[] = " Erro Fatal $intError->code: " . str_replace($en,$pt,$intError->message);
                         break;
                 }
+                $this->errMsg .= str_replace($en,$pt,$intError->message);
             }
         } else {
             $flagOK = true;
