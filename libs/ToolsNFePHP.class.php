@@ -3337,7 +3337,7 @@ class ToolsNFePHP {
      * Conforme Manual de Integração Versão 4.0.1 
      *
      * @name __sendSOAP
-     * @version 2.1.1
+     * @version 2.1.2
      * @package NFePHP
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @param string $urlsefaz
@@ -3350,6 +3350,11 @@ class ToolsNFePHP {
      * @return mixed false se houve falha ou o retorno em xml do SEFAZ
      */
     protected function __sendSOAP($urlsefaz,$namespace,$cabecalho,$dados,$metodo,$ambiente,$UF=''){
+        if(!class_exists("SoapClient")){
+            $this->errMsg = "SOAP não está disponível.\n";
+            $this->errStatus = true;
+            return false;
+        }        
         //ativa retorno de erros soap
         use_soap_error_handler(true);
         //versão do SOAP
