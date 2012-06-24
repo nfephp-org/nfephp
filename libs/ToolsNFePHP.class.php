@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   2.9.15
+ * @version   3.0.1
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -56,9 +56,11 @@
  *              Guilherme Filippo <guilherme at macromind dot com dot br>
  *              Jorge Luiz Rodrigues Tomé <jlrodriguestome at hotmail dot com>
  *              Leandro C. Lopez <leandro dot castoldi at gmail dot com>
+ *              Mario Almeida <prog dot almeida at gmail.com>
  *              Odair Jose Santos Junior <odairsantosjunior at gmail dot com>
  *              Paulo Gabriel Coghi <paulocoghi at gmail dot com>
  *              Paulo Henrique Demori <phdemori at hotmail dot com>
+ *              Roberto Spadim <rspadim at gmail dot com>
  *              Vinicius L. Azevedo <vinilazev at gmail dot com>
  *              Walber da Silva Sales <eng dot walber at gmail dot com>
  *
@@ -800,8 +802,9 @@ class ToolsNFePHP {
     * uso de uma marcação no arquivo tiposBasico_v1.02.xsd
     * onde se le {0 , } substituir por *
     * A validação não deve ser feita após a inclusão do protocolo !!!
+    * Caso seja passado uma NFe ainda não assinada a falta da assinatura será desconsiderada.
     * @name validXML
-    * @version 3.00
+    * @version 3.01
     * @package NFePHP
     * @author Roberto L. Machado <linux.rlm at gmail dot com>
     * @param    string  $xml  string contendo o arquivo xml a ser validado ou seu path
@@ -809,7 +812,7 @@ class ToolsNFePHP {
     * @param    array   $aError Variável passada como referencia irá conter as mensagens de erro se houverem 
     * @return   boolean 
     */
-    public function validXML($xml='', $xsdFile='',&$aError=array()){
+    public function validXML($xml='', $xsdFile='',&$aError){
         $flagOK = false;
         // Habilita a manipulaçao de erros da libxml
         libxml_use_internal_errors(true);
@@ -863,6 +866,8 @@ class ToolsNFePHP {
                 $xsdFile = $aFile[0];
             }
         }
+        //limpa erros anteriores
+        libxml_clear_errors();
         // valida o xml com o xsd
         if ( !$dom->schemaValidate($xsdFile) ) {
             /**
@@ -873,23 +878,65 @@ class ToolsNFePHP {
              */
             // carrega os erros em um array
             $aIntErrors = libxml_get_errors();
-            //libxml_clear_errors();
+            // remove o erro de falta de assinatura
+            foreach ($aIntErrors as $k=>$intError){
+                if(strpos($intError->message,'( {http://www.w3.org/2000/09/xmldsig#}Signature )')!==false){	
+                    // remove o erro da assinatura, se tiver outro meio melhor (atravez dos erros de codigo) e alguem souber como tratar por eles, por favor contribua...
+                    unset($aIntErrors[$k]);
+                }    
+	    }
+            reset($aIntErrors);            
             $flagOK = false;
             foreach ($aIntErrors as $intError){
+                $en = array("{http://www.portalfiscal.inf.br/nfe}"
+                            ,"[facet 'pattern']"
+                            ,"The value"
+                            ,"is not accepted by the pattern"
+                            ,"has a length of"
+                            ,"[facet 'minLength']"
+                            ,"this underruns the allowed minimum length of"
+                            ,"[facet 'maxLength']"
+                            ,"this exceeds the allowed maximum length of"
+                            ,"Element"
+                            ,"attribute"
+                            ,"is not a valid value of the local atomic type"
+                            ,"is not a valid value of the atomic type"
+                            ,"Missing child element(s). Expected is"
+                            ,"The document has no document element");
+              
+                $pt = array(""
+                            ,"[Erro 'Layout']"
+                            ,"O valor"
+                            ,"não é aceito para o padrão."
+                            ,"tem o tamanho"
+                            ,"[Erro 'Tam. Min']"
+                            ,"deve ter o tamanho mínimo de"
+                            ,"[Erro 'Tam. Max']"
+                            ,"Tamanho máximo permitido"
+                            ,"Elemento"
+                            ,"Atributo"
+                            ,"não é um valor válido"
+                            ,"não é um valor válido"
+                            ,"Elemento filho faltando. Era esperado"
+                            ,"Falta uma tag no documento");
+                
                 switch ($intError->level) {
                     case LIBXML_ERR_WARNING:
-                        $aError[] = " Atençao $intError->code: $intError->message";
+                        $aError[] = " Atençao $intError->code: " . str_replace($en,$pt,$intError->message);
                         break;
                     case LIBXML_ERR_ERROR:
-                        $aError[] = " Erro $intError->code: $intError->message";
+                        $aError[] = " Erro $intError->code: " . str_replace($en,$pt,$intError->message);
                         break;
                     case LIBXML_ERR_FATAL:
-                        $aError[] = " Erro Fatal $intError->code: $intError->message";
+                        $aError[] = " Erro Fatal $intError->code: " . str_replace($en,$pt,$intError->message);
                         break;
                 }
-                
             }
         } else {
+            $flagOK = true;
+        }
+        //caso não sejam relatados erros no xml
+        if (!isset($aError)){
             $flagOK = true;
         }
         return $flagOK;
@@ -3636,12 +3683,15 @@ class ToolsNFePHP {
  * @author  Roberto L. Machado <linux.rlm at gmail dot com>
  *
  */
-class NFeSOAP2Client extends SoapClient {
-    function __doRequest($request, $location, $action, $version,$one_way = 0) {
-        $request = str_replace(':ns1', '', $request);
-        $request = str_replace('ns1:', '', $request);
-        $request = str_replace("\n", '', $request);
-        $request = str_replace("\r", '', $request);
-        return parent::__doRequest($request, $location, $action, $version);
-    }
-} //fim NFeSOAP2Client
+if(class_exists("SoapClient")){
+    class NFeSOAP2Client extends SoapClient {
+        function __doRequest($request, $location, $action, $version,$one_way = 0) {
+            $request = str_replace(':ns1', '', $request);
+            $request = str_replace('ns1:', '', $request);
+            $request = str_replace("\n", '', $request);
+            $request = str_replace("\r", '', $request);
+            return parent::__doRequest($request, $location, $action, $version);
+        }
+    } //fim NFeSOAP2Client
+}
+?>
