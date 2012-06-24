@@ -26,7 +26,7 @@
  *
  * @package     NFePHP
  * @name        ConvertNFePHP
- * @version     2.3.6
+ * @version     2.3.7
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2011 &copy; NFePHP
@@ -543,6 +543,10 @@ class ConvertNFePHP {
                     $enderDest = $dom->createElement("enderDest");
                     $xLgr = $dom->createElement("xLgr", $dados[1]);
                     $enderDest->appendChild($xLgr);
+                    $dados[2] = preg_replace("/[^0-9]/", "", $dados[2]);
+                    if($dados[2]==''){
+                        $dados[2] = 0;
+                    }
                     $nro = $dom->createElement("nro", $dados[2]);
                     $enderDest->appendChild($nro);
                     if(!empty($dados[3])){
@@ -584,6 +588,10 @@ class ConvertNFePHP {
                         $retirada->appendChild($xLgr);
                     }
                     if(!empty($dados[2])) {
+                        $dados[2] = preg_replace("/[^0-9]/", "", $dados[2]);
+                        if($dados[2]==''){
+                            $dados[2] = 0;
+                        }
                         $nro = $dom->createElement("nro", $dados[2]);
                         $retirada->appendChild($nro);
                     }
@@ -632,6 +640,10 @@ class ConvertNFePHP {
                         $entrega->appendChild($xLgr);
                     }
                     if(!empty($dados[2])) {
+                        $dados[2] = preg_replace("/[^0-9]/", "", $dados[2]);
+                        if($dados[2]==''){
+                            $dados[2] = 0;
+                        }
                         $nro = $dom->createElement("nro", $dados[2]);
                         $entrega->appendChild($nro);
                     }
