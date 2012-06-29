@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.0.2
+ * @version   3.0.3
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -2353,7 +2353,7 @@ class ToolsNFePHP {
      * - O xml do processo de cancelamento será salvo na pasta Canceladas
      *      
      * @name cancelNF
-     * @version 2.2.1
+     * @version 2.2.2
      * @package NFePHP
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @param	string  $chNFe   Chave da NFe com 44 digitos
@@ -2408,7 +2408,7 @@ class ToolsNFePHP {
         $cabec = '<nfeCabecMsg xmlns="'. $namespace . '"><cUF>'.$this->cUF.'</cUF><versaoDados>'.$versao.'</versaoDados></nfeCabecMsg>';
         //montagem dos dados da mensagem SOAP
         $dXML = '<cancNFe xmlns="'.$this->URLnfe.'" versao="'.$versao.'">';
-        $dXML .= '<infCanc Id="ID'.$id.'"><tpAmb>'.$tpAmb.'</tpAmb><xServ>CANCELAR</xServ><chNFe>'.$chNFe.'</chNFe><nProt>'.$nProt.'</nProt><xJust>'.$xJust.'</xJust></infCanc></cancNFe>';
+        $dXML .= '<infCanc Id="ID'.$chNFe.'"><tpAmb>'.$tpAmb.'</tpAmb><xServ>CANCELAR</xServ><chNFe>'.$chNFe.'</chNFe><nProt>'.$nProt.'</nProt><xJust>'.$xJust.'</xJust></infCanc></cancNFe>';
         //assinar a mensagem
         $dXML = $this->signXML($dXML, 'infCanc');
         $dados = '<nfeDadosMsg xmlns="'. $namespace . '">'.$dXML.'</nfeDadosMsg>';
