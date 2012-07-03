@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.0.3
+ * @version   3.0.4
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -804,7 +804,7 @@ class ToolsNFePHP {
     * A validação não deve ser feita após a inclusão do protocolo !!!
     * Caso seja passado uma NFe ainda não assinada a falta da assinatura será desconsiderada.
     * @name validXML
-    * @version 3.0.1
+    * @version 3.0.2
     * @package NFePHP
     * @author Roberto L. Machado <linux.rlm at gmail dot com>
     * @param    string  $xml  string contendo o arquivo xml a ser validado ou seu path
@@ -813,7 +813,7 @@ class ToolsNFePHP {
     * @return   boolean 
     */
     public function validXML($xml='', $xsdFile='', &$aError){
-        $flagOK = false;
+        $flagOK = true;
         // Habilita a manipulaçao de erros da libxml
         libxml_use_internal_errors(true);
         //verifica se foi passado o xml
@@ -880,6 +880,7 @@ class ToolsNFePHP {
              */
             // carrega os erros em um array
             $aIntErrors = libxml_get_errors();
+            $flagOK = false;
             if (!isset($Signature)){
                 // remove o erro de falta de assinatura
                 foreach ($aIntErrors as $k=>$intError){
@@ -889,9 +890,11 @@ class ToolsNFePHP {
                     }    
                 }
                 reset($aIntErrors);            
+                $flagOK = true;
             }//fim teste Signature    
-            $flagOK = false;
+            
             foreach ($aIntErrors as $intError){
+                $flagOK = false;
                 $en = array("{http://www.portalfiscal.inf.br/nfe}"
                             ,"[facet 'pattern']"
                             ,"The value"
@@ -908,6 +911,7 @@ class ToolsNFePHP {
                             ,"Missing child element(s). Expected is"
                             ,"The document has no document element"
                             ,"[facet 'enumeration']"
+                            ,"one of"
                             ,"is not an element of the set");
               
                 $pt = array(""
@@ -926,6 +930,7 @@ class ToolsNFePHP {
                             ,"Elemento filho faltando. Era esperado"
                             ,"Falta uma tag no documento"
                             ,"[Erro 'Conteúdo']"
+                            ,"um de"
                             ,"não é um dos seguintes possiveis");
                 
                 switch ($intError->level) {
@@ -942,10 +947,6 @@ class ToolsNFePHP {
                 $this->errMsg .= str_replace($en,$pt,$intError->message);
             }
         } else {
-            $flagOK = true;
-        }
-        //caso não sejam relatados erros no xml
-        if (!isset($aError)){
             $flagOK = true;
         }
         return $flagOK;

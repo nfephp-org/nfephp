@@ -25,7 +25,7 @@
  *
  * @package   NFePHP
  * @name      AutoToolsNFePHP
- * @version   1.01
+ * @version   1.0.2
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2011 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -607,7 +607,7 @@ class AutoToolsNFePHP extends ToolsNFePHP {
      * com o shema XSD. Caso a NFe seja valida será movida para a pasta VALIDADAS, caso contrario
      * será movida para a pasta REPROVADAS.
      *
-     * @version 2.02
+     * @version 2.0.3
      * @package NFePHP
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @param  none
@@ -643,9 +643,9 @@ class AutoToolsNFePHP extends ToolsNFePHP {
                         $this->errStatus = true;
                         return false;
                     }
-                    $aErro = '';
-                    $retorno = $this->validXML($nfefile,$filexsd[0],$aErro);
-                    if ( $retorno ) {
+                    $aErr = array();
+                    $bRet = $this->validXML($nfefile,$filexsd[0],$aErr);
+                    if ( $bRet ) {
                         // validado => transferir para pasta validados
                         $file = $this->valDir . $aName[$x];
                         if ( !file_put_contents($file, $nfefile) ) {
@@ -654,13 +654,14 @@ class AutoToolsNFePHP extends ToolsNFePHP {
                             unlink($filename);
                         }
                     } else {
+                        $sErr = '';
+                        foreach ($aErr as $e){
+                            $sErr .= $e . "\n";
+                        }
                         //NFe com erros transferir de pasta rejeitadas
                         $file = $this->rejDir . $aName[$x];
                         $this->errStatus = true;
-                        $this->errMsg .= $aName[$x].' ... ';
-                        foreach ($aErro as $er){
-                            $this->errMsg .= $er."\n";
-                        }
+                        $this->errMsg .= $aName[$x].' ... '.$sErr."\n";
                        if ( !file_put_contents($file, $nfefile) ) {
                             $this->errStatus = true;
                         } else {
