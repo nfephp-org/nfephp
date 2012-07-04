@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.0.4
+ * @version   3.0.5
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -2148,7 +2148,7 @@ class ToolsNFePHP {
      * Solicita inutilizaçao de uma serie de numeros de NF
      * - o processo de inutilização será gravado na pasta Inutilizadas
      * @name inutNF
-     * @version 2.2.1
+     * @version 2.2.2
      * @package NFePHP
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @param	string  $nAno       ano com 2 digitos
@@ -2267,7 +2267,7 @@ class ToolsNFePHP {
         $dados = str_replace('<?xml version="1.0" encoding="UTF-8"?>','', $dados);
         $dados = str_replace(array("\r","\n","\s"),"", $dados);
         //grava a solicitação de inutilização
-        if(!file_put_contents($this->temDir.$id.'-inut.xml', '<?xml version="1.0" encoding="utf-8"?>'.$dXML)){
+        if(!file_put_contents($this->temDir.$id.'-inut.xml', $dXML)){
             $this->errStatus = true;
             $this->errMsg = "Falha na gravação do pedido de inutilização!!\n";
         }
@@ -2311,7 +2311,7 @@ class ToolsNFePHP {
        $inut = new DOMDocument(); //cria objeto DOM
        $inut->formatOutput = false;
        $inut->preserveWhiteSpace = false;
-       $inut->loadXML('<?xml version="1.0" encoding="utf-8"?>'.$dXML,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
+       $inut->loadXML($dXML,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
        $inutNFe = $canc->getElementsByTagName("inutNFe")->item(0);
        //Processo completo solicitação + protocolo
        $procInut = new DOMDocument('1.0', 'utf-8');; //cria objeto DOM
@@ -2354,7 +2354,7 @@ class ToolsNFePHP {
      * - O xml do processo de cancelamento será salvo na pasta Canceladas
      *      
      * @name cancelNF
-     * @version 2.2.2
+     * @version 2.2.3
      * @package NFePHP
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @param	string  $chNFe   Chave da NFe com 44 digitos
@@ -2419,7 +2419,7 @@ class ToolsNFePHP {
         $dados = str_replace('<?xml version="1.0" encoding="UTF-8"?>','', $dados);
         $dados = str_replace(array("\r","\n","\s"),"", $dados);
         //grava a solicitação na pasta Temporarias
-        if( !file_put_contents($this->temDir.$chNFe.'-pedCanc.xml', '<?xml version="1.0" encoding="utf-8"?>'.$dXML)){
+        if( !file_put_contents($this->temDir.$chNFe.'-pedCanc.xml', $dXML)){
             $this->errStatus = true;
             $this->errMsg = "Falha na gravação do pedido de cancelamento.\n";
         }
@@ -2461,7 +2461,7 @@ class ToolsNFePHP {
         $canc = new DOMDocument(); //cria objeto DOM
         $canc->formatOutput = false;
         $canc->preserveWhiteSpace = false;
-        $canc->loadXML('<?xml version="1.0" encoding="utf-8"?>'.$dXML,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
+        $canc->loadXML($dXML,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
         $cancNFe = $canc->getElementsByTagName("cancNFe")->item(0);
         //Processo completo solicitação + protocolo
         $procCanc = new DOMDocument('1.0', 'utf-8');; //cria objeto DOM
