@@ -23,7 +23,7 @@
  *
  * @package     NFePHP
  * @name        DanfeNFePHP.class.php
- * @version     2.1.8
+ * @version     2.1.9
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2012 &copy; NFePHP
@@ -81,7 +81,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
     protected $destino = 'I'; //destivo do arquivo pdf I-borwser, S-retorna o arquivo, D-força download, F-salva em arquivo local
     protected $pdfDir=''; //diretorio para salvar o pdf com a opção de destino = F
     protected $fontePadrao='Times'; //Nome da Fonte para gerar o DANFE
-    protected $version = '2.1.8';
+    protected $version = '2.1.9';
     protected $textoAdic = '';
     protected $wAdic = 0;
     protected $wPrint; //largura imprimivel
@@ -1698,7 +1698,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
      * Monta o campo de itens da DANFE ( retrato e paisagem )
      * @package NFePHP
      * @name __itensDANFE
-     * @version 1.8
+     * @version 1.8.1
      * @author Roberto L. Machado
      * @param number $x Posição horizontal canto esquerdo
      * @param number $y Posição vertical canto superior
@@ -1848,7 +1848,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
                 $linhaDescr = $this->__getNumLines($textoProduto,$w2,$aFont);
                 $h = round(($linhaDescr * $this->pdf->FontSize)+1,0);
                 $hUsado += $h;
-                if ($hUsado > $hmax && $i < $totItens ){
+                if ($hUsado >= $hmax && $i < $totItens ){
                     //ultrapassa a capacidade para uma única página
                     //o restante dos dados serão usados nas proximas paginas
                     $nInicio = $i;
