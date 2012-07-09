@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.0.7
+ * @version   3.0.8
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -44,6 +44,7 @@
  *              Daniel Viana <daniellista at gmail dot com>
  *              Diego Mosela <diego dot caicai at gmail dot com>
  *              Edilson Carlos Belluomini <edilson at maxihelp dot com dot br>
+ *              Eduardo Gusmão <eduardo.intrasis at gmail dot com>
  *              Eduardo Pacheco <eduardo at onlyone dot com dot br>
  *              Fabio A. Silva <binhoouropreto at gmail dot com>
  *              Fabricio Veiga <fabriciostuff at gmail dot com>
@@ -1913,7 +1914,7 @@ class ToolsNFePHP {
      * Solicita inutilizaçao de uma serie de numeros de NF
      * - o processo de inutilização será gravado na pasta Inutilizadas
      * @name inutNF
-     * @version 2.2.2
+     * @version 2.2.3
      * @package NFePHP
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @param	string  $nAno       ano com 2 digitos
@@ -2077,13 +2078,13 @@ class ToolsNFePHP {
        $inut->formatOutput = false;
        $inut->preserveWhiteSpace = false;
        $inut->loadXML($dXML,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
-       $inutNFe = $canc->getElementsByTagName("inutNFe")->item(0);
+       $inutNFe = $inut->getElementsByTagName("inutNFe")->item(0);
        //Processo completo solicitação + protocolo
        $procInut = new DOMDocument('1.0', 'utf-8');; //cria objeto DOM
        $procInut->formatOutput = false;
        $procInut->preserveWhiteSpace = false;
        //cria a tag procInutNFe
-       $procInutNFe = $procCanc->createElement('procInutNFe');
+       $procInutNFe = $procInut->createElement('procInutNFe');
        $procInut->appendChild($procInutNFe);
        //estabele o atributo de versão
        $inutProc_att1 = $procInutNFe->appendChild($procInut->createAttribute('versao'));
@@ -2107,7 +2108,7 @@ class ToolsNFePHP {
        $procXML = str_replace("\r",'',$procXML);
        $procXML = str_replace("\s",'',$procXML);
        //salva o arquivo xml
-       if (!file_put_contents($this->inuDir."$chNFe-procInut.xml", $procXML)){
+       if (!file_put_contents($this->inuDir."$id-procInut.xml", $procXML)){
            $this->errStatus = true;
            $this->errMsg = "Falha na gravação da procInut!!\n";
        }
