@@ -1586,7 +1586,7 @@ class ToolsNFePHP {
      * Caso $this->cStat == 105 Tentar novamente mais tarde
      *
      * @name getProtocol
-     * @version 2.2.10
+     * @version 2.2.11
      * @package NFePHP
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @param	string   $recibo numero do recibo do envio do lote
@@ -1719,7 +1719,7 @@ class ToolsNFePHP {
                 $aRetorno['aProt'] = $aProt;
                 $aRetorno['aCanc'] = $aCanc;
                 //gravar o retorno na pasta temp apenas se a nota foi aprovada ou denegada
-                if ( $aRetorno['cStat'] == 100 || $aRetorno['cStat'] == 101 || $aRetorno['cStat'] == 110 ){
+                if ( $aRetorno['cStat'] == 100 || $aRetorno['cStat'] == 101 || $aRetorno['cStat'] == 110 || $aRetorno['cStat'] == 301 || $aRetorno['cStat'] == 302 ){
                     //nome do arquivo
                     $nomeArq = $chave.'-prot.xml';
                     $nome = $this->temDir.$nomeArq;
@@ -1759,7 +1759,7 @@ class ToolsNFePHP {
                         }
                         $i++; //incluido increment para controlador de indice do array
                         //salvar o protocolo somente se a nota estiver approvada ou denegada
-                        if ( $protcStat == 100 || $protcStat == 110 ){
+                        if ( $protcStat == 100 || $protcStat == 110 || $protcStat == 301 || $protcStat == 302 ){
                             $nomeprot = $this->temDir.$infProt->getElementsByTagName('chNFe')->item(0)->nodeValue.'-prot.xml';//id da nfe
                             //salvar o protocolo em arquivo
                             $novoprot = new DOMDocument('1.0', 'UTF-8');
