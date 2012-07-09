@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.0.6
+ * @version   3.0.7
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -60,6 +60,7 @@
  *              Odair Jose Santos Junior <odairsantosjunior at gmail dot com>
  *              Paulo Gabriel Coghi <paulocoghi at gmail dot com>
  *              Paulo Henrique Demori <phdemori at hotmail dot com>
+ *              Rafael Stavarengo <faelsta at gmail dot com>
  *              Roberto Spadim <rspadim at gmail dot com>
  *              Vinicius L. Azevedo <vinilazev at gmail dot com>
  *              Walber da Silva Sales <eng dot walber at gmail dot com>
@@ -165,6 +166,12 @@ class ToolsNFePHP {
      * @var string
      */
     public $evtDir='';
+    /**
+     * dpcDir
+     * Diretorio de arquivos dos DPEC
+     * @var string
+     */
+    public $dpcDir='';
     /**
      * tempDir
      * Diretorio de arquivos temporarios ou não significativos para a operação do sistema
@@ -968,7 +975,7 @@ class ToolsNFePHP {
      * para impressão e envio ao destinatário.
      *
      * @name addProt
-     * @version 2.10
+     * @version 2.1.1
      * @package NFePHP
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @param string $nfefile path completo para o arquivo contendo a NFe
@@ -987,7 +994,7 @@ class ToolsNFePHP {
                 return false;
             }
             //carrega o arquivo na variável
-            $docnfe = new DOMDocument(); //cria objeto DOM
+            $docnfe = new DOMDocument('1.0', 'utf-8'); //cria objeto DOM
             $docnfe->formatOutput = false;
             $docnfe->preserveWhiteSpace = false;
             $xmlnfe = file_get_contents($nfefile);
@@ -1014,7 +1021,7 @@ class ToolsNFePHP {
             }
             //carrega o protocolo e seus dados
             //protocolo do lote enviado
-            $prot = new DOMDocument(); //cria objeto DOM
+            $prot = new DOMDocument('1.0', 'utf-8'); //cria objeto DOM
             $prot->formatOutput = false;
             $prot->preserveWhiteSpace = false;
             $xmlprot = file_get_contents($protfile);
@@ -1142,7 +1149,7 @@ class ToolsNFePHP {
             $replace = '';
             $docxml = str_replace($order, $replace, $docxml);
             // carrega o documento no DOM
-            $xmldoc = new DOMDocument();
+            $xmldoc = new DOMDocument('1.0', 'utf-8');
             $xmldoc->preservWhiteSpace = false; //elimina espaços em branco
             $xmldoc->formatOutput = false;
             // muito importante deixar ativadas as opçoes para limpar os espacos em branco
@@ -1289,7 +1296,7 @@ class ToolsNFePHP {
         //verifica o retorno do SOAP
         if ( isset($retorno) ) {
             //tratar dados de retorno
-            $doc = new DOMDocument(); //cria objeto DOM
+            $doc = new DOMDocument('1.0', 'utf-8'); //cria objeto DOM
             $doc->formatOutput = false;
             $doc->preserveWhiteSpace = false;
             $doc->loadXML($retorno,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
@@ -1327,7 +1334,7 @@ class ToolsNFePHP {
      * retornados podem ser bastante incompletos. Não é recomendado seu uso.
      *
      * @name consultaCadastro
-     * @version 2.1.9
+     * @version 2.1.10
      * @package NFePHP
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @param	string  $UF
@@ -1413,7 +1420,7 @@ class ToolsNFePHP {
         }
         if($retorno){
             //tratar dados de retorno
-            $doc = new DOMDocument(); //cria objeto DOM
+            $doc = new DOMDocument('1.0', 'utf-8'); //cria objeto DOM
             $doc->formatOutput = false;
             $doc->preserveWhiteSpace = false;
             $doc->loadXML($retorno,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
@@ -1532,7 +1539,7 @@ class ToolsNFePHP {
         //verifica o retorno
         if ($retorno){
             //tratar dados de retorno
-            $doc = new DOMDocument(); //cria objeto DOM
+            $doc = new DOMDocument('1.0', 'utf-8'); //cria objeto DOM
             $doc->formatOutput = false;
             $doc->preserveWhiteSpace = false;
             $doc->loadXML($retorno,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
@@ -1674,7 +1681,7 @@ class ToolsNFePHP {
         //verifica o retorno
         if ($retorno){
             //tratar dados de retorno
-            $doc = new DOMDocument(); //cria objeto DOM
+            $doc = new DOMDocument('1.0', 'utf-8'); //cria objeto DOM
             $doc->formatOutput = false;
             $doc->preserveWhiteSpace = false;
             $doc->loadXML($retorno,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
@@ -2025,7 +2032,7 @@ class ToolsNFePHP {
         $dados = str_replace('<?xml version="1.0" encoding="UTF-8"?>','', $dados);
         $dados = str_replace(array("\r","\n","\s"),"", $dados);
         //grava a solicitação de inutilização
-        if(!file_put_contents($this->temDir.$id.'-inut.xml', $dXML)){
+        if(!file_put_contents($this->temDir.$id.'-pedInut.xml', $dXML)){
             $this->errStatus = true;
             $this->errMsg = "Falha na gravação do pedido de inutilização!!\n";
         }
@@ -2042,7 +2049,7 @@ class ToolsNFePHP {
             return false;
         }    
         //tratar dados de retorno
-        $doc = new DOMDocument(); //cria objeto DOM
+        $doc = new DOMDocument('1.0', 'utf-8'); //cria objeto DOM
         $doc->formatOutput = false;
         $doc->preserveWhiteSpace = false;
         $doc->loadXML($retorno,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
@@ -2062,11 +2069,11 @@ class ToolsNFePHP {
             return false;
         }    
        //gravar o retorno na pasta temp
-       $nome = $this->temDir.$id.'-retinut.xml';
+       $nome = $this->temDir.$id.'-retInut.xml';
        $nome = $doc->save($nome);
        $retInutNFe = $doc->getElementsByTagName("retInutNFe")->item(0);
        //preparar o processo de inutilização
-       $inut = new DOMDocument(); //cria objeto DOM
+       $inut = new DOMDocument('1.0', 'utf-8'); //cria objeto DOM
        $inut->formatOutput = false;
        $inut->preserveWhiteSpace = false;
        $inut->loadXML($dXML,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
@@ -2194,7 +2201,7 @@ class ToolsNFePHP {
             return false;
         }    
         //tratar dados de retorno
-        $doc = new DOMDocument(); //cria objeto DOM
+        $doc = new DOMDocument('1.0', 'utf-8'); //cria objeto DOM
         $doc->formatOutput = false;
         $doc->preserveWhiteSpace = false;
         $doc->loadXML($retorno,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
@@ -2216,7 +2223,7 @@ class ToolsNFePHP {
         $nome = $doc->save($nome);
         $retCancNFe = $doc->getElementsByTagName("retCancNFe")->item(0);
         //preparar o processo de cancelamento
-        $canc = new DOMDocument(); //cria objeto DOM
+        $canc = new DOMDocument('1.0', 'utf-8'); //cria objeto DOM
         $canc->formatOutput = false;
         $canc->preserveWhiteSpace = false;
         $canc->loadXML($dXML,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
@@ -2386,7 +2393,6 @@ class ToolsNFePHP {
             $this->errStatus = true;
             $this->errMsg = "Falha na gravação da CCe!!\n";
         }
-        
         //envia dados via SOAP
         if ($modSOAP == '2'){
             $retorno = $this->__sendSOAP2($urlservico, $namespace, $cabec, $dados, $metodo, $tpAmb);
@@ -2401,7 +2407,7 @@ class ToolsNFePHP {
             return false;
         }
         //tratar dados de retorno
-        $xmlretCCe = new DOMDocument(); //cria objeto DOM
+        $xmlretCCe = new DOMDocument('1.0', 'utf-8'); //cria objeto DOM
         $xmlretCCe->formatOutput = false;
         $xmlretCCe->preserveWhiteSpace = false;
         $xmlretCCe->loadXML($retorno,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
@@ -2423,7 +2429,7 @@ class ToolsNFePHP {
         }
         //a correção foi aceita cStat == 135
         //carregar a CCe
-        $xmlenvCCe = new DOMDocument(); //cria objeto DOM
+        $xmlenvCCe = new DOMDocument('1.0', 'utf-8'); //cria objeto DOM
         $xmlenvCCe->formatOutput = false;
         $xmlenvCCe->preserveWhiteSpace = false;
         $xmlenvCCe->loadXML($Ev,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
@@ -2611,7 +2617,7 @@ class ToolsNFePHP {
             return false;
         }
         //tratar dados de retorno
-        $xmlMDe = new DOMDocument(); //cria objeto DOM
+        $xmlMDe = new DOMDocument('1.0', 'utf-8'); //cria objeto DOM
         $xmlMDe->formatOutput = false;
         $xmlMDe->preserveWhiteSpace = false;
         $xmlMDe->loadXML($retorno,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
@@ -2633,7 +2639,7 @@ class ToolsNFePHP {
             return false;
         }
         //o evento foi aceito
-        $xmlenvMDe = new DOMDocument(); //cria objeto DOM
+        $xmlenvMDe = new DOMDocument('1.0', 'utf-8'); //cria objeto DOM
         $xmlenvMDe->formatOutput = false;
         $xmlenvMDe->preserveWhiteSpace = false;
         $xmlenvMDe->loadXML($Ev,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
@@ -2798,7 +2804,7 @@ class ToolsNFePHP {
      * @return boolean false se não confere e true se confere
      */
     protected function __verifySignatureXML($conteudoXML, $tag){
-        $dom = new DOMDocument();
+        $dom = new DOMDocument('1.0', 'utf-8');
         $dom->preserveWhiteSpace = false;
         $dom->formatOutput = false;
         $dom->loadXML($conteudoXML,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
@@ -2860,7 +2866,7 @@ class ToolsNFePHP {
             if ($this->__verifySignatureXML($xml,'infNFe')){
                 //como a ssinatura confere, consultar o SEFAZ para verificar se a NF não foi cancelada ou é FALSA
                 //carrega o documento no DOM
-                $xmldoc = new DOMDocument();
+                $xmldoc = new DOMDocument('1.0', 'utf-8');
                 $xmldoc->preservWhiteSpace = false; //elimina espaços em branco
                 $xmldoc->formatOutput = false;
                 $xmldoc->loadXML($xml,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
