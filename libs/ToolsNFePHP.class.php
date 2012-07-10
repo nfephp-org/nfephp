@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.0.10
+ * @version   3.0.11
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -3429,15 +3429,23 @@ class ToolsNFePHP {
     * certificados de forma a garantir que sempre estejam validos
     *
     * @name __validCerts
-    * @version  1.0.1
+    * @version  1.0.2
     * @package  NFePHP
     * @author Roberto L. Machado <linux.rlm at gmail dot com>
     * @param    string  $cert Certificado digital no formato pem
     * @return	array ['status'=>true,'meses'=>8,'dias'=>245]
     */
     protected function __validCerts($cert=''){
-        if(!file_exists($cert) || $cert == ''){
-            $msg = "Arquivo não encontrado - $cert .";
+        if ($cert == ''){
+            $msg = "O certificado é um parâmetro obrigatorio.";
+            $this->__setError($msg);
+            if ($this->exceptions) {
+                throw new nfephpException($msg);
+            }
+            return false;
+        }
+        if(!file_exists($cert)){
+            $msg = "Arquivo do certificado não encontrado - $cert .";
             $this->__setError($msg);
             if ($this->exceptions) {
                 throw new nfephpException($msg);
