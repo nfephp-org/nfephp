@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.0.11
+ * @version   3.0.12
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -3429,7 +3429,7 @@ class ToolsNFePHP {
     * certificados de forma a garantir que sempre estejam validos
     *
     * @name __validCerts
-    * @version  1.0.2
+    * @version  1.0.3
     * @package  NFePHP
     * @author Roberto L. Machado <linux.rlm at gmail dot com>
     * @param    string  $cert Certificado digital no formato pem
@@ -3438,14 +3438,6 @@ class ToolsNFePHP {
     protected function __validCerts($cert=''){
         if ($cert == ''){
             $msg = "O certificado é um parâmetro obrigatorio.";
-            $this->__setError($msg);
-            if ($this->exceptions) {
-                throw new nfephpException($msg);
-            }
-            return false;
-        }
-        if(!file_exists($cert)){
-            $msg = "Arquivo do certificado não encontrado - $cert .";
             $this->__setError($msg);
             if ($this->exceptions) {
                 throw new nfephpException($msg);
@@ -3739,7 +3731,7 @@ class ToolsNFePHP {
      * Conforme Manual de Integração Versão 4.0.1 Utilizando cURL e não o SOAP nativo
      *
      * @name __sendSOAP2
-     * @version 2.1.7
+     * @version 2.1.8
      * @package NFePHP
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @author Jorge Luiz Rodrigues Tomé <jlrodriguestome at hotmail dot com>
@@ -3909,8 +3901,10 @@ class ToolsNFePHP {
                 throw new nfephpException($msg,self::STOP_CRITICAL);
             } else {
                 //houve retorno mas ainda pode ser uma mensagem de erro do webservice
-                $msg = $info['http_code'] . $cCode[$info['http_code']];
-                $this->__setError($msg);            
+                if($info['http_code'] > 300) {
+                    $msg = $info['http_code'] . $cCode[$info['http_code']];
+                    $this->__setError($msg);            
+                }                
             }
             curl_close($oCurl);
             return $xml;
