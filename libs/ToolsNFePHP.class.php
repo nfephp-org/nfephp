@@ -1365,7 +1365,7 @@ class ToolsNFePHP {
                     $aRetorno['bStat'] = true;
                 }
             }
-           // tipo de ambiente
+            // tipo de ambiente
             $aRetorno['tpAmb'] = $doc->getElementsByTagName('tpAmb')->item(0)->nodeValue;
             // versão do aplicativo
             $aRetorno['verAplic'] = $doc->getElementsByTagName('verAplic')->item(0)->nodeValue;
