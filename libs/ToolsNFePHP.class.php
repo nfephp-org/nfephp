@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.0.12
+ * @version   3.0.13
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -1299,7 +1299,7 @@ class ToolsNFePHP {
      *        cStat = 114 SCAN dasativado pela SEFAZ de origem    
      * se SCAN estiver ativado usar, caso contrario aguardar pacientemente.
      * @name statusServico
-     * @version 2.0.5
+     * @version 2.0.6
      * @package NFePHP
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @param	string $UF sigla da unidade da Federação
@@ -1309,7 +1309,7 @@ class ToolsNFePHP {
     **/
     public function statusServico($UF='',$tpAmb='',$modSOAP='2'){
         //retorno da funçao
-        $aRetorno = array('bStat'=>false,'cStat'=>'','tMed'=>'','dhRecbto'=>'','xMotivo'=>'','xObs'=>'');
+        $aRetorno = array('bStat'=>false,'tpAmb'=>'','verAplic'=>'','cUF'=>'','cStat'=>'','tMed'=>'','dhRetorno'=>'','dhRecbto'=>'','xMotivo'=>'','xObs'=>'');
         // caso o parametro tpAmb seja vazio
         if ( $tpAmb == '' ){
             $tpAmb = $this->tpAmb;
@@ -1354,17 +1354,29 @@ class ToolsNFePHP {
             $doc->loadXML($retorno,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
             $cStat = !empty($doc->getElementsByTagName('cStat')->item(0)->nodeValue) ? $doc->getElementsByTagName('cStat')->item(0)->nodeValue : '';
             if ($cStat == ''){
-                //houve erro 
+                $msg = "Não houve retorno Soap verifique a mensagem de erro e o debug!!";
+                $this->__setError($msg);
+                if ($this->exceptions) {
+                    throw new nfephpException($msg);
+                }
                 return false;
             } else {
                 if ($cStat == '107'){
                     $aRetorno['bStat'] = true;
                 }
             }
+           // tipo de ambiente
+            $aRetorno['tpAmb'] = $doc->getElementsByTagName('tpAmb')->item(0)->nodeValue;
+            // versão do aplicativo
+            $aRetorno['verAplic'] = $doc->getElementsByTagName('verAplic')->item(0)->nodeValue;
+            // Código da UF que atendeu a solicitação
+            $aRetorno['cUF'] = $doc->getElementsByTagName('cUF')->item(0)->nodeValue;  
             // status do serviço
             $aRetorno['cStat'] = $doc->getElementsByTagName('cStat')->item(0)->nodeValue;
             // tempo medio de resposta
             $aRetorno['tMed'] = $doc->getElementsByTagName('tMed')->item(0)->nodeValue;
+             // data e hora do retorno a operação (opcional)
+            $aRetorno['dhRetorno'] = !empty($doc->getElementsByTagName('dhRetorno')->item(0)->nodeValue) ? date("d/m/Y H:i:s",$this->__convertTime($doc->getElementsByTagName('dhRetorno')->item(0)->nodeValue)) : '';
             // data e hora da mensagem (opcional)
             $aRetorno['dhRecbto'] = !empty($doc->getElementsByTagName('dhRecbto')->item(0)->nodeValue) ? date("d/m/Y H:i:s",$this->__convertTime($doc->getElementsByTagName('dhRecbto')->item(0)->nodeValue)) : '';
             // motivo da resposta (opcional)
