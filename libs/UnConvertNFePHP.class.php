@@ -59,6 +59,20 @@
 
 class UnConvertNFePHP {
 
+    /**
+     * errMsg
+     * Mensagens de erro do API
+     * @var string
+     */
+    public $errMsg='';
+
+    /**
+     * errStatus
+     * Status de erro
+     * @var boolean
+     */
+    public $errStatus=false;
+ 
 
 
     /**
@@ -71,104 +85,125 @@ class UnConvertNFePHP {
      *
      * @package NFePHP
      * @name nfexml2txt
-     * @version xxxx
-     * @param string $arq Path do arquivo xml
-     * @return string
-     * @todo ajustar para v2.00
+     * @version 0.0.1
+     * @param mixed string ou array $arq Paths dos arquivo xmls
+     * @return mixed boolean ou string
      */
     public function nfexml2txt($arq) {
-        //variavel que irá conter o resultado
-        $txt = "";
-        //verificar se a string passada como parametro é um arquivo
+        //verificar se a string passada como parametro é string ou array
 	if ( is_array($arq) ){
 		$matriz = $arq;
 	} else {
 		$matriz[] = $arq;
         }
         //para cada nf passada na matriz
-	$CONTADOR_NOTAS=0;
-	$txtRet='';
-        foreach($matriz as $xml){
+	$contNotas=0;
+        foreach($matriz as $file){
             //carregar o conteúdo do arquivo xml em uma string
-	    if(is_file($xml))
-		$xml = file_get_contents($xml);
+	    if(is_file($file)){
+		$xml = file_get_contents($file);
+            } else {
+                $xml = $file;
+            }    
             //instanciar o ojeto DOM
-            $dom = new DOMDocument();
+            $dom = new DOMDocument('1.0', 'utf-8');
             //carregar o xml no objeto DOM
-	    if(!$dom->loadXML($xml))
-		continue;
-	// uma nova nota...
-		$txt='';
-            //carregar os grupos de dados possíveis da NFe
-            $nfeProc	= $dom->getElementsByTagName("nfeProc")->item(0);
-            $infNFe	= $dom->getElementsByTagName("infNFe")->item(0);
-            $ide	= $dom->getElementsByTagName("ide")->item(0);
-            $refNFe	= $dom->getElementsByTagName("refNFe");
-            $refNF	= $dom->getElementsByTagName("refNF");
-            $refNFP	= $dom->getElementsByTagName("refNFP");
-	    $refCTe	= $dom->getElementsByTagName("refCTe");
-            $refECF	= $dom->getElementsByTagName("refECF");
-            $emit       = $dom->getElementsByTagName("emit")->item(0);
-            $avulsa     = $dom->getElementsByTagName("avulsa")->item(0);
-            $dest       = $dom->getElementsByTagName("dest")->item(0);
-            $retirada   = $dom->getElementsByTagName("retirada")->item(0);
-            $entrega    = $dom->getElementsByTagName("entrega")->item(0);
-            $enderEmit  = $dom->getElementsByTagName("enderEmit")->item(0);
-            $enderDest  = $dom->getElementsByTagName("enderDest")->item(0);
-            $det        = $dom->getElementsByTagName("det");
-            $cobr       = $dom->getElementsByTagName("cobr")->item(0);
-            $ICMSTot    = $dom->getElementsByTagName("ICMSTot")->item(0);
-            $ISSQNtot   = $dom->getElementsByTagName("ISSQNtot")->item(0);
-            $retTrib    = $dom->getElementsByTagName("retTrib")->item(0);
-            $transp     = $dom->getElementsByTagName("transp")->item(0);
-            $infAdic    = $dom->getElementsByTagName("infAdic")->item(0);
-            $procRef    = $dom->getElementsByTagName("procRef")->item(0);
-            $exporta    = $dom->getElementsByTagName("exporta")->item(0);
-            $compra     = $dom->getElementsByTagName("compra")->item(0);
-	    $cana	= $dom->getElementsByTagName("cana")->item(0);
+	    if(!$dom->loadXML($xml)){
+                $this->errMsg = 'O arquivo indicado como NFe não é um XML!';
+                $this->errStatus = true;
+                return false;
+            }
+            //é um xml => verificar se é uma NFe
+            $infNFe = $dom->getElementsByTagName("infNFe")->item(0);
+            if (!isset($infNFe)){
+                $this->errMsg = 'O arquivo indicado como NFe não é uma NFe!';
+                $this->errStatus = true;
+                return false;
+            }
+            // é uma NFe => transformar em txt
+            $contNotas++;
+            //tansforma no xml => txt
+            $txt .= $this->__cxtt($dom);
+            
+        } //fim foreach
+        $txt = "NOTA FISCAL|".$contNotas."\r\n".$txt;
+        return $txt;
+    } //fim nfexml2txt
+    
+    /**
+     *
+     * @param type $dom 
+     */
+    private function __cxtt($dom){
+        $txt = '';
+        //carregar os grupos de dados possíveis da NFe
+        $nfeProc	= $dom->getElementsByTagName("nfeProc")->item(0);
+        $infNFe	= $dom->getElementsByTagName("infNFe")->item(0);
+        $ide	= $dom->getElementsByTagName("ide")->item(0);
+        $refNFe	= $dom->getElementsByTagName("refNFe");
+        $refNF	= $dom->getElementsByTagName("refNF");
+        $refNFP	= $dom->getElementsByTagName("refNFP");
+	$refCTe	= $dom->getElementsByTagName("refCTe");
+        $refECF	= $dom->getElementsByTagName("refECF");
+        $emit       = $dom->getElementsByTagName("emit")->item(0);
+        $avulsa     = $dom->getElementsByTagName("avulsa")->item(0);
+        $dest       = $dom->getElementsByTagName("dest")->item(0);
+        $retirada   = $dom->getElementsByTagName("retirada")->item(0);
+        $entrega    = $dom->getElementsByTagName("entrega")->item(0);
+        $enderEmit  = $dom->getElementsByTagName("enderEmit")->item(0);
+        $enderDest  = $dom->getElementsByTagName("enderDest")->item(0);
+        $det        = $dom->getElementsByTagName("det");
+        $cobr       = $dom->getElementsByTagName("cobr")->item(0);
+        $ICMSTot    = $dom->getElementsByTagName("ICMSTot")->item(0);
+        $ISSQNtot   = $dom->getElementsByTagName("ISSQNtot")->item(0);
+        $retTrib    = $dom->getElementsByTagName("retTrib")->item(0);
+        $transp     = $dom->getElementsByTagName("transp")->item(0);
+        $infAdic    = $dom->getElementsByTagName("infAdic")->item(0);
+        $procRef    = $dom->getElementsByTagName("procRef")->item(0);
+        $exporta    = $dom->getElementsByTagName("exporta")->item(0);
+        $compra     = $dom->getElementsByTagName("compra")->item(0);
+	$cana	= $dom->getElementsByTagName("cana")->item(0);
+        //A|versão do schema|id| 
+        $id = $infNFe->getAttribute("Id") ? $infNFe->getAttribute("Id") : '';
+        $versao = $infNFe->getAttribute("versao");
+        $txt .= "A|$versao|$id|\r\n";
+         
+        //B|cUF|cNF|NatOp|intPag|mod|serie|nNF|dEmi|dSaiEnt|hSaiEnt|tpNF|cMunFG|TpImp|TpEmis|cDV|tpAmb|finNFe|procEmi|VerProc|dhCont|xJust| 
+        $cUF	= $ide->getElementsByTagName('cUF')->item(0)->nodeValue;
+        $cNF	= $ide->getElementsByTagName('cNF')->item(0)->nodeValue;
+        $natOp	= $ide->getElementsByTagName('natOp')->item(0)->nodeValue;
+        $indPag	= $ide->getElementsByTagName('indPag')->item(0)->nodeValue;
+        $mod	= $ide->getElementsByTagName('mod')->item(0)->nodeValue;
+        $serie	= $ide->getElementsByTagName('serie')->item(0)->nodeValue;
+        $nNF	= $ide->getElementsByTagName('nNF')->item(0)->nodeValue;
+        $dEmi	= $ide->getElementsByTagName('dEmi')->item(0)->nodeValue;
+        $dSaiEnt	= !empty($ide->getElementsByTagName('dSaiEnt')->item(0)->nodeValue) ? $ide->getElementsByTagName('dSaiEnt')->item(0)->nodeValue : '';
+	$hSaiEnt	= !empty($ide->getElementsByTagName('hSaiEnt')->item(0)->nodeValue) ? $ide->getElementsByTagName('hSaiEnt')->item(0)->nodeValue : '';
+	$tpNF	= $ide->getElementsByTagName('tpNF')->item(0)->nodeValue;
+        $cMunFG	= $ide->getElementsByTagName('cMunFG')->item(0)->nodeValue;
+        $tpImp	= $ide->getElementsByTagName('tpImp')->item(0)->nodeValue;
+        $tpEmis	= $ide->getElementsByTagName('tpEmis')->item(0)->nodeValue;
+        $cDV	= $ide->getElementsByTagName('cDV')->item(0)->nodeValue;
+        $tpAmb	= $ide->getElementsByTagName('tpAmb')->item(0)->nodeValue;
+        $finNFe	= $ide->getElementsByTagName('finNFe')->item(0)->nodeValue;
+        $procEmi	= $ide->getElementsByTagName('procEmi')->item(0)->nodeValue;
+        $verProc	= $ide->getElementsByTagName('verProc')->item(0)->nodeValue;
+	$dhCont	= $ide->getElementsByTagName('dhCont')->item(0)->nodeValue;
+	$xJust	= $ide->getElementsByTagName('xJust')->item(0)->nodeValue;
+        $txt .= "B|$cUF|$cNF|$natOp|$indPag|$mod|$serie|$nNF|$dEmi|$dSaiEnt|$hSaiEnt|$tpNF|$cMunFG|$tpImp|$tpEmis|$cDV|$tpAmb|$finNFe|$procEmi|$verProc|$dhCont|$xJust|\r\n";
+           
+        //B13|refNFe|
+        if ( isset($refNFe) ) {
+            foreach ($refNFe as $n => $r){
+                $ref = !empty($refNFe->item($n)->nodeValue) ? $refNFe->item($n)->nodeValue : '';
+		if($ref==''){;
+                    $txt .= "B13|$ref|\r\n";
+                }    
+            }
+        } //fim refNFe
 
-            //A|versão do schema|id| 
-            $id = $infNFe->getAttribute("Id") ? $infNFe->getAttribute("Id") : '';
-            $versao = $infNFe->getAttribute("versao");
-            $txt .= "A|$versao|$id|\r\n";
-            $this->chave = substr($id,-44);
-
-	    //B|cUF|cNF|NatOp|intPag|mod|serie|nNF|dEmi|dSaiEnt|hSaiEnt|tpNF|cMunFG|TpImp|TpEmis|cDV|tpAmb|finNFe|procEmi|VerProc|dhCont|xJust| 
-            $cUF	= $ide->getElementsByTagName('cUF')->item(0)->nodeValue;
-            $cNF	= $ide->getElementsByTagName('cNF')->item(0)->nodeValue;
-            $natOp	= $ide->getElementsByTagName('natOp')->item(0)->nodeValue;
-            $indPag	= $ide->getElementsByTagName('indPag')->item(0)->nodeValue;
-            $mod	= $ide->getElementsByTagName('mod')->item(0)->nodeValue;
-            $serie	= $ide->getElementsByTagName('serie')->item(0)->nodeValue;
-            $nNF	= $ide->getElementsByTagName('nNF')->item(0)->nodeValue;
-            $dEmi	= $ide->getElementsByTagName('dEmi')->item(0)->nodeValue;
-            $dSaiEnt	= !empty($ide->getElementsByTagName('dSaiEnt')->item(0)->nodeValue) ? $ide->getElementsByTagName('dSaiEnt')->item(0)->nodeValue : '';
-	    $hSaiEnt	= !empty($ide->getElementsByTagName('hSaiEnt')->item(0)->nodeValue) ? $ide->getElementsByTagName('hSaiEnt')->item(0)->nodeValue : '';
-	    $tpNF	= $ide->getElementsByTagName('tpNF')->item(0)->nodeValue;
-            $cMunFG	= $ide->getElementsByTagName('cMunFG')->item(0)->nodeValue;
-            $tpImp	= $ide->getElementsByTagName('tpImp')->item(0)->nodeValue;
-            $tpEmis	= $ide->getElementsByTagName('tpEmis')->item(0)->nodeValue;
-            $cDV	= $ide->getElementsByTagName('cDV')->item(0)->nodeValue;
-            $tpAmb	= $ide->getElementsByTagName('tpAmb')->item(0)->nodeValue;
-            $finNFe	= $ide->getElementsByTagName('finNFe')->item(0)->nodeValue;
-            $procEmi	= $ide->getElementsByTagName('procEmi')->item(0)->nodeValue;
-            $verProc	= $ide->getElementsByTagName('verProc')->item(0)->nodeValue;
-	    $dhCont	= $ide->getElementsByTagName('dhCont')->item(0)->nodeValue;
-	    $xJust	= $ide->getElementsByTagName('xJust')->item(0)->nodeValue;
-            $txt .= "B|$cUF|$cNF|$natOp|$indPag|$mod|$serie|$nNF|$dEmi|$dSaiEnt|$hSaiEnt|$tpNF|".
-				"$cMunFG|$tpImp|$tpEmis|$cDV|$tpAmb|$finNFe|$procEmi|$verProc|$dhCont|$xJust|\r\n";
-
-            //B13|refNFe|
-            if ( isset($refNFe) ) {
-                foreach ( $refNFe as $n => $r){
-                    $ref = !empty($refNFe->item($n)->nodeValue) ? $refNFe->item($n)->nodeValue : '';
-		    if($ref=='') continue;	// inutil ter uma referencia sem numero...
-                    $txt = "B13|$ref|\r\n";
-                }
-            } //fim refNFe
-
-            //B14|cUF|AAMM(ano mês)|CNPJ|Mod|serie|nNF|
-            if ( isset($refNF) ) {
+        //B14|cUF|AAMM(ano mês)|CNPJ|Mod|serie|nNF|
+        if ( isset($refNF) ) {
                 foreach ( $refNF as $x => $k){
                     $cUF	= !empty($refNF->item($x)->getElementsByTagName('cUF')->nodeValue) ? $refNF->item($x)->getElementsByTagName('cUF')->nodeValue : '';
                     $AAMM	= !empty($refNF->item($x)->getElementsByTagName('AAMM')->nodeValue) ? $refNF->item($x)->getElementsByTagName('AAMM')->nodeValue : '';
@@ -176,12 +211,10 @@ class UnConvertNFePHP {
                     $mod	= !empty($refNF->item($x)->getElementsByTagName('mod')->nodeValue) ? $refNF->item($x)->getElementsByTagName('mod')->nodeValue : '';
                     $serie	= !empty($refNF->item($x)->getElementsByTagName('serie')->nodeValue) ? $refNF->item($x)->getElementsByTagName('serie')->nodeValue : '';
                     $nNF	= !empty($refNF->item($x)->getElementsByTagName('nNF')->nodeValue) ? $refNF->item($x)->getElementsByTagName('nNF')->nodeValue : '';
-		    if($cUF=='' || $AAMM=='' || $CNPJ=='' || $mod=='' || $serie=='' || $nNF=='')
-			continue;	// inutil não ter um dos campos...
                     $txt .= "B14|$cUF|$AAMM|$CNPJ|$mod|$serie|$nNF|\r\n";
                 }
             } //fim refNF
-	    
+            
 	    //B20a|cUF|AAMM|IE|mod|serie|nNF| 
 	    // B20d|CNPJ|
 	    // B20e|CPF|
@@ -195,37 +228,33 @@ class UnConvertNFePHP {
                     $nNF	= !empty($refNFP->item($x)->getElementsByTagName('nNF')->nodeValue) ? $refNFP->item($x)->getElementsByTagName('nNF')->nodeValue : '';
 		    $CPF	= !empty($refNFP->item($x)->getElementsByTagName('nNF')->nodeValue) ? $refNFP->item($x)->getElementsByTagName('nNF')->nodeValue : '';
 		    $CNPJ	= !empty($refNFP->item($x)->getElementsByTagName('CNPJ')->nodeValue) ? $refNFP->item($x)->getElementsByTagName('CNPJ')->nodeValue : '';
-                    if($cUF=='' || $AAMM=='' || $mod=='' || $serie=='' || $nNF=='' || ($CNPJ=='' && $CPF==''))
-			continue;	// inutil não ter um dos campos...
-                    $txt .=	"B20a|$cUF|$AAMM|$IE|$mod|$serie|$nNF|\r\n".
-				($CPF!=''?	"B20e|$CPF|\r\n":
-						"B20d|$CNPJ|\r\n");
-                }
+                    $txt .=	"B20a|$cUF|$AAMM|$IE|$mod|$serie|$nNF|\r\n";
+                    if ($CPF!=''){
+                        $txt .= "B20e|$CPF|\r\n";
+                    } else {    
+                        $txt .= "B20d|$CNPJ|\r\n";
+                    }    
+                }   
             } //fim refNFP
-	    
-	    
 	    
 	    //B20i|refCTe| 
 	    if ( isset($refCTe) ) {
                 foreach ( $refCTe as $x => $k){
                     $ref = !empty($refCTe->item($n)->nodeValue) ? $refCTe->item($n)->nodeValue : '';
-		    if($ref=='') continue;	// inutil ter uma referencia sem numero...
-                    $txt = "B20i|$ref|\r\n";
+		    $txt .= "B20i|$ref|\r\n";
                 }
             } //fim refCTE
-	    
+
 	    //B20j|mod|nECF|nCOO| 
 	    if ( isset($refECF) ) {
                 foreach ( $refECF as $x => $k){
                     $mod	= !empty($refECF->item($x)->getElementsByTagName('mod')->nodeValue) ? $refECF->item($x)->getElementsByTagName('mod')->nodeValue : '';
                     $nECF	= !empty($refECF->item($x)->getElementsByTagName('nECF')->nodeValue) ? $refECF->item($x)->getElementsByTagName('nECF')->nodeValue : '';
                     $nCOO	= !empty($refECF->item($x)->getElementsByTagName('nCOO')->nodeValue) ? $refECF->item($x)->getElementsByTagName('nCOO')->nodeValue : '';
-                    if($mod=='' || $nECF=='' || $nCOO=='') continue;	// inutil ter uma referencia sem numero...
                     $txt = "B20j|$mod|$nECF|$nCOO|\r\n";
                 }
             } //fim refECF
 	    
-
             //C|XNome|XFant|IE|IEST|IM|CNAE|CRT|
             // C02|CNPJ|
 	    // C02a|CPF|
@@ -238,13 +267,14 @@ class UnConvertNFePHP {
             $CRT	= !empty($emit->getElementsByTagName('CRT')->item(0)->nodeValue) ? $emit->getElementsByTagName('CRT')->item(0)->nodeValue : '';
             $CNPJ	= !empty($emit->getElementsByTagName('CNPJ')->item(0)->nodeValue) ? $emit->getElementsByTagName('CNPJ')->item(0)->nodeValue : '';
             $CPF	= !empty($emit->getElementsByTagName('CPF')->item(0)->nodeValue) ? $emit->getElementsByTagName('CPF')->item(0)->nodeValue : '';
-	    $txt .= "C|$xNome|$xFant|$IE|$IEST|$IM|$CNAE|$CRT|\r\n".
-			($CPF != ''?	"C02a|$CPF|\r\n":
-					"C02|$CNPJ|\r\n");
-
-	//  v2=>  C05|XLgr|Nro|Cpl|Bairro|CMun|XMun|UF|CEP|cPais|xPais|fone|    (só teve alteração no nome da variavel do arquivo TXT...)
-        //  v1=>  C05|xLgr|nro|xCpl|bairro|cMun|xMun|UF|CEP|cPais|xPais|fone|
-		// não mudei o nome das variaveis (PHP) da versão v1 pra v2, as variaveis do XML estão OK
+	    $txt .= "C|$xNome|$xFant|$IE|$IEST|$IM|$CNAE|$CRT|\r\n";
+            if ($CPF != ''){
+                $txt .= "C02a|$CPF|\r\n";
+            } else {
+                $txt .= "C02|$CNPJ|\r\n";
+            }    
+            
+            //C05|XLgr|Nro|Cpl|Bairro|CMun|XMun|UF|CEP|cPais|xPais|fone|
             $xLgr	= !empty($enderEmit->getElementsByTagName("xLgr")->item(0)->nodeValue) ? $enderEmit->getElementsByTagName("xLgr")->item(0)->nodeValue : '';
             $nro	= !empty($enderEmit->getElementsByTagName("nro")->item(0)->nodeValue) ? $enderEmit->getElementsByTagName("nro")->item(0)->nodeValue : '';
             $xCpl	= !empty($enderEmit->getElementsByTagName("xCpl")->item(0)->nodeValue) ? $enderEmit->getElementsByTagName("xCpl")->item(0)->nodeValue : '';
@@ -283,10 +313,13 @@ class UnConvertNFePHP {
 	    $email	= !empty($dest->getElementsByTagName("email")->item(0)->nodeValue) ? $dest->getElementsByTagName("email")->item(0)->nodeValue : '';
             $CNPJ	= !empty($dest->getElementsByTagName("CNPJ")->item(0)->nodeValue) ? $dest->getElementsByTagName("CNPJ")->item(0)->nodeValue : '';
             $CPF	= !empty($dest->getElementsByTagName("CPF")->item(0)->nodeValue) ? $dest->getElementsByTagName("CPF")->item(0)->nodeValue : '';
-            $txt .= "E|$xNome|$IE|$ISUF|$email|\r\n".
-			($CPF != '' ?	"E03|$CPF|\r\n":
-					"E02|$CNPJ|\r\n");
-
+            $txt .= "E|$xNome|$IE|$ISUF|$email|\r\n";
+            if ($CPF != ''){
+                $txt .= "E03|$CPF|\r\n";
+            } else {
+                $txt .= "E02|$CNPJ|\r\n";
+            }
+		
             //E05|xLgr|nro|xCpl|xBairro|cMun|xMun|UF|CEP|cPais|xPais|fone|
             $xLgr	= !empty($enderDest->getElementsByTagName("xLgr")->item(0)->nodeValue) ? $enderDest->getElementsByTagName("xLgr")->item(0)->nodeValue : '';
             $nro	= !empty($enderDest->getElementsByTagName("nro")->item(0)->nodeValue) ? $enderDest->getElementsByTagName("nro")->item(0)->nodeValue : '';
@@ -301,23 +334,7 @@ class UnConvertNFePHP {
             $fone	= !empty($enderDest->getElementsByTagName("fone")->item(0)->nodeValue) ? $enderDest->getElementsByTagName("fone")->item(0)->nodeValue : '';
             $txt .= "E05|$xLgr|$nro|$xCpl|$xBairro|$cMun|$xMun|$UF|$CEP|$cPais|$xPais|$fone|\r\n";
 
-            //v2=> F|CNPJ|XLgr|Nro|XCpl|XBairro|CMun|XMun|UF| (só mudou o nome na variavel TXT)
-            //v1=> F|CNPJ|xLgr|nro|xCpl|xBairro|cMun|xMun|UF|
-	    //	F02|CNPJ		(sinceramente não intendi porque isso.... ja tem no F|CNPJ ...) 
-	    //	F02a|CPF		(sinceramente não intendi porque isso.... ja tem no F|CNPJ ...)
-	    //
-	    // por via das duvidas baixei este arquivo preenchendo os dados no emissor da receita...
-	    
-	    // CNPJ:
-	    // F|log|num|compl|bairo|1200013|Acrelandia|AC|
-	    //    F02|11111111111111|
-	    // CPF:
-	    // F|log|num|compl|bairo|1200013|Acrelandia|AC|
-	    //    F02a|99999999999|
-
-	    //
-	    
-	    if( isset($retirada) ) {
+            if( isset($retirada) ) {
                 $CNPJ	= !empty($retirada->getElementsByTagName("CNPJ")->item(0)->nodeValue) ? $retirada->getElementsByTagName("CNPJ")->item(0)->nodeValue : '';
                 $CPF	= !empty($retirada->getElementsByTagName("CPF")->item(0)->nodeValue) ? $retirada->getElementsByTagName("CPF")->item(0)->nodeValue : '';
                 $xLgr	= !empty($retirada->getElementsByTagName("xLgr")->item(0)->nodeValue) ? $retirada->getElementsByTagName("xLgr")->item(0)->nodeValue : '';
@@ -327,17 +344,14 @@ class UnConvertNFePHP {
                 $cMun	= !empty($retirada->getElementsByTagName("cMun")->item(0)->nodeValue) ? $retirada->getElementsByTagName("cMun")->item(0)->nodeValue : '';
                 $xMun	= !empty($retirada->getElementsByTagName("xMun")->item(0)->nodeValue) ? $retirada->getElementsByTagName("xMun")->item(0)->nodeValue : '';
                 $UF	= !empty($retirada->getElementsByTagName("UF")->item(0)->nodeValue) ? $retirada->getElementsByTagName("UF")->item(0)->nodeValue : '';
-                $txt .= "F|$xLgr|$nro|$xCpl|$xBairro|$cMun|$xMun|$UF|\r\n".
-			($CPF!=''?	"$F02a|$CPF|\r\n":
-					"$F02|$CNPJ|\r\n");
+                $txt .= "F|$xLgr|$nro|$xCpl|$xBairro|$cMun|$xMun|$UF|\r\n";
+                if ($CPF!=''){
+                    $txt .= "$F02a|$CPF|\r\n";
+                } else {    
+                    $txt .= "$F02|$CNPJ|\r\n";
+                }
             } //fim da retirada
-
-	    //v2=> G|CNPJ|XLgr|Nro|XCpl|XBairro|CMun|XMun|UF| 
-            //v1=> G|CNPJ|xLgr|nro|xCpl|xBairro|cMun|xMun|UF|
-	    //	esta errado assim como no F| o CNPJ não existe  no emissor...
-	    //
-	    // G02|CNPJ 
-	    // G02a|CPF 
+            
             if( isset($entrega) ) {
                 $CNPJ	= !empty($entrega->getElementsByTagName("CNPJ")->item(0)->nodeValue) ? $entrega->getElementsByTagName("CNPJ")->item(0)->nodeValue : '';
                 $CPF	= !empty($entrega->getElementsByTagName("CNPJ")->item(0)->nodeValue) ? $entrega->getElementsByTagName("CNPJ")->item(0)->nodeValue : '';
@@ -348,213 +362,450 @@ class UnConvertNFePHP {
                 $cMun	= !empty($entrega->getElementsByTagName("cMun")->item(0)->nodeValue) ? $entrega->getElementsByTagName("cMun")->item(0)->nodeValue : '';
                 $xMun	= !empty($entrega->getElementsByTagName("xMun")->item(0)->nodeValue) ? $entrega->getElementsByTagName("xMun")->item(0)->nodeValue : '';
                 $UF	= !empty($entrega->getElementsByTagName("UF")->item(0)->nodeValue) ? $entrega->getElementsByTagName("UF")->item(0)->nodeValue : '';
-                $txt .= "G|$xLgr|$nro|$xCpl|$xBairro|$cMun|$xMun|$UF|\r\n".
-			($CPF!=''?	"G02a|$CPF|\r\n":
-					"G02|$CNPJ|\r\n");
+                $txt .= "G|$xLgr|$nro|$xCpl|$xBairro|$cMun|$xMun|$UF|\r\n";
+                if ($CPF!=''){
+                    $txt .= "G02a|$CPF|\r\n";
+                } else {    
+                    $txt .= "G02|$CNPJ|\r\n";
+                }    
             } //fim entrega
 
-            //instaciar uma variável para contagem
-            $i = 0;
-            foreach ($det as $d){
-                //H|nItem|infAdProd|
-                $nItem		= $det->item($i)->getAttribute("nItem");
-                $infAdProd	= !empty($det->item($i)->getElementsByTagName("infAdProd")->item(0)->nodeValue) ? $det->item($i)->getElementsByTagName("infAdProd")->item(0)->nodeValue : '';
-                $txt .= "H|$nItem|$infAdProd|\r\n";
+            //carrega dados dos itens
+            $txt .= $this->__getItens($det);
+
+            //W|
+            $txt .= "W|\r\n";
+            $vBC	= !empty($ICMSTot->getElementsByTagName("vBC")->item(0)->nodeValue) ? $ICMSTot->getElementsByTagName("vBC")->item(0)->nodeValue : '';
+            $vICMS	= !empty($ICMSTot->getElementsByTagName("vICMS")->item(0)->nodeValue) ? $ICMSTot->getElementsByTagName("vICMS")->item(0)->nodeValue : '';
+            $vBCST	= !empty($ICMSTot->getElementsByTagName("vBCST")->item(0)->nodeValue) ? $ICMSTot->getElementsByTagName("vBCST")->item(0)->nodeValue : '';
+            $vST	= !empty($ICMSTot->getElementsByTagName("vST")->item(0)->nodeValue) ? $ICMSTot->getElementsByTagName("vST")->item(0)->nodeValue : '';
+            $vProd	= !empty($ICMSTot->getElementsByTagName("vProd")->item(0)->nodeValue) ? $ICMSTot->getElementsByTagName("vProd")->item(0)->nodeValue : '';
+            $vFrete	= !empty($ICMSTot->getElementsByTagName("vFrete")->item(0)->nodeValue) ? $ICMSTot->getElementsByTagName("vFrete")->item(0)->nodeValue : '';
+            $vSeg	= !empty($ICMSTot->getElementsByTagName("vSeg")->item(0)->nodeValue) ? $ICMSTot->getElementsByTagName("vSeg")->item(0)->nodeValue : '';
+            $vDesc	= !empty($ICMSTot->getElementsByTagName("vDesc")->item(0)->nodeValue) ? $ICMSTot->getElementsByTagName("vDesc")->item(0)->nodeValue : '';
+            $vII	= !empty($ICMSTot->getElementsByTagName("vII")->item(0)->nodeValue) ? $ICMSTot->getElementsByTagName("vII")->item(0)->nodeValue : '';
+            $vIPI	= !empty($ICMSTot->getElementsByTagName("vIPI")->item(0)->nodeValue) ? $ICMSTot->getElementsByTagName("vIPI")->item(0)->nodeValue : '';
+            $vPIS	= !empty($ICMSTot->getElementsByTagName("vPIS")->item(0)->nodeValue) ? $ICMSTot->getElementsByTagName("vPIS")->item(0)->nodeValue : '';
+            $vCOFINS= !empty($ICMSTot->getElementsByTagName("vCOFINS")->item(0)->nodeValue) ? $ICMSTot->getElementsByTagName("vCOFINS")->item(0)->nodeValue : '';
+            $vOutro	= !empty($ICMSTot->getElementsByTagName("vOutro")->item(0)->nodeValue) ? $ICMSTot->getElementsByTagName("vOutro")->item(0)->nodeValue : '';
+            $vNF	= !empty($ICMSTot->getElementsByTagName("vNF")->item(0)->nodeValue) ? $ICMSTot->getElementsByTagName("vNF")->item(0)->nodeValue : '';
+
+            //W02|vBC|vICMS|vBCST|vST|vProd|vFrete|vSeg|vDesc|vII|vIPI|vPIS|vCOFINS|vOutro|vNF|
+            $txt .= "W02|$vBC|$vICMS|$vBCST|$vST|$vProd|$vFrete|$vSeg|$vDesc|$vII|$vIPI|$vPIS|$vCOFINS|$vOutro|$vNF|\r\n";
+
+            // monta dados do total de ISS
+            if (isset($ISSQNtot)){
+                //W17|VServ|VBC|VISS|VPIS|VCOFINS|
+                $vServ	= !empty($ISSQNTot->getElementsByTagName("vServ")->item(0)->nodeValue) ? $ISSQNTot->getElementsByTagName("vServ")->item(0)->nodeValue : '';
+                $vBC	= !empty($ISSQNTot->getElementsByTagName("vBC")->item(0)->nodeValue) ? $ISSQNTot->getElementsByTagName("vBC")->item(0)->nodeValue : '';
+                $vISS	= !empty($ISSQNTot->getElementsByTagName("vISS")->item(0)->nodeValue) ? $ISSQNTot->getElementsByTagName("vISS")->item(0)->nodeValue : '';
+                $vPIS	= !empty($ISSQNTot->getElementsByTagName("vPIS")->item(0)->nodeValue) ? $ISSQNTot->getElementsByTagName("vPIS")->item(0)->nodeValue : '';
+                $vCOFINS	= !empty($ISSQNTot->getElementsByTagName("vCOFINS")->item(0)->nodeValue) ? $ISSQNTot->getElementsByTagName("vCOFINS")->item(0)->nodeValue : '';
+                $txt .= "W17|$vServ|$vBC|$vISS|$vPIS|$vCOFINS|\r\n";
+            } //fim ISSQNtot
+
+            //monta dados da Retenção de tributos
+            if ( isset($retTrib) ) {
+                //W23|VRetPIS|VRetCOFINS|VRetCSLL|VBCIRRF|VIRRF|VBCRetPrev|VRetPrev| 
+                $vRetPIS	= !empty($retTrib->getElementsByTagName("vRetPIS")->item(0)->nodeValue) ? $retTrib->getElementsByTagName("vRetPIS")->item(0)->nodeValue : '';
+                $vRetCOFINS	= !empty($retTrib->getElementsByTagName("vRetCOFINS")->item(0)->nodeValue) ? $retTrib->getElementsByTagName("vRetCOFINS")->item(0)->nodeValue : '';
+                $vRetCSLL	= !empty($retTrib->getElementsByTagName("vRetCSLL")->item(0)->nodeValue) ? $retTrib->getElementsByTagName("vRetCSLL")->item(0)->nodeValue : '';
+                $vBCIRRF	= !empty($retTrib->getElementsByTagName("vBCIRRF")->item(0)->nodeValue) ? $retTrib->getElementsByTagName("vBCIRRF")->item(0)->nodeValue : '';
+                $vIRRF	= !empty($retTrib->getElementsByTagName("vIRRF")->item(0)->nodeValue) ? $retTrib->getElementsByTagName("vIRRF")->item(0)->nodeValue : '';
+                $vBCRetPrev	= !empty($retTrib->getElementsByTagName("vBCRetPrev")->item(0)->nodeValue) ? $retTrib->getElementsByTagName("vBCRetPrev")->item(0)->nodeValue : '';
+                $vRetPrev	= !empty($retTrib->getElementsByTagName("vRetPrev")->item(0)->nodeValue) ? $retTrib->getElementsByTagName("vRetPrev")->item(0)->nodeValue : '';
+                $txt .= "W23|$vRetPIS|$vRetCOFINS|$vRetCSLL|$vBCIRRF|$vIRRF|$vBCRetPrev|$vRetPrev|\r\n";
+            }
+
+            //monta dados de Transportes
+            if ( isset($transp) ) {
+                //instancia sub grupos da tag transp
+                $transporta	= $dom->getElementsByTagName("transporta")->item(0);
+                $retTransp	= $dom->getElementsByTagName("retTransp")->item(0);
+                $veicTransp	= $dom->getElementsByTagName("veicTransp")->item(0);
+                $reboque	= $dom->getElementsByTagName("reboque");
+                $vol	= $dom->getElementsByTagName("vol");
+            
+                //X|ModFrete| 
+                $modFrete	= !empty($transp->getElementsByTagName("modFrete")->item(0)->nodeValue) ? $transp->getElementsByTagName("modFrete")->item(0)->nodeValue : '';
+                $txt .= "X|$modFrete|\r\n";
+                if ( isset($transporta) ){
+                    $CNPJ	= !empty($transporta->getElementsByTagName("CNPJ")->item(0)->nodeValue) ? $transporta->getElementsByTagName("CNPJ")->item(0)->nodeValue : '';
+                    $CPF	= !empty($transporta->getElementsByTagName("CPF")->item(0)->nodeValue) ? $transporta->getElementsByTagName("CPF")->item(0)->nodeValue : '';
+                    $IE	= !empty($transporta->getElementsByTagName("IE")->item(0)->nodeValue) ? $transporta->getElementsByTagName("IE")->item(0)->nodeValue : '';
+                    $xNome	= !empty($transporta->getElementsByTagName("xNome")->item(0)->nodeValue) ? $transporta->getElementsByTagName("xNome")->item(0)->nodeValue : '';
+                    $xEnder	= !empty($transporta->getElementsByTagName("xEnder")->item(0)->nodeValue) ? $transporta->getElementsByTagName("xEnder")->item(0)->nodeValue : '';
+                    $xMun	= !empty($transporta->getElementsByTagName("xMun")->item(0)->nodeValue) ? $transporta->getElementsByTagName("xMun")->item(0)->nodeValue : '';
+                    $UF	= !empty($transporta->getElementsByTagName("UF")->item(0)->nodeValue) ? $transporta->getElementsByTagName("UF")->item(0)->nodeValue : '';
+                    //X03|XNome|IE|XEnder|UF|XMun|
+                    // X04|CNPJ|
+                    // X05|CPF|
+                    $txt .= "X03|$xNome|$IE|$xEnder|$UF|$xMun|\r\n";
+                    if ( $CNPJ != ''){
+                        $txt .= "X04|$CNPJ|\r\n";
+                    } else {
+			$txt .= "X05|$CPF|\r\n";
+                    }
+                    
+                } // fim transporta
+
+                //monta dados da retenção tributária de transporte
+                if ( isset($retTransp) ) {
+                    $vServ	= !empty($retTransp->getElementsByTagName("vServ")->item(0)->nodeValue) ? $retTransp->getElementsByTagName("vServ")->item(0)->nodeValue : '';
+                    $vBCRet	= !empty($retTransp->getElementsByTagName("vBCRet")->item(0)->nodeValue) ? $retTransp->getElementsByTagName("vBCRet")->item(0)->nodeValue : '';
+                    $pICMSRet	= !empty($retTransp->getElementsByTagName("pICMSRet")->item(0)->nodeValue) ? $retTransp->getElementsByTagName("pICMSRet")->item(0)->nodeValue : '';
+                    $vICMSRet	= !empty($retTransp->getElementsByTagName("vICMSRet")->item(0)->nodeValue) ? $retTransp->getElementsByTagName("vICMSRet")->item(0)->nodeValue : '';
+                    $CFOP	= !empty($retTransp->getElementsByTagName("CFOP")->item(0)->nodeValue) ? $retTransp->getElementsByTagName("CFOP")->item(0)->nodeValue : '';
+                    $cMunFG	= !empty($retTransp->getElementsByTagName("cMunFG")->item(0)->nodeValue) ? $retTransp->getElementsByTagName("cMunFG")->item(0)->nodeValue : '';
+                    //X11|VServ|VBCRet|PICMSRet|VICMSRet|CFOP|CMunFG|
+                    $txt .= "X11|$vServ|$vBCRet|$pICMSRet|$vICMSRet|$CFOP|$cMunFG|\r\n";
+                } // fim rettransp
+
+                //monta dados de identificação dos veiculos utilizados no transporte
+                if ( isset($veicTransp) ) {
+                    //X18|Placa|UF|RNTC|
+                    $placa = !empty($veicTransp->getElementsByTagName("placa")->item(0)->nodeValue) ? $veicTransp->getElementsByTagName("placa")->item(0)->nodeValue : '';
+                    $UF	= !empty($veicTransp->getElementsByTagName("UF")->item(0)->nodeValue) ? $veicTransp->getElementsByTagName("UF")->item(0)->nodeValue : '';
+                    $RNTC = !empty($veicTransp->getElementsByTagName("RNTC")->item(0)->nodeValue) ? $veicTransp->getElementsByTagName("RNTC")->item(0)->nodeValue : '';
+                    $txt .= "X18|$placa|$UF|$RNTC|\r\n";
+                } //fim veicTransp
+
+                //monta dados de identificação dos reboques utilizados no transporte
+                if ( isset($reboque) ){
+                    foreach ($reboque as $n => $reb){
+                    	$placa	= !empty($reboque->item($n)->getElementsByTagName("placa")->item(0)->nodeValue) ? $reboque->item($n)->getElementsByTagName("placa")->item(0)->nodeValue : '';
+                    	$UF	= !empty($reboque->item($n)->getElementsByTagName("UF")->item(0)->nodeValue) ? $reboque->item($n)->getElementsByTagName("UF")->item(0)->nodeValue : '';
+			$RNTC	= !empty($reboque->item($n)->getElementsByTagName("RNTC")->item(0)->nodeValue) ? $reboque->item($n)->getElementsByTagName("RNTC")->item(0)->nodeValue : '';
+			//X22|Placa|UF|RNTC|
+			$txt .= "X22|$placa|$UF|$RNTC|\r\n";
+                    } //fim foreach
+                } //fim reboque
+
+                //monta dados dos volumes transportados
+                if ( isset($vol) ){
+                    foreach ($vol as $n => $volumes) {
+                        //X26|QVol|Esp|Marca|NVol|PesoL|PesoB| 
+			$qVol	= !empty($vol->item($n)->getElementsByTagName("qVol")->item(0)->nodeValue) ? $vol->item($n)->getElementsByTagName("qVol")->item(0)->nodeValue : '';
+			$esp	= !empty($vol->item($n)->getElementsByTagName("esp")->item(0)->nodeValue) ? $vol->item($n)->getElementsByTagName("esp")->item(0)->nodeValue : '';
+			$marca	= !empty($vol->item($n)->getElementsByTagName("marca")->item(0)->nodeValue) ? $vol->item($n)->getElementsByTagName("marca")->item(0)->nodeValue : '';
+			$nVol	= !empty($vol->item($n)->getElementsByTagName("nVol")->item(0)->nodeValue) ? $vol->item($n)->getElementsByTagName("nVol")->item(0)->nodeValue : '';
+			$pesoL	= !empty($vol->item($n)->getElementsByTagName("pesoL")->item(0)->nodeValue) ? $vol->item($n)->getElementsByTagName("pesoL")->item(0)->nodeValue : '';
+			$pesoB	= !empty($vol->item($n)->getElementsByTagName("pesoB")->item(0)->nodeValue) ? $vol->item($n)->getElementsByTagName("pesoB")->item(0)->nodeValue : '';
+			$lacres	= $vol->item($n)->getElementsByTagName("lacres")->item(0);
+			$txt .= "X26|$qVol|$esp|$marca|$nVol|$pesoL|$pesoB|\r\n";
+			//monta dados dos lacres utilizados
+			if ( isset($lacres) ){
+			    foreach ($lacres as $n => $lac){
+				$nLacre = !empty($lacres->item($n)->getElementsByTagName("nLacre")->item(0)->nodeValue) ? $lacres->item($n)->getElementsByTagName("nLacre")->item(0)->nodeValue : '';
+				//X33|NLacre|
+				$txt .= "X33|$nLacre|\r\n";
+			    } //fim foreach lacre
+			} //fim lacres
+                    } //fim foreach volumes
+                } //fim vol
+            }//fim monta transp
+
+            //monta dados de cobrança
+            if ( isset($cobr) ){
+                //instancia sub grupos da tag cobr
+                $fat = $dom->getElementsByTagName('fat')->item(0);
+                $dup = $dom->getElementsByTagName('dup');
+                $txt .= "Y|\r\n";
+                //monta dados da fatura
+                if ( isset($fat) ){
+                    //Y02|NFat|VOrig|VDesc|VLiq| 
+                    $nFat	= !empty($fat->getElementsByTagName("nFat")->item(0)->nodeValue) ? $fat->getElementsByTagName("nFat")->item(0)->nodeValue : '';
+                    $vOrig	= !empty($fat->getElementsByTagName("vOrig")->item(0)->nodeValue) ? $fat->getElementsByTagName("vOrig")->item(0)->nodeValue : '';
+                    $vDesc	= !empty($fat->getElementsByTagName("vDesc")->item(0)->nodeValue) ? $fat->getElementsByTagName("vDesc")->item(0)->nodeValue : '';
+                    $vLiq	= !empty($fat->getElementsByTagName("vLiq")->item(0)->nodeValue) ? $fat->getElementsByTagName("vLiq")->item(0)->nodeValue : '';
+                    $txt .= "Y02|$nFat|$vOrig|$vDesc|$vLiq|\r\n";
+                 } //fim fat
+                    
+                 //monta dados das duplicatas
+                 if( isset($dup) ){
+                    foreach ( $dup as $n => $duplicata ){
+                        //Y07|NDup|DVenc|VDup| 
+                        $nDup	= !empty($dup->item($n)->getElementsByTagName("nDup")->item(0)->nodeValue) ? $dup->item($n)->getElementsByTagName("nDup")->item(0)->nodeValue : '';
+                        $dVenc	= !empty($dup->item($n)->getElementsByTagName("dVenc")->item(0)->nodeValue) ? $dup->item($n)->getElementsByTagName("dVenc")->item(0)->nodeValue : '';
+                        $vDup	= !empty($dup->item($n)->getElementsByTagName("vDup")->item(0)->nodeValue) ? $dup->item($n)->getElementsByTagName("vDup")->item(0)->nodeValue : '';
+                        $txt .= "Y07|$nDup|$dVenc|$vDup|\r\n";
+                    } //fim foreach
+                } //fim dup
+            } //fim cobr
+
+            //monta dados das informações adicionais da NFe
+            if ( isset($infAdic) ) {
+                //instancia sub grupos da tag infAdic
+                $obsCont	= $infAdic->getElementsByTagName('obsCont');
+                $obsFisco	= $infAdic->getElementsByTagName('obsFisco');
+                $procRef	= $infAdic->getElementsByTagName('procRef');
+                
+                //Z|InfAdFisco|InfCpl|
+                $infAdFisco	= !empty($infAdic->getElementsByTagName("infAdFisco")->item(0)->nodeValue) ? $infAdic->getElementsByTagName("infAdFisco")->item(0)->nodeValue : '';
+                $infCpl = !empty($infAdic->getElementsByTagName("infCpl")->item(0)->nodeValue) ? $infAdic->getElementsByTagName("infCpl")->item(0)->nodeValue : '';
+                $txt .= "Z|$infAdFisco|$infCpl|\r\n";
+
+                //monta dados de observaçoes da NFe
+                if ( isset($obsCont) ){
+                    foreach ($obsCont as $n => $oC){
+                        //Z04|XCampo|XTexto|
+                        $xCampo = !empty($obsCont->item($n)->getElementsByTagName("xCampo")->item(0)->nodeValue) ? $obsCont->item($n)->getElementsByTagName("xCampo")->item(0)->nodeValue : '';
+                        $xTexto = !empty($obsCont->item($n)->getElementsByTagName("xTexto")->item(0)->nodeValue) ? $obsCont->item($n)->getElementsByTagName("xTexto")->item(0)->nodeValue : '';
+                        $txt .= "Z04|$xCampo|$xTexto|\r\n";
+                    }//fim foreach
+                } //fim obsCont
+
+                //monta dados dos processos
+                if ( isset($obsFisco) ){
+                    foreach ($obsFisco as $n => $pR){
+                        //Z07|XCampo|XTexto|
+                        $xCampo = !empty($obsFisco->item($n)->getElementsByTagName("xCampo")->item(0)->nodeValue) ? $obsFisco->item($n)->getElementsByTagName("xCampo")->item(0)->nodeValue : '';
+                        $xTexto = !empty($obsFisco->item($n)->getElementsByTagName("xTexto")->item(0)->nodeValue) ? $obsFisco->item($n)->getElementsByTagName("xTexto")->item(0)->nodeValue : '';
+                        $txt .= "Z07|$xCampo|$xTexto|\r\n";
+                    } //fim foreach
+                } //fim procRef
+
+                //monta dados dos processos
+                if ( isset($procRef) ){
+                    foreach ($procRef as $n => $pR){
+                        //Z10|NProc|IndProc|
+                        $nProc = !empty($procRef->item($n)->getElementsByTagName("nProc")->item(0)->nodeValue) ? $procRef->item($n)->getElementsByTagName("nProc")->item(0)->nodeValue : '';
+                        $indProc = !empty($procRef->item($n)->getElementsByTagName("infProc")->item(0)->nodeValue) ? $procRef->item($n)->getElementsByTagName("infProc")->item(0)->nodeValue : '';
+                        $txt .= "Z10|$nProc|$indProc|\r\n";
+                    } //fim foreach
+                } //fim procRef
+                    
+            } //fim infAdic
+
+            //monta dados de exportação
+            if ( isset($exporta) ){
+                //ZA|UFEmbarq|XLocEmbarq|
+                $UFEmbarq	= !empty($exporta->getElementsByTagName("UFEmbarq")->item(0)->nodeValue) ? $exporta->getElementsByTagName("UFEmbarq")->item(0)->nodeValue : '';
+                $xLocEmbarq	= !empty($exporta->getElementsByTagName("xLocEmbarq")->item(0)->nodeValue) ? $exporta->getElementsByTagName("xLocEmbarq")->item(0)->nodeValue : '';
+                $txt .= "ZA|$UFEmbarq|$xLocEmbarq|\r\n";
+            } //fim exporta
+
+            //monta dados de compra
+            if ( isset($compra) ){
+               //ZB|XNEmp|XPed|XCont|
+                $xNEmp	= !empty($compra->getElementsByTagName("xNEmp")->item(0)->nodeValue) ? $compra->getElementsByTagName("xNEmp")->item(0)->nodeValue : '';
+                $xPed	= !empty($compra->getElementsByTagName("xPed")->item(0)->nodeValue) ? $compra->getElementsByTagName("xPed")->item(0)->nodeValue : '';
+                $xCont	= !empty($compra->getElementsByTagName("xCont")->item(0)->nodeValue) ? $compra->getElementsByTagName("xCont")->item(0)->nodeValue : '';
+                $txt .= "ZB|$xNEmp|$xPed|$xCont|\r\n";
+            } //fim compra
+                
+            //monta dados de cana
+            if ( isset($cana) ){
+                //ZC01|safra|ref|qTotMes|qTotAnt|qTotGer|vFor|vTotDed|vLiqFor|
+                $forDia	= $cana->getElementsByTagName('forDia');
+                $deduc	= $cana->getElementsByTagName('deduc');
+                $safra	= !empty($cana->getElementsByTagName("safra")->item(0)->nodeValue) ? $cana->getElementsByTagName("safra")->item(0)->nodeValue : '';
+                $ref	= !empty($cana->getElementsByTagName("ref")->item(0)->nodeValue) ? $cana->getElementsByTagName("ref")->item(0)->nodeValue : '';
+                $qTotMes= !empty($cana->getElementsByTagName("qTotMes")->item(0)->nodeValue) ? $cana->getElementsByTagName("qTotMes")->item(0)->nodeValue : '';
+                $qTotAnt= !empty($cana->getElementsByTagName("qTotAnt")->item(0)->nodeValue) ? $cana->getElementsByTagName("qTotAnt")->item(0)->nodeValue : '';
+                $qTotGer= !empty($cana->getElementsByTagName("qTotGer")->item(0)->nodeValue) ? $cana->getElementsByTagName("qTotGer")->item(0)->nodeValue : '';
+                $vFor	= !empty($cana->getElementsByTagName("vFor")->item(0)->nodeValue) ? $cana->getElementsByTagName("vFpr")->item(0)->nodeValue : '';
+                $vTotDed= !empty($cana->getElementsByTagName("vTotDed")->item(0)->nodeValue) ? $cana->getElementsByTagName("vTotDed")->item(0)->nodeValue : '';
+                $vLiqFor= !empty($cana->getElementsByTagName("vLiqFor")->item(0)->nodeValue) ? $cana->getElementsByTagName("vLiqFor")->item(0)->nodeValue : '';
+                $txt .= "ZC01|$safra|$ref|$qTotMes|$qTotAnt|$qTotGer|$vFor|$vTotDed|$vLiqFor|\r\n";
+                //monta dados fornecimento diario
+                if ( isset($forDia) ){
+                    foreach ($forDia as $n => $pR){
+                        //ZC04|dia|qtde|
+                        $dia	= !empty($forDia->item($n)->getElementsByTagName("dia")->item(0)->nodeValue) ? $forDia->item($n)->getElementsByTagName("dia")->item(0)->nodeValue : '';
+                        $qtde	= !empty($forDia->item($n)->getElementsByTagName("qtde")->item(0)->nodeValue) ? $forDia->item($n)->getElementsByTagName("qtde")->item(0)->nodeValue : '';
+                        $txt .= "ZC04|$dia|$qtde|\r\n";
+                    } //fim foreach
+                } //fim fordia
+
+                //monta dados grupo deduções
+                if ( isset($deduc) ){
+                    foreach ($deduc as $n => $pR){
+                        //ZC10|xDed|vDed|
+                        $xDed	= !empty($deduc->item($n)->getElementsByTagName("xDed")->item(0)->nodeValue) ? $deduc->item($n)->getElementsByTagName("xDed")->item(0)->nodeValue : '';
+                        $vDed	= !empty($deduc->item($n)->getElementsByTagName("vDed")->item(0)->nodeValue) ? $deduc->item($n)->getElementsByTagName("vDed")->item(0)->nodeValue : '';
+                        $txt .= "ZC10|$xDed|$vDed|\r\n";
+                    } //fim foreach
+                } //fim deduc
+            } //fim cana
+        return $txt;
+    } //fim __cxtt
+    
+    
+    private function __getItens($det){
+        $txt = '';
+        //instanciar uma variável para contagem
+        $i = 0;
+        foreach ($det as $d){
+            
+            //H|nItem|infAdProd|
+            $nItem		= $det->item($i)->getAttribute("nItem");
+            $infAdProd	= !empty($det->item($i)->getElementsByTagName("infAdProd")->item(0)->nodeValue) ? $det->item($i)->getElementsByTagName("infAdProd")->item(0)->nodeValue : '';
+            $txt .= "H|$nItem|$infAdProd|\r\n";
 		
-                //instanciar os grupos de dados internos da tag det
-        	$prod		= $det->item($i)->getElementsByTagName("prod")->item(0);
-		$imposto	= $det->item($i)->getElementsByTagName("imposto")->item(0);
-			$ICMS		= $imposto->getElementsByTagName("ICMS")->item(0);
-				$ICMS00	= $ICMS->getElementsByTagName("ICMS00")->item(0);
-				$ICMS10	= $ICMS->getElementsByTagName("ICMS10")->item(0);
-				$ICMS20	= $ICMS->getElementsByTagName("ICMS20")->item(0);
-				$ICMS30	= $ICMS->getElementsByTagName("ICMS30")->item(0);
-				$ICMS40	= $ICMS->getElementsByTagName("ICMS40")->item(0);
-				$ICMS51	= $ICMS->getElementsByTagName("ICMS51")->item(0);
-				$ICMS60	= $ICMS->getElementsByTagName("ICMS60")->item(0);
-				$ICMS70	= $ICMS->getElementsByTagName("ICMS70")->item(0);
-				$ICMS90	= $ICMS->getElementsByTagName("ICMS90")->item(0);
-				$ICMSSN101	= $ICMS->getElementsByTagName("ICMSSN101")->item(0);
-				$ICMSSN102	= $ICMS->getElementsByTagName("ICMSSN102")->item(0);
-				$ICMSSN201	= $ICMS->getElementsByTagName("ICMSSN201")->item(0);
-				$ICMSSN202	= $ICMS->getElementsByTagName("ICMSSN202")->item(0);
-				$ICMSSN500	= $ICMS->getElementsByTagName("ICMSSN500")->item(0);
-				$ICMSSN900	= $ICMS->getElementsByTagName("ICMSSN900")->item(0);
-				$ICMSPart	= $ICMS->getElementsByTagName("ICMSPart")->item(0);	// VERIFICAR SE ESTA OK...
-				$ICMSST		= $ICMS->getElementsByTagName("ICMSST")->item(0);	// VERIFICAR SE ESTA OK...
-			$IPI		= $imposto->getElementsByTagName("IPI")->item(0);
-			$II 		= $imposto->getElementsByTagName("II")->item(0);
-			$PIS 		= $imposto->getElementsByTagName("PIS")->item(0);
-			$PISST 		= $imposto->getElementsByTagName("PISST")->item(0);
-			$COFINS 	= $imposto->getElementsByTagName("COFINS")->item(0);
-			$COFINSST 	= $imposto->getElementsByTagName("COFINSST")->item(0);
-			$ISSQN 		= $imposto->getElementsByTagName("ISSQN")->item(0);
-                $DI 		= $det->item($i)->getElementsByTagName("DI")->item(0);
-                $veicProd 	= $det->item($i)->getElementsByTagName("veicProd")->item(0);
-                $med 		= $det->item($i)->getElementsByTagName("med")->item(0);
-                $arma 		= $det->item($i)->getElementsByTagName("arma")->item(0);
-                $comb 		= $det->item($i)->getElementsByTagName("comb")->item(0);
-		
-                $i++;
+            //instanciar os grupos de dados internos da tag det
+            $prod	= $det->item($i)->getElementsByTagName("prod")->item(0);
+            $imposto	= $det->item($i)->getElementsByTagName("imposto")->item(0);
+            $ICMS	= $imposto->getElementsByTagName("ICMS")->item(0);
+            $ICMS00	= $ICMS->getElementsByTagName("ICMS00")->item(0);
+            $ICMS10	= $ICMS->getElementsByTagName("ICMS10")->item(0);
+            $ICMS20	= $ICMS->getElementsByTagName("ICMS20")->item(0);
+            $ICMS30	= $ICMS->getElementsByTagName("ICMS30")->item(0);
+            $ICMS40	= $ICMS->getElementsByTagName("ICMS40")->item(0);
+            $ICMS51	= $ICMS->getElementsByTagName("ICMS51")->item(0);
+            $ICMS60	= $ICMS->getElementsByTagName("ICMS60")->item(0);
+            $ICMS70	= $ICMS->getElementsByTagName("ICMS70")->item(0);
+            $ICMS90	= $ICMS->getElementsByTagName("ICMS90")->item(0);
+            $ICMSSN101	= $ICMS->getElementsByTagName("ICMSSN101")->item(0);
+            $ICMSSN102	= $ICMS->getElementsByTagName("ICMSSN102")->item(0);
+            $ICMSSN201	= $ICMS->getElementsByTagName("ICMSSN201")->item(0);
+            $ICMSSN202	= $ICMS->getElementsByTagName("ICMSSN202")->item(0);
+            $ICMSSN500	= $ICMS->getElementsByTagName("ICMSSN500")->item(0);
+            $ICMSSN900	= $ICMS->getElementsByTagName("ICMSSN900")->item(0);
+            $ICMSPart	= $ICMS->getElementsByTagName("ICMSPart")->item(0);	// VERIFICAR SE ESTA OK...
+            $ICMSST	= $ICMS->getElementsByTagName("ICMSST")->item(0);	// VERIFICAR SE ESTA OK...
+            $IPI	= $imposto->getElementsByTagName("IPI")->item(0);
+            $II 	= $imposto->getElementsByTagName("II")->item(0);
+            $PIS 	= $imposto->getElementsByTagName("PIS")->item(0);
+            $PISST 	= $imposto->getElementsByTagName("PISST")->item(0);
+            $COFINS 	= $imposto->getElementsByTagName("COFINS")->item(0);
+            $COFINSST 	= $imposto->getElementsByTagName("COFINSST")->item(0);
+            $ISSQN	= $imposto->getElementsByTagName("ISSQN")->item(0);
+            $DI 	= $det->item($i)->getElementsByTagName("DI")->item(0);
+            $veicProd 	= $det->item($i)->getElementsByTagName("veicProd")->item(0);
+            $med 	= $det->item($i)->getElementsByTagName("med")->item(0);
+            $arma 	= $det->item($i)->getElementsByTagName("arma")->item(0);
+            $comb 	= $det->item($i)->getElementsByTagName("comb")->item(0);
 
-		//V1=> I|cProd|cEAN|xProd|NCM|EXTIPI|genero|CFOP|uCom|qCom|vUnCom|vProd|cEANTrib|uTrib|qTrib|vUnTrib|vFrete|vSeg|vDesc|
-                //V2=> I|CProd|CEAN|XProd|NCM|EXTIPI|CFOP|UCom|QCom|VUnCom|VProd|CEANTrib|UTrib|QTrib|VUnTrib|VFrete|VSeg|VDesc|vOutro|indTot|xPed|nItemPed|
-                $cProd      =  !empty($prod->getElementsByTagName("cProd")->item(0)->nodeValue) ? $prod->getElementsByTagName("cProd")->item(0)->nodeValue : '';
-                $cEAN       =  !empty($prod->getElementsByTagName("cEAN")->item(0)->nodeValue) ? $prod->getElementsByTagName("cEAN")->item(0)->nodeValue : '';
-                $xProd      =  !empty($prod->getElementsByTagName("xProd")->item(0)->nodeValue) ? $prod->getElementsByTagName("xProd")->item(0)->nodeValue : '';
-                $NCM        =  !empty($prod->getElementsByTagName("NCM")->item(0)->nodeValue) ? $prod->getElementsByTagName("NCM")->item(0)->nodeValue : '';
-                $EXTIPI     =  !empty($prod->getElementsByTagName("EXTIPI")->item(0)->nodeValue) ? $prod->getElementsByTagName("EXTIPI")->item(0)->nodeValue : '';
-                #$genero     =  !empty($prod->getElementsByTagName("genero")->item(0)->nodeValue) ? $prod->getElementsByTagName("genero")->item(0)->nodeValue : '';
-                $CFOP       =  !empty($prod->getElementsByTagName("CFOP")->item(0)->nodeValue) ? $prod->getElementsByTagName("CFOP")->item(0)->nodeValue : '';
-                $uCom       =  !empty($prod->getElementsByTagName("uCom")->item(0)->nodeValue) ? $prod->getElementsByTagName("uCom")->item(0)->nodeValue : '';
-                $qCom       =  !empty($prod->getElementsByTagName("qCom")->item(0)->nodeValue) ? $prod->getElementsByTagName("qCom")->item(0)->nodeValue : '';
-                $vUnCom     =  !empty($prod->getElementsByTagName("vUnCom")->item(0)->nodeValue) ? $prod->getElementsByTagName("vUnCom")->item(0)->nodeValue : '';
-                $vProd      =  !empty($prod->getElementsByTagName("vProd")->item(0)->nodeValue) ? $prod->getElementsByTagName("vProd")->item(0)->nodeValue : '';
-                $cEANTrib   =  !empty($prod->getElementsByTagName("cEANTrib")->item(0)->nodeValue) ? $prod->getElementsByTagName("cEANTrib")->item(0)->nodeValue : '';
-                $uTrib      =  !empty($prod->getElementsByTagName("uTrib")->item(0)->nodeValue) ? $prod->getElementsByTagName("uTrib")->item(0)->nodeValue : '';
-                $qTrib      =  !empty($prod->getElementsByTagName("qTrib")->item(0)->nodeValue) ? $prod->getElementsByTagName("qTrib")->item(0)->nodeValue : '';
-                $vUnTrib    =  !empty($prod->getElementsByTagName("vUnTrib")->item(0)->nodeValue) ? $prod->getElementsByTagName("vUnTrib")->item(0)->nodeValue : '';
-                $vFrete     =  !empty($prod->getElementsByTagName("vFrete")->item(0)->nodeValue) ? $prod->getElementsByTagName("vFrete")->item(0)->nodeValue : '';
-                $vSeg       =  !empty($prod->getElementsByTagName("vSeg")->item(0)->nodeValue) ? $prod->getElementsByTagName("vSeg")->item(0)->nodeValue : '';
-                $vDesc      =  !empty($prod->getElementsByTagName("vDesc")->item(0)->nodeValue) ? $prod->getElementsByTagName("vDesc")->item(0)->nodeValue : '';
-                $vOutro     =  !empty($prod->getElementsByTagName("vOutro")->item(0)->nodeValue) ? $prod->getElementsByTagName("vOutro")->item(0)->nodeValue : '';
-                $indTot     =  !empty($prod->getElementsByTagName("indTot")->item(0)->nodeValue) ? $prod->getElementsByTagName("indTot")->item(0)->nodeValue : '';
-                $xPed       =  !empty($prod->getElementsByTagName("xPed")->item(0)->nodeValue) ? $prod->getElementsByTagName("xPed")->item(0)->nodeValue : '';
-                $nItemPed   =  !empty($prod->getElementsByTagName("nItemPed")->item(0)->nodeValue) ? $prod->getElementsByTagName("nItemPed")->item(0)->nodeValue : '';
-		$txt .= "I|$cProd|$cEAN|$xProd|$NCM|$EXTIPI|$CFOP|$uCom|$qCom|$vUnCom|$vProd|$cEANTrib|$uTrib|$qTrib|$vUnTrib|$vFrete|$vSeg|$vDesc|$vOutro|$indTot|$xPed|$nItemPed|\r\n";
+            $i++;
+            //I|CProd|CEAN|XProd|NCM|EXTIPI|CFOP|UCom|QCom|VUnCom|VProd|CEANTrib|UTrib|QTrib|VUnTrib|VFrete|VSeg|VDesc|vOutro|indTot|xPed|nItemPed|
+            $cProd      =  !empty($prod->getElementsByTagName("cProd")->item(0)->nodeValue) ? $prod->getElementsByTagName("cProd")->item(0)->nodeValue : '';
+            $cEAN       =  !empty($prod->getElementsByTagName("cEAN")->item(0)->nodeValue) ? $prod->getElementsByTagName("cEAN")->item(0)->nodeValue : '';
+            $xProd      =  !empty($prod->getElementsByTagName("xProd")->item(0)->nodeValue) ? $prod->getElementsByTagName("xProd")->item(0)->nodeValue : '';
+            $NCM        =  !empty($prod->getElementsByTagName("NCM")->item(0)->nodeValue) ? $prod->getElementsByTagName("NCM")->item(0)->nodeValue : '';
+            $EXTIPI     =  !empty($prod->getElementsByTagName("EXTIPI")->item(0)->nodeValue) ? $prod->getElementsByTagName("EXTIPI")->item(0)->nodeValue : '';
+            $CFOP       =  !empty($prod->getElementsByTagName("CFOP")->item(0)->nodeValue) ? $prod->getElementsByTagName("CFOP")->item(0)->nodeValue : '';
+            $uCom       =  !empty($prod->getElementsByTagName("uCom")->item(0)->nodeValue) ? $prod->getElementsByTagName("uCom")->item(0)->nodeValue : '';
+            $qCom       =  !empty($prod->getElementsByTagName("qCom")->item(0)->nodeValue) ? $prod->getElementsByTagName("qCom")->item(0)->nodeValue : '';
+            $vUnCom     =  !empty($prod->getElementsByTagName("vUnCom")->item(0)->nodeValue) ? $prod->getElementsByTagName("vUnCom")->item(0)->nodeValue : '';
+            $vProd      =  !empty($prod->getElementsByTagName("vProd")->item(0)->nodeValue) ? $prod->getElementsByTagName("vProd")->item(0)->nodeValue : '';
+            $cEANTrib   =  !empty($prod->getElementsByTagName("cEANTrib")->item(0)->nodeValue) ? $prod->getElementsByTagName("cEANTrib")->item(0)->nodeValue : '';
+            $uTrib      =  !empty($prod->getElementsByTagName("uTrib")->item(0)->nodeValue) ? $prod->getElementsByTagName("uTrib")->item(0)->nodeValue : '';
+            $qTrib      =  !empty($prod->getElementsByTagName("qTrib")->item(0)->nodeValue) ? $prod->getElementsByTagName("qTrib")->item(0)->nodeValue : '';
+            $vUnTrib    =  !empty($prod->getElementsByTagName("vUnTrib")->item(0)->nodeValue) ? $prod->getElementsByTagName("vUnTrib")->item(0)->nodeValue : '';
+            $vFrete     =  !empty($prod->getElementsByTagName("vFrete")->item(0)->nodeValue) ? $prod->getElementsByTagName("vFrete")->item(0)->nodeValue : '';
+            $vSeg       =  !empty($prod->getElementsByTagName("vSeg")->item(0)->nodeValue) ? $prod->getElementsByTagName("vSeg")->item(0)->nodeValue : '';
+            $vDesc      =  !empty($prod->getElementsByTagName("vDesc")->item(0)->nodeValue) ? $prod->getElementsByTagName("vDesc")->item(0)->nodeValue : '';
+            $vOutro     =  !empty($prod->getElementsByTagName("vOutro")->item(0)->nodeValue) ? $prod->getElementsByTagName("vOutro")->item(0)->nodeValue : '';
+            $indTot     =  !empty($prod->getElementsByTagName("indTot")->item(0)->nodeValue) ? $prod->getElementsByTagName("indTot")->item(0)->nodeValue : '';
+            $xPed       =  !empty($prod->getElementsByTagName("xPed")->item(0)->nodeValue) ? $prod->getElementsByTagName("xPed")->item(0)->nodeValue : '';
+            $nItemPed   =  !empty($prod->getElementsByTagName("nItemPed")->item(0)->nodeValue) ? $prod->getElementsByTagName("nItemPed")->item(0)->nodeValue : '';
+            $txt .= "I|$cProd|$cEAN|$xProd|$NCM|$EXTIPI|$CFOP|$uCom|$qCom|$vUnCom|$vProd|$cEANTrib|$uTrib|$qTrib|$vUnTrib|$vFrete|$vSeg|$vDesc|$vOutro|$indTot|$xPed|$nItemPed|\r\n";
 
-                //I18|nDI|dDI|xLocDesemb|UFDesemb|dDesemb|cExportador|
-                if ( isset($DI) ){
-		    foreach ( $DI as $x => $k){
-			    $nDI	= !empty($DI->item($x)->getElementsByTagName("nDI")->item(0)->nodeValue) ? $DI->item($x)->getElementsByTagName("nDI")->item(0)->nodeValue : '';
-			    $dDI	= !empty($DI->item($x)->getElementsByTagName("nDI")->item(0)->nodeValue) ? $DI->item($x)->getElementsByTagName("nDI")->item(0)->nodeValue : '';
-			    $xLocDesemb	= !empty($DI->item($x)->getElementsByTagName("nDI")->item(0)->nodeValue) ? $DI->item($x)->getElementsByTagName("nDI")->item(0)->nodeValue : '';
-			    $UFDesemb	= !empty($DI->item($x)->getElementsByTagName("nDI")->item(0)->nodeValue) ? $DI->item($x)->getElementsByTagName("nDI")->item(0)->nodeValue : '';
-			    $dDesemb	= !empty($DI->item($x)->getElementsByTagName("nDI")->item(0)->nodeValue) ? $DI->item($x)->getElementsByTagName("nDI")->item(0)->nodeValue : '';
-			    $cExportador= !empty($DI->item($x)->getElementsByTagName("nDI")->item(0)->nodeValue) ? $DI->item($x)->getElementsByTagName("nDI")->item(0)->nodeValue : '';
-			    $txt .= "I18|$nDI|$dDI|$xLocDesemb|$UFDesemb|$dDesemb|$cExportador|\r\n";
-			    $adi = $DI->item($X)->getElementsByTagName("adi")->item(0);
-			    if ( isset($adi) ){
-				foreach ( $adi as $y => $k){
-                		//I25|nAdicao|nSeqAdic|cFabricante|vDescDI|
-				    $nAdicao	= !empty($adi->item($y)->getElementsByTagName("nAdicao")->item(0)->nodeValue) ? $adi->item($y)->getElementsByTagName("nAdicao")->item(0)->nodeValue : '';
-				    $nSeqAdic	= !empty($adi->item($y)->getElementsByTagName("nSeqAdic")->item(0)->nodeValue) ? $adi->item($y)->getElementsByTagName("nSeqAdic")->item(0)->nodeValue : '';
-				    $cFabricante= !empty($adi->item($y)->getElementsByTagName("cFabricante")->item(0)->nodeValue) ? $adi->item($y)->getElementsByTagName("cFabricante")->item(0)->nodeValue : '';
-				    $vDescDI	= !empty($adi->item($y)->getElementsByTagName("vDescDI")->item(0)->nodeValue) ? $adi->item($y)->getElementsByTagName("vDescDI")->item(0)->nodeValue : '';
-				    $txt .= "I25|$nAdicao|$nSeqAdic|$cFabricante|$vDescDI|\r\n";
-				} //fim adição
-			    }
-		    }
-                } //fim importação
+            
+            //I18|nDI|dDI|xLocDesemb|UFDesemb|dDesemb|cExportador|
+            if ( isset($DI) ){
+                foreach ( $DI as $x => $k){
+                    $nDI	= !empty($DI->item($x)->getElementsByTagName("nDI")->item(0)->nodeValue) ? $DI->item($x)->getElementsByTagName("nDI")->item(0)->nodeValue : '';
+                    $dDI	= !empty($DI->item($x)->getElementsByTagName("nDI")->item(0)->nodeValue) ? $DI->item($x)->getElementsByTagName("nDI")->item(0)->nodeValue : '';
+                    $xLocDesemb	= !empty($DI->item($x)->getElementsByTagName("nDI")->item(0)->nodeValue) ? $DI->item($x)->getElementsByTagName("nDI")->item(0)->nodeValue : '';
+                    $UFDesemb	= !empty($DI->item($x)->getElementsByTagName("nDI")->item(0)->nodeValue) ? $DI->item($x)->getElementsByTagName("nDI")->item(0)->nodeValue : '';
+                    $dDesemb	= !empty($DI->item($x)->getElementsByTagName("nDI")->item(0)->nodeValue) ? $DI->item($x)->getElementsByTagName("nDI")->item(0)->nodeValue : '';
+                    $cExportador= !empty($DI->item($x)->getElementsByTagName("nDI")->item(0)->nodeValue) ? $DI->item($x)->getElementsByTagName("nDI")->item(0)->nodeValue : '';
+                    $txt .= "I18|$nDI|$dDI|$xLocDesemb|$UFDesemb|$dDesemb|$cExportador|\r\n";
+                    
+                    $adi = $DI->item($X)->getElementsByTagName("adi")->item(0);
+                    if ( isset($adi) ){
+                        foreach ( $adi as $y => $k){
+                            //I25|nAdicao|nSeqAdic|cFabricante|vDescDI|
+                            $nAdicao	= !empty($adi->item($y)->getElementsByTagName("nAdicao")->item(0)->nodeValue) ? $adi->item($y)->getElementsByTagName("nAdicao")->item(0)->nodeValue : '';
+                            $nSeqAdic	= !empty($adi->item($y)->getElementsByTagName("nSeqAdic")->item(0)->nodeValue) ? $adi->item($y)->getElementsByTagName("nSeqAdic")->item(0)->nodeValue : '';
+                            $cFabricante= !empty($adi->item($y)->getElementsByTagName("cFabricante")->item(0)->nodeValue) ? $adi->item($y)->getElementsByTagName("cFabricante")->item(0)->nodeValue : '';
+                            $vDescDI	= !empty($adi->item($y)->getElementsByTagName("vDescDI")->item(0)->nodeValue) ? $adi->item($y)->getElementsByTagName("vDescDI")->item(0)->nodeValue : '';
+                            $txt .= "I25|$nAdicao|$nSeqAdic|$cFabricante|$vDescDI|\r\n";
+                         } //fim adição
+                    }
+		}
+            } //fim importação
 
-                //v2=>J|TpOp|Chassi|CCor|XCor|Pot|cilin|pesoL|pesoB|NSerie|TpComb|NMotor|CMT|Dist|
-		//	anoMod|anoFab|tpPint|tpVeic|espVeic|VIN|condVeic|cMod|cCorDENATRAN|lota|tpRest| 
-                //v1=>J|tpOp|chassi|cCor|xCor|pot|CM3|pesoL|pesoB|nSerie|tpComb|nMotor|CMKG|dist|RENAVAM|
-		//	anoMod|anoFab|tpPint|tpVeic|espVeic|vIN|condVeic|cMod|
-		if ( isset($veicProd) ){
-                    $tpOp	= !empty($veicProd->getElementsByTagName("tpOp")->item(0)->nodeValue) ? $veicProd->getElementsByTagName("tpOp")->item(0)->nodeValue : '';
-                    $chassi	= !empty($veicProd->getElementsByTagName("chassi")->item(0)->nodeValue) ? $veicProd->getElementsByTagName("chassi")->item(0)->nodeValue : '';
-                    $cCor	= !empty($veicProd->getElementsByTagName("cCor")->item(0)->nodeValue) ? $veicProd->getElementsByTagName("cCor")->item(0)->nodeValue : '';
-                    $xCor	= !empty($veicProd->getElementsByTagName("xCor")->item(0)->nodeValue) ? $veicProd->getElementsByTagName("xCor")->item(0)->nodeValue : '';
-                    $pot	= !empty($veicProd->getElementsByTagName("pot")->item(0)->nodeValue) ? $veicProd->getElementsByTagName("pot")->item(0)->nodeValue : '';
-                    $cilin	= !empty($veicProd->getElementsByTagName("cilin")->item(0)->nodeValue) ? $veicProd->getElementsByTagName("cilin")->item(0)->nodeValue : '';
-                    $pesoL	= !empty($veicProd->getElementsByTagName("pesoL")->item(0)->nodeValue) ? $veicProd->getElementsByTagName("pesoL")->item(0)->nodeValue : '';
-                    $pesoB	= !empty($veicProd->getElementsByTagName("pesoB")->item(0)->nodeValue) ? $veicProd->getElementsByTagName("pesoB")->item(0)->nodeValue : '';
-                    $nSerie	= !empty($veicProd->getElementsByTagName("nSerie")->item(0)->nodeValue) ? $veicProd->getElementsByTagName("nSerie")->item(0)->nodeValue : '';
-                    $tpComb	= !empty($veicProd->getElementsByTagName("tpComb")->item(0)->nodeValue) ? $veicProd->getElementsByTagName("tpComb")->item(0)->nodeValue : '';
-                    $nMotor	= !empty($veicProd->getElementsByTagName("nMotor")->item(0)->nodeValue) ? $veicProd->getElementsByTagName("nMotor")->item(0)->nodeValue : '';
-                    $CMT	= !empty($veicProd->getElementsByTagName("CMT")->item(0)->nodeValue) ? $veicProd->getElementsByTagName("CMT")->item(0)->nodeValue : '';
-                    $dist	= !empty($veicProd->getElementsByTagName("dist")->item(0)->nodeValue) ? $veicProd->getElementsByTagName("dist")->item(0)->nodeValue : '';
-                    $anoMod	= !empty($veicProd->getElementsByTagName("anoMod")->item(0)->nodeValue) ? $veicProd->getElementsByTagName("anoMod")->item(0)->nodeValue : '';
-                    $anoFab	= !empty($veicProd->getElementsByTagName("anoFab")->item(0)->nodeValue) ? $veicProd->getElementsByTagName("anoFab")->item(0)->nodeValue : '';
-                    $tpPint	= !empty($veicProd->getElementsByTagName("tpPint")->item(0)->nodeValue) ? $veicProd->getElementsByTagName("tpPint")->item(0)->nodeValue : '';
-                    $tpVeic	= !empty($veicProd->getElementsByTagName("tpVeic")->item(0)->nodeValue) ? $veicProd->getElementsByTagName("tpVeic")->item(0)->nodeValue : '';
-                    $espVeic	= !empty($veicProd->getElementsByTagName("espVeic")->item(0)->nodeValue) ? $veicProd->getElementsByTagName("espVeic")->item(0)->nodeValue : '';
-                    $vIN	= !empty($veicProd->getElementsByTagName("vIN")->item(0)->nodeValue) ? $veicProd->getElementsByTagName("vIN")->item(0)->nodeValue : '';
-                    $condVeic	= !empty($veicProd->getElementsByTagName("condVeic")->item(0)->nodeValue) ? $veicProd->getElementsByTagName("condVeic")->item(0)->nodeValue : '';
-                    $cMod	= !empty($veicProd->getElementsByTagName("cMod")->item(0)->nodeValue) ? $veicProd->getElementsByTagName("cMod")->item(0)->nodeValue : '';
-                    $cCorDENATRAN= !empty($veicProd->getElementsByTagName("cCorDENATRAN")->item(0)->nodeValue) ? $veicProd->getElementsByTagName("cCorDENATRAN")->item(0)->nodeValue : '';
-                    $lota	= !empty($veicProd->getElementsByTagName("lota")->item(0)->nodeValue) ? $veicProd->getElementsByTagName("lota")->item(0)->nodeValue : '';
-                    $tpRest	= !empty($veicProd->getElementsByTagName("tpRest")->item(0)->nodeValue) ? $veicProd->getElementsByTagName("tpRest")->item(0)->nodeValue : '';
-                    $txt .= "J|$tpOp|$chassi|$cCor|$xCor|$pot|$cilin|$pesoL|$pesoB|$nSerie|$tpComb|$nMotor|$CMT|$dist|".
-				"$anoMod|$anoFab|$tpPint|$tpVeic|$espVeic|$vIN|$condVeic|$cMod|$cCorDENATRAN|$lote|$tpRest|\r\n";
-                } // fim veiculos novos
+            //v2=>J|TpOp|Chassi|CCor|XCor|Pot|cilin|pesoL|pesoB|NSerie|TpComb|NMotor|CMT|Dist|
+            //	anoMod|anoFab|tpPint|tpVeic|espVeic|VIN|condVeic|cMod|cCorDENATRAN|lota|tpRest| 
+            if ( isset($veicProd) ){
+                $tpOp	= !empty($veicProd->getElementsByTagName("tpOp")->item(0)->nodeValue) ? $veicProd->getElementsByTagName("tpOp")->item(0)->nodeValue : '';
+                $chassi	= !empty($veicProd->getElementsByTagName("chassi")->item(0)->nodeValue) ? $veicProd->getElementsByTagName("chassi")->item(0)->nodeValue : '';
+                $cCor	= !empty($veicProd->getElementsByTagName("cCor")->item(0)->nodeValue) ? $veicProd->getElementsByTagName("cCor")->item(0)->nodeValue : '';
+                $xCor	= !empty($veicProd->getElementsByTagName("xCor")->item(0)->nodeValue) ? $veicProd->getElementsByTagName("xCor")->item(0)->nodeValue : '';
+                $pot	= !empty($veicProd->getElementsByTagName("pot")->item(0)->nodeValue) ? $veicProd->getElementsByTagName("pot")->item(0)->nodeValue : '';
+                $cilin	= !empty($veicProd->getElementsByTagName("cilin")->item(0)->nodeValue) ? $veicProd->getElementsByTagName("cilin")->item(0)->nodeValue : '';
+                $pesoL	= !empty($veicProd->getElementsByTagName("pesoL")->item(0)->nodeValue) ? $veicProd->getElementsByTagName("pesoL")->item(0)->nodeValue : '';
+                $pesoB	= !empty($veicProd->getElementsByTagName("pesoB")->item(0)->nodeValue) ? $veicProd->getElementsByTagName("pesoB")->item(0)->nodeValue : '';
+                $nSerie	= !empty($veicProd->getElementsByTagName("nSerie")->item(0)->nodeValue) ? $veicProd->getElementsByTagName("nSerie")->item(0)->nodeValue : '';
+                $tpComb	= !empty($veicProd->getElementsByTagName("tpComb")->item(0)->nodeValue) ? $veicProd->getElementsByTagName("tpComb")->item(0)->nodeValue : '';
+                $nMotor	= !empty($veicProd->getElementsByTagName("nMotor")->item(0)->nodeValue) ? $veicProd->getElementsByTagName("nMotor")->item(0)->nodeValue : '';
+                $CMT	= !empty($veicProd->getElementsByTagName("CMT")->item(0)->nodeValue) ? $veicProd->getElementsByTagName("CMT")->item(0)->nodeValue : '';
+                $dist	= !empty($veicProd->getElementsByTagName("dist")->item(0)->nodeValue) ? $veicProd->getElementsByTagName("dist")->item(0)->nodeValue : '';
+                $anoMod	= !empty($veicProd->getElementsByTagName("anoMod")->item(0)->nodeValue) ? $veicProd->getElementsByTagName("anoMod")->item(0)->nodeValue : '';
+                $anoFab	= !empty($veicProd->getElementsByTagName("anoFab")->item(0)->nodeValue) ? $veicProd->getElementsByTagName("anoFab")->item(0)->nodeValue : '';
+                $tpPint	= !empty($veicProd->getElementsByTagName("tpPint")->item(0)->nodeValue) ? $veicProd->getElementsByTagName("tpPint")->item(0)->nodeValue : '';
+                $tpVeic	= !empty($veicProd->getElementsByTagName("tpVeic")->item(0)->nodeValue) ? $veicProd->getElementsByTagName("tpVeic")->item(0)->nodeValue : '';
+                $espVeic	= !empty($veicProd->getElementsByTagName("espVeic")->item(0)->nodeValue) ? $veicProd->getElementsByTagName("espVeic")->item(0)->nodeValue : '';
+                $vIN	= !empty($veicProd->getElementsByTagName("vIN")->item(0)->nodeValue) ? $veicProd->getElementsByTagName("vIN")->item(0)->nodeValue : '';
+                $condVeic	= !empty($veicProd->getElementsByTagName("condVeic")->item(0)->nodeValue) ? $veicProd->getElementsByTagName("condVeic")->item(0)->nodeValue : '';
+                $cMod	= !empty($veicProd->getElementsByTagName("cMod")->item(0)->nodeValue) ? $veicProd->getElementsByTagName("cMod")->item(0)->nodeValue : '';
+                $cCorDENATRAN= !empty($veicProd->getElementsByTagName("cCorDENATRAN")->item(0)->nodeValue) ? $veicProd->getElementsByTagName("cCorDENATRAN")->item(0)->nodeValue : '';
+                $lota	= !empty($veicProd->getElementsByTagName("lota")->item(0)->nodeValue) ? $veicProd->getElementsByTagName("lota")->item(0)->nodeValue : '';
+                $tpRest	= !empty($veicProd->getElementsByTagName("tpRest")->item(0)->nodeValue) ? $veicProd->getElementsByTagName("tpRest")->item(0)->nodeValue : '';
+                $txt .= "J|$tpOp|$chassi|$cCor|$xCor|$pot|$cilin|$pesoL|$pesoB|$nSerie|$tpComb|$nMotor|$CMT|$dist|$anoMod|$anoFab|$tpPint|$tpVeic|$espVeic|$vIN|$condVeic|$cMod|$cCorDENATRAN|$lote|$tpRest|\r\n";
+            } // fim veiculos novos
 
-                //K|nLote|qLote|dFab|dVal|vPMC|
-                if ( isset($med) ){
-                    foreach ( $med as $x => $k){
-			$nLote	= !empty($med->item($x)->getElementsByTagName("nLote")->item(0)->nodeValue) ? $med->item($x)->getElementsByTagName("nLote")->item(0)->nodeValue : '';
-			$qLote	= !empty($med->item($x)->getElementsByTagName("qLote")->item(0)->nodeValue) ? $med->item($x)->getElementsByTagName("qLote")->item(0)->nodeValue : '';
-			$dFab	= !empty($med->item($x)->getElementsByTagName("dFab")->item(0)->nodeValue) ? $med->item($x)->getElementsByTagName("dFab")->item(0)->nodeValue : '';
-			$dVal	= !empty($med->item($x)->getElementsByTagName("dVal")->item(0)->nodeValue) ? $med->item($x)->getElementsByTagName("dVal")->item(0)->nodeValue : '';
-			$vPMC	= !empty($med->item($x)->getElementsByTagName("vPMC")->item(0)->nodeValue) ? $med->item($x)->getElementsByTagName("vPMC")->item(0)->nodeValue : '';
-			$txt .= "K|$nLote|$qLote|$dFab|$dVal|$vPMC|\r\n";
-		    }
-                } // fim medicamentos
+            //K|nLote|qLote|dFab|dVal|vPMC|
+            if ( isset($med) ){
+                foreach ( $med as $x => $k){
+                    $nLote	= !empty($med->item($x)->getElementsByTagName("nLote")->item(0)->nodeValue) ? $med->item($x)->getElementsByTagName("nLote")->item(0)->nodeValue : '';
+                    $qLote	= !empty($med->item($x)->getElementsByTagName("qLote")->item(0)->nodeValue) ? $med->item($x)->getElementsByTagName("qLote")->item(0)->nodeValue : '';
+                    $dFab	= !empty($med->item($x)->getElementsByTagName("dFab")->item(0)->nodeValue) ? $med->item($x)->getElementsByTagName("dFab")->item(0)->nodeValue : '';
+                    $dVal	= !empty($med->item($x)->getElementsByTagName("dVal")->item(0)->nodeValue) ? $med->item($x)->getElementsByTagName("dVal")->item(0)->nodeValue : '';
+                    $vPMC	= !empty($med->item($x)->getElementsByTagName("vPMC")->item(0)->nodeValue) ? $med->item($x)->getElementsByTagName("vPMC")->item(0)->nodeValue : '';
+                    $txt .= "K|$nLote|$qLote|$dFab|$dVal|$vPMC|\r\n";
+                } 
+            } // fim medicamentos
+            
 
-                //L|TpArma|NSerie|NCano|Descr| 
-                if ( isset($arma) ){
-                    foreach ( $arma as $x => $k){
-			$tpArma = !empty($arma->item($x)->getElementsByTagName("tpArma")->item(0)->nodeValue) ? $arma->item($x)->getElementsByTagName("tpArma")->item(0)->nodeValue : '';
-			$nSerie = !empty($arma->item($x)->getElementsByTagName("nSerie")->item(0)->nodeValue) ? $arma->item($x)->getElementsByTagName("nSerie")->item(0)->nodeValue : '';
-			$nCano = !empty($arma->item($x)->getElementsByTagName("nCano")->item(0)->nodeValue) ? $arma->item($x)->getElementsByTagName("nCano")->item(0)->nodeValue : '';
-			$descr = !empty($arma->item($x)->getElementsByTagName("descr")->item(0)->nodeValue) ? $arma->item($x)->getElementsByTagName("descr")->item(0)->nodeValue : '';
-			$txt .= "L|$tpArma|$nSerie|$nCano|$descr|\r\n";
-		    }
-                } // fim armas
+            //L|TpArma|NSerie|NCano|Descr| 
+            if ( isset($arma) ){
+                foreach ( $arma as $x => $k){
+                    $tpArma = !empty($arma->item($x)->getElementsByTagName("tpArma")->item(0)->nodeValue) ? $arma->item($x)->getElementsByTagName("tpArma")->item(0)->nodeValue : '';
+                    $nSerie = !empty($arma->item($x)->getElementsByTagName("nSerie")->item(0)->nodeValue) ? $arma->item($x)->getElementsByTagName("nSerie")->item(0)->nodeValue : '';
+                    $nCano = !empty($arma->item($x)->getElementsByTagName("nCano")->item(0)->nodeValue) ? $arma->item($x)->getElementsByTagName("nCano")->item(0)->nodeValue : '';
+                    $descr = !empty($arma->item($x)->getElementsByTagName("descr")->item(0)->nodeValue) ? $arma->item($x)->getElementsByTagName("descr")->item(0)->nodeValue : '';
+                    $txt .= "L|$tpArma|$nSerie|$nCano|$descr|\r\n";
+		}
+            } // fim armas
 
-                //combustiveis
-                if ( isset($comb) ){
-			//L01|CProdANP|CODIF|QTemp|UFCons| 
-			//instanciar sub grups da tag comb
-			$CIDE		= $comb->getElementsByTagName("CIDE")->item(0);
-			$cProdANP	= !empty($comb->getElementsByTagName("cProdANP")->item(0)->nodeValue) ? $comb->getElementsByTagName("cProdANP")->item(0)->nodeValue : '';
-			$CODIF		= !empty($comb->getElementsByTagName("CODIF")->item(0)->nodeValue) ? $comb->getElementsByTagName("CODIF")->item(0)->nodeValue : '';
-			$qTemp		= !empty($comb->getElementsByTagName("qTemp")->item(0)->nodeValue) ? $comb->getElementsByTagName("qTemp")->item(0)->nodeValue : '';
-			$UFCons		= !empty($comb->getElementsByTagName("UFCons")->item(0)->nodeValue) ? $comb->getElementsByTagName("UFCons")->item(0)->nodeValue : '';
-			$txt .= "L01|$cProdANP|$CODIF|$qTemp|$UFCons|\r\n";
-			//grupo CIDE
-			if ( isset($CIDE) ){
-				//L105|qBCProd|vAliqProd|vCIDE|
-				$qBCprod	= !empty($CIDE->getElementsByTagName("qBCprod")->item(0)->nodeValue) ? $CIDE->getElementsByTagName("qBCprod")->item(0)->nodeValue : '';
-				$vAliqProd	= !empty($CIDE->getElementsByTagName("vAliqProd")->item(0)->nodeValue) ? $CIDE->getElementsByTagName("vAliqProd")->item(0)->nodeValue : '';
-				$vCIDE		= !empty($CIDE->getElementsByTagName("vCIDE")->item(0)->nodeValue) ? $CIDE->getElementsByTagName("vCIDE")->item(0)->nodeValue : '';
-				$txt .= "L105|$qBCProd|$vAliqProd|$vCIDE|\r\n";
-			} // fim grupo CIDE
-			/*
-			#$ICMSComb	= $comb->getElementsByTagName("ICMSComb")->item(0);
-			#$ICMSInter	= $comb->getElementsByTagName("ICMSInter")->item(0);
-			#$ICMSCons	= $comb->getElementsByTagName("ICMSCons")->item(0);
-			// não achei no V2
-			    //grupo ICMSComb
-			    if ( isset($ICMSComb) ){
-				//L109|VBCICMS|VICMS|VBCICMSST|VICMSST|
-				$vBCICMS = !empty($ICMSComb->getElementsByTagName("vBCICMS")->item(0)->nodeValue) ? $ICMSComb->getElementsByTagName("vBCICMS")->item(0)->nodeValue : '';
-				$vICMS = !empty($ICMSComb->getElementsByTagName("vICMS")->item(0)->nodeValue) ? $ICMSComb->getElementsByTagName("vICMS")->item(0)->nodeValue : '';
-				$vBCICMSST = !empty($ICMSComb->getElementsByTagName("vBCICMSST")->item(0)->nodeValue) ? $ICMSComb->getElementsByTagName("vBCICMSST")->item(0)->nodeValue : '';
-				$vICMSST = !empty($ICMSComb->getElementsByTagName("vICMSST")->item(0)->nodeValue) ? $ICMSComb->getElementsByTagName("vBCICMSST")->item(0)->nodeValue : '';
-				$txt .= "L109|$vBCICMS|$vICMS|$vBCICMSST|$vICMSST|\r\n";
-			    } // fim ICMSComb
-			    //grupo ICMSInter
-			    if ( isset($ICMSInter) ){
-				 //L114|VBCICMSST|VICMSST|
-				 $vBCICMSSTDest = !empty($ICMSInter->getElementsByTagName("vBCICMSSTDest")->item(0)->nodeValue) ? $ICMSInter->getElementsByTagName("vBCICMSST")->item(0)->nodeValue : '';
-				 $vICMSSTDest = !empty($ICMSInter->getElementsByTagName("vICMSSTDest")->item(0)->nodeValue) ? $ICMSInter->getElementsByTagName("vICMSST")->item(0)->nodeValue : '';
-				 $txt .= "L114|$vBCICMSSTDest|$vICMSSTDest|";
-			    } //fim ICMSInter
-			    //grupo ICMSCons
-			    if ( isset($ICMSCons) ){
-				//L117|VBCICMSSTCons|VICMSSTCons|UFCons|
-				$vBCICMSSTCons = !empty($ICMSInter->getElementsByTagName("vBCICMSSTCons")->item(0)->nodeValue) ? $ICMSInter->getElementsByTagName("vBCICMSSTCons")->item(0)->nodeValue : '';
-				$vICMSSTCons = !empty($ICMSInter->getElementsByTagName("vICMSSTCons")->item(0)->nodeValue) ? $ICMSInter->getElementsByTagName("vICMSSTCons")->item(0)->nodeValue : '';
-				$UFCons = !empty($ICMSInter->getElementsByTagName("UFCons")->item(0)->nodeValue) ? $ICMSInter->getElementsByTagName("UFCons")->item(0)->nodeValue : '';
-			    } //fim ICMSCons
-			*/
-                } //fim combustiveis
+            //combustiveis
+            if ( isset($comb) ){
+                //L01|CProdANP|CODIF|QTemp|UFCons| 
+		//instanciar sub grups da tag comb
+		$CIDE       = $comb->getElementsByTagName("CIDE")->item(0);
+		$cProdANP   = !empty($comb->getElementsByTagName("cProdANP")->item(0)->nodeValue) ? $comb->getElementsByTagName("cProdANP")->item(0)->nodeValue : '';
+		$CODIF      = !empty($comb->getElementsByTagName("CODIF")->item(0)->nodeValue) ? $comb->getElementsByTagName("CODIF")->item(0)->nodeValue : '';
+		$qTemp      = !empty($comb->getElementsByTagName("qTemp")->item(0)->nodeValue) ? $comb->getElementsByTagName("qTemp")->item(0)->nodeValue : '';
+		$UFCons     = !empty($comb->getElementsByTagName("UFCons")->item(0)->nodeValue) ? $comb->getElementsByTagName("UFCons")->item(0)->nodeValue : '';
+		$txt .= "L01|$cProdANP|$CODIF|$qTemp|$UFCons|\r\n";
+                //grupo CIDE
+		if ( isset($CIDE) ){
+                    //L105|qBCProd|vAliqProd|vCIDE|
+                    $qBCProd	= !empty($CIDE->getElementsByTagName("qBCprod")->item(0)->nodeValue) ? $CIDE->getElementsByTagName("qBCprod")->item(0)->nodeValue : '';
+                    $vAliqProd	= !empty($CIDE->getElementsByTagName("vAliqProd")->item(0)->nodeValue) ? $CIDE->getElementsByTagName("vAliqProd")->item(0)->nodeValue : '';
+                    $vCIDE	= !empty($CIDE->getElementsByTagName("vCIDE")->item(0)->nodeValue) ? $CIDE->getElementsByTagName("vCIDE")->item(0)->nodeValue : '';
+                    $txt .= "L105|$qBCProd|$vAliqProd|$vCIDE|\r\n";
+                } // fim grupo CIDE
+            } //fim combustiveis
 
-                //M|
-                $txt .= "M|\r\n";
-                //N|
+
+            //M|
+            $txt .= "M|\r\n";
+            //N|
                 $txt .= "N|\r\n";
 		$orig		= !empty($ICMS->getElementsByTagName("orig")->item(0)->nodeValue) ? $ICMS->getElementsByTagName("orig")->item(0)->nodeValue : '';
                 $CST		= (string) !empty($ICMS->getElementsByTagName("CST")->item(0)->nodeValue) ? $ICMS->getElementsByTagName("CST")->item(0)->nodeValue : '';
@@ -875,256 +1126,17 @@ class UnConvertNFePHP {
 			$txt .= "T04|$qBCProd|$vAliqProd|\r\n";
 		    }
                 } //fim COFINSST
-        } // fim foreach produtos
+        } //fim fopreach itens
+  
+        return $txt;
+    } //fim __getItens    
+    
+}//fim da classe    
+    
+    
+    /*
 
-        //W|
-        $txt .= "W|\r\n";
-        $vBC	= !empty($ICMSTot->getElementsByTagName("vBC")->item(0)->nodeValue) ? $ICMSTot->getElementsByTagName("vBC")->item(0)->nodeValue : '';
-        $vICMS	= !empty($ICMSTot->getElementsByTagName("vICMS")->item(0)->nodeValue) ? $ICMSTot->getElementsByTagName("vICMS")->item(0)->nodeValue : '';
-        $vBCST	= !empty($ICMSTot->getElementsByTagName("vBCST")->item(0)->nodeValue) ? $ICMSTot->getElementsByTagName("vBCST")->item(0)->nodeValue : '';
-        $vST	= !empty($ICMSTot->getElementsByTagName("vST")->item(0)->nodeValue) ? $ICMSTot->getElementsByTagName("vST")->item(0)->nodeValue : '';
-        $vProd	= !empty($ICMSTot->getElementsByTagName("vProd")->item(0)->nodeValue) ? $ICMSTot->getElementsByTagName("vProd")->item(0)->nodeValue : '';
-        $vFrete	= !empty($ICMSTot->getElementsByTagName("vFrete")->item(0)->nodeValue) ? $ICMSTot->getElementsByTagName("vFrete")->item(0)->nodeValue : '';
-        $vSeg	= !empty($ICMSTot->getElementsByTagName("vSeg")->item(0)->nodeValue) ? $ICMSTot->getElementsByTagName("vSeg")->item(0)->nodeValue : '';
-        $vDesc	= !empty($ICMSTot->getElementsByTagName("vDesc")->item(0)->nodeValue) ? $ICMSTot->getElementsByTagName("vDesc")->item(0)->nodeValue : '';
-        $vII	= !empty($ICMSTot->getElementsByTagName("vII")->item(0)->nodeValue) ? $ICMSTot->getElementsByTagName("vII")->item(0)->nodeValue : '';
-        $vIPI	= !empty($ICMSTot->getElementsByTagName("vIPI")->item(0)->nodeValue) ? $ICMSTot->getElementsByTagName("vIPI")->item(0)->nodeValue : '';
-        $vPIS	= !empty($ICMSTot->getElementsByTagName("vPIS")->item(0)->nodeValue) ? $ICMSTot->getElementsByTagName("vPIS")->item(0)->nodeValue : '';
-        $vCOFINS= !empty($ICMSTot->getElementsByTagName("vCOFINS")->item(0)->nodeValue) ? $ICMSTot->getElementsByTagName("vCOFINS")->item(0)->nodeValue : '';
-        $vOutro	= !empty($ICMSTot->getElementsByTagName("vOutro")->item(0)->nodeValue) ? $ICMSTot->getElementsByTagName("vOutro")->item(0)->nodeValue : '';
-        $vNF	= !empty($ICMSTot->getElementsByTagName("vNF")->item(0)->nodeValue) ? $ICMSTot->getElementsByTagName("vNF")->item(0)->nodeValue : '';
 
-        //W02|vBC|vICMS|vBCST|vST|vProd|vFrete|vSeg|vDesc|vII|vIPI|vPIS|vCOFINS|vOutro|vNF|
-        $txt .= "W02|$vBC|$vICMS|$vBCST|$vST|$vProd|$vFrete|$vSeg|$vDesc|$vII|$vIPI|$vPIS|$vCOFINS|$vOutro|$vNF|\r\n";
-
-        // monta dados do total de ISS
-        if (isset($ISSQNtot)){
-            //W17|VServ|VBC|VISS|VPIS|VCOFINS|
-            $vServ	= !empty($ISSQNTot->getElementsByTagName("vServ")->item(0)->nodeValue) ? $ISSQNTot->getElementsByTagName("vServ")->item(0)->nodeValue : '';
-            $vBC	= !empty($ISSQNTot->getElementsByTagName("vBC")->item(0)->nodeValue) ? $ISSQNTot->getElementsByTagName("vBC")->item(0)->nodeValue : '';
-            $vISS	= !empty($ISSQNTot->getElementsByTagName("vISS")->item(0)->nodeValue) ? $ISSQNTot->getElementsByTagName("vISS")->item(0)->nodeValue : '';
-            $vPIS	= !empty($ISSQNTot->getElementsByTagName("vPIS")->item(0)->nodeValue) ? $ISSQNTot->getElementsByTagName("vPIS")->item(0)->nodeValue : '';
-            $vCOFINS	= !empty($ISSQNTot->getElementsByTagName("vCOFINS")->item(0)->nodeValue) ? $ISSQNTot->getElementsByTagName("vCOFINS")->item(0)->nodeValue : '';
-            $txt .= "W17|$vServ|$vBC|$vISS|$vPIS|$vCOFINS|\r\n";
-        } //fim ISSQNtot
-
-        //monta dados da Retenção de tributos
-        if ( isset($retTrib) ) {
-            //W23|VRetPIS|VRetCOFINS|VRetCSLL|VBCIRRF|VIRRF|VBCRetPrev|VRetPrev| 
-            $vRetPIS	= !empty($retTrib->getElementsByTagName("vRetPIS")->item(0)->nodeValue) ? $retTrib->getElementsByTagName("vRetPIS")->item(0)->nodeValue : '';
-            $vRetCOFINS	= !empty($retTrib->getElementsByTagName("vRetCOFINS")->item(0)->nodeValue) ? $retTrib->getElementsByTagName("vRetCOFINS")->item(0)->nodeValue : '';
-            $vRetCSLL	= !empty($retTrib->getElementsByTagName("vRetCSLL")->item(0)->nodeValue) ? $retTrib->getElementsByTagName("vRetCSLL")->item(0)->nodeValue : '';
-            $vBCIRRF	= !empty($retTrib->getElementsByTagName("vBCIRRF")->item(0)->nodeValue) ? $retTrib->getElementsByTagName("vBCIRRF")->item(0)->nodeValue : '';
-            $vIRRF	= !empty($retTrib->getElementsByTagName("vIRRF")->item(0)->nodeValue) ? $retTrib->getElementsByTagName("vIRRF")->item(0)->nodeValue : '';
-            $vBCRetPrev	= !empty($retTrib->getElementsByTagName("vBCRetPrev")->item(0)->nodeValue) ? $retTrib->getElementsByTagName("vBCRetPrev")->item(0)->nodeValue : '';
-            $vRetPrev	= !empty($retTrib->getElementsByTagName("vRetPrev")->item(0)->nodeValue) ? $retTrib->getElementsByTagName("vRetPrev")->item(0)->nodeValue : '';
-            $txt .= "W23|$vRetPIS|$vRetCOFINS|$vRetCSLL|$vBCIRRF|$vIRRF|$vBCRetPrev|$vRetPrev|\r\n";
-        }
-
-        //monta dados de Transportes
-        if ( isset($transp) ) {
-            //instancia sub grupos da tag transp
-            $transporta	= $dom->getElementsByTagName("transporta")->item(0);
-            $retTransp	= $dom->getElementsByTagName("retTransp")->item(0);
-            $veicTransp	= $dom->getElementsByTagName("veicTransp")->item(0);
-            $reboque	= $dom->getElementsByTagName("reboque");
-            $vol	= $dom->getElementsByTagName("vol");
-            
-            //X|ModFrete| 
-            $modFrete	= !empty($transp->getElementsByTagName("modFrete")->item(0)->nodeValue) ? $transp->getElementsByTagName("modFrete")->item(0)->nodeValue : '';
-            $txt .= "X|$modFrete|\r\n";
-            if ( isset($transporta) ){
-                $CNPJ	= !empty($transporta->getElementsByTagName("CNPJ")->item(0)->nodeValue) ? $transporta->getElementsByTagName("CNPJ")->item(0)->nodeValue : '';
-                $CPF	= !empty($transporta->getElementsByTagName("CPF")->item(0)->nodeValue) ? $transporta->getElementsByTagName("CPF")->item(0)->nodeValue : '';
-                $IE	= !empty($transporta->getElementsByTagName("IE")->item(0)->nodeValue) ? $transporta->getElementsByTagName("IE")->item(0)->nodeValue : '';
-                $xNome	= !empty($transporta->getElementsByTagName("xNome")->item(0)->nodeValue) ? $transporta->getElementsByTagName("xNome")->item(0)->nodeValue : '';
-                $xEnder	= !empty($transporta->getElementsByTagName("xEnder")->item(0)->nodeValue) ? $transporta->getElementsByTagName("xEnder")->item(0)->nodeValue : '';
-                $xMun	= !empty($transporta->getElementsByTagName("xMun")->item(0)->nodeValue) ? $transporta->getElementsByTagName("xMun")->item(0)->nodeValue : '';
-                $UF	= !empty($transporta->getElementsByTagName("UF")->item(0)->nodeValue) ? $transporta->getElementsByTagName("UF")->item(0)->nodeValue : '';
-                //X03|XNome|IE|XEnder|UF|XMun|
-		// X04|CNPJ|
-		// X05|CPF|
-                $txt .= "X03|$xNome|$IE|$xEnder|$UF|$xMun|\r\n".
-			( $CNPJ != '' ?	"X04|$CNPJ|\r\n":
-					"X05|$CPF|\r\n");
-            } // fim transporta
-
-            //monta dados da retenção tributária de transporte
-            if ( isset($retTransp) ) {
-		$vServ		= !empty($retTransp->getElementsByTagName("vServ")->item(0)->nodeValue) ? $retTransp->getElementsByTagName("vServ")->item(0)->nodeValue : '';
-		$vBCRet		= !empty($retTransp->getElementsByTagName("vBCRet")->item(0)->nodeValue) ? $retTransp->getElementsByTagName("vBCRet")->item(0)->nodeValue : '';
-		$pICMSRet	= !empty($retTransp->getElementsByTagName("pICMSRet")->item(0)->nodeValue) ? $retTransp->getElementsByTagName("pICMSRet")->item(0)->nodeValue : '';
-		$vICMSRet	= !empty($retTransp->getElementsByTagName("vICMSRet")->item(0)->nodeValue) ? $retTransp->getElementsByTagName("vICMSRet")->item(0)->nodeValue : '';
-		$CFOP		= !empty($retTransp->getElementsByTagName("CFOP")->item(0)->nodeValue) ? $retTransp->getElementsByTagName("CFOP")->item(0)->nodeValue : '';
-		$cMunFG		= !empty($retTransp->getElementsByTagName("cMunFG")->item(0)->nodeValue) ? $retTransp->getElementsByTagName("cMunFG")->item(0)->nodeValue : '';
-		//X11|VServ|VBCRet|PICMSRet|VICMSRet|CFOP|CMunFG|
-		$txt .= "X11|$vServ|$vBCRet|$pICMSRet|$vICMSRet|$CFOP|$cMunFG|\r\n";
-	    } // fim rettransp
-
-	    //monta dados de identificação dos veiculos utilizados no transporte
-	    if ( isset($veicTransp) ) {
-		//X18|Placa|UF|RNTC|
-		$placa	= !empty($veicTransp->getElementsByTagName("placa")->item(0)->nodeValue) ? $veicTransp->getElementsByTagName("placa")->item(0)->nodeValue : '';
-		$UF	= !empty($veicTransp->getElementsByTagName("UF")->item(0)->nodeValue) ? $veicTransp->getElementsByTagName("UF")->item(0)->nodeValue : '';
-		$RNTC	= !empty($veicTransp->getElementsByTagName("RNTC")->item(0)->nodeValue) ? $veicTransp->getElementsByTagName("RNTC")->item(0)->nodeValue : '';
-		$txt .= "X18|$placa|$UF|$RNTC|\r\n";
-	    } //fim veicTransp
-
-	    //monta dados de identificação dos reboques utilizados no transporte
-	    if ( isset($reboque) ){
-		foreach ($reboque as $n => $reb){
-			$placa	= !empty($reboque->item($n)->getElementsByTagName("placa")->item(0)->nodeValue) ? $reboque->item($n)->getElementsByTagName("placa")->item(0)->nodeValue : '';
-			$UF	= !empty($reboque->item($n)->getElementsByTagName("UF")->item(0)->nodeValue) ? $reboque->item($n)->getElementsByTagName("UF")->item(0)->nodeValue : '';
-			$RNTC	= !empty($reboque->item($n)->getElementsByTagName("RNTC")->item(0)->nodeValue) ? $reboque->item($n)->getElementsByTagName("RNTC")->item(0)->nodeValue : '';
-			//X22|Placa|UF|RNTC|
-			$txt .= "X22|$placa|$UF|$RNTC|\r\n";
-		} //fim foreach
-	    } //fim reboque
-
-	    //monta dados dos volumes transpotados
-	    if ( isset($vol) ){
-		foreach ($vol as $n => $volumes) {
-			//X26|QVol|Esp|Marca|NVol|PesoL|PesoB| 
-			$qVol	= !empty($vol->item($n)->getElementsByTagName("qVol")->item(0)->nodeValue) ? $vol->item($n)->getElementsByTagName("qVol")->item(0)->nodeValue : '';
-			$esp	= !empty($vol->item($n)->getElementsByTagName("esp")->item(0)->nodeValue) ? $vol->item($n)->getElementsByTagName("esp")->item(0)->nodeValue : '';
-			$marca	= !empty($vol->item($n)->getElementsByTagName("marca")->item(0)->nodeValue) ? $vol->item($n)->getElementsByTagName("marca")->item(0)->nodeValue : '';
-			$nVol	= !empty($vol->item($n)->getElementsByTagName("nVol")->item(0)->nodeValue) ? $vol->item($n)->getElementsByTagName("nVol")->item(0)->nodeValue : '';
-			$pesoL	= !empty($vol->item($n)->getElementsByTagName("pesoL")->item(0)->nodeValue) ? $vol->item($n)->getElementsByTagName("pesoL")->item(0)->nodeValue : '';
-			$pesoB	= !empty($vol->item($n)->getElementsByTagName("pesoB")->item(0)->nodeValue) ? $vol->item($n)->getElementsByTagName("pesoB")->item(0)->nodeValue : '';
-			$lacres	= $vol->item($n)->getElementsByTagName("lacres")->item(0);
-			$txt .= "X26|$qVol|$esp|$marca|$nVol|$pesoL|$pesoB|\r\n";
-			//monta dados dos lacres utilizados
-			if ( isset($lacres) ){
-			    foreach ($lacres as $n => $lac){
-				$nLacre = !empty($lacres->item($n)->getElementsByTagName("nLacre")->item(0)->nodeValue) ? $lacres->item($n)->getElementsByTagName("nLacre")->item(0)->nodeValue : '';
-				//X33|NLacre|
-				$txt .= "X33|$nLacre|\r\n";
-			    } //fim foreach lacre
-			} //fim lacres
-		} //fim foreach volumes
-	    } //fim vol
-
-            //monta dados de cobrança
-            if ( isset($cobr) ){
-                //instancia sub grupos da tag cobr
-                $fat = $dom->getElementsByTagName('fat')->item(0);
-                $dup = $dom->getElementsByTagName('dup');
-                $txt .= "Y|\r\n";
-                //monta dados da fatura
-                if ( isset($fat) ){
-                    //Y02|NFat|VOrig|VDesc|VLiq| 
-                    $nFat	= !empty($fat->getElementsByTagName("nFat")->item(0)->nodeValue) ? $fat->getElementsByTagName("nFat")->item(0)->nodeValue : '';
-                    $vOrig	= !empty($fat->getElementsByTagName("vOrig")->item(0)->nodeValue) ? $fat->getElementsByTagName("vOrig")->item(0)->nodeValue : '';
-                    $vDesc	= !empty($fat->getElementsByTagName("vDesc")->item(0)->nodeValue) ? $fat->getElementsByTagName("vDesc")->item(0)->nodeValue : '';
-                    $vLiq	= !empty($fat->getElementsByTagName("vLiq")->item(0)->nodeValue) ? $fat->getElementsByTagName("vLiq")->item(0)->nodeValue : '';
-                    $txt .= "Y02|$nFat|$vOrig|$vDesc|$vLiq|\r\n";
-                } //fim fat
-
-                //monta dados das duplicatas
-                if( isset($dup) ){
-                   foreach ( $dup as $n => $duplicata ){
-                        //Y07|NDup|DVenc|VDup| 
-                        $nDup	= !empty($dup->item($n)->getElementsByTagName("nDup")->item(0)->nodeValue) ? $dup->item($n)->getElementsByTagName("nDup")->item(0)->nodeValue : '';
-                        $dVenc	= !empty($dup->item($n)->getElementsByTagName("dVenc")->item(0)->nodeValue) ? $dup->item($n)->getElementsByTagName("dVenc")->item(0)->nodeValue : '';
-                        $vDup	= !empty($dup->item($n)->getElementsByTagName("vDup")->item(0)->nodeValue) ? $dup->item($n)->getElementsByTagName("vDup")->item(0)->nodeValue : '';
-                        $txt .= "Y07|$nDup|$dVenc|$vDup|\r\n";
-                    } //fim foreach
-                } //fim dup
-            } //fim cobr
-
-            //monta dados das informações adicionais da NFe
-            if ( isset($infAdic) ) {
-                //instancia sub grupos da tag infAdic
-                $obsCont	= $infAdic->getElementsByTagName('obsCont');
-		$obsFisco	= $infAdic->getElementsByTagName('obsFisco');
-		$procRef	= $infAdic->getElementsByTagName('procRef');
-		
-                //Z|InfAdFisco|InfCpl|
-                $infAdFisco	= !empty($infAdic->getElementsByTagName("infAdFisco")->item(0)->nodeValue) ? $infAdic->getElementsByTagName("infAdFisco")->item(0)->nodeValue : '';
-                $infCpl		= !empty($infAdic->getElementsByTagName("infCpl")->item(0)->nodeValue) ? $infAdic->getElementsByTagName("infCpl")->item(0)->nodeValue : '';
-                $txt .= "Z|$infAdFisco|$infCpl|\r\n";
-
-                //monta dados de observaçoes da NFe
-                if ( isset($obsCont) ){
-                    foreach ($obsCont as $n => $oC){
-                        //Z04|XCampo|XTexto|
-                        $xCampo = !empty($obsCont->item($n)->getElementsByTagName("xCampo")->item(0)->nodeValue) ? $obsCont->item($n)->getElementsByTagName("xCampo")->item(0)->nodeValue : '';
-                        $xTexto = !empty($obsCont->item($n)->getElementsByTagName("xTexto")->item(0)->nodeValue) ? $obsCont->item($n)->getElementsByTagName("xTexto")->item(0)->nodeValue : '';
-                        $txt .= "Z04|$xCampo|$xTexto|\r\n";
-                    } //fim foreach
-                } //fim obsCont
-		//monta dados dos processos
-		if ( isset($obsFisco) ){
-                    foreach ($obsFisco as $n => $pR){
-			//Z07|XCampo|XTexto|
-                        $xCampo = !empty($obsFisco->item($n)->getElementsByTagName("xCampo")->item(0)->nodeValue) ? $obsFisco->item($n)->getElementsByTagName("xCampo")->item(0)->nodeValue : '';
-                        $xTexto = !empty($obsFisco->item($n)->getElementsByTagName("xTexto")->item(0)->nodeValue) ? $obsFisco->item($n)->getElementsByTagName("xTexto")->item(0)->nodeValue : '';
-                        $txt .= "Z07|$xCampo|$xTexto|\r\n";
-		    } //fim foreach
-		} //fim procRef
-		//monta dados dos processos
-		if ( isset($procRef) ){
-                    foreach ($procRef as $n => $pR){
-			//Z10|NProc|IndProc|
-			$nProc = !empty($procRef->item($n)->getElementsByTagName("nProc")->item(0)->nodeValue) ? $procRef->item($n)->getElementsByTagName("nProc")->item(0)->nodeValue : '';
-			$indProc = !empty($procRef->item($n)->getElementsByTagName("infProc")->item(0)->nodeValue) ? $procRef->item($n)->getElementsByTagName("infProc")->item(0)->nodeValue : '';
-			$txt .= "Z10|$nProc|$indProc|\r\n";
-		    } //fim foreach
-		} //fim procRef
-
-            } //fim infAdic
-
-            
-            //monta dados de exportação
-            if ( isset($exporta) ){
-                //ZA|UFEmbarq|XLocEmbarq|
-                $UFEmbarq	= !empty($exporta->getElementsByTagName("UFEmbarq")->item(0)->nodeValue) ? $exporta->getElementsByTagName("UFEmbarq")->item(0)->nodeValue : '';
-                $xLocEmbarq	= !empty($exporta->getElementsByTagName("xLocEmbarq")->item(0)->nodeValue) ? $exporta->getElementsByTagName("xLocEmbarq")->item(0)->nodeValue : '';
-                $txt .= "ZA|$UFEmbarq|$xLocEmbarq|\r\n";
-            } //fim exporta
-
-            //monta dados de compra
-            if ( isset($compra) ){
-                //ZB|XNEmp|XPed|XCont|
-                $xNEmp	= !empty($compra->getElementsByTagName("xNEmp")->item(0)->nodeValue) ? $compra->getElementsByTagName("xNEmp")->item(0)->nodeValue : '';
-                $xPed	= !empty($compra->getElementsByTagName("xPed")->item(0)->nodeValue) ? $compra->getElementsByTagName("xPed")->item(0)->nodeValue : '';
-                $xCont	= !empty($compra->getElementsByTagName("xCont")->item(0)->nodeValue) ? $compra->getElementsByTagName("xCont")->item(0)->nodeValue : '';
-                $txt .= "ZB|$xNEmp|$xPed|$xCont|\r\n";
-            } //fim compra
-	    
-	    //monta dados de cana
-            if ( isset($cana) ){
-                //ZC01|safra|ref|qTotMes|qTotAnt|qTotGer|vFor|vTotDed|vLiqFor|
-		$forDia	= $cana->getElementsByTagName('forDia');
-		$deduc	= $cana->getElementsByTagName('deduc');
-                $safra	= !empty($cana->getElementsByTagName("safra")->item(0)->nodeValue) ? $cana->getElementsByTagName("safra")->item(0)->nodeValue : '';
-                $ref	= !empty($cana->getElementsByTagName("ref")->item(0)->nodeValue) ? $cana->getElementsByTagName("ref")->item(0)->nodeValue : '';
-                $qTotMes= !empty($cana->getElementsByTagName("qTotMes")->item(0)->nodeValue) ? $cana->getElementsByTagName("qTotMes")->item(0)->nodeValue : '';
-                $qTotAnt= !empty($cana->getElementsByTagName("qTotAnt")->item(0)->nodeValue) ? $cana->getElementsByTagName("qTotAnt")->item(0)->nodeValue : '';
-                $qTotGer= !empty($cana->getElementsByTagName("qTotGer")->item(0)->nodeValue) ? $cana->getElementsByTagName("qTotGer")->item(0)->nodeValue : '';
-                $vFor	= !empty($cana->getElementsByTagName("vFor")->item(0)->nodeValue) ? $cana->getElementsByTagName("vFpr")->item(0)->nodeValue : '';
-                $vTotDed= !empty($cana->getElementsByTagName("vTotDed")->item(0)->nodeValue) ? $cana->getElementsByTagName("vTotDed")->item(0)->nodeValue : '';
-                $vLiqFor= !empty($cana->getElementsByTagName("vLiqFor")->item(0)->nodeValue) ? $cana->getElementsByTagName("vLiqFor")->item(0)->nodeValue : '';
-                $txt .= "ZC01|$safra|$ref|$qTotMes|$qTotAnt|$qTotGer|$vFor|$vTotDed|$vLiqFor|\r\n";
-		//monta dados fornecimento diario
-		if ( isset($forDia) ){
-                    foreach ($forDia as $n => $pR){
-			//ZC04|dia|qtde|
-			$dia	= !empty($forDia->item($n)->getElementsByTagName("dia")->item(0)->nodeValue) ? $forDia->item($n)->getElementsByTagName("dia")->item(0)->nodeValue : '';
-			$qtde	= !empty($forDia->item($n)->getElementsByTagName("qtde")->item(0)->nodeValue) ? $forDia->item($n)->getElementsByTagName("qtde")->item(0)->nodeValue : '';
-			$txt .= "ZC04|$dia|$qtde|\r\n";
-		    } //fim foreach
-		} //fim fordia
-		//monta dados grupo deduções
-		if ( isset($deduc) ){
-                    foreach ($deduc as $n => $pR){
-			//ZC10|xDed|vDed|
-			$xDed	= !empty($deduc->item($n)->getElementsByTagName("xDed")->item(0)->nodeValue) ? $deduc->item($n)->getElementsByTagName("xDed")->item(0)->nodeValue : '';
-			$vDed	= !empty($deduc->item($n)->getElementsByTagName("vDed")->item(0)->nodeValue) ? $deduc->item($n)->getElementsByTagName("vDed")->item(0)->nodeValue : '';
-			$txt .= "ZC10|$xDed|$vDed|\r\n";
-		    } //fim foreach
-		} //fim deduc
-            } //fim cana
 	    $CONTADOR_NOTAS++;
 	    // caso queira cancelar a nota atual, pode usar continue no for dos arquivos xmls, pois só se chegar aki ele adiciona no arquivo ($txtRet)...
 	    $txtRet.=$txt;
@@ -1137,6 +1149,8 @@ class UnConvertNFePHP {
         return $txtRet;
     }// fim da função nfexml2txt
 
+  
+    }    
 } //fim da classe
-
+*/
 ?>
