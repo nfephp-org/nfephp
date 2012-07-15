@@ -23,7 +23,7 @@
  *
  * @package     NFePHP
  * @name        PdfNFePHP.class.php
- * @version     1.03
+ * @version     1.0.4
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2011 &copy; NFePHP
@@ -798,7 +798,7 @@ class PdfNFePHP extends FPDF {
      * Desenha uma linha horizontal tracejada com o FPDF
      * @package NFePHP
      * @name DashedHLine
-     * @version 1.0
+     * @version 1.0.1
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @param number $x Posição horizontal inicial, em mm
      * @param number $y Posição vertical inicial, em mm
@@ -808,6 +808,7 @@ class PdfNFePHP extends FPDF {
      * @return none
      */
     public function DashedHLine($x,$y,$w,$h,$n) {
+        $this->SetDrawColor(110);
         $this->SetLineWidth($h);
         $wDash=($w/$n)/2; // comprimento dos traços
         for( $i=$x; $i<=$x+$w; $i += $wDash+$wDash ) {
@@ -817,6 +818,7 @@ class PdfNFePHP extends FPDF {
                 }
             }
         }
+        $this->SetDrawColor(0);
     } //fim função DashedHLine
 
    /**
