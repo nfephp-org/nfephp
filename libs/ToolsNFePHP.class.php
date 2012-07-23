@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.0.13
+ * @version   3.0.14
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -300,19 +300,19 @@ class ToolsNFePHP {
      * Path completo para a chave privada em formato pem
      * @var string 
      */
-    private $priKEY='';
+    protected $priKEY='';
     /**
      * pubKEY
      * Path completo para a chave public em formato pem
      * @var string 
      */
-    private $pubKEY='';
+    protected $pubKEY='';
     /**
      * certKEY
      * Path completo para o certificado (chave privada e publica) em formato pem
      * @var string 
      */
-    private $certKEY='';
+    protected $certKEY='';
     /**
      * empName
      * Razão social da Empresa
