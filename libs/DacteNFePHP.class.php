@@ -23,7 +23,7 @@
  *
  * @package     NFePHP
  * @name        DacteNFePHP.class.php
- * @version     1.2.3
+ * @version     1.2.4
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2011 &copy; NFePHP
@@ -32,8 +32,9 @@
  *
  *        CONTRIBUIDORES (por ordem alfabetica):
  * 
- *          Marcos Diez    <marcos at unitron dot com dot br>
- *          Rodrigo Rysdyk <rodrigo_rysdyk at hotmail dot com>
+ *          Joao Eduardo Silva Correa <jcorrea at sucden dot com dot br> 
+ *          Marcos Diez               <marcos at unitron dot com dot br>
+ *          Rodrigo Rysdyk            <rodrigo_rysdyk at hotmail dot com>         
  * 
  * 
  */
@@ -65,8 +66,8 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP {
     protected $papel='A4'; //formato do papel
     protected $destino = 'I'; //destivo do arquivo pdf I-borwser, S-retorna o arquivo, D-força download, F-salva em arquivo local
     protected $pdfDir=''; //diretorio para salvar o pdf com a opção de destino = F
-    protected $fontePadrao='Helvetica'; //Nome da Fonte para gerar o DACTE
-    protected $version = '1.2.3';
+    protected $fontePadrao='Times'; //Nome da Fonte para gerar o DACTE
+    protected $version = '1.2.4';
     protected $wPrint; //largura imprimivel
     protected $hPrint; //comprimento imprimivel
     //objetos DOM da CTe
@@ -93,14 +94,15 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP {
     protected $infNF;
     protected $infNFe;
     protected $compl;
-    protected $seg;
-    protected $debugMode=0;
-
+    protected $modal;
+    protected $wAdic = 150;
+    protected $textoAdic = '';
+    
     /**
      *__construct
      * @package NFePHP
      * @name __construct
-     * @version 1.01
+     * @version 1.0.1
      * @param string $docXML Arquivo XML da CTe
      * @param string $sOrientacao (Opcional) Orientação da impressão P-retrato L-Paisagem
      * @param string $sPapel Tamanho do papel (Ex. A4)
@@ -108,19 +110,8 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP {
      * @param string $sDestino Estabelece a direção do envio do documento PDF I-browser D-browser com download S-
      * @param string $sDirPDF Caminho para o diretorio de armazenamento dos arquivos PDF
      * @param string $fonteDACTE Nome da fonte a ser utilizada
-     * @param number $mododebug (Opcional) 1-SIM ou 0-NÃO (0 default)
      */
-    function __construct($docXML='', $sOrientacao='',$sPapel='',$sPathLogo='', $sDestino='I',$sDirPDF='',$fonteDACTE='',$mododebug=0) {
-        if(is_numeric($mododebug)){
-            $this->debugMode = $mododebug;
-        }
-        if($this->debugMode){
-            //ativar modo debug
-            error_reporting(E_ALL);ini_set('display_errors', 'On');
-        } else {
-            //desativar modo debug
-            error_reporting(0);ini_set('display_errors', 'Off');
-        }
+    function __construct($docXML='', $sOrientacao='',$sPapel='',$sPathLogo='', $sDestino='I',$sDirPDF='',$fonteDACTE='') {
         $this->orientacao = $sOrientacao;
         $this->papel = $sPapel;
         $this->pdf = '';
@@ -129,9 +120,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP {
         $this->destino = $sDestino;
         $this->pdfDir = $sDirPDF;
         // verifica se foi passa a fonte a ser usada
-        if (empty($fonteDACTE)) {
-            $this->fontePadrao = 'Helvetica';
-        } else {
+        if (!empty($fonteDACTE)) {
             $this->fontePadrao = $fonteDACTE;
         }
         //se for passado o xml
@@ -152,17 +141,22 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP {
             $this->receb      = $this->dom->getElementsByTagName("receb")->item(0);
             $this->enderReceb = $this->dom->getElementsByTagName("enderReceb")->item(0);
             $this->infCarga   = $this->dom->getElementsByTagName("infCarga")->item(0);
+            $this->seg        = $this->dom->getElementsByTagName("seg")->item(0);
             $this->rodo       = $this->dom->getElementsByTagName("rodo")->item(0);
+            $this->moto       = $this->dom->getElementsByTagName("moto")->item(0);
+            $this->veic       = $this->dom->getElementsByTagName("veic");
+            $this->ferrov     = $this->dom->getElementsByTagName("ferrov")->item(0);
+            /*adicionar outros modais*/
             $this->vPrest     = $this->dom->getElementsByTagName("vPrest")->item(0);
             $this->Comp       = $this->dom->getElementsByTagName("Comp");
             $this->infNF      = $this->dom->getElementsByTagName("infNF");
             $this->infNFe     = $this->dom->getElementsByTagName("infNFe");
             $this->compl      = $this->dom->getElementsByTagName("compl");
-            $this->seg        = $this->dom->getElementsByTagName("seg")->item(0);
-            $this->ICMS = $this->dom->getElementsByTagName("ICMS")->item(0);
-            $this->imp  = $this->dom->getElementsByTagName("imp")->item(0);
-
-            $toma = (!empty($this->ide->getElementsByTagName("toma")->item(0)->nodeValue)  || $this->ide->getElementsByTagName("toma")->item(0)->nodeValue==0 ) ? $this->ide->getElementsByTagName("toma")->item(0)->nodeValue : '';
+            $this->ICMS       = $this->dom->getElementsByTagName("ICMS")->item(0);
+            $this->imp        = $this->dom->getElementsByTagName("imp")->item(0);   
+            $this->toma4      = $this->ide->getElementsByTagName("toma4")->item(0); 
+                     
+            $toma = (!empty($this->ide->getElementsByTagName("toma03")->item(0)->nodeValue)) ? $this->ide->getElementsByTagName("toma")->item(0)->nodeValue : '';
             //0-Remetente;1-Expedidor;2-Recebedor;3-Destinatário;4 - Outros
             switch ($toma){
                 case '0':
@@ -181,15 +175,35 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP {
                     $this->toma      = $this->dest;
                     $this->enderToma = $this->enderDest;
                     break;
-                case '4':
-                    $this->toma      = '??';
-                    $this->enderToma = '??';
-                    break;
                 default:
-                    $this->toma      = '??';
-                    $this->enderToma = '??';
+                    $this->toma      = $this->toma4;
+                    $this->enderToma = $this->toma4->getElementsByTagName("enderToma")->item(0);
+                    break; 
             }
-
+            $seguro  = (!empty($this->seg)) ? $this->seg->getElementsByTagName("respSeg")->item(0)->nodeValue : '';
+            switch ($seguro){
+                case '0':
+                    $this->respSeg   = 'Remetente';
+                   break;
+                case '1':
+                    $this->respSeg   = 'Expedidor';
+                    break;
+                case '2':
+                    $this->respSeg   = 'Recebedor';
+                    break;
+                case '3':
+                    $this->respSeg   = 'Destinatário';
+                    break;
+                case '4':
+                    $this->respSeg   = 'Emitente';
+                    break;
+                case '5':
+                    $this->respSeg   = 'Tomador';
+                    break; 
+                default:
+                    $this->respSeg   = '';    
+                    break;    
+            }
             $this->tpImp      = $this->ide->getElementsByTagName("tpImp")->item(0)->nodeValue;
             $this->tpAmb      = $this->ide->getElementsByTagName("tpAmb")->item(0)->nodeValue;
             $this->protCTe    = $this->dom->getElementsByTagName("protCTe")->item(0);
@@ -200,7 +214,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP {
      * simpleConsistencyCheck
      * @package NFePHP
      * @name simpleConsistencyCheck()
-     * @version 1.0
+     * @version 1.0.0
      * @author Marcos Diez
      * @return bool Retorna se o documenento se parece com um DACTE ( condicao necessaria porem nao suficiente )
     */
@@ -245,7 +259,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP {
      * pelo conteúdo da funçao e podem ser modificados.
      * @package NFePHP
      * @name montaDACTE
-     * @version 1.00
+     * @version 1.0.1
      * @param string $orientacao (Opcional) Estabelece a orientação da impressão (ex. P-retrato), se nada for fornecido será usado o padrão da NFe
      * @param string $papel (Opcional) Estabelece o tamanho do papel (ex. A4)
      * @return string O ID da NFe numero de 44 digitos extraido do arquivo XML
@@ -256,7 +270,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP {
             if($this->tpImp == '1'){
                 $orientacao = 'P';
             } else {
-                $orientacao = 'L';
+                $orientacao = 'P'; //correto é 'L' ??? 
             }
         }
         $this->orientacao = $orientacao;
@@ -277,7 +291,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP {
                 $maxW = 210;
                 $maxH = 297;
             }    
-        }else{
+        } else {
             // margens do PDF
             $margSup = 3;
             $margEsq = 3;
@@ -318,52 +332,79 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP {
         $y = $yInic;
 
         //coloca o cabeçalho
-        $y = $this->__cabecalhoDACTE($x,$y,$pag,$totPag);
+        $y = $this->__canhotoDACTE($x ,$y);
+        
+        $y+= 19;
+        $r = $this->__cabecalhoDACTE($x,$y,$pag,$totPag);
 
-        $y+= 31;
+        $y+= 70;
         $r = $this->__remetenteDACTE($x ,$y);
 
         $x = $this->wPrint*0.5+2;
         $r = $this->__destinatarioDACTE($x ,$y);
 
-        $y+= 20;
+        $y+= 19;
         $x = $xInic;
         $r = $this->__expedidorDACTE($x ,$y);
 
         $x = $this->wPrint*0.5+2;
         $r = $this->__recebedorDACTE($x ,$y);
 
-        $y+= 20;
+        $y+= 19;
         $x = $xInic;
         $r = $this->__tomadorDACTE($x ,$y);
 
-        $y+= 11;
+        $y+= 10;
         $x = $xInic;
         $r = $this->__descricaoCargaDACTE($x ,$y);
 
-        $y+= 18;
+        $y+= 17;
         $x = $xInic;
         $r = $this->__componentesValorDACTE($x ,$y);
 
-        $y+= 26;
+        $y+= 25;
         $x = $xInic;
         $r = $this->__impostosDACTE($x ,$y);
 
-        $y+= 14;
+        $y+= 13;
         $x = $xInic;
         $r = $this->__documentosOriginariosDACTE($x ,$y);
 
-        $y+= 44;
+        $y+= 24.95;
         $x = $xInic;
         $r = $this->__observacoesDACTE($x ,$y);
+        
+        switch ($this->modal){
+            case '1':
+                $y+= 17.9;
+                $x = $xInic;
+                $r = $this->__modalRodoviarioDACTE($x ,$y);
+                break;
+            case '2':
+                $y+= 17.9;
+                $x = $xInic;
+                $r = $this->__modalAereoDACTE($x ,$y);
+                break;
+            case '3':
+                $y+= 17.9;
+                $x = $xInic;
+                $r = $this->__modalAquaviarioDACTE($x ,$y);
+                break;
+            case '4':
+                $y+= 17.9;
+                $x = $xInic;
+                $r = $this->__modalFerroviarioDACTE($x ,$y);
+                break;
+            case '5':
+                $y+= 17.9;
+                $x = $xInic;
+                $r = $this->__modalDutoviarioDACTE($x ,$y);
+                break;
+        }
 
-        $y+= 21;
+        $y+= 37;
         $x = $xInic;
-        $r = $this->__modalRodoviarioDACTE($x ,$y);
-
-        $y+= 14;
-        $x = $xInic;
-        $r = $this->__canhotoDACTE($x ,$y);
+        $r = $this->__dadosAdicionaisDACTE($x,$y,$pag,$totPag);
 
         //coloca o rodapé da página
         if( $this->orientacao == 'P' ){
@@ -372,7 +413,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP {
             $this->__rodapeDACTE($xInic,$this->hPrint + 2.3);
         }
         //retorna o ID na CTe
-		return str_replace('CTe', '', $this->infCte->getAttribute("Id"));
+	return str_replace('CTe', '', $this->infCte->getAttribute("Id"));
 		
     }//fim da função montaDACTE
 
@@ -388,7 +429,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP {
      * nome da impressora e o destino deve ser 'S'.
      * @package NFePHP
      * @name printDACTE
-     * @version 1.0
+     * @version 1.0.0
      * @param string $nome Path completo com o nome do arquivo pdf
      * @param string $destino Direção do envio do PDF
      * @param string $printer Identificação da impressora no sistema
@@ -408,7 +449,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP {
      * Monta o cabelhalho da DACTE ( retrato e paisagem )
      * @package NFePHP
      * @name __cabecalhoDACTE
-     * @version 1.00
+     * @version 1.0.1
      * @param number $x Posição horizontal inicial, canto esquerdo
      * @param number $y Posição vertical inicial, canto superior
      * @param number $pag Número da Página
@@ -430,17 +471,17 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP {
         
         //####################################################################################
         //coluna esquerda identificação do emitente
-        $w = round($maxW*0.50,0);
+        $w = round($maxW*0.42);
         if( $this->orientacao == 'P' ){
-            $aFont = array('font'=>$this->fontePadrao,'size'=>6,'style'=>'I');
+            $aFont = array('font'=>$this->fontePadrao,'size'=>6,'style'=>'');
         }else{
             $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
         }
         $w1 = $w;
-        $h = 42;
+        $h = 35;
         $oldY += $h;
         //desenha a caixa
-        $this->__textBox($x,$y,$w,$h);
+        $this->__textBox($x,$y,$w+2,$h+1);
         
         //$texto = 'IDENTIFICAÇÃO DO EMITENTE';
         // coloca o logo
@@ -487,10 +528,10 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP {
         //Nome emitente
         $aFont = array('font'=>$this->fontePadrao,'size'=>12,'style'=>'B');
         $texto = $this->emit->getElementsByTagName("xNome")->item(0)->nodeValue;
-        $this->__textBox($x1,$y1,$tw,8,$texto,$aFont,'T','C',0,'');
+        $this->__textBox($x1,$y1-2,$tw,8,$texto,$aFont,'T','C',0,'');
         //endereço
-        $y1 = $y1+5;
-        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'');
+        $y1 = $y1+3;
+        $aFont = array('font'=>$this->fontePadrao,'size'=>9,'style'=>'');
         
         $fone = $this->__fone( $this->enderEmit );
         
@@ -514,14 +555,14 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP {
         $this->__textBox($x1,$y1+14,$tw,8,$texto,$aFont,'T','C',0,'');
         
         //outra caixa
-        $h1 = 11.2;
+        $h1 = 17.5;
         $y1 = $y+$h+1;
-        $this->__textBox($x,$y1,$w,$h1);
+        $this->__textBox($x,$y1,$w+2,$h1);
         //TIPO DO CT-E
-        $texto = 'Tipo do CTe';
-        $wa = 20;
-        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'I');
-        $this->__textBox($x,$y1,$wa,$h1,$texto,$aFont,'T','C',0,'');
+        $texto = 'TIPO DO CTE';
+        $wa = 37;
+        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'');
+        $this->__textBox($x,$y1,$w*0.5,$h1,$texto,$aFont,'T','C',0,'');
         $tpCTe = (!empty($this->ide->getElementsByTagName("tpCTe")->item(0)->nodeValue) || $this->ide->getElementsByTagName("tpCTe")->item(0)->nodeValue==0) ? $this->ide->getElementsByTagName("tpCTe")->item(0)->nodeValue : '';
         //0 - CT-e Normal,1 - CT-e de Complemento de Valores,2 - CT-e de Anulação de Valores,3 - CT-e Substituto
         switch ($tpCTe){
@@ -541,14 +582,14 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP {
                 $texto = 'ERRO'.$tpCTe.$tpServ;
         }
         $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
-        $this->__textBox($x,$y1+4,$wa,$h1,$texto,$aFont,'T','C',0,'',false);
-        $this->pdf->Line($x+$wa,$y1,$x+$wa,$y1+$h1);
+        $this->__textBox($x,$y1+3,$w*0.5,$h1,$texto,$aFont,'T','C',0,'',false);
+        
         
         //TIPO DO SERVIÇO
-        $texto = 'Tipo do Serviço';
-        $wb = 26;
-        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'I');
-        $this->__textBox($x+$wa,$y1,$wb,$h1,$texto,$aFont,'T','C',0,'');
+        $texto = 'TIPO DO SERVIÇO';
+        $wb = 36;
+        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'');
+        $this->__textBox($x+$wa+4.5,$y1,$w*0.5,$h1,$texto,$aFont,'T','C',0,'');
         $tpServ = (!empty($this->ide->getElementsByTagName("tpServ")->item(0)->nodeValue)  || $this->ide->getElementsByTagName("tpServ")->item(0)->nodeValue==0 ) ? $this->ide->getElementsByTagName("tpServ")->item(0)->nodeValue : '';
         //0 - Normal;1 - Subcontratação;2 - Redespacho;3 - Redespacho Intermediário
         switch ($tpServ){
@@ -567,15 +608,18 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP {
                 $texto = 'ERRO'.$tpServ;
         }
         $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
-        $this->__textBox($x+$wa,$y1+4,$wb,$h1,$texto,$aFont,'T','C',0,'',false);
-        $this->pdf->Line($x+$wa+$wb,$y1,$x+$wa+$wb,$y1+$h1);
+        $this->__textBox($x+$wa+4.5,$y1+3,$w*0.5,$h1,$texto,$aFont,'T','C',0,'',false);
+        
+        $this->pdf->Line($w*0.5,$y1,$w*0.5,$y1+$h1);
         
         //TOMADOR DO SERVIÇO
-        $texto = 'Tomador do Serviço';
-        $wc = 26;
-        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'I');
-        $this->__textBox($x+$wa+$wb,$y1,$wc,$h1,$texto,$aFont,'T','C',0,'');
-        $this->pdf->Line($x+$wa+$wb+$wc,$y1,$x+$wa+$wb+$wc,$y1+$h1);
+        $texto = 'TOMADOR DO SERVIÇO';
+        $wc = 37;
+        $y2 = $y1+8;
+        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'');
+        $this->__textBox($x,$y2,$w*0.5,$h1,$texto,$aFont,'T','C',0,'');
+        
+        $this->pdf->Line($x,$y1+8,$w+3,$y1+8);
         
         $toma = (!empty($this->ide->getElementsByTagName("toma")->item(0)->nodeValue)  || $this->ide->getElementsByTagName("toma")->item(0)->nodeValue==0 ) ? $this->ide->getElementsByTagName("toma")->item(0)->nodeValue : '';
         //0-Remetente;1-Expedidor;2-Recebedor;3-Destinatário;4 - Outros
@@ -599,7 +643,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP {
                 $texto = 'ERRO'.$toma;
         }
         $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
-        $this->__textBox($x+$wa+$wb,$y1+4,$wb,$h1,$texto,$aFont,'T','C',0,'',false);
+        $this->__textBox($x,$y2+3,$w*0.5,$h1,$texto,$aFont,'T','C',0,'',false);
         
         if ( $this->tpAmb != 1 ) {
             $Ax = 10;
@@ -620,14 +664,11 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP {
             $this->pdf->SetTextColor(0,0,0);
         }
 		
-		
-		
-        
         //FORMA DE PAGAMENTO
-        $texto = 'Forma de Pagamento';
-        $wd = 30;
-        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'I');
-        $this->__textBox($x+$wa+$wb+$wc,$y1,$wd,$h1,$texto,$aFont,'T','C',0,'');
+        $texto = 'FORMA DE PAGAMENTO';
+        $wd = 36;
+        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'');
+        $this->__textBox($x+$wa+4.5,$y2,$w*0.5,$h1,$texto,$aFont,'T','C',0,'');
         
         $forma = (!empty($this->ide->getElementsByTagName("forPag")->item(0)->nodeValue)  || $this->ide->getElementsByTagName("forPag")->item(0)->nodeValue==0 ) ? $this->ide->getElementsByTagName("forPag")->item(0)->nodeValue : '';
         //0 - Pago;1 - A pagar;2 - outros
@@ -645,16 +686,15 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP {
                 $texto = 'ERRO'.$forma;
         }
         $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
-        $this->__textBox($x+$wa+$wb+$wc+2,$y1+4,$wb,$h1,$texto,$aFont,'T','C',0,'',false);
-        
+        $this->__textBox($x+$wa+4.5,$y2+3,$w*0.5,$h1,$texto,$aFont,'T','C',0,'',false);
         
         //####################################################################################
         //coluna direita
         $x += $w+2;
-        $w=round($maxW * 0.25,0);
+        $w=round($maxW * 0.335);
         $w1 = $w;
         $h = 11;
-        $this->__textBox($x,$y,$w,$h);
+        $this->__textBox($x,$y,$w+2,$h+1);
         $texto = "DACTE";
         $aFont = array('font'=>$this->fontePadrao,'size'=>10,'style'=>'B');
         $this->__textBox($x,$y+1,$w,$h,$texto,$aFont,'T','C',0,'');
@@ -667,13 +707,14 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP {
         $w=round($maxW * 0.22,0);
         $w2 = $w;
         $h = 11;
-        $this->__textBox($x1,$y,$w,$h);
+        $this->__textBox($x1,$y,$w+0.5,$h+1);
         $texto = "MODAL";
-        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'I');
+        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'');
         $this->__textBox($x1,$y+1,$w,$h,$texto,$aFont,'T','C',0,'');
 
         //01-Rodoviário; //02-Aéreo; //03-Aquaviário; //04-Ferroviário;//05-Dutoviário
         $modal = !empty($this->ide->getElementsByTagName("modal")->item(0)->nodeValue) ? $this->ide->getElementsByTagName("modal")->item(0)->nodeValue : '';
+        $this->modal = $modal;
         switch ($modal){
             case '1':
                 $texto = 'Rodoviário';
@@ -697,142 +738,148 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP {
         $y += 12;
         $h = 9;
         $w = $w1+$w2+2;
-        $this->__textBox($x,$y,$w,$h);
+        $this->__textBox($x,$y,$w+0.5,$h+1);
         
         //modelo
         $wa = 12;
         $xa = $x;
-        $texto= 'Modelo';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'I');
+        $texto= 'MODELO';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'');
         $this->__textBox($xa,$y+1,$wa,$h,$texto,$aFont,'T','C',0,'');
         $texto = !empty($this->ide->getElementsByTagName("mod")->item(0)->nodeValue) ? $this->ide->getElementsByTagName("mod")->item(0)->nodeValue : '';
         $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
         $this->__textBox($xa,$y+5,$wa,$h,$texto,$aFont,'T','C',0,'');
-        $this->pdf->Line($x+$wa, $y, $x+$wa, $y+$h);
+        $this->pdf->Line($x+$wa, $y, $x+$wa, $y+$h+1);
         //serie
         $xa += $wa;
-        $texto= 'Série';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'I');
+        $texto= 'SÉRIE';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'');
         $this->__textBox($xa,$y+1,$wa,$h,$texto,$aFont,'T','C',0,'');
         $texto = ( !empty($this->ide->getElementsByTagName("serie")->item(0)->nodeValue) || $this->ide->getElementsByTagName("serie")->item(0)->nodeValue==0 )? $this->ide->getElementsByTagName("serie")->item(0)->nodeValue : '';
         $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
         $this->__textBox($xa,$y+5,$wa,$h,$texto,$aFont,'T','C',0,'');
-        $this->pdf->Line($xa+$wa, $y, $xa+$wa, $y+$h);
+        $this->pdf->Line($xa+$wa, $y, $xa+$wa, $y+$h+1);
         //numero
         $xa += $wa;
         $wa = 20;
-        $texto= 'Número';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'I');
+        $texto= 'NÚMERO';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'');
         $this->__textBox($xa,$y+1,$wa,$h,$texto,$aFont,'T','C',0,'');
         $texto = !empty($this->ide->getElementsByTagName("nCT")->item(0)->nodeValue) ? $this->ide->getElementsByTagName("nCT")->item(0)->nodeValue : '';
         $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
         $this->__textBox($xa,$y+5,$wa,$h,$texto,$aFont,'T','C',0,'');
-        $this->pdf->Line($xa+$wa, $y, $xa+$wa, $y+$h);
+        $this->pdf->Line($xa+$wa, $y, $xa+$wa, $y+$h+1);
         //folha
         $xa += $wa;
         $wa = 12;
         $texto= 'FL';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'I');
+        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'');
         $this->__textBox($xa,$y+1,$wa,$h,$texto,$aFont,'T','C',0,'');
         $texto = '1/1';
         $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
         $this->__textBox($xa,$y+5,$wa,$h,$texto,$aFont,'T','C',0,'');
-        $this->pdf->Line($xa+$wa, $y, $xa+$wa, $y+$h);
+        $this->pdf->Line($xa+$wa, $y, $xa+$wa, $y+$h+1);
         //data  hora de emissão
         $xa += $wa;
-        $wa = 40;
-        $texto= 'Data e Hora de Emissão';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'I');
+        $wa = 30;
+        $texto= 'DATA E HORA DE EMISSÃO';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'');
         $this->__textBox($xa,$y+1,$wa,$h,$texto,$aFont,'T','C',0,'');
         $texto = !empty($this->ide->getElementsByTagName("dhEmi")->item(0)->nodeValue) ? date('d/m/Y H:i:s',$this->__convertTime($this->ide->getElementsByTagName("dhEmi")->item(0)->nodeValue)) : '';
         $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
         $this->__textBox($xa,$y+5,$wa,$h,$texto,$aFont,'T','C',0,'');
+        $this->pdf->Line($xa+$wa, $y, $xa+$wa, $y+$h+1);
+        //ISUF
+        $xa += $wa;
+        $wa = 32;
+        $texto= 'INSC. SUFRAMA DO DESTINATÁRIO';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
+        $this->__textBox($xa,$y+1,$wa,$h,$texto,$aFont,'T','C',0,'');
+        $texto = $texto =  $this->dest->getElementsByTagName('ISUF');
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'B');
+        $this->__textBox($xa,$y+5,$wa,$h,$texto,$aFont,'T','C',0,'');
         //outra caixa
         $y += $h+1;
         $h = 23;
-        $this->__textBox($x,$y,$w,$h);
-        $texto = 'CONTROLE DO FISCO';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'I');
-        $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','C',0,'');
+        $h1 = 14;
+        $this->__textBox($x,$y,$w+0.5,$h1);
         
         //CODIGO DE BARRAS
         $chave_acesso = str_replace('CTe', '', $this->infCte->getAttribute("Id"));
         $bW = 85;
-        $bH = 12;
+        $bH = 10;
         //codigo de barras
         $this->pdf->SetFillColor(0,0,0);
-        $this->pdf->Code128($x+(($w-$bW)/2),$y+4,$chave_acesso,$bW,$bH);
-        $texto = 'Chave de acesso para consulta de autenticidade no site www.cte.fazenda.gov.br ';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'I');
-        $this->__textBox($x,$y+16,$w,$h,$texto,$aFont,'T','C',0,'');
+        $this->pdf->Code128($x+(($w-$bW)/2),$y+2,$chave_acesso,$bW,$bH);
+        $this->__textBox($x,$y+$h1,$w+0.5,$h1-6);
+        
+        $texto = 'CHAVE DE ACESSO';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
+        $this->__textBox($x,$y+$h1,$w,$h,$texto,$aFont,'T','L',0,'');
+        
         $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
         $texto = $this->__format($chave_acesso,'##.####.##.###.###/####-##-##-###-###.###.###-###.###.###-#');
-        $this->__textBox($x,$y+19,$w,$h,$texto,$aFont,'T','C',0,'');
+        $this->__textBox($x,$y+$h1+3,$w,$h,$texto,$aFont,'T','C',0,'');
+        
+        $this->__textBox($x,$y+$h1+8,$w+0.5,$h1-4.5);
+        $texto = "Consulta de autenticidade no portal nacional do CT-e, no site da Sefaz Autorizadora, \r\n ou em http://www.cte.fazenda.gov.br";
+        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'');
+        $this->__textBox($x,$y+$h1+9,$w,$h,$texto,$aFont,'T','C',0,'');
         
         //outra caixa
         $y += $h+1;
-        $h = 8;
-        $wa = 30;
-        $this->__textBox($x,$y,$w,$h);
-        $texto = 'N. PROTOCOLO';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'I');
-        $this->__textBox($x,$y,$wa,$h,$texto,$aFont,'T','C',0,'');
+        $h = 8.5;
+        $wa = $w;
+        $this->__textBox($x,$y+7.5,$w+0.5,$h);
+        $texto = 'PROTOCOLO DE AUTORIZAÇÃO DE USO';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
+        $this->__textBox($x,$y+7.5,$wa,$h,$texto,$aFont,'T','L',0,'');
         
-        $texto = $this->protCTe->getElementsByTagName("nProt")->item(0)->nodeValue;
+        $texto = $this->protCTe->getElementsByTagName("nProt")->item(0)->nodeValue ." - ";
+        $texto .= date('d/m/Y   H:i:s',$this->__convertTime($this->protCTe->getElementsByTagName("dhRecbto")->item(0)->nodeValue));
         $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
-        $this->__textBox($x,$y+4,$wa,$h,$texto,$aFont,'T','C',0,'');
-        $this->pdf->Line($x+$wa, $y, $x+$wa, $y+$h);
-        $wb = $w-$wa;
-        $texto = 'INSC. SUFRAMA DO DESTINATÁRIO';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'I');
-        $this->__textBox($x+$wa,$y,$wb,$h,$texto,$aFont,'T','C',0,'');
-        
-        $texto = 'xxxxxxxxxxxxxxxxxxxxxx';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
-        $this->__textBox($x+$wa,$y+4,$wb,$h,$texto,$aFont,'T','C',0,'');
-        
+        $this->__textBox($x,$y+12,$wa,$h,$texto,$aFont,'T','C',0,'');             
         
         //CFOP
-        $y += $h+1;
         $x =  $oldX;
-        $h = 8;
-        $w = $maxW-0.7;
-        $this->__textBox($x,$y,$w,$h);
+        $h = 8.5;
+        $w = round($maxW*0.42);
+        $y1 = $y+7.5; 
+        $this->__textBox($x,$y1,$w+2,$h);
         
-        $texto = 'CFOP - Natureza da Prestação';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'I');
-        $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',0,'');
+        $texto = 'CFOP - NATUREZA DA PRESTAÇÃO';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'');
+        $this->__textBox($x,$y1,$w,$h,$texto,$aFont,'T','L',0,'');
         
         $texto = $this->ide->getElementsByTagName("CFOP")->item(0)->nodeValue . ' - ' . $this->ide->getElementsByTagName("natOp")->item(0)->nodeValue;
         
         $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
-        $this->__textBox($x,$y+3.5,$w,$h,$texto,$aFont,'T','L',0,'');
+        $this->__textBox($x,$y1+3.5,$w,$h,$texto,$aFont,'T','L',0,'');
         
         //ORIGEM DA PRESTAÇÃO
-        $y += $h+1;
+        $y += $h+7.5;
         $x =  $oldX;
         $h = 8;
         $w = ($maxW*0.5);
-        $this->__textBox($x,$y,$w,$h);
+        $this->__textBox($x,$y,$w+0.5,$h);
         
-        $texto = 'Origem da Prestação';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'I');
+        $texto = 'INÍCIO DA PRESTAÇÃO';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',0,'');
         
-        $texto = $this->ide->getElementsByTagName("xMunIni")->item(0)->nodeValue . ' - ' . $this->ide->getElementsByTagName("UFEmi")->item(0)->nodeValue;
+        $texto = $this->ide->getElementsByTagName("xMunIni")->item(0)->nodeValue . ' - ' . $this->ide->getElementsByTagName("UFIni")->item(0)->nodeValue;
         
         $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
-        $this->__textBox($x,$y+3.5,$w,$h,$texto,$aFont,'T','L',0,'');
-        
+        $this->__textBox($x,$y+3.5,$w,$h,$texto,$aFont,'T','L',0,'');        
         
         //DESTINO DA PRESTAÇÃO
         $x =  $oldX + $w + 1;
         $h = 8;
         $w = $w - 1.3;
-        $this->__textBox($x,$y,$w,$h);
+        $this->__textBox($x-0.5,$y,$w+0.5,$h);
         
-        $texto = 'Destino da Prestação';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'I');
+        $texto = 'TÉRMINO DA PRESTAÇÃO';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',0,'');
         
         $texto = $this->ide->getElementsByTagName("xMunFim")->item(0)->nodeValue . ' - ' . $this->ide->getElementsByTagName("UFFim")->item(0)->nodeValue;
@@ -848,7 +895,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP {
      * Monta o rodape no final da DACTE ( retrato e paisagem )
      * @package NFePHP
      * @name __rodapeDACTEE
-     * @version 1.0
+     * @version 1.0.1
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @param number $xInic Posição horizontal canto esquerdo
      * @param number $yFinal Posição vertical final para impressão
@@ -856,10 +903,10 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP {
     protected function __rodapeDACTE($x,$y){
         $texto = "Impresso em  ". date('d/m/Y   H:i:s');
         $w = $this->wPrint-4;
-        $aFont = array('font'=>$this->fontePadrao,'size'=>6,'style'=>'I');
+        $aFont = array('font'=>$this->fontePadrao,'size'=>6,'style'=>'');
         $this->__textBox($x,$y,$w,4,$texto,$aFont,'T','L',0,'');
         $texto = "DacteNFePHP ver. " . $this->version .  "  Powered by NFePHP (GNU/GPLv3 GNU/LGPLv3) © www.nfephp.org";
-        $aFont = array('font'=>$this->fontePadrao,'size'=>6,'style'=>'I');
+        $aFont = array('font'=>$this->fontePadrao,'size'=>6,'style'=>'');
         $this->__textBox($x,$y,$w,4,$texto,$aFont,'T','R',0,'http://www.nfephp.org');
     } //fim __rodapeDANFE
   
@@ -869,7 +916,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP {
      * Monta o campo com os dados do remetente na DACTE. ( retrato  e paisagem  )
      * @package NFePHP
      * @name __destinatarioDANFE
-     * @version 1.2
+     * @version 1.2.1
      * @param number $x Posição horizontal canto esquerdo
      * @param number $y Posição vertical canto superior
      * @return number Posição vertical final 
@@ -882,92 +929,87 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP {
         }else{
                 $maxW = $this->wPrint - $this->wCanhoto;
         }
-        $w = $maxW*0.5;
+        $w = $maxW*0.5 + 0.5;
         $h = 19;
-        $texto = 'Remetente';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+        $x1 = $x + 16;
+        $texto = 'REMETENTE';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',1,'');
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'B');
+        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
         
         $texto = $this->rem->getElementsByTagName("xNome")->item(0)->nodeValue;
-        $this->__textBox($x+13,$y,$w,$h,$texto,$aFont,'T','L',0,'');
-        
+        $this->__textBox($x1,$y,$w,$h,$texto,$aFont,'T','L',0,'');
         
         $y += 3;
-        
-        $texto = 'Endereço';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+        $texto = 'ENDEREÇO';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',0,'');
         
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'B');
-        
+        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
         $texto = $this->enderReme->getElementsByTagName("xLgr")->item(0)->nodeValue . ',' . $this->enderReme->getElementsByTagName("nro")->item(0)->nodeValue;
         $texto = !empty($this->enderReme->getElementsByTagName("xCpl")->item(0)->nodeValue) ? $texto . ' - '.$this->enderReme->getElementsByTagName("xCpl")->item(0)->nodeValue : $texto;
-        $this->__textBox($x+13,$y,$w,$h,$texto,$aFont,'T','L',0,'');
+        $this->__textBox($x1,$y,$w,$h,$texto,$aFont,'T','L',0,'');
         
         $y += 3;
         $texto = $this->enderReme->getElementsByTagName("xBairro")->item(0)->nodeValue;
-        $this->__textBox($x+13,$y,$w,$h,$texto,$aFont,'T','L',0,'');
+        $this->__textBox($x1,$y,$w,$h,$texto,$aFont,'T','L',0,'');
         
         $y += 3;
-        $texto = 'Município';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+        $texto = 'MUNICÍPIO';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',0,'');
         
         $texto = $this->enderReme->getElementsByTagName("xMun")->item(0)->nodeValue . ' - ' . $this->enderReme->getElementsByTagName("UF")->item(0)->nodeValue;
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'B');
-        $this->__textBox($x+13,$y,$w,$h,$texto,$aFont,'T','L',0,'');
-        
+        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
+        $this->__textBox($x1,$y,$w,$h,$texto,$aFont,'T','L',0,'');
         
         $x = $w - 18;
         $texto = 'CEP';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',0,'');
         
-        $texto = $this->__format($this->enderReme->getElementsByTagName("CEP")->item(0)->nodeValue,"#####-###");
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'B');
+        $texto = !empty($this->enderReme->getElementsByTagName("CEP")->item(0)->nodeValue) ? ($this->__format($this->enderReme->getElementsByTagName("CEP")->item(0)->nodeValue,"#####-###")) : '';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
         $this->__textBox($x+6,$y,$w,$h,$texto,$aFont,'T','L',0,'');    
         
         $x = $oldX;
         $y += 3;
         $texto = 'CNPJ/CPF';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',0,'');
-        
         
         $cpfCnpj = $this->__cnpjCpf( $this->rem );
 
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'B');
-        $this->__textBox($x+13,$y,$w,$h,$cpfCnpj,$aFont,'T','L',0,'');    
-        
+        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
+        $this->__textBox($x1,$y,$w,$h,$cpfCnpj,$aFont,'T','L',0,'');    
         
         $x = $w - 45;
         $texto = 'INSCRIÇÃO ESTADUAL';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',0,'');
         
         $texto = $this->rem->getElementsByTagName("IE")->item(0)->nodeValue;;
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'B');
+        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
         $this->__textBox($x+28,$y,$w,$h,$texto,$aFont,'T','L',0,'');    
         
         $x = $oldX;
         $y += 3;
-        $texto = 'País';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+        $texto = 'PAÍS';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',0,'');
         
-        $texto = $this->rem->getElementsByTagName("xPais")->item(0)->nodeValue;
+        $texto = !empty($this->rem->getElementsByTagName("xPais")->item(0)->nodeValue) ? $this->rem->getElementsByTagName("xPais")->item(0)->nodeValue : 'BRASIL';
         
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'B');
-        $this->__textBox($x+13,$y,$w,$h,$texto,$aFont,'T','L',0,'');    
+        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
+        $this->__textBox($x1,$y,$w,$h,$texto,$aFont,'T','L',0,'');    
         
         $x = $w - 25;
         $texto = 'FONE';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',0,'');
 
         $texto = $this->__fone( $this->rem );
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'B');
+        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
         $this->__textBox($x+8,$y,$w,$h,$texto,$aFont,'T','L',0,'');    
     } //fim da função __remetenteDACTE
     
@@ -977,7 +1019,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP {
      * Monta o campo com os dados do destinatário na DACTE. ( retrato  e paisagem  )
      * @package NFePHP
      * @name __destinatarioDANFE
-     * @version 1.2
+     * @version 1.2.1
      * @param number $x Posição horizontal canto esquerdo
      * @param number $y Posição vertical canto superior
      * @return number Posição vertical final 
@@ -990,105 +1032,94 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP {
         }else{
             $maxW = $this->wPrint - $this->wCanhoto;
         }
-        $w = ($maxW*0.5) - 1.2;
+        $w = ($maxW*0.5) - 0.7;
         $h = 19;
-        $texto = 'Destinatário';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
-        $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',1,'');
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'B');
+        $x1 = $x + 19;
+        $texto = 'DESTINATÁRIO';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
+        $this->__textBox($x-0.5,$y,$w,$h,$texto,$aFont,'T','L',1,'');
+        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
         
         $texto = $this->dest->getElementsByTagName("xNome")->item(0)->nodeValue;
-        $this->__textBox($x+14,$y,$w,$h,$texto,$aFont,'T','L',0,'');
-        
+        $this->__textBox($x1,$y,$w,$h,$texto,$aFont,'T','L',0,'');
         
         $y += 3;
-        
-        $texto = 'Endereço';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+        $texto = 'ENDEREÇO';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',0,'');
         
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'B');
-        
+        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
         $texto = $this->enderDest->getElementsByTagName("xLgr")->item(0)->nodeValue . ',' . $this->enderDest->getElementsByTagName("nro")->item(0)->nodeValue;
         $texto = !empty($this->enderDest->getElementsByTagName("xCpl")->item(0)->nodeValue) ? $texto . ' - '.$this->enderDest->getElementsByTagName("xCpl")->item(0)->nodeValue : $texto;
-        $this->__textBox($x+14,$y,$w,$h,$texto,$aFont,'T','L',0,'');
+        $this->__textBox($x1,$y,$w,$h,$texto,$aFont,'T','L',0,'');
         
         $y += 3;
         $texto = $this->enderDest->getElementsByTagName("xBairro")->item(0)->nodeValue;
-        $this->__textBox($x+14,$y,$w,$h,$texto,$aFont,'T','L',0,'');
+        $this->__textBox($x1,$y,$w,$h,$texto,$aFont,'T','L',0,'');
         
         $y += 3;
-        $texto = 'Município';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+        $texto = 'MUNICÍPIO';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',0,'');
         
         $texto = $this->enderDest->getElementsByTagName("xMun")->item(0)->nodeValue . ' - ' . $this->enderDest->getElementsByTagName("UF")->item(0)->nodeValue;
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'B');
-        $this->__textBox($x+14,$y,$w,$h,$texto,$aFont,'T','L',0,'');
-        
+        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
+        $this->__textBox($x1,$y,$w,$h,$texto,$aFont,'T','L',0,'');
         
         $x = $w - 19 + $oldX;
         $texto = 'CEP';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',0,'');
         
-        $texto = $this->__format($this->enderDest->getElementsByTagName("CEP")->item(0)->nodeValue,"#####-###");
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'B');
-        $this->__textBox($x+6,$y,$w,$h,$texto,$aFont,'T','L',0,'');    
+        $texto = !empty($this->enderDest->getElementsByTagName("CEP")->item(0)->nodeValue) ? $this->__format($this->enderDest->getElementsByTagName("CEP")->item(0)->nodeValue,"#####-###") : '';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
+        $this->__textBox($x+5,$y,$w,$h,$texto,$aFont,'T','L',0,'');    
         
         $x = $oldX;
         $y += 3;
         $texto = 'CNPJ/CPF';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',0,'');
         
-        
         $cpfCnpj = $this->__cnpjCpf( $this->dest );
-
-        
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'B');
-        $this->__textBox($x+14,$y,$w,$h,$cpfCnpj,$aFont,'T','L',0,'');    
-        
+        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
+        $this->__textBox($x1,$y,$w,$h,$cpfCnpj,$aFont,'T','L',0,'');    
         
         $x = $w - 47.5 + $oldX;
         $texto = 'INSCRIÇÃO ESTADUAL';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',0,'');
         
-        $texto = $this->dest->getElementsByTagName("IE")->item(0)->nodeValue;;
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'B');
+        $texto = !empty($this->dest->getElementsByTagName("IE")->item(0)->nodeValue)? $this->dest->getElementsByTagName("IE")->item(0)->nodeValue : '';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
         $this->__textBox($x+28,$y,$w,$h,$texto,$aFont,'T','L',0,'');    
         
         $x = $oldX;
         $y += 3;
-        $texto = 'País';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
-
+        $texto = 'PAÍS';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',0,'');
         
         $texto = $this->__simpleGetValue( $this->dest ,  "xPais");
-        
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'B');
-        $this->__textBox($x+14,$y,$w,$h,$texto,$aFont,'T','L',0,'');    
+        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
+        $this->__textBox($x1,$y,$w,$h,$texto,$aFont,'T','L',0,'');    
         
         $x = $w - 27 + $oldX;
         $texto = 'FONE';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',0,'');
 
         $texto = $this->__fone( $this->dest );        
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'B');
+        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
         $this->__textBox($x+8,$y,$w,$h,$texto,$aFont,'T','L',0,'');    
     } //fim da função __destinatarioDACTE
-    
-    
     
     /**
      * __expedidorDACTE
      * Monta o campo com os dados do remetente na DACTE. ( retrato  e paisagem  )
      * @package NFePHP
      * @name __expedidorDACTE
-     * @version 1.2
+     * @version 1.2.1
      * @param number $x Posição horizontal canto esquerdo
      * @param number $y Posição vertical canto superior
      * @return number Posição vertical final 
@@ -1101,128 +1132,125 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP {
         }else{
                 $maxW = $this->wPrint - $this->wCanhoto;
         }
-        $w = $maxW*0.5;
+        $w = $maxW*0.5 + 0.5;
         $h = 19;
-        $texto = 'Expedidor';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+        $x1 = $x + 16;
+        $texto = 'EXPEDIDOR';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',1,'');
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'B');
+        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
     
-        if(isset($this->exped))
+        if(isset($this->exped)){
             $texto = !empty($this->exped->getElementsByTagName("xNome")->item(0)->nodeValue) ? $this->exped->getElementsByTagName("xNome")->item(0)->nodeValue : '';
-        else
+        } else {
             $texto ='';
-        
-        $this->__textBox($x+13,$y,$w,$h,$texto,$aFont,'T','L',0,'');
-        
+        }
+        $this->__textBox($x1,$y,$w,$h,$texto,$aFont,'T','L',0,'');
         
         $y += 3;
-        
-        $texto = 'Endereço';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+        $texto = 'ENDEREÇO';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',0,'');
         
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'B');
-        
+        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
         if(isset($this->enderExped)){
             $texto = $this->enderExped->getElementsByTagName("xLgr")->item(0)->nodeValue .  ', '.$this->enderExped->getElementsByTagName("nro")->item(0)->nodeValue;
-                     
             $texto = !empty($this->enderExped->getElementsByTagName("xCpl")->item(0)->nodeValue) ? $texto . ' - '.$this->enderExped->getElementsByTagName("xCpl")->item(0)->nodeValue : $texto;
-        }
-        else
+        } else {
             $texto = '';
-        $this->__textBox($x+13,$y,$w,$h,$texto,$aFont,'T','L',0,'');
+        }    
+        $this->__textBox($x1,$y,$w,$h,$texto,$aFont,'T','L',0,'');
         
         $y += 3;
-        if(isset($this->enderExped))
+        if(isset($this->enderExped)){
             $texto = !empty($this->enderExped->getElementsByTagName("xBairro")->item(0)->nodeValue) ? $this->enderExped->getElementsByTagName("xBairro")->item(0)->nodeValue : '';
-        else
+        } else {
             $texto = '';
-        $this->__textBox($x+13,$y,$w,$h,$texto,$aFont,'T','L',0,'');
+        }    
+        $this->__textBox($x1,$y,$w,$h,$texto,$aFont,'T','L',0,'');
         
         $y += 3;
-        $texto = 'Município';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+        $texto = 'MUNICÍPIO';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',0,'');
         
-        if(isset($this->enderExped))
+        if(isset($this->enderExped)){
             $texto = $this->enderExped->getElementsByTagName("xMun")->item(0)->nodeValue  .   ' - ' . $this->enderExped->getElementsByTagName("UF")->item(0)->nodeValue ;
-        else
+        } else {
             $texto = '';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'B');
-        $this->__textBox($x+13,$y,$w,$h,$texto,$aFont,'T','L',0,'');
-        
+        }    
+        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
+        $this->__textBox($x1,$y,$w,$h,$texto,$aFont,'T','L',0,'');
         
         $x = $w - 18;
         $texto = 'CEP';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',0,'');
         
-        if(isset($this->enderExped))
+        if(isset($this->enderExped)){
             $texto = !empty($this->enderExped->getElementsByTagName("CEP")->item(0)->nodeValue) ? $this->__format($this->enderExped->getElementsByTagName("CEP")->item(0)->nodeValue,"#####-###") : '' ;
-        else
+        } else {
             $texto = '';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'B');
+        }    
+        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
         $this->__textBox($x+6,$y,$w,$h,$texto,$aFont,'T','L',0,'');    
         
         $x = $oldX;
         $y += 3;
         $texto = 'CNPJ/CPF';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',0,'');
         
-        
         $cpfCnpj = $this->__cnpjCpf( $this->exped );
-
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'B');
-        $this->__textBox($x+13,$y,$w,$h,$cpfCnpj,$aFont,'T','L',0,'');    
-        
+        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
+        $this->__textBox($x1,$y,$w,$h,$cpfCnpj,$aFont,'T','L',0,'');    
         
         $x = $w - 45;
         $texto = 'INSCRIÇÃO ESTADUAL';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',0,'');
         
-        if(isset($this->exped))
+        if(isset($this->exped)){
             $texto = !empty($this->exped->getElementsByTagName("IE")->item(0)->nodeValue) ? $this->exped->getElementsByTagName("IE")->item(0)->nodeValue : '';
-        else
+        } else {
             $texto = '';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'B');
+        }    
+        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
         $this->__textBox($x+28,$y,$w,$h,$texto,$aFont,'T','L',0,'');    
         
         $x = $oldX;
         $y += 3;
-        $texto = 'País';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+        $texto = 'PAÍS';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',0,'');
         
-        if(isset($this->exped))
+        if(isset($this->exped)){
             $texto = !empty($this->exped->getElementsByTagName("xPais")->item(0)->nodeValue) ? $this->exped->getElementsByTagName("xPais")->item(0)->nodeValue : '';
-        else
+        } else {
             $texto = '';
-        
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'B');
-        $this->__textBox($x+13,$y,$w,$h,$texto,$aFont,'T','L',0,'');    
+        }    
+        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
+        $this->__textBox($x1,$y,$w,$h,$texto,$aFont,'T','L',0,'');    
         
         $x = $w - 25;
         $texto = 'FONE';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',0,'');
         
         if(isset($this->exped)){
             $texto = $this->__fone( $this->exped );  
-            $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'B');
+            $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
             $this->__textBox($x+8,$y,$w,$h,$texto,$aFont,'T','L',0,'');            
         }
        
     } //fim da função __remetenteDACTE
     
-        /**
+    /**
      * __recebedorDACTE
      * Monta o campo com os dados do remetente na DACTE. ( retrato  e paisagem  )
      * @package NFePHP
      * @name __recebedorDACTE
-     * @version 1.2
+     * @version 1.2.1
      * @param number $x Posição horizontal canto esquerdo
      * @param number $y Posição vertical canto superior
      * @return number Posição vertical final 
@@ -1232,120 +1260,118 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP {
         $oldY = $y;
         if( $this->orientacao == 'P' ){
                 $maxW = $this->wPrint;
-        }else{
+        } else {
                 $maxW = $this->wPrint - $this->wCanhoto;
         }
-        $w = ($maxW*0.5) - 1.2;
+        $w = ($maxW*0.5) - 0.7;
         $h = 19;
-        $texto = 'Expedidor';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
-        $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',1,'');
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'B');
+        $x1 = $x + 19;
+        $texto = 'RECEBEDOR';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
+        $this->__textBox($x-0.5,$y,$w,$h,$texto,$aFont,'T','L',1,'');
+        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
     
-        if(isset($this->receb))
+        if(isset($this->receb)){
             $texto = !empty($this->receb->getElementsByTagName("xNome")->item(0)->nodeValue) ? $this->receb->getElementsByTagName("xNome")->item(0)->nodeValue : '';
-        else
+        } else {
             $texto ='';
-        
-        $this->__textBox($x+13,$y,$w,$h,$texto,$aFont,'T','L',0,'');
-        
+        }
+        $this->__textBox($x1,$y,$w,$h,$texto,$aFont,'T','L',0,'');
         
         $y += 3;
         
-        $texto = 'Endereço';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+        $texto = 'ENDEREÇO';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',0,'');
         
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'B');
-        
+        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
         if(isset($this->enderReceb)){
             $texto = $this->enderReceb->getElementsByTagName("xLgr")->item(0)->nodeValue . ', '.$this->enderReceb->getElementsByTagName("nro")->item(0)->nodeValue ;
-            
             $texto = !empty($this->enderReceb->getElementsByTagName("xCpl")->item(0)->nodeValue) ? $texto . ' - '.$this->enderReceb->getElementsByTagName("xCpl")->item(0)->nodeValue : $texto;
-        }
-        else
+        } else {
             $texto = '';
-        $this->__textBox($x+13,$y,$w,$h,$texto,$aFont,'T','L',0,'');
+        }    
+        $this->__textBox($x1,$y,$w,$h,$texto,$aFont,'T','L',0,'');
         
         $y += 3;
-        if(isset($this->enderReceb))
+        if(isset($this->enderReceb)){
             $texto = !empty($this->enderReceb->getElementsByTagName("xBairro")->item(0)->nodeValue) ? $this->enderReceb->getElementsByTagName("xBairro")->item(0)->nodeValue : '';
-        else
+        } else {
             $texto = '';
-        $this->__textBox($x+13,$y,$w,$h,$texto,$aFont,'T','L',0,'');
+        }    
+        $this->__textBox($x1,$y,$w,$h,$texto,$aFont,'T','L',0,'');
         
         $y += 3;
-        $texto = 'Município';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+        $texto = 'MUNICÍPIO';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',0,'');
         
-        if(isset($this->enderReceb))
+        if(isset($this->enderReceb)){
             $texto = $this->enderReceb->getElementsByTagName("xMun")->item(0)->nodeValue . ' - ' . $this->enderReceb->getElementsByTagName("UF")->item(0)->nodeValue ;
-        else
+        } else {
             $texto = '';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'B');
-        $this->__textBox($x+13,$y,$w,$h,$texto,$aFont,'T','L',0,'');
-        
+        }    
+        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
+        $this->__textBox($x1,$y,$w,$h,$texto,$aFont,'T','L',0,'');
         
         $x = $w - 19 + $oldX;
         $texto = 'CEP';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',0,'');
         
-        if(isset($this->enderReceb))
+        if(isset($this->enderReceb)){
             $texto = !empty($this->enderReceb->getElementsByTagName("CEP")->item(0)->nodeValue) ? $this->__format($this->enderReceb->getElementsByTagName("CEP")->item(0)->nodeValue,"#####-###") : '' ;
-        else
+        } else {
             $texto = '';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'B');
-        $this->__textBox($x+6,$y,$w,$h,$texto,$aFont,'T','L',0,'');    
+        }    
+        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
+        $this->__textBox($x+5,$y,$w,$h,$texto,$aFont,'T','L',0,'');    
         
         $x = $oldX;
         $y += 3;
         $texto = 'CNPJ/CPF';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',0,'');
-        
-        
+
         $texto = $this->__cnpjCpf( $this->receb );
-        
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'B');
-        $this->__textBox($x+13,$y,$w,$h,$texto,$aFont,'T','L',0,'');    
-        
+        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
+        $this->__textBox($x1,$y,$w,$h,$texto,$aFont,'T','L',0,'');    
         
         $x = $w - 47 + $oldX;
         $texto = 'INSCRIÇÃO ESTADUAL';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',0,'');
         
-        if(isset($this->receb))
+        if(isset($this->receb)){
             $texto = !empty($this->receb->getElementsByTagName("IE")->item(0)->nodeValue) ? $this->receb->getElementsByTagName("IE")->item(0)->nodeValue : '';
-        else
+        } else {
             $texto = '';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'B');
+        }    
+        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
         $this->__textBox($x+28,$y,$w,$h,$texto,$aFont,'T','L',0,'');    
         
         $x = $oldX;
         $y += 3;
-        $texto = 'País';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+        $texto = 'PAÍS';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',0,'');
         
-        if(isset($this->receb))
+        if(isset($this->receb)){
             $texto = !empty($this->receb->getElementsByTagName("xPais")->item(0)->nodeValue) ? $this->receb->getElementsByTagName("xPais")->item(0)->nodeValue : '';
-        else
+        } else {
             $texto = '';
-        
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'B');
-        $this->__textBox($x+13,$y,$w,$h,$texto,$aFont,'T','L',0,'');    
+        }
+        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
+        $this->__textBox($x1,$y,$w,$h,$texto,$aFont,'T','L',0,'');    
         
         $x = $w - 27 + $oldX;
         $texto = 'FONE';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',0,'');
         
         if(isset($this->receb)){
             $texto = $this->__fone( $this->receb );
-            $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'B');
+            $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
             $this->__textBox($x+8,$y,$w,$h,$texto,$aFont,'T','L',0,'');
         }
     } //fim da função __recebedorDACTE
@@ -1355,7 +1381,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP {
      * Monta o campo com os dados do remetente na DACTE. ( retrato  e paisagem  )
      * @package NFePHP
      * @name __tomadorDACTE
-     * @version 1.2
+     * @version 1.2.1
      * @param number $x Posição horizontal canto esquerdo
      * @param number $y Posição vertical canto superior
      * @return number Posição vertical final 
@@ -1365,90 +1391,92 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP {
         $oldY = $y;
         if( $this->orientacao == 'P' ){
                 $maxW = $this->wPrint;
-        }else{
+        } else {
                 $maxW = $this->wPrint - $this->wCanhoto;
-        }
+        }        
         $w = $maxW;
         $h = 10;
-        $texto = 'Tomador do Serviço';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+        $texto = 'TOMADOR DO SERVIÇO';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',1,'');
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'B');
-        
+
+        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
         $texto = $this->toma->getElementsByTagName("xNome")->item(0)->nodeValue;
-        $this->__textBox($x+23,$y,$w,$h,$texto,$aFont,'T','L',0,'');
+        $this->__textBox($x+29,$y,$w,$h,$texto,$aFont,'T','L',0,'');
         
         $x = $maxW*0.60;
-        $texto = 'Município';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+        $texto = 'MUNICÍPIO';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',0,'');
         
         $texto = $this->enderToma->getElementsByTagName("xMun")->item(0)->nodeValue;
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'B');
-        $this->__textBox($x+11,$y,$w,$h,$texto,$aFont,'T','L',0,'');
+        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
+        $this->__textBox($x+15,$y,$w,$h,$texto,$aFont,'T','L',0,'');
         
         $x = $maxW*0.85;
         $texto = 'UF';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',0,'');
         
         $texto = $this->enderToma->getElementsByTagName("UF")->item(0)->nodeValue;
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'B');
+        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
         $this->__textBox($x+4,$y,$w,$h,$texto,$aFont,'T','L',0,'');
         
         $x = $w - 18;
         $texto = 'CEP';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',0,'');
         
-        $texto = $this->__format($this->enderToma->getElementsByTagName("CEP")->item(0)->nodeValue,"#####-###");
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'B');
+        $texto = !empty($this->enderToma->getElementsByTagName("CEP")->item(0)->nodeValue) ? $this->__format($this->enderToma->getElementsByTagName("CEP")->item(0)->nodeValue,"#####-###") : '';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
         $this->__textBox($x+6,$y,$w,$h,$texto,$aFont,'T','L',0,'');    
         
         $y += 3;
         $x = $oldX;
-        $texto = 'Endereço';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+        $texto = 'ENDEREÇO';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',0,'');
         
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'B');
+        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
         $texto = $this->enderToma->getElementsByTagName("xLgr")->item(0)->nodeValue . ',' . $this->enderToma->getElementsByTagName("nro")->item(0)->nodeValue;
         $texto = !empty($this->enderToma->getElementsByTagName("xCpl")->item(0)->nodeValue) ? $texto . ' - '.$this->enderToma->getElementsByTagName("xCpl")->item(0)->nodeValue : $texto;
-        
         $texto .= ' - ' . $this->enderToma->getElementsByTagName("xBairro")->item(0)->nodeValue;
-        $this->__textBox($x+13,$y,$w,$h,$texto,$aFont,'T','L',0,'');
+        $this->__textBox($x+16,$y,$w,$h,$texto,$aFont,'T','L',0,'');
 
         $y += 3;
         $texto = 'CNPJ/CPF';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',0,'');
         
-        $texto = $this->__cnpjCpf($this->toma);
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'B');
+        $texto = $this->__cnpjCpf( $this->toma);
+        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
         $this->__textBox($x+13,$y,$w,$h,$texto,$aFont,'T','L',0,'');    
         
         $x = $x + 65;
         $texto = 'INSCRIÇÃO ESTADUAL';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',0,'');
+        
         $texto = $this->toma->getElementsByTagName("IE")->item(0)->nodeValue;;
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'B');
+        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
         $this->__textBox($x+28,$y,$w,$h,$texto,$aFont,'T','L',0,'');    
         
         $x = $w * 0.75;
-        $texto = 'País';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+        $texto = 'PAÍS';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',0,'');
-        $texto = $this->toma->getElementsByTagName("xPais")->item(0)->nodeValue;
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'B');
+        
+        $texto = !empty($this->enderToma->getElementsByTagName("xPais")->item(0)->nodeValue) ? $this->enderToma->getElementsByTagName("xPais")->item(0)->nodeValue : 'BRASIL';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
         $this->__textBox($x+6,$y,$w,$h,$texto,$aFont,'T','L',0,'');    
         
         $x = $w - 27;
         $texto = 'FONE';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',0,'');
-        $texto = $this->__fone($this->toma);
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'B');
+        
+        $texto = $this->__fone( $this->rem );
+        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
         $this->__textBox($x+8,$y,$w,$h,$texto,$aFont,'T','L',0,'');
     } //fim da função __tomadorDACTE
     
@@ -1458,7 +1486,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP {
      * Monta o campo com os dados do remetente na DACTE. ( retrato  e paisagem  )
      * @package NFePHP
      * @name __tomadorDACTE
-     * @version 1.2
+     * @version 1.2.1
      * @param number $x Posição horizontal canto esquerdo
      * @param number $y Posição vertical canto superior
      * @return number Posição vertical final 
@@ -1473,31 +1501,31 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP {
         }
         $w = $maxW;
         $h = 17;
-        $texto = 'Produto Predominante';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>6,'style'=>'I');
+        $texto = 'PRODUTO PREDOMINANTE';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>6,'style'=>'');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',1,'');
         
         $texto = $this->infCarga->getElementsByTagName("proPred")->item(0)->nodeValue;
         $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
         $this->__textBox($x,$y+2.8,$w,$h,$texto,$aFont,'T','L',0,'');
         
-        $x = $w * 0.60;
-        $this->pdf->Line($x, $y, $x, $y+9);
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
-        $texto = 'Outras Características da Carga';
+        $x = $w * 0.56;
+        $this->pdf->Line($x, $y, $x, $y+8);
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
+        $texto = 'OUTRAS CARACTERÍSTICAS DA CARGA';
         $this->__textBox($x+1,$y,$w,$h,$texto,$aFont,'T','L',0,'');
         
         $texto = $this->__simpleGetValue( $this->infCarga , "xOutCat" );  //$this->infCarga->getElementsByTagName("xOutCat")->item(0)->nodeValue;
         $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
         $this->__textBox($x+1,$y+3,$w,$h,$texto,$aFont,'T','L',0,'');
         
-        $x = $w * 0.80;
+        $x = $w * 0.8;
         $this->pdf->Line($x, $y, $x, $y+8);
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
-        $texto = 'Valot Total da Mercadoria';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
+        $texto = 'VALOR TOTAL DA MERCADORIA';
         $this->__textBox($x+1,$y,$w,$h,$texto,$aFont,'T','L',0,'');
         
-        $texto = $this->infCarga->getElementsByTagName("vMerc")->item(0)->nodeValue;
+        $texto = !empty($this->infCarga->getElementsByTagName("vCarga")->item(0)->nodeValue)? $this->infCarga->getElementsByTagName("vCarga")->item(0)->nodeValue : $this->infCarga->getElementsByTagName("vMerc")->item(0)->nodeValue;
         $texto = number_format($texto, 2, ",", ".");
         $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
         $this->__textBox($x+1,$y+3,$w,$h,$texto,$aFont,'T','L',0,'');
@@ -1506,119 +1534,145 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP {
         $x = $oldX;
         $this->pdf->Line($x, $y, $w+1, $y);
         
-        $texto = 'QT./UN. Medida';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+        $texto = 'TP MED QT./UN. MED';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>5,'style'=>'');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',0,'');
-        $unidade = $this->__unidade($this->infCarga->getElementsByTagName("cUnid")->item(0)->nodeValue);
-        $texto  = number_format($this->infCarga->getElementsByTagName("qCarga")->item(0)->nodeValue, 3, ",", ".");
-        $texto .= ' '.$unidade;
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'B');
+        
+        $texto = $this->infCarga->getElementsByTagName("tpMed")->item(0)->nodeValue;      
+        $texto .= ' '.number_format($this->infCarga->getElementsByTagName("qCarga")->item(0)->nodeValue, 3, ",", ".") * $this->__multiUnidadePeso($this->infCarga->getElementsByTagName("cUnid")->item(0)->nodeValue);
+        $texto .= ' '.$this->__unidade($this->infCarga->getElementsByTagName("cUnid")->item(0)->nodeValue);
+        $aFont = array('font'=>$this->fontePadrao,'size'=>6,'style'=>'B');
         $this->__textBox($x,$y+3,$w,$h,$texto,$aFont,'T','L',0,'');
         
-        $x = $w * 0.16;
+        $x = $w * 0.12;
         $this->pdf->Line($x, $y, $x, $y+9);
-        
-        $texto = 'QT./UN. Medida';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+
+        $texto = 'TP MED QT./UN. MED';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>5,'style'=>'');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',0,'');
-        $unidade = $this->__unidade($this->infCarga->getElementsByTagName("cUnid")->item(1)->nodeValue);
-        $texto  = number_format($this->infCarga->getElementsByTagName("qCarga")->item(1)->nodeValue, 3, ",", ".");
-        $texto .= ' '.$unidade;
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'B');
+        
+        if(!empty($this->infCarga->getElementsByTagName("qCarga")->item(1)->nodeValue)){
+            $texto = $this->infCarga->getElementsByTagName("tpMed")->item(1)->nodeValue; 
+            $texto .= number_format($this->infCarga->getElementsByTagName("qCarga")->item(2)->nodeValue, 3, ",", ".") * $this->__multiUnidadePeso($this->infCarga->getElementsByTagName("cUnid")->item(1)->nodeValue);
+            $texto .= ' '.$this->__unidade($this->infCarga->getElementsByTagName("cUnid")->item(1)->nodeValue);
+        } else {
+            $texto = '';
+        }    
+        $aFont = array('font'=>$this->fontePadrao,'size'=>6,'style'=>'B');
         $this->__textBox($x,$y+3,$w,$h,$texto,$aFont,'T','L',0,'');
         
-        $x = $w * 0.32;
+        $x = $w * 0.24;
         
         $this->pdf->Line($x, $y, $x, $y+9);
         
-        $texto = 'QT./UN. Medida';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+        $texto = 'TP MED QT./UN. MED';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>5,'style'=>'');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',0,'');
         
         if(!empty($this->infCarga->getElementsByTagName("qCarga")->item(2)->nodeValue)){
-            $unidade = $this->__unidade($this->infCarga->getElementsByTagName("cUnid")->item(2)->nodeValue);
-            $texto  = number_format($this->infCarga->getElementsByTagName("qCarga")->item(2)->nodeValue, 3, ",", ".");
-            $texto .= ' '.$unidade;
-        } else
+            $texto = $this->infCarga->getElementsByTagName("tpMed")->item(2)->nodeValue; 
+            $texto .= number_format($this->infCarga->getElementsByTagName("qCarga")->item(2)->nodeValue, 3, ",", ".") * $this->__multiUnidadePeso($this->infCarga->getElementsByTagName("cUnid")->item(2)->nodeValue);
+            $texto .= ' '.$this->__unidade($this->infCarga->getElementsByTagName("cUnid")->item(2)->nodeValue);
+        } else {
             $texto = '';
+        }    
+            
+        $aFont = array('font'=>$this->fontePadrao,'size'=>6,'style'=>'B');
+        $this->__textBox($x,$y+3,$w,$h,$texto,$aFont,'T','L',0,'');
+        
+        $x = $w * 0.36;
+        
+        $this->pdf->Line($x, $y, $x, $y+9);
+        
+        $texto = 'CUBAGEM(M3)';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
+        $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',0,'');
+        
+        if($this->infCarga->getElementsByTagName("cUnid")->item(0)->nodeValue == '00'){
+            $texto  = $this->infCarga->getElementsByTagName("qCarga")->item(0)->nodeValue;
+        } else {
+            $texto = '';
+        }    
             
         $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'B');
         $this->__textBox($x,$y+3,$w,$h,$texto,$aFont,'T','L',0,'');
-        $x = $w * 0.48;
-        $this->pdf->Line($x, $y, $x, $y+9);
-
-        $rSeg = !empty($this->dom->getElementsByTagName('respSeg')->item(0)->nodeValue) ? $this->dom->getElementsByTagName('respSeg')->item(0)->nodeValue : '';
-        switch($rSeg){
-             case '0':
-                 $respSeg = 'Remetente';
-                 break;
-             case '1':
-                 $respSeg = 'Expedidor';
-                 break;
-             case '2':
-                 $respSeg = 'Recebedor';
-                 break;
-             case '3':
-                 $respSeg ='Destinatário';
-                 break;
-             case '4':
-                 $respSeg = 'Emitente do CT-e';
-                 break;
-             case '5':
-                 $respSeg ='Tomador de Serviço.';
-                 break;
-             default:
-                 $respSeg = '';
-        }
-        $xSeg = !empty($this->dom->getElementsByTagName('xSeg')->item(0)->nodeValue) ? $this->dom->getElementsByTagName('xSeg')->item(0)->nodeValue : '';
-        $nApol = !empty($this->dom->getElementsByTagName('nApol')->item(0)->nodeValue) ? $this->dom->getElementsByTagName('nApol')->item(0)->nodeValue : ''; 
-        $nAver = !empty($this->dom->getElementsByTagName('nAver')->item(0)->nodeValue) ? $this->dom->getElementsByTagName('nAver')->item(0)->nodeValue : ''; 
-        $vCarga= !empty($this->dom->getElementsByTagName('vCarga')->item(0)->nodeValue) ? $this->dom->getElementsByTagName('vCarga')->item(0)->nodeValue : ''; 
         
-        $texto = 'Nome da Seguradora: '.$xSeg;
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+        $x = $w * 0.45;
+        
+        $this->pdf->Line($x, $y, $x, $y+9);
+        
+        $texto = 'QTDE(VOL)';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',0,'');
+        
+        if(!empty($this->infCarga->getElementsByTagName("qCarga")->item(0)->nodeValue)){
+            $texto  = $this->infCarga->getElementsByTagName("qCarga")->item(0)->nodeValue;            
+        } else {
+            $texto = '';
+        }    
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'B');
+        $this->__textBox($x,$y+3,$w,$h,$texto,$aFont,'T','L',0,'');
+        
+        $x = $w * 0.53;
+        
+        $this->pdf->Line($x, $y, $x, $y+9);
+       
+        $texto = 'NOME DA SEGURADORA';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
+        $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',0,'');
+        
+        if(!empty($this->seg)){
+           $texto = $this->seg->getElementsByTagName("xSeg")->item(0)->nodeValue; 
+        } else {
+            $texto = '';
+        }    
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'B');
+        $this->__textBox($x+31,$y,$w,$h,$texto,$aFont,'T','L',0,'');
+        
         $y +=3;
         $this->pdf->Line($x, $y, $w+1, $y);
-        $texto = 'Responsável';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+        
+        $texto = 'RESPONSÁVEL';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',0,'');
-        $texto = $respSeg;
+        
+        $texto = $this->respSeg;
         $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'B');
         $this->__textBox($x,$y+3,$w,$h,$texto,$aFont,'T','L',0,'');
         
-        $x = $w * 0.64;
+        $x = $w * 0.68;
         $this->pdf->Line($x, $y, $x, $y+6);
         
-        $texto = 'Número da Apólice';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+        $texto = 'NÚMERO DA APOLICE';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',0,'');
         
-        $texto = $nApol;
+        if(!empty($this->seg)){
+           $texto = $this->seg->getElementsByTagName("nApol")->item(0)->nodeValue; 
+        } else {
+           $texto = '';
+        }   
         $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'B');
         $this->__textBox($x,$y+3,$w,$h,$texto,$aFont,'T','L',0,'');
         
-        $x = $w * 0.80;
+        $x = $w * 0.85;
         $this->pdf->Line($x, $y, $x, $y+6);
-        $texto = 'Número da Averbação';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+        
+        $texto = 'NÚMERO DA AVERBAÇÃO';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',0,'');
         
-        $texto = $nAver;
+        $texto = !empty($this->seg) ? $this->seg->getElementsByTagName("vCarga")->item(0)->nodeValue :'';        
         $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'B');
         $this->__textBox($x,$y+3,$w,$h,$texto,$aFont,'T','L',0,'');
-        
-
     } //fim da função __descricaoCargaDACTE
-    
-    
     
     /**
      * __componentesValorDACTE
      * Monta o campo com os dados do remetente na DACTE. ( retrato  e paisagem  )
      * @package NFePHP
      * @name __componentesValorDACTE
-     * @version 1.2
+     * @version 1.2.1
      * @param number $x Posição horizontal canto esquerdo
      * @param number $y Posição vertical canto superior
      * @return number Posição vertical final 
@@ -1633,79 +1687,70 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP {
         }
         $w = $maxW;
         $h = 25;
-        $texto = 'Componentes do Valor da Prestação do Serviço';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+        $texto = 'COMPONENTES DO VALOR DA PRESTAÇÃO DO SERVIÇO';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','C',1,'');
         
         $y += 3.4;
         $this->pdf->Line($x, $y, $w+1, $y);
-        
-        
-        $texto = 'Nome';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+                
+        $texto = 'NOME';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
         $this->__textBox($x,$y,$w*0.14,$h,$texto,$aFont,'T','L',0,'');
         
         $yIniDados = $y;
-        
         $x = $w * 0.14;
-        
-        $texto = 'Valor';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+        $texto = 'VALOR';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
         $this->__textBox($x,$y,$w *0.14,$h,$texto,$aFont,'T','L',0,'');
         
         $x = $w * 0.28;
         $this->pdf->Line($x, $y, $x, $y + 21.5);
-        
-        
-        $texto = 'Nome';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+                
+        $texto = 'NOME';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
         $this->__textBox($x,$y,$w*0.14,$h,$texto,$aFont,'T','L',0,'');
         
         $x = $w * 0.42;
         
-        $texto = 'Valor';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+        $texto = 'VALOR';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
         $this->__textBox($x,$y,$w * 0.14,$h,$texto,$aFont,'T','L',0,'');
         
         $x = $w * 0.56;
         $this->pdf->Line($x, $y, $x, $y + 21.5);
-        
-        
-        
-        $texto = 'Nome';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+                    
+        $texto = 'NOME';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
         $this->__textBox($x,$y,$w*0.14,$h,$texto,$aFont,'T','L',0,'');
         
         $x = $w * 0.70;
-        
-        $texto = 'Valor';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+        $texto = 'VALOR';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
         $this->__textBox($x,$y,$w * 0.14,$h,$texto,$aFont,'T','L',0,'');
         
         $x = $w * 0.86;
         $this->pdf->Line($x, $y, $x, $y + 21.5);
         
         $y += 1;
-        
-        $texto = 'Valor Total do Serviço';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+        $texto = 'VALOR TOTAL DO SERVIÇO';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
         $this->__textBox($x,$y,$w * 0.14,$h,$texto,$aFont,'T','C',0,'');
         
         $texto = number_format($this->vPrest->getElementsByTagName("vTPrest")->item(0)->nodeValue, 2, ",", ".");
-        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
+        $aFont = array('font'=>$this->fontePadrao,'size'=>9,'style'=>'B');
         $this->__textBox($x,$y+4,$w * 0.14,$h,$texto,$aFont,'T','C',0,'');
         
         $y += 10;
         $this->pdf->Line($x, $y, $w+1, $y);
         
         $y += 1;
-        
-        $texto = 'Valor a Receber';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+        $texto = 'VALOR A RECEBER';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
         $this->__textBox($x,$y,$w * 0.14,$h,$texto,$aFont,'T','C',0,'');
         
         $texto = number_format($this->vPrest->getElementsByTagName("vRec")->item(0)->nodeValue, 2, ",", ".");
-        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
+        $aFont = array('font'=>$this->fontePadrao,'size'=>9,'style'=>'B');
         $this->__textBox($x,$y+4,$w * 0.14,$h,$texto,$aFont,'T','C',0,'');
         
         $auxX = $oldX;
@@ -1713,33 +1758,29 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP {
         foreach ($this->Comp as $k => $d) {
              $nome = $this->Comp->item($k)->getElementsByTagName('xNome')->item(0)->nodeValue;
              $valor = number_format($this->Comp->item($k)->getElementsByTagName('vComp')->item(0)->nodeValue, 2, ",", ".");
-             
              if($auxX>$w*0.60){
                  $yIniDados = $yIniDados + 4;
                  $auxX = $oldX;
              }
-             
              $texto = $nome;
-             $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'');
+             $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
              $this->__textBox($auxX,$yIniDados,$w * 0.14,$h,$texto,$aFont,'T','L',0,'');
              
              $auxX += $w * 0.14;
-             
              $texto = $valor;
-             $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'');
+             $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
              $this->__textBox($auxX,$yIniDados,$w * 0.14,$h,$texto,$aFont,'T','L',0,'');
              
              $auxX += $w * 0.14;
         }
     } //fim da função __componentesValorDACTE
     
-    
     /**
      * __impostosDACTE
      * Monta o campo com os dados do remetente na DACTE. ( retrato  e paisagem  )
      * @package NFePHP
      * @name __impostosDACTE
-     * @version 1.2
+     * @version 1.2.1
      * @param number $x Posição horizontal canto esquerdo
      * @param number $y Posição vertical canto superior
      * @return number Posição vertical final 
@@ -1754,105 +1795,94 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP {
         }
         $w = $maxW;
         $h = 13;
-        $texto = 'Informações Relativas ao Imposto';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+        $texto = 'INFORMAÇÕES RELATIVAS AO IMPOSTO';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','C',1,'');
         
         $y += 3.4;
         $this->pdf->Line($x, $y, $w+1, $y);
-
                 
-        $texto = 'Situação Tributária';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+        $texto = 'SITUAÇÃO TRIBUTÁRIA';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
         $this->__textBox($x,$y,$w*0.26,$h,$texto,$aFont,'T','L',0,'');
         
         $x += $w*0.26;
         $this->pdf->Line($x, $y, $x, $y + 9.5);
         
-        $texto = 'Base De Calculo';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+        $texto = 'BASE DE CALCULO';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
         $this->__textBox($x,$y,$w*0.14,$h,$texto,$aFont,'T','L',0,'');
         
         $x += $w*0.14;
         $this->pdf->Line($x, $y, $x, $y + 9.5);
         
-        $texto = 'Alíq ICMS';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+        $texto = 'ALÍQ ICMS';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
         $this->__textBox($x,$y,$w*0.14,$h,$texto,$aFont,'T','L',0,'');
-        
         
         $x += $w*0.14;
         $this->pdf->Line($x, $y, $x, $y + 9.5);
         
-        $texto = 'Valor ICMS';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+        $texto = 'VALOR ICMS';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
         $this->__textBox($x,$y,$w*0.14,$h,$texto,$aFont,'T','L',0,'');
-        
         
         $x += $w*0.14;
         $this->pdf->Line($x, $y, $x, $y + 9.5);
         
-        $texto = '% Red. BC ICMS';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+        $texto = '% RED. BC ICMS';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
         $this->__textBox($x,$y,$w*0.14,$h,$texto,$aFont,'T','L',0,'');
         
         $x += $w*0.14;
         $this->pdf->Line($x, $y, $x, $y + 9.5);
         
         $texto = 'ICMS ST';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
         $this->__textBox($x,$y,$w*0.14,$h,$texto,$aFont,'T','L',0,'');
-        
         
         $x = $oldX;
         $y = $y + 4;
-        
         
         $texto =  $this->ICMS->getElementsByTagName("CST")->item(0)->nodeValue;
         switch ($texto){
             case '00':
                 $texto = '00 - Tributação normal do ICMS';
                 break;
+            case '40':
+                $texto = '40 - Isento';
+                break;    
             default:
                 $texto = $texto . ' ? ';
         }
-        
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'B');
+        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
         $this->__textBox($x,$y,$w*0.26,$h,$texto,$aFont,'T','L',0,'');
         
         $x += $w*0.26;
-        
-        $texto = number_format($this->ICMS->getElementsByTagName("vBC")->item(0)->nodeValue, 2, ",", ".");
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'B');
+        $texto = !empty($this->ICMS->getElementsByTagName("vBC")->item(0)->nodeValue) ? number_format($this->ICMS->getElementsByTagName("vBC")->item(0)->nodeValue, 2, ",", ".") : '';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
         $this->__textBox($x,$y,$w*0.14,$h,$texto,$aFont,'T','L',0,'');
         
         $x += $w*0.14;
-        
-        $texto = $texto = number_format($this->ICMS->getElementsByTagName("pICMS")->item(0)->nodeValue, 2, ",", ".");;
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'B');
+        $texto = !empty($this->ICMS->getElementsByTagName("pICMS")->item(0)->nodeValue) ? number_format($this->ICMS->getElementsByTagName("pICMS")->item(0)->nodeValue, 2, ",", ".") : '';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
         $this->__textBox($x,$y,$w*0.14,$h,$texto,$aFont,'T','L',0,'');
         
-        
         $x += $w*0.14;
-        
-        $texto = $texto = number_format($this->ICMS->getElementsByTagName("vICMS")->item(0)->nodeValue, 2, ",", ".");;;
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'B');
+        $texto = !empty($this->ICMS->getElementsByTagName("vICMS")->item(0)->nodeValue) ? number_format($this->ICMS->getElementsByTagName("vICMS")->item(0)->nodeValue, 2, ",", ".") : '';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
         $this->__textBox($x,$y,$w*0.14,$h,$texto,$aFont,'T','L',0,'');
         
         
         $x += $w*0.14;
-        
         $texto = '';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'B');
+        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
         $this->__textBox($x,$y,$w*0.14,$h,$texto,$aFont,'T','L',0,'');
         
         $x += $w*0.14;
-        
         $texto = '';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'B');
+        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
         $this->__textBox($x,$y,$w*0.14,$h,$texto,$aFont,'T','L',0,'');
-        
-        
     } //fim da função __componentesValorDACTE
     
     
@@ -1861,7 +1891,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP {
      * Monta o campo com os dados do remetente na DACTE. ( retrato  e paisagem  )
      * @package NFePHP
      * @name __documentosOriginariosDACTE
-     * @version 1.2
+     * @version 1.2.1
      * @param number $x Posição horizontal canto esquerdo
      * @param number $y Posição vertical canto superior
      * @return number Posição vertical final 
@@ -1875,52 +1905,46 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP {
             $maxW = $this->wPrint - $this->wCanhoto;
         }
         $w = $maxW;
-        $h = 40;
-        $texto = 'Documentos Originários';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+        $h = 25;
+        $texto = 'DOCUMENTOS ORIGINÁRIOS';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','C',1,'');
         
         $y += 3.4;
         $this->pdf->Line($x, $y, $w+1, $y);
         
         $texto = 'Tipo DOC';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
         $this->__textBox($x,$y,$w*0.23,$h,$texto,$aFont,'T','L',0,'');
         
         $yIniDados = $y;
         
         $x += $w*0.23;
         
-        $texto = 'CNPJ/CPF Emitente';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
-        $this->__textBox($x,$y,$w*0.13,$h,$texto,$aFont,'T','L',0,'');
-        
-        
-        $x += $w*0.13;
-        
-        $texto = 'Série/Nro. Documento';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+        $texto = 'CNPJ/CPF EMITENTE';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
         $this->__textBox($x,$y,$w*0.13,$h,$texto,$aFont,'T','L',0,'');
         
         $x += $w*0.13;
-        $this->pdf->Line($x, $y, $x, $y+36.5);
+        $texto = 'SÉRIE/NRO. DOCUMENTO';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
+        $this->__textBox($x,$y,$w*0.13,$h,$texto,$aFont,'T','L',0,'');
         
+        $x += $w*0.13;
+        $this->pdf->Line($x, $y, $x, $y+21.5);
         
-        $texto = 'Tipo DOC';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+        $texto = 'TIPO DOC';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
         $this->__textBox($x,$y,$w*0.23,$h,$texto,$aFont,'T','L',0,'');
         
         $x += $w*0.23;
-        
-        $texto = 'CNPJ/CPF Emitente';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+        $texto = 'CNPJ/CPF EMITENTE';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
         $this->__textBox($x,$y,$w*0.13,$h,$texto,$aFont,'T','L',0,'');
         
-        
         $x += $w*0.13;
-        
-        $texto = 'Série/Nro. Documento';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+        $texto = 'SÉRIE/NRO. DOCUMENTO';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
         $this->__textBox($x,$y,$w*0.13,$h,$texto,$aFont,'T','L',0,'');
         
         $auxX = $oldX;
@@ -1928,29 +1952,23 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP {
         if(count($this->infNFe) >= 0){
            foreach ($this->infNF as $k => $d) {
              $tp = 'NOTA FISCAL'; // ????????????
-             
              $cnpj = $this->__cnpjCpf( $this->rem );
-            
              $doc = $this->infNF->item($k)->getElementsByTagName('serie')->item(0)->nodeValue;
              $doc.= '/'.$this->infNF->item($k)->getElementsByTagName('nDoc')->item(0)->nodeValue;
-
              if($auxX>$w*0.90){
                  $yIniDados = $yIniDados + 4;
                  $auxX = $oldX;
              }
-
              $texto = $tp;
              $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'');
              $this->__textBox($auxX,$yIniDados,$w * 0.23,$h,$texto,$aFont,'T','L',0,'');
 
              $auxX += $w * 0.23;
-
              $texto = $cnpj;
              $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'');
              $this->__textBox($auxX,$yIniDados,$w * 0.13,$h,$texto,$aFont,'T','L',0,'');
 
              $auxX += $w * 0.13;
-
              $texto = $doc;
              $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'');
              $this->__textBox($auxX,$yIniDados,$w * 0.13,$h,$texto,$aFont,'T','L',0,'');
@@ -1960,29 +1978,24 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP {
         }else {
            foreach ($this->infNFe as $k => $d) {
              $tp = 'NF-E';
-
              $chaveNFe = $this->infNFe->item($k)->getElementsByTagName('chave')->item(0)->nodeValue;
              $numNFe = substr($chaveNFe, 25, 9);
              $serieNFe = substr($chaveNFe, 24, 3);
              $doc = $serieNFe.'/'.$numNFe;
-
              if($auxX>$w*0.90){
                  $yIniDados = $yIniDados + 4;
                  $auxX = $oldX;
              }
-
              $texto = $tp;
              $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'');
              $this->__textBox($auxX,$yIniDados,$w * 0.23,$h,$texto,$aFont,'T','L',0,'');
 
              $auxX += $w * 0.23;
-
              $texto = $chaveNFe;
              $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'');
              $this->__textBox($auxX,$yIniDados,$w * 0.13,$h,$texto,$aFont,'T','L',0,'');
 
              $auxX += $w * 0.13;
-
              $texto = $doc;
              $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'');
              $this->__textBox($auxX,$yIniDados,$w * 0.13,$h,$texto,$aFont,'T','L',0,'');
@@ -1990,19 +2003,14 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP {
              $auxX += $w * 0.13;
            }
         }
-
-
-
-
-
-    } //fim da função __componentesValorDACTE
+    } //fim da função __documentosOriginariosDACTE
 
     /**
-     * __documentosOriginariosDACTE
+     * __observacoesDACTE
      * Monta o campo com os dados do remetente na DACTE. ( retrato  e paisagem  )
      * @package NFePHP
-     * @name __documentosOriginariosDACTE
-     * @version 1.2
+     * @name __observacoesDACTE
+     * @version 1.2.1
      * @param number $x Posição horizontal canto esquerdo
      * @param number $y Posição vertical canto superior
      * @return number Posição vertical final 
@@ -2012,13 +2020,13 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP {
         $oldY = $y;
         if( $this->orientacao == 'P' ){
             $maxW = $this->wPrint;
-        }else{
+        } else {
             $maxW = $this->wPrint - $this->wCanhoto;
         }
         $w = $maxW;
-        $h = 20;
-        $texto = 'Observações';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+        $h = 18;
+        $texto = 'OBSERVAÇÕES';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','C',1,'');
         
         $y += 3.4;
@@ -2033,16 +2041,13 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP {
         }
         $texto .= $this->__simpleGetValue( $this->imp , "infAdFisco"  , "\r\n");
         $texto .= $this->__localDeEntregaAdicional();
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+        $aFont = array('font'=>$this->fontePadrao,'size'=>6,'style'=>'');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',0,'',FALSE);
+    } //fim da função __observacoesDACTE
 
-        
-    } //fim da função __componentesValorDACTE
     
     protected function __localDeEntregaAdicional(){
-    
         $locEntX = $this->dest->getElementsByTagName('locEnt');
-    
         if( $locEntX->length > 0 ){
             $locEnt =  $locEntX->item(0);
             $output =  "Entrega: " . 
@@ -2055,11 +2060,9 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP {
             $output .= $this->__simpleGetValue( $locEnt , "xBairro") . " ";
             $output .= $this->__simpleGetValue( $locEnt , "xMun") . " ";
             $output .= $this->__simpleGetValue( $locEnt , "UF") . " ";
-        
             return $output;
         }
         return  "";
-    
     }
 
     
@@ -2068,7 +2071,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP {
      * Monta o campo com os dados do remetente na DACTE. ( retrato  e paisagem  )
      * @package NFePHP
      * @name __modalRodoviarioDACTE
-     * @version 1.2
+     * @version 1.2.1
      * @param number $x Posição horizontal canto esquerdo
      * @param number $y Posição vertical canto superior
      * @return number Posição vertical final 
@@ -2078,32 +2081,34 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP {
         $oldY = $y;
         if( $this->orientacao == 'P' ){
             $maxW = $this->wPrint;
-        }else{
+        } else {
             $maxW = $this->wPrint - $this->wCanhoto;
         }
         $w = $maxW;
-        $h = 12;
-        $texto = 'DADOS ESPECÍFICOS DO MODAL RODOVIÁRIO - CARGA FRACIONADA';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
-        $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','C',1,'');
+        $h = 12.5;
+        $lota = $this->rodo->getElementsByTagName("lota")->item(0)->nodeValue;
+        $textolota = $lota == 1 ? 'LOTAÇÃO' : 'CARGA FRACIONADA';
+        $texto = 'DADOS ESPECÍFICOS DO MODAL RODOVIÁRIO - ' . $textolota;
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
+        $this->__textBox($x,$y,$w,$h*3.2,$texto,$aFont,'T','C',1,'');
+        $this->pdf->Line($x, $y+12, $w+1, $y+12);
         
         $y += 3.4;
         $this->pdf->Line($x, $y, $w+1, $y);
-        
-        
-        $texto = 'RNTRC Da Empresa';
-         $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+
+        $texto = 'RNTRC DA EMPRESA';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
         $this->__textBox($x,$y,$w * 0.23,$h,$texto,$aFont,'T','L',0,'');
         
         $texto = $this->rodo->getElementsByTagName("RNTRC")->item(0)->nodeValue;
-         $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'B');
+        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
         $this->__textBox($x,$y+3,$w * 0.23,$h,$texto,$aFont,'T','L',0,'');
              
         $x += $w * 0.23;
         $this->pdf->Line($x, $y, $x, $y+8.5);
         
-        $texto = 'Lotação';
-         $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+        $texto = 'LOTAÇÃO';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
         $this->__textBox($x,$y,$w * 0.13,$h,$texto,$aFont,'T','L',0,'');
         
         $texto = $this->rodo->getElementsByTagName("lota")->item(0)->nodeValue;
@@ -2117,30 +2122,381 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP {
             default:
                 $texto = $texto . ' ? ';
         }
-         $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'B');
+        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
         $this->__textBox($x,$y+3,$w * 0.13,$h,$texto,$aFont,'T','L',0,'');
              
         $x += $w * 0.13;
-        $this->pdf->Line($x, $y, $x, $y+8.5);
+        $this->pdf->Line($x, $y, $x, $y+8.5);               
         
-        
-        
-        $texto = 'Data Prevista de Entrega';
-         $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+        $texto = 'DATA PREVISTA DE ENTREGA';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
         $this->__textBox($x,$y,$w * 0.15,$h,$texto,$aFont,'T','L',0,'');
         
         $texto = $this->__ymd2dmy($this->rodo->getElementsByTagName("dPrev")->item(0)->nodeValue);
-         $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'B');
+        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
         $this->__textBox($x,$y+3,$w * 0.15,$h,$texto,$aFont,'T','L',0,'');
              
         $x += $w * 0.15;
         $this->pdf->Line($x, $y, $x, $y+8.5);
         
+        $h = 25;
         $texto = 'ESTE CONHECIMENTO DE TRANSPORTE ATENDE '."\r\n".' À LEGISLAÇÃO DE TRANSPORTE RODOVIÁRIO EM VIGOR';
         $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
         $this->__textBox($x,$y+1,$w * 0.50,$h,$texto,$aFont,'T','C',0,'');
         
+        $y += 10;
+        $x = 1;
+        $texto = 'IDENTIFICAÇÃO DO CONJUNTO TRANSPORTADOR';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
+        $this->__textBox($x,$y,$w*0.465,$h,$texto,$aFont,'T','C',0,'');
+        $this->pdf->Line($x, $y+3.5, $w*0.465, $y+3.5);
+        
+        $y += 3.5;
+        $texto = 'TIPO';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
+        $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',0,'');
+        
+        $yIniDados = $y;
+        if(count($this->veic) >= 0){
+           foreach ($this->veic as $k => $d) {
+               $yIniDados = $yIniDados + 3;
+               $texto = $this->veic->item($k)->getElementsByTagName('tpVeic')->item(0)->nodeValue;
+                switch ($texto){
+                    case '0':
+                        $texto = 'Tração';
+                        break;
+                    case '1':
+                        $texto = 'Reboque';
+                        break;
+                    default:
+                        $texto = ' ';
+                }
+                $aFont = array('font'=>$this->fontePadrao,'size'=>6,'style'=>'B');
+                $this->__textBox($x,$yIniDados,$w,$h,$texto,$aFont,'T','L',0,'');
+            } //fim foreach
+        }        
+        $x += $w * 0.10; 
+        $texto = 'PLACA';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
+        $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',0,'');
+        $this->pdf->Line($x, $y, $x, $y+14);
+        
+        $yIniDados = $y;
+        if(count($this->veic) >= 0){
+           foreach ($this->veic as $k => $d) {
+               $yIniDados = $yIniDados + 3;    
+               $texto = $this->veic->item($k)->getElementsByTagName('placa')->item(0)->nodeValue;
+                $aFont = array('font'=>$this->fontePadrao,'size'=>6,'style'=>'B');
+                $this->__textBox($x,$yIniDados,$w,$h,$texto,$aFont,'T','L',0,'');
+           }
+        }  
+        $x += $w * 0.13;
+        $texto = 'UF';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
+        $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',0,'');
+        $this->pdf->Line($x, $y, $x, $y+23);
+        
+        $yIniDados = $y;
+        if(count($this->veic) >= 0){
+           foreach ($this->veic as $k => $d) {
+                $yIniDados = $yIniDados + 3;
+                $texto = $this->veic->item($k)->getElementsByTagName('UF')->item(0)->nodeValue;
+                $aFont = array('font'=>$this->fontePadrao,'size'=>6,'style'=>'B');
+                $this->__textBox($x,$yIniDados,$w,$h,$texto,$aFont,'T','L',0,'');
+           }
+        }  
+        $x += $w * 0.03;
+        $texto = 'RNTRC';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
+        $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',0,'');
+        $this->pdf->Line($x, $y, $x, $y+14);
+        
+        $yIniDados = $y;
+        if(count($this->veic) >= 0){
+           foreach ($this->veic as $k => $d) {
+               $yIniDados = $yIniDados + 3;    
+               $texto = $this->veic->item($k)->getElementsByTagName('RNTRC')->item(0)->nodeValue;
+               $aFont = array('font'=>$this->fontePadrao,'size'=>6,'style'=>'B');
+               $this->__textBox($x,$yIniDados,$w,$h,$texto,$aFont,'T','L',0,'');
+           }
+        }  
+        $y += 14;
+        $x = 1;
+        $texto = 'NOME DO MOTORISTA';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>5,'style'=>'');
+        $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',0,'');
+        $this->pdf->Line($x, $y, $w+1, $y);
+        
+        $texto = !empty($this->moto) ? $this->moto->getElementsByTagName("xNome")->item(0)->nodeValue : '';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'B');
+        $this->__textBox($x,$y+3,$w*0.25,$h,$texto,$aFont,'T','L',0,'');
+        
+        $x += $w * 0.23;
+        $texto = 'CPF MOTORISTA';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>5,'style'=>'');
+        $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',0,'');
+        
+        $texto = !empty($this->moto) ? $this->moto->getElementsByTagName("CPF")->item(0)->nodeValue : '';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'B');
+        $this->__textBox($x,$y+3,$w,$h,$texto,$aFont,'T','L',0,'');
+        
+        $x += $w * 0.23;
+        $texto = 'IDENTIFICAÇÃO DOS LACRES EM TRANSITO';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>5,'style'=>'');
+        $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',0,'');
+        $this->pdf->Line($x, $y, $x, $y-18.7);
+        $this->pdf->Line($x, $y, $x, $y+9);
+        
+        $x = $w*0.465;
+        $y -= 16;
+        
+        $texto = 'INFORMAÇÕES REFERENTES AO VALE PEDÁGIO';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
+        $this->__textBox($x,$y,$w*0.5,$h,$texto,$aFont,'T','C',0,'');
+        $this->pdf->Line($x, $y+4, $w+1, $y+4);    
+        
+        $y += 4;
+        $texto = 'CNPJ FORNECEDOR';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>5,'style'=>'');
+        $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',0,'');
+        $this->pdf->Line($x, $y+4, $w+1, $y+4);
+        
+        $y += 4;
+        $texto = 'NUMERO COMPROVANTE';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>5,'style'=>'');
+        $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',0,'');
+        $this->pdf->Line($x, $y+4, $w+1, $y+4);
+
+        $y += 4;
+        $texto = 'CNPJ RESPONSÁVEL';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>5,'style'=>'');
+        $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',0,'');
     } //fim da função __modalRodoviarioDACTE
+    
+    /**
+     * __modalFerroviarioDACTE
+     * Monta o campo com os dados do remetente na DACTE. ( retrato  e paisagem  )
+     * @package NFePHP
+     * @name __modalFerroviarioDACTE
+     * @version 1.2.1
+     * @param number $x Posição horizontal canto esquerdo
+     * @param number $y Posição vertical canto superior
+     * @return number Posição vertical final 
+     */
+    protected function __modalFerroviarioDACTE($x=0,$y=0){
+        $oldX = $x;
+        $oldY = $y;
+        if( $this->orientacao == 'P' ){
+            $maxW = $this->wPrint;
+        }else{
+            $maxW = $this->wPrint - $this->wCanhoto;
+        }
+        $w = $maxW;
+        $h = 19.6;
+        $texto = 'DADOS ESPECÍFICOS DO MODAL FERROVIÁRIO';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
+        $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','C',1,'');
+        
+        $y += 3.4;
+        $this->pdf->Line($x, $y, $w+1, $y);        
+        
+        $texto = 'DCL';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'B');
+        $this->__textBox($x,$y,$w * 0.25,$h,$texto,$aFont,'T','C',0,'');
+               
+        $this->pdf->Line($x + 49.6, $y, $x + 49.6, $y+3.5);
+        
+        $texto = 'VAGÕES';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'B');
+        $this->__textBox($x + 50,$y,$w * 0.5,$h,$texto,$aFont,'T','C',0,'');
+        
+        $y += 3.4;
+        $this->pdf->Line($x, $y, $w+1, $y); 
+        /*DCL*/
+        $texto = 'ID TREM';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>6,'style'=>'');
+        $this->__textBox($x,$y,$w * 0.10,$h,$texto,$aFont,'T','L',0,'');
+        
+        $texto = $this->ferrov->getElementsByTagName("idTrem")->item(0)->nodeValue;
+        $aFont = array('font'=>$this->fontePadrao,'size'=>6,'style'=>'B');
+        $this->__textBox($x,$y+3,$w * 0.10,$h,$texto,$aFont,'T','L',0,'');
+             
+        $x += $w * 0.06;
+        $y1 = $y+12.5;
+        $this->pdf->Line($x, $y, $x, $y1);
+        
+        $texto = 'NUM';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>6,'style'=>'');
+        $this->__textBox($x,$y,$w * 0.10,$h,$texto,$aFont,'T','L',0,'');
+        
+        $texto = $this->rem->getElementsByTagName("nDoc")->item(0)->nodeValue;
+        $aFont = array('font'=>$this->fontePadrao,'size'=>6,'style'=>'B');
+        $this->__textBox($x,$y+3,$w * 0.10,$h,$texto,$aFont,'T','L',0,'');
+             
+        $x += $w * 0.06;
+        $this->pdf->Line($x, $y, $x, $y1);   
+        
+        $texto = 'SÉRIE';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>6,'style'=>'');
+        $this->__textBox($x,$y,$w * 0.10,$h,$texto,$aFont,'T','L',0,'');
+        
+        $texto = $this->rem->getElementsByTagName("serie")->item(0)->nodeValue;
+        $aFont = array('font'=>$this->fontePadrao,'size'=>6,'style'=>'B');
+        $this->__textBox($x,$y+3,$w * 0.10,$h,$texto,$aFont,'T','L',0,'');
+             
+        $x += $w * 0.06;
+        $this->pdf->Line($x, $y, $x, $y1);  
+        
+        $texto = 'EMISSÃO';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>6,'style'=>'');
+        $this->__textBox($x,$y,$w * 0.10,$h,$texto,$aFont,'T','L',0,'');
+        
+        $texto = $this->__ymd2dmy($this->rem->getElementsByTagName("dEmi")->item(0)->nodeValue);
+        $aFont = array('font'=>$this->fontePadrao,'size'=>6,'style'=>'B');
+        $this->__textBox($x,$y+3,$w * 0.10,$h,$texto,$aFont,'T','L',0,'');
+        /*VAGOES*/
+        $x += $w * 0.06;
+        $this->pdf->Line($x, $y, $x, $y1);  
+        
+        $texto = 'NUM';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>6,'style'=>'');
+        $this->__textBox($x,$y,$w * 0.10,$h,$texto,$aFont,'T','L',0,'');
+        
+        $texto = $this->ferrov->getElementsByTagName("nVag")->item(0)->nodeValue;
+        $aFont = array('font'=>$this->fontePadrao,'size'=>6,'style'=>'B');
+        $this->__textBox($x,$y+3,$w * 0.10,$h,$texto,$aFont,'T','L',0,'');
+        
+        $x += $w * 0.06;
+        $this->pdf->Line($x, $y, $x, $y1);  
+        
+        $texto = 'TIPO';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>6,'style'=>'');
+        $this->__textBox($x,$y,$w * 0.10,$h,$texto,$aFont,'T','L',0,'');
+        
+        $texto = $this->ferrov->getElementsByTagName("tpVag")->item(0)->nodeValue;
+        $aFont = array('font'=>$this->fontePadrao,'size'=>6,'style'=>'B');
+        $this->__textBox($x,$y+3,$w * 0.10,$h,$texto,$aFont,'T','L',0,'');
+        
+        $x += $w * 0.06;
+        $this->pdf->Line($x, $y, $x, $y1);  
+        
+        $texto = 'CAPACIDADE';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>6,'style'=>'');
+        $this->__textBox($x,$y,$w * 0.10,$h,$texto,$aFont,'T','L',0,'');
+        
+        $texto = $this->ferrov->getElementsByTagName("cap")->item(0)->nodeValue;
+        $aFont = array('font'=>$this->fontePadrao,'size'=>6,'style'=>'B');
+        $this->__textBox($x,$y+3,$w * 0.10,$h,$texto,$aFont,'T','L',0,'');
+        
+        $x += $w * 0.08;
+        $this->pdf->Line($x, $y, $x, $y1);  
+        
+        $texto = 'PESO REAL/TON';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>6,'style'=>'');
+        $this->__textBox($x,$y,$w * 0.10,$h,$texto,$aFont,'T','L',0,'');
+        
+        $texto = $this->ferrov->getElementsByTagName("pesoR")->item(0)->nodeValue;
+        $aFont = array('font'=>$this->fontePadrao,'size'=>6,'style'=>'B');
+        $this->__textBox($x,$y+3,$w * 0.10,$h,$texto,$aFont,'T','L',0,'');
+        
+        $x += $w * 0.09;
+        $this->pdf->Line($x, $y, $x, $y1);  
+        
+        $texto = 'PESO BRUTO/TON';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>6,'style'=>'');
+        $this->__textBox($x,$y,$w * 0.10,$h,$texto,$aFont,'T','L',0,'');
+        
+        $texto = $this->ferrov->getElementsByTagName("pesoBC")->item(0)->nodeValue;
+        $aFont = array('font'=>$this->fontePadrao,'size'=>6,'style'=>'B');
+        $this->__textBox($x,$y+3,$w * 0.10,$h,$texto,$aFont,'T','L',0,'');
+        
+        $x += $w * 0.1;
+        $this->pdf->Line($x, $y, $x, $y1);  
+        
+        $texto = 'IDENTIFICAÇÃO DOS CONTÊINERES';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>6,'style'=>'');
+        $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',0,'');
+        
+        $texto = $this->ferrov->getElementsByTagName("nCont")->item(0)->nodeValue;
+        $aFont = array('font'=>$this->fontePadrao,'size'=>6,'style'=>'B');
+        $this->__textBox($x,$y+3,$w,$h,$texto,$aFont,'T','L',0,'');
+             
+        /*FLUXO*/ 
+        $x = 1;
+        $y += 12.9;
+        $h1 = $h * 0.5 + 0.27;
+        $wa = round($w * 0.103) + 0.5;
+        $texto = 'FLUXO FERROVIARIO';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
+        $this->__textBox($x,$y,$wa,$h1,$texto,$aFont,'T','C',1,'');
+        
+        $texto = $this->ferrov->getElementsByTagName("fluxo")->item(0)->nodeValue;
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'B');
+        $this->__textBox($x,$y+3,$wa,$h1,$texto,$aFont,'T','C',0,'');
+
+        $y += 10;
+        $texto = 'TIPO DE TRÁFEGO';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
+        $this->__textBox($x,$y,$wa,$h1,$texto,$aFont,'T','C',1,''); 
+        
+        $texto = $this->__convertUnidadeTrafego($this->ferrov->getElementsByTagName("tpTraf")->item(0)->nodeValue);
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'B');
+        $this->__textBox($x,$y+3,$wa,$h1,$texto,$aFont,'T','C',0,'');
+        
+        /*Novo Box Relativo a Modal Ferroviário*/
+        $x = 22.5;
+        $y += -10.2;
+        $texto = 'INFORMAÇÕES DAS FERROVIAS ENVOLVIDAS';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
+        $this->__textBox($x,$y,$w - 21.5,$h1*2.019,$texto,$aFont,'T','C',1,'');
+        
+        $y += 3.4;
+        $this->pdf->Line($x, $y, $w+1, $y);
+        
+        $w = $w * 0.2; 
+        $h = $h *1.04;
+        $texto = 'CÓDIGO INTERNO';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>6,'style'=>'');
+        $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',0,'');
+        
+        $texto = $this->ferrov->getElementsByTagName("cInt")->item(0)->nodeValue;
+        $aFont = array('font'=>$this->fontePadrao,'size'=>6,'style'=>'B');
+        $this->__textBox($x,$y+3,$w,$h,$texto,$aFont,'T','L',0,'');
+        
+        $texto = 'CNPJ';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>6,'style'=>'');
+        $this->__textBox($x,$y+6,$w,$h,$texto,$aFont,'T','L',0,'');
+        
+        $texto = $this->ferrov->getElementsByTagName("CNPJ")->item(0)->nodeValue;
+        $aFont = array('font'=>$this->fontePadrao,'size'=>6,'style'=>'B');
+        $this->__textBox($x,$y+9,$w,$h,$texto,$aFont,'T','L',0,'');
+        
+        $x += 50;
+        $texto = 'NOME';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>6,'style'=>'');
+        $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',0,'');
+        
+        $texto = $this->ferrov->getElementsByTagName("xNome")->item(0)->nodeValue;
+        $aFont = array('font'=>$this->fontePadrao,'size'=>6,'style'=>'B');
+        $this->__textBox($x,$y+3,$w,$h,$texto,$aFont,'T','L',0,'');
+        
+        $texto = 'INSCRICAO ESTADUAL';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>6,'style'=>'');
+        $this->__textBox($x,$y+6,$w,$h,$texto,$aFont,'T','L',0,'');
+        
+        $texto = $this->ferrov->getElementsByTagName("IE")->item(0)->nodeValue;
+        $aFont = array('font'=>$this->fontePadrao,'size'=>6,'style'=>'B');
+        $this->__textBox($x,$y+9,$w,$h,$texto,$aFont,'T','L',0,'');
+        
+        $x += 50;
+        $texto = 'PARTICIPAÇÃO OUTRA FERROVIA';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>6,'style'=>'');
+        $this->__textBox($x,$y+6,$w,$h,$texto,$aFont,'T','L',0,'');
+        
+        $texto = '';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>6,'style'=>'B');
+        $this->__textBox($x,$y+9,$w,$h,$texto,$aFont,'T','L',0,'');
+    } //fim da função __modalFerroviarioDACTE
     
     
     /**
@@ -2148,7 +2504,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP {
      * Monta o campo com os dados do remetente na DACTE. ( retrato  e paisagem  )
      * @package NFePHP
      * @name __canhotoDACTE
-     * @version 1.2
+     * @version 1.2.1
      * @param number $x Posição horizontal canto esquerdo
      * @param number $y Posição vertical canto superior
      * @return number Posição vertical final 
@@ -2161,53 +2517,134 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP {
         }else{
             $maxW = $this->wPrint - $this->wCanhoto;
         }
-        $w = $maxW;
-        $h = 22;
-        $this->__hDashedLine($x,$y,$this->wPrint,0.1,80);
-        
+        $w = $maxW-1;
+        $h = 15;
         $y = $y + 1;
         $texto = 'DECLARO QUE RECEBI OS VOLUMES DESTE CONHECIMENTO EM PERFEITO ESTADO PELO QUE DOU POR CUMPRIDO O PRESENTE CONTRATO DE TRANSPORTE';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','C',1,'');
         
         $y += 3.4;
         $this->pdf->Line($x, $y, $w+1, $y);
         
-        $texto = 'Nome';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
-        $this->__textBox($x,$y,$w*0.33,$h,$texto,$aFont,'T','L',0,'');
+        $texto = 'NOME';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>6,'style'=>'');
+        $this->__textBox($x,$y,$w*0.25,$h,$texto,$aFont,'T','L',0,'');
         
-        $x += $w*0.33;
-        $this->pdf->Line($x, $y, $x, $y+18.5);
+        $x += $w*0.25;
+        $this->pdf->Line($x, $y, $x, $y+11.5);
 
         $texto = 'ASSINATURA / CARIMBO';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
-        $this->__textBox($x,$y,$w*0.33,$h-3.4,$texto,$aFont,'B','C',0,'');
-        
+        $aFont = array('font'=>$this->fontePadrao,'size'=>6,'style'=>'');
+        $this->__textBox($x,$y,$w*0.25,$h-3.4,$texto,$aFont,'B','C',0,'');
 
-        $x += $w*0.33;
-        $this->pdf->Line($x, $y, $x, $y+18.5);
+        $x += $w*0.25;
+        $this->pdf->Line($x, $y, $x, $y+11.5);
         
-        $texto = 'CHEGADA DATA/HORA'."\r\n" ."\r\n"."\r\n"."\r\n" .'SAÍDA DATA/HORA';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
-        $this->__textBox($x,$y,$w*0.33,$h-3.4,$texto,$aFont,'T','C',0,'');
+        $texto = 'TÉRMINO DA PRESTAÇÃO - DATA/HORA'."\r\n" ."\r\n"."\r\n" .' INÍCIO DA PRESTAÇÃO - DATA/HORA';
+        $aFont = array('font'=>$this->fontePadrao,'size'=>6,'style'=>'');
+        $this->__textBox($x+10,$y,$w*0.25,$h-3.4,$texto,$aFont,'T','C',0,'');
         
         $x = $oldX;
-        $y = $y+9;
-        $this->pdf->Line($x, $y, $w*0.334, $y);
+        $y = $y+5;
+        $this->pdf->Line($x, $y, $w*0.255, $y);
         
         $texto = 'RG';
-        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'I');
+        $aFont = array('font'=>$this->fontePadrao,'size'=>6,'style'=>'');
         $this->__textBox($x,$y,$w*0.33,$h,$texto,$aFont,'T','L',0,'');
         
+        $x += $w*0.85;
+        $this->pdf->Line($x, $y+6.4, $x, $y-5);
         
+        $texto = "CT-E";
+        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
+        $this->__textBox($x,$y-5,$w*0.15,$h,$texto,$aFont,'T','C',0,'');
+
+        $texto = "\r\n Nº. DOCUMENTO  " . $this->ide->getElementsByTagName("nCT")->item(0)->nodeValue . " \n";
+        $texto .= "\r\n SÉRIE  ". $this->ide->getElementsByTagName("serie")->item(0)->nodeValue;
+        $aFont = array('font'=>$this->fontePadrao,'size'=>6,'style'=>'');
+        $this->__textBox($x,$y-8,$w*0.15,$h,$texto,$aFont,'C','C',0,'');
+        $x = $oldX;
+        $this->__hDashedLine($x,$y+7.5,$this->wPrint,0.1,80);
     } //fim da função __canhotoDACTE
-
-
-
-
-
-
+    
+        /**
+     *__dadosAdicionaisDANFE
+     * Coloca o grupo de dados adicionais da DACTE. ( retrato e paisagem )
+     * @package NFePHP
+     * @name __dadosAdicionaisDACTE
+     * @version 1.0.1
+     * @author Roberto L. Machado <linux.rlm at gmail dot com>
+     * @author Joao Eduardo Silva Correa <jscorrea2 at gmail dot com>
+     * @param number $x Posição horizontal canto esquerdo
+     * @param number $y Posição vertical canto superior
+     * @param number $h altura do campo
+     * @return number Posição vertical final
+     */
+    protected function __dadosAdicionaisDACTE($x,$y,$pag,$h){
+        $oldX = $x;
+        //##################################################################################
+        //DADOS ADICIONAIS DACTE
+        if( $this->orientacao == 'P' ){
+              $w = $this->wPrint;
+        } else {
+              $w = $this->wPrint-$this->wCanhoto;
+        }
+        //INFORMAÇÕES COMPLEMENTARES
+        $texto = "USO EXCLUSIVO DO EMISSOR DO CT-E";
+        $y += 3;
+        $w = $this->wAdic;
+        $h = 17; //mudar
+        $aFont = array('font'=>$this->fontePadrao,'size'=>6,'style'=>'');
+        $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','C',1,'');
+        $this->pdf->Line($x, $y+3, $w*1.385, $y+3);
+        //o texto com os dados adicionais foi obtido na função xxxxxx
+        //e carregado em uma propriedade privada da classe
+        //$this->wAdic com a largura do campo
+        //$this->textoAdic com o texto completo do campo
+        $y += 1;
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
+        $this->__textBox($x,$y+2,$w-2,$h-3, $this->textoAdic   ,$aFont,'T','L',0,'',FALSE);
+        //RESERVADO AO FISCO
+        $texto = "RESERVADO AO FISCO";
+        $x += $w;
+        $y -= 1;
+        if( $this->orientacao == 'P' ){
+            $w = $this->wPrint-$w;
+        }else{
+            $w = $this->wPrint-$w-$this->wCanhoto;
+        }
+        $aFont = array('font'=>$this->fontePadrao,'size'=>6,'style'=>'');
+        $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','C',1,'');
+        
+        //inserir texto informando caso de contingência
+        //1 – Normal – emissão normal;
+        //2 – Contingência FS – emissão em contingência com impressão do DACTE em Formulário de Segurança;
+        //3 – Contingência SCAN – emissão em contingência no Sistema de Contingência do Ambiente Nacional – SCAN;
+        //4 – Contingência DPEC - emissão em contingência com envio da Declaração Prévia de Emissão em Contingência – DPEC;
+        //5 – Contingência FS-DA - emissão em contingência com impressão do DACTE em Formulário de Segurança para Impressão de Documento Auxiliar de Documento Fiscal Eletrônico (FS-DA).
+        $xJust = !empty($this->ide->getElementsByTagName("xJust")->item(0)->nodeValue) ? ' Justificativa: ' . $this->ide->getElementsByTagName("xJust")->item(0)->nodeValue : '';
+        $dhCont = !empty($this->ide->getElementsByTagName("dhCont")->item(0)->nodeValue) ? ' Entrada em contingência : ' . $this->ide->getElementsByTagName("dhCont")->item(0)->nodeValue : '';
+        $texto = '';
+        switch($this->tpEmis){
+            case 2:
+                $texto = 'CONTINGÊNCIA FS' . $dhCont . $xJust;
+                break;
+            case 3:
+                $texto = 'CONTINGÊNCIA SCAN' . $dhCont . $xJust;
+                break;
+            case 4:
+                $texto = 'CONTINGÊNCIA DPEC' . $dhCont . $xJust;
+                break;
+            case 5:
+                $texto = 'CONTINGÊNCIA FSDA' . $dhCont . $xJust;
+                break;
+        }
+        $y += 2;
+        $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
+        $this->__textBox($x,$y,$w-2,$h-3,$texto,$aFont,'T','L',0,'',FALSE);
+        return $y+$h;
+    } //fim __dadosAdicionaisDACTE
 
 
     /**
@@ -2215,7 +2652,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP {
      * Desenha uma linha horizontal tracejada com o FPDF
      * @package NFePHP
      * @name __hDashedLine
-     * @version 1.0
+     * @version 1.0.1
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @param number $x Posição horizontal inicial, em mm
      * @param number $y Posição vertical inicial, em mm
@@ -2268,8 +2705,15 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP {
 
     } //fim função __hDashedVerticalLine
 
-
-
+    /**
+     * __cnpjCpf
+     * Formata campo CnpjCpf contida na CTe
+     * @package NFePHP
+     * @name __cnpjCpf
+     * @version 1.0.1
+     * @param string $field campo cnpjCpf da CT-e
+     * @return string
+     */
     protected function __cnpjCpf( $field ){
         if( ! isset($field) ) 
             return "";
@@ -2283,8 +2727,17 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP {
             $cnpj   = !empty($field->getElementsByTagName("CPF")->item(0)->nodeValue)   ? $this->__format($field->getElementsByTagName("CPF")->item(0)->nodeValue   ,'###.###.###.###-##') : '';
         }
         return $cnpj;  
-    }
- 
+    }//fim __cnpjCpf
+    
+     /**
+     * __fone
+     * Formata campo fone contida na CTe
+     * @package NFePHP
+     * @name __fone
+     * @version 1.0.1
+     * @param string $field campo fone da CT-e
+     * @return string
+     */
     protected function __fone( $field ){
         $fone = !empty($field->getElementsByTagName("fone")->item(0)->nodeValue) ? $field->getElementsByTagName("fone")->item(0)->nodeValue : '';
         $foneLen = strlen($fone);
@@ -2296,8 +2749,17 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP {
             $fone = '';
         }
         return $fone;
-    }
- 
+    }//fim __fone
+    
+     /**
+     * __unidade
+     * Converte a imformação de peso contida na CTe
+     * @package NFePHP
+     * @name __unidade
+     * @version 1.0.1
+     * @param string $c unidade de trafego extraida da CTe
+     * @return string
+     */
     protected function __unidade( $c='' ){
         switch ($c) {
             case '00':
@@ -2323,8 +2785,64 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP {
         }
         return $r;
     } //fim __unidade
+    
+     /**
+     * __convertUnidadeTrafego
+     * Converte a imformação de peso contida na CTe
+     * @package NFePHP
+     * @name __convertUnidadeTrafego
+     * @version 1.0.1
+     * @author Joao Eduardo Silva Correa <jscorrea2 at gmail dot com>
+     * @param string $U Informação de trafego extraida da CTe
+     * @return string
+     */
+    protected function __convertUnidadeTrafego($U = ''){
+        if($U){
+            switch($U){
+                case '0':
+                $stringU = 'Próprio';
+                break;
+                case '1':
+                $stringU = 'Mútuo';
+                break;
+                case '2':
+                $stringU = 'Rodoferroviário';
+                break;
+                case '3':
+                $stringU = 'Rodoviário';
+                break;
+       
+            }
+            return $stringU;
+        }
+    } //fim da função __convertUnidadeTrafego
+    
+     /**
+     * __multiUnidadePeso
+     * Fornece a imformação multiplicação de peso contida na CTe
+     * @package NFePHP
+     * @name __multiUnidadePeso
+     * @version 1.0.1
+     * @author Joao Eduardo Silva Correa <jscorrea2 at gmail dot com>
+     * @param interger $U Informação de peso extraida da CTe
+     * @return interger
+     */
+    protected function __multiUnidadePeso($U = ''){
+        if($U){
+            switch($U){               
+                case '00':
+                $MU = 1;
+                break;
+                case '01':
+                $MU = 1;
+                break;
+                case '02':
+                $MU = 1000;
+                break;
+            }
+            return $MU;
+        }
+    } //fim da função __multiUnidadePeso
 
 } //fim da classe DacteNFePHP
-
-
 ?>
