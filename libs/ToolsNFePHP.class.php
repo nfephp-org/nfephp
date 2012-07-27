@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.0.14
+ * @version   3.0.15
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -1556,7 +1556,7 @@ class ToolsNFePHP {
      * Este processo enviará somente até 50 NFe em cada Lote
      *
      * @name sendLot
-     * @version 2.1.10
+     * @version 2.1.11
      * @package NFePHP
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @param	mixed    $mNFe string com uma nota fiscal em xml ou um array com as NFe em xml, uma em cada campo do array unidimensional MAX 50
@@ -1650,7 +1650,7 @@ class ToolsNFePHP {
             $aRetorno['verAplic'] = !empty($doc->getElementsByTagName('verAplic')->item(0)->nodeValue) ? $doc->getElementsByTagName('verAplic')->item(0)->nodeValue : '';
             $aRetorno['cUF'] = !empty($doc->getElementsByTagName('cUF')->item(0)->nodeValue) ? $doc->getElementsByTagName('cUF')->item(0)->nodeValue : '';
             //gravar o retorno na pasta temp
-            $nome = $this->temDir.$id.'-rec.xml';
+            $nome = $this->temDir.$idLote.'-rec.xml';
             $nome = $doc->save($nome);
         } else {
             $msg = "Nao houve retorno Soap verifique a mensagem de erro e o debug!!";
