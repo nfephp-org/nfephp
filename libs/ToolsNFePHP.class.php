@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.0.15
+ * @version   3.0.16
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -294,7 +294,13 @@ class ToolsNFePHP {
      * Dias que faltam para o certificado expirar
      * @var integer
      */
-    public $certDaysToExpire=0;    
+    public $certDaysToExpire=0;
+    /**
+     * pfxTimeStamp
+     * Timestamp da validade do certificado A1 PKCS12 .pfx 
+     * @var timestamp  
+     */
+    private $pfxTimestamp=0;
     /**
      * priKEY
      * Path completo para a chave privada em formato pem
@@ -3329,7 +3335,7 @@ class ToolsNFePHP {
      *   $this->passKey
      *
      * @name __loadCerts
-     * @version 2.1.2
+     * @version 2.1.3
      * @package NFePHP
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @param	none
@@ -3353,10 +3359,10 @@ class ToolsNFePHP {
             return false;
         }
         //monta o caminho completo até o certificado pfx
-        $pCert = $this->certsDir.$this->certName;
+        $pfxCert = $this->certsDir.$this->certName;
         //verifica se o arquivo existe
-        if(!file_exists($pCert)){
-            $msg = "Certificado não encontrado!! $pCert";
+        if(!file_exists($pfxCert)){
+            $msg = "Certificado não encontrado!! $pfxCert";
             $this->__setError($msg);
             if ($this->exceptions) {
                 throw new nfephpException($msg);
@@ -3364,9 +3370,9 @@ class ToolsNFePHP {
             return false;
         }
         //carrega o certificado em um string
-        $key = file_get_contents($pCert);
+        $pfxContent = file_get_contents($pfxCert);
         //carrega os certificados e chaves para um array denominado $x509certdata
-        if (!openssl_pkcs12_read($key,$x509certdata,$this->keyPass) ){
+        if (!openssl_pkcs12_read($pfxContent,$x509certdata,$this->keyPass) ){
             $msg = "O certificado não pode ser lido!! Provavelmente corrompido ou com formato inválido!!";
             $this->__setError($msg);
             if ($this->exceptions) {
@@ -3384,49 +3390,63 @@ class ToolsNFePHP {
             }
             return false;
         }
-        //verifica se arquivo já existe
-        if(file_exists($this->priKEY)){
-            //se existir verificar se é o mesmo
-            $conteudo = file_get_contents($this->priKEY);
-            //comparar os primeiros 100 digitos
-            if ( !substr($conteudo,0,100) == substr($x509certdata['pkey'],0,100) ) {
-                 //se diferentes gravar o novo
-                if (!file_put_contents($this->priKEY,$x509certdata['pkey']) ){
-                    $msg = "Impossivel gravar no diretório!!! Permissão negada!!";
-                    $this->__setError($msg);
-                    if ($this->exceptions) {
-                        throw new nfephpException($msg);
-                    }
-                    return false;
-                }
-            }
+        //aqui verifica se existem as chaves em formato PEM
+        //se existirem pega a data da validade dos arquivos PEM 
+        //e compara com a data de validade do PFX
+        //caso a data de validade do PFX for maior que a data do PEM
+        //deleta dos arquivos PEM, recria e prossegue
+        $flagNovo = false;
+        if(file_exists($this->pubKEY)){
+            $cert = file_get_contents($this->pubKEY);
+            if (!$data = openssl_x509_read($cert)){
+                //arquivo não pode ser lido como um certificado então deletar
+                $flagNovo = true;
+            } else {
+                //pegar a data de validade do mesmo
+                $cert_data = openssl_x509_parse($data);
+                // reformata a data de validade;
+                $ano = substr($cert_data['validTo'],0,2);
+                $mes = substr($cert_data['validTo'],2,2);
+                $dia = substr($cert_data['validTo'],4,2);
+                //obtem o timeestamp da data de validade do certificado
+                $dValPubKey = gmmktime(0,0,0,$mes,$dia,$ano);
+                //compara esse timestamp com o do pfx que foi carregado
+                if( $dValPubKey < $this->pfxTimestamp){
+                    //o arquivo PEM é de um certificado anterior 
+                    //então apagar os arquivos PEM
+                    $flagNovo = true;
+                }//fim teste timestamp
+            }//fim read pubkey
         } else {
-            //salva a chave privada no formato pem para uso so SOAP
-            if ( !file_put_contents($this->priKEY,$x509certdata['pkey']) ){
+            //arquivo não localizado
+            $flagNovo = true;
+        }//fim if file pubkey
+        //verificar a chave privada em PEM
+        if(!file_exists($this->priKEY)){
+            //arquivo não encontrado
+            $flagNovo = true;
+        }
+        //verificar o certificado em PEM
+        if(!file_exists($this->certKEY)){
+            //arquivo não encontrado
+            $flagNovo = true;
+        }
+        //criar novos arquivos PEM
+        if ($flagNovo){
+            unlink($this->pubKEY);
+            unlink($this->priKEY);
+            unlink($this->certKEY);
+            //recriar os arquivos pem com o arquivo pfx
+            if (!file_put_contents($this->priKEY,$x509certdata['pkey'])) {
                 $msg = "Impossivel gravar no diretório!!! Permissão negada!!";
                 $this->__setError($msg);
                 if ($this->exceptions) {
                     throw new nfephpException($msg);
                 }
                 return false;
-            }
-        }
-        //verifica se arquivo com a chave publica já existe
-        if(file_exists($this->pubKEY)){
-            //se existir verificar se é o mesmo atualmente instalado
-            $conteudo = file_get_contents($this->pubKEY);
-            //comparar os primeiros 100 digitos
-            if ( !substr($conteudo,0,100) == substr($x509certdata['cert'],0,100) ) {
-                //se diferentes gravar o novo
-                $n = file_put_contents($this->pubKEY,$x509certdata['cert']);
-                //salva o certificado completo no formato pem
-                $n = file_put_contents($this->certKEY,$x509certdata['pkey']."\r\n".$x509certdata['cert']);
-            }
-        } else {
-            //se não existir salva a chave publica no formato pem para uso do SOAP
+            }    
             $n = file_put_contents($this->pubKEY,$x509certdata['cert']);
-            //salva o certificado completo no formato pem
-            $n = file_put_contents($this->certKEY,$x509certdata['pkey']."\r\n".$x509certdata['cert']);
+            $n = file_put_contents($this->certKEY,$x509certdata['pkey']."\r\n".$x509certdata['cert']);                    
         }
         return true;
     } //fim __loadCerts
@@ -3441,7 +3461,7 @@ class ToolsNFePHP {
     * certificados de forma a garantir que sempre estejam validos
     *
     * @name __validCerts
-    * @version  1.0.3
+    * @version  1.0.4
     * @package  NFePHP
     * @author Roberto L. Machado <linux.rlm at gmail dot com>
     * @param    string  $cert Certificado digital no formato pem
@@ -3495,6 +3515,7 @@ class ToolsNFePHP {
         $monthsToExpire = ($m-$n);
         $this->certMonthsToExpire = $monthsToExpire;
         $this->certDaysToExpire = $daysToExpire;
+        $this->pfxTimestamp = $dValid;
         return array('status'=>$flagOK,'error'=>$errorMsg,'meses'=>$monthsToExpire,'dias'=>$daysToExpire);
     } //fim __validCerts
 
