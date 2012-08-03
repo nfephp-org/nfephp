@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--  PL_006j_semAncora - 26/10/11 - versao emergencial sem ancora no pattern da placa -->
+<!--  PL_006j - 20/10/11 - alteracao no formato da placa do veiculo para aceitar AAA999, AAA9999, AA9999 e AAAA999  // NT2011/005 -->
 <!--  PL_006i - 03/07/11 - acrescimo do item 6/7 tpEmis  // NT2011/004 -->
 <!--  PL_006i - 10/06/11 - acrescimo do item 8 - Venda a Orgao Publico no motDesoICMS  // NT2011/004 -->
 <!--  PL_006i - 13/05/11 - correções da NT 2011/004  // v2.0-->
@@ -12,6 +14,7 @@
 <!--  PL_006 versao com correcoes 08/12/2009 -->
 <!--  versao com alteracoes do tipo token, valida a partir de 03/11/08- PL_005b-->
 <!--  versao com atualizacao na UFCons e cPais emi - 21/12/2008-->
+<!-- PL_006m - 01/09/2012 - correções da NT 2012/003 -->
 <xs:schema xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.portalfiscal.inf.br/nfe" targetNamespace="http://www.portalfiscal.inf.br/nfe" elementFormDefault="qualified" attributeFormDefault="unqualified">
 	<xs:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="xmldsig-core-schema_v1.01.xsd"/>
 	<xs:include schemaLocation="tiposBasico_v1.03.xsd"/>
@@ -130,7 +133,7 @@ SCAN 900-999</xs:documentation>
 											<xs:documentation>Código do Município de Ocorrência do Fato Gerador (utilizar a tabela do IBGE)</xs:documentation>
 										</xs:annotation>
 									</xs:element>
-									<xs:element name="NFref" minOccurs="0" maxOccurs="unbounded">
+									<xs:element name="NFref" minOccurs="0" maxOccurs="5000">
 										<xs:annotation>
 											<xs:documentation>Grupo de infromações da NF referenciada</xs:documentation>
 										</xs:annotation>
@@ -1418,23 +1421,14 @@ N-NormalVIN </xs:documentation>
 													</xs:element>
 													<xs:element name="comb">
 														<xs:annotation>
-															<xs:documentation>Informar apenas para operações
-com combustíveis líquidos</xs:documentation>
+															<xs:documentation>Informar apenas para operações com combustíveis líquidos</xs:documentation>
 														</xs:annotation>
 														<xs:complexType>
 															<xs:sequence>
-																<xs:element name="cProdANP">
+																<xs:element name="cProdANP" type="TcProdANP">
 																	<xs:annotation>
-																		<xs:documentation>Código de produto da ANP. Utilizar a codificação de produtos do Sistema de Informações de Movimentação de produtos - SIMP(http://www.anp.gov.br/simp/index.h
-tm), somente informar 999999999 quando não se tratar  de produtos não regulados pela ANP -
-Agência Nacional do Petróleo.</xs:documentation>
+																		<xs:documentation>Código de produto da ANP. codificação de produtos do SIMP (http://www.anp.gov.br)</xs:documentation>
 																	</xs:annotation>
-																	<xs:simpleType>
-																		<xs:restriction base="xs:string">
-																			<xs:whiteSpace value="preserve"/>
-																			<xs:pattern value="[0-9]{9}"/>
-																		</xs:restriction>
-																	</xs:simpleType>
 																</xs:element>
 																<xs:element name="CODIF" minOccurs="0">
 																	<xs:annotation>
@@ -3949,13 +3943,13 @@ Substituição Tributaria;</xs:documentation>
 											</xs:simpleType>
 										</xs:element>
 									</xs:choice>
-									<xs:element name="vol" minOccurs="0" maxOccurs="unbounded">
+									<xs:element name="vol" minOccurs="0" maxOccurs="5000">
 										<xs:annotation>
 											<xs:documentation>Dados dos volumes</xs:documentation>
 										</xs:annotation>
 										<xs:complexType>
 											<xs:sequence>
-												<xs:element name="qVol" minOccurs="0">
+												<xs:element name="qVol">
 													<xs:annotation>
 														<xs:documentation>Quantidade de volumes transportados</xs:documentation>
 													</xs:annotation>
@@ -4009,7 +4003,7 @@ Substituição Tributaria;</xs:documentation>
 														<xs:documentation>Peso bruto (em kg)</xs:documentation>
 													</xs:annotation>
 												</xs:element>
-												<xs:element name="lacres" minOccurs="0" maxOccurs="unbounded">
+												<xs:element name="lacres" minOccurs="0" maxOccurs="5000">
 													<xs:complexType>
 														<xs:sequence>
 															<xs:element name="nLacre">
@@ -4095,7 +4089,7 @@ Substituição Tributaria;</xs:documentation>
 														<xs:documentation>Data de vencimento da duplicata (AAAA-MM-DD)</xs:documentation>
 													</xs:annotation>
 												</xs:element>
-												<xs:element name="vDup" type="TDec_1302Opc" minOccurs="0">
+												<xs:element name="vDup" type="TDec_1302Opc">
 													<xs:annotation>
 														<xs:documentation>Valor da duplicata</xs:documentation>
 													</xs:annotation>
@@ -4188,7 +4182,7 @@ e o conteúdo do campo no xTexto</xs:documentation>
 											</xs:attribute>
 										</xs:complexType>
 									</xs:element>
-									<xs:element name="procRef" minOccurs="0" maxOccurs="unbounded">
+									<xs:element name="procRef" minOccurs="0" maxOccurs="100">
 										<xs:annotation>
 											<xs:documentation>Grupo de informações do  processo referenciado</xs:documentation>
 										</xs:annotation>
@@ -4990,7 +4984,7 @@ alterado para tamanho variavel 1-4. (NT2011/004)</xs:documentation>
 				<xs:simpleType>
 					<xs:restriction base="xs:string">
 						<xs:whiteSpace value="preserve"/>
-						<xs:pattern value="[A-Z]{3}[0-9]{4}"/>
+						<xs:pattern value="[A-Z]{2,3}[0-9]{4}|[A-Z]{3,4}[0-9]{3}"/>
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:element>
@@ -5538,6 +5532,184 @@ alterado para tamanho variavel 1-4. (NT2011/004)</xs:documentation>
 			<xs:enumeration value="7667"/>
 			<xs:enumeration value="7930"/>
 			<xs:enumeration value="7949"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="TcProdANP">
+		<xs:annotation>
+			<xs:documentation>Código de produto da ANP de acordo com o Sistema de Movimentação de produtos - SIMP</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:whiteSpace value="preserve"/>
+				<xs:enumeration value="820101002"/>
+				<xs:enumeration value="820101001"/>
+				<xs:enumeration value="820101010"/>
+				<xs:enumeration value="610101009"/>
+				<xs:enumeration value="210202003"/>
+				<xs:enumeration value="210202001"/>
+				<xs:enumeration value="210202002"/>
+				<xs:enumeration value="620501002"/>
+				<xs:enumeration value="620501001"/>
+				<xs:enumeration value="610101005"/>
+				<xs:enumeration value="610101006"/>
+				<xs:enumeration value="620601003"/>
+				<xs:enumeration value="340101002"/>
+				<xs:enumeration value="560101002"/>
+				<xs:enumeration value="820101026"/>
+				<xs:enumeration value="820101032"/>
+				<xs:enumeration value="820101027"/>
+				<xs:enumeration value="820101004"/>
+				<xs:enumeration value="820101005"/>
+				<xs:enumeration value="820101022"/>
+				<xs:enumeration value="820101014"/>
+				<xs:enumeration value="820101006"/>
+				<xs:enumeration value="820101031"/>
+				<xs:enumeration value="820101030"/>
+				<xs:enumeration value="820101016"/>
+				<xs:enumeration value="820101015"/>
+				<xs:enumeration value="820101025"/>
+				<xs:enumeration value="820101007"/>
+				<xs:enumeration value="820101002"/>
+				<xs:enumeration value="820101009"/>
+				<xs:enumeration value="820101008"/>
+				<xs:enumeration value="820101017"/>
+				<xs:enumeration value="820101018"/>
+				<xs:enumeration value="820101019"/>
+				<xs:enumeration value="820101020"/>
+				<xs:enumeration value="820101021"/>
+				<xs:enumeration value="420201001"/>
+				<xs:enumeration value="420201003"/>
+				<xs:enumeration value="620101002"/>
+				<xs:enumeration value="620101007"/>
+				<xs:enumeration value="210301001"/>
+				<xs:enumeration value="810102001"/>
+				<xs:enumeration value="810102004"/>
+				<xs:enumeration value="810102002"/>
+				<xs:enumeration value="810102003"/>
+				<xs:enumeration value="810101002"/>
+				<xs:enumeration value="810101001"/>
+				<xs:enumeration value="810101003"/>
+				<xs:enumeration value="210301002"/>
+				<xs:enumeration value="210302004"/>
+				<xs:enumeration value="210101001"/>
+				<xs:enumeration value="210302003"/>
+				<xs:enumeration value="210302002"/>
+				<xs:enumeration value="210204001"/>
+				<xs:enumeration value="220101003"/>
+				<xs:enumeration value="220101004"/>
+				<xs:enumeration value="220101002"/>
+				<xs:enumeration value="220101001"/>
+				<xs:enumeration value="220101005"/>
+				<xs:enumeration value="220101006"/>
+				<xs:enumeration value="520101001"/>
+				<xs:enumeration value="320101001"/>
+				<xs:enumeration value="320101003"/>
+				<xs:enumeration value="320101002"/>
+				<xs:enumeration value="320103001"/>
+				<xs:enumeration value="320102002"/>
+				<xs:enumeration value="320102001"/>
+				<xs:enumeration value="320102004"/>
+				<xs:enumeration value="320102003"/>
+				<xs:enumeration value="320201001"/>
+				<xs:enumeration value="320201002"/>
+				<xs:enumeration value="220102001"/>
+				<xs:enumeration value="320301002"/>
+				<xs:enumeration value="210203001"/>
+				<xs:enumeration value="210203002"/>
+				<xs:enumeration value="650101001"/>
+				<xs:enumeration value="620101001"/>
+				<xs:enumeration value="610201001"/>
+				<xs:enumeration value="610201002"/>
+				<xs:enumeration value="610201003"/>
+				<xs:enumeration value="620101004"/>
+				<xs:enumeration value="620101005"/>
+				<xs:enumeration value="220102002"/>
+				<xs:enumeration value="640201001"/>
+				<xs:enumeration value="640101001"/>
+				<xs:enumeration value="620502001"/>
+				<xs:enumeration value="610101002"/>
+				<xs:enumeration value="610401002"/>
+				<xs:enumeration value="610101003"/>
+				<xs:enumeration value="610401003"/>
+				<xs:enumeration value="610101004"/>
+				<xs:enumeration value="610401004"/>
+				<xs:enumeration value="510101003"/>
+				<xs:enumeration value="510101001"/>
+				<xs:enumeration value="510101002"/>
+				<xs:enumeration value="510102003"/>
+				<xs:enumeration value="510102001"/>
+				<xs:enumeration value="510102002"/>
+				<xs:enumeration value="510201001"/>
+				<xs:enumeration value="510201002"/>
+				<xs:enumeration value="510201003"/>
+				<xs:enumeration value="510301003"/>
+				<xs:enumeration value="560101001"/>
+				<xs:enumeration value="420105001"/>
+				<xs:enumeration value="420101005"/>
+				<xs:enumeration value="420101004"/>
+				<xs:enumeration value="420101003"/>
+				<xs:enumeration value="420102006"/>
+				<xs:enumeration value="420102005"/>
+				<xs:enumeration value="420102004"/>
+				<xs:enumeration value="420102003"/>
+				<xs:enumeration value="420104001"/>
+				<xs:enumeration value="820101033"/>
+				<xs:enumeration value="820101034"/>
+				<xs:enumeration value="820101011"/>
+				<xs:enumeration value="820101003"/>
+				<xs:enumeration value="820101028"/>
+				<xs:enumeration value="820101029"/>
+				<xs:enumeration value="820101013"/>
+				<xs:enumeration value="820101012"/>
+				<xs:enumeration value="420301003"/>
+				<xs:enumeration value="420201002"/>
+				<xs:enumeration value="420202001"/>
+				<xs:enumeration value="420301001"/>
+				<xs:enumeration value="610601001"/>
+				<xs:enumeration value="610701001"/>
+				<xs:enumeration value="510301002"/>
+				<xs:enumeration value="620601001"/>
+				<xs:enumeration value="660101001"/>
+				<xs:enumeration value="620401001"/>
+				<xs:enumeration value="620301001"/>
+				<xs:enumeration value="620201001"/>
+				<xs:enumeration value="630101001"/>
+				<xs:enumeration value="320301001"/>
+				<xs:enumeration value="320103002"/>
+				<xs:enumeration value="650101002"/>
+				<xs:enumeration value="640401001"/>
+				<xs:enumeration value="810201002"/>
+				<xs:enumeration value="340101003"/>
+				<xs:enumeration value="560101003"/>
+				<xs:enumeration value="210302001"/>
+				<xs:enumeration value="210204002"/>
+				<xs:enumeration value="610201004"/>
+				<xs:enumeration value="510301001"/>
+				<xs:enumeration value="420301002"/>
+				<xs:enumeration value="620601004"/>
+				<xs:enumeration value="620505001"/>
+				<xs:enumeration value="610501001"/>
+				<xs:enumeration value="620101008"/>
+				<xs:enumeration value="610101010"/>
+				<xs:enumeration value="610302001"/>
+				<xs:enumeration value="610301001"/>
+				<xs:enumeration value="620101003"/>
+				<xs:enumeration value="210201001"/>
+				<xs:enumeration value="210201002"/>
+				<xs:enumeration value="210201003"/>
+				<xs:enumeration value="620601002"/>
+				<xs:enumeration value="550101001"/>
+				<xs:enumeration value="550101005"/>
+				<xs:enumeration value="550101002"/>
+				<xs:enumeration value="550101003"/>
+				<xs:enumeration value="550101004"/>
+				<xs:enumeration value="610101001"/>
+				<xs:enumeration value="610401001"/>
+				<xs:enumeration value="620101006"/>
+				<xs:enumeration value="620504001"/>
+				<xs:enumeration value="620503001"/>
+				<xs:enumeration value="610101007"/>
+				<xs:enumeration value="610101008"/>
+				<xs:enumeration value="640301001"/>
 		</xs:restriction>
 	</xs:simpleType>
 	<xs:simpleType name="TCfopTransp">
