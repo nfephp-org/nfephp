@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.0.16
+ * @version   3.0.17
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -2266,7 +2266,7 @@ class ToolsNFePHP {
      * - O xml do processo de cancelamento será salvo na pasta Canceladas
      *      
      * @name cancelNF
-     * @version 2.2.4
+     * @version 2.2.5
      * @package NFePHP
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @param	string  $chNFe   Chave da NFe com 44 digitos
@@ -2378,7 +2378,7 @@ class ToolsNFePHP {
             }
             return false;
         } 
-        if ($cStat != '101'){
+        if ($cStat != '101' || $cStat != '151'){
             $msg = "Rejeição : $cStat - $xMotivo";
             $this->__setError($msg);
             if ($this->exceptions) {
