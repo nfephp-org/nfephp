@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.0.17
+ * @version   3.0.18
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -1023,7 +1023,7 @@ class ToolsNFePHP {
      * para impressão e envio ao destinatário.
      *
      * @name addProt
-     * @version 2.1.2
+     * @version 2.1.3
      * @package NFePHP
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @param string $nfefile path completo para o arquivo contendo a NFe
@@ -1134,6 +1134,8 @@ class ToolsNFePHP {
             $protNFe_att1->appendChild($procnfe->createTextNode($versao));
             //cria tag infProt
             $infProt = $procnfe->createElement('infProt');
+            $infProt_att1 = $infProt->appendChild($procnfe->createAttribute('Id'));
+            $infProt_att1->appendChild($procnfe->createTextNode('ID'.$nProt));
             $protNFe->appendChild($infProt);
             $infProt->appendChild($procnfe->createElement('tpAmb',$tpAmb));
             $infProt->appendChild($procnfe->createElement('verAplic',$verAplic));
