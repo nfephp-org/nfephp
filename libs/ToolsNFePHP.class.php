@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.0.18
+ * @version   3.0.19
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -246,6 +246,12 @@ class ToolsNFePHP {
      * @var string
      */
     public $modSOAP='2';
+    /**
+     * soapTimeout
+     * Limite de tempo que o SOAP aguarda por uma conexão
+     * @var integer 0-indefinidamente ou numero de segundos 
+     */
+    public $soapTimeout = 10;
     /**
      * tpAmb
      * Tipo de ambiente 1-produção 2-homologação
@@ -3766,7 +3772,7 @@ class ToolsNFePHP {
      * Conforme Manual de Integração Versão 4.0.1 Utilizando cURL e não o SOAP nativo
      *
      * @name __sendSOAP2
-     * @version 2.1.8
+     * @version 2.1.9
      * @package NFePHP
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @author Jorge Luiz Rodrigues Tomé <jlrodriguestome at hotmail dot com>
@@ -3889,6 +3895,7 @@ class ToolsNFePHP {
                     curl_setopt($oCurl, CURLOPT_PROXYAUTH, "CURLAUTH_BASIC");
                 } //fim if senha proxy
             }//fim if aProxy
+            curl_setopt($oCurl, CURLOPT_CONNECTTIMEOUT, $this->soapTimeout);
             curl_setopt($oCurl, CURLOPT_URL, $urlsefaz.'');
             curl_setopt($oCurl, CURLOPT_PORT , 443);
             curl_setopt($oCurl, CURLOPT_VERBOSE, 1);
