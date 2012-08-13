@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.0.19
+ * @version   3.0.20
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -3659,7 +3659,7 @@ class ToolsNFePHP {
      * Conforme Manual de Integração Versão 4.0.1 
      *
      * @name __sendSOAP
-     * @version 2.1.3
+     * @version 2.1.4
      * @package NFePHP
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @param string $urlsefaz
@@ -3726,6 +3726,11 @@ class ToolsNFePHP {
             //se for SCAN montar o URL baseado no metodo e ambiente
             $urlsefaz = "$this->URLbase/wsdl/2.00/$ambiente/SCAN$usef";
         }
+        if ($this->soapTimeout == 0){
+            $tout = 999999;
+        } else {
+            $tout = $this->soapTimeout;
+        }
         //completa a url do serviço para baixar o arquivo WSDL
         $URL = $urlsefaz.'?WSDL';
         $this->soapDebug = $urlsefaz;
@@ -3740,6 +3745,7 @@ class ToolsNFePHP {
             'trace'         => true,
             'compression'   => 0,
             'exceptions'    => true,
+            'connection_timeout' => $tout,
             'cache_wsdl'    => WSDL_CACHE_NONE 
         );
         //instancia a classe soap
