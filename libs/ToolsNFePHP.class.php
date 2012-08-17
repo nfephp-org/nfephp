@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.0.20
+ * @version   3.0.21
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -639,21 +639,22 @@ class ToolsNFePHP {
      * Este metodo pode estabelecer as configurações a partir do arquivo config.php ou 
      * através de um array passado na instanciação da classe.
      * 
-     * @version 2.1.6
+     * @version 2.1.7
      * @package NFePHP
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @param array $aConfig Opcional dados de configuração
-     * @param number $mododebug Opcional 1-SIM ou 0-NÃO (0 default)
+     * @param number $mododebug Opcional 2-Não altera nenhum paraâmetro 1-SIM ou 0-NÃO (2 default)
      * @return  boolean true sucesso false Erro
      */
-    function __construct($aConfig='',$mododebug=0,$exceptions=false) {
+    function __construct($aConfig='',$mododebug=2,$exceptions=false) {
         if(is_numeric($mododebug)){
             $this->debugMode = $mododebug;
         }
-        if($mododebug){
+        if($mododebug == 1){
             //ativar modo debug
             error_reporting(E_ALL);ini_set('display_errors', 'On');
-        } else {
+        }
+        if($mododebug == 0){
             //desativar modo debug
             error_reporting(0);ini_set('display_errors', 'Off');
         }
