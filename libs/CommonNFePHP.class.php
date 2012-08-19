@@ -23,7 +23,7 @@
  *
  * @package     NFePHP
  * @name        CommonNFePHP.class.php
- * @version     1.01
+ * @version     1.0.2
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2012 &copy; NFePHP
@@ -302,7 +302,7 @@ class CommonNFePHP {
      *
      * @package NFePHP
      * @name __textBox
-     * @version 1.1
+     * @version 1.1.1
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @param number $x Posição horizontal da caixa, canto esquerdo superior
      * @param number $y Posição vertical da caixa, canto esquerdo superior
@@ -325,11 +325,18 @@ class CommonNFePHP {
         $resetou = FALSE;
         if ($w < 0 ) {
             return $y;
+        }    
+        if (is_object($text)){
+            $text = '';
         }
-        //remover espaços desnecessários
-        $text = trim($text);
-        //converter o charset para o fpdf
-        $text = utf8_decode($text);
+        if (is_string($text)){
+            //remover espaços desnecessários
+            $text = trim($text);
+            //converter o charset para o fpdf
+            $text = utf8_decode($text);
+        } else {
+            $text = (string) $text;
+        }       
         //desenhar a borda da caixa
         if ( $border ) {
             $this->pdf->RoundedRect($x,$y,$w,$h,0.8,'1234','D');
@@ -416,7 +423,7 @@ class CommonNFePHP {
      *
      * @package NFePHP
      * @name __textBox90
-     * @version 1.1
+     * @version 1.1.1
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @author Guilherme Calabria Filho <guiga86 at gmail dot com>
      * @param number $x Posição horizontal da caixa, canto esquerdo superior
@@ -443,10 +450,17 @@ class CommonNFePHP {
         if ($w < 0 ) {
             return $y;
         }
-        //remover espaços desnecessários
-        $text = trim($text);
-        //converter o charset para o fpdf
-        $text = utf8_decode($text);
+        if (is_object($text)){
+            $text = '';
+        }
+        if (is_string($text)){
+            //remover espaços desnecessários
+            $text = trim($text);
+            //converter o charset para o fpdf
+            $text = utf8_decode($text);
+        } else {
+            $text = (string) $text;
+        }    
         //desenhar a borda da caixa
         if ( $border ) {
             $this->pdf->RoundedRect($x,$y,$w,$h,0.8,'1234','D');
