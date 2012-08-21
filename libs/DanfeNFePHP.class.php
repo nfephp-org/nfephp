@@ -23,7 +23,7 @@
  *
  * @package     NFePHP
  * @name        DanfeNFePHP.class.php
- * @version     2.1.10
+ * @version     2.1.11
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2012 &copy; NFePHP
@@ -88,7 +88,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
     protected $destino = 'I'; //destivo do arquivo pdf I-borwser, S-retorna o arquivo, D-força download, F-salva em arquivo local
     protected $pdfDir=''; //diretorio para salvar o pdf com a opção de destino = F
     protected $fontePadrao='Times'; //Nome da Fonte para gerar o DANFE
-    protected $version = '2.1.10';
+    protected $version = '2.1.11';
     protected $textoAdic = '';
     protected $wAdic = 0;
     protected $wPrint; //largura imprimivel
@@ -247,7 +247,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
      * pelo conteúdo da funçao e podem ser modificados.
      * @package NFePHP
      * @name montaDANFE
-     * @version 2.5.2
+     * @version 2.5.3
      * @param string $orientacao (Opcional) Estabelece a orientação da impressão (ex. P-retrato), se nada for fornecido será usado o padrão da NFe
      * @param string $papel (Opcional) Estabelece o tamanho do papel (ex. A4)
      * @return string O ID da NFe numero de 44 digitos extraido do arquivo XML
@@ -379,7 +379,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
             if( $this->textoAdic != '' ){
                 $this->textoAdic .= ". \r\n";
             }
-            $this->textoAdic .= !empty($this->infAdic->getElementsByTagName("infCpl")->item(0)->nodeValue) ? 'Inf. Contribuinte: ' . trim($this->infAdic->getElementsByTagName("infCpl")->item(0)->nodeValue) : '';
+            $this->textoAdic .= !empty($this->infAdic->getElementsByTagName("infCpl")->item(0)->nodeValue) ? 'Inf. Contribuinte: ' . trim($this->__anfavea($this->infAdic->getElementsByTagName("infCpl")->item(0)->nodeValue)) : '';
             $infPedido = $this->__geraInformacoesDaTagCompra();
             if( $infPedido != "" ){
                 $this->textoAdic .= $infPedido;
@@ -518,6 +518,149 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
         }        
     }//fim da função montaDANFE
 
+    /**
+     * __anfavea
+     * Função para transformar o campo cdata do padrão ANFAVEA para 
+     * texto imprimível
+     * @package NFePHP
+     * @name __anfavea
+     * @version 0.1.0
+     * @author Roberto L. Machado <linux.rlm at gmail dot com>* 
+     * @param type $cdata campo CDATA
+     * @return string conteúdo do campo CDATA como string
+     */
+    private function __anfavea($cdata=''){
+        if ($cdata == ''){
+            return '';
+        }
+        //remove qualquer texto antes ou depois da tag CDATA
+        $cdata = str_replace('<![CDATA[', '<CDATA>', $cdata);
+        $cdata = str_replace(']]>', '</CDATA>', $cdata);
+        $cdata = preg_replace('/\s\s+/',' ', $cdata);
+        $cdata = str_replace("> <","><",$cdata);
+        $len = strlen($cdata);
+        $startPos = strpos($cdata,'<');
+        for($x=$len;$x>0;$x--){
+            if(substr($cdata, $x, 1) == '>') {
+                $endPos = $x;
+                break;
+            }
+        }
+        if ($startPos > 0 ){
+            $parte1 = substr($cdata, 0, $startPos);
+        } else {
+            $parte1 = '';
+        }            
+        $parte2 = substr($cdata, $startPos, $endPos-$startPos+1);
+        if ($endPos < $len){
+            $parte3 = substr($cdata, $endPos + 1, $len - $endPos - 1);
+        } else {
+            $parte3 = '';
+        }
+        $texto = trim($parte1).' '.trim($parte3);
+        if(strpos($parte2, '<CDATA>') === false){
+            $cdata = '<CDATA>'.$parte2.'</CDATA>';
+        } else {
+            $cdata = $parte2;
+        }
+        //carrega o xml CDATA em um objeto DOM
+        $dom = new DOMDocument('1.0', 'utf-8');
+        $dom->preservWhiteSpace = false; //elimina espaços em branco
+        $dom->formatOutput = false;
+        $dom->loadXML($cdata,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
+        $xml = $dom->saveXML();
+        //grupo CDATA infADprod
+        $id = $dom->getElementsByTagName('id')->item(0);
+        $div = $dom->getElementsByTagName('dev')->item(0);
+        $entg = $dom->getElementsByTagName('entg')->item(0);
+        $dest = $dom->getElementsByTagName('dest')->item(0);
+        $ctl = $dom->getElementsByTagName('ctl')->item(0);
+        $ref = $dom->getElementsByTagName('ref')->item(0);
+        if (isset($id)){
+            if ($id->hasAttributes()) {
+                foreach ($id->attributes as $attr) {
+                    $name = $attr->nodeName;
+                    $value = $attr->nodeValue;
+                    $texto .= " $name : $value";
+                }
+            }
+        }   
+        if (isset($div)){
+            if ($div->hasAttributes()) {
+                foreach ($div->attributes as $attr) {
+                    $name = $attr->nodeName;
+                    $value = $attr->nodeValue;
+                    $texto .= " $name : $value";
+                }
+            }
+        }   
+        if (isset($entg)){
+            if ($entg->hasAttributes()) {
+                foreach ($entg->attributes as $attr) {
+                    $name = $attr->nodeName;
+                    $value = $attr->nodeValue;
+                    $texto .= " $name : $value";
+                }
+            }
+        }   
+        if (isset($dest)){
+            if ($dest->hasAttributes()) {
+                foreach ($dest->attributes as $attr) {
+                    $name = $attr->nodeName;
+                    $value = $attr->nodeValue;
+                    $texto .= " $name : $value";
+                }
+            }
+        }   
+        if (isset($ctl)){
+            if ($ctl->hasAttributes()) {
+                foreach ($ctl->attributes as $attr) {
+                    $name = $attr->nodeName;
+                    $value = $attr->nodeValue;
+                    $texto .= " $name : $value";
+                }
+            }
+        }   
+        if (isset($ref)){
+            if ($ref->hasAttributes()) {
+                foreach ($ref->attributes as $attr) {
+                    $name = $attr->nodeName;
+                    $value = $attr->nodeValue;
+                    $texto .= " $name : $value";
+                }
+            }
+        }   
+        //grupo CADATA infCpl
+        $t = $dom->getElementsByTagName('transmissor')->item(0);
+        $r = $dom->getElementsByTagName('receptor')->item(0);
+        $versao = !empty($dom->getElementsByTagName('versao')->item(0)->nodeValue) ? 'Versao:'.$dom->getElementsByTagName('versao')->item(0)->nodeValue.' ' : '';
+        $especieNF = !empty($dom->getElementsByTagName('especieNF')->item(0)->nodeValue) ? 'Especie:'.$dom->getElementsByTagName('especieNF')->item(0)->nodeValue.' ' : '';
+        $fabEntrega = !empty($dom->getElementsByTagName('fabEntrega')->item(0)->nodeValue) ? 'Entrega:'.$dom->getElementsByTagName('fabEntrega')->item(0)->nodeValue.' ' : '';
+        $dca = !empty($dom->getElementsByTagName('dca')->item(0)->nodeValue) ? 'dca:'.$dom->getElementsByTagName('dca')->item(0)->nodeValue.' ' : '';
+        $texto .= "".$versao.$especieNF.$fabEntrega.$dca;
+        if (isset($t)){
+            if ($t->hasAttributes()) {
+                $texto .= " Transmissor ";
+                foreach ($t->attributes as $attr) {
+                    $name = $attr->nodeName;
+                    $value = $attr->nodeValue;
+                    $texto .= " $name : $value";
+                }
+            }
+        }   
+        if (isset($r)){
+            if ($r->hasAttributes()) {
+                $texto .= " Receptor ";
+                foreach ($r->attributes as $attr) {
+                    $name = $attr->nodeName;
+                    $value = $attr->nodeValue;
+                    $texto .= " $name : $value";
+                }
+            }
+        }   
+        return $texto;
+    }//fim __anfavea
+    
     /**
      * printDANFE
      * Esta função envia a DANFE em PDF criada para o dispositivo informado.
@@ -1681,7 +1824,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
                 $ivaTxt .= " IcmsSt = $icmsStTxt%";
             }
         }
-        $infAdProd = substr(!empty($itemProd->getElementsByTagName('infAdProd')->item(0)->nodeValue) ? $itemProd->getElementsByTagName('infAdProd')->item(0)->nodeValue : '',0,500);
+        $infAdProd = substr(!empty($itemProd->getElementsByTagName('infAdProd')->item(0)->nodeValue) ? $this->__anfavea($itemProd->getElementsByTagName('infAdProd')->item(0)->nodeValue) : '',0,500);
         if (!empty($infAdProd)){
             $infAdProd = trim($infAdProd);
             $infAdProd .= ' ';
