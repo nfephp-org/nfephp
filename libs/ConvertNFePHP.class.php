@@ -26,7 +26,7 @@
  *
  * @package     NFePHP
  * @name        ConvertNFePHP
- * @version     3.1.1
+ * @version     3.1.2
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2011 &copy; NFePHP
@@ -156,7 +156,7 @@ class ConvertNFePHP {
      *
      * @package NFePHP
      * @name nfetxt2xml
-     * @version 2.2.0
+     * @version 2.2.1
      * @param string $arrayComAsLinhasDoArquivo Array de Strings onde cada elemento é uma linha do arquivo
      * @return string xml construido
      */
@@ -1926,32 +1926,33 @@ class ConvertNFePHP {
                         break;
 
                     case "X26": //Grupo Volumes 0 a N [transp]
-                        $vol = $dom->createElement("vol");
                         if(!empty($dados[1])) {
+							$vol = $dom->createElement("vol");
                             $qVol = $dom->createElement("qVol", $dados[1]);
                             $vol->appendChild($qVol);
-                        }
-                        if(!empty($dados[2])) {
-                            $esp = $dom->createElement("esp", $dados[2]);
-                            $vol->appendChild($esp);
-                        }
-                        if(!empty($dados[3])) {
-                            $marca = $dom->createElement("marca", $dados[3]);
-                            $vol->appendChild($marca);
-                        }
-                        if(!empty($dados[4])) {
-                            $nVol = $dom->createElement("nVol", $dados[4]);
-                            $vol->appendChild($nVol);
-                        }
-                        if(!empty($dados[5])) {
-                            $pesoL = $dom->createElement("pesoL", $dados[5]);
-                            $vol->appendChild($pesoL);
-                        }
-                        if(!empty($dados[6])) {
-                            $pesoB = $dom->createElement("pesoB", $dados[6]);
-                            $vol->appendChild($pesoB);
-                        }
-                        $transp->appendChild($vol);
+                        
+							if(!empty($dados[2])) {
+								$esp = $dom->createElement("esp", $dados[2]);
+								$vol->appendChild($esp);
+							}
+							if(!empty($dados[3])) {
+								$marca = $dom->createElement("marca", $dados[3]);
+								$vol->appendChild($marca);
+							}
+							if(!empty($dados[4])) {
+								$nVol = $dom->createElement("nVol", $dados[4]);
+								$vol->appendChild($nVol);
+							}
+							if(!empty($dados[5])) {
+								$pesoL = $dom->createElement("pesoL", $dados[5]);
+								$vol->appendChild($pesoL);
+							}
+							if(!empty($dados[6])) {
+								$pesoB = $dom->createElement("pesoB", $dados[6]);
+								$vol->appendChild($pesoB);
+							}
+							$transp->appendChild($vol);
+						}
                         break;
 
                     case "X33": //Grupo de Lacres 0 a N [vol]
