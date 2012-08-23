@@ -23,7 +23,7 @@
  *
  * @package     NFePHP
  * @name        DanfeNFePHP.class.php
- * @version     2.1.11
+ * @version     2.1.12
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2012 &copy; NFePHP
@@ -524,7 +524,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
      * texto imprimível
      * @package NFePHP
      * @name __anfavea
-     * @version 0.1.0
+     * @version 0.1.1
      * @author Roberto L. Machado <linux.rlm at gmail dot com>* 
      * @param type $cdata campo CDATA
      * @return string conteúdo do campo CDATA como string
@@ -540,6 +540,9 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
         $cdata = str_replace("> <","><",$cdata);
         $len = strlen($cdata);
         $startPos = strpos($cdata,'<');
+        if($starPos === false){
+            return $cdata;
+        }
         for($x=$len;$x>0;$x--){
             if(substr($cdata, $x, 1) == '>') {
                 $endPos = $x;
@@ -571,7 +574,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
         $xml = $dom->saveXML();
         //grupo CDATA infADprod
         $id = $dom->getElementsByTagName('id')->item(0);
-        $div = $dom->getElementsByTagName('dev')->item(0);
+        $div = $dom->getElementsByTagName('div')->item(0);
         $entg = $dom->getElementsByTagName('entg')->item(0);
         $dest = $dom->getElementsByTagName('dest')->item(0);
         $ctl = $dom->getElementsByTagName('ctl')->item(0);
