@@ -23,7 +23,7 @@
  *
  * @package     NFePHP
  * @name        DanfeNFePHP.class.php
- * @version     2.1.12
+ * @version     2.1.13
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2012 &copy; NFePHP
@@ -39,6 +39,7 @@
  *              Djalma Fadel Junior <dfadel at ferasoft dot com dot br>
  *              Faruk Mustafa Zahra < farukz at gmail dot com >
  *              Felipe Bonato <montanhats at gmail dot com>
+ *              Fernando Mertins <fernando dot mertins at gmail dot com>
  *              Guilherme Calabria Filho <guiga at gmail dot com>
  *              Leandro C. Lopez <leandro.castoldi at gmail dot com>
  *              Paulo Gabriel Coghi < paulocoghi at gmail dot com>
@@ -2112,7 +2113,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
      * Monta o campo de serviços do DANFE
      * @package NFePHP
      * @name __issqnDANFE ( retrato e paisagem )
-     * @version 1.21
+     * @version 1.22
      * @param number $x Posição horizontal canto esquerdo
      * @param number $y Posição vertical canto superior
      * @return number Posição vertical final
@@ -2133,7 +2134,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
         $aFont = array('font'=>$this->fontePadrao,'size'=>6,'style'=>'');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',1,'');
         //inscrição municipal
-        $texto = !empty($this->emit->getElementsByTagName("im")->item(0)->nodeValue) ? $this->emit->getElementsByTagName("im")->item(0)->nodeValue : '';
+        $texto = !empty($this->emit->getElementsByTagName("IM")->item(0)->nodeValue) ? $this->emit->getElementsByTagName("IM")->item(0)->nodeValue : '';
         $aFont = array('font'=>$this->fontePadrao,'size'=>10,'style'=>'B');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'B','L',0,'');
         //VALOR TOTAL DOS SERVIÇOS
@@ -2156,7 +2157,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',1,'');
         if ( isset($this->ISSQNtot) ){
             $texto = !empty($this->ISSQNtot->getElementsByTagName("vBC")->item(0)->nodeValue) ? $this->ISSQNtot->getElementsByTagName("vBC")->item(0)->nodeValue : '';
-            $texto = !empty($text) ? number_format($texto, 2, ",", ".") : '';
+            $texto = !empty($texto) ? number_format($texto, 2, ",", ".") : '';
         } else {
             $texto = '';
         }
