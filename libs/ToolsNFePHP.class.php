@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.0.22
+ * @version   3.0.23
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -58,7 +58,7 @@
  *              Jorge Luiz Rodrigues Tomé <jlrodriguestome at hotmail dot com>
  *              Leandro C. Lopez <leandro dot castoldi at gmail dot com>
  *              Mario Almeida <prog dot almeida at gmail.com>
- *				Nataniel Fiuza <natan at laxus dot com dot br>
+ *		Nataniel Fiuza <natan at laxus dot com dot br>
  *              Odair Jose Santos Junior <odairsantosjunior at gmail dot com>
  *              Paulo Gabriel Coghi <paulocoghi at gmail dot com>
  *              Paulo Henrique Demori <phdemori at hotmail dot com>
@@ -859,7 +859,7 @@ class ToolsNFePHP {
     * A validação não deve ser feita após a inclusão do protocolo !!!
     * Caso seja passado uma NFe ainda não assinada a falta da assinatura será desconsiderada.
     * @name validXML
-    * @version 3.0.2
+    * @version 3.0.3
     * @package NFePHP
     * @author Roberto L. Machado <linux.rlm at gmail dot com>
     * @param    string  $xml  string contendo o arquivo xml a ser validado ou seu path
@@ -979,6 +979,7 @@ class ToolsNFePHP {
                             ,"The document has no document element"
                             ,"[facet 'enumeration']"
                             ,"one of"
+                            ,"This element is not expected. Expected is"                     
                             ,"is not an element of the set");
               
                 $pt = array(""
@@ -998,6 +999,7 @@ class ToolsNFePHP {
                             ,"Falta uma tag no documento"
                             ,"[Erro 'Conteúdo']"
                             ,"um de"
+                            ,"Este elemento não é esperado. Esperado é"
                             ,"não é um dos seguintes possiveis");
                 
                 switch ($intError->level) {
