@@ -23,7 +23,7 @@
  *
  * @package     NFePHP
  * @name        DanfeNFePHP.class.php
- * @version     2.1.14
+ * @version     2.1.15
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2012 &copy; NFePHP
@@ -37,6 +37,7 @@
  *              Bruno J R Lima <brunofileh at gmail dot com>
  *              Chrystian Toigo <ctoigo at gmail dot com>
  *              Djalma Fadel Junior <dfadel at ferasoft dot com dot br>
+ *              Eduardo Gusmão <eduardo dot intrasis at gmail dot com>
  *              Faruk Mustafa Zahra < farukz at gmail dot com >
  *              Felipe Bonato <montanhats at gmail dot com>
  *              Fernando Mertins <fernando dot mertins at gmail dot com>
@@ -90,7 +91,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
     protected $destino = 'I'; //destivo do arquivo pdf I-borwser, S-retorna o arquivo, D-força download, F-salva em arquivo local
     protected $pdfDir=''; //diretorio para salvar o pdf com a opção de destino = F
     protected $fontePadrao='Times'; //Nome da Fonte para gerar o DANFE
-    protected $version = '2.1.14';
+    protected $version = '2.1.15';
     protected $textoAdic = '';
     protected $wAdic = 0;
     protected $wPrint; //largura imprimivel
@@ -1810,7 +1811,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
      * Monta a string de descrição de cada Produto
      * @package NFePHP
      * @name __descricaoProduto
-     * @version 1.0
+     * @version 1.1.0
      * @author Marcos Diez
      * @param DOM itemProd
      * @return string String com a descricao do produto
@@ -1835,17 +1836,21 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
             $infAdProd .= ' ';
         }
         $medTxt='';
-        $med = $prod->getElementsByTagName("med")->item(0);
-        if( isset( $med ) ){
-            $medTxt .= $this->__simpleGetValue( $med , 'nLote' , ' Lote: ');
-            $medTxt .= $this->__simpleGetValue( $med , 'qLote' , ' Quant: ' );
-            $medTxt .= $this->__simpleGetDate( $med , 'dFab'  , ' Fab: ' );
-            $medTxt .= $this->__simpleGetDate( $med , 'dVal'  , ' Val: ' );
-            $medTxt .= $this->__simpleGetValue( $med , 'vPMC'  , ' PMC: ' );
+        $med = $prod->getElementsByTagName("med");
+        if(isset($med)){
+            $i = 0;
+            while($i < $med->length) {
+                $medTxt .= $this->__simpleGetValue($med->item($i) , 'nLote' , ' Lote: ');
+                $medTxt .= $this->__simpleGetValue($med->item($i) , 'qLote' , ' Quant: ');
+                $medTxt .= $this->__simpleGetDate($med->item($i) , 'dFab'  , ' Fab: ');
+                $medTxt .= $this->__simpleGetDate($med->item($i) , 'dVal'  , ' Val: ');
+                $medTxt .= $this->__simpleGetValue($med->item($i) , 'vPMC'  , ' PMC: ');
+                $i++;
+            }
             if( $medTxt != '' ){
                 $medTxt.= ' ';
             }
-        }
+        }    
 	$tmp_ad=$infAdProd . $medTxt . $ivaTxt;
 	$texto = $prod->getElementsByTagName("xProd")->item(0)->nodeValue . (strlen($tmp_ad)!=0?"\n    ".$tmp_ad:'');
         $texto = str_replace( ";" , "\n" , $texto );
