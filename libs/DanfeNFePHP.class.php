@@ -23,7 +23,7 @@
  *
  * @package     NFePHP
  * @name        DanfeNFePHP.class.php
- * @version     2.1.15
+ * @version     2.1.16
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2012 &copy; NFePHP
@@ -91,7 +91,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
     protected $destino = 'I'; //destivo do arquivo pdf I-borwser, S-retorna o arquivo, D-força download, F-salva em arquivo local
     protected $pdfDir=''; //diretorio para salvar o pdf com a opção de destino = F
     protected $fontePadrao='Times'; //Nome da Fonte para gerar o DANFE
-    protected $version = '2.1.15';
+    protected $version = '2.1.16';
     protected $textoAdic = '';
     protected $wAdic = 0;
     protected $wPrint; //largura imprimivel
@@ -543,7 +543,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
         $cdata = str_replace("> <","><",$cdata);
         $len = strlen($cdata);
         $startPos = strpos($cdata,'<');
-        if($starPos === false){
+        if($startPos === false){
             return $cdata;
         }
         for($x=$len;$x>0;$x--){
