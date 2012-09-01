@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WS xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
+<UF>
+    <sigla>RS</sigla>
+    <homologacao>
+        <MDFeRecepcao method='mdfeRecepcaoLote' version = '1.0'>https://mdfe-hml.sefaz.rs.gov.br/ws/MDFerecepcao/MDFeRecepcao.asmx</MDFeRecepcao>
+        <MDFeRetRecepcao method='mdfeRetRecepcao' version = '1.0'>https://mdfe-hml.sefaz.rs.gov.br/ws/MDFeRetRecepcao/MDFeRetRecepcao.asmx</MDFeRetRecepcao>
+        <MDFeRecepcaoEvento method='mdfeRecepcaoEvento' version = '1.0'>https://mdfe-hml.sefaz.rs.gov.br/ws/MDFeRecepcaoEvento/MDFeRecepcaoEvento.asm</MDFeRecepcaoEvento>
+        <MDFeConsultaSituacao method='mdfeConsultaMDF' version = '1.0'>https://mdfe-hml.sefaz.rs.gov.br/ws/MDFeConsultaSit/MDFeConsultaSit.asmx</MDFeConsultaSituacao>
+        <MDFeStatusServico method='mdfeStatusServicoMDF' version = '1.0'>https://mdfe-hml.sefaz.rs.gov.br/ws/MDFeStatusServico/MDFeStatusServico.asmx</MDFeStatusServico>
+    </homologacao>
+    <producao>
+        <MDFeRecepcao method='mdfeRecepcaoLote' version='1.0'>https://mdfe.sefaz.rs.gov.br/ws/MDFerecepcao/MDFeRecepcao.asmx</MDFeRecepcao>
+        <MDFeRetRecepcao method='mdfeRetRecepcao' version='1.0'>https://mdfe.sefaz.rs.gov.br/ws/MDFeRetRecepcao/MDFeRetRecepcao.asmx</MDFeRetRecepcao>
+        <MDFeRecepcaoEvento method='mdfeRecepcaoEvento' version='1.0'>https://mdfe.sefaz.rs.gov.br/ws/MDFeRecepcaoEvento/MDFeRecepcaoEvento.asmx</MDFeRecepcaoEvento>
+        <MDFeConsultaSituacao method='mdfeConsultaMDF' version='1.0'>https://mdfe.sefaz.rs.gov.br/ws/MDFeConsultaSit/MDFeConsultaSit.asmx</MDFeConsultaSituacao>
+        <MDFeStatusServico method='mdfeStatusServicoMDF' version='1.0'>https://mdfe.sefaz.rs.gov.br/ws/MDFeStatusServico/MDFeStatusServico.asmx</MDFeStatusServico>
+    </producao>
+</UF>
+</WS>
