@@ -66,7 +66,7 @@ $arquivosDir='/var/www/nfe';
 $baseurl='http://localhost/nfephp';
 
 // Versão em uso dos shemas utilizados para validação dos xmls
-$schemes='PL_006m';
+$schemes='PL_006n';
 
 //###############################
 //###### EMPRESA EMITENTE #######
