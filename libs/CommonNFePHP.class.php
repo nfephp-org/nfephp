@@ -23,7 +23,7 @@
  *
  * @package     NFePHP
  * @name        CommonNFePHP.class.php
- * @version     1.0.2
+ * @version     1.0.3
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2012 &copy; NFePHP
@@ -83,15 +83,19 @@ class CommonNFePHP {
      * __simpleGetValue
      * Extrai o valor do node DOM
      * @package NFePHP
-     * @version 1.01
+     * @version 1.02
      * @author Marcos Diez
      * @param DOM $theObj
      * @param string $keyName identificador da TAG do xml
      * @param string $extraText prefixo do retorno
      * @return string
      */
-    protected function __simpleGetValue( $theObj , $keyName , $extraBefore = "" , $extraTextAfter = ""){
-        $vct = $theObj->getElementsByTagName( $keyName )->item(0);
+    protected function __simpleGetValue( $theObj , $keyName , $extraBefore = "" , $extraTextAfter = "" , $itemNum = 0 ){
+        if( !isset($theObj) || ! is_object( $theObj ) ){
+            return "";
+        }
+
+        $vct = $theObj->getElementsByTagName( $keyName )->item($itemNum);
         if( isset( $vct ) ){
             return $extraBefore . trim($vct->nodeValue) . $extraTextAfter;
         }
@@ -325,15 +329,15 @@ class CommonNFePHP {
         $resetou = FALSE;
         if ($w < 0 ) {
             return $y;
-        }    
+        }
         if (is_object($text)){
             $text = '';
         }
         if (is_string($text)){
-            //remover espaços desnecessários
-            $text = trim($text);
-            //converter o charset para o fpdf
-            $text = utf8_decode($text);
+        //remover espaços desnecessários
+        $text = trim($text);
+        //converter o charset para o fpdf
+        $text = utf8_decode($text);
         } else {
             $text = (string) $text;
         }       
@@ -454,10 +458,10 @@ class CommonNFePHP {
             $text = '';
         }
         if (is_string($text)){
-            //remover espaços desnecessários
-            $text = trim($text);
-            //converter o charset para o fpdf
-            $text = utf8_decode($text);
+        //remover espaços desnecessários
+        $text = trim($text);
+        //converter o charset para o fpdf
+        $text = utf8_decode($text);
         } else {
             $text = (string) $text;
         }    
