@@ -23,7 +23,7 @@
  *
  * @package     NFePHP
  * @name        DanfeNFePHP.class.php
- * @version     2.1.16
+ * @version     2.1.17
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2012 &copy; NFePHP
@@ -91,7 +91,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
     protected $destino = 'I'; //destivo do arquivo pdf I-borwser, S-retorna o arquivo, D-força download, F-salva em arquivo local
     protected $pdfDir=''; //diretorio para salvar o pdf com a opção de destino = F
     protected $fontePadrao='Times'; //Nome da Fonte para gerar o DANFE
-    protected $version = '2.1.16';
+    protected $version = '2.1.17';
     protected $textoAdic = '';
     protected $wAdic = 0;
     protected $wPrint; //largura imprimivel
@@ -1811,7 +1811,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
      * Monta a string de descrição de cada Produto
      * @package NFePHP
      * @name __descricaoProduto
-     * @version 1.1.0
+     * @version 1.2.0
      * @author Marcos Diez
      * @param DOM itemProd
      * @return string String com a descricao do produto
@@ -1823,11 +1823,19 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
         if (!empty($ICMS)){
             $ivaTxt = !empty($ICMS->getElementsByTagName("pMVAST")->item(0)->nodeValue) ? number_format($ICMS->getElementsByTagName("pMVAST")->item(0)->nodeValue, 2, ",", ".") : '';
             if ($ivaTxt != ''){
-                $ivaTxt = " IVA = $ivaTxt%";
+                $ivaTxt = " IVA=$ivaTxt%";
             }
             $icmsStTxt = !empty($ICMS->getElementsByTagName("pICMSST")->item(0)->nodeValue) ? number_format($ICMS->getElementsByTagName("pICMSST")->item(0)->nodeValue, 2, ",", ".") : '';
             if ($icmsStTxt != ''){
-                $ivaTxt .= " IcmsSt = $icmsStTxt%";
+                $ivaTxt .= " IcmsSt=$icmsStTxt%";
+            }
+            $bcIcmsSt = !empty($ICMS->getElementsByTagName("vBCST")->item(0)->nodeValue) ? number_format($ICMS->getElementsByTagName("vBCST")->item(0)->nodeValue, 2, ",", ".") : '';
+            if ($icmsStTxt != ''){
+                $ivaTxt .= " BcIcmsSt=$bcIcmsSt";
+            }
+            $vIcmsSt = !empty($ICMS->getElementsByTagName("vICMSST")->item(0)->nodeValue) ? number_format($ICMS->getElementsByTagName("vICMSST")->item(0)->nodeValue, 2, ",", ".") : '';
+            if ($icmsStTxt != ''){
+                $ivaTxt .= " vIcmsSt=$vIcmsSt";
             }
         }
         $infAdProd = substr(!empty($itemProd->getElementsByTagName('infAdProd')->item(0)->nodeValue) ? $this->__anfavea($itemProd->getElementsByTagName('infAdProd')->item(0)->nodeValue) : '',0,500);
