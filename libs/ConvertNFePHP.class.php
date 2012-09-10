@@ -26,7 +26,7 @@
  *
  * @package     NFePHP
  * @name        ConvertNFePHP
- * @version     3.1.2
+ * @version     3.1.3
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2011 &copy; NFePHP
@@ -156,7 +156,7 @@ class ConvertNFePHP {
      *
      * @package NFePHP
      * @name nfetxt2xml
-     * @version 2.2.1
+     * @version 2.2.2
      * @param string $arrayComAsLinhasDoArquivo Array de Strings onde cada elemento é uma linha do arquivo
      * @return string xml construido
      */
@@ -225,16 +225,14 @@ class ConvertNFePHP {
 			'chave'	=>'',
 			'tpAmb'	=>'');
 		    
-		    
 		    //cria o objeto DOM para o xml
-		    
 		    $notas[$cur_nota]['dom']=new DOMDocument('1.0', 'UTF-8');
-			$dom = & $notas[$cur_nota]['dom'];
-			$dom->formatOutput = true;
-			$dom->preserveWhiteSpace = false;
+                    $dom = & $notas[$cur_nota]['dom'];
+                    $dom->formatOutput = true;
+                    $dom->preserveWhiteSpace = false;
 		    $notas[$cur_nota]['NFe']=$dom->createElement("NFe");
-			$NFe = & $notas[$cur_nota]['NFe'];
-			$NFe->setAttribute("xmlns", "http://www.portalfiscal.inf.br/nfe");
+                    $NFe = & $notas[$cur_nota]['NFe'];
+                    $NFe->setAttribute("xmlns", "http://www.portalfiscal.inf.br/nfe");
 
                     $notas[$cur_nota]['infNFe']=$dom->createElement("infNFe");
 		    $infNFe = &$notas[$cur_nota]['infNFe'];
@@ -1417,20 +1415,30 @@ class ConvertNFePHP {
                         $ICMSSN900->appendChild($orig);
                         $CSOSN = $dom->createElement("CSOSN", $dados[2]);
                         $ICMSSN900->appendChild($CSOSN);
-                        $modBC = $dom->createElement("modBC", $dados[3]);
-                        $ICMSSN900->appendChild($modBC);
-                        $vBC = $dom->createElement("vBC", $dados[4]);
-                        $ICMSSN900->appendChild($vBC);
+                        if(!empty($dados[3])){
+                            $modBC = $dom->createElement("modBC", $dados[3]);
+                            $ICMSSN900->appendChild($modBC);
+                        }
+                        if(!empty($dados4)){
+                            $vBC = $dom->createElement("vBC", $dados[4]);
+                            $ICMSSN900->appendChild($vBC);
+                        }
                         if(!empty($dados[5])) {
                             $pRedBC = $dom->createElement("pRedBC", $dados[5]);
                             $ICMSSN900->appendChild($pRedBC);
+                        }
+                        if(!empty($dados[6])){
+                            $pICMS = $dom->createElement("pICMS", $dados[6]);
+                            $ICMSSN900->appendChild($pICMS);
+                        }
+                        if(!empty($dados[7])){
+                            $vICMS = $dom->createElement("vICMS", $dados[7]);
+                            $ICMSSN900->appendChild($vICMS);
+                        }
+                        if(!empty($dados[8])){
+                            $modBCST = $dom->createElement("modBCST", $dados[8]);
+                            $ICMSSN900->appendChild($modBCST);
                         }    
-                        $pICMS = $dom->createElement("pICMS", $dados[6]);
-                        $ICMSSN900->appendChild($pICMS);
-                        $vICMS = $dom->createElement("vICMS", $dados[7]);
-                        $ICMSSN900->appendChild($vICMS);
-                        $modBCST = $dom->createElement("modBCST", $dados[8]);
-                        $ICMSSN900->appendChild($modBCST);
                         if(!empty($dados[9])) {
                             $pMVAST = $dom->createElement("pMVAST", $dados[9]);
                             $ICMSSN900->appendChild($pMVAST);
@@ -1438,17 +1446,27 @@ class ConvertNFePHP {
                         if(!empty($dados[10])) {
                             $pRedBCST = $dom->createElement("pRedBCST", $dados[10]);
                             $ICMSSN900->appendChild($pRedBCST);
+                        }
+                        if(!empty($dados[11])){
+                            $vBCST = $dom->createElement("vBCST", $dados[11]);
+                            $ICMSSN900->appendChild($vBCST);
+                        }
+                        if(!empty($dados[12])){
+                            $pICMSST = $dom->createElement("pICMSST", $dados[12]);
+                            $ICMSSN900->appendChild($pICMSST);
+                        }
+                        if(!empty($dados[13])){
+                            $vICMSST = $dom->createElement("vICMSST", $dados[13]);
+                            $ICMSSN900->appendChild($vICMSST);
+                        }
+                        if(!empty($dados[14])){
+                            $pCredSN = $dom->createElement("pCredSN", $dados[14]);
+                            $ICMSSN900->appendChild($pCredSN);
+                        }
+                        if(!empty($dados[15])){
+                            $vCredICMSSN = $dom->createElement("vCredICMSSN", $dados[15]);
+                            $ICMSSN900->appendChild($vCredICMSSN);
                         }    
-                        $vBCST = $dom->createElement("vBCST", $dados[11]);
-                        $ICMSSN900->appendChild($vBCST);
-                        $pICMSST = $dom->createElement("pICMSST", $dados[12]);
-                        $ICMSSN900->appendChild($pICMSST);
-                        $vICMSST = $dom->createElement("vICMSST", $dados[13]);
-                        $ICMSSN900->appendChild($vICMSST);
-                        $pCredSN = $dom->createElement("pCredSN", $dados[14]);
-                        $ICMSSN900->appendChild($pCredSN);
-                        $vCredICMSSN = $dom->createElement("vCredICMSSN", $dados[15]);
-                        $ICMSSN900->appendChild($vCredICMSSN);
                         $ICMS->appendChild($ICMSSN900);
                         break;
 
