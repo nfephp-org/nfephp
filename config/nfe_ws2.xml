@@ -12,6 +12,7 @@
 <!-- Versão 20120412 Correção do Webservice ConsultaCadastro -->
 <!-- Versão 20120617 Correção dos Webservices DPEC -->
 <!-- Versão 20120621 Correção do Webservice NfeRecepcao2.asmx BA - Contribuição de Gilmar de Paula <gilmarfiocca at gmail dot com> -->
+<!-- Versão 20120911 Complementação dos Webservices do PR -->
   <UF>
     <sigla>AM</sigla>
     <homologacao>
@@ -235,8 +236,8 @@
       <NfeInutilizacao method='nfeInutilizacaoNF2' version='2.00'>https://homologacao.nfe2.fazenda.pr.gov.br/nfe/NFeInutilizacao2</NfeInutilizacao>
       <NfeConsulta method='nfeConsultaNF2' version='2.00'>https://homologacao.nfe2.fazenda.pr.gov.br/nfe/NFeConsulta2</NfeConsulta>
       <NfeStatusServico method='nfeStatusServicoNF2' version='2.00'>https://homologacao.nfe2.fazenda.pr.gov.br/nfe/NFeStatusServico2</NfeStatusServico>
-      <CadConsultaCadastro method='consultaCadastro2' version='2.00'></CadConsultaCadastro>
-      <RecepcaoEvento method='nfeRecepcaoEvento' version='1.00'></RecepcaoEvento>
+      <CadConsultaCadastro method='consultaCadastro2' version='2.00'>https://homologacao.nfe2.fazenda.pr.gov.br/nfe/CadConsultaCadastro2</CadConsultaCadastro>
+      <RecepcaoEvento method='nfeRecepcaoEvento' version='1.00'>https://homologacao.nfe2.fazenda.pr.gov.br/nfe-evento/NFeRecepcaoEvento</RecepcaoEvento>
       <NfeConsultaDest method='nfeConsultaNFDest' version='2.00'></NfeConsultaDest>
       <NfeDownloadNF method='nfeDownloadNF' version='2.00'></NfeDownloadNF>
     </homologacao>
@@ -247,8 +248,8 @@
       <NfeInutilizacao method='nfeInutilizacaoNF2' version='2.00'>https://nfe2.fazenda.pr.gov.br/nfe/NFeInutilizacao2</NfeInutilizacao>
       <NfeConsulta method='nfeConsultaNF2' version='2.00'>https://nfe2.fazenda.pr.gov.br/nfe/NFeConsulta2</NfeConsulta>
       <NfeStatusServico method='nfeStatusServicoNF2' version='2.00'>https://nfe2.fazenda.pr.gov.br/nfe/NFeStatusServico2</NfeStatusServico>
-      <CadConsultaCadastro method='consultaCadastro2' version='2.00'></CadConsultaCadastro>
-      <RecepcaoEvento method='nfeRecepcaoEvento' version='1.00'></RecepcaoEvento>
+      <CadConsultaCadastro method='consultaCadastro2' version='2.00'>https://nfe2.fazenda.pr.gov.br/nfe/CadConsultaCadastro2</CadConsultaCadastro>
+      <RecepcaoEvento method='nfeRecepcaoEvento' version='1.00'>https://nfe2.fazenda.pr.gov.br/nfe-evento/NFeRecepcaoEvento</RecepcaoEvento>
       <NfeConsultaDest method='nfeConsultaNFDest' version='2.00'></NfeConsultaDest>
       <NfeDownloadNF method='nfeDownloadNF' version='2.00'></NfeDownloadNF>
     </producao>
