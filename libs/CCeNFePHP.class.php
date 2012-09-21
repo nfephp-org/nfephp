@@ -51,6 +51,7 @@ class CCeNFePHP extends CommonNFePHP {
     public $logoAlign='C'; //alinhamento do logo
     public $yDados=0;
     public $debugMode=0; //ativa ou desativa o modo de debug
+    public $aEnd=array();
     //privadas
     protected $pdf; // objeto fpdf()
     protected $xml; // string XML NFe
@@ -100,11 +101,12 @@ class CCeNFePHP extends CommonNFePHP {
     * @param string $sPapel Tamanho do papel (Ex. A4)
     * @param string $sPathLogo Caminho para o arquivo do logo
     * @param string $sDestino Estabelece a direção do envio do documento PDF I-browser D-browser com download S-
+    * @param array $aEnd array com o endereço do emitente
     * @param string $sDirPDF Caminho para o diretorio de armazenamento dos arquivos PDF
     * @param string $fonteDANFE Nome da fonte alternativa do DAnfe
     * @param number $mododebug 1-SIM e 0-Não (0 default)
     */
-    function __construct($xmlfile='', $sOrientacao='',$sPapel='',$sPathLogo='', $sDestino='I', $sDirPDF='', $fontePDF='', $mododebug=0) {
+    function __construct($xmlfile='', $sOrientacao='',$sPapel='',$sPathLogo='', $sDestino='I', $aEnd='',$sDirPDF='', $fontePDF='', $mododebug=0) {
         if(is_numeric($mododebug)){
             $this->debugMode = $mododebug;
         }
@@ -114,6 +116,9 @@ class CCeNFePHP extends CommonNFePHP {
         } else {
             //desativar modo debug
             error_reporting(0);ini_set('display_errors', 'Off');
+        }
+        if (is_array($aEnd)){
+            $this->aEnd = $aEnd;
         }
         $this->orientacao   = $sOrientacao;
         $this->papel        = $sPapel;
@@ -298,29 +303,54 @@ class CCeNFePHP extends CommonNFePHP {
         if ($foneLen > 0 ){
             $fone2 = substr($fone,0,$foneLen-4);
             $fone1 = substr($fone,0,$foneLen-8);
+            $fone = 'Fone: (' . $fone1 . ') ' . substr($fone2,-4) . '-' . substr($fone,-4);
+        } else {
+            $fone = '';
+        }
+        $lgr = $this->aEnd['logradouro'];
+        $nro = $this->aEnd['numero'];
+        $cpl = $this->aEnd['complemento'];
+        $bairro = $this->aEnd['bairro'];
+        $CEP = $this->aEnd['CEP'];
+        $CEP = $this->__format($CEP,"#####-###");
+        $mun = $this->aEnd['municipio'];
+        $UF = $this->aEnd['UF'];
+        $fone = $this->aEnd['telefone'];
+        $email = $this->aEnd['email'];
+        if ($foneLen > 0 ){
+            $fone2 = substr($fone,0,$foneLen-4);
+            $fone1 = substr($fone,0,$foneLen-8);
             $fone = '(' . $fone1 . ') ' . substr($fone2,-4) . '-' . substr($fone,-4);
         } else {
             $fone = '';
         }
-        $lgr = 'RUA SILVA BUENO';
-        $nro = '390';
-        $cpl = '';
-        $bairro = 'IPIRANGA';
-        $CEP = '04157000';
-        $CEP = $this->__format($CEP,"#####-###");
-        $mun = 'SAO PAULO';
-        $UF = 'SP';
-        $texto = $lgr . ", " . $nro . $cpl . "\n" . $bairro . " - " . $CEP . "\n" . $mun . " - " . $UF . " " . "Fone/Fax: " . $fone;
-        $this->__textBox($x1,$y1,$tw,8,$texto,$aFont,'T','C',0,'');
+        if ($email != ''){
+            $email = 'Email: '.$email;
+        }
+        $texto = $lgr . ", " . $nro . $cpl . "\n" . $bairro . " - " . $CEP . "\n" . $mun . " - " . $UF . " " . $fone . "\n" . $email;
+        $this->__textBox($x1,$y1-2,$tw,8,$texto,$aFont,'T','C',0,'');
         //##################################################
         $w2 = round($maxW - $w,0);
         $x += $w;
         $this->__textBox($x,$y,$w2,$h);
         $y1 = $y + $h;
-        $aFont = array('font'=>$this->fontePadrao,'size'=>14,'style'=>'B');
+        $aFont = array('font'=>$this->fontePadrao,'size'=>16,'style'=>'B');
         $this->__textBox($x,$y+2,$w2,8,'Representação Gráfica de CCe',$aFont,'T','C',0,'');
-        $aFont = array('font'=>$this->fontePadrao,'size'=>10,'style'=>'I');
+        $aFont = array('font'=>$this->fontePadrao,'size'=>12,'style'=>'I');
         $this->__textBox($x,$y+7,$w2,8,'(Carta de Correção Eletrônica)',$aFont,'T','C',0,'');
+        
+        $texto = 'ID do Evento: '.$this->id;
+        $aFont = array('font'=>$this->fontePadrao,'size'=>10,'style'=>'');
+        $this->__textBox($x,$y+15,$w2,8,$texto,$aFont,'T','L',0,'');
+        $tsHora = $this->__convertTime($this->dhEvento);
+        $texto = 'Criado em : '. date('d/m/Y   H:i:s',$tsHora);
+        $this->__textBox($x,$y+20,$w2,8,$texto,$aFont,'T','L',0,'');
+        $tsHora = $this->__convertTime($this->dhRegEvento);
+        $texto = 'Prococolo: '.$this->nProt.'  -  Registrado na SEFAZ em: '.date('d/m/Y   H:i:s',$tsHora);
+        $this->__textBox($x,$y+25,$w2,8,$texto,$aFont,'T','L',0,'');
+        
+        //$cStat;
+        //$tpAmb;
         //####################################################
         $x = $oldX;
         $this->__textBox($x,$y1,$maxW,40);
@@ -329,6 +359,17 @@ class CCeNFePHP extends CommonNFePHP {
         $aFont = array('font'=>$this->fontePadrao,'size'=>10,'style'=>'');
         $this->__textBox($x+5,$y1,$maxW-5,20,$texto,$aFont,'T','L',0,'',false);
         //############################################
+        $x = $oldX;
+        $y = $y1;
+        $texto = 'CNPJ do Destinatário: '.$this->__format($this->CNPJDest,"##.###.###/####-##");
+        $aFont = array('font'=>$this->fontePadrao,'size'=>12,'style'=>'B');
+        $this->__textBox($x+2,$y+13,$w2,8,$texto,$aFont,'T','L',0,'');
+        $numNF = substr($this->chNFe,25,9);
+        $serie = substr($this->chNFe,22,3);
+        $numNF = $this->__format($numNF,"###.###.###");
+        $texto = "Nota Fiscal: " . $numNF .'  -   Série: '.$serie;
+        $this->__textBox($x+2,$y+19,$w2,8,$texto,$aFont,'T','L',0,'');
+        
         $bW = 87;
         $bH = 15;
         $x = 55;
@@ -338,9 +379,17 @@ class CCeNFePHP extends CommonNFePHP {
         $this->pdf->Code128($x+(($w-$bW)/2),$y+2,$this->chNFe,$bW,$bH);
         $this->pdf->SetFillColor(255,255,255);
         $y1 = $y+2+$bH;
+        $aFont = array('font'=>$this->fontePadrao,'size'=>10,'style'=>'');
         $texto = $this->__format( $this->chNFe, $this->formatoChave );
-        $this->__textBox($x+2,$y1,$w-2,$h,$texto,$aFont,'T','C',0,'');
-        return $sY;
+        $this->__textBox($x,$y1,$w-2,$h,$texto,$aFont,'T','C',0,'');
+        //$sY += 1;
+        $x = $oldX;
+        $this->__textBox($x,$sY,$maxW,15);
+        $texto = $this->xCondUso;
+        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'I');
+        $this->__textBox($x+2,$sY+2,$maxW-2,15,$texto,$aFont,'T','L',0,'',false);
+        
+        return $sY+2;
         
     }// fim __headerCCe
     
@@ -350,12 +399,7 @@ class CCeNFePHP extends CommonNFePHP {
         $aFont = array('font'=>$this->fontePadrao,'size'=>10,'style'=>'B');
         $this->__textBox($x,$y,$maxW,5,$texto,$aFont,'T','L',0,'',false);
         $y += 5;
-        $this->__textBox($x,$y,$maxW,15);
-        $texto = $this->xCondUso;
-        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'I');
-        $this->__textBox($x+2,$y+2,$maxW-2,15,$texto,$aFont,'T','L',0,'',false);
-        $y += 15;
-        $this->__textBox($x,$y,$maxW,150);
+        $this->__textBox($x,$y,$maxW,190);
         $texto = $this->xCorrecao;
         $aFont = array('font'=>$this->fontePadrao,'size'=>12,'style'=>'B');
         $this->__textBox($x+2,$y+2,$maxW-2,150,$texto,$aFont,'T','L',0,'',false);
@@ -399,7 +443,7 @@ class CCeNFePHP extends CommonNFePHP {
         
         if ( $destino == 'S' ){
             //aqui pode entrar a rotina de impressão direta
-            $command = "lpr $printer $file";
+            $command = "lpr $command $file";
         }
         return $arq;
 
