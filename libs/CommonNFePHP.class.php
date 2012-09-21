@@ -23,7 +23,7 @@
  *
  * @package     NFePHP
  * @name        CommonNFePHP.class.php
- * @version     1.0.3
+ * @version     1.0.4
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2012 &copy; NFePHP
@@ -174,7 +174,7 @@ class CommonNFePHP {
      * Converte a imformação de data e tempo contida na NFe
      * @package NFePHP
      * @name __convertTime
-     * @version 1.0
+     * @version 1.1.0
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @param string $DH Informação de data e tempo extraida da NFe
      * @return timestamp UNIX Para uso com a funçao date do php
@@ -183,7 +183,8 @@ class CommonNFePHP {
         if ($DH){
             $aDH = explode('T',$DH);
             $adDH = explode('-',$aDH[0]);
-            $atDH = explode(':',$aDH[1]);
+            $inter = explode('-',$aDH[1]);
+            $atDH = explode(':',$inter[0]);            
             $timestampDH = mktime($atDH[0],$atDH[1],$atDH[2],$adDH[1],$adDH[2],$adDH[0]);
             return $timestampDH;
         }
