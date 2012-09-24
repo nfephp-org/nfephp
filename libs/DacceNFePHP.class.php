@@ -22,7 +22,7 @@
  * <http://www.fsfla.org/svnwiki/trad/LGPLv3>.
  *
  * @package     NFePHP
- * @name        CCeNFePHP.class.php
+ * @name        DacceNFePHP.class.php
  * @version     0.1.0
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
@@ -45,7 +45,7 @@ require_once('PdfNFePHP.class.php');
 //classe com as funções communs entre DANFE e DACTE
 require_once('CommonNFePHP.class.php');
 
-class CCeNFePHP extends CommonNFePHP {
+class DacceNFePHP extends CommonNFePHP {
     
     //publicas
     public $logoAlign='C'; //alinhamento do logo
