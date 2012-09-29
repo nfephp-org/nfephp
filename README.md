@@ -32,7 +32,7 @@ Para mais detalhes sobre a instalação, veja <https://github.com/nfephp-org/nfe
 
 Quick start
 -----
-Clone o repositório com `git clone https://github.com/nfephp-org/nfephp.git` ou [baixe a última versão estável](https://github.com/nfephp-org/nfephp/tags).
+Clone o repositório com `git clone https://github.com/nfephp-org/nfephp.git` ou [baixe a última versão estável](https://github.com/nfephp-org/nfephp/downloads).
 
 Versionamento
 ----------
