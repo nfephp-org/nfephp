@@ -26,7 +26,7 @@
  *
  * @package     NFePHP
  * @name        ConvertNFePHP
- * @version     3.1.3
+ * @version     3.1.4
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2011 &copy; NFePHP
@@ -130,17 +130,20 @@ class ConvertNFePHP {
      * de Dezembro de 2009 do manual de integração da NFe, incluindo a 
      * Nota Técnica 2011/002 de março de 2011
      *
-     * @package NFePHP
-     * @name nfetxt2xml
-     * @version 3.0.0
-     * @param string $txt Path para o arquivo txt ou o conteudo do txt em uma string
+     * @param mixed $txt Path para o arquivo txt, array ou o conteudo do txt em uma string
      * @return string xml construido
      */
     public function nfetxt2xml($txt) {
         if ( is_file($txt) ){
             $aDados = file($txt, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES | FILE_TEXT);
         } else {
-            $aDados = explode("\n", $txt);
+            if (is_array($txt)){
+                $aDados = $txt;
+            } else {
+                if (strlen($txt) > 0){
+                    $aDados = explode("\n", $txt);
+                }    
+            }    
         }
         return $this->__nfetxt2xml_array_com_linhas($aDados);
     }//fim nfetxt2xml
