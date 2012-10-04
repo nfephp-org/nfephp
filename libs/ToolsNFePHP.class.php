@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.0.23
+ * @version   3.0.24
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -1317,9 +1317,6 @@ class ToolsNFePHP {
      *        cStat = 114 SCAN dasativado pela SEFAZ de origem    
      * se SCAN estiver ativado usar, caso contrario aguardar pacientemente.
      * @name statusServico
-     * @version 2.0.6
-     * @package NFePHP
-     * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @param	string $UF sigla da unidade da Federação
      * @param   integer $tpAmb tipo de ambiente 1-produção e 2-homologação
      * @param   integer 1 usa o __sendSOAP e 2 usa o __sendSOAP2
@@ -1364,7 +1361,7 @@ class ToolsNFePHP {
             $retorno = $this->__sendSOAP($urlservico, $namespace, $cabec, $dados, $metodo, $tpAmb,$UF);
         }
         //verifica o retorno do SOAP
-        if ( isset($retorno) ) {
+        if ($retorno) {
             //tratar dados de retorno
             $doc = new DOMDocument('1.0', 'utf-8'); //cria objeto DOM
             $doc->formatOutput = false;
