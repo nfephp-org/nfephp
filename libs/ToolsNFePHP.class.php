@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.0.26
+ * @version   3.0.27
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -870,8 +870,8 @@ class ToolsNFePHP {
         // Habilita a manipulaçao de erros da libxml
         libxml_use_internal_errors(true);
         //verifica se foi passado o xml
-        if($xml==''){
-            $msg = 'Você deve passar o conteudo do xml assinado como parâmetro.';
+        if(strlen($xml)==0){
+            $msg = 'Você deve passar o conteudo do xml assinado como parâmetro ou o caminho completo até o arquivo.';
             $this->__setError($msg);
             if ($this->exceptions) {
                 throw new nfephpException($msg, self::STOP_CRITICAL);
@@ -889,6 +889,8 @@ class ToolsNFePHP {
         } else {
             $dom->loadXML($xml,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
         }
+        //limpar erros anteriores que possam estar em memória
+        libxml_clear_errors();        
         //recupera os erros da libxml
         $errors = libxml_get_errors(); 
         if (!empty($errors)) { 
@@ -3572,13 +3574,19 @@ class ToolsNFePHP {
      *   $this->passKey
      *
      * @name __loadCerts
-     * @version 2.1.3
-     * @package NFePHP
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @param	none
      * @return	boolean true se o certificado foi carregado e false se nao
      **/
     protected function __loadCerts(){
+        if(!function_exists('openssl_pkcs12_read')){
+            $msg = "Função não existente: openssl_pkcs12_read!!";
+            $this->__setError($msg);
+            if ($this->exceptions) {
+                throw new nfephpException($msg);
+            }
+            return false;
+	}
         //monta o path completo com o nome da chave privada
         $this->priKEY = $this->certsDir.$this->cnpj.'_priKEY.pem';
         //monta o path completo com o nome da chave prublica
