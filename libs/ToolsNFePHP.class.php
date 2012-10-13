@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.0.24
+ * @version   3.0.25
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -859,8 +859,6 @@ class ToolsNFePHP {
     * A validação não deve ser feita após a inclusão do protocolo !!!
     * Caso seja passado uma NFe ainda não assinada a falta da assinatura será desconsiderada.
     * @name validXML
-    * @version 3.0.3
-    * @package NFePHP
     * @author Roberto L. Machado <linux.rlm at gmail dot com>
     * @param    string  $xml  string contendo o arquivo xml a ser validado ou seu path
     * @param    string  $xsdfile Path completo para o arquivo xsd
@@ -979,6 +977,8 @@ class ToolsNFePHP {
                             ,"The document has no document element"
                             ,"[facet 'enumeration']"
                             ,"one of"
+                            ,"failed to load external entity" 
+                            ,"Failed to locate the main schema resource at"
                             ,"This element is not expected. Expected is"                     
                             ,"is not an element of the set");
               
@@ -999,6 +999,8 @@ class ToolsNFePHP {
                             ,"Falta uma tag no documento"
                             ,"[Erro 'Conteúdo']"
                             ,"um de"
+                            ,"falha ao carregar entidade externa"
+                            ,"Falha ao tentar localizar o schema principal em"
                             ,"Este elemento não é esperado. Esperado é"
                             ,"não é um dos seguintes possiveis");
                 
