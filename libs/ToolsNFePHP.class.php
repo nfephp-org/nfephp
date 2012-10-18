@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.0.27
+ * @version   3.0.28
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -2955,16 +2955,27 @@ class ToolsNFePHP {
         }
         switch ($tpEvento){
             case '210200':
-                $descEvento = 'Confirmacao da Operacao';
+                $descEvento = 'Confirmacao da Operacao'; //confirma a operação e o recebimento da mercadoria (para as operações com circulação de mercadoria)
+                //Após a Confirmação da Operação pelo destinatário, a empresa emitente fica automaticamente impedida de cancelar a NF-e
                 break;
             case '210210':
-                $descEvento = 'Ciencia da Operacao';
+                $descEvento = 'Ciencia da Operacao'; //encrenca !!! Não usar
+                //O evento de “Ciência da Operação” é um evento opcional e pode ser evitado
+                //Após um período determinado, todas as operações com “Ciência da Operação” deverão
+                //obrigatoriamente ter a manifestação final do destinatário declarada em um dos eventos de
+                //Confirmação da Operação, Desconhecimento ou Operação não Realizada
                 break;
             case '210220':
                 $descEvento = 'Desconhecimento da Operacao';
+                //Uma empresa pode ficar sabendo das operações destinadas a um determinado CNPJ
+                //consultando o “Serviço de Consulta da Relação de Documentos Destinados” ao seu CNPJ.
+                //O evento de “Desconhecimento da Operação” permite ao destinatário informar o seu
+                //desconhecimento de uma determinada operação que conste nesta relação, por exemplo
                 break;
             case '210240':
-                $descEvento = 'Operacao nao Realizada';
+                $descEvento = 'Operacao nao Realizada'; //não aceitação no recebimento que antes se fazia com apenas um carimbo na NF
+                //operação não foi realizada (com Recusa de Recebimento da mercadoria e outros motivos),
+                //não cabendo neste caso a emissão de uma Nota Fiscal de devolução.
                 break;
             default:
                 $msg = "O código do tipo de evento informado não corresponde a nenhum evento de manifestação de destinatário.";
@@ -2997,9 +3008,9 @@ class ToolsNFePHP {
         $numLote = substr(str_replace(',','',number_format(microtime(true)*1000000,0)),0,15);
         //Data e hora do evento no formato AAAA-MM-DDTHH:MM:SSTZD (UTC)
         $dhEvento = date('Y-m-d').'T'.date('H:i:s').$this->timeZone;
-        //se o envio for para svan mudar o numero no orgão para 90
+        //se o envio for para svan mudar o numero no orgão para 91
         if ($this->enableSVAN){
-            $cOrgao='90';
+            $cOrgao='91';
         } else {
             $cOrgao=$this->cUF;
         }
@@ -3031,7 +3042,9 @@ class ToolsNFePHP {
         $Ev .= "<verEvento>$versao</verEvento>";
         $Ev .= "<detEvento versao=\"$versao\">";
         $Ev .= "<descEvento>$descEvento</descEvento>";
-        $Ev .= "<xJust>$xJust</xJust>";
+        if($xJust != ''){
+            $Ev .= "<xJust>$xJust</xJust>";
+        }
         $Ev .= "</detEvento></infEvento></evento>";
         //assinatura dos dados
         $tagid = 'infEvento';
@@ -3092,7 +3105,7 @@ class ToolsNFePHP {
             return false;
         }
         //erro no processamento
-        if ($cStat != '135' || $cStat != '136' ){
+        if ($cStat != '135' and $cStat != '136' ){
             //se cStat <> 135 houve erro e o lote foi rejeitado
             $msg = "O Lote foi rejeitado : $cStat - $xMotivo\n";
             $this->__setError($msg);
@@ -3100,6 +3113,13 @@ class ToolsNFePHP {
                 throw new nfephpException($msg);
             }
             return false;
+        }
+        if ($cStat == '136'){
+            $msg = "O Evento foi registrado mas a NFe não foi localizada : $cStat - $xMotivo\n";
+            $this->__setError($msg);
+            if ($this->exceptions) {
+                throw new nfephpException($msg);
+            }
         }
         //o evento foi aceito
         $xmlenvMDe = new DOMDocument('1.0', 'utf-8'); //cria objeto DOM
@@ -3113,13 +3133,13 @@ class ToolsNFePHP {
         $xmlprocMDe->preserveWhiteSpace = false;
         //cria a tag procEventoNFe
         $procEventoNFe = $xmlprocMDe->createElement('procEventoNFe');
-        $xmlprocCCe->appendChild($procEventoNFe);
+        $xmlprocMDe->appendChild($procEventoNFe);
         //estabele o atributo de versão
         $eventProc_att1 = $procEventoNFe->appendChild($xmlprocMDe->createAttribute('versao'));
-        $eventProc_att1->appendChild($xmlprocCCe->createTextNode($versao));
+        $eventProc_att1->appendChild($xmlprocMDe->createTextNode($versao));
         //estabelece o atributo xmlns
         $eventProc_att2 = $procEventoNFe->appendChild($xmlprocMDe->createAttribute('xmlns'));
-        $eventProc_att2->appendChild($xmlprocCCe->createTextNode($this->URLportal));
+        $eventProc_att2->appendChild($xmlprocMDe->createTextNode($this->URLportal));
         //carrega o node evento
         $node1 = $xmlprocMDe->importNode($evento, true);
         $procEventoNFe->appendChild($node1);
@@ -3136,7 +3156,7 @@ class ToolsNFePHP {
         $procXML = str_replace("\r",'',$procXML);
         $procXML = str_replace("\s",'',$procXML);
         //salva o arquivo xml
-        if (!file_put_contents($this->evtDir."$chNFe-$nSeqEvento-procMDe.xml", $procXML)){
+        if (!file_put_contents($this->evtDir."$chNFe-$tpEvento-$nSeqEvento-procMDe.xml", $procXML)){
             $msg = "Falha na gravação do arquivo procMDe!!";
             $this->__setError($msg);
             if ($this->exceptions) {
