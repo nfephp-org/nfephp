@@ -2028,6 +2028,8 @@ class ToolsNFePHP {
         //retorno para testes
         //TODO preparar a comunicação com o SEFAZ quando o ambiente de testes estiver habilitado
         return $cabec.$dados; 
+        
+        
     }//fim getNFe
 
     /**
