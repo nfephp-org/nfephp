@@ -50,5 +50,9 @@ require_once('ToolsNFePHP.php');
  */
 class MDFePHP extends ToolsNFePHP {
     
+    function __construct($aConfig='',$mododebug=2,$exceptions=false) {
+        parent::ToolsNFePHP($aConfig,$mododebug,$exceptions);
+        
+    }//fim __construct
 }
 ?>
