@@ -21,9 +21,9 @@
  * <http://www.fsfla.org/svnwiki/trad/LGPLv3>. 
  *
  * Está atualizada para :
- *      PHP 5.3
+ *      PHP 5.4
  *      Versão 2 dos webservices da SEFAZ com comunicação via SOAP 1.2
- *      e conforme Manual de Integração Versão 5
+ *      e conforme Manual MDFe  versão 1.00 de 29.08.2012
  *
  * Atenção: Esta classe não mantêm a compatibilidade com a versão 1.10 da SEFAZ !!!
  *
@@ -43,10 +43,12 @@
 if (!defined('PATH_ROOT')) {
    define('PATH_ROOT', dirname(dirname( __FILE__ )) . DIRECTORY_SEPARATOR);
 }
+require_once('ToolsNFePHP.php');
+
 /**
- * Classe principal "CORE class"
+ * Classe principal "CORE class" extende a classe Tools
  */
-class MDFePHP {
+class MDFePHP extends ToolsNFePHP {
     
 }
 ?>
