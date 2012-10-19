@@ -15,16 +15,15 @@
 <!-- Versão 20120911 Complementação dos Webservices do PR -->
 <!-- Versao 20120911.1 Complementação dos Webservices do RS e SVAN com os eventos de destinatário -->
 <!-- Versao 20121018 Inclusão dos Webservices do Ambiente Nacional AN -->
-<!-- Versao 20121019 Correção dos numeros de versão dos metodos [AN] nfeConcultaNFDest e [SP - homolog.] nfeConsultaNF2 -->
   <UF>
     <sigla>AN</sigla>
     <homologacao>
       <RecepcaoEvento method='nfeRecepcaoEvento' version='1.00'>https://hom.nfe.fazenda.gov.br/RecepcaoEvento/RecepcaoEvento.asmx</RecepcaoEvento>            
-      <NfeConsultaDest method='nfeConsultaNFDest' version='1.01'>https://hom.nfe.fazenda.gov.br/NFeConsultaDest/NFeConsultaDest.asmx</NfeConsultaDest>
+      <NfeConsultaDest method='nfeConsultaNFDest' version='1.00'>https://hom.nfe.fazenda.gov.br/NFeConsultaDest/NFeConsultaDest.asmx</NfeConsultaDest>
     </homologacao>
     <producao>
       <RecepcaoEvento method='nfeRecepcaoEvento' version='1.00'>https://www.nfe.fazenda.gov.br/RecepcaoEvento/RecepcaoEvento.asmx</RecepcaoEvento>            
-      <NfeConsultaDest method='nfeConsultaNFDest' version='1.01'>https://www.nfe.fazenda.gov.br/NFeConsultaDest/NFeConsultaDest.asmx</NfeConsultaDest>
+      <NfeConsultaDest method='nfeConsultaNFDest' version='1.00'>https://www.nfe.fazenda.gov.br/NFeConsultaDest/NFeConsultaDest.asmx</NfeConsultaDest>
     </producao>      
   </UF>      
   <UF>
@@ -304,7 +303,7 @@
       <NfeRetRecepcao method='nfeRetRecepcao2' version='2.00'>https://homologacao.nfe.fazenda.sp.gov.br/nfeweb/services/NfeRetRecepcao2.asmx</NfeRetRecepcao>
       <NfeCancelamento method='nfeCancelamentoNF2' version='2.00'>https://homologacao.nfe.fazenda.sp.gov.br/nfeweb/services/NfeCancelamento2.asmx</NfeCancelamento>
       <NfeInutilizacao method='nfeInutilizacaoNF2' version='2.00'>https://homologacao.nfe.fazenda.sp.gov.br/nfeweb/services/NfeInutilizacao2.asmx</NfeInutilizacao>
-      <NfeConsulta method='nfeConsultaNF2' version='2.01'>https://homologacao.nfe.fazenda.sp.gov.br/nfeweb/services/NfeConsulta2.asmx</NfeConsulta>
+      <NfeConsulta method='nfeConsultaNF2' version='2.00'>https://homologacao.nfe.fazenda.sp.gov.br/nfeweb/services/NfeConsulta2.asmx</NfeConsulta>
       <NfeStatusServico method='nfeStatusServicoNF2' version='2.00'>https://homologacao.nfe.fazenda.sp.gov.br/nfeweb/services/NfeStatusServico2.asmx</NfeStatusServico>
       <CadConsultaCadastro method='consultaCadastro2' version='2.00'>https://homologacao.nfe.fazenda.sp.gov.br/nfeweb/services/CadConsultaCadastro2.asmx</CadConsultaCadastro>
       <RecepcaoEvento method='nfeRecepcaoEvento' version='1.00'>https://homologacao.nfe.fazenda.sp.gov.br/eventosWEB/services/RecepcaoEvento.asmx</RecepcaoEvento>
