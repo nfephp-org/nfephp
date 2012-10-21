@@ -1,1 +1,12 @@
-<?xml version="1.0" encoding="UTF-8"?><root><num>0</num></root>
+<?xml version="1.0" encoding="UTF-8"?>
+<NSU xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <UF>
+        <sigla>AN</sigla>
+        <homologacao>
+            <ultNSU>0</ultNSU>
+        </homologacao>
+        <producao>
+            <ultNSU>0</ultNSU>
+        </producao>
+    </UF>
+</NSU>>

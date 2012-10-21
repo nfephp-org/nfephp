@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<retConsNFeDest versao="1.01" xmlns="http://www.portalfiscal.inf.br/nfe">
+  <tpAmb>2</tpAmb>
+  <verAplic>RS20120430083814</verAplic>
+  <cStat>138</cStat>
+  <xMotivo>Documento localizado para o destinatário.</xMotivo>
+  <dhResp>2012-07-29T18:49:03</dhResp>
+  <indCont>0</indCont>
+  <ultNSU>100000</ultNSU>
+  <ret>
+    <resNFe NSU="1234567">
+      <chNFe>43120479999975000104550000000884201000884208</chNFe>
+      <CNPJ>79999975000104</CNPJ>
+      <xNome>NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL</xNome>
+      <IE>123456789</IE>
+      <dEmi>2012-05-29</dEmi>
+      <tpNF>1</tpNF>
+      <vNF>1000.00</vNF>
+      <digVal>1eyXp3r2WjqQrATl+kaxz8Pe0bk=</digVal>
+      <dhRecbto>2012-05-29T09:30:47</dhRecbto>
+      <cSitNFe>1</cSitNFe>
+      <cSitConf>0</cSitConf>
+    </resNFe>
+  </ret>
+  <ret>
+    <resCCe NSU="1234571">
+      <chNFe>43120479999975000104550000000884201000884208</chNFe>
+      <dhEvento>22012-05-29T013:10:07-03:00</dhEvento>
+      <tpEvento>110110</tpEvento>
+      <nSeqEvento>1</nSeqEvento>
+      <descEvento>Carta de Correção</descEvento>
+      <xCorrecao>A unidade de comercializacao do item 1 deve ser PC</xCorrecao>
+      <tpNF>1</tpNF>
+      <dhRecbto>22012-05-29T015:10:07</dhRecbto>
+    </resCCe>
+  </ret>
+  <ret>
+    <resCanc NSU="1234768">
+      <chNFe>43120479999975000104550000000884201000884208</chNFe>
+      <CNPJ>79999975000104</CNPJ>
+      <xNome>NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL</xNome>
+      <IE>123456789</IE>
+      <dEmi>2012-05-29</dEmi>
+      <tpNF>1</tpNF>
+      <vNF>1000.00</vNF>
+      <digVal>1eyXp3r2WjqQrATl+kaxz8Pe0bk=</digVal>
+      <dhRecbto>2012-05-30T08:30:00</dhRecbto>
+      <cSitNFe>3</cSitNFe>
+      <cSitConf>0</cSitConf>
+    </resCanc>
+  </ret>
+  <ret>
+    <resNFe NSU="1235555">
+      <chNFe>43120479999975000104550000000885201000885201</chNFe>
+      <CNPJ>79999975000104</CNPJ>
+      <xNome>NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL</xNome>
+      <IE>123456789</IE>
+      <dEmi>2012-05-30</dEmi>
+      <tpNF>1</tpNF>
+      <vNF>2000.00</vNF>
+      <digVal>1eyXp3r2WjqQrATl+kaxz8Pe0bk=</digVal>
+      <dhRecbto>2012-05-30T07:00:00</dhRecbto>
+      <cSitNFe>1</cSitNFe>
+      <cSitConf>0</cSitConf>
+    </resNFe>
+  </ret>
+</retConsNFeDest>
