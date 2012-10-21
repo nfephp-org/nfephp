@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.0.28
+ * @version   3.0.29
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -471,6 +471,7 @@ class ToolsNFePHP {
     private $aliaslist = array('AC'=>'SVRS',
                                'AL'=>'SVRS',
                                'AM'=>'AM',
+                               'AN'=>'AN', 
                                'AP'=>'SVRS',
                                'BA'=>'BA',
                                'CE'=>'CE',
@@ -1936,29 +1937,31 @@ class ToolsNFePHP {
      * Este serviço não suporta SCAN !!!
      *  
      * @name getListNFe
-     * @version 0.1.1
+     * @version 0.1.2
      * @package NFePHP
      * @author Roberto L. Machado <linux.rlm at gmail dot com> 
+     * @param boolean $AN TRUE - usa ambiente Nacional para buscar a lista de NFe, FALSE usa sua própria SEFAZ
      * @param string $indNFe Indicador de NF-e consultada: 0=Todas as NF-e; 1=Somente as NF-e que ainda não tiveram manifestação do destinatário (Desconhecimento da operação, Operação não Realizada ou Confirmação da Operação); 2=Idem anterior, incluindo as NF-e que também não tiveram a Ciência da Operação
      * @param string $indEmi Indicador do Emissor da NF-e: 0=Todos os Emitentes / Remetentes; 1=Somente as NF-e emitidas por emissores / remetentes que não tenham a mesma raiz do CNPJ do destinatário (para excluir as notas fiscais de transferência entre filiais).
      * @param string $ultNSU Último NSU recebido pela Empresa. Caso seja informado com zero, ou com um NSU muito antigo, a consulta retornará unicamente as notas fiscais que tenham sido recepcionadas nos últimos 15 dias.
      * @param string $tpAmb Tipo de ambiente 1=Produção 2=Homologação
      * @param string $modSOAP
-     * @return mixed False ou array
+     * @return mixed False ou array com os dados das NFe
      */
-    public function getListNFe($indNFe='0',$indEmi='0',$ultNSU='',$tpAmb='',$modSOAP='2'){
+    public function getListNFe($AN=false,$indNFe='0',$indEmi='0',$ultNSU='',$tpAmb='',$modSOAP='2'){
         if($tpAmb == ''){
             $tpAmb = $this->tpAmb;
         }
         if($ultNSU == ''){
             //buscar o ultimo NSU no xml
             $nsufile = $this->raizDir . 'config/numNSU.xml';
-            $domNSU = new DomDocument;
-            $domNSU->load($nsufile);
-            $ultNSU = $domNSU->getElementsByTagName('num')->item(0)->nodeValue;
+            /*TODO criar função para ler e gravar o numero do ultimo NSU, com UF e ambiente*/    
         }
-        $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . $this->xmlURLfile,$tpAmb,$this->UF);
-        
+        if($AN){
+            $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . $this->xmlURLfile,$tpAmb,'AN');            
+        } else {
+            $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . $this->xmlURLfile,$tpAmb,$this->UF);
+        }
         //identificação do serviço
         $servico = 'NfeConsultaDest';
         //recuperação da versão
