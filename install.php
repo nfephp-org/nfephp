@@ -23,7 +23,7 @@
  *
  * @package   NFePHP
  * @name      install.php
- * @version   1.31
+ * @version   1.3.2
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2011 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -37,11 +37,11 @@
 if (!defined('PATH_NFEPHP')) {
    define('PATH_NFEPHP', dirname( __FILE__ ));
 }
-
+error_reporting(E_ALL);ini_set('display_errors', 'On');
 require_once('config/config.php');
 require_once('libs/ToolsNFePHP.class.php');
 
-$installVer = '1.31';
+$installVer = '1.3.2';
 //cores
 $cRed = '#FF0000';
 $cGreen = '#00CC00';
@@ -144,6 +144,21 @@ if($modsoap){
     }
 }
 
+//zip
+$modzip = false;
+if($modzip = $modules->isLoaded('zip')) { // Testa se zip esta carregado
+  $modzip_enable = $modules->getModuleSetting('zip', 'Zip');
+  $modzip_ver = $modules->getModuleSetting('zip', 'Zip version');
+}
+$cZIP = $cRed;
+$zipver = ' N&atilde;o instalado !!!';
+if($modzip){
+    if($modzip_enable=='enabled'){
+        $cZIP = $cGreen;
+        $zipver = ' vers&atilde;o ' . $modzip_ver;
+    }
+}
+
 //teste de escrita no diretorio dos certificados
 $filen = $pathdir.DIRECTORY_SEPARATOR.'certs'.DIRECTORY_SEPARATOR.'teste.txt';
 $cdCerts = $cRed;
@@ -212,7 +227,8 @@ if (is_dir($arquivosDir)) {
 }
 
 //verificação da validade do certificado
-$nfe = new ToolsNFePHP();
+$nfe = new ToolsNFePHP('',0);
+
 if ($nfe->certDaysToExpire > 0){
     if($nfe->certDaysToExpire>365){
         $dias = round($nfe->certDaysToExpire/10,0);
@@ -405,7 +421,8 @@ class moduleCheck {
     }
     return $onlyModules; // Return array of all module names
   } // End function listModules();
-}?>
+}
+?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
@@ -472,6 +489,11 @@ class moduleCheck {
       <td>GD <?php echo $gdver;?></td>
       <td bgcolor="<?php echo $cgd;?>"><div align="center">ok</div></td>
       <td>gd &eacute; necess&aacute;rio para DANFE</td>
+    </tr>
+    <tr bgcolor="#FFFF99">
+      <td>ZIP <?php echo $zipver;?></td>
+      <td bgcolor="<?php echo $cZIP;?>"><div align="center">ok</div></td>
+      <td>ZIP necess&aacute;rio para download da NFe</td>
     </tr>
     <tr>
       <td>&nbsp;</td>
@@ -762,6 +784,11 @@ class moduleCheck {
               <td><div align="right">MailIMAP Box</div></td>
               <td><input name="mailimapbox" type="text" id="mailimapbox" value="<?php echo $mailIMAPbox;?>" size="20" maxlength="100"></td>
               <td><i>Caixa de Entrada IMAP (ex. INBOX)</i></td>
+            </tr>
+            <tr>
+              <td><div align="right">LayOut email File</div></td>
+              <td><input name="maillayout" type="text" id="maillayout" value="<?php echo $mailLayoutFile;?>" size="20" maxlength="100"></td>
+              <td><i>Nome arquivo html (UTF8) do template para o corpo do email (na pasta config)</i></td>
             </tr>
             <tr bgcolor="#999999">
               <td colspan="3"><strong>Configura&ccedil;&atilde;o de Proxy</strong></td>
