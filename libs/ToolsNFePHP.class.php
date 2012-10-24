@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.0.29
+ * @version   3.0.30
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -641,9 +641,6 @@ class ToolsNFePHP {
      * Este metodo pode estabelecer as configurações a partir do arquivo config.php ou 
      * através de um array passado na instanciação da classe.
      * 
-     * @version 2.1.8
-     * @package NFePHP
-     * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @param array $aConfig Opcional dados de configuração
      * @param number $mododebug Opcional 2-Não altera nenhum paraâmetro 1-SIM ou 0-NÃO (2 default)
      * @return  boolean true sucesso false Erro
@@ -837,6 +834,8 @@ class ToolsNFePHP {
                 throw new nfephpException($msg, self::STOP_CRITICAL);
             }
         }
+        //estados que participam do horario de verão
+        $aUFhv = array('ES','GO','MG','MS','PR','RJ','RS','SP','SC','TO');
         //corrigir o timeZone
         if ($this->UF == 'AC' ||
             $this->UF == 'AM' ||   
@@ -846,6 +845,15 @@ class ToolsNFePHP {
             $this->UF == 'RR' ){
             $this->timeZone = '-04:00';
         }
+        //verificar se estamos no horário de verão *** depende da configuração do servidor ***
+        if (date('I') == 1){
+            //estamos no horario de verão verificar se o estado está incluso
+            if(in_array($this->UF, $aUFhv)) {
+                $tz = (int) $this->timeZone;
+                $tz++;
+                $this->timeZone = '-'.sprintf("%02d",abs($tz)).':00'; //poderia ser obtido com date('P')
+            }
+        }//fim check horario verao
         return true;
     } //fim __construct
 
