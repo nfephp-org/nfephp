@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.0.30
+ * @version   3.0.31
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -1939,15 +1939,9 @@ class ToolsNFePHP {
      * Consulta da Relação de Documentos Destinados 
      * para um determinado CNPJ de destinatário informado na NF-e.
      * 
-     * ESSE SEVIÇO NÃO ESTÁ AINDA OPERACIONAL EXISTE APENAS EM AMBIENTE DE HOMOLOCAÇÃO
-     * NO SEFAZ DO RS
-     * 
      * Este serviço não suporta SCAN !!!
      *  
      * @name getListNFe
-     * @version 0.1.2
-     * @package NFePHP
-     * @author Roberto L. Machado <linux.rlm at gmail dot com> 
      * @param boolean $AN TRUE - usa ambiente Nacional para buscar a lista de NFe, FALSE usa sua própria SEFAZ
      * @param string $indNFe Indicador de NF-e consultada: 0=Todas as NF-e; 1=Somente as NF-e que ainda não tiveram manifestação do destinatário (Desconhecimento da operação, Operação não Realizada ou Confirmação da Operação); 2=Idem anterior, incluindo as NF-e que também não tiveram a Ciência da Operação
      * @param string $indEmi Indicador do Emissor da NF-e: 0=Todos os Emitentes / Remetentes; 1=Somente as NF-e emitidas por emissores / remetentes que não tenham a mesma raiz do CNPJ do destinatário (para excluir as notas fiscais de transferência entre filiais).
@@ -1957,18 +1951,26 @@ class ToolsNFePHP {
      * @return mixed False ou array com os dados das NFe
      */
     public function getListNFe($AN=false,$indNFe='0',$indEmi='0',$ultNSU='',$tpAmb='',$modSOAP='2'){
+        $datahora = date('Ymd_His');
         if($tpAmb == ''){
             $tpAmb = $this->tpAmb;
         }
+        if (!$AN){
+            $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . $this->xmlURLfile,$tpAmb,$this->UF);
+            $sigla = $this->UF;
+        } else {
+            $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . $this->xmlURLfile,$tpAmb,'AN');            
+            $sigla = 'AN';
+        }    
         if($ultNSU == ''){
             //buscar o ultimo NSU no xml
-            $nsufile = $this->raizDir . 'config/numNSU.xml';
-            /*TODO criar função para ler e gravar o numero do ultimo NSU, com UF e ambiente*/    
+            $ultNSU = $this->__getUltNSU($sigla,$tpAmb);
         }
-        if($AN){
-            $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . $this->xmlURLfile,$tpAmb,'AN');            
-        } else {
-            $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . $this->xmlURLfile,$tpAmb,$this->UF);
+        if($indNFe == ''){
+            $indNFe = '0';
+        }
+        if($indEmi == ''){
+            $indEmi = '0';
         }
         //identificação do serviço
         $servico = 'NfeConsultaDest';
@@ -1979,14 +1981,80 @@ class ToolsNFePHP {
         //recuperação do método
         $metodo = $aURL[$servico]['method'];
         //montagem do namespace do serviço
-        $namespace = $this->URLPortal.'/wsdl/'.$servico.'2';
+        $namespace = $this->URLPortal.'/wsdl/'.$servico;
+        //monta a consulta
+        $Ev = '<consNFeDest xmlns="'.$this->URLPortal.'" versao="'.$versao.'"><tpAmb>'.$tpAmb.'</tpAmb><xServ>CONSULTAR NFE DEST</xServ><CNPJ>'.$this->cnpj.'</CNPJ><indNFe>'.$indNFe.'</indNFe><indEmi>'.$indEmi.'</indEmi><ultNSU>'.$ultNSU.'</ultNSU></consNFeDest>';
         //montagem do cabeçalho da comunicação SOAP
         $cabec = '<nfeCabecMsg xmlns="'. $namespace . '"><cUF>'.$this->cUF.'</cUF><versaoDados>'.$versao.'</versaoDados></nfeCabecMsg>';
         //montagem dos dados da mensagem SOAP
-        $dados = '<nfeDadosMsg xmlns="'.$namespace.'"><consNFeDest xmlns="'.$this->URLPortal.'" versao="'.$versao.'"><tpAmb>'.$tpAmb.'</tpAmb><xServ>CONSULTAR NFE DEST</xServ><CNPJ>'.$this->cnpj.'</CNPJ><indNFe>'.$indNFe.'</indNFe><indEmi>'.$indEmi.'</indEmi><ultNSU>'.$ultNSU.'</ultNSU></consNFeDest></nfeDadosMsg>';
-        //retorno para testes
-        //TODO preparar a comunicação com o SEFAZ quando o ambiente de testes estiver habilitado
-        return $cabec.$dados;    
+        $dados = '<nfeDadosMsg xmlns="'.$namespace.'">'.$Ev.'</nfeDadosMsg>';
+        //grava solicitação em temp
+        if (!file_put_contents($this->temDir."$this->cnpj-$ultNSU-$datahora-LNFe.xml",$Ev)){
+            $msg = "Falha na gravação do arquivo LNFe !!";
+            $this->__setError($msg);
+            if ($this->exceptions) {
+               throw new nfephpException($msg);
+            }
+        }
+        //envia dados via SOAP
+        if ($modSOAP == '2'){
+            $retorno = $this->__sendSOAP2($urlservico, $namespace, $cabec, $dados, $metodo, $tpAmb);
+        } else {
+            $retorno = $this->__sendSOAP($urlservico, $namespace, $cabec, $dados, $metodo, $tpAmb,$this->UF);
+        }
+        //verifica o retorno
+        if (!$retorno){
+            //não houve retorno
+            $msg = "Nao houve retorno Soap verifique a mensagem de erro e o debug!!";
+            $this->__setError($msg);
+            if ($this->exceptions) {
+                throw new nfephpException($msg);
+            }
+            return false;
+        }
+        //tratar dados de retorno
+        $xmlLNFe = new DOMDocument('1.0', 'utf-8'); //cria objeto DOM
+        $xmlLNFe->formatOutput = false;
+        $xmlLNFe->preserveWhiteSpace = false;
+        $xmlLNFe->loadXML($retorno,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
+        $retConsNFeDest = $xmlLNFe->getElementsByTagName("retConsNFeDest")->item(0);
+        $cStat = !empty($retConsNFeDest->getElementsByTagName('cStat')->item(0)->nodeValue) ? $retConsNFeDest->getElementsByTagName('cStat')->item(0)->nodeValue : '';
+        $xMotivo = !empty($retConsNFeDest->getElementsByTagName('xMotivo')->item(0)->nodeValue) ? $retConsNFeDest->getElementsByTagName('xMotivo')->item(0)->nodeValue : '';
+        $ultNSU  = !empty($retConsNFeDest->getElementsByTagName('ultNSU')->item(0)->nodeValue) ? $retConsNFeDest->getElementsByTagName('ultNSU')->item(0)->nodeValue : '';
+        if ($cStat == ''){
+            //houve erro
+            $msg = "cStat está em branco, houve erro na comunicação Soap verifique a mensagem de erro e o debug!!";
+            $this->__setError($msg);
+            if ($this->exceptions) {
+                throw new nfephpException($msg);
+            }
+            return false;
+        }
+        //erro no processamento
+        if ($cStat != '137' and $cStat != '138' ){
+            //se cStat <> 135 houve erro e o lote foi rejeitado
+            $msg = "A requisição foi rejeitada : $cStat - $xMotivo\n";
+            $this->__setError($msg);
+            if ($this->exceptions) {
+                throw new nfephpException($msg);
+            }
+            return false;
+        }
+        //podem existir NFe emitidas para este destinatário 
+        //TODO : ler essas notas e montar um array para retorno
+        //salva o arquivo xml
+        if (!file_put_contents($this->temDir."$this->cnpj-$ultNSU-$datahora-resLNFe.xml", $retorno)){
+            $msg = "Falha na gravação do arquivo resLNFe!!";
+            $this->__setError($msg);
+            if ($this->exceptions) {
+                throw new nfephpException($msg);
+            }
+        }
+        if ($ultNSU != ''){
+            //grava o ultimo NSU informado no arquivo
+            $this->__putUltNSU($sigla, $tpAmb, $ultNSU);
+        }
+        return $retorno;
     }//fim getListNFe
     
     /**
@@ -3181,7 +3249,7 @@ class ToolsNFePHP {
     
     /**
      * DPEC
-     * 
+     * Apenas para teste não funcional
      *
      */
     private function __criaDPEC($aNFe='',$tpAmb='',$modSOAP='2'){
@@ -4316,8 +4384,86 @@ class ToolsNFePHP {
         $this->errStatus = true;
     }
     
-    
-    
+    /**
+     * __getUltNSU
+     * Pega o ultimo numero NSU gravado no arquivo numNSU.xml
+     * @param type $sigla sigla do estado (UF)
+     * @param type $tpAmb tipo de ambiente 1-produção ou 2 homologação
+     * @return string o numero encontrado no arquivo ou '0' em qualquer outro caso
+     */
+    private function __getUltNSU($sigla='',$tpAmb=''){
+        if ($sigla=='' || $tpAmb==''){
+            $msg = "Tanto a sigla do estado como o ambiente devem ser informados.";
+            if ($this->exceptions) {
+                throw new nfephpException($msg, self::STOP_CRITICAL);
+            }
+            $this->__setError($msg);
+            return '0';
+        }
+        $nsufile = $this->raizDir . 'config/numNSU.xml';
+        if (!is_file($nsufile)){
+            $msg = "O arquivo numNSU.xml não está na pasta config/.";
+            if ($this->exceptions) {
+                throw new nfephpException($msg, self::STOP_CRITICAL);
+            }
+            $this->__setError($msg);
+            return '0';
+        }
+        //buscar o ultimo NSU no xml
+        $xml = new SimpleXMLElement($nsufile,null,true);
+        $searchString = '/NSU/UF[@sigla="'.$sigla.'" and @tpAmb="'.$tpAmb.'"]';
+        $ufn = $xml->xpath($searchString);
+        $ultNSU = (string) $ufn[0]->ultNSU[0];
+        if ($ultNSU == ''){
+            $ultNSU = '0';
+        }
+        return $ultNSU;
+    }//fim __getUltNSU
+
+    /**
+     * __putUltNSU
+     * Grava o ultNSU fornecido pela SEFAZ
+     * @param type $sigla sigla do estado (UF)
+     * @param type $tpAmb tipo de ambiente 
+     * @param type $ultNSU Valor retornado da consulta a SEFAZ
+     * @return boolean true gravado ou false falha
+     */
+    private function __putUltNSU($sigla,$tpAmb,$ultNSU=''){
+        if ($sigla=='' || $tpAmb=='' || $ultNSU==''){
+            $msg = "A sigla do estado, o tipo de ambiente e o numero do ultimo NSU são obrigatórios.";
+            if ($this->exceptions) {
+                throw new nfephpException($msg, self::STOP_CRITICAL);
+            }
+            $this->__setError($msg);
+            return false;    
+        }
+        $nsufile = $this->raizDir . 'config/numNSU.xml';
+        if (!is_file($nsufile)){
+            $msg = "O arquivo numNSU.xml não está na pasta config/.";
+            if ($this->exceptions) {
+                throw new nfephpException($msg, self::STOP_CRITICAL);
+            }
+            $this->__setError($msg);
+            return false;
+        }
+        //buscar o ultimo NSU no xml
+        $xml = new SimpleXMLElement($nsufile,null,true);
+        $searchString = '/NSU/UF[@sigla="'.$sigla.'" and @tpAmb="'.$tpAmb.'"]';
+        $ufn = $xml->xpath($searchString);
+        if ($ufn[0]->ultNSU[0] != ''){
+            $ufn[0]->ultNSU[0] = $ultNSU;
+        }  
+        if(!file_put_contents($nsufile, $xml->asXML())){
+            $msg = "O arquivo não pode ser gravado na pasta config/.";
+            if ($this->exceptions) {
+                throw new nfephpException($msg, self::STOP_CRITICAL);
+            }
+            $this->__setError($msg);
+            return false;
+        }
+        return true;
+    }//fim __putUltNSU
+       
 } //fim classe ToolsNFePHP
 
 /**
