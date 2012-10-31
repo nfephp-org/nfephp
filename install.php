@@ -23,7 +23,7 @@
  *
  * @package   NFePHP
  * @name      install.php
- * @version   1.3.2
+ * @version   1.3.3
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2011 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -41,7 +41,7 @@ error_reporting(E_ALL);ini_set('display_errors', 'On');
 require_once('config/config.php');
 require_once('libs/ToolsNFePHP.class.php');
 
-$installVer = '1.3.2';
+$installVer = '1.3.3';
 //cores
 $cRed = '#FF0000';
 $cGreen = '#00CC00';
@@ -207,6 +207,16 @@ if (file_exists($filen)){
         }
     }
 }
+
+//testa existencia do diretorio schemes
+$filen = $pathdir.DIRECTORY_SEPARATOR.'schemes'.DIRECTORY_SEPARATOR.$schemes;
+if(file_exists($filen)){
+    $schTxt = 'Indique a versão do schema (veja pasta schemes)';
+    $schStyle = 'color: #000000; background-color: #FFFFFF;';
+} else {
+    $schTxt = 'Erro !!! essa pasta não existe no diretorio schemes.';
+    $schStyle = 'color: #000000; font-weight: bold; font-size: 12px; background-color: #FF0000;';
+}    
 
 //teste do diretorio de arquivo dos xml
 $cDir = $cRed;
@@ -631,8 +641,8 @@ class moduleCheck {
             </tr>
             <tr>
               <td><div align="right">Vers&atilde;o 2.00</div></td>
-              <td><input name="schema" type="text" id="schema" value="<?php echo $schemes;?>" size="30" maxlength="200"></td>
-              <td><i>Indique a versão do schema (veja pasta schemes)</i></td>
+              <td><input name="schema" type="text" style="<?=$schStyle;?>" id="schema" value="<?php echo $schemes;?>" size="30" maxlength="200"></td>
+              <td><i><?=$schTxt;?></i></td>
             </tr>
             <tr bgcolor="#999999">
               <td colspan="3"><strong>Configura&ccedil;&atilde;o do DANFE</strong></td>
