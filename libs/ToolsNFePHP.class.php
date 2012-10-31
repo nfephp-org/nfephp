@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.0.32
+ * @version   3.0.33
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -1429,14 +1429,11 @@ class ToolsNFePHP {
      * retornados podem ser bastante incompletos. Não é recomendado seu uso.
      *
      * @name consultaCadastro
-     * @version 2.1.10
-     * @package NFePHP
-     * @author Roberto L. Machado <linux.rlm at gmail dot com>
-     * @param	string  $UF
-     * @param   string  $IE
-     * @param   string  $CNPJ
-     * @param   string  $CPF
-     * @param   string  $tpAmb
+     * @param	string  $UF sigla da unidade da federação
+     * @param   string  $IE opcional numero da inscrição estadual
+     * @param   string  $CNPJ opcional numero do cnpj
+     * @param   string  $CPF opcional numero do cpf
+     * @param   string  $tpAmb tipo de ambiente se não informado será usado o ambiente default
      * @param   integer $modSOAP    1 usa __sendSOAP e 2 usa __sendSOAP2
      * @return	mixed false se falha ou array se retornada informação
      **/
@@ -1519,56 +1516,80 @@ class ToolsNFePHP {
         } else {
             $retorno = $this->__sendSOAP($urlservico, $namespace, $cabec, $dados, $metodo, $tpAmb,$UF);
         }
-        if($retorno){
-            //tratar dados de retorno
-            $doc = new DOMDocument('1.0', 'utf-8'); //cria objeto DOM
-            $doc->formatOutput = false;
-            $doc->preserveWhiteSpace = false;
-            $doc->loadXML($retorno,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
-            $infCons = $doc->getElementsByTagName('infCons')->item(0);
-            if ( isset($infCons) ){
-                //foi retornado dados
-                $cStat = $infCons->getElementsByTagName('cStat')->item(0)->nodeValue;
-                $xMotivo = $infCons->getElementsByTagName('xMotivo')->item(0)->nodeValue;
-                $infCad = $infCons->getElementsByTagName('infCad');
-                if($cStat == '111' && isset($infCad) ){
-                    $aRetorno['bStat'] = true;
-                    //existem dados do cadastro e podem ser multiplos
-                    $i =0;
-                    foreach ($infCad as $dCad){
-                        $ender = $dCad->getElementsByTagName('ender')->item(0);
-                        $aCad[$i]['CNPJ'] = !empty($dCad->getElementsByTagName('CNPJ')->item(0)->nodeValue) ? $dCad->getElementsByTagName('CNPJ')->item(0)->nodeValue : '';
-                        $aCad[$i]['IE'] = !empty($dCad->getElementsByTagName('IE')->item(0)->nodeValue) ? $dCad->getElementsByTagName('IE')->item(0)->nodeValue : '';
-                        $aCad[$i]['UF'] = !empty($dCad->getElementsByTagName('UF')->item(0)->nodeValue) ? $dCad->getElementsByTagName('UF')->item(0)->nodeValue : '';
-                        $aCad[$i]['cSit'] = !empty($dCad->getElementsByTagName('cSit')->item(0)->nodeValue) ? $dCad->getElementsByTagName('cSit')->item(0)->nodeValue : '';
-                        $aCad[$i]['indCredNFe'] = !empty($dCad->getElementsByTagName('indCredNFe')->item(0)->nodeValue) ? $dCad->getElementsByTagName('indCredNFe')->item(0)->nodeValue : '';
-                        $aCad[$i]['indCredCTe'] = !empty($dCad->getElementsByTagName('indCredCTe')->item(0)->nodeValue) ? $dCad->getElementsByTagName('indCredCTe')->item(0)->nodeValue : '';
-                        $aCad[$i]['xNome'] = !empty($dCad->getElementsByTagName('xNome')->item(0)->nodeValue) ? $dCad->getElementsByTagName('xNome')->item(0)->nodeValue : '';
-                        $aCad[$i]['xRegApur'] = !empty($dCad->getElementsByTagName('xRegApur')->item(0)->nodeValue) ? $dCad->getElementsByTagName('xRegApur')->item(0)->nodeValue : '';
-                        $aCad[$i]['CNAE'] = !empty($dCad->getElementsByTagName('CNAE')->item($i)->nodeValue) ? $dCad->getElementsByTagName('CNAE')->item($i)->nodeValue : '';
-                        $aCad[$i]['dIniAtiv'] = !empty($dCad->getElementsByTagName('dIniAtiv')->item(0)->nodeValue) ? $dCad->getElementsByTagName('dIniAtiv')->item(0)->nodeValue : '';
-                        $aCad[$i]['dUltSit'] = !empty($dCad->getElementsByTagName('dUltSit')->item(0)->nodeValue) ? $dCad->getElementsByTagName('dUltSit')->item(0)->nodeValue : '';
-                        if ( isset($ender) ){
-                            $aCad[$i]['xLgr'] = !empty($ender->getElementsByTagName('xLgr')->item(0)->nodeValue) ? $ender->getElementsByTagName('xLgr')->item(0)->nodeValue : '';
-                            $aCad[$i]['nro'] = !empty($ender->getElementsByTagName('nro')->item(0)->nodeValue) ? $ender->getElementsByTagName('nro')->item(0)->nodeValue : '';
-                            $aCad[$i]['xBairro'] = !empty($ender->getElementsByTagName('xBairro')->item(0)->nodeValue) ? $ender->getElementsByTagName('xBairro')->item(0)->nodeValue : '';
-                            $aCad[$i]['cMun'] = !empty($ender->getElementsByTagName('cMun')->item(0)->nodeValue) ? $ender->getElementsByTagName('cMun')->item(0)->nodeValue : '';
-                            $aCad[$i]['xMun'] = !empty($ender->getElementsByTagName('xMun')->item(0)->nodeValue) ? $ender->getElementsByTagName('xMun')->item(0)->nodeValue : '';
-                            $aCad[$i]['CEP'] = !empty($ender->getElementsByTagName('CEP')->item(0)->nodeValue) ? $ender->getElementsByTagName('CEP')->item(0)->nodeValue : '';
-                        }
-                    } //fim foreach
-                } else {
-                    //houve retorno de erro do SEFAZ
-                    $aRetorno['bStat'] = false;
-                }
-            }
-        } else {
-            $msg = 'Não houve retorno da SEFAZ';
+        //verifica o retorno
+        if (!$retorno){
+            //não houve retorno
+            $msg = "Nao houve retorno Soap verifique a mensagem de erro e o debug!!";
             $this->__setError($msg);
             if ($this->exceptions) {
                 throw new nfephpException($msg);
             }
             return false;
+        }
+        //tratar dados de retorno
+        $doc = new DOMDocument('1.0', 'utf-8'); //cria objeto DOM
+        $doc->formatOutput = false;
+        $doc->preserveWhiteSpace = false;
+        $doc->loadXML($retorno,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
+        $infCons = $doc->getElementsByTagName('infCons')->item(0);        
+        $cStat = !empty($infCons->getElementsByTagName('cStat')->item(0)->nodeValue) ? $infCons->getElementsByTagName('cStat')->item(0)->nodeValue : '';
+        $xMotivo = !empty($infCons->getElementsByTagName('xMotivo')->item(0)->nodeValue) ? $infCons->getElementsByTagName('xMotivo')->item(0)->nodeValue : '';
+        $infCad = $infCons->getElementsByTagName('infCad');
+        if ($cStat == ''){
+            //houve erro
+            $msg = "cStat está em branco, houve erro na comunicação Soap verifique a mensagem de erro e o debug!!";
+            $this->__setError($msg);
+            if ($this->exceptions) {
+                throw new nfephpException($msg);
+            }
+            return false;
+        }
+        //tratar erro 239 Versão do arquivo XML não suportada
+        if ($cStat == '239'){
+            $this->__trata239($retorno, $this->UF, $tpAmb, $servico, $versao);
+            $msg = "Versão do arquivo XML não suportada!!";
+            $this->__setError($msg);
+            if ($this->exceptions) {
+                throw new nfephpException($msg);
+            }
+            return false;
+        }
+        if ($cStat <> '111'){
+            $msg = "Retorno de ERRO: $cStat - $xMotivo";
+            $this->__setError($msg);
+            if ($this->exceptions) {
+                throw new nfephpException($msg);
+            }
+            return false;
+        }
+        
+        if (isset($infCad)){
+            $aRetorno['bStat'] = true;
+            //existem dados do cadastro e podem ser multiplos
+            $i =0;
+            foreach ($infCad as $dCad){
+                $ender = $dCad->getElementsByTagName('ender')->item(0);
+                $aCad[$i]['CNPJ'] = !empty($dCad->getElementsByTagName('CNPJ')->item(0)->nodeValue) ? $dCad->getElementsByTagName('CNPJ')->item(0)->nodeValue : '';
+                $aCad[$i]['IE'] = !empty($dCad->getElementsByTagName('IE')->item(0)->nodeValue) ? $dCad->getElementsByTagName('IE')->item(0)->nodeValue : '';
+                $aCad[$i]['UF'] = !empty($dCad->getElementsByTagName('UF')->item(0)->nodeValue) ? $dCad->getElementsByTagName('UF')->item(0)->nodeValue : '';
+                $aCad[$i]['cSit'] = !empty($dCad->getElementsByTagName('cSit')->item(0)->nodeValue) ? $dCad->getElementsByTagName('cSit')->item(0)->nodeValue : '';
+                $aCad[$i]['indCredNFe'] = !empty($dCad->getElementsByTagName('indCredNFe')->item(0)->nodeValue) ? $dCad->getElementsByTagName('indCredNFe')->item(0)->nodeValue : '';
+                $aCad[$i]['indCredCTe'] = !empty($dCad->getElementsByTagName('indCredCTe')->item(0)->nodeValue) ? $dCad->getElementsByTagName('indCredCTe')->item(0)->nodeValue : '';
+                $aCad[$i]['xNome'] = !empty($dCad->getElementsByTagName('xNome')->item(0)->nodeValue) ? $dCad->getElementsByTagName('xNome')->item(0)->nodeValue : '';
+                $aCad[$i]['xRegApur'] = !empty($dCad->getElementsByTagName('xRegApur')->item(0)->nodeValue) ? $dCad->getElementsByTagName('xRegApur')->item(0)->nodeValue : '';
+                $aCad[$i]['CNAE'] = !empty($dCad->getElementsByTagName('CNAE')->item($i)->nodeValue) ? $dCad->getElementsByTagName('CNAE')->item($i)->nodeValue : '';
+                $aCad[$i]['dIniAtiv'] = !empty($dCad->getElementsByTagName('dIniAtiv')->item(0)->nodeValue) ? $dCad->getElementsByTagName('dIniAtiv')->item(0)->nodeValue : '';
+                $aCad[$i]['dUltSit'] = !empty($dCad->getElementsByTagName('dUltSit')->item(0)->nodeValue) ? $dCad->getElementsByTagName('dUltSit')->item(0)->nodeValue : '';
+                if ( isset($ender) ){
+                    $aCad[$i]['xLgr'] = !empty($ender->getElementsByTagName('xLgr')->item(0)->nodeValue) ? $ender->getElementsByTagName('xLgr')->item(0)->nodeValue : '';
+                    $aCad[$i]['nro'] = !empty($ender->getElementsByTagName('nro')->item(0)->nodeValue) ? $ender->getElementsByTagName('nro')->item(0)->nodeValue : '';
+                    $aCad[$i]['xCpl'] = !empty($ender->getElementsByTagName('xCpl')->item(0)->nodeValue) ? $ender->getElementsByTagName('xCpl')->item(0)->nodeValue : '';
+                    $aCad[$i]['xBairro'] = !empty($ender->getElementsByTagName('xBairro')->item(0)->nodeValue) ? $ender->getElementsByTagName('xBairro')->item(0)->nodeValue : '';
+                    $aCad[$i]['cMun'] = !empty($ender->getElementsByTagName('cMun')->item(0)->nodeValue) ? $ender->getElementsByTagName('cMun')->item(0)->nodeValue : '';
+                    $aCad[$i]['xMun'] = !empty($ender->getElementsByTagName('xMun')->item(0)->nodeValue) ? $ender->getElementsByTagName('xMun')->item(0)->nodeValue : '';
+                    $aCad[$i]['CEP'] = !empty($ender->getElementsByTagName('CEP')->item(0)->nodeValue) ? $ender->getElementsByTagName('CEP')->item(0)->nodeValue : '';
+                }    
+            } //fim foreach
         }
         $aRetorno['cStat'] = $cStat;
         $aRetorno['xMotivo'] = $xMotivo;
