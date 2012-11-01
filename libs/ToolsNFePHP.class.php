@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.0.34
+ * @version   3.0.35
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -4562,6 +4562,179 @@ class ToolsNFePHP {
         }//fim cStat ver=ver
         return true;
     }//fim trata 239
+    
+    /**
+     * __gunzip2 
+     * Descompacta strings GZIP usando arquivo temporário
+     * 
+     * @param string $data Dados compactados com gzip 
+     * @return string xml descompactado
+     * @throws Exception
+     */
+    private function __gunzip2($data) {
+        //cria um nome para o arquivo temporario
+        do {
+            $tempName = uniqid('temp ');
+        } while (file_exists($tempName));
+        //grava a string compactada no arquivo temporário
+        if (file_put_contents($tempName, $data)) {
+            try {
+                ob_start();
+                //efetua a leitura do arquivo descompactando e jogando o resultado 
+                //bo cache 
+                @readgzfile($tempName);
+                //descarrega o cache na variável
+                $uncompressed = ob_get_clean();
+            } catch (Exception $e) {
+                $ex = $e;
+            }
+            //remove o arquivo temporário
+            unlink($tempName);
+            if (isset($ex)) {
+                throw $ex;
+            }
+            //retorna a string descomprimida
+            return $uncompressed;
+        }
+    }//fim __gunzip2
+    
+    /**
+     * __gunzip1
+     * Descompacta strings GZIP
+     * 
+     * @param string $data Dados compactados com gzip
+     * @return mixed 
+     */
+    private function __gunzip1($data){
+        $len = strlen($data);
+        if ($len < 18 || strcmp(substr($data,0,2),"\x1f\x8b")) {
+            $msg = "Não é dado no formato GZIP.";
+            $this->__setError($msg);
+            return false;
+        }
+        $method = ord(substr($data,2,1));  // metodo de compressão
+        $flags  = ord(substr($data,3,1));  // Flags
+        if ($flags & 31 != $flags) {
+            $msg = "Não são permitidos bits reservados.";
+            $this->__setError($msg);
+            return false;
+        }
+        // NOTA: $mtime pode ser negativo (limitações nos inteiros do PHP)
+        $mtime = unpack("V", substr($data,4,4));
+        $mtime = $mtime[1];
+        $xfl   = substr($data,8,1);
+        $os    = substr($data,8,1);
+        $headerlen = 10;
+        $extralen  = 0;
+        $extra     = "";
+        if ($flags & 4) {
+            // dados estras prefixados de 2-byte no cabeçalho
+            if ($len - $headerlen - 2 < 8) {
+                $msg = "Dados inválidos.";
+                $this->__setError($msg);
+                return false;
+            }
+            $extralen = unpack("v",substr($data,8,2));
+            $extralen = $extralen[1];
+            if ($len - $headerlen - 2 - $extralen < 8) {
+                $msg = "Dados inválidos.";
+                $this->__setError($msg);
+                return false;
+            }
+            $extra = substr($data,10,$extralen);
+            $headerlen += 2 + $extralen;
+        }
+        $filenamelen = 0;
+        $filename = "";
+        if ($flags & 8) {
+            // C-style string
+            if ($len - $headerlen - 1 < 8) {
+                $msg = "Dados inválidos.";
+                $this->__setError($msg);
+                return false;
+            }
+            $filenamelen = strpos(substr($data,$headerlen),chr(0));
+            if ($filenamelen === false || $len - $headerlen - $filenamelen - 1 < 8) {
+                $msg = "Dados inválidos.";
+                $this->__setError($msg);
+                return false;
+            }
+            $filename = substr($data,$headerlen,$filenamelen);
+            $headerlen += $filenamelen + 1;
+        }
+        $commentlen = 0;
+        $comment = "";
+        if ($flags & 16) {
+            // C-style string COMMENT data no cabeçalho
+            if ($len - $headerlen - 1 < 8) {
+                $msg = "Dados inválidos.";
+                $this->__setError($msg);
+                return false;
+            }
+            $commentlen = strpos(substr($data,$headerlen),chr(0));
+            if ($commentlen === false || $len - $headerlen - $commentlen - 1 < 8) {
+                $msg = "Formato de cabeçalho inválido.";
+                $this->__setError($msg);
+                return false;
+            }
+            $comment = substr($data,$headerlen,$commentlen);
+            $headerlen += $commentlen + 1;
+        }
+        $headercrc = "";
+        if ($flags & 2) {
+            // 2-bytes de menor ordem do CRC32 esta presente no cabeçalho
+            if ($len - $headerlen - 2 < 8) {
+                $msg = "Dados inválidos.";
+                $this->__setError($msg);
+                return false;
+            }
+            $calccrc = crc32(substr($data,0,$headerlen)) & 0xffff;
+            $headercrc = unpack("v", substr($data,$headerlen,2));
+            $headercrc = $headercrc[1];
+            if ($headercrc != $calccrc) {
+                $msg = "Checksum do cabeçalho falhou.";
+                $this->__setError($msg);
+                return false;
+            }
+            $headerlen += 2;
+        }
+        // Rodapé GZIP
+        $datacrc = unpack("V",substr($data,-8,4));
+        $datacrc = sprintf('%u',$datacrc[1] & 0xFFFFFFFF);
+        $isize = unpack("V",substr($data,-4));
+        $isize = $isize[1];
+        // decompressão
+        $bodylen = $len-$headerlen-8;
+        if ($bodylen < 1) {
+            $msg = "BUG da implementação.";
+            $this->__setError($msg);
+            return false;
+        }
+        $body = substr($data,$headerlen,$bodylen);
+        $data = "";
+        if ($bodylen > 0) {
+            switch ($method) {
+            case 8:
+                // Por hora somente é suportado esse metodo de compressão
+                $data = gzinflate($body,null);
+                break;
+            default:
+                $msg = "Método de compressão desconhecido (não suportado).";
+                $this->__setError($msg);
+                return false;
+            }
+        }  // conteudo zero-byte é permitido
+        // Verificar CRC32
+        $crc   = sprintf("%u",crc32($data));
+        $crcOK = $crc == $datacrc;
+        $lenOK = $isize == strlen($data);
+        if (!$lenOK || !$crcOK) {
+            $msg = ( $lenOK ? '' : 'Verificação do comprimento FALHOU. ') . ( $crcOK ? '' : 'Checksum FALHOU.');
+            $this->__setError($msg);
+            return false;
+        }
+        return $data;
+    }//fim __gunzip1
        
 } //fim classe ToolsNFePHP
 
