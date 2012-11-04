@@ -1846,6 +1846,7 @@ class ToolsNFePHP {
                 $aRetorno['xMotivo'] = !empty($doc->getElementsByTagName('xMotivo')->item(0)->nodeValue) ? $doc->getElementsByTagName('xMotivo')->item(0)->nodeValue : '';
                 $infProt = $doc->getElementsByTagName('infProt')->item(0);
                 $infCanc = $doc->getElementsByTagName('infCanc')->item(0);
+				$procEventoNFe = $doc->getElementsByTagName('procEventoNFe');
                 if(isset($infProt)){
                     foreach($infProt->childNodes as $t) {
                         $aProt[$t->nodeName] = $t->nodeValue;
@@ -1862,8 +1863,31 @@ class ToolsNFePHP {
                 } else {
                     $aCanc = '';
                 }
+				
+				if( !empty( $procEventoNFe ) ){
+				  foreach($procEventoNFe as $i => $evento) {
+					$infEvento = $evento->getElementsByTagName('infEvento')->item(0);
+					foreach($infEvento->childNodes as $t) {
+
+					  if( 'detEvento' == $t->nodeName ) {
+						foreach( $t->childNodes as $t2 ){
+						  $aEventos[$i][$t->nodeName][$t2->nodeName] = $t2->nodeValue;
+						}
+						continue;
+					  }
+
+					  $aEventos[$i][$t->nodeName] = $t->nodeValue;
+					}
+
+					$aEventos[$i]['id'] = $infEvento->getAttribute('Id');
+				  }
+				}else{
+				  $aEventos = '';
+				}
+				
                 $aRetorno['aProt'] = $aProt;
                 $aRetorno['aCanc'] = $aCanc;
+				$aRetorno['aEventos'] = $aEventos;
                 //gravar o retorno na pasta temp apenas se a nota foi aprovada ou denegada
                 if ( $aRetorno['cStat'] == 100 || $aRetorno['cStat'] == 101 || $aRetorno['cStat'] == 110 || $aRetorno['cStat'] == 301 || $aRetorno['cStat'] == 302 ){
                     //nome do arquivo
