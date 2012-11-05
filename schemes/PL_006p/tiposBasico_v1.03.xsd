@@ -282,7 +282,7 @@
 		</xs:annotation>
 		<xs:restriction base="xs:string">
 			<xs:whiteSpace value="preserve"/>
-			<xs:pattern value="ISENTO|[0-9]{0,14}"/>
+			<xs:pattern value="[0]{0,}|ISENTO|[0-9]{0,14}"/>
 		</xs:restriction>
 	</xs:simpleType>
 	<xs:simpleType name="TIeST">
@@ -300,7 +300,7 @@
 		</xs:annotation>
 		<xs:restriction base="xs:string">
 			<xs:whiteSpace value="preserve"/>
-			<xs:pattern value="[0-9]{2,14}|ISENTO"/>
+			<xs:pattern value="[0]{0,}|ISENTO|[0-9]{0,14}"/>
 		</xs:restriction>
 	</xs:simpleType>
 	<xs:simpleType name="TMod">
