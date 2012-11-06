@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.0.35
+ * @version   3.0.36
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -1046,9 +1046,6 @@ class ToolsNFePHP {
      * para impressão e envio ao destinatário.
      *
      * @name addProt
-     * @version 2.1.3
-     * @package NFePHP
-     * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @param string $nfefile path completo para o arquivo contendo a NFe
      * @param string $protfile path completo para o arquivo contendo o protocolo
      * @return string Retorna a NFe com o protocolo
@@ -1108,7 +1105,8 @@ class ToolsNFePHP {
                 $digVal      = $protNFe->getElementsByTagName("digVal")->item(0)->nodeValue;
                 $cStat       = $protNFe->getElementsByTagName("cStat")->item(0)->nodeValue;
                 $xMotivo     = $protNFe->getElementsByTagName("xMotivo")->item(0)->nodeValue;
-            }    
+            }
+            //cancelamento antigo
             $retCancNFe = $prot->getElementsByTagName("retCancNFe")->item(0);
             if (isset($retCancNFe)){
                 $protver     = trim($retCancNFe->getAttribute("versao"));
@@ -1120,10 +1118,22 @@ class ToolsNFePHP {
                 $cStat       = $retCancNFe->getElementsByTagName("cStat")->item(0)->nodeValue;
                 $xMotivo     = $retCancNFe->getElementsByTagName("xMotivo")->item(0)->nodeValue;
             }
-            if(!isset($protNFe) && !isset($retCancNFe)){
+            //cancelamento por evento NOVO
+            $retEvento = $prot->getElementsByTagName("retEvento")->item(0);
+            if (isset($retEvento)){
+                $protver     = trim($retEvento->getAttribute("versao"));
+                $tpAmb       = $retEvento->getElementsByTagName("tpAmb")->item(0)->nodeValue;
+                $verAplic    = $retEvento->getElementsByTagName("verAplic")->item(0)->nodeValue;
+                $chNFe       = $retEvento->getElementsByTagName("chNFe")->item(0)->nodeValue;
+                $dhRecbto    = $retEvento->getElementsByTagName("dhRegEvento")->item(0)->nodeValue;
+                $nProt       = $retEvento->getElementsByTagName("nProt")->item(0)->nodeValue;
+                $cStat       = $retEvento->getElementsByTagName("cStat")->item(0)->nodeValue;
+                $xMotivo     = $retEvento->getElementsByTagName("xMotivo")->item(0)->nodeValue;
+            }
+            if(!isset($protNFe) && !isset($retCancNFe) && !isset($retEvento)){
                 $msg = 'O arquivo indicado como Protocolo não é um XML de protocolo de NFe! ' . $protfile;
                 throw new nfephpException($msg, self::STOP_CRITICAL);
-            }
+            }            
             if ($chNFe != $chave){
                 $this->errStatus = true;
                 $msg = 'O protocolo indicado pertence a outra NFe ... os numertos das chaves não combinam !';
