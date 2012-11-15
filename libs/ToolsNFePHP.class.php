@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.0.36
+ * @version   3.0.37
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -1044,10 +1044,13 @@ class ToolsNFePHP {
      * addProt
      * Este método adiciona a tag do protocolo a NFe, preparando a mesma
      * para impressão e envio ao destinatário.
+     * Também pode ser usada para substituir o protocolo de autorização 
+     * pelo protocolo de cancelamento, nesse caso apenas para a gestão interna 
+     * na empresa, esse arquivo com o cancelamento não deve ser enviado ao cliente.
      *
      * @name addProt
      * @param string $nfefile path completo para o arquivo contendo a NFe
-     * @param string $protfile path completo para o arquivo contendo o protocolo
+     * @param string $protfile path completo para o arquivo contendo o protocolo, cancelamento ou evento de cancelamento
      * @return string Retorna a NFe com o protocolo
      */
     public function addProt($nfefile='', $protfile='') {
@@ -1090,10 +1093,10 @@ class ToolsNFePHP {
             $prot->preserveWhiteSpace = false;
             $xmlprot = file_get_contents($protfile);
             if (!$prot->loadXML($xmlprot,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG)){
-                $msg = 'O arquivo indicado como Protocolo não é um XML! ' . $protfile;
+                $msg = 'O arquivo indicado para ser protocolado na NFe é um XML! ' . $protfile;
                 throw new nfephpException($msg, self::STOP_CRITICAL);
             }
-            //aqui pode ocorrer de existir tanto o protNFe como o retCancNFe
+            //protocolo de autorização
             $protNFe = $prot->getElementsByTagName("protNFe")->item(0);
             if (isset($protNFe)){
                 $protver     = trim($protNFe->getAttribute("versao"));
@@ -1105,6 +1108,10 @@ class ToolsNFePHP {
                 $digVal      = $protNFe->getElementsByTagName("digVal")->item(0)->nodeValue;
                 $cStat       = $protNFe->getElementsByTagName("cStat")->item(0)->nodeValue;
                 $xMotivo     = $protNFe->getElementsByTagName("xMotivo")->item(0)->nodeValue;
+                if ($DigestValue != $digVal){
+                    $msg = 'Inconsistência! O DigestValue da NFe não combina com o do digVal do protocolo indicado!';
+                    throw new nfephpException($msg, self::STOP_CRITICAL);
+                }
             }
             //cancelamento antigo
             $retCancNFe = $prot->getElementsByTagName("retCancNFe")->item(0);
@@ -1117,6 +1124,7 @@ class ToolsNFePHP {
                 $nProt       = $retCancNFe->getElementsByTagName("nProt")->item(0)->nodeValue;
                 $cStat       = $retCancNFe->getElementsByTagName("cStat")->item(0)->nodeValue;
                 $xMotivo     = $retCancNFe->getElementsByTagName("xMotivo")->item(0)->nodeValue;
+                $digVal      = $DigestValue;
             }
             //cancelamento por evento NOVO
             $retEvento = $prot->getElementsByTagName("retEvento")->item(0);
@@ -1128,19 +1136,20 @@ class ToolsNFePHP {
                 $dhRecbto    = $retEvento->getElementsByTagName("dhRegEvento")->item(0)->nodeValue;
                 $nProt       = $retEvento->getElementsByTagName("nProt")->item(0)->nodeValue;
                 $cStat       = $retEvento->getElementsByTagName("cStat")->item(0)->nodeValue;
+                $tpEvento    = $retEvento->getElementsByTagName("tpEvento")->item(0)->nodeValue;
                 $xMotivo     = $retEvento->getElementsByTagName("xMotivo")->item(0)->nodeValue;
+                $digVal      = $DigestValue;
+                if ($tpEvento != '110111'){
+                    $msg = 'O arquivo indicado para ser anexado não é um evento de cancelamento! ' . $protfile;
+                    throw new nfephpException($msg, self::STOP_CRITICAL);
+                }
             }
             if(!isset($protNFe) && !isset($retCancNFe) && !isset($retEvento)){
-                $msg = 'O arquivo indicado como Protocolo não é um XML de protocolo de NFe! ' . $protfile;
+                $msg = 'O arquivo indicado para ser protocolado a NFe não é um protocolo nem de cancelamento! ' . $protfile;
                 throw new nfephpException($msg, self::STOP_CRITICAL);
             }            
             if ($chNFe != $chave){
-                $this->errStatus = true;
                 $msg = 'O protocolo indicado pertence a outra NFe ... os numertos das chaves não combinam !';
-                throw new nfephpException($msg, self::STOP_CRITICAL);
-            }
-            if ($DigestValue != $digVal){
-                $msg = 'Inconsistência! O DigestValue da NFe não combina com o do digVal do protocolo indicado!';
                 throw new nfephpException($msg, self::STOP_CRITICAL);
             }
             //cria a NFe processada com a tag do protocolo
@@ -1187,8 +1196,6 @@ class ToolsNFePHP {
             $procXML = str_replace("\r",'',$procXML);
             $procXML = str_replace("\s",'',$procXML);
             $procXML = str_replace('NFe xmlns="http://www.portalfiscal.inf.br/nfe" xmlns="http://www.w3.org/2000/09/xmldsig#"','NFe xmlns="http://www.portalfiscal.inf.br/nfe"',$procXML);
-            return $procXML;
-            
         } catch (nfephpException $e) {
             $this->__setError($e->getMessage());
             if ($this->exceptions) {
@@ -1196,6 +1203,7 @@ class ToolsNFePHP {
             }
             return false;
         }
+        return $procXML;
     } //fim addProt
     
     /**
