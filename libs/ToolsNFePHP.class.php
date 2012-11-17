@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.0.37
+ * @version   3.0.38
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -1864,7 +1864,7 @@ class ToolsNFePHP {
                 $aRetorno['xMotivo'] = !empty($doc->getElementsByTagName('xMotivo')->item(0)->nodeValue) ? $doc->getElementsByTagName('xMotivo')->item(0)->nodeValue : '';
                 $infProt = $doc->getElementsByTagName('infProt')->item(0);
                 $infCanc = $doc->getElementsByTagName('infCanc')->item(0);
-				$procEventoNFe = $doc->getElementsByTagName('procEventoNFe');
+                $procEventoNFe = $doc->getElementsByTagName('procEventoNFe');
                 if(isset($infProt)){
                     foreach($infProt->childNodes as $t) {
                         $aProt[$t->nodeName] = $t->nodeValue;
@@ -1881,31 +1881,26 @@ class ToolsNFePHP {
                 } else {
                     $aCanc = '';
                 }
-				
-				if( !empty( $procEventoNFe ) ){
-				  foreach($procEventoNFe as $i => $evento) {
-					$infEvento = $evento->getElementsByTagName('infEvento')->item(0);
-					foreach($infEvento->childNodes as $t) {
-
-					  if( 'detEvento' == $t->nodeName ) {
-						foreach( $t->childNodes as $t2 ){
-						  $aEventos[$i][$t->nodeName][$t2->nodeName] = $t2->nodeValue;
-						}
-						continue;
-					  }
-
-					  $aEventos[$i][$t->nodeName] = $t->nodeValue;
-					}
-
-					$aEventos[$i]['id'] = $infEvento->getAttribute('Id');
-				  }
-				}else{
-				  $aEventos = '';
-				}
-				
+                if( !empty( $procEventoNFe ) ){
+                    foreach($procEventoNFe as $i => $evento) {
+                        $infEvento = $evento->getElementsByTagName('infEvento')->item(0);
+                        foreach($infEvento->childNodes as $t) {
+                            if( 'detEvento' == $t->nodeName ) {
+                                foreach( $t->childNodes as $t2 ){
+                                    $aEventos[$i][$t->nodeName][$t2->nodeName] = $t2->nodeValue;
+                                }
+                                continue;
+                            }
+                            $aEventos[$i][$t->nodeName] = $t->nodeValue;
+                        }
+                        $aEventos[$i]['id'] = $infEvento->getAttribute('Id');
+                    }
+                }else{
+                    $aEventos = '';
+                }
                 $aRetorno['aProt'] = $aProt;
                 $aRetorno['aCanc'] = $aCanc;
-				$aRetorno['aEventos'] = $aEventos;
+                $aRetorno['aEventos'] = $aEventos;
                 //gravar o retorno na pasta temp apenas se a nota foi aprovada ou denegada
                 if ( $aRetorno['cStat'] == 100 || $aRetorno['cStat'] == 101 || $aRetorno['cStat'] == 110 || $aRetorno['cStat'] == 301 || $aRetorno['cStat'] == 302 ){
                     //nome do arquivo
@@ -3433,14 +3428,12 @@ class ToolsNFePHP {
      * __verifySignatureXML
      * Verifica correção da assinatura no xml
      * 
-     * @version 1.2.2
-     * @package NFePHP
-     * @author Bernardo Silva <bernardo at datamex dot com dot br>
      * @param string $conteudoXML xml a ser verificado 
      * @param string $tag tag que é assinada
+     * @param string $err variavel passada como referencia onde são retornados os erros
      * @return boolean false se não confere e true se confere
      */
-    protected function __verifySignatureXML($conteudoXML, $tag){
+    protected function __verifySignatureXML($conteudoXML, $tag, &$err){
         // Habilita a manipulaçao de erros da libxml
         libxml_use_internal_errors(true);
         $dom = new DOMDocument('1.0', 'utf-8');
@@ -3450,10 +3443,7 @@ class ToolsNFePHP {
         $errors = libxml_get_errors(); 
         if (!empty($errors)) { 
             $msg = "O arquivo informado não é um xml.";
-            $this->__setError($msg);
-            if ($this->exceptions) {
-                throw new nfephpException($msg);
-            }
+            $err = $msg;
             return false;
         }
         $tagBase = $dom->getElementsByTagName($tag)->item(0);
@@ -3464,10 +3454,7 @@ class ToolsNFePHP {
         $digestInformado = $dom->getElementsByTagName('DigestValue')->item(0)->nodeValue;		
         if ($digestCalculado != $digestInformado){
             $msg = "O conteúdo do XML não confere com o Digest Value.\nDigest calculado [{$digestCalculado}], informado no XML [{$digestInformado}].\nO arquivo pode estar corrompido ou ter sido adulterado.";
-            $this->__setError($msg);
-            if ($this->exceptions) {
-                throw new nfephpException($msg);
-            }
+            $err = $msg;
             return false;
         }
         // Remontando o certificado 
@@ -3477,10 +3464,7 @@ class ToolsNFePHP {
         $pubKey = openssl_pkey_get_public($X509Certificate);
         if ($pubKey === false){
             $msg = "Ocorreram problemas ao remontar a chave pública. Certificado incorreto ou corrompido!!";
-            $this->__setError($msg);
-            if ($this->exceptions) {
-                throw new nfephpException($msg);
-            }
+            $err = $msg;
             return false;
         }                
         // remontando conteudo que foi assinado 
@@ -3493,10 +3477,7 @@ class ToolsNFePHP {
 	$ok = openssl_verify($conteudoAssinado, $conteudoAssinadoNoXML, $pubKey);
 	if ($ok != 1){
             $msg = "Problema ({$ok}) ao verificar a assinatura do digital!!";
-            $this->__setError($msg);
-            if ($this->exceptions) {
-                throw new nfephpException($msg);
-            }
+            $err = $msg;
             return false;
 	}
         return true;
@@ -3506,109 +3487,77 @@ class ToolsNFePHP {
      * verifyNFe
      * Verifica a validade da NFe recebida de terceiros
      *
-     * @version 1.0.6
-     * @package NFePHP
-     * @author Roberto L. Machado <linux dot rlm at gmail dot com>
      * @param string $file Path completo para o arquivo xml a ser verificado
      * @return boolean false se não confere e true se confere
      */
     public function verifyNFe($file){
-        //verifica se o arquivo existe
-        if ( file_exists($file) ){
+        try{        
+            //verifica se o arquivo existe
+            if (!file_exists($file)){
+                $msg = "Arquivo não localizado!!";
+                throw new nfephpException($msg, self::STOP_CRITICAL);
+            }    
             //carrega a NFe
             $xml = file_get_contents($file);
             //testa a assinatura
-            if ($this->__verifySignatureXML($xml,'infNFe')){
-                //como a ssinatura confere, consultar o SEFAZ para verificar se a NF não foi cancelada ou é FALSA
-                //carrega o documento no DOM
-                $xmldoc = new DOMDocument('1.0', 'utf-8');
-                $xmldoc->preservWhiteSpace = false; //elimina espaços em branco
-                $xmldoc->formatOutput = false;
-                $xmldoc->loadXML($xml,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
-                $root = $xmldoc->documentElement;
-                $infNFe = $xmldoc->getElementsByTagName('infNFe')->item(0);
-                //extrair a tag com os dados a serem assinados
-                $id = trim($infNFe->getAttribute("Id"));
-                $chave = preg_replace('/[^0-9]/','', $id);
-                $digest = $xmldoc->getElementsByTagName('DigestValue')->item(0)->nodeValue;
-                //ambiente da NFe sendo consultada
-                $tpAmb = $infNFe->getElementsByTagName('tpAmb')->item(0)->nodeValue;
-                //verifica se existe o protocolo
-                $protNFe = $xmldoc->getElementsByTagName('protNFe')->item(0);
-                if (isset($protNFe)){
-                    $nProt = $xmldoc->getElementsByTagName('nProt')->item(0)->nodeValue;
-                } else {
-                    $nProt = '';
-                }
-                //busca o status da NFe na SEFAZ do estado do emitente
-                $resp = $this->getProtocol('',$chave,$tpAmb);
-                if ($resp['cStat']!='100'){
-                    //ERRO! nf não aprovada
-                    $msg = "NF não aprovada no SEFAZ!! cStat =" . $resp['cStat'] .' - '.$resp['xMotivo'] ."";
-                    $this->__setError($msg);
-                    if ($this->exceptions) {
-                        throw new nfephpException($msg);
-                    }
-                    return false;
-                } else {
-                    if ( is_array($resp['aProt'])){
-                        $nProtSefaz = $resp['aProt']['nProt'];
-                        $digestSefaz = $resp['aProt']['digVal'];
-                        //verificar numero do protocolo
-                        if ($nProt != '') {
-                            if ($nProtSefaz != $nProt){
-                                //ERRO !!!os numeros de protocolo não combinam
-                                $msg = "Os numeros dos protocolos não combinam!! nProtNF = " . $nProt . " <> nProtSefaz = " . $nProtSefaz."";
-                                $this->__setError($msg);
-                                if ($this->exceptions) {
-                                    throw new nfephpException($msg);
-                                }
-                                return false;
-                            } //fim teste do protocolo
-                        } else {
-                                $msg = "A NFe enviada não contêm o protocolo de aceitação !!";
-                                $this->__setError($msg);
-                                if ($this->exceptions) {
-                                    throw new nfephpException($msg);
-                                }
-                                return false;
-                        }
-                        //verifica o digest
-                        if ($digestSefaz != $digest){
-                            //ERRO !!!os numeros digest não combinam
-                            $msg = "Os numeros digest não combinam!! digValSEFAZ = " . $digestSefaz . " <> DigestValue = " . $digest."";
-                            $this->__setError($msg);
-                            if ($this->exceptions) {
-                                throw new nfephpException($msg);
-                            }
-                            return false;
-                        } //fim teste do digest value
-                    } else {
-                        //o retorno veio como 100 mas por algum motivo sem o protocolo
-                        $msg = "Falha no retorno dos dados, retornado sem o protocolo !!";
-                        $this->__setError($msg);
-                        if ($this->exceptions) {
-                            throw new nfephpException($msg);
-                        }
-                        return false;
-                    }
-                }
+            if (!$this->__verifySignatureXML($xml,'infNFe',$err)){
+                $msg = "Assinatura não confere!! ".$err;
+                throw new nfephpException($msg, self::STOP_CRITICAL);
+            }
+            //como a ssinatura confere, consultar o SEFAZ para verificar se a NF não foi cancelada ou é FALSA
+            //carrega o documento no DOM
+            $xmldoc = new DOMDocument('1.0', 'utf-8');
+            $xmldoc->preservWhiteSpace = false; //elimina espaços em branco
+            $xmldoc->formatOutput = false;
+            $xmldoc->loadXML($xml,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
+            $root = $xmldoc->documentElement;
+            $infNFe = $xmldoc->getElementsByTagName('infNFe')->item(0);
+            //extrair a tag com os dados a serem assinados
+            $id = trim($infNFe->getAttribute("Id"));
+            $chave = preg_replace('/[^0-9]/','', $id);
+            $digest = $xmldoc->getElementsByTagName('DigestValue')->item(0)->nodeValue;
+            //ambiente da NFe sendo consultada
+            $tpAmb = $infNFe->getElementsByTagName('tpAmb')->item(0)->nodeValue;
+            //verifica se existe o protocolo
+            $protNFe = $xmldoc->getElementsByTagName('protNFe')->item(0);
+            if (isset($protNFe)){
+                $nProt = $xmldoc->getElementsByTagName('nProt')->item(0)->nodeValue;
             } else {
-                $msg = " Assinatura não confere!!";
-                $this->__setError($msg);
-                if ($this->exceptions) {
-                    throw new nfephpException($msg);
-                }
-                return false;
-            } //fim verificação da assinatura
-        } else {
-            $msg = "Arquivo não localizado!!";
-            $this->__setError($msg);
+                $nProt = '';
+            }
+            //busca o status da NFe na SEFAZ do estado do emitente
+            $resp = $this->getProtocol('',$chave,$tpAmb);
+            if ($resp['cStat']!='100'){
+                $msg = "NF não aprovada no SEFAZ!! cStat =" . $resp['cStat'] .' - '.$resp['xMotivo'] ."";
+                throw new nfephpException($msg, self::STOP_CRITICAL);
+            }
+            if ( !is_array($resp['aProt'])){
+               $msg = "Falha no retorno dos dados, retornado sem o protocolo !!";
+               throw new nfephpException($msg, self::STOP_CRITICAL);
+            }    
+            $nProtSefaz = $resp['aProt']['nProt'];
+            $digestSefaz = $resp['aProt']['digVal'];
+            //verificar numero do protocolo
+            if ($nProt == '') {
+                $msg = "A NFe enviada não contêm o protocolo de aceitação !!";
+                throw new nfephpException($msg, self::STOP_CRITICAL);
+            }    
+            if ($nProtSefaz != $nProt){
+               $msg = "Os numeros dos protocolos não combinam!! nProtNF = " . $nProt . " <> nProtSefaz = " . $nProtSefaz."";
+               throw new nfephpException($msg, self::STOP_CRITICAL);
+            }
+            //verifica o digest
+            if ($digestSefaz != $digest){
+               $msg = "Os numeros digest não combinam!! digValSEFAZ = " . $digestSefaz . " <> DigestValue = " . $digest."";
+               throw new nfephpException($msg, self::STOP_CRITICAL);
+            }
+        } catch (nfephpException $e) {
+            $this->__setError($e->getMessage());
             if ($this->exceptions) {
-                throw new nfephpException($msg);
+                throw $e;
             }
             return false;
-        } //fim file_exists
+        }
         return true;
     } // fim verifyNFe
 
