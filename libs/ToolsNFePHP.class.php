@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.0.38
+ * @version   3.0.39
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -1205,7 +1205,87 @@ class ToolsNFePHP {
         }
         return $procXML;
     } //fim addProt
-    
+
+    /**
+     * addB2B
+     * Adiciona o xml referente a comunicação B2B à NFe, conforme padrão ANFAVEA+GS1
+     * 
+     * @param string $nfefile path para o arquivo com a nfe protocolada e autorizada
+     * @param string $b2bfile path para o arquivo xml padrão ANFAVEA+GS1
+     * @return mixed FALSE se houve erro ou xml com a nfe+b2b  
+     */
+    public function addB2B($nfefile='',$b2bfile=''){
+        try {
+            if($nfefile == '' || $b2bfile == ''){
+                $msg = 'Para adicionar o arquivo B2B, ambos os caminhos devem ser passados. Para a nota e para o B2B!';
+                throw new nfephpException($msg, self::STOP_CRITICAL);
+            }
+            if(!is_file($nfefile) || !is_file($b2bfile) ){
+                $msg = 'Algum dos arquivos não foi localizado no caminho indicado ! ' . $nfefile. ' ou ' .$b2bfile;
+                throw new nfephpException($msg, self::STOP_CRITICAL);
+            }
+            //carrega o arquivo na variável
+            $docnfe = new DOMDocument('1.0', 'utf-8'); //cria objeto DOM
+            $docnfe->formatOutput = false;
+            $docnfe->preserveWhiteSpace = false;
+            $xmlnfe = file_get_contents($nfefile);
+            if (!$docnfe->loadXML($xmlnfe,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG)){
+                $msg = 'O arquivo indicado como NFe não é um XML! ' . $nfefile;
+                throw new nfephpException($msg, self::STOP_CRITICAL);
+            }
+            $nfeProc = $docnfe->getElementsByTagName("nfeProc")->item(0);
+            if(!isset($nfeProc)){
+                $msg = 'O arquivo indicado como NFe não é um xml de NFe ou não contêm o protocolo! ' . $nfefile;
+                throw new nfephpException($msg, self::STOP_CRITICAL);
+            }
+            $infNFe = $docnfe->getElementsByTagName("infNFe")->item(0);
+            $versao = trim($infNFe->getAttribute("versao"));
+            $id = trim($infNFe->getAttribute("Id"));
+            $chave = preg_replace('/[^0-9]/','', $id);
+            //carrega o arquivo B2B e seus dados
+            //protocolo do lote enviado
+            $b2b = new DOMDocument('1.0', 'utf-8'); //cria objeto DOM
+            $b2b->formatOutput = false;
+            $b2b->preserveWhiteSpace = false;
+            $xmlb2b = file_get_contents($b2bfile);
+            if (!$b2b->loadXML($xmlb2b,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG)){
+                $msg = 'O arquivo indicado como Protocolo não é um XML! ' . $protfile;
+                throw new nfephpException($msg, self::STOP_CRITICAL);
+            }
+            $NFeB2BFin = $b2b->getElementsByTagName("NFeB2BFin")->item(0);
+            if (!isset($NFeB2BFin)){
+                $msg = 'O arquivo indicado como B2B não é um XML de B2B! ' . $b2bfile;
+                throw new nfephpException($msg, self::STOP_CRITICAL);
+            }            
+            //cria a NFe processada com a tag do protocolo
+            $procb2b = new DOMDocument('1.0', 'utf-8');
+            $procb2b->formatOutput = false;
+            $procb2b->preserveWhiteSpace = false;
+            //cria a tag nfeProc
+            $nfeProcB2B = $procb2b->createElement('nfeProcB2B');
+            $procb2b->appendChild($nfeProcB2B);
+            //inclui a tag NFe
+            $node = $procb2b->importNode($nfeProc, true);
+            $nfeProcB2B->appendChild($node);
+            //inclui a tag NFeB2BFin
+            $node = $procb2b->importNode($NFeB2BFin, true);
+            $nfeProcB2B->appendChild($node);
+            //salva o xml como string em uma variável
+            $nfeb2bXML = $procb2b->saveXML();
+            //remove as informações indesejadas
+            $nfeb2bXML = str_replace("\n",'',$nfeb2bXML);
+            $nfeb2bXML = str_replace("\r",'',$nfeb2bXML);
+            $nfeb2bXML = str_replace("\s",'',$nfeb2bXML);
+        } catch (nfephpException $e) {
+            $this->__setError($e->getMessage());
+            if ($this->exceptions) {
+                throw $e;
+            }
+            return false;
+        }
+        return $nfeb2bXML;
+    }//fim addB2B
+
     /**
      * signXML
      * Assinador TOTALMENTE baseado em PHP para arquivos XML
