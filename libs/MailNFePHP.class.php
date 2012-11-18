@@ -23,7 +23,7 @@
  *
  * @package   NFePHP
  * @name      MailNFePHP
- * @version   2.2.11
+ * @version   2.2.12
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -66,6 +66,7 @@ class MailNFePHP {
     public $mailIMAPnocerts = 'novalidate-cert';
     public $mailIMAPbox = 'INBOX';
     public $recebidasDir ='';
+    public $temporariasDir='';
     public $CNPJ='';
     
     protected $debugMode = 0;
@@ -120,6 +121,7 @@ class MailNFePHP {
             $this->mailIMAPnocerts = $aConfig['mailIMAPnocerts'];
             $this->mailIMAPbox = $aConfig['mailIMAPbox'];
             $this->recebidasDir = $aConfig['recebidasDir'];
+            $this->temporariasDir = $aConfig['temporariasDir'];
             $this->CNPJ = $aConfig['cnpj'];            
             if($aConfig['mailLayoutFile'] != ''){
                 if (is_file(PATH_ROOT.'config/'.$aConfig['mailLayoutFile'])){
@@ -146,11 +148,12 @@ class MailNFePHP {
                 $this->mailIMAPnocerts = $mailIMAPnocerts;
                 $this->mailIMAPbox = $mailIMAPbox;
                 if ($ambiente == 1){
-                    $caminho = '/producao/recebidas';
+                    $caminho = '/producao';
                 } else {
-                    $caminho = '/homologacao/recebidas';
+                    $caminho = '/homologacao';
                 }
-                $this->recebidasDir = "$arquivosDir$caminho";
+                $this->recebidasDir = "$arquivosDir$caminho/recebidas";
+                $this->temporariasDir = "$arquivosDir$caminho/temporarias";
                 $this->CNPJ = $cnpj;
                 if($mailLayoutFile != ''){
                     if (is_file(PATH_ROOT.'config/'.$mailLayoutFile)){
@@ -258,7 +261,7 @@ class MailNFePHP {
      *
      * @package NFePHP
      * @name sendNFe
-     * @version 2.1.8
+     * @version 2.1.9
      * @author    Roberto L. Machado <linux dot rlm at gmail dot com>
      * @param string $docXML arquivo XML, é obrigatório
      * @param string $docPDF DANFE em formato PDF, se não quizer mandar o pdf deixe em branco
@@ -276,7 +279,7 @@ class MailNFePHP {
 	}	
 	//retorna se não foi passado o xml
 	if ($docXML != '' && $nomeXML != ''){
-            $fileXML = PATH_ROOT.$nomeXML;
+            $fileXML = $this->temporariasDir.$nomeXML;
             //retorna false se houve erro na gravação
             if ( !file_put_contents($fileXML,$docXML) ){
                 $this->mailERROR = "Não foi possivel gravar o XML para envio. Permissão Negada ao tentar gravar $fileXML!";
@@ -314,7 +317,7 @@ class MailNFePHP {
         //se não foi passado o pdf ignorar e só enviar o xml
         if ($docPDF != '' && $nomePDF != ''){
             //salvar temporariamente os arquivo passados
-            $filePDF = PATH_ROOT.'pdf-'. number_format(microtime(true)*1000000,0,0,15) .'.pdf';
+            $filePDF = $this->temporariasDir.'pdf-'. number_format(microtime(true)*1000000,0,0,15) .'.pdf';
             file_put_contents($filePDF,$docPDF);
         } else {
             $filePDF = '';
