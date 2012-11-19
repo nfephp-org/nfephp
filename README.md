@@ -65,7 +65,7 @@ Mantenedores
 -----------
 * NFe  - `Roberto L. Machado`
 * NFCe - `Roberto L. Machado`
-* NFSe - `não definido`
+* NFSe - `Hugo Cegana`
 * CTe  - `Luciano Antony`
 * MDFe - `não definido`
 
