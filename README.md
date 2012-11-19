@@ -61,6 +61,14 @@ Encontrou um bug? Informe-nos aqui no GitHub!
 
 <https://github.com/nfephp-org/nfephp/issues>
 
+Mantenedores
+-----------
+NFe  - Roberto L. Machado
+NFCe - Roberto L. Machado
+NFSe - <não definido>
+CTe  - Luciano Antony
+MDFe - <não definido>
+
 Pull Request
 --------
 Para que seu Pull Request seja aceito ele deve estar seguindo os padrões descritos neste documento <http://www.walkeralencar.com/PHPCodeStandards.pdf>
