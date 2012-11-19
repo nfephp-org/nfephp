@@ -63,11 +63,11 @@ Encontrou um bug? Informe-nos aqui no GitHub!
 
 Mantenedores
 -----------
-* NFe  - Roberto L. Machado
-* NFCe - Roberto L. Machado
-* NFSe - não definido
-* CTe  - Luciano Antony
-* MDFe - não definido
+* NFe  - `Roberto L. Machado`
+* NFCe - `Roberto L. Machado`
+* NFSe - `não definido`
+* CTe  - `Luciano Antony`
+* MDFe - `não definido`
 
 Pull Request
 --------
