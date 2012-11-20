@@ -29,14 +29,15 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.0.39
+ * @version   3.0.40
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
  * @author    Roberto L. Machado <linux.rlm at gmail dot com>
  *
  *        CONTRIBUIDORES (em ordem alfabetica):
- *
+ * 
+ *              Allan Rett <allanlimao at gmail dot com>
  *              Antonio Neykson Turbano de Souza <neykson at gmail dot com>
  *              Bernardo Silva <bernardo at datamex dot com dot br>
  *              Bruno Bastos <brunomauro at gmail dot com>
@@ -497,6 +498,7 @@ class ToolsNFePHP {
                                'SP'=>'SP',
                                'TO'=>'SVRS',
                                'SCAN'=>'SCAN',
+                               'SVAN'=>'SVAN', 
                                'DEPC'=>'DPEC');
     /**
      * cUFlist
@@ -2199,55 +2201,128 @@ class ToolsNFePHP {
     /**
      * getNFe
      * Download da NF-e para uma determinada Chave de Acesso informada, 
-     * para as NF-e confirmadas pelo destinatário.
+     * para as NF-e confirmadas pelo destinatário. As NFe baixadas serão salvas 
+     * na pasta de recebidas
      * 
-     * ESSE SEVIÇO NÃO ESTÁ AINDA OPERACIONAL EXISTE APENAS EM AMBIENTE DE HOMOLOCAÇÃO
-     * NO SEFAZ DO RS 
+     * ESSE SEVIÇO NÃO ESTÁ TOTALMENTE OPERACIONAL EXISTE APENAS NO SEFAZ DO RS E SVAN
      * 
      * Este serviço não suporta SCAN !!
      * 
      * @name getNFe
-     * @version 0.1.1
-     * @package NFePHP
-     * @author Roberto L. Machado <linux.rlm at gmail dot com> 
-     * @param string $cnpj
-     * @param string $chave
-     * @param string $tpAmb
-     * @param string $modSOAP
-     * @return mixed FALSE ou $array  
+     * @param boolean $AN true usa o SVAN e false Usa a UF do emitente da NF
+     * @param string $chNFe chave da NFe
+     * @param string $tpAmb tipo de ambiente
+     * @param string $modSOAP modo do SOAP
+     * @return mixed FALSE ou xml de retorno  
      */
-    public function getNFe($chNFe='',$tpAmb='',$modSOAP='2'){
-        if($chNFe == ''){
-            $msg = 'Uma chave de NFe deve ser passada como parâmetro da função.';
-            $this->__setError($msg);
-            if ($this->exceptions) {
+    public function getNFe($AN=false,$chNFe='',$tpAmb='',$modSOAP='2'){
+        try{
+            if($chNFe == ''){
+                $msg = 'Uma chave de NFe deve ser passada como parâmetro da função.';
+                throw new nfephpException($msg, self::STOP_CRITICAL);
+            }
+            if($tpAmb == ''){
+                $tpAmb = $this->tpAmb;
+            }
+            if (!$AN){
+                //obtem a SEFAZ do emissor
+                $cUF = substr($chNFe,0,2);
+                $UF = $this->UFList[$cUF];
+                $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . $this->xmlURLfile,$tpAmb,$UF);
+            } else {
+                $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . $this->xmlURLfile,$tpAmb,'SVAN');            
+                $sigla = 'SVAN';
+            }    
+            //identificação do serviço
+            $servico = 'NfeDownloadNF';
+            //recuperação da versão
+            $versao = $aURL[$servico]['version'];
+            //recuperação da url do serviço
+            $urlservico = $aURL[$servico]['URL'];
+            //recuperação do método
+            $metodo = $aURL[$servico]['method'];
+            //montagem do namespace do serviço
+            $namespace = $this->URLPortal.'/wsdl/'.$servico;
+            if ($urlservico == ''){
+                $msg = 'Não existe esse serviço na SEFAZ consultada.';
+                throw new nfephpException($msg,self::STOP_CRITICAL);
+            }
+            //montagem do cabeçalho da comunicação SOAP
+            $cabec = '<nfeCabecMsg xmlns="'. $namespace . '"><cUF>'.$this->cUF.'</cUF><versaoDados>'.$versao.'</versaoDados></nfeCabecMsg>';
+            //montagem dos dados da mensagem SOAP
+            $dados = '<nfeDadosMsg xmlns="'.$namespace.'"><downloadNFe xmlns="'.$this->URLPortal.'" versao="'.$versao.'"><tpAmb>'.$tpAmb.'</tpAmb><xServ>DOWNLOAD NFE</xServ><CNPJ>'.$this->cnpj.'</CNPJ><chNFe>'.$chNFe.'</chNFe></downloadNFe></nfeDadosMsg>';
+            //envia dados via SOAP
+            if ($modSOAP == '2'){
+                $retorno = $this->__sendSOAP2($urlservico, $namespace, $cabec, $dados, $metodo, $tpAmb);
+            } else {
+                $retorno = $this->__sendSOAP($urlservico, $namespace, $cabec, $dados, $metodo, $tpAmb,$this->UF);
+            }
+            //verifica o retorno
+            if (!$retorno){
+                //não houve retorno
+                $msg = "Nao houve retorno Soap verifique a mensagem de erro e o debug!!";
+                throw new nfephpException($msg, self::STOP_CRITICAL);
+            }
+            //salva arquivo de retorno contendo todo o XML da SEFAZ
+            $fileName  = $this->temDir."$chNFe-resDWNFe.xml";
+            if (!file_put_contents($fileName, $retorno)){
+                $msg = "Falha na gravação do arquivo $fileName!!";
+                $this->__setError($msg);
+            }
+            //tratar dados de retorno
+            $xmlDNFe = new DOMDocument('1.0', 'utf-8'); //cria objeto DOM
+            $xmlDNFe->formatOutput = false;
+            $xmlDNFe->preserveWhiteSpace = false;
+            $xmlDNFe->loadXML($retorno,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
+            $retDownloadNFe = $xmlDNFe->getElementsByTagName("retDownloadNFe")->item(0);
+            $cStat = !empty($retDownloadNFe->getElementsByTagName('cStat')->item(0)->nodeValue) ? $retDownloadNFe->getElementsByTagName('cStat')->item(0)->nodeValue : '';
+            $xMotivo = !empty($retDownloadNFe->getElementsByTagName('xMotivo')->item(0)->nodeValue) ? $retDownloadNFe->getElementsByTagName('xMotivo')->item(0)->nodeValue : '';
+            $dhResp = !empty($retDownloadNFe->getElementsByTagName('dhResp')->item(0)->nodeValue) ? $retDownloadNFe->getElementsByTagName('dhResp')->item(0)->nodeValue : '';
+            //existem 2 cStat, um com nó pai retDownloadNFe ($cStat) e outro no 
+            //nó pai retNFe($cStatRetorno)
+            //para que o download seja efetuado corretamente o $cStat deve vir com valor 139 
+            //e o $cStatRetorno com valor 140
+            $retNFe = $xmlDNFe->getElementsByTagName("retNFe")->item(0);        
+            if (isset($retNFe)){
+                $cStatRetorno = !empty($retNFe->getElementsByTagName('cStat')->item(0)->nodeValue) ? $retNFe->getElementsByTagName('cStat')->item(0)->nodeValue : '';
+                $xMotivoRetorno = !empty($retNFe->getElementsByTagName('xMotivo')->item(0)->nodeValue) ? $retNFe->getElementsByTagName('xMotivo')->item(0)->nodeValue : '';
+            } else {
+                $cStatRetorno = '';
+                $xMotivoRetorno = '';
+            }    
+            //status de retorno nao podem vir vazios
+            if (empty($cStat)){
+                //houve erro
+                $msg = "cStat está em branco, houve erro na comunicação verifique a mensagem de erro!";
+                throw new nfephpException($msg, self::STOP_CRITICAL);
+            }
+            //erro no processamento
+            if ($cStat != '139' ){
+                //se cStat <> 139 ou 140 houve erro e o lote foi rejeitado
+                $msg = "A requisição foi rejeitada : $cStat - $xMotivo\n";
                 throw new nfephpException($msg);
             }
+            if ( $cStatRetorno != '140' ){
+                //pega o motivo do nó retNFe, com a descriçao da rejeiçao
+                $msg = "Não houve o download da NF : $cStatRetorno - $xMotivoRetorno\n";
+                throw new nfephpException($msg);
+            }
+            //grava arquivo XML iniciando com a tag nfeProc, sem o cabeçalho de retorno da SEFAZ
+            $content = $xmlDNFe->getElementsByTagName("nfeProc")->item(0);
+            $xml =  $content->ownerDocument->saveXML($content);
+            $fileName = $this->recDir."$chNFe-procNFe.xml";
+            if (!file_put_contents($fileName, $xml)){
+                $msg = "Falha na gravação do arquivo NFe $fileName!!";
+                $this->__setError($msg);
+            }
+        } catch (nfephpException $e) {
+            $this->__setError("[$e->getCode()]$e->getMessage() ($e->getFile() - lin:$e->getLine())\n");
+            if ($this->exceptions) {
+                throw $e;
+            }
             return false;
-        }
-        if($tpAmb == ''){
-            $tpAmb = $this->tpAmb;
-        }
-        $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . $this->xmlURLfile,$tpAmb,$this->UF);
-        //identificação do serviço
-        $servico = 'NfeDownloadNF';
-        //recuperação da versão
-        $versao = $aURL[$servico]['version'];
-        //recuperação da url do serviço
-        $urlservico = $aURL[$servico]['URL'];
-        //recuperação do método
-        $metodo = $aURL[$servico]['method'];
-        //montagem do namespace do serviço
-        $namespace = $this->URLPortal.'/wsdl/'.$servico.'2';
-        //montagem do cabeçalho da comunicação SOAP
-        $cabec = '<nfeCabecMsg xmlns="'. $namespace . '"><cUF>'.$cUF.'</cUF><versaoDados>'.$versao.'</versaoDados></nfeCabecMsg>';
-        //montagem dos dados da mensagem SOAP
-        $dados = '<nfeDadosMsg xmlns="'.$namespace.'"><downloadNFe xmlns="'.$this->URLPortal.'" versao="'.$versao.'"><tpAmb>'.$tpAmb.'</tpAmb><xServ>DOWNLOAD NFE</xServ><CNPJ>'.$this->cnpj.'</CNPJ><chNFe>'.$chNFe.'</chNFe></downloadNFe></nfeDadosMsg>';
-        //retorno para testes
-        //TODO preparar a comunicação com o SEFAZ quando o ambiente de testes estiver habilitado
-        return $cabec.$dados; 
-        
-        
+        }//fim catch        
+        return $retorno;
     }//fim getNFe
 
     /**
