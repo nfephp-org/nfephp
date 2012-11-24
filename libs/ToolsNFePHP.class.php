@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.0.40
+ * @version   3.0.41
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -877,171 +877,200 @@ class ToolsNFePHP {
     * @return   boolean 
     */
     public function validXML($xml='', $xsdFile='', &$aError){
-        $flagOK = true;
-        // Habilita a manipulaçao de erros da libxml
-        libxml_use_internal_errors(true);
-        //verifica se foi passado o xml
-        if(strlen($xml)==0){
-            $msg = 'Você deve passar o conteudo do xml assinado como parâmetro ou o caminho completo até o arquivo.';
-            $this->__setError($msg);
-            if ($this->exceptions) {
+        try{
+            $flagOK = true;
+            // Habilita a manipulaçao de erros da libxml
+            libxml_use_internal_errors(true);
+            //limpar erros anteriores que possam estar em memória
+            libxml_clear_errors();        
+            //verifica se foi passado o xml
+            if(strlen($xml)==0){
+                $msg = 'Você deve passar o conteudo do xml assinado como parâmetro ou o caminho completo até o arquivo.';
+                $aError[] = $msg;
                 throw new nfephpException($msg, self::STOP_CRITICAL);
             }
-            $aError[] = $msg;
-            return false;
-        }
-        // instancia novo objeto DOM
-        $dom = new DOMDocument('1.0', 'utf-8');
-        $dom->preservWhiteSpace = false; //elimina espaços em branco
-        $dom->formatOutput = false;
-        // carrega o xml tanto pelo string contento o xml como por um path
-        if (is_file($xml)){
-            $dom->load($xml,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
-        } else {
-            $dom->loadXML($xml,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
-        }
-        //limpar erros anteriores que possam estar em memória
-        libxml_clear_errors();        
-        //recupera os erros da libxml
-        $errors = libxml_get_errors(); 
-        if (!empty($errors)) { 
-            //o dado passado como $docXml não é um xml
-            $msg = 'O dado informado não é um XML ou não foi encontrado. Você deve passar o conteudo de um arquivo xml assinado como parâmetro.';
-            $this->__setError($msg);
-            if ($this->exceptions) {
-                throw new nfephpException($msg, self::STOP_MESSAGE);
-            }
-            $aError[] = $msg;
-            return false;
-        }
-        //verificar se a nota contem o protocolo !!!
-        $nfeProc = $dom->getElementsByTagName('nfeProc')->item(0);
-        $Signature = $dom->getElementsByTagName('Signature')->item(0);        
-        if (isset($nfeProc)){
-            $msg = "Essa NFe já contêm o protocolo. Não é possivel continuar, como alternativa use a verificação de notas completas.";
-            $this->__setError($msg);
-            if ($this->exceptions) {
-                throw new nfephpException($msg, self::STOP_MESSAGE);
-            }
-            $aError[] = "";
-            return true;
-        }
-        if($xsdFile==''){
-            //não foi passado o xsd então determinar qual o arquivo de schema válido 
-            //buscar o nome do scheme
-            //extrair a tag com o numero da versão da NFe
-            $node = $dom->getElementsByTagName('infNFe')->item(0);
-            //obtem a versão do layout da NFe
-            $ver = trim($node->getAttribute("versao"));
-            $aFile = $this->listDir($this->xsdDir . $this->schemeVer. DIRECTORY_SEPARATOR,'nfe_v*.xsd',true);
-            if (!$aFile[0]) {
-                $msg = "Erro na localização do schema xsd.\n";
-                $this->__setError($msg);
-                if ($this->exceptions) {
-                    throw new nfephpException($msg, self::STOP_CRITICAL);
-                }
-                $aError[] = "Erro na localização do schema xsd.";
-                return false;
+            // instancia novo objeto DOM
+            $dom = new DOMDocument('1.0', 'utf-8');
+            $dom->preservWhiteSpace = false; //elimina espaços em branco
+            $dom->formatOutput = false;
+            // carrega o xml tanto pelo string contento o xml como por um path
+            if (is_file($xml)){
+                $dom->load($xml,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
             } else {
-                $xsdFile = $aFile[0];
+                $dom->loadXML($xml,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
             }
-        }
-        //limpa erros anteriores
-        libxml_clear_errors();
-        // valida o xml com o xsd
-        if ( !$dom->schemaValidate($xsdFile) ) {
-            /**
-             * Se não foi possível validar, você pode capturar
-             * todos os erros em um array
-             * Cada elemento do array $arrayErrors
-             * será um objeto do tipo LibXmlError
-             */
-            // carrega os erros em um array
-            $aIntErrors = libxml_get_errors();
-            $flagOK = false;
-            if (!isset($Signature)){
-                // remove o erro de falta de assinatura
-                foreach ($aIntErrors as $k=>$intError){
-                    if(strpos($intError->message,'( {http://www.w3.org/2000/09/xmldsig#}Signature )')!==false){	
-                        // remove o erro da assinatura, se tiver outro meio melhor (atravez dos erros de codigo) e alguem souber como tratar por eles, por favor contribua...
-                        unset($aIntErrors[$k]);
-                    }    
+            //recupera os erros da libxml
+            $errors = libxml_get_errors(); 
+            if (!empty($errors)) { 
+                //o dado passado como $docXml não é um xml
+                $msg = 'O dado informado não é um XML ou não foi encontrado. Você deve passar o conteudo de um arquivo xml assinado como parâmetro.';
+                $aError[] = $msg;
+                throw new nfephpException($msg, self::STOP_MESSAGE);
+            }
+            if($xsdFile==''){
+                if (is_file($xml)){
+                    $contents = file_get_contents($xml);
+                } else {
+                    $contents = $xml;
                 }
-                reset($aIntErrors);            
-                $flagOK = true;
-            }//fim teste Signature    
-            $msg = '';
-            foreach ($aIntErrors as $intError){
+                $sxml = simplexml_load_string($contents);
+                $nome = $sxml->getName();
+                $sxml = null;
+                //determinar qual o arquivo de schema válido 
+                //buscar o nome do scheme
+                switch ($nome){
+                    case 'evento':
+                        //obtem o node com a versão
+                        $node = $dom->$dom->documentElement;
+                        //obtem a versão do layout
+                        $ver = trim($node->getAttribute("versao"));
+                        $tpEvento = $node->getElementsByTagName('tpEvento')->item(0)->nodeValue;
+                        switch ($tpEvento){
+                            case '110110':
+                                //carta de correção
+                                $xsdFile = "CCe_v$ver.xsd";
+                                break;
+                            default:
+                                $xsdFile = "";
+                                break;
+                        }
+                        break;
+                    case 'envEvento':
+                        //obtem o node com a versão
+                        $node = $dom->getElementsByTagName('evento')->item(0);
+                        //obtem a versão do layout
+                        $ver = trim($node->getAttribute("versao"));
+                        $tpEvento = $node->getElementsByTagName('tpEvento')->item(0)->nodeValue;
+                        switch ($tpEvento){
+                            case '110110':
+                                //carta de correção
+                                $xsdFile = "envCCe_v$ver.xsd";
+                                break;
+                            default:
+                                $xsdFile = "envEvento_v$ver.xsd";
+                                break;
+                        }
+                        break;
+                    case 'NFe':
+                        //obtem o node com a versão
+                        $node = $dom->getElementsByTagName('infNFe')->item(0);
+                        //obtem a versão do layout
+                        $ver = trim($node->getAttribute("versao"));
+                        $xsdFile = "nfe_v$ver.xsd";
+                        break;
+                    case 'nfeProc':
+                        //obtem o node com a versão
+                        $node = $dom->documentElement;
+                        //obtem a versão do layout
+                        $ver = trim($node->getAttribute("versao"));
+                        $xsdFile = "procNFe_v$ver.xsd";
+                        break;
+                    default:
+                        //obtem o node com a versão
+                        $node = $dom->documentElement;
+                        //obtem a versão do layout
+                        $ver = trim($node->getAttribute("versao"));
+                        $xsdFile = $nome."_v".$ver.".xsd";
+                        break;
+                }
+                $aFile = $this->listDir($this->xsdDir . $this->schemeVer. DIRECTORY_SEPARATOR,$xsdFile,true);
+                if (!$aFile[0]) {
+                    $msg = "Erro na localização do schema xsd.\n";
+                    $aError[] = $msg;
+                    throw new nfephpException($msg, self::STOP_CRITICAL);
+                } else {
+                    $xsdFile = $aFile[0];
+                }
+            }
+            //limpa erros anteriores
+            libxml_clear_errors();
+            // valida o xml com o xsd
+            if ( !$dom->schemaValidate($xsdFile) ) {
+                /**
+                 * Se não foi possível validar, você pode capturar
+                 * todos os erros em um array
+                 * Cada elemento do array $arrayErrors
+                 * será um objeto do tipo LibXmlError
+                 */
+                // carrega os erros em um array
+                $aIntErrors = libxml_get_errors();
                 $flagOK = false;
-                $en = array("{http://www.portalfiscal.inf.br/nfe}"
-                            ,"[facet 'pattern']"
-                            ,"The value"
-                            ,"is not accepted by the pattern"
-                            ,"has a length of"
-                            ,"[facet 'minLength']"
-                            ,"this underruns the allowed minimum length of"
-                            ,"[facet 'maxLength']"
-                            ,"this exceeds the allowed maximum length of"
-                            ,"Element"
-                            ,"attribute"
-                            ,"is not a valid value of the local atomic type"
-                            ,"is not a valid value of the atomic type"
-                            ,"Missing child element(s). Expected is"
-                            ,"The document has no document element"
-                            ,"[facet 'enumeration']"
-                            ,"one of"
-                            ,"failed to load external entity" 
-                            ,"Failed to locate the main schema resource at"
-                            ,"This element is not expected. Expected is"                     
-                            ,"is not an element of the set");
-              
-                $pt = array(""
-                            ,"[Erro 'Layout']"
-                            ,"O valor"
-                            ,"não é aceito para o padrão."
-                            ,"tem o tamanho"
-                            ,"[Erro 'Tam. Min']"
-                            ,"deve ter o tamanho mínimo de"
-                            ,"[Erro 'Tam. Max']"
-                            ,"Tamanho máximo permitido"
-                            ,"Elemento"
-                            ,"Atributo"
-                            ,"não é um valor válido"
-                            ,"não é um valor válido"
-                            ,"Elemento filho faltando. Era esperado"
-                            ,"Falta uma tag no documento"
-                            ,"[Erro 'Conteúdo']"
-                            ,"um de"
-                            ,"falha ao carregar entidade externa"
-                            ,"Falha ao tentar localizar o schema principal em"
-                            ,"Este elemento não é esperado. Esperado é"
-                            ,"não é um dos seguintes possiveis");
-                
-                switch ($intError->level) {
-                    case LIBXML_ERR_WARNING:
-                        $aError[] = " Atençao $intError->code: " . str_replace($en,$pt,$intError->message);
-                        break;
-                    case LIBXML_ERR_ERROR:
-                        $aError[] = " Erro $intError->code: " . str_replace($en,$pt,$intError->message);
-                        break;
-                    case LIBXML_ERR_FATAL:
-                        $aError[] = " Erro Fatal $intError->code: " . str_replace($en,$pt,$intError->message);
-                        break;
+                $msg = '';
+                foreach ($aIntErrors as $intError){
+                    $flagOK = false;
+                    $en = array("{http://www.portalfiscal.inf.br/nfe}"
+                                ,"[facet 'pattern']"
+                                ,"The value"
+                                ,"is not accepted by the pattern"
+                                ,"has a length of"
+                                ,"[facet 'minLength']"
+                                ,"this underruns the allowed minimum length of"
+                                ,"[facet 'maxLength']"
+                                ,"this exceeds the allowed maximum length of"
+                                ,"Element"
+                                ,"attribute"
+                                ,"is not a valid value of the local atomic type"
+                                ,"is not a valid value of the atomic type"
+                                ,"Missing child element(s). Expected is"
+                                ,"The document has no document element"
+                                ,"[facet 'enumeration']"
+                                ,"one of"
+                                ,"failed to load external entity" 
+                                ,"Failed to locate the main schema resource at"
+                                ,"This element is not expected. Expected is"                     
+                                ,"is not an element of the set");
+                    
+                    $pt = array(""
+                                ,"[Erro 'Layout']"
+                                ,"O valor"
+                                ,"não é aceito para o padrão."
+                                ,"tem o tamanho"
+                                ,"[Erro 'Tam. Min']"
+                                ,"deve ter o tamanho mínimo de"
+                                ,"[Erro 'Tam. Max']"
+                                ,"Tamanho máximo permitido"
+                                ,"Elemento"
+                                ,"Atributo"
+                                ,"não é um valor válido"
+                                ,"não é um valor válido"
+                                ,"Elemento filho faltando. Era esperado"
+                                ,"Falta uma tag no documento"
+                                ,"[Erro 'Conteúdo']"
+                                ,"um de"
+                                ,"falha ao carregar entidade externa"
+                                ,"Falha ao tentar localizar o schema principal em"
+                                ,"Este elemento não é esperado. Esperado é"
+                                ,"não é um dos seguintes possiveis");
+                    
+                    switch ($intError->level) {
+                        case LIBXML_ERR_WARNING:
+                            $aError[] = " Atençao $intError->code: " . str_replace($en,$pt,$intError->message);
+                            break;
+                        case LIBXML_ERR_ERROR:
+                            $aError[] = " Erro $intError->code: " . str_replace($en,$pt,$intError->message);
+                            break;
+                        case LIBXML_ERR_FATAL:
+                            $aError[] = " Erro Fatal $intError->code: " . str_replace($en,$pt,$intError->message);
+                            break;
+                    }
+                    $msg .= str_replace($en,$pt,$intError->message);
                 }
-                $msg .= str_replace($en,$pt,$intError->message);
+            } else {
+                $flagOK = true;
             }
-        } else {
-            $flagOK = true;
-        }
-        if(!$flagOK){
-            $this->__setError($msg, self::STOP_MESSAGE);
-            if ($this->exceptions) {
+            if(!$flagOK){
                 throw new nfephpException($msg);
             }
+        } catch (nfephpException $e) {
+            $this->__setError($e->getMessage());
+            if ($this->exceptions) {
+                throw $e;
+            }
+            return false;
         }
-        return $flagOK;
+        return true;
     } //fim validXML
-	
+    
     /**
      * addProt
      * Este método adiciona a tag do protocolo a NFe, preparando a mesma
