@@ -268,6 +268,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
         $this->__adicionaLogoPeloCnpj();
         $this->papel = $papel;
         $this->logoAlign = $logoAlign;
+        $this->situacao_externa = $situacao_externa;
         //instancia a classe pdf
 	if($CLASSE_PDF!==false){
             $this->pdf = $CLASSE_PDF;
@@ -460,7 +461,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
             $y = $yInic;
         }
         //coloca o cabeçalho
-        $y = $this->__cabecalhoDANFE($x,$y,$pag,$totPag,$situacao_externa);
+        $y = $this->__cabecalhoDANFE($x,$y,$pag,$totPag);
         //coloca os dados do destinatário
         $y = $this->__destinatarioDANFE($x,$y+1);
         //coloca os dados das faturas
@@ -500,7 +501,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
             $x = $xInic;
             $y = $yInic;
             //coloca o cabeçalho na página adicional
-            $y = $this->__cabecalhoDANFE($x,$y,$n,$totPag,$situacao_externa);
+            $y = $this->__cabecalhoDANFE($x,$y,$n,$totPag);
             //coloca os itens na página adicional
             $y = $this->__itensDANFE($x,$y+1,$nInicial,$hDispo2,$pag,$totPag);
             //coloca o rodapé da página
@@ -719,6 +720,17 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
         */
     } //fim função printDANFE
 
+    
+    protected function __notaCancelada(){        
+        $cStat = $this->__simpleGetValue( $this->nfeProc , "cStat");
+        return $cStat == '101' || $cStat == '135' || $this->situacao_externa==NFEPHP_SITUACAO_EXTERNA_CANCELADA;
+    }
+    
+    protected function __notaDenegada(){
+        $cStat = $this->__simpleGetValue( $this->nfeProc , "cStat");
+        return $cStat == '110' || $cStat == '301' || $cStat == '302' || $this->situacao_externa==NFEPHP_SITUACAO_EXTERNA_DENEGADA;
+    }
+    
     /**
      *__cabecalhoDANFE
      * Monta o cabelhalho da DANFE ( retrato e paisagem )
@@ -731,7 +743,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
      * @param number$totPag Total de páginas
      * @return number Posição vertical final
      */
-    protected function __cabecalhoDANFE($x=0,$y=0,$pag='1',$totPag='1',$situacao_externa=NFEPHP_SITUACAO_EXTERNA_NONE){
+    protected function __cabecalhoDANFE($x=0,$y=0,$pag='1',$totPag='1'){
         $oldX = $x;
         $oldY = $y;
         if( $this->orientacao == 'P' ){
@@ -839,13 +851,17 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
         $w2 = $w;
         $h = 32;
         $this->__textBox($x,$y,$w,$h);
-        $texto = "DANFE";
-        $aFont = array('font'=>$this->fontePadrao,'size'=>14,'style'=>'B');
-        $this->__textBox($x,$y+1,$w,$h,$texto,$aFont,'T','C',0,'');
-        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'');
-        $texto = 'Documento Auxiliar da Nota Fiscal Eletrônica';
-        $h = 20;
-        $this->__textBox($x,$y+6,$w,$h,$texto,$aFont,'T','C',0,'',FALSE);
+
+        if( ! $this->__notaCancelada() ) {
+            $texto = "DANFE";
+            $aFont = array('font'=>$this->fontePadrao,'size'=>14,'style'=>'B');
+            $this->__textBox($x,$y+1,$w,$h,$texto,$aFont,'T','C',0,'');
+            $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'');
+            $texto = 'Documento Auxiliar da Nota Fiscal Eletrônica';
+            $h = 20;
+            $this->__textBox($x,$y+6,$w,$h,$texto,$aFont,'T','C',0,'',FALSE);
+        }
+        
         $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'');
         $texto = '0 - ENTRADA';
         $y1 = $y + 14;
@@ -999,7 +1015,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
         //Indicação de NF Homologação, cancelamento e falta de protocolo
         $tpAmb = $this->ide->getElementsByTagName('tpAmb')->item(0)->nodeValue;
         //indicar cancelamento
-        if ( $cStat == '101' || $cStat == '135' || $situacao_externa==NFEPHP_SITUACAO_EXTERNA_CANCELADA) {
+        if ( $this->__notaCancelada() ) {
             //101 Cancelamento
             $x = 10;
             $y = $this->hPrint-130;
@@ -1011,7 +1027,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
             $this->__textBox($x,$y,$w,$h,$texto,$aFont,'C','C',0,'');
             $this->pdf->SetTextColor(0,0,0);
         }
-        if ( $cStat == '110' || $cStat == '301' || $cStat == '302' || $situacao_externa==NFEPHP_SITUACAO_EXTERNA_DENEGADA) {
+        if ( $this->__notaDenegada() ) {
             //110 301 302 Denegada
             $x = 10;
             $y = $this->hPrint-130;
