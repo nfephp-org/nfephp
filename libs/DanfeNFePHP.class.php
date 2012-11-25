@@ -720,6 +720,17 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
         */
     } //fim função printDANFE
 
+    
+    protected function __notaCancelada(){        
+        $cStat = $this->__simpleGetValue( $this->nfeProc , "cStat");
+        return $cStat == '101' || $cStat == '135' || $this->situacao_externa==NFEPHP_SITUACAO_EXTERNA_CANCELADA;
+    }
+    
+    protected function __notaDenegada(){
+        $cStat = $this->__simpleGetValue( $this->nfeProc , "cStat");
+        return $cStat == '110' || $cStat == '301' || $cStat == '302' || $this->situacao_externa==NFEPHP_SITUACAO_EXTERNA_DENEGADA;
+    }
+    
     /**
      *__cabecalhoDANFE
      * Monta o cabelhalho da DANFE ( retrato e paisagem )
@@ -1000,7 +1011,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
         //Indicação de NF Homologação, cancelamento e falta de protocolo
         $tpAmb = $this->ide->getElementsByTagName('tpAmb')->item(0)->nodeValue;
         //indicar cancelamento
-        if ( $cStat == '101' || $cStat == '135' || $this->situacao_externa==NFEPHP_SITUACAO_EXTERNA_CANCELADA) {
+        if ( $this->__notaCancelada() ) {
             //101 Cancelamento
             $x = 10;
             $y = $this->hPrint-130;
@@ -1012,7 +1023,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
             $this->__textBox($x,$y,$w,$h,$texto,$aFont,'C','C',0,'');
             $this->pdf->SetTextColor(0,0,0);
         }
-        if ( $cStat == '110' || $cStat == '301' || $cStat == '302' || $this->situacao_externa==NFEPHP_SITUACAO_EXTERNA_DENEGADA) {
+        if ( $this->__notaDenegada() ) {
             //110 301 302 Denegada
             $x = 10;
             $y = $this->hPrint-130;
