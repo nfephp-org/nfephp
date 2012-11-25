@@ -851,13 +851,17 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
         $w2 = $w;
         $h = 32;
         $this->__textBox($x,$y,$w,$h);
-        $texto = "DANFE";
-        $aFont = array('font'=>$this->fontePadrao,'size'=>14,'style'=>'B');
-        $this->__textBox($x,$y+1,$w,$h,$texto,$aFont,'T','C',0,'');
-        $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'');
-        $texto = 'Documento Auxiliar da Nota Fiscal Eletrônica';
-        $h = 20;
-        $this->__textBox($x,$y+6,$w,$h,$texto,$aFont,'T','C',0,'',FALSE);
+
+        if( ! $this->__notaCancelada() ) {
+            $texto = "DANFE";
+            $aFont = array('font'=>$this->fontePadrao,'size'=>14,'style'=>'B');
+            $this->__textBox($x,$y+1,$w,$h,$texto,$aFont,'T','C',0,'');
+            $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'');
+            $texto = 'Documento Auxiliar da Nota Fiscal Eletrônica';
+            $h = 20;
+            $this->__textBox($x,$y+6,$w,$h,$texto,$aFont,'T','C',0,'',FALSE);
+        }
+        
         $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'');
         $texto = '0 - ENTRADA';
         $y1 = $y + 14;
