@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.0.41
+ * @version   3.0.42
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -3872,124 +3872,109 @@ class ToolsNFePHP {
      *   $this->passKey
      *
      * @name __loadCerts
-     * @author Roberto L. Machado <linux.rlm at gmail dot com>
-     * @param	none
-     * @return	boolean true se o certificado foi carregado e false se nao
+     * @param	boolean $testaVal True testa a validade do certificado ou false não testa
+     * @return	boolean true se o certificado foi carregado e false se não
      **/
-    protected function __loadCerts(){
-        if(!function_exists('openssl_pkcs12_read')){
-            $msg = "Função não existente: openssl_pkcs12_read!!";
-            $this->__setError($msg);
-            if ($this->exceptions) {
+    protected function __loadCerts($testaVal=true){
+        try {
+            if(!function_exists('openssl_pkcs12_read')){
+                $msg = "Função não existente: openssl_pkcs12_read!!";
                 throw new nfephpException($msg);
             }
-            return false;
-	}
-        //monta o path completo com o nome da chave privada
-        $this->priKEY = $this->certsDir.$this->cnpj.'_priKEY.pem';
-        //monta o path completo com o nome da chave prublica
-        $this->pubKEY =  $this->certsDir.$this->cnpj.'_pubKEY.pem';
-        //monta o path completo com o nome do certificado (chave publica e privada) em formato pem
-        $this->certKEY = $this->certsDir.$this->cnpj.'_certKEY.pem';
-        //verificar se o nome do certificado e
-        //o path foram carregados nas variaveis da classe
-        if ($this->certsDir == '' || $this->certName == '') {
-            $msg = "Um certificado deve ser passado para a classe pelo arquivo de configuração!! ";
-            $this->__setError($msg);
-            if ($this->exceptions) {
+            //monta o path completo com o nome da chave privada
+            $this->priKEY = $this->certsDir.$this->cnpj.'_priKEY.pem';
+            //monta o path completo com o nome da chave prublica
+            $this->pubKEY =  $this->certsDir.$this->cnpj.'_pubKEY.pem';
+            //monta o path completo com o nome do certificado (chave publica e privada) em formato pem
+            $this->certKEY = $this->certsDir.$this->cnpj.'_certKEY.pem';
+            //verificar se o nome do certificado e
+            //o path foram carregados nas variaveis da classe
+            if ($this->certsDir == '' || $this->certName == '') {
+                $msg = "Um certificado deve ser passado para a classe pelo arquivo de configuração!! ";
                 throw new nfephpException($msg);
             }
-            return false;
-        }
-        //monta o caminho completo até o certificado pfx
-        $pfxCert = $this->certsDir.$this->certName;
-        //verifica se o arquivo existe
-        if(!file_exists($pfxCert)){
-            $msg = "Certificado não encontrado!! $pfxCert";
-            $this->__setError($msg);
-            if ($this->exceptions) {
+            //monta o caminho completo até o certificado pfx
+            $pfxCert = $this->certsDir.$this->certName;
+            //verifica se o arquivo existe
+            if(!file_exists($pfxCert)){
+                $msg = "Certificado não encontrado!! $pfxCert";
                 throw new nfephpException($msg);
             }
-            return false;
-        }
-        //carrega o certificado em um string
-        $pfxContent = file_get_contents($pfxCert);
-        //carrega os certificados e chaves para um array denominado $x509certdata
-        if (!openssl_pkcs12_read($pfxContent,$x509certdata,$this->keyPass) ){
-            $msg = "O certificado não pode ser lido!! Provavelmente corrompido ou com formato inválido!!";
-            $this->__setError($msg);
-            if ($this->exceptions) {
+            //carrega o certificado em um string
+            $pfxContent = file_get_contents($pfxCert);
+            //carrega os certificados e chaves para um array denominado $x509certdata
+            if (!openssl_pkcs12_read($pfxContent,$x509certdata,$this->keyPass) ){
+                $msg = "O certificado não pode ser lido!! Provavelmente corrompido ou com formato inválido!!";
                 throw new nfephpException($msg);
             }
-            return false;
-        }
-        //verifica sua validade
-        $aResp = $this->__validCerts($x509certdata['cert']);
-        if ($aResp['error'] != ''){
-            $msg = "Certificado invalido!! - " . $aResp['error'];
-            $this->__setError($msg);
-            if ($this->exceptions) {
-                throw new nfephpException($msg);
-            }
-            return false;
-        }
-        //aqui verifica se existem as chaves em formato PEM
-        //se existirem pega a data da validade dos arquivos PEM 
-        //e compara com a data de validade do PFX
-        //caso a data de validade do PFX for maior que a data do PEM
-        //deleta dos arquivos PEM, recria e prossegue
-        $flagNovo = false;
-        if(file_exists($this->pubKEY)){
-            $cert = file_get_contents($this->pubKEY);
-            if (!$data = openssl_x509_read($cert)){
-                //arquivo não pode ser lido como um certificado então deletar
-                $flagNovo = true;
-            } else {
-                //pegar a data de validade do mesmo
-                $cert_data = openssl_x509_parse($data);
-                // reformata a data de validade;
-                $ano = substr($cert_data['validTo'],0,2);
-                $mes = substr($cert_data['validTo'],2,2);
-                $dia = substr($cert_data['validTo'],4,2);
-                //obtem o timeestamp da data de validade do certificado
-                $dValPubKey = gmmktime(0,0,0,$mes,$dia,$ano);
-                //compara esse timestamp com o do pfx que foi carregado
-                if( $dValPubKey < $this->pfxTimestamp){
-                    //o arquivo PEM é de um certificado anterior 
-                    //então apagar os arquivos PEM
-                    $flagNovo = true;
-                }//fim teste timestamp
-            }//fim read pubkey
-        } else {
-            //arquivo não localizado
-            $flagNovo = true;
-        }//fim if file pubkey
-        //verificar a chave privada em PEM
-        if(!file_exists($this->priKEY)){
-            //arquivo não encontrado
-            $flagNovo = true;
-        }
-        //verificar o certificado em PEM
-        if(!file_exists($this->certKEY)){
-            //arquivo não encontrado
-            $flagNovo = true;
-        }
-        //criar novos arquivos PEM
-        if ($flagNovo){
-            unlink($this->pubKEY);
-            unlink($this->priKEY);
-            unlink($this->certKEY);
-            //recriar os arquivos pem com o arquivo pfx
-            if (!file_put_contents($this->priKEY,$x509certdata['pkey'])) {
-                $msg = "Impossivel gravar no diretório!!! Permissão negada!!";
-                $this->__setError($msg);
-                if ($this->exceptions) {
+            if ($testaVal){
+                //verifica sua validade
+                if ( !$aResp = $this->__validCerts($x509certdata['cert']) ){
+                     $msg = "Certificado invalido!! - " . $aResp['error'];
                     throw new nfephpException($msg);
                 }
-                return false;
             }    
-            $n = file_put_contents($this->pubKEY,$x509certdata['cert']);
-            $n = file_put_contents($this->certKEY,$x509certdata['pkey']."\r\n".$x509certdata['cert']);                    
+            //aqui verifica se existem as chaves em formato PEM
+            //se existirem pega a data da validade dos arquivos PEM 
+            //e compara com a data de validade do PFX
+            //caso a data de validade do PFX for maior que a data do PEM
+            //deleta dos arquivos PEM, recria e prossegue
+            $flagNovo = false;
+            if(file_exists($this->pubKEY)){
+                $cert = file_get_contents($this->pubKEY);
+                if (!$data = openssl_x509_read($cert)){
+                    //arquivo não pode ser lido como um certificado 
+                    //então deletar
+                    $flagNovo = true;
+                } else {
+                    //pegar a data de validade do mesmo
+                    $cert_data = openssl_x509_parse($data);
+                    // reformata a data de validade;
+                    $ano = substr($cert_data['validTo'],0,2);
+                    $mes = substr($cert_data['validTo'],2,2);
+                    $dia = substr($cert_data['validTo'],4,2);
+                    //obtem o timeestamp da data de validade do certificado
+                    $dValPubKey = gmmktime(0,0,0,$mes,$dia,$ano);
+                    //compara esse timestamp com o do pfx que foi carregado
+                    if( $dValPubKey < $this->pfxTimestamp){
+                        //o arquivo PEM é de um certificado anterior 
+                        //então apagar os arquivos PEM
+                        $flagNovo = true;
+                    }//fim teste timestamp
+                }//fim read pubkey
+            } else {
+                //arquivo não localizado
+                $flagNovo = true;
+            }//fim if file pubkey
+            //verificar a chave privada em PEM
+            if(!file_exists($this->priKEY)){
+                //arquivo não encontrado
+                $flagNovo = true;
+            }
+            //verificar o certificado em PEM
+            if(!file_exists($this->certKEY)){
+                //arquivo não encontrado
+                $flagNovo = true;
+            }
+            //criar novos arquivos PEM
+            if ($flagNovo){
+                unlink($this->pubKEY);
+                unlink($this->priKEY);
+                unlink($this->certKEY);
+                //recriar os arquivos pem com o arquivo pfx
+                if (!file_put_contents($this->priKEY,$x509certdata['pkey'])) {
+                    $msg = "Impossivel gravar no diretório!!! Permissão negada!!";
+                    throw new nfephpException($msg);
+                }    
+                $n = file_put_contents($this->pubKEY,$x509certdata['cert']);
+                $n = file_put_contents($this->certKEY,$x509certdata['pkey']."\r\n".$x509certdata['cert']);                    
+            }
+        } catch (nfephpException $e) {
+            $this->__setError($e->getMessage());
+            if ($this->exceptions) {
+                throw $e;
+            }
+            return false;
         }
         return true;
     } //fim __loadCerts
@@ -4004,62 +3989,61 @@ class ToolsNFePHP {
     * certificados de forma a garantir que sempre estejam validos
     *
     * @name __validCerts
-    * @version  1.0.4
-    * @package  NFePHP
-    * @author Roberto L. Machado <linux.rlm at gmail dot com>
     * @param    string  $cert Certificado digital no formato pem
-    * @return	array ['status'=>true,'meses'=>8,'dias'=>245]
+    * @param    array   $aRetorno variavel passa por referência Array com os dados do certificado
+    * @return	boolean true ou false
     */
-    protected function __validCerts($cert=''){
-        if ($cert == ''){
-            $msg = "O certificado é um parâmetro obrigatorio.";
-            $this->__setError($msg);
-            if ($this->exceptions) {
+    protected function __validCerts($cert='',&$aRetorno=''){
+        try{
+            if ($cert == ''){
+                $msg = "O certificado é um parâmetro obrigatorio.";
                 throw new nfephpException($msg);
+            }
+            if (!$data = openssl_x509_read($cert)){
+                $msg = "O certificado não pode ser lido pelo SSL - $cert .";
+                throw new nfephpException($msg);
+            }
+            $flagOK = true;
+            $errorMsg = "";
+            $cert_data = openssl_x509_parse($data);
+            // reformata a data de validade;
+            $ano = substr($cert_data['validTo'],0,2);
+            $mes = substr($cert_data['validTo'],2,2);
+            $dia = substr($cert_data['validTo'],4,2);
+            //obtem o timestamp da data de validade do certificado
+            $dValid = gmmktime(0,0,0,$mes,$dia,$ano);
+            // obtem o timestamp da data de hoje
+            $dHoje = gmmktime(0,0,0,date("m"),date("d"),date("Y"));
+            // compara a data de validade com a data atual
+            if ($dValid < $dHoje ){
+                $flagOK = false;
+                $errorMsg = "A Validade do certificado expirou em ["  . $dia.'/'.$mes.'/'.$ano . "]";
+            } else {
+                $flagOK = $flagOK && true;
+            }
+            //diferença em segundos entre os timestamp
+            $diferenca = $dValid - $dHoje;
+            // convertendo para dias
+            $diferenca = round($diferenca /(60*60*24),0);
+            //carregando a propriedade
+            $daysToExpire = $diferenca;
+            // convertendo para meses e carregando a propriedade
+            $m = ($ano * 12 + $mes);
+            $n = (date("y") * 12 + date("m"));
+            //numero de meses até o certificado expirar
+            $monthsToExpire = ($m-$n);
+            $this->certMonthsToExpire = $monthsToExpire;
+            $this->certDaysToExpire = $daysToExpire;
+            $this->pfxTimestamp = $dValid;
+            $aRetorno = array('status'=>$flagOK,'error'=>$errorMsg,'meses'=>$monthsToExpire,'dias'=>$daysToExpire);
+        } catch (nfephpException $e) {
+            $this->__setError($e->getMessage());
+            if ($this->exceptions) {
+                throw $e;
             }
             return false;
         }
-        if (!$data = openssl_x509_read($cert)){
-            $msg = "O certificado não pode ser lido pelo SSL - $cert .";
-            $this->__setError($msg);
-            if ($this->exceptions) {
-                throw new nfephpException($msg);
-            }
-            return false;
-        }
-        $flagOK = true;
-        $errorMsg = "";
-        $cert_data = openssl_x509_parse($data);
-        // reformata a data de validade;
-        $ano = substr($cert_data['validTo'],0,2);
-        $mes = substr($cert_data['validTo'],2,2);
-        $dia = substr($cert_data['validTo'],4,2);
-        //obtem o timeestamp da data de validade do certificado
-        $dValid = gmmktime(0,0,0,$mes,$dia,$ano);
-        // obtem o timestamp da data de hoje
-        $dHoje = gmmktime(0,0,0,date("m"),date("d"),date("Y"));
-        // compara a data de validade com a data atual
-        if ($dValid < $dHoje ){
-            $flagOK = false;
-            $errorMsg = "A Validade do certificado expirou em ["  . $dia.'/'.$mes.'/'.$ano . "]";
-        } else {
-            $flagOK = $flagOK && true;
-        }
-        //diferença em segundos entre os timestamp
-        $diferenca = $dValid - $dHoje;
-        // convertendo para dias
-        $diferenca = round($diferenca /(60*60*24),0);
-        //carregando a propriedade
-        $daysToExpire = $diferenca;
-        // convertendo para meses e carregando a propriedade
-        $m = ($ano * 12 + $mes);
-        $n = (date("y") * 12 + date("m"));
-        //numero de meses até o certificado expirar
-        $monthsToExpire = ($m-$n);
-        $this->certMonthsToExpire = $monthsToExpire;
-        $this->certDaysToExpire = $daysToExpire;
-        $this->pfxTimestamp = $dValid;
-        return array('status'=>$flagOK,'error'=>$errorMsg,'meses'=>$monthsToExpire,'dias'=>$daysToExpire);
+        return true;
     } //fim __validCerts
 
     /**
@@ -4068,33 +4052,34 @@ class ToolsNFePHP {
      * para inclusão do mesmo na tag assinatura do xml
      *
      * @name __cleanCerts
-     * @version 1.0.1
-     * @package NFePHP
-     * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @param    $certFile
-     * @return   string contendo a chave digital limpa
+     * @return   mixed false ou string contendo a chave digital limpa
      * @access   private
      **/
     protected function __cleanCerts($certFile){
-        //carregar a chave publica do arquivo pem
-        if (!$pubKey = file_get_contents($certFile)){
-            $msg = "Arquivo não encontrado - $certFile .";
-            $this->__setError($msg);
-            if ($this->exceptions) {
+        try {
+            //inicializa variavel
+            $data = '';
+            //carregar a chave publica do arquivo pem
+            if (!$pubKey = file_get_contents($certFile)){
+                $msg = "Arquivo não encontrado - $certFile .";
                 throw new nfephpException($msg);
             }
-            return false;
-        }
-        //inicializa variavel
-        $data = '';
-        //carrega o certificado em um array usando o LF como referencia
-        $arCert = explode("\n", $pubKey);
-        foreach ($arCert AS $curData) {
-            //remove a tag de inicio e fim do certificado
-            if (strncmp($curData, '-----BEGIN CERTIFICATE', 22) != 0 && strncmp($curData, '-----END CERTIFICATE', 20) != 0 ) {
-                //carrega o resultado numa string
-                $data .= trim($curData);
+            //carrega o certificado em um array usando o LF como referencia
+            $arCert = explode("\n", $pubKey);
+            foreach ($arCert AS $curData) {
+                //remove a tag de inicio e fim do certificado
+                if (strncmp($curData, '-----BEGIN CERTIFICATE', 22) != 0 && strncmp($curData, '-----END CERTIFICATE', 20) != 0 ) {
+                    //carrega o resultado numa string
+                    $data .= trim($curData);
+                }
             }
+        } catch (nfephpException $e) {
+            $this->__setError($e->getMessage());
+            if ($this->exceptions) {
+                throw $e;
+            }
+            return false;
         }
         return $data;
     }//fim __cleanCerts
