@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.0.42
+ * @version   3.0.43
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -4648,7 +4648,8 @@ class ToolsNFePHP {
     
     /**
      * __trata239
-     * Esta função corrige automaticamente todas as versões dos webservices sempre que ocorrer o erro 239
+     * Esta função corrige automaticamente todas as versões dos 
+     * webservices sempre que ocorrer o erro 238 ou 239
      * no retorno de qualquer requisição aos webservices
      * 
      * @param string $xml xml retornado da SEFAZ
@@ -4660,68 +4661,69 @@ class ToolsNFePHP {
         //quando ocorre esse erro o que está errado é a versão indicada no arquivo nfe_ws2.xml
         // para esse método, então nos resta ler o retorno pegar o numero correto da versão, 
         // comparar com o default e caso sejam diferentes corrigir o arquivo nfe_ws2.xml
-        if ($tpAmb == ''){
-            $tpAmb = $this->tpAmb;
-        }
-        if ($tpAmb == '1'){
-            $sAmbiente = 'producao';
-        } else {
-            //força homologação em qualquer outra situação
-            $sAmbiente = 'homologacao';
-        }
-        if($this->enableSCAN){
-            $UF = 'SCAN';
-        }
-        //habilita verificação de erros
-        libxml_use_internal_errors(true);
-        //limpar erros anteriores que possam estar em memória
-        libxml_clear_errors();        
-        //carrega o xml de retorno com o erro 239
-        $doc = new DOMDocument('1.0', 'utf-8'); //cria objeto DOM
-        $doc->formatOutput = false;
-        $doc->preserveWhiteSpace = false;
-        $doc->loadXML($xml,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
-        //recupera os erros da libxml
-        $errors = libxml_get_errors(); 
-        if (!empty($errors)) { 
-            //houveram erros no xml ou o arquivo não é um xml
-            $msg = "O xml retornado possue erros ou não é um xml.";
-            if ($this->exceptions) {
+        try {
+            if ($tpAmb == ''){
+                $tpAmb = $this->tpAmb;
+            }
+            if ($tpAmb == '1'){
+                $sAmbiente = 'producao';
+            } else {
+                //força homologação em qualquer outra situação
+                $sAmbiente = 'homologacao';
+            }
+            if($this->enableSCAN){
+                $UF = 'SCAN';
+            }
+            //habilita verificação de erros
+            libxml_use_internal_errors(true);
+            //limpar erros anteriores que possam estar em memória
+            libxml_clear_errors();        
+            //carrega o xml de retorno com o erro 239
+            $doc = new DOMDocument('1.0', 'utf-8'); //cria objeto DOM
+            $doc->formatOutput = false;
+            $doc->preserveWhiteSpace = false;
+            $doc->loadXML($xml,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
+            //recupera os erros da libxml
+            $errors = libxml_get_errors(); 
+            if (!empty($errors)) { 
+                //houveram erros no xml ou o arquivo não é um xml
+                $msg = "O xml retornado possue erros ou não é um xml.";
                 throw new nfephpException($msg, self::STOP_MESSAGE);
             }
-            $this->__setError($msg);
+            $cStat = !empty($doc->getElementsByTagName('cStat')->item(0)->nodeValue) ? $doc->getElementsByTagName('cStat')->item(0)->nodeValue : '';
+            $versao= !empty($doc->getElementsByTagName('versaoDados')->item(0)->nodeValue) ? $doc->getElementsByTagName('versaoDados')->item(0)->nodeValue : ''; 
+            if (($cStat == '239' || $cStat == '238') && $versao != $versaodefault){
+                //realmente as versões estão diferentes => corrigir
+                $nfews = $this->raizDir . 'config' . DIRECTORY_SEPARATOR . $this->xmlURLfile;
+                if (is_file($nfews)){
+                    //carregar o xml com os webservices
+                    $objxml = new SimpleXMLElement($nfews,null,true);
+                    foreach($objxml->UF as $objElem){
+                        //procura dados do UF
+                        if ($objElem->sigla == $UF){
+                            //altera o numero da versão
+                            $objElem->$sAmbiente->$servico->attributes()->version = "$versao";
+                            //grava o xml alterado
+                            if (!file_put_contents($nfews, $objxml->asXML())){
+                                $msg = "A versão do serviço $servico de $UF [$sAmbiente] no arquivo $nfews não foi corrigida.";
+                                throw new nfephpException($msg, self::STOP_MESSAGE);
+                            } else {
+                                break;
+                            }//fim file_put
+                        }//fim elem UF    
+                    }//fim foreach 
+                }//fim is file
+            }//fim cStat ver=ver
+         } catch (nfephpException $e) {
+            $this->__setError($e->getMessage());
+            if ($this->exceptions) {
+                throw $e;
+            }
             return false;
         }
-        $cStat = !empty($doc->getElementsByTagName('cStat')->item(0)->nodeValue) ? $doc->getElementsByTagName('cStat')->item(0)->nodeValue : '';
-        $versao= !empty($doc->getElementsByTagName('versaoDados')->item(0)->nodeValue) ? $doc->getElementsByTagName('versaoDados')->item(0)->nodeValue : ''; 
-        if (($cStat == '239') && $versao != $versaodefault){
-            //realmente as versões estão diferentes => corrigir
-            $nfews = $this->raizDir . 'config' . DIRECTORY_SEPARATOR . $this->xmlURLfile;
-            if (is_file($nfews)){
-                //carregar o xml com os webservices
-                $objxml = new SimpleXMLElement($nfews,null,true);
-                foreach($objxml->UF as $objElem){
-                    //procura dados do UF
-                    if ($objElem->sigla == $UF){
-                        //altera o numero da versão
-                        $objElem->$sAmbiente->$servico->attributes()->version = "$versao";
-                        //grava o xml alterado
-                        if (!file_put_contents($nfews, $objxml->asXML())){
-                            $msg = "A versão do serviço $servico de $UF [$sAmbiente] no arquivo $nfews não foi corrida.";
-                            if ($this->exceptions) {
-                                throw new nfephpException($msg, self::STOP_MESSAGE);
-                            }
-                            $this->__setError($msg);
-                            return false;
-                        } else {
-                            break;
-                        }//fim file_put
-                    }//fim elem UF    
-                }//fim foreach 
-            }//fim is file
-        }//fim cStat ver=ver
         return true;
     }//fim trata 239
+
     
     /**
      * __gunzip2 
