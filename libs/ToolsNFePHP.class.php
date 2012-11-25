@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.0.43
+ * @version   3.0.44
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -2785,215 +2785,195 @@ class ToolsNFePHP {
      * @param number $modSOAP
      */
     public function cancelEvent($chNFe='',$nProt='',$xJust='',$tpAmb='',$modSOAP='2'){
-        //validação dos dados de entrada
-        if($chNFe == '' || $nProt == '' || $xJust == ''){
-            $msg = "Não foi passado algum dos parâmetros necessários ID=$chNFe ou protocolo=$nProt ou justificativa=$xJust.";
-            $this->__setError($msg);
-            if ($this->exceptions) {
+        try{
+            //validação dos dados de entrada
+            if($chNFe == '' || $nProt == '' || $xJust == ''){
+                $msg = "Não foi passado algum dos parâmetros necessários ID=$chNFe ou protocolo=$nProt ou justificativa=$xJust.";
                 throw new nfephpException($msg);
+            }
+            if($tpAmb == ''){
+                $tpAmb = $this->tpAmb;
+            }
+            if (strlen($xJust) < 15){
+                $msg = "A justificativa deve ter pelo menos 15 digitos!!";
+                throw new nfephpException($msg);
+            }
+            if (strlen($xJust) > 255){
+                $msg = "A justificativa deve ter no máximo 255 digitos!!";
+                throw new nfephpException($msg);
+            }
+            if (strlen($chNFe) != 44){
+                $msg = "Uma chave de NFe válida não foi passada como parâmetro $chNFe.";
+                throw new nfephpException($msg);
+            }
+            //estabelece o codigo do tipo de evento CANCELAMENTO
+            $tpEvento = '110111';
+            $descEvento = 'Cancelamento';
+            //para cancelamento o numero sequencia do evento sempre será 1
+            $nSeqEvento = '1';
+            //remove qualquer caracter especial
+            $xJust = $this->__cleanString($xJust);
+            //decompor a chNFe e pegar o tipo de emissão
+            $tpEmiss = substr($chNFe, 34, 1);
+            //verifica se o SCAN esta habilitado
+            if (!$this->enableSCAN){
+                $aURL = $this->aURL;
+            } else {
+                $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . $this->xmlURLfile,$tpAmb,'SCAN');
+            }
+            $numLote = substr(str_replace(',','',number_format(microtime(true)*1000000,0)),0,15);
+            //Data e hora do evento no formato AAAA-MM-DDTHH:MM:SSTZD (UTC)
+            $dhEvento = date('Y-m-d').'T'.date('H:i:s').$this->timeZone;
+            //se o envio for para svan mudar o numero no orgão para 91
+            if ($this->enableSVAN){
+                $cOrgao='90';
+            } else {
+                $cOrgao=$this->cUF;
+            }
+            //montagem do namespace do serviço
+            $servico = 'RecepcaoEvento';
+            //recuperação da versão
+            $versao = $aURL[$servico]['version'];
+            //recuperação da url do serviço
+            $urlservico = $aURL[$servico]['URL'];
+            //recuperação do método
+            $metodo = $aURL[$servico]['method'];
+            //montagem do namespace do serviço
+            $namespace = $this->URLPortal.'/wsdl/'.$servico;
+            //de acordo com o manual versão 5 de março de 2012
+            // 2   +    6     +    44         +   2  = 54 digitos
+            //“ID” + tpEvento + chave da NF-e + nSeqEvento
+            //garantir que existam 2 digitos em nSeqEvento para montar o ID com 54 digitos
+            if (strlen(trim($nSeqEvento))==1){
+                $zenSeqEvento = str_pad($nSeqEvento, 2, "0", STR_PAD_LEFT);
+            } else {
+                $zenSeqEvento = trim($nSeqEvento);
+            }
+            $id = "ID".$tpEvento.$chNFe.$zenSeqEvento;
+            //monta mensagem
+            $Ev='';
+            $Ev .= "<evento xmlns=\"$this->URLPortal\" versao=\"$versao\">";
+            $Ev .= "<infEvento Id=\"$id\">";
+            $Ev .= "<cOrgao>$cOrgao</cOrgao>";
+            $Ev .= "<tpAmb>$tpAmb</tpAmb>";
+            $Ev .= "<CNPJ>$this->cnpj</CNPJ>";
+            $Ev .= "<chNFe>$chNFe</chNFe>";
+            $Ev .= "<dhEvento>$dhEvento</dhEvento>";
+            $Ev .= "<tpEvento>$tpEvento</tpEvento>";
+            $Ev .= "<nSeqEvento>$nSeqEvento</nSeqEvento>";
+            $Ev .= "<verEvento>$versao</verEvento>";
+            $Ev .= "<detEvento versao=\"$versao\">";
+            $Ev .= "<descEvento>$descEvento</descEvento>";
+            $Ev .= "<nProt>$nProt</nProt>";
+            $Ev .= "<xJust>$xJust</xJust>";
+            $Ev .= "</detEvento></infEvento></evento>";
+            //assinatura dos dados
+            $tagid = 'infEvento';
+            $Ev = $this->signXML($Ev, $tagid);
+            $Ev = str_replace('<?xml version="1.0"?>','', $Ev);
+            $Ev = str_replace('<?xml version="1.0" encoding="utf-8"?>','', $Ev);
+            $Ev = str_replace('<?xml version="1.0" encoding="UTF-8"?>','', $Ev);
+            $Ev = str_replace(array("\r","\n","\s"),"", $Ev);
+            //carrega uma matriz temporária com os eventos assinados
+            //montagem dos dados 
+            $dados = '';
+            $dados .= "<envEvento xmlns=\"$this->URLPortal\" versao=\"$versao\">";
+            $dados .= "<idLote>$numLote</idLote>";
+            $dados .= $Ev;
+            $dados .= "</envEvento>";
+            //montagem da mensagem
+            $cabec = "<nfeCabecMsg xmlns=\"$namespace\"><cUF>$this->cUF</cUF><versaoDados>$versao</versaoDados></nfeCabecMsg>";
+            $dados = "<nfeDadosMsg xmlns=\"$namespace\">$dados</nfeDadosMsg>";
+            //grava solicitação em temp
+            $arqName = $this->temDir."$chNFe-$nSeqEvento-eventCanc.xml";
+            if (!file_put_contents($arqName,$Ev)){
+                $msg = "Falha na gravação do arquivo $arqName";
+                $this->__setError($msg);
+            }
+            //envia dados via SOAP
+            if ($modSOAP == '2'){
+                $retorno = $this->__sendSOAP2($urlservico, $namespace, $cabec, $dados, $metodo, $tpAmb);
+            } else {
+                $retorno = $this->__sendSOAP($urlservico, $namespace, $cabec, $dados, $metodo, $tpAmb,$this->UF);
+            }
+            //verifica o retorno
+            if (!$retorno){
+                //não houve retorno
+                $msg = "Nao houve retorno Soap verifique a mensagem de erro e o debug!!";
+                throw new nfephpException($msg);
+            }
+            //tratar dados de retorno
+            $xmlretEvent = new DOMDocument('1.0', 'utf-8'); //cria objeto DOM
+            $xmlretEvent->formatOutput = false;
+            $xmlretEvent->preserveWhiteSpace = false;
+            $xmlretEvent->loadXML($retorno,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
+            $retEvento = $xmlretEvent->getElementsByTagName("retEvento")->item(0);
+            $cStat = !empty($retEvento->getElementsByTagName('cStat')->item(0)->nodeValue) ? $retEvento->getElementsByTagName('cStat')->item(0)->nodeValue : '';
+            $xMotivo = !empty($retEvento->getElementsByTagName('xMotivo')->item(0)->nodeValue) ? $retEvento->getElementsByTagName('xMotivo')->item(0)->nodeValue : '';
+            if ($cStat == ''){
+                //houve erro
+                $msg = "cStat está em branco, houve erro na comunicação Soap verifique a mensagem de erro e o debug!!";
+                throw new nfephpException($msg);
+            }
+            //tratar erro de versão do XML
+            if ($cStat == '238' || $cStat == '239'){
+                $this->__trata239($retorno, $this->UF, $tpAmb, $servico, $versao);
+                $msg = "Versão do arquivo XML não suportada no webservice!!";
+                throw new nfephpException($msg);
+            }    
+            //erro no processamento cStat <> 135
+            if ($cStat != 135 ){
+                //se cStat <> 135 houve erro e o lote foi rejeitado
+                $msg = "Retorno de ERRO: $cStat - $xMotivo";
+                throw new nfephpException($msg);
+            }
+            //o evento foi aceito cStat == 135
+            //carregar o evento
+            $xmlenvEvento = new DOMDocument('1.0', 'utf-8'); //cria objeto DOM
+            $xmlenvEvento->formatOutput = false;
+            $xmlenvEvento->preserveWhiteSpace = false;
+            $xmlenvEvento->loadXML($Ev,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
+            $evento = $xmlenvEvento->getElementsByTagName("evento")->item(0);
+            //Processo completo solicitação + protocolo
+            $xmlprocEvento = new DOMDocument('1.0', 'utf-8');; //cria objeto DOM
+            $xmlprocEvento->formatOutput = false;
+            $xmlprocEvento->preserveWhiteSpace = false;
+            //cria a tag procEventoNFe
+            $procEventoNFe = $xmlprocEvento->createElement('procEventoNFe');
+            $xmlprocEvento->appendChild($procEventoNFe);
+            //estabele o atributo de versão
+            $eventProc_att1 = $procEventoNFe->appendChild($xmlprocEvento->createAttribute('versao'));
+            $eventProc_att1->appendChild($xmlprocEvento->createTextNode($versao));
+            //estabelece o atributo xmlns
+            $eventProc_att2 = $procEventoNFe->appendChild($xmlprocEvento->createAttribute('xmlns'));
+            $eventProc_att2->appendChild($xmlprocEvento->createTextNode($this->URLportal));
+            //carrega o node evento
+            $node1 = $xmlprocEvento->importNode($evento, true);
+            $procEventoNFe->appendChild($node1);
+            //carrega o node retEvento
+            $node2 = $xmlprocEvento->importNode($retEvento, true);
+            $procEventoNFe->appendChild($node2);
+            //salva o xml como string em uma variável
+            $procXML = $xmlprocEvento->saveXML();
+            //remove as informações indesejadas
+            $procXML = str_replace("xmlns:default=\"http://www.w3.org/2000/09/xmldsig#\"",'',$procXML);
+            $procXML = str_replace('default:','',$procXML);
+            $procXML = str_replace(':default','',$procXML);
+            $procXML = str_replace("\n",'',$procXML);
+            $procXML = str_replace("\r",'',$procXML);
+            $procXML = str_replace("\s",'',$procXML);
+            //salva o arquivo xml
+            $arqName = $this->canDir."$chNFe-$nSeqEvento-procCanc.xml";
+            if (!file_put_contents($arqName, $procXML)){
+                $msg = "Falha na gravação do arquivo $arqName";
+                $this->__setError($msg);
+            }
+        } catch (nfephpException $e) {
+            $this->__setError($e->getMessage());
+            if ($this->exceptions) {
+                throw $e;
             }
             return false;
-        }
-        if($tpAmb == ''){
-            $tpAmb = $this->tpAmb;
-        }
-        if (strlen($xJust) < 15){
-            $msg = "A justificativa deve ter pelo menos 15 digitos!!";
-            $this->__setError($msg);
-            if ($this->exceptions) {
-                throw new nfephpException($msg);
-            }
-            return false;
-        }
-        if (strlen($xJust) > 255){
-            $msg = "A justificativa deve ter no máximo 255 digitos!!";
-            $this->__setError($msg);
-            if ($this->exceptions) {
-                throw new nfephpException($msg);
-            }
-            return false;
-        }
-        if (strlen($chNFe) != 44){
-            $msg = "Uma chave de NFe válida não foi passada como parâmetro $chNFe.";
-            $this->__setError($msg);
-            if ($this->exceptions) {
-                throw new nfephpException($msg);
-            }
-            return false;
-        }
-        //estabelece o codigo do tipo de evento CANCELAMENTO
-        $tpEvento = '110111';
-        $descEvento = 'Cancelamento';
-        //para cancelamento o numero sequencia do evento sempre será 1
-        $nSeqEvento = '1';
-        //remove qualquer caracter especial
-        $xJust = $this->__cleanString($xJust);
-        //decompor a chNFe e pegar o tipo de emissão
-        $tpEmiss = substr($chNFe, 34, 1);
-        //verifica se o SCAN esta habilitado
-        if (!$this->enableSCAN){
-            $aURL = $this->aURL;
-        } else {
-            $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . $this->xmlURLfile,$tpAmb,'SCAN');
-        }
-        $numLote = substr(str_replace(',','',number_format(microtime(true)*1000000,0)),0,15);
-        //Data e hora do evento no formato AAAA-MM-DDTHH:MM:SSTZD (UTC)
-        $dhEvento = date('Y-m-d').'T'.date('H:i:s').$this->timeZone;
-        //se o envio for para svan mudar o numero no orgão para 91
-        if ($this->enableSVAN){
-            $cOrgao='91';
-        } else {
-            $cOrgao=$this->cUF;
-        }
-        //montagem do namespace do serviço
-        $servico = 'RecepcaoEvento';
-        //recuperação da versão
-        $versao = $aURL[$servico]['version'];
-        //recuperação da url do serviço
-        $urlservico = $aURL[$servico]['URL'];
-        //recuperação do método
-        $metodo = $aURL[$servico]['method'];
-        //montagem do namespace do serviço
-        $namespace = $this->URLPortal.'/wsdl/'.$servico;
-        //de acordo com o manual versão 5 de março de 2012
-        // 2   +    6     +    44         +   2  = 54 digitos
-        //“ID” + tpEvento + chave da NF-e + nSeqEvento
-        //garantir que existam 2 digitos em nSeqEvento para montar o ID com 54 digitos
-        if (strlen(trim($nSeqEvento))==1){
-            $zenSeqEvento = str_pad($nSeqEvento, 2, "0", STR_PAD_LEFT);
-        } else {
-            $zenSeqEvento = trim($nSeqEvento);
-        }
-        $id = "ID".$tpEvento.$chNFe.$zenSeqEvento;
-        //monta mensagem
-        $Ev='';
-        $Ev .= "<evento xmlns=\"$this->URLPortal\" versao=\"$versao\">";
-        $Ev .= "<infEvento Id=\"$id\">";
-        $Ev .= "<cOrgao>$cOrgao</cOrgao>";
-        $Ev .= "<tpAmb>$tpAmb</tpAmb>";
-        $Ev .= "<CNPJ>$this->cnpj</CNPJ>";
-        $Ev .= "<chNFe>$chNFe</chNFe>";
-        $Ev .= "<dhEvento>$dhEvento</dhEvento>";
-        $Ev .= "<tpEvento>$tpEvento</tpEvento>";
-        $Ev .= "<nSeqEvento>$nSeqEvento</nSeqEvento>";
-        $Ev .= "<verEvento>$versao</verEvento>";
-        $Ev .= "<detEvento versao=\"$versao\">";
-        $Ev .= "<descEvento>$descEvento</descEvento>";
-        $Ev .= "<nProt>$nProt</nProt>";
-        $Ev .= "<xJust>$xJust</xJust>";
-        $Ev .= "</detEvento></infEvento></evento>";
-        //assinatura dos dados
-        $tagid = 'infEvento';
-        $Ev = $this->signXML($Ev, $tagid);
-        $Ev = str_replace('<?xml version="1.0"?>','', $Ev);
-        $Ev = str_replace('<?xml version="1.0" encoding="utf-8"?>','', $Ev);
-        $Ev = str_replace('<?xml version="1.0" encoding="UTF-8"?>','', $Ev);
-        $Ev = str_replace(array("\r","\n","\s"),"", $Ev);
-        //carrega uma matriz temporária com os eventos assinados
-        //montagem dos dados 
-        $dados = '';
-        $dados .= "<envEvento xmlns=\"$this->URLPortal\" versao=\"$versao\">";
-        $dados .= "<idLote>$numLote</idLote>";
-        $dados .= $Ev;
-        $dados .= "</envEvento>";
-        //montagem da mensagem
-        $cabec = "<nfeCabecMsg xmlns=\"$namespace\"><cUF>$this->cUF</cUF><versaoDados>$versao</versaoDados></nfeCabecMsg>";
-        $dados = "<nfeDadosMsg xmlns=\"$namespace\">$dados</nfeDadosMsg>";
-        //grava solicitação em temp
-        $arqName = $this->temDir."$chNFe-$nSeqEvento-eventCanc.xml";
-        if (!file_put_contents($arqName,$Ev)){
-            $msg = "Falha na gravação do arquivo $arqName";
-            $this->__setError($msg);
-            if ($this->exceptions) {
-                throw new nfephpException($msg);
-            }
-        }
-        //envia dados via SOAP
-        if ($modSOAP == '2'){
-            $retorno = $this->__sendSOAP2($urlservico, $namespace, $cabec, $dados, $metodo, $tpAmb);
-        } else {
-            $retorno = $this->__sendSOAP($urlservico, $namespace, $cabec, $dados, $metodo, $tpAmb,$this->UF);
-        }
-        //verifica o retorno
-        if (!$retorno){
-            //não houve retorno
-            $msg = "Nao houve retorno Soap verifique a mensagem de erro e o debug!!";
-            $this->__setError($msg);
-            if ($this->exceptions) {
-                throw new nfephpException($msg);
-            }
-            return false;
-        }
-        //tratar dados de retorno
-        $xmlretEvent = new DOMDocument('1.0', 'utf-8'); //cria objeto DOM
-        $xmlretEvent->formatOutput = false;
-        $xmlretEvent->preserveWhiteSpace = false;
-        $xmlretEvent->loadXML($retorno,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
-        $retEvento = $xmlretEvent->getElementsByTagName("retEvento")->item(0);
-        $cStat = !empty($retEvento->getElementsByTagName('cStat')->item(0)->nodeValue) ? $retEvento->getElementsByTagName('cStat')->item(0)->nodeValue : '';
-        $xMotivo = !empty($retEvento->getElementsByTagName('xMotivo')->item(0)->nodeValue) ? $retEvento->getElementsByTagName('xMotivo')->item(0)->nodeValue : '';
-        if ($cStat == ''){
-            //houve erro
-            $msg = "cStat está em branco, houve erro na comunicação Soap verifique a mensagem de erro e o debug!!";
-            $this->__setError($msg);
-            if ($this->exceptions) {
-                throw new nfephpException($msg);
-            }
-            return false;
-        }
-        //erro no processamento cStat <> 135
-        if ($cStat != 135 ){
-            //se cStat <> 135 houve erro e o lote foi rejeitado
-            $msg = "Retorno de ERRO: $cStat - $xMotivo";
-            $this->__setError($msg);
-            if ($this->exceptions) {
-                throw new nfephpException($msg);
-            }
-            return false;
-        }
-        //o evento foi aceito cStat == 135
-        //carregar o evento
-        $xmlenvEvento = new DOMDocument('1.0', 'utf-8'); //cria objeto DOM
-        $xmlenvEvento->formatOutput = false;
-        $xmlenvEvento->preserveWhiteSpace = false;
-        $xmlenvEvento->loadXML($Ev,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
-        $evento = $xmlenvEvento->getElementsByTagName("evento")->item(0);
-        //Processo completo solicitação + protocolo
-        $xmlprocEvento = new DOMDocument('1.0', 'utf-8');; //cria objeto DOM
-        $xmlprocEvento->formatOutput = false;
-        $xmlprocEvento->preserveWhiteSpace = false;
-        //cria a tag procEventoNFe
-        $procEventoNFe = $xmlprocEvento->createElement('procEventoNFe');
-        $xmlprocEvento->appendChild($procEventoNFe);
-        //estabele o atributo de versão
-        $eventProc_att1 = $procEventoNFe->appendChild($xmlprocEvento->createAttribute('versao'));
-        $eventProc_att1->appendChild($xmlprocEvento->createTextNode($versao));
-        //estabelece o atributo xmlns
-        $eventProc_att2 = $procEventoNFe->appendChild($xmlprocEvento->createAttribute('xmlns'));
-        $eventProc_att2->appendChild($xmlprocEvento->createTextNode($this->URLportal));
-        //carrega o node evento
-        $node1 = $xmlprocEvento->importNode($evento, true);
-        $procEventoNFe->appendChild($node1);
-        //carrega o node retEvento
-        $node2 = $xmlprocEvento->importNode($retEvento, true);
-        $procEventoNFe->appendChild($node2);
-        //salva o xml como string em uma variável
-        $procXML = $xmlprocEvento->saveXML();
-        //remove as informações indesejadas
-        $procXML = str_replace("xmlns:default=\"http://www.w3.org/2000/09/xmldsig#\"",'',$procXML);
-        $procXML = str_replace('default:','',$procXML);
-        $procXML = str_replace(':default','',$procXML);
-        $procXML = str_replace("\n",'',$procXML);
-        $procXML = str_replace("\r",'',$procXML);
-        $procXML = str_replace("\s",'',$procXML);
-        //salva o arquivo xml
-        $arqName = $this->canDir."$chNFe-$nSeqEvento-procCanc.xml";
-        if (!file_put_contents($arqName, $procXML)){
-            $msg = "Falha na gravação do arquivo $arqName";
-            $this->__setError($msg);
-            if ($this->exceptions) {
-                throw new nfephpException($msg);
-            }
         }
         return $procXML;
     } //fim cancEvent
