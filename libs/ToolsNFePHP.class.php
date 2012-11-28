@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.0.44
+ * @version   3.0.45
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -1850,9 +1850,6 @@ class ToolsNFePHP {
      * Caso $this->cStat == 105 Tentar novamente mais tarde
      *
      * @name getProtocol
-     * @version 2.2.12
-     * @package NFePHP
-     * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @param	string   $recibo numero do recibo do envio do lote
      * @param	string   $chave  numero da chave da NFe de 44 digitos
      * @param   string   $tpAmb  numero do ambiente 1-producao e 2-homologação
@@ -1872,10 +1869,12 @@ class ToolsNFePHP {
             $tpAmb = '2';
         }
         $aURL = $this->aURL;
+        $ctpEmissao = '';
         //verifica se a chave foi passada
         if($chave != ''){
             //se sim extrair o cUF da chave
             $cUF = substr($chave,0,2);
+            $ctpEmissao = substr($chave,34,1);
             //testar para ver se é o mesmo do emitente
             if($cUF != $this->cUF || $tpAmb != $this->tpAmb){
                 //se não for o mesmo carregar a sigla
@@ -1885,7 +1884,7 @@ class ToolsNFePHP {
             }
         }
         //verifica se o SCAN esta habilitado
-        if ($this->enableSCAN){
+        if ($this->enableSCAN || $ctpEmissao == '3'){
             $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . $this->xmlURLfile,$tpAmb,'SCAN');
         }        
         if ($recibo == '' && $chave == '') {
