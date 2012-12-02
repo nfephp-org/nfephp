@@ -23,7 +23,7 @@
  *
  * @package   NFePHP
  * @name      grava_config.php
- * @version   1.31
+ * @version   1.3.3
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2011 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -56,19 +56,26 @@ $texto .= "//esta variável contêm o nome do arquivo com todas as url dos webse
 $texto .= "//incluindo a versao dos mesmos, pois alguns estados não estão utilizando as\n";
 $texto .= "//mesmas versões\n";
 $texto .= '$arquivoURLxml="' . $_POST['urlws'] . '"' .";\n";
+$texto .= '$arquivoURLxmlCTe="' . $_POST['urlwscte'] . '"' .";\n";
 $texto .= "//Diretório onde serão mantidos os arquivos com as NFe em xml\n";
 $texto .= "//a partir deste diretório serão montados todos os subdiretórios do sistema\n";
-$texto .= "//de manipulação e armazenamento das NFe\n";
+$texto .= "//de manipulação e armazenamento das NFe e CTe\n";
 if ($flagWIN){
     $texto .= '$arquivosDir="' . addcslashes($_POST['dirnfe'], "\\") . '"' . ";\n";
 } else {
     $texto .= '$arquivosDir="' . $_POST['dirnfe'] . '"' .";\n";
-}    
+}
+if ($flagWIN){
+    $texto .= '$arquivosDirCTe="' . addcslashes($_POST['dircte'], "\\") . '"' . ";\n";
+} else {
+    $texto .= '$arquivosDirCTe="' . $_POST['dircte'] . '"' .";\n";
+}
 $texto .= "//URL base da API, passa a ser necessária em virtude do uso dos arquivos wsdl\n";
 $texto .= "//para acesso ao ambiente nacional\n";
 $texto .= '$baseurl="' . $_POST['urlapi'] . '"' .";\n";
 $texto .= "//Versão em uso dos shemas utilizados para validação dos xmls\n";
 $texto .= '$schemes="' . $_POST['schema'] . '"' .";\n";
+$texto .= '$schemesCTe="' . $_POST['schemacte'] . '"' .";\n";
 $texto .= "\n";
 $texto .= "//###############################\n";
 $texto .= "//###### EMPRESA EMITENTE #######\n";
@@ -137,6 +144,22 @@ $texto .= '$danfeFonte="' . $_POST['fonte'] . '"' ."; //define a fonte do Danfe 
 $texto .= '$danfePrinter="' . $_POST['printer'] . '"' ."; //define a impressora para impressão da Danfe \n";
 $texto .= "\n";
 $texto .= "//###############################\n";
+$texto .= "//############ DACTE ############\n";
+$texto .= "//###############################\n";
+$texto .= "//Configuração do DACTE\n";
+$texto .= '$dacteFormato="' . $_POST['formatocte'] . '"' ."; //P-Retrato L-Paisagem \n";
+$texto .= '$dactePapel="' . $_POST['papelcte'] . '"' ."; //Tipo de papel utilizado \n";
+$texto .= '$dacteCanhoto=' . $_POST['canhotocte'] . '' ."; //se verdadeiro imprime o canhoto na DANFE \n";
+if ($flagWIN){
+    $texto .= '$dacteLogo="' . addcslashes($_POST['logocte'], "\\") . '"' ."; //passa o caminho para o LOGO da empresa \n";
+} else {
+    $texto .= '$dacteLogo="' . $_POST['logocte'] . '"' ."; //passa o caminho para o LOGO da empresa \n";
+}    
+$texto .= '$dacteLogoPos="' . $_POST['logoposcte'] . '"' ."; //define a posição do logo na Danfe L-esquerda, C-dentro e R-direta \n";
+$texto .= '$dacteFonte="' . $_POST['fontecte'] . '"' ."; //define a fonte do Danfe limitada as fontes compiladas no FPDF (Times) \n";
+$texto .= '$dactePrinter="' . $_POST['printercte'] . '"' ."; //define a impressora para impressão da Dacte \n";
+$texto .= "\n";
+$texto .= "//###############################\n";
 $texto .= "//############ EMAIL ############\n";
 $texto .= "//###############################\n";
 $texto .= "//Configuração do email\n";
@@ -156,6 +179,7 @@ $texto .= '$mailIMAPport="' . $_POST['mailimapport'] . '"' ."; //porta do servid
 $texto .= '$mailIMAPsecurity="' . $_POST['mailimapsecurity'] . '"' ."; //esquema de segurança do servidor IMAP\n";
 $texto .= '$mailIMAPnocerts="' . $_POST['mailimapnocerts'] . '"' ."; //desabilita verificação de certificados do Servidor IMAP\n";
 $texto .= '$mailIMAPbox="' . $_POST['mailimapbox'] . '"' ."; //caixa postal de entrada do servidor IMAP\n";
+$texto .= '$mailLayoutFile="' . $_POST['maillayout'] . '"' . "; //layout da mensagem do email\n";
 $texto .= "\n";
 $texto .= "//###############################\n";
 $texto .= "//############ PROXY ############\n";

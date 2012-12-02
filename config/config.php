@@ -55,11 +55,13 @@ $ambiente=2;
 // incluindo a versao dos mesmos, pois alguns estados não estão utilizando as
 // mesmas versões
 $arquivoURLxml='nfe_ws2.xml';
+$arquivoURLxmlCTe="cte_ws1.xml";
 
 // Diretório onde serão mantidos os arquivos com as NFe em xml
 // a partir deste diretório serão montados todos os subdiretórios do sistema
 // de manipulação e armazenamento das NFe. Não utilizar barra no final.
 $arquivosDir='/var/www/nfe';
+$arquivosDirCTe="/var/www/cte";
 
 // URL base da API, passa a ser necessária em virtude do uso dos arquivos wsdl
 // para acesso ao ambiente nacional. Não utilizar barra no final.
@@ -67,6 +69,7 @@ $baseurl='http://localhost/nfephp';
 
 // Versão em uso dos shemas utilizados para validação dos xmls
 $schemes='PL_006n';
+$schemesCTe="PL_CTE_104";
 
 //###############################
 //###### EMPRESA EMITENTE #######
@@ -101,6 +104,18 @@ $danfeLogo='/var/www/nfephp/images/logo.jpg'; //passa o caminho para o LOGO da e
 $danfeLogoPos='L'; //define a posição do logo na Danfe L-esquerda, C-dentro e R-direta
 $danfeFonte='Times'; //define a fonte do Danfe limitada as fontes compiladas no FPDF (Times)
 $danfePrinter='hpteste'; //define a impressora para impressão da Danfe
+
+//###############################
+//############ DACTE ############
+//###############################
+//Configuração do DACTE
+$dacteFormato="P"; //P-Retrato L-Paisagem 
+$dactePapel="A4"; //Tipo de papel utilizado 
+$dacteCanhoto=1; //se verdadeiro imprime o canhoto na DANFE 
+$dacteLogo="/var/www/nfephp/images/logo.jpg"; //passa o caminho para o LOGO da empresa 
+$dacteLogoPos="L"; //define a posição do logo na Danfe L-esquerda, C-dentro e R-direta 
+$dacteFonte="Times"; //define a fonte do Danfe limitada as fontes compiladas no FPDF (Times) 
+$dactePrinter="hpteste"; //define a impressora para impressão da Dacte 
 
 //###############################
 //############ EMAIL ############

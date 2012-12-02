@@ -27,7 +27,7 @@
  * 
  * @package   NFePHP
  * @name      CTeNFePHP
- * @version   1.0.13
+ * @version   1.0.14
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; CTePHP
  * @link      http://www.nfephp.org/
@@ -38,10 +38,10 @@
  *          Bernardo Silva <bernardo at datamex dot com dot br>
  *          Chrystian Toigo <ctoigo at gmail dot com>
  *          Fernando Mertins <fernando.mertins at gmail dot com>
- *          Roberto Spadim  <roberto at spadim dot com dot br>
+ *	    Roberto Spadim  <roberto at spadim dot com dot br>
  *          Rodrigo Rysdyk <rodrigo_rysdyk at hotmail dot com>
- *
- *
+ * 
+ *               
  */
 // Define o caminho base da instalação do sistema
 if (!defined('PATH_ROOT')) {
@@ -74,12 +74,6 @@ class CTeNFePHP {
      * @var string
      */
     public $raizDir = '';
-    /**
-     * cteDir
-     * Diretorio raiz de armazenamento das CTe
-     * @var string
-     */
-    public $cteDir = '';
     /**
      * pdfDir
      * Diretorio onde são armazenados temporariamente as notas em pdf
@@ -473,7 +467,7 @@ class CTeNFePHP {
     private $aliaslist = array(
             'AC' => 'SVRS',
             'AL' => 'SVRS',
-            'AM' => 'AM',
+            'AM' => 'SVRS',
             'AP' => 'SVRS',
             'BA' => 'BA',
             'CE' => 'SVAN',
@@ -606,11 +600,9 @@ class CTeNFePHP {
             $this->dactecanhoto = $aConfig['dacteCanhoto'];
             $this->dactefont = $aConfig['dacteFonte'];
             $this->dacteprinter = $aConfig['dactePrinter'];
-            $this->cteSchemeVer = $aConfig['cteSchemes'];
-            if (isset($aConfig['arquivoURLxmlCTe'])) {
-                $this->xmlURLfile = $aConfig['arquivoURLxmlCTe'];
-            } else {
-                $this->xmlURLfile = $aConfig['arquivoURLxml'];
+            $this->cteSchemeVer = $aConfig['schemesCTe'];
+            if(isset($aConfig['arquivoURLxmlCTe'])){
+		$this->xmlURLfile = $aConfig['arquivoURLxmlCTe'];
             }
             if ($aConfig['proxyIP'] != '') {
                 $this->aProxy = 
@@ -622,8 +614,7 @@ class CTeNFePHP {
                     );
             }
             if ($aConfig['mailFROM'] != '') {
-                $this->aMAIL = 
-                    array(
+                $this->aMAIL = array(
                         'mailFROM' => $aConfig['mailFROM'],
                         'mailHOST' => $aConfig['mailHOST'],
                         'mailUSER' => $aConfig['mailUSER'],
@@ -651,8 +642,7 @@ class CTeNFePHP {
                 $this->certName = $certName;
                 $this->keyPass = $keyPass;
                 $this->passPhrase = $passPhrase;
-                $this->cteDir = $cteDir;
-                $this->arqDir = $arquivosDir;
+                $this->arqDir = $arquivosDirCTe;
                 $this->URLbase = $baseurl;
                 $this->dactelogopath = $dacteLogo;
                 $this->dactelogopos = $dacteLogoPos;
@@ -661,25 +651,21 @@ class CTeNFePHP {
                 $this->dactecanhoto = $dacteCanhoto;
                 $this->dactefont = $dacteFonte;
                 $this->dacteprinter = $dactePrinter;
-                $this->cteSchemeVer = $cteSchemes;
+                $this->cteSchemeVer = $schemesCTe;
                 if(isset($arquivoURLxmlCTe)){
                     $this->xmlURLfile = $arquivoURLxmlCTe;
-                } else {
-                    $this->xmlURLfile = $arquivoURLxml;
                 }
                 if ($proxyIP != '') {
-                    $this->aProxy = 
-                        array(
+                    $this->aProxy = array(
                             'IP' => $proxyIP,
                             'PORT' => $proxyPORT,
                             'USER' => $proxyUSER,
                             'PASS' => $proxyPASS
                         );
                 }
-
+                
                 if ($mailFROM != '') {
-                    $this->aMail = 
-                        array(
+                    $this->aMail = array(
                             'mailFROM' => $mailFROM,
                             'mailHOST' => $mailHOST,
                             'mailUSER' => $mailUSER,
@@ -698,7 +684,6 @@ class CTeNFePHP {
                 return false;
             }
         }
-
         //estabelece o ambiente
         $sAmb = ($this->tpAmb == 2) ? 'homologacao' : 'producao';
         //carrega propriedade com ano e mes ex. 200911
@@ -709,32 +694,30 @@ class CTeNFePHP {
         $this->certsDir =  $this->raizDir . 'certs'. DIRECTORY_SEPARATOR;
         //carrega o caminho para as imagens
         $this->imgDir =  $this->raizDir . 'images'. DIRECTORY_SEPARATOR;
-        
         // Verifica o ultimo caracter da variável $arqDir
         // se não for um DIRECTORY_SEPARATOR então colocar um
-        if (substr($this->arqDir, -1, 1) != DIRECTORY_SEPARATOR)
+        if (substr($this->arqDir, -1, 1) != DIRECTORY_SEPARATOR){
             $this->arqDir .= DIRECTORY_SEPARATOR;
-            // monta a estrutura de diretorios utilizados na manipulação das CTe
-            $this->entDir=$this->arqDir . $sAmb . DIRECTORY_SEPARATOR . 'entradas' . DIRECTORY_SEPARATOR;
-            $this->assDir=$this->arqDir . $sAmb . DIRECTORY_SEPARATOR . 'assinadas' . DIRECTORY_SEPARATOR;        
-            $this->valDir=$this->arqDir . $sAmb . DIRECTORY_SEPARATOR . 'validadas' . DIRECTORY_SEPARATOR;
-            $this->rejDir=$this->arqDir . $sAmb . DIRECTORY_SEPARATOR . 'rejeitadas' . DIRECTORY_SEPARATOR;
-            $this->envDir=$this->arqDir . $sAmb . DIRECTORY_SEPARATOR . 'enviadas' . DIRECTORY_SEPARATOR;
-            $this->aprDir=$this->envDir . 'aprovadas'  . DIRECTORY_SEPARATOR;
-            $this->denDir=$this->envDir . 'denegadas'  . DIRECTORY_SEPARATOR;
-            $this->repDir=$this->envDir . 'reprovadas' . DIRECTORY_SEPARATOR;
-            $this->canDir=$this->arqDir . $sAmb . DIRECTORY_SEPARATOR . 'canceladas' . DIRECTORY_SEPARATOR;
-            $this->inuDir=$this->arqDir . $sAmb . DIRECTORY_SEPARATOR . 'inutilizadas' . DIRECTORY_SEPARATOR;
-            $this->temDir=$this->arqDir . $sAmb . DIRECTORY_SEPARATOR . 'temporarias' . DIRECTORY_SEPARATOR;
-            $this->recDir=$this->arqDir . $sAmb . DIRECTORY_SEPARATOR . 'recebidas' . DIRECTORY_SEPARATOR;
-            $this->conDir=$this->arqDir . $sAmb . DIRECTORY_SEPARATOR . 'consultadas' . DIRECTORY_SEPARATOR;
-            $this->pdfDir=$this->arqDir . $sAmb . DIRECTORY_SEPARATOR . 'pdf' . DIRECTORY_SEPARATOR;
-
+        }    
+        // monta a estrutura de diretorios utilizados na manipulação das CTe
+        $this->entDir=$this->arqDir . $sAmb . DIRECTORY_SEPARATOR . 'entradas' . DIRECTORY_SEPARATOR;
+        $this->assDir=$this->arqDir . $sAmb . DIRECTORY_SEPARATOR . 'assinadas' . DIRECTORY_SEPARATOR;        
+        $this->valDir=$this->arqDir . $sAmb . DIRECTORY_SEPARATOR . 'validadas' . DIRECTORY_SEPARATOR;
+        $this->rejDir=$this->arqDir . $sAmb . DIRECTORY_SEPARATOR . 'rejeitadas' . DIRECTORY_SEPARATOR;
+        $this->envDir=$this->arqDir . $sAmb . DIRECTORY_SEPARATOR . 'enviadas' . DIRECTORY_SEPARATOR;
+        $this->aprDir=$this->envDir . 'aprovadas'  . DIRECTORY_SEPARATOR;
+        $this->denDir=$this->envDir . 'denegadas'  . DIRECTORY_SEPARATOR;
+        $this->repDir=$this->envDir . 'reprovadas' . DIRECTORY_SEPARATOR;
+        $this->canDir=$this->arqDir . $sAmb . DIRECTORY_SEPARATOR . 'canceladas' . DIRECTORY_SEPARATOR;
+        $this->inuDir=$this->arqDir . $sAmb . DIRECTORY_SEPARATOR . 'inutilizadas' . DIRECTORY_SEPARATOR;
+        $this->temDir=$this->arqDir . $sAmb . DIRECTORY_SEPARATOR . 'temporarias' . DIRECTORY_SEPARATOR;
+        $this->recDir=$this->arqDir . $sAmb . DIRECTORY_SEPARATOR . 'recebidas' . DIRECTORY_SEPARATOR;
+        $this->conDir=$this->arqDir . $sAmb . DIRECTORY_SEPARATOR . 'consultadas' . DIRECTORY_SEPARATOR;
+        $this->pdfDir=$this->arqDir . $sAmb . DIRECTORY_SEPARATOR . 'pdf' . DIRECTORY_SEPARATOR;
         // Monta a arvore de diretórios necessária e estabelece permissões de acesso
         if (!is_dir($this->arqDir)){ 
             mkdir($this->arqDir, 0777);
         }
-        
         if (!is_dir($this->arqDir . DIRECTORY_SEPARATOR . $sAmb)){
             mkdir($this->arqDir . DIRECTORY_SEPARATOR . $sAmb, 0777);
         }
@@ -780,7 +763,6 @@ class CTeNFePHP {
         if (!is_dir($this->pdfDir)){
             mkdir($this->pdfDir, 0777);
         }
-
         // Carregar uma matriz com os dados para acesso aos WebServices SEFAZ
         $this->aURL = $this->loadSEFAZ($this->raizDir . 'config' . DIRECTORY_SEPARATOR . $this->xmlURLfile, $this->tpAmb, $this->UF);
         // Se houver erro no carregamento dos certificados passe para erro
@@ -790,26 +772,26 @@ class CTeNFePHP {
         return true;
     } //fim __construct
 
-/**
-    * validXML
-    * Verifica o xml com base no xsd
-    * Esta função pode validar qualquer arquivo xml do sistema de CTe
-    * Há um bug no libxml2 para versões anteriores a 2.7.3
-    * que causa um falso erro na validação da CTe devido ao
-    * uso de uma marcação no arquivo tiposBasico_v1.02.xsd
-    * onde se le {0 , } substituir por *
-    *
-    * @name validXML
-    * @param    string  $docxml  string contendo o arquivo xml a ser validado
-    * @param    string  $xsdfile Path completo para o arquivo xsd
-    * @return   array   ['status','error']
-    */
+    /**
+     * validXML
+     * Verifica o xml com base no xsd
+     * Esta função pode validar qualquer arquivo xml do sistema de CTe
+     * Há um bug no libxml2 para versões anteriores a 2.7.3
+     * que causa um falso erro na validação da CTe devido ao
+     * uso de uma marcação no arquivo tiposBasico_v1.02.xsd
+     * onde se le {0 , } substituir por *
+     *
+     * @name validXML
+     * @param    string  $docxml  string contendo o arquivo xml a ser validado
+     * @param    string  $xsdfile Path completo para o arquivo xsd
+     * @return   array   ['status','error']
+     */
     public function validXML($xml='', $xsdFile='', &$aError){
         $flagOK = true;
         // Habilita a manipulaçao de erros da libxml
         libxml_use_internal_errors(true);
         //verifica se foi passado o xml
-        if(strlen($xml)==0){
+	if(strlen($xml)==0){
             $msg = 'Você deve passar o conteudo do xml assinado como parâmetro.';
             $this->__setError($msg);
             if ($this->exceptions) {
@@ -847,7 +829,7 @@ class CTeNFePHP {
                         break;
                 }
                 $msg .= $intError->message;
-            }
+	    }
             $this->__setError($msg);
             if ($this->exceptions) {
                 throw new nfephpException($msg, self::STOP_MESSAGE);
@@ -887,37 +869,38 @@ class CTeNFePHP {
                 $xsdFile = $aFile[0];
             }
         }
-        // VAMOS PEGAR O XSD DO MODAL BASEADO NO NOME DO ARQUIVO XSD QUE RECEBEMOS, ELE DEVE ESTAR NA MESMA PASTA COM NOME:
-        // cte_v1.04.xsd -> cteModalXXXXXXXX_v1.04.xsd
-        // ou seja 3 primeiras letras iguais, e ultimas 10 letras também, e no meio escrito Modal e o nome do modal...
-        $tmp1=dirname($xsdFile);
-        $tmp2=basename($xsdFile);
-        $tmp_nome_modal=$nfeProc = $dom->getElementsByTagName('modal')->item(0);
-        if(!empty($tmp_nome_modal)){
-            $tmp_nome_modal=$tmp_nome_modal->nodeValue;
-            if($tmp_nome_modal=='01')	$tmp_nome_modal='Rodoviario';
-                elseif($tmp_nome_modal=='02')   $tmp_nome_modal='Aereo';
-                elseif($tmp_nome_modal=='03')   $tmp_nome_modal='Aquaviario';
-                elseif($tmp_nome_modal=='04')   $tmp_nome_modal='Ferroviario';
-                elseif($tmp_nome_modal=='05')   $tmp_nome_modal='Dutoviario';
-                else    $tmp_nome_modal='';
-        }else{
-                $tmp_nome_modal='';
-        }
-        $xsdFile_modal=$tmp1. DIRECTORY_SEPARATOR . substr($tmp2,0,3)."Modal".$tmp_nome_modal.substr($tmp2,-10);
-        if(!is_file($xsdFile_modal)){
-            $msg = "Erro na localização do schema xsd para o modal $tmp_nome_modal.\n";
-            $this->__setError($msg);
-            if ($this->exceptions) {
-                throw new nfephpException($msg, self::STOP_CRITICAL);
-            }
-            $aError[] = "Erro na localização do schema xsd do modal.";
-            return false;
-        }
+	// VAMOS PEGAR O XSD DO MODAL BASEADO NO NOME DO ARQUIVO XSD QUE RECEBEMOS, ELE DEVE ESTAR NA MESMA PASTA COM NOME:
+	//	cte_v1.04.xsd -> cteModalXXXXXXXX_v1.04.xsd
+	// 	ou seja 3 primeiras letras iguais, e ultimas 10 letras também, e no meio escrito Modal e o nome do modal...
+	$tmp1=dirname($xsdFile);
+	$tmp2=basename($xsdFile);
+	$tmp_nome_modal=$nfeProc = $dom->getElementsByTagName('modal')->item(0);
+	if(!empty($tmp_nome_modal)){
+		$tmp_nome_modal=$tmp_nome_modal->nodeValue;
+		if($tmp_nome_modal=='01')	$tmp_nome_modal='Rodoviario';
+		elseif($tmp_nome_modal=='02')	$tmp_nome_modal='Aereo';
+		elseif($tmp_nome_modal=='03')	$tmp_nome_modal='Aquaviario';
+		elseif($tmp_nome_modal=='04')	$tmp_nome_modal='Ferroviario';
+		elseif($tmp_nome_modal=='05')	$tmp_nome_modal='Dutoviario';
+		else				$tmp_nome_modal='';
+	}else{
+		$tmp_nome_modal='';
+	}
+	$xsdFile_modal=$tmp1. DIRECTORY_SEPARATOR . substr($tmp2,0,3)."Modal".$tmp_nome_modal.substr($tmp2,-10);
+	if(!is_file($xsdFile_modal)){
+		$msg = "Erro na localização do schema xsd para o modal $tmp_nome_modal.\n";
+                $this->__setError($msg);
+                if ($this->exceptions) {
+                    throw new nfephpException($msg, self::STOP_CRITICAL);
+                }
+                $aError[] = "Erro na localização do schema xsd do modal.";
+                return false;
+	}
         //limpa erros anteriores
         libxml_clear_errors();
         // valida o xml com o xsd
-        if ( !$dom->schemaValidate($xsdFile) ) {
+	if ( !$dom->schemaValidate($xsdFile) ) {
+
             /**
              * Se não foi possível validar, você pode capturar
              * todos os erros em um array
@@ -930,16 +913,16 @@ class CTeNFePHP {
             if (!isset($Signature)){
                 // remove o erro de falta de assinatura
                 foreach ($aIntErrors as $k=>$intError){
-                    if(strpos($intError->message,'( {http://www.w3.org/2000/09/xmldsig#}Signature )')!==false){
-                        // remove o erro da assinatura, se tiver outro meio melhor (atravez dos erros de codigo) e alguem souber como tratar por eles, por favor contribua
+                    if(strpos($intError->message,'( {http://www.w3.org/2000/09/xmldsig#}Signature )')!==false){	
+                        // remove o erro da assinatura, se tiver outro meio melhor (atravez dos erros de codigo) e alguem souber como tratar por eles, por favor contribua...
                         unset($aIntErrors[$k]);
-                        continue;
+			continue;
                     }
                 }
-                reset($aIntErrors);
+                reset($aIntErrors);            
                 $flagOK = true;
-            }//fim teste Signature
-            $msg = '';
+            }//fim teste Signature    
+	    $msg = '';
             foreach ($aIntErrors as $intError){
                 $flagOK = false;
                 $en = array("{http://www.portalfiscal.inf.br/cte}"
@@ -961,7 +944,7 @@ class CTeNFePHP {
                             ,"one of"
                             ,"This element is not expected. Expected is"                     
                             ,"is not an element of the set");
-
+              
                 $pt = array(""
                             ,"[Erro 'Layout']"
                             ,"O valor"
@@ -981,7 +964,7 @@ class CTeNFePHP {
                             ,"um de"
                             ,"Este elemento não é esperado. Esperado é"
                             ,"não é um dos seguintes possiveis");
-
+                
                 switch ($intError->level) {
                     case LIBXML_ERR_WARNING:
                         $aError[] = " Atençao $intError->code: " . str_replace($en,$pt,$intError->message);
@@ -995,6 +978,7 @@ class CTeNFePHP {
                 }
                 $msg .= str_replace($en,$pt,$intError->message);
             }
+
         } else {
             $flagOK = true;
         }
@@ -1004,35 +988,35 @@ class CTeNFePHP {
                 throw new nfephpException($msg);
             }
         }
-
-        // validar o schema do modal agora.....
-        if($tmp_nome_modal=='Rodoviario')       $tmp_tag='rodo';
-        elseif($tmp_nome_modal=='Aereo')        $tmp_tag='aereo';
-        elseif($tmp_nome_modal=='Aquaviario')   $tmp_tag='aquav';
-        elseif($tmp_nome_modal=='Ferroviario')  $tmp_tag='ferrov';
-        elseif($tmp_nome_modal=='Dutoviario')   $tmp_tag='duto';
-        $tmp_modal=$dom->getElementsByTagName('infModal')->item(0);
-        $tmp_modal2=$tmp_modal->getElementsByTagName($tmp_tag)->item(0);
-        if(empty($tmp_modal2)){
-            $msg = "Erro para localizar a tag do modal $tmp_tag no xml da CTe.\n";
-            $this->__setError($msg);
-            if ($this->exceptions) {
-                throw new nfephpException($msg, self::STOP_CRITICAL);
-            }
-            $aError[] = "Erro para localizar a tag do modal $tmp_tag no xml da CTe.";
-            return false;
-        }
-        // limpa dom antigo...
-        $dom = new DOMDocument('1.0', 'utf-8');
-        $dom->formatOutput = true;
-        $dom->preserveWhiteSpace = false;
-        $tmp_modal2=$dom->importNode( $tmp_modal2 ,true);
-        $dom->appendChild($tmp_modal2);
-
+	
+	// validar o schema do modal agora.....
+	if($tmp_nome_modal=='Rodoviario')	$tmp_tag='rodo';
+	elseif($tmp_nome_modal=='Aereo')	$tmp_tag='aereo';
+	elseif($tmp_nome_modal=='Aquaviario')	$tmp_tag='aquav';
+	elseif($tmp_nome_modal=='Ferroviario')	$tmp_tag='ferrov';
+	elseif($tmp_nome_modal=='Dutoviario')	$tmp_tag='duto';
+	$tmp_modal=$dom->getElementsByTagName('infModal')->item(0);
+	$tmp_modal2=$tmp_modal->getElementsByTagName($tmp_tag)->item(0);
+	if(empty($tmp_modal2)){
+		$msg = "Erro para localizar a tag do modal $tmp_tag no xml da CTe.\n";
+                $this->__setError($msg);
+                if ($this->exceptions) {
+                    throw new nfephpException($msg, self::STOP_CRITICAL);
+                }
+                $aError[] = "Erro para localizar a tag do modal $tmp_tag no xml da CTe.";
+                return false;
+	}
+	// limpa dom antigo...
+	$dom = new DOMDocument('1.0', 'utf-8');
+	$dom->formatOutput = true;
+	$dom->preserveWhiteSpace = false;
+	$tmp_modal2=$dom->importNode( $tmp_modal2 ,true);
+	$dom->appendChild($tmp_modal2);
+	
 	//limpa erros anteriores
         libxml_clear_errors();
         // valida o xml com o xsd
-        if ( !$dom->schemaValidate($xsdFile_modal) ) {
+	if ( !$dom->schemaValidate($xsdFile_modal) ) {
 
             /**
              * Se não foi possível validar, você pode capturar
@@ -1046,17 +1030,17 @@ class CTeNFePHP {
             if (!isset($Signature)){
                 // remove o erro de falta de assinatura
                 foreach ($aIntErrors as $k=>$intError){
-                    if(strpos($intError->message,'( {http://www.w3.org/2000/09/xmldsig#}Signature )')!==false){
+                    if(strpos($intError->message,'( {http://www.w3.org/2000/09/xmldsig#}Signature )')!==false){	
                         // isso é inutil, mas é bom ter por via das duvidas....
-                        // remove o erro da assinatura, se tiver outro meio melhor (atravez dos erros de codigo) e alguem souber como tratar por eles, por favor contribua...
+			// remove o erro da assinatura, se tiver outro meio melhor (atravez dos erros de codigo) e alguem souber como tratar por eles, por favor contribua...
                         unset($aIntErrors[$k]);
-                        continue;
+			continue;
                     }
                 }
                 reset($aIntErrors);
                 $flagOK = true;
-            }//fim teste Signature
-            $msg = '';
+            }//fim teste Signature    
+	    $msg = '';
             foreach ($aIntErrors as $intError){
                 $flagOK = false;
                 $en = array("{http://www.portalfiscal.inf.br/cte}"
@@ -1078,7 +1062,7 @@ class CTeNFePHP {
                             ,"one of"
                             ,"This element is not expected. Expected is"                     
                             ,"is not an element of the set");
-
+              
                 $pt = array(""
                             ,"[Erro 'Layout']"
                             ,"O valor"
@@ -1393,7 +1377,7 @@ class CTeNFePHP {
         // Busca o cUF
         $cUF = $this->cUFlist[$UF];
         // Identificação do serviço
-        $servico = 'CTeStatusServico';
+        $servico = 'CteStatusServico';
         // Recuperação da versão
         $versao = $aURL[$servico]['version'];
         // Recuperação da url do serviço
@@ -1520,7 +1504,7 @@ class CTeNFePHP {
         // Busca o cUF
         $cUF = $this->cUFlist[$UF];
         // Identificação do serviço
-        $servico = 'CTeConsultaCadastro';
+        $servico = 'CteConsultaCadastro';
         // Recuperação da versão
         $versao = $aURL[$servico]['version'];
         // Recuperação da url do serviço
@@ -1575,7 +1559,7 @@ class CTeNFePHP {
             $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . "cte_ws1.xml",$this->tpAmb,'SCAN');
         }
         // Identificação do serviço
-        $servico = 'CTeRecepcao';
+        $servico = 'CteRecepcao';
 		//var_dump($aURL);
         // Recuperação da versão
         $versao = $aURL[$servico]['version'];
@@ -1695,7 +1679,7 @@ class CTeNFePHP {
         if ($recibo != '' && $chave == '') {
             // Buscar os protocolos pelo numero do recibo do lote
             // Identificação do serviço
-            $servico = 'CTeRetRecepcao';
+            $servico = 'CteRetRecepcao';
             // Recuperação da versão
             $versao = $aURL[$servico]['version'];
             // Recuperação da url do serviço
@@ -1715,7 +1699,7 @@ class CTeNFePHP {
         if ($recibo == '' &&  $chave != '') {
             // Buscar o protocolo pelo numero da chave de acesso
             // Identificação do serviço
-            $servico = 'CTeConsulta';
+            $servico = 'CteConsulta';
             // Recuperação da versão
             $versao = $aURL[$servico]['version'];
             // Recuperação da url do serviço
@@ -1910,7 +1894,7 @@ class CTeNFePHP {
             }
         }
         // Identificação do serviço
-        $servico = 'CTeInutilizacao';
+        $servico = 'CteInutilizacao';
         // Recuperação da versão
         $versao = $aURL[$servico]['version'];
         // Recuperação da url do serviço
@@ -2028,7 +2012,7 @@ class CTeNFePHP {
             $aURL = $this->aURL;
         }    
         // Identificação do serviço
-        $servico = 'CTeCancelamento';
+        $servico = 'CteCancelamento';
         // Recuperação da versão
         $versao = $aURL[$servico]['version'];
         // Recuperação da url do serviço
@@ -2793,22 +2777,22 @@ class CTeNFePHP {
             //monta a terminação do URL
             switch ($metodo){
                 case 'cteRecepcaoLote2':
-                    $servico = "CTeRecepcao";
+                    $servico = "CteRecepcao";
                     break;
                 case 'cteRetRecepcao2':
-                    $servico = "CTeRetRecepcao";
+                    $servico = "CteRetRecepcao";
                     break;
                 case 'cteCancelamentoNF2':
-                    $servico = "CTeCancelamento";
+                    $servico = "CteCancelamento";
                     break;
                 case 'cteInutilizacaoNF2':
-                    $servico = "CTeInutilizacao";
+                    $servico = "CteInutilizacao";
                     break;
                 case 'cteConsultaNF2':
-                    $servico = "CTeConsulta";
+                    $servico = "CteConsulta";
                     break;
                 case 'cteStatusServicoNF2':
-                    $servico = "CTeStatusServico";
+                    $servico = "CteStatusServico";
                     break;
                 case 'consultaCadastro':
                     $servico = "CadConsultaCadastro";
@@ -2963,12 +2947,8 @@ class CTeNFePHP {
     private function __setError($msg){
         $this->errMsg .= "$msg\n";
         $this->errStatus = true;
-    }
-
-
-
-} //fim classe ToolsNFePHP
-
+    } 
+} //fim classe CTeNFePHP
 /**
  * Classe complementar
  * necessária para a comunicação SOAP 1.2
@@ -2981,15 +2961,15 @@ class CTeNFePHP {
  *
  */
 if(class_exists("SoapClient")){
-    class CTeSOAP2Client extends SoapClient {
-        function __doRequest($request, $location, $action, $version) {
-            $request = str_replace(':ns1', '', $request);
-            $request = str_replace('ns1:', '', $request);
-            $request = str_replace("\n", '', $request);
-            $request = str_replace("\r", '', $request);
-            return parent::__doRequest($request, $location, $action, $version);
-        }
-    } // Fim CTeSOAP2Client
+	class CTeSOAP2Client extends SoapClient {
+	    function __doRequest($request, $location, $action, $version) {
+		$request = str_replace(':ns1', '', $request);
+		$request = str_replace('ns1:', '', $request);
+		$request = str_replace("\n", '', $request);
+		$request = str_replace("\r", '', $request);
+		return parent::__doRequest($request, $location, $action, $version);
+	    }
+	} // Fim CTeSOAP2Client
 }
 
 /**
@@ -3001,12 +2981,12 @@ if(class_exists("SoapClient")){
  * 
  */
 if(!class_exists('nfephpException')){
-    class nfephpException extends Exception {
-        public function errorMessage() {
-            $errorMsg = $this->getMessage()."\n";
-            return $errorMsg;
-        }
-    }
+	class nfephpException extends Exception {
+	    public function errorMessage() {
+		$errorMsg = $this->getMessage()."\n";
+		return $errorMsg;
+	    }
+	}
 }
 
 ?>
