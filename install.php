@@ -23,7 +23,7 @@
  *
  * @package   NFePHP
  * @name      install.php
- * @version   1.3.3
+ * @version   1.3.4
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2011 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -572,7 +572,7 @@ class moduleCheck {
           <tr bgcolor="#FFFFCC">
             <td>Diretorio config</td>
             <td bgcolor="<?php echo $cdConf;?>"><div align="center"><?php echo $wdConf;?></div></td>
-            <td bgcolor="#FFFFCC">O diret&oacute;rio config e seu conte&uacute;do devem ter premiss&atilde;o de escrita</td>
+            <td bgcolor="#FFFFCC">O diret&oacute;rio config e seu conte&uacute;do devem ter permiss&atilde;o de escrita</td>
           </tr>
           <tr>
             <td>&nbsp;</td>
