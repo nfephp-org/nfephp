@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.0.47
+ * @version   3.0.48
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -2107,9 +2107,10 @@ class ToolsNFePHP {
      * @param string $ultNSU Último NSU recebido pela Empresa. Caso seja informado com zero, ou com um NSU muito antigo, a consulta retornará unicamente as notas fiscais que tenham sido recepcionadas nos últimos 15 dias.
      * @param string $tpAmb Tipo de ambiente 1=Produção 2=Homologação
      * @param string $modSOAP
-     * @return mixed False ou array com os dados das NFe
+     * @param array $resp Array com os retornos parametro passado por REFRENCIA
+     * @return mixed False ou xml com os dados
      */
-    public function getListNFe($AN=false,$indNFe='0',$indEmi='0',$ultNSU='',$tpAmb='',$modSOAP='2'){
+    public function getListNFe($AN=false,$indNFe='0',$indEmi='0',$ultNSU='',$tpAmb='',$modSOAP='2',&$resp=''){
         try {
             $datahora = date('Ymd_His');
             if($tpAmb == ''){
@@ -2171,9 +2172,13 @@ class ToolsNFePHP {
             $xmlLNFe->preserveWhiteSpace = false;
             $xmlLNFe->loadXML($retorno,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
             $retConsNFeDest = $xmlLNFe->getElementsByTagName("retConsNFeDest")->item(0);
-            $cStat = !empty($retConsNFeDest->getElementsByTagName('cStat')->item(0)->nodeValue) ? $retConsNFeDest->getElementsByTagName('cStat')->item(0)->nodeValue : '';
-            $xMotivo = !empty($retConsNFeDest->getElementsByTagName('xMotivo')->item(0)->nodeValue) ? $retConsNFeDest->getElementsByTagName('xMotivo')->item(0)->nodeValue : '';
-            $ultNSU  = !empty($retConsNFeDest->getElementsByTagName('ultNSU')->item(0)->nodeValue) ? $retConsNFeDest->getElementsByTagName('ultNSU')->item(0)->nodeValue : '';
+            if (isset($retConsNFeDest)){
+                $cStat = !empty($retConsNFeDest->getElementsByTagName('cStat')->item(0)->nodeValue) ? $retConsNFeDest->getElementsByTagName('cStat')->item(0)->nodeValue : '';
+                $xMotivo = !empty($retConsNFeDest->getElementsByTagName('xMotivo')->item(0)->nodeValue) ? $retConsNFeDest->getElementsByTagName('xMotivo')->item(0)->nodeValue : '';
+                $ultNSU  = !empty($retConsNFeDest->getElementsByTagName('ultNSU')->item(0)->nodeValue) ? $retConsNFeDest->getElementsByTagName('ultNSU')->item(0)->nodeValue : '';
+            } else {    
+                $cStat = '';
+            }
             if ($cStat == ''){
                 //houve erro
                 $msg = "cStat está em branco, houve erro na comunicação Soap verifique a mensagem de erro e o debug!!";
@@ -2185,8 +2190,52 @@ class ToolsNFePHP {
                 $msg = "A requisição foi rejeitada : $cStat - $xMotivo\n";
                 throw new nfephpException($msg);
             }
-            //podem existir NFe emitidas para este destinatário 
-            //TODO : ler essas notas e montar um array para retorno
+            //podem existir NFe emitidas para este destinatário
+            $aNFe = array();
+            $aCanc = array();
+            $aCCe = array();
+            $ret =  $xmlLNFe->getElementsByTagName("ret");
+            foreach ($ret as $k => $d) {
+               $resNFe = $ret->item($k)->getElementsByTagName('resNFe')->item(0);
+               $resCanc = $ret->item($k)->getElementsByTagName('resCanc')->item(0);
+               $resCCe = $ret->item($k)->getElementsByTagName('resCCe')->item(0);
+               if (isset($resNFe)){
+                   //existem notas emitida para esse cnpj
+                   $chNFe = $resNFe->getElementsByTagName('chNFe')->item(0)->nodeValue;
+                   $CNPJ = $resNFe->getElementsByTagName('CNPJ')->item(0)->nodeValue;
+                   $xNome = $resNFe->getElementsByTagName('xNome')->item(0)->nodeValue;
+                   $dEmi = $resNFe->getElementsByTagName('dEmi')->item(0)->nodeValue;
+                   $dhRecbto= $resCanc->getElementsByTagName('dhRecbto')->item(0)->nodeValue;
+                   $tpNF = $resNFe->getElementsByTagName('tpNF')->item(0)->nodeValue;
+                   $cSitNFe = $resNFe->getElementsByTagName('cSitNFe')->item(0)->nodeValue;
+                   $cSitConf = $resNFe->getElementsByTagName('cSitConf')->item(0)->nodeValue;
+                   $aNFe[] = array('chNFe'=>$chNFe,'CNPJ'=>$CNPJ,'xNome'=>$xNome,'dEmi'=>$dEmi,'dhRecbto'=>$dhRecbto,'$tpNF'=>$tpNF,'cSitNFe'=>$cSitNFe,'cSitconf'=>$cSitConf);
+               }//fim resNFe
+               if (isset($resCanc)){
+                   //existem notas emitida para esse cnpj
+                   $chNFe = $resCanc->getElementsByTagName('chNFe')->item(0)->nodeValue;
+                   $CNPJ = $resCanc->getElementsByTagName('CNPJ')->item(0)->nodeValue;
+                   $xNome = $resCanc->getElementsByTagName('xNome')->item(0)->nodeValue;
+                   $dEmi = $resCanc->getElementsByTagName('dEmi')->item(0)->nodeValue;
+                   $dhRecbto= $resCanc->getElementsByTagName('dhRecbto')->item(0)->nodeValue;
+                   $tpNF = $resCanc->getElementsByTagName('tpNF')->item(0)->nodeValue;
+                   $cSitNFe = $resCanc->getElementsByTagName('cSitNFe')->item(0)->nodeValue;
+                   $cSitConf = $resCanc->getElementsByTagName('cSitConf')->item(0)->nodeValue;
+                   $aCanc[] = array('chNFe'=>$chNFe,'CNPJ'=>$CNPJ,'xNome'=>$xNome,'dEmi'=>$dEmi,'dhRecbto'=>$dhRecbto,'$tpNF'=>$tpNF,'cSitNFe'=>$cSitNFe,'cSitconf'=>$cSitConf);
+               }//fim resCanc
+               if (isset($resCCe)){
+                   //existem notas emitida para esse cnpj
+                   $chNFe = $resCCe->getElementsByTagName('chNFe')->item(0)->nodeValue;
+                   $tpEvento = $resCCe->getElementsByTagName('tpEvento')->item(0)->nodeValue;
+                   $nSeqEvento = $resCCe->getElementsByTagName('nSeqEvento')->item(0)->nodeValue;
+                   $dhEvento = $resCCe->getElementsByTagName('dhEvento')->item(0)->nodeValue;
+                   $dhRecbto= $resCCe->getElementsByTagName('dhRecbto')->item(0)->nodeValue;
+                   $descEvento = $resCCe->getElementsByTagName('descEvento')->item(0)->nodeValue;
+                   $xCorrecao = $resCCe->getElementsByTagName('xCorrecao')->item(0)->nodeValue;
+                   $tpNF = $resCCe->getElementsByTagName('tpNF')->item(0)->nodeValue;
+                   $aCCe[] = array('chNFe'=>$chNFe,'tpEvento'=>$tpEvento,'nSeqEvento'=>$nSeqEvento,'dhEvento'=>$dhEvento,'dhRecbto'=>$dhRecbto,'descEvento'=>$descEvento,'xCorrecao'=>$xCorrecao,'tpNF'=>$tpNF);
+               }//fim resCCe
+            }//fim foreach ret
             //salva o arquivo xml
             if (!file_put_contents($this->temDir."$this->cnpj-$ultNSU-$datahora-resLNFe.xml", $retorno)){
                 $msg = "Falha na gravação do arquivo resLNFe!!";
@@ -2203,6 +2252,7 @@ class ToolsNFePHP {
             }
             return false;
         }//fim catch 
+        $resp = array('NFe'=>$aNFe,'Canc'=>$aCanc,'CCe'=>$aCCe);
         return $retorno;
     }//fim getListNFe
     
@@ -2217,12 +2267,16 @@ class ToolsNFePHP {
      * Este serviço não suporta SCAN !!
      * 
      * @name getNFe
+     * @param boolean $AN   true usa ambiente nacional, false usa o SEFAZ do emitente da NF
      * @param string $chNFe chave da NFe
      * @param string $tpAmb tipo de ambiente
      * @param string $modSOAP modo do SOAP
      * @return mixed FALSE ou xml de retorno  
+     * 
+     * TODO: quando o serviço estiver funcional extrair o xml da NFe e colocar
+     * no diretorio correto
      */
-    public function getNFe($chNFe='',$tpAmb='',$modSOAP='2'){
+    public function getNFe($AN=true,$chNFe='',$tpAmb='',$modSOAP='2'){
         try{
             if($chNFe == ''){
                 $msg = 'Uma chave de NFe deve ser passada como parâmetro da função.';
@@ -2231,12 +2285,16 @@ class ToolsNFePHP {
             if($tpAmb == ''){
                 $tpAmb = $this->tpAmb;
             }
-            //deve se verificado se NFe emitidas em SCAN, com séries começando com 9
-            //podem ser obtidas no sefaz do emitente DUVIDA!!!
-            //obtem a SEFAZ do emissor
-            $cUF = substr($chNFe,0,2);
-            $UF = $this->UFList[$cUF];
-            $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . $this->xmlURLfile,$tpAmb,$UF);
+            if ($AN){
+                $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . $this->xmlURLfile,$tpAmb,'AN');            
+            } else {    
+                //deve se verificado se NFe emitidas em SCAN, com séries começando com 9
+                //podem ser obtidas no sefaz do emitente DUVIDA!!!
+                //obtem a SEFAZ do emissor
+                $cUF = substr($chNFe,0,2);
+                $UF = $this->UFList[$cUF];
+                $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . $this->xmlURLfile,$tpAmb,$UF);
+            }
             //identificação do serviço
             $servico = 'NfeDownloadNF';
             //recuperação da versão
@@ -2279,21 +2337,25 @@ class ToolsNFePHP {
             $xmlDNFe->preserveWhiteSpace = false;
             $xmlDNFe->loadXML($retorno,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
             $retDownloadNFe = $xmlDNFe->getElementsByTagName("retDownloadNFe")->item(0);
-            $cStat = !empty($retDownloadNFe->getElementsByTagName('cStat')->item(0)->nodeValue) ? $retDownloadNFe->getElementsByTagName('cStat')->item(0)->nodeValue : '';
-            $xMotivo = !empty($retDownloadNFe->getElementsByTagName('xMotivo')->item(0)->nodeValue) ? $retDownloadNFe->getElementsByTagName('xMotivo')->item(0)->nodeValue : '';
-            $dhResp = !empty($retDownloadNFe->getElementsByTagName('dhResp')->item(0)->nodeValue) ? $retDownloadNFe->getElementsByTagName('dhResp')->item(0)->nodeValue : '';
-            //existem 2 cStat, um com nó pai retDownloadNFe ($cStat) e outro no 
-            //nó filho retNFe($cStatRetorno)
-            //para que o download seja efetuado corretamente o $cStat deve vir com valor 139 
-            //e o $cStatRetorno com valor 140
-            $retNFe = $xmlDNFe->getElementsByTagName("retNFe")->item(0);        
-            if (isset($retNFe)){
-                $cStatRetorno = !empty($retNFe->getElementsByTagName('cStat')->item(0)->nodeValue) ? $retNFe->getElementsByTagName('cStat')->item(0)->nodeValue : '';
-                $xMotivoRetorno = !empty($retNFe->getElementsByTagName('xMotivo')->item(0)->nodeValue) ? $retNFe->getElementsByTagName('xMotivo')->item(0)->nodeValue : '';
+            if (isset($retDownloadNFe)){
+                $cStat = !empty($retDownloadNFe->getElementsByTagName('cStat')->item(0)->nodeValue) ? $retDownloadNFe->getElementsByTagName('cStat')->item(0)->nodeValue : '';
+                $xMotivo = !empty($retDownloadNFe->getElementsByTagName('xMotivo')->item(0)->nodeValue) ? $retDownloadNFe->getElementsByTagName('xMotivo')->item(0)->nodeValue : '';
+                $dhResp = !empty($retDownloadNFe->getElementsByTagName('dhResp')->item(0)->nodeValue) ? $retDownloadNFe->getElementsByTagName('dhResp')->item(0)->nodeValue : '';
+                //existem 2 cStat, um com nó pai retDownloadNFe ($cStat) e outro no 
+                //nó filho retNFe($cStatRetorno)
+                //para que o download seja efetuado corretamente o $cStat deve vir com valor 139 
+                //e o $cStatRetorno com valor 140
+                $retNFe = $xmlDNFe->getElementsByTagName("retNFe")->item(0);        
+                if (isset($retNFe)){
+                    $cStatRetorno = !empty($retNFe->getElementsByTagName('cStat')->item(0)->nodeValue) ? $retNFe->getElementsByTagName('cStat')->item(0)->nodeValue : '';
+                    $xMotivoRetorno = !empty($retNFe->getElementsByTagName('xMotivo')->item(0)->nodeValue) ? $retNFe->getElementsByTagName('xMotivo')->item(0)->nodeValue : '';
+                } else {
+                    $cStatRetorno = '';
+                    $xMotivoRetorno = '';
+                }    
             } else {
-                $cStatRetorno = '';
-                $xMotivoRetorno = '';
-            }    
+                $cStat = '';
+            }   
             //status de retorno nao podem vir vazios
             if (empty($cStat)){
                 //houve erro
@@ -4333,6 +4395,7 @@ class ToolsNFePHP {
             $cCode['504']="Gateway Timeout";
             $cCode['505']="HTTP Version Not Supported";
             $tamanho = strlen($data);
+            /*
             if($this->enableSCAN){
                 //monta a terminação do URL
                 switch ($metodo){
@@ -4361,7 +4424,8 @@ class ToolsNFePHP {
                 }
                 $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . $this->xmlURLfile,$ambiente,'SCAN');
                 $urlsefaz = $aURL[$servico]['URL'];
-            } 
+            }
+             */ 
             $parametros = Array('Content-Type: application/soap+xml;charset=utf-8;action="'.$namespace."/".$metodo.'"','SOAPAction: "'.$metodo.'"',"Content-length: $tamanho");
             $_aspa = '"';
             $oCurl = curl_init();
@@ -4380,7 +4444,7 @@ class ToolsNFePHP {
             curl_setopt($oCurl, CURLOPT_VERBOSE, 1);
             curl_setopt($oCurl, CURLOPT_HEADER, 1); //retorna o cabeçalho de resposta
             curl_setopt($oCurl, CURLOPT_SSLVERSION, 3);
-            curl_setopt($oCurl, CURLOPT_SSL_VERIFYHOST, 0);
+            curl_setopt($oCurl, CURLOPT_SSL_VERIFYHOST, 2); // verifica o host evita MITM
             curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, 0);
             curl_setopt($oCurl, CURLOPT_SSLCERT, $this->pubKEY);
             curl_setopt($oCurl, CURLOPT_SSLKEY, $this->priKEY);
