@@ -2084,7 +2084,7 @@ class ToolsNFePHP {
                 throw new nfephpException($msg);
             } //fim retorno
         } catch (nfephpException $e) {
-            $this->__setError("[$e->getCode()]$e->getMessage() ($e->getFile() - lin:$e->getLine())\n");
+            $this->__setError($e->getMessage());
             if ($this->exceptions) {
                 throw $e;
             }
