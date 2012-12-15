@@ -17,15 +17,18 @@
 <!-- Versao 20121018 Inclusão dos Webservices do Ambiente Nacional AN -->
 <!-- Versao 20121021 Correção das versões usadas no metodo nfeConsNFDest no ambiente nacional -->
 <!-- Versao 20121030 Inclusao dos webservices de recpcao de eventos no SCAN -->
+<!-- Versao 20121215 Inclusão dos webservices de download da NFe no ambiente Nacional -->
   <UF>
     <sigla>AN</sigla>
     <homologacao>
       <RecepcaoEvento method='nfeRecepcaoEvento' version='1.00'>https://hom.nfe.fazenda.gov.br/RecepcaoEvento/RecepcaoEvento.asmx</RecepcaoEvento>            
       <NfeConsultaDest method='nfeConsultaNFDest' version='1.01'>https://hom.nfe.fazenda.gov.br/NFeConsultaDest/NFeConsultaDest.asmx</NfeConsultaDest>
+      <NfeDownloadNF method='nfeDownloadNF' version='1.00'>https://hom.nfe.fazenda.gov.br/NfeDownloadNF/NfeDownloadNF.asmx</NfeDownloadNF>
     </homologacao>
     <producao>
       <RecepcaoEvento method='nfeRecepcaoEvento' version='1.00'>https://www.nfe.fazenda.gov.br/RecepcaoEvento/RecepcaoEvento.asmx</RecepcaoEvento>            
       <NfeConsultaDest method='nfeConsultaNFDest' version='1.01'>https://www.nfe.fazenda.gov.br/NFeConsultaDest/NFeConsultaDest.asmx</NfeConsultaDest>
+      <NfeDownloadNF method='nfeDownloadNF' version='1.00'>https://www.nfe.fazenda.gov.br/NfeDownloadNF/NfeDownloadNF.asmx</NfeDownloadNF>
     </producao>      
   </UF>      
   <UF>
