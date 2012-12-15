@@ -27,7 +27,7 @@
  * 
  * @package   NFePHP
  * @name      CTeNFePHP
- * @version   1.0.14
+ * @version   1.0.15
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; CTePHP
  * @link      http://www.nfephp.org/
@@ -38,6 +38,7 @@
  *          Bernardo Silva <bernardo at datamex dot com dot br>
  *          Chrystian Toigo <ctoigo at gmail dot com>
  *          Fernando Mertins <fernando.mertins at gmail dot com>
+ *          Herbert Silva <hebert2 at gmail dot com>
  *	    Roberto Spadim  <roberto at spadim dot com dot br>
  *          Rodrigo Rysdyk <rodrigo_rysdyk at hotmail dot com>
  * 
@@ -1819,9 +1820,6 @@ class CTeNFePHP {
      * Solicita inutilizaçao de uma serie de numeros de CT
      *
      * @name inutNF
-     * @version 1.00
-     * @package CTePHP
-     * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @param	string  $nAno       ano com 2 digitos
      * @param   string  $nSerie     serie do CT 1 até 3 digitos
      * @param   integer $nIni       numero inicial 1 até 9 digitos zero a esq
@@ -1909,7 +1907,7 @@ class CTeNFePHP {
         // 43 posições
         //     2      4       6       20      22    25       34      43
         //     2      2       2       14       2     3        9       9            
-        $id = 'ID' . $this->cUF . $nAno . $this->cnpj . '55' . str_pad($nSerie, 3, '0', STR_PAD_LEFT) . str_pad($nIni, 9, '0', STR_PAD_LEFT) . str_pad($nFin, 9, '0', STR_PAD_LEFT);
+        $id = 'ID' . $this->cUF . $nAno . $this->cnpj . '57' . str_pad($nSerie, 3, '0', STR_PAD_LEFT) . str_pad($nIni, 9, '0', STR_PAD_LEFT) . str_pad($nFin, 9, '0', STR_PAD_LEFT);
         // Montagem do cabeçalho da comunicação SOAP
         $cabec = '<cteCabecMsg xmlns="' . $namespace . '"><cUF>' . $this->cUF . '</cUF><versaoDados>' . $versao . '</versaoDados></cteCabecMsg>';
         // Montagem do corpo da mensagem
@@ -1920,7 +1918,7 @@ class CTeNFePHP {
         $dXML .= '<cUF>' . $this->cUF . '</cUF>';
         $dXML .= '<ano>' . $nAno . '</ano>';
         $dXML .= '<CNPJ>' . $this->cnpj . '</CNPJ>';
-        $dXML .= '<mod>55</mod>';
+        $dXML .= '<mod>57</mod>';
         $dXML .= '<serie>' . $nSerie . '</serie>';
         $dXML .= '<nNFIni>' . $nIni . '</nNFIni>';
         $dXML .= '<nNFFin>' . $nFin . '</nNFFin>';
