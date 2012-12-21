@@ -23,7 +23,7 @@
  *
  * @package     NFePHP
  * @name        DanfeNFePHP.class.php
- * @version     2.1.18
+ * @version     2.1.19
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2012 &copy; NFePHP
@@ -427,7 +427,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
         }else{
             $hcanhoto = $this->hPrint;//para canhoto
         }
-        $hDispo2 = $this->hPrint - ($hcabecalho + $hfooter + $hCabecItens);
+        $hDispo2 = $this->hPrint - ($hcabecalho + $hfooter + $hCabecItens)-4;
         //Contagem da altura ocupada para impressão dos itens
         $fontProduto = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
         $i = 0;
