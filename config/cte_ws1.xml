@@ -34,6 +34,14 @@ maiusculas so para ficar igual ao site da SEFAZ.
     </producao>
 </UF>
 <UF>
+    <sigla>PR</sigla>
+    <homologacao>        
+    </homologacao>
+    <producao>
+        <CteConsultaProtocolo method='cteConsultaCT' version='1.04'>https://cte.fazenda.pr.gov.br/cte/CteConsulta?wsdl</CteConsultaProtocolo>
+    </producao>
+</UF>
+<UF>
     <sigla>MS</sigla>
     <homologacao>
         <CteRecepcao method='CTeRecepcao' version='1.04'>https://homologacao.cte.ms.gov.br/cteWEB/CteRecepcao.asmx</CteRecepcao>
@@ -88,7 +96,7 @@ maiusculas so para ficar igual ao site da SEFAZ.
         <CteRetRecepcao method='CTeRetRecepcao' version='1.04'>https://cte.sefaz.rs.gov.br/ws/cteretrecepcao/cteRetRecepcao.asmx</CteRetRecepcao>
         <CteCancelamento method='CTeCancelamento' version='1.04'>https://cte.sefaz.rs.gov.br/ws/ctecancelamento/ctecancelamento.asmx</CteCancelamento>
         <CteInutilizacao method='CTeInutilizacao' version='1.04'>https://cte.sefaz.rs.gov.br/ws/cteinutilizacao/cteinutilizacao.asmx</CteInutilizacao>
-        <CteConsulta method='cteConsultaCT' version='1.04'>https://cte.sefaz.rs.gov.br/ws/cteconsulta/CteConsulta.asmx</CteConsulta>
+        <CteConsultaProtocolo method='cteConsultaCT' version='1.04'>https://cte.sefaz.rs.gov.br/ws/cteconsulta/CteConsulta.asmx</CteConsultaProtocolo>
         <CteStatusServico method='cteStatusServicoCT' version='1.04'>https://cte.sefaz.rs.gov.br/ws/ctestatusservico/CteStatusServico.asmx</CteStatusServico>
     </producao>
 </UF>
@@ -108,6 +116,25 @@ maiusculas so para ficar igual ao site da SEFAZ.
         <CteCancelamento method='CTeCancelamento' version='1.04'>https://nfe.fazenda.sp.gov.br/cteWEB/services/cteCancelamento.asmx</CteCancelamento>
         <CteInutilizacao method='CTeInutilizacao' version='1.04'>https://nfe.fazenda.sp.gov.br/cteWEB/services/cteInutilizacao.asmx</CteInutilizacao>
         <CteConsultaProtocolo method='cteConsultaCT' version='1.04'>https://nfe.fazenda.sp.gov.br/cteWEB/services/cteConsulta.asmx</CteConsultaProtocolo>
+        <CteStatusServico method='cteStatusServicoCT' version='1.04'>https://nfe.fazenda.sp.gov.br/cteWEB/services/cteStatusServico.asmx</CteStatusServico>
+    </producao>
+</UF>
+<UF>
+    <sigla>SVSP</sigla>
+    <homologacao>
+        <CteRecepcao method='CTeRecepcao' version='1.04'>https://homologacao.nfe.fazenda.sp.gov.br/cteWEB/services/cteRecepcao.asmx</CteRecepcao>
+        <CteRetRecepcao method='CTeRetRecepcao' version='1.04'>https://homologacao.nfe.fazenda.sp.gov.br/cteWEB/services/cteRetRecepcao.asmx</CteRetRecepcao>
+        <CteCancelamento method='CTeCancelamento' version='1.04'>https://homologacao.nfe.fazenda.sp.gov.br/cteWEB/services/cteCancelamento.asmx</CteCancelamento>
+        <CteInutilizacao method='CTeInutilizacao' version='1.04'>https://homologacao.nfe.fazenda.sp.gov.br/cteWEB/services/cteInutilizacao.asmx</CteInutilizacao>
+        <CteConsultaProtocolo method='cteConsultaCT' version='1.04'>https://homologacao.nfe.fazenda.sp.gov.br/cteWEB/services/cteConsulta.asmx</CteConsultaProtocolo>
+        <CteStatusServico method='cteStatusServicoCT' version='1.04'>https://homologacao.nfe.fazenda.sp.gov.br/cteWEB/services/cteStatusServico.asmx</CteStatusServico>        
+    </homologacao>
+    <producao>
+        <CteRecepcao method='CTeRecepcao' version='1.04'>https://nfe.fazenda.sp.gov.br/cteWEB/services/cteRecepcao.asmx</CteRecepcao>
+        <CteRetRecepcao method='CTeRetRecepcao' version='1.04'>https://nfe.fazenda.sp.gov.br/cteWEB/services/cteRetRecepcao.asmx</CteRetRecepcao>
+        <CteCancelamento method='CTeCancelamento' version='1.04'>https://nfe.fazenda.sp.gov.br/cteWEB/services/cteCancelamento.asmx</CteCancelamento>
+        <CteInutilizacao method='CTeInutilizacao' version='1.04'>https://nfe.fazenda.sp.gov.br/cteWEB/services/cteInutilizacao.asmx</CteInutilizacao>
+        <CteConsultaProtocolo method='cteConsultaCT' version='1.04'>https://nfe.fazenda.sp.gov.br/cteWEB/services/CteConsulta.asmx</CteConsultaProtocolo>
         <CteStatusServico method='cteStatusServicoCT' version='1.04'>https://nfe.fazenda.sp.gov.br/cteWEB/services/cteStatusServico.asmx</CteStatusServico>
     </producao>
 </UF>

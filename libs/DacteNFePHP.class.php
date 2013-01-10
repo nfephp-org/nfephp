@@ -143,6 +143,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP {
         if ( !empty($this->xml) ) {
             $this->dom = new DomDocument;
             $this->dom->loadXML($this->xml);
+            $this->cteProc    = $this->dom->getElementsByTagName("cteProc")->item(0);
             $this->infCte     = $this->dom->getElementsByTagName("infCte")->item(0);
             $this->ide        = $this->dom->getElementsByTagName("ide")->item(0);
             $this->emit       = $this->dom->getElementsByTagName("emit")->item(0);
@@ -903,6 +904,110 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP {
         $texto = $this->__simpleGetValue( $this->ide ,  "xMunFim") . ' - ' . $this->__simpleGetValue( $this->ide ,  "UFFim");
         $aFont = $this->formatNegrito;
         $this->__textBox($x,$y+3.5,$w,$h,$texto,$aFont,'T','L',0,'');
+        
+        if( $this->tpEmis == 2 || $this->tpEmis == 5 ){
+            $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
+            $texto = $this->__format( $chaveContingencia, "#### #### #### #### #### #### #### #### ####" );
+            $cStat = '';
+        }else{
+            $aFont = array('font'=>$this->fontePadrao,'size'=>10,'style'=>'B');
+            
+            if( isset( $this->cteProc ) ) {
+                $texto = !empty($this->cteProc->getElementsByTagName("nProt")->item(0)->nodeValue) ? $this->cteProc->getElementsByTagName("nProt")->item(0)->nodeValue : '';
+                $tsHora = $this->__convertTime($this->cteProc->getElementsByTagName("dhRecbto")->item(0)->nodeValue);
+                if ($texto != ''){
+                    $texto .= "  -  " . date('d/m/Y   H:i:s',$tsHora);
+                }
+                $cStat = $this->cteProc->getElementsByTagName("cStat")->item(0)->nodeValue;
+            } else {
+                $texto = '';
+                $cStat = '';
+            }
+        }
+        //####################################################################################
+        //Indicação de CTe Homologação, cancelamento e falta de protocolo
+        $tpAmb = $this->ide->getElementsByTagName('tpAmb')->item(0)->nodeValue;
+        
+        //indicar cancelamento
+        if ( $cStat == '101') {
+            //101 Cancelamento
+            $x = 10;
+            $y = $this->hPrint-130;
+            $h = 25;
+            $w = $maxW-(2*$x);
+            $this->pdf->SetTextColor(90,90,90);
+            $texto = "CTe CANCELADA";
+            $aFont = array('font'=>$this->fontePadrao,'size'=>48,'style'=>'B');
+            $this->__textBox($x,$y,$w,$h,$texto,$aFont,'C','C',0,'');
+            $this->pdf->SetTextColor(0,0,0);
+        }
+        if ( $cStat == '110' ) {
+            //110 Denegada
+            $x = 10;
+            $y = $this->hPrint-130;
+            $h = 25;
+            $w = $maxW-(2*$x);
+            $this->pdf->SetTextColor(90,90,90);
+            $texto = "CTe USO DENEGADO";
+            $aFont = array('font'=>$this->fontePadrao,'size'=>48,'style'=>'B');
+            $this->__textBox($x,$y,$w,$h,$texto,$aFont,'C','C',0,'');
+            $y += $h;
+            $h = 5;
+            $w = $maxW-(2*$x);
+            $texto = "SEM VALOR FISCAL";
+            $aFont = array('font'=>$this->fontePadrao,'size'=>48,'style'=>'B');
+            $this->__textBox($x,$y,$w,$h,$texto,$aFont,'C','C',0,'');
+            $this->pdf->SetTextColor(0,0,0);
+        }
+        //indicar sem valor
+        if ( $tpAmb != 1 ) {
+            $x = 10;
+            if( $this->orientacao == 'P' ){
+                $y = round($this->hPrint*2/3,0);
+            }else{
+                $y = round($this->hPrint/2,0);
+            }
+            $h = 5;
+            $w = $maxW-(2*$x);
+            $this->pdf->SetTextColor(90,90,90);
+            $texto = "SEM VALOR FISCAL";
+            $aFont = array('font'=>$this->fontePadrao,'size'=>48,'style'=>'B');
+            $this->__textBox($x,$y,$w,$h,$texto,$aFont,'C','C',0,'');
+            $aFont = array('font'=>$this->fontePadrao,'size'=>30,'style'=>'B');
+            $texto = "AMBIENTE DE HOMOLOGAÇÃO";
+            $this->__textBox($x,$y+14,$w,$h,$texto,$aFont,'C','C',0,'');
+            $this->pdf->SetTextColor(0,0,0);
+        } else {
+            $x = 10;
+            if( $this->orientacao == 'P' ){
+                $y = round($this->hPrint*2/3,0);
+            } else {
+                $y = round($this->hPrint/2,0);
+            }//fim orientacao
+            $h = 5;
+            $w = $maxW-(2*$x);
+            $this->pdf->SetTextColor(90,90,90);
+            //indicar FALTA DO PROTOCOLO se NFe não for em contingência
+            if( $this->tpEmis == 2 || $this->tpEmis == 5 ){
+                //Contingência
+                $texto = "DACTE Emitido em Contingência";
+                $aFont = array('font'=>$this->fontePadrao,'size'=>48,'style'=>'B');
+                $this->__textBox($x,$y,$w,$h,$texto,$aFont,'C','C',0,'');
+                $aFont = array('font'=>$this->fontePadrao,'size'=>30,'style'=>'B');
+                $texto = "devido à problemas técnicos";
+                $this->__textBox($x,$y+12,$w,$h,$texto,$aFont,'C','C',0,'');
+            } else {    
+                if ( !isset($this->cteProc) ) {
+                    $texto = "SEM VALOR FISCAL";
+                    $aFont = array('font'=>$this->fontePadrao,'size'=>48,'style'=>'B');
+                    $this->__textBox($x,$y,$w,$h,$texto,$aFont,'C','C',0,'');
+                    $aFont = array('font'=>$this->fontePadrao,'size'=>30,'style'=>'B');
+                    $texto = "FALTA PROTOCOLO DE APROVAÇÃO DA SEFAZ";
+                    $this->__textBox($x,$y+12,$w,$h,$texto,$aFont,'C','C',0,'');
+                }//fim nefProc
+            }//fim tpEmis
+            $this->pdf->SetTextColor(0,0,0);
+        }
         
         return $oldY;
     } //fim __cabecalhoDANFE
