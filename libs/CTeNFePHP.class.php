@@ -1646,15 +1646,18 @@ class CTeNFePHP {
     public function getProtocol($recibo = '', $chave = '', $tpAmb = '', $modSOAP = '2') {
         // Carrega defaults
         $i = 0;
-        $aRetorno = array('bStat' => false,'cStat' => '','xMotivo' => '','aProt' => '');
+        $aRetorno = array('bStat' => false,'cStat' => '','xMotivo' => '','aProt' => '','aCanc'=>'');
         $cUF = $this->cUF;
         $UF = $this->UF;
+        
         if ($tpAmb != '1' && $tpAmb != '2' ) {
             $tpAmb = '2';
         }
+        
         $tpAmb = $this->tpAmb;
         $aURL = $this->aURL;
         // Verifica se a chave foi passada
+        
         if($chave != '') {
             // Se sim extrair o cUF da chave
             $cUF = substr($chave, 0, 2);
@@ -1663,9 +1666,19 @@ class CTeNFePHP {
                 // Se não for o mesmo carregar a sigla
                 $UF = $this->UFList[$cUF];
                 // Recarrega as url referentes aos dados passados como parametros para a função
-                $aURL = $this->loadSEFAZ($this->raizDir . 'config' . DIRECTORY_SEPARATOR . "cte_ws1.xml", $tpAmb, $UF);
+                $aURL = $this->loadSEFAZ($this->raizDir . '/config' . DIRECTORY_SEPARATOR . "cte_ws1.xml", $tpAmb, $UF);
             }
+            $scan = substr($chave,34,1);
         }
+        //hambiente SCAN
+        if($scan == 7 || $scan == 3){
+            if($cUF == 35){
+                $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . $this->xmlURLfile,$tpAmb,'SVSP');
+            }else{
+                $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . $this->xmlURLfile,$tpAmb,'SVRS');
+            }			
+        }
+        
         if ($recibo == '' && $chave == '') {
             $this->errStatus = true;
             $this->errMsg = 'ERRO. Favor indicar o numero do recibo ou a chave de acesso da CTe!!';
@@ -1700,23 +1713,28 @@ class CTeNFePHP {
         if ($recibo == '' &&  $chave != '') {
             // Buscar o protocolo pelo numero da chave de acesso
             // Identificação do serviço
-            $servico = 'CteConsulta';
+            
+            $servico = 'CteConsultaProtocolo';
             // Recuperação da versão
+            
             $versao = $aURL[$servico]['version'];
             // Recuperação da url do serviço
             $urlservico = $aURL[$servico]['URL'];
             // Recuperação do método
             $metodo = $aURL[$servico]['method'];
+            
             // Montagem do namespace do serviço
+            $servico = 'CteConsulta';
             $namespace = $this->URLPortal . '/wsdl/' . $servico;
             // Montagem do cabeçalho da comunicação SOAP
-            $cabec = '<cteCabecMsg xmlns="' . $namespace . '"><cUF>' . $cUF . '</cUF><versaoDados>' . $versao . '</versaoDados></cteCabecMsg>';
+            $cabec = '<cteCabecMsg xmlns="' . $namespace . '"><cUF>' . $cUF . '</cUF><versaoDados>' . $versao . '</versaoDados></cteCabecMsg>';            
             // Montagem dos dados da mensagem SOAP
             $dados = '<cteDadosMsg xmlns="' . $namespace . '"><consSitCTe xmlns="' . $this->URLPortal . '" versao="' . $versao . '"><tpAmb>' . $tpAmb . '</tpAmb><xServ>CONSULTAR</xServ><chCTe>' . $chave . '</chCTe></consSitCTe></cteDadosMsg>';
         }
+        
         // Envia a solicitação via SOAP
         if ($modSOAP == 2){
-            $retorno = $this->__sendSOAP2($urlservico, $namespace, $cabec, $dados, $metodo, $tpAmb);
+            $retorno = $this->__sendSOAP2($urlservico, $namespace, $cabec, $dados, $metodo, $tpAmb,$UF);
         } else {
             $retorno = $this->__sendSOAP($urlservico, $namespace, $cabec, $dados, $metodo, $tpAmb, $UF);
         }    
@@ -1740,15 +1758,28 @@ class CTeNFePHP {
                 $aRetorno['cStat'] = $doc->getElementsByTagName('cStat')->item(0)->nodeValue;
                 $aRetorno['xMotivo'] = !empty($doc->getElementsByTagName('xMotivo')->item(0)->nodeValue) ? $doc->getElementsByTagName('xMotivo')->item(0)->nodeValue : '';
                 $infProt = $doc->getElementsByTagName('infProt')->item($i);
+                $infCanc = $doc->getElementsByTagName('infCanc')->item(0);
                 $aProt = '';
                 if (isset($infProt)){
                     foreach($infProt->childNodes as $t){
                         $aProt[$i][$t->nodeName] = $t->nodeValue;
-                    }    
-                }    
+                    }
+                    $aProt['dhRecbto'] = !empty($aProt['dhRecbto']) ? date("d/m/Y H:i:s",$this->__convertTime($aProt['dhRecbto'])) : '';
+                }else {
+                    $aProt = '';
+                }
+                if(isset($infCanc)){
+                    foreach($infCanc->childNodes as $t) {
+                        $aCanc[$t->nodeName] = $t->nodeValue;
+                    }
+                    $aCanc['dhRecbto'] = !empty($aCanc['dhRecbto']) ? date("d/m/Y H:i:s",$this->__convertTime($aCanc['dhRecbto'])) : '';
+                } else {
+                    $aCanc = '';
+                }
                 $aRetorno['aProt'] = $aProt;
-                // Gravar o retorno na pasta temp apenas se a nota foi aprovada ou denegada
-                if ($aRetorno['cStat'] == 100 || $aRetorno['cStat'] == 110) {
+                $aRetorno['aCanc'] = $aCanc;
+                // Gravar o retorno na pasta temp apenas se a nota foi aprovada, cancelada ou denegada
+                if ( $aRetorno['cStat'] == 100 || $aRetorno['cStat'] == 101 || $aRetorno['cStat'] == 110 ) {
                     // Nome do arquivo
                     $nomeArq = $chave . '-prot.xml';
                     $nome = $this->temDir . $nomeArq;
@@ -1777,7 +1808,7 @@ class CTeNFePHP {
                         $i++; //incluido increment para controlador de indice do array
                         //salvar o protocolo somente se a nota estiver approvada ou denegada
                         if ( $protcStat == 100 || $protcStat == 110 ){
-                            $nomeprot = $this->temDir.$infProt->getElementsByTagName('chCTe')->item(0)->nodeValue.'-prot.xml';//id da cte
+                            $nomeprot = $this->temDir.$infProt->getElementsByTagName('chCTe')->item(0)->nodeValue.'-prot.xml';//id da nfe
                             //salvar o protocolo em arquivo
                             $novoprot = new DOMDocument('1.0', 'UTF-8');
                             $novoprot->formatOutput = true;
