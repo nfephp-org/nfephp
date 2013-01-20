@@ -18,6 +18,7 @@
 <!-- Versao 20121021 Correção das versões usadas no metodo nfeConsNFDest no ambiente nacional -->
 <!-- Versao 20121030 Inclusao dos webservices de recpcao de eventos no SCAN -->
 <!-- Versao 20121215 Inclusão dos webservices de download da NFe no ambiente Nacional -->
+<!-- Versao 20130120 Correção da URL de Recpcao do Evento da BA -->
   <UF>
     <sigla>AN</sigla>
     <homologacao>
@@ -68,7 +69,7 @@
       <NfeConsulta method='nfeConsultaNF2' version='2.01'>https://hnfe.sefaz.ba.gov.br/webservices/nfenw/NfeConsulta2.asmx</NfeConsulta>
       <NfeStatusServico method='nfeStatusServicoNF2' version='2.00'>https://hnfe.sefaz.ba.gov.br/webservices/nfenw/NfeStatusServico2.asmx</NfeStatusServico>
       <CadConsultaCadastro method='consultaCadastro2' version='2.00'>https://hnfe.sefaz.ba.gov.br/webservices/nfenw/CadConsultaCadastro2.asmx</CadConsultaCadastro>
-      <RecepcaoEvento method='nfeRecepcaoEvento' version='1.00'>https://hnfe.sefaz.ba.gov.br/webservices/sre/nferecepcaoevento.asmx</RecepcaoEvento>
+      <RecepcaoEvento method='nfeRecepcaoEvento' version='1.00'>https://hnfe.sefaz.ba.gov.br/webservices/sre/RecepcaoEvento.asmx</RecepcaoEvento>
       <NfeConsultaDest method='nfeConsultaNFDest' version='1.00'></NfeConsultaDest>
       <NfeDownloadNF method='nfeDownloadNF' version='1.00'></NfeDownloadNF>
     </homologacao>
@@ -80,7 +81,7 @@
       <NfeConsulta method='nfeConsultaNF2' version='2.01'>https://nfe.sefaz.ba.gov.br/webservices/nfenw/NfeConsulta2.asmx</NfeConsulta>
       <NfeStatusServico method='nfeStatusServicoNF2' version='2.00'>https://nfe.sefaz.ba.gov.br/webservices/nfenw/NfeStatusServico2.asmx</NfeStatusServico>
       <CadConsultaCadastro method='consultaCadastro2' version='2.00'>https://nfe.sefaz.ba.gov.br/webservices/nfenw/CadConsultaCadastro2.asmx</CadConsultaCadastro>
-      <RecepcaoEvento method='nfeRecepcaoEvento' version='1.00'>https://nfe.sefaz.ba.gov.br/webservices/sre/nferecepcaoevento.asmx</RecepcaoEvento>
+      <RecepcaoEvento method='nfeRecepcaoEvento' version='1.00'>https://nfe.sefaz.ba.gov.br/webservices/sre/RecepcaoEvento.asmx</RecepcaoEvento>
       <NfeConsultaDest method='nfeConsultaNFDest' version='1.00'></NfeConsultaDest>
       <NfeDownloadNF method='nfeDownloadNF' version='1.00'></NfeDownloadNF>
     </producao>

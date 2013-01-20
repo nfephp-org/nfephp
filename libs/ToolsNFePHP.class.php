@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.0.50
+ * @version   3.0.51
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -42,6 +42,7 @@
  *              Bernardo Silva <bernardo at datamex dot com dot br>
  *              Bruno Bastos <brunomauro at gmail dot com>
  *              Bruno Lima <brunofileh at gmail.com>
+ *              Bruno Tadeu Porto <brunotporto at gmail dot com>
  *              Daniel Viana <daniellista at gmail dot com>
  *              Diego Mosela <diego dot caicai at gmail dot com>
  *              Edilson Carlos Belluomini <edilson at maxihelp dot com dot br>
@@ -837,7 +838,7 @@ class ToolsNFePHP {
             }
         }
         //estados que participam do horario de verão
-        $aUFhv = array('ES','GO','MG','MS','PR','RJ','RS','SP','SC','TO');
+        $aUFhv = array('BA','ES','GO','MG','MS','PR','RJ','RS','SP','SC','TO');
         //corrigir o timeZone
         if ($this->UF == 'AC' ||
             $this->UF == 'AM' ||   
