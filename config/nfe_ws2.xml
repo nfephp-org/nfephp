@@ -19,7 +19,7 @@
 <!-- Versao 20121030 Inclusao dos webservices de recpcao de eventos no SCAN -->
 <!-- Versao 20121215 Inclusão dos webservices de download da NFe no ambiente Nacional -->
 <!-- Versao 20130120 Correção da URL de Recepcao do Evento da BA -->
-<!-- Versão 20130201 Inclusão das URL's de Consulta de Cadastro SC e ES -->
+<!-- Versão 20130201 Inclusão das URL's de Consulta de Cadastro SC, ES e RN -->
   <UF>
     <sigla>AN</sigla>
     <homologacao>
@@ -283,6 +283,15 @@
       <RecepcaoEvento method='nfeRecepcaoEvento' version='1.00'>https://nfe2.fazenda.pr.gov.br/nfe-evento/NFeRecepcaoEvento</RecepcaoEvento>
       <NfeConsultaDest method='nfeConsultaNFDest' version='1.00'></NfeConsultaDest>
       <NfeDownloadNF method='nfeDownloadNF' version='1.00'></NfeDownloadNF>
+    </producao>
+  </UF>
+  <UF>
+    <sigla>RN</sigla>
+    <homologacao>
+      <CadConsultaCadastro method='consultaCadastro2' version='2.00'>https://webservice.set.rn.gov.br/projetonfehomolog/set_nfe/servicos/CadConsultaCadastroWS.asmx</CadConsultaCadastro>
+    </homologacao>  
+    <producao>
+      <CadConsultaCadastro method='consultaCadastro2' version='2.00'>https://webservice.set.rn.gov.br/projetonfeprod/set_nfe/servicos/CadConsultaCadastroWS.asmx</CadConsultaCadastro>
     </producao>
   </UF>
   <UF>
