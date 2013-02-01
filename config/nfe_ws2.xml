@@ -18,7 +18,8 @@
 <!-- Versao 20121021 Correção das versões usadas no metodo nfeConsNFDest no ambiente nacional -->
 <!-- Versao 20121030 Inclusao dos webservices de recpcao de eventos no SCAN -->
 <!-- Versao 20121215 Inclusão dos webservices de download da NFe no ambiente Nacional -->
-<!-- Versao 20130120 Correção da URL de Recpcao do Evento da BA -->
+<!-- Versao 20130120 Correção da URL de Recepcao do Evento da BA -->
+<!-- Versão 20130201 Inclusão das URL's de Consulta de Cadastro SC e ES -->
   <UF>
     <sigla>AN</sigla>
     <homologacao>
@@ -113,6 +114,15 @@
       <NfeDownloadNF method='nfeDownloadNF' version='1.00'></NfeDownloadNF>
     </producao>
   </UF>
+  <UF>
+    <sigla>ES</sigla>
+    <homologacao>
+      <CadConsultaCadastro method='consultaCadastro2' version='2.00'>https://homologacao.sefaz.es.gov.br/ConsultaCadastroService/WSConsultaCadastro.asmx</CadConsultaCadastro>        
+    </homologacao>      
+    <producao>
+      <CadConsultaCadastro method='consultaCadastro2' version='2.00'>https://app.sefaz.es.gov.br/ConsultaCadastroService/WSConsultaCadastro.asmx</CadConsultaCadastro>
+    </producao>    
+  </UF>    
   <UF>
     <sigla>GO</sigla>
     <homologacao>
@@ -300,6 +310,15 @@
       <RecepcaoEvento method='nfeRecepcaoEvento' version='1.00'>https://nfe.sefaz.rs.gov.br/ws/recepcaoevento/recepcaoevento.asmx</RecepcaoEvento>
       <NfeConsultaDest method='nfeConsultaNFDest' version='1.00'>https://nfe.sefaz.rs.gov.br/ws/nfeConsultaDest/nfeConsultaDest.asmx</NfeConsultaDest>
       <NfeDownloadNF method='nfeDownloadNF' version='1.00'>https://nfe.sefaz.rs.gov.br/ws/nfeDownloadNF/nfeDownloadNF.asmx</NfeDownloadNF>
+    </producao>
+  </UF>
+  <UF>
+    <sigla>SC</sigla>
+    <homologacao>
+      <CadConsultaCadastro method='consultaCadastro2' version='2.00'>https://svp-ws.sefazvirtual.rs.gov.br/ws/CadConsultaCadastro/CadConsultaCadastro2.asmx</CadConsultaCadastro>
+    </homologacao>
+    <producao>
+      <CadConsultaCadastro method='consultaCadastro2' version='2.00'>https://svp-ws.sefazvirtual.rs.gov.br/ws/CadConsultaCadastro/CadConsultaCadastro2.asmx</CadConsultaCadastro>
     </producao>
   </UF>
   <UF>

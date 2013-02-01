@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.0.51
+ * @version   3.0.52
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -3803,6 +3803,23 @@ class ToolsNFePHP {
                     // do nome do webservice e a sua versão
                     foreach ( $child->attributes() as $a => $b) {
                         $aUrl[$child->getName()][$a] = (string) $b;
+                    }
+                }
+            }
+            //verifica se existem outros serviços exclusivos para esse estado
+            if ($alias == 'SVAN' || $alias == 'SVRS'){
+                $xpathExpression = "/WS/UF[sigla='" . $sUF . "']/$sAmbiente";
+                //para cada "nó" no xml que atenda aos critérios estabelecidos
+                foreach ( $xml->xpath( $xpathExpression ) as $gUF ) {
+                    //para cada "nó filho" retonado
+                    foreach ( $gUF->children() as $child ) {
+                        $u = (string) $child[0];
+                        $aUrl[$child->getName()]['URL'] = $u;
+                        // em cada um desses nós pode haver atributos como a identificação
+                        // do nome do webservice e a sua versão
+                        foreach ( $child->attributes() as $a => $b) {
+                            $aUrl[$child->getName()][$a] = (string) $b;
+                        }
                     }
                 }
             }
