@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.0.52
+ * @version   3.0.53
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -4342,38 +4342,8 @@ class ToolsNFePHP {
             $cCode['503']="Service Unavailable";
             $cCode['504']="Gateway Timeout";
             $cCode['505']="HTTP Version Not Supported";
+
             $tamanho = strlen($data);
-            /*
-            if($this->enableSCAN){
-                //monta a terminação do URL
-                switch ($metodo){
-                    case 'nfeRecepcaoLote2':
-                        $servico = "NfeRecepcao";
-                        break;
-                    case 'nfeRetRecepcao2':
-                        $servico = "NfeRetRecepcao";
-                        break;
-                    case 'nfeCancelamentoNF2':
-                        $servico = "NfeCancelamento";
-                        break;
-                    case 'nfeInutilizacaoNF2':
-                        $servico = "NfeInutilizacao";
-                        break;
-                    case 'nfeConsultaNF2':
-                        $servico = "NfeConsulta";
-                        break;
-                    case 'nfeStatusServicoNF2':
-                        $servico = "NfeStatusServico";
-                        break;
-                    default:
-                        $servico = '';
-                        $msg = "Serviço não disponível em SCAN.";
-                        throw new nfephpException($msg, self::STOP_CRITICAL);
-                }
-                $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . $this->xmlURLfile,$ambiente,'SCAN');
-                $urlsefaz = $aURL[$servico]['URL'];
-            }
-             */ 
             $parametros = Array('Content-Type: application/soap+xml;charset=utf-8;action="'.$namespace."/".$metodo.'"','SOAPAction: "'.$metodo.'"',"Content-length: $tamanho");
             $_aspa = '"';
             $oCurl = curl_init();
@@ -4426,9 +4396,13 @@ class ToolsNFePHP {
             $txtInfo .= "Certinfo=$info[certinfo]\n";
             $n = strlen($__xml);
             $x = stripos($__xml, "<");
-            $xml = substr($__xml, $x, $n-$x);
+            if ($x !== false){
+                $xml = substr($__xml, $x, $n-$x);
+            } else {
+                $xml = '';
+            }    
             $this->soapDebug = $data."\n\n".$txtInfo."\n".$__xml;
-            if ($__xml === false){
+            if ($__xml === false || $x === false){
                 //não houve retorno
                 $msg = curl_error($oCurl) . $info['http_code'] . $cCode[$info['http_code']];
                 throw new nfephpException($msg,self::STOP_CRITICAL);
