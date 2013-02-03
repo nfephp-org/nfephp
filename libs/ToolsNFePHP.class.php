@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.0.54
+ * @version   3.0.55
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -500,7 +500,7 @@ class ToolsNFePHP {
                                'TO'=>'SVRS',
                                'SCAN'=>'SCAN',
                                'SVAN'=>'SVAN', 
-                               'DEPC'=>'DPEC');
+                               'DPEC'=>'DPEC');
     /**
      * cUFlist
      * Lista dos numeros identificadores dos estados
@@ -3306,59 +3306,78 @@ class ToolsNFePHP {
     } //fim manifDest
     
     /**
-     * DPEC
+     * envDPEC
      * Apenas para teste não funcional
      *
      */
-    private function __criaDPEC($aNFe='',$tpAmb='',$modSOAP='2'){
+    public function envDPEC($aNFe='',$tpAmb='',$modSOAP='2'){
         // Habilita a manipulaçao de erros da libxml
         libxml_use_internal_errors(true);
-        if($aNFe == ''){
-            return false;
-        }
-        if($tpAmb == ''){
-            $tpAmb = $this->tpAmb;
-        }
-        if (is_array($aNFe)){
-            $matriz = $aNFe;
-        } else {
-            $matriz[]=$aNFe;
-        }
-        $i = 0;
-        foreach($matriz as $n){
-            $errors = null;
-            $dom = null;
-            if (is_file($n)){
-                $dom->load($n,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
-            } else {
-                $dom->loadXML($n,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
+        try {
+            if($aNFe == ''){
+                $msg = "Pelo menos uma NFe deve ser passada como parâmetro!!";
+                throw new nfephpException($msg);
             }
-            $errors = libxml_get_errors(); 
-            if (!empty($errors)) { 
-                //o dado passado como $docXml não é um xml
-                $msg = "O dado informado não é um XML. $n " . implode('; ',$erros);
-                $this->__setError($msg);
-                if ($this->exceptions) {
-                    throw new nfephpException($msg);
-                }
+            if($tpAmb == ''){
+                $tpAmb = $this->tpAmb;
+            }
+            if (is_array($aNFe)){
+                $matriz = $aNFe;
             } else {
-                //pegar os dados necessários para DPEC
-                $xtpAmb = $dom->getElementsByTagName("tpAmb")->item(0)->nodevalue;
-                $tpEmiss = $dom->getElementsByTagName("tpEmiss")->item(0)->nodevalue;
-                $dhCont = !empty($dom->getElementsByTagName("dhCont")->item(0)->nodevalue) ? $dom->getElementsByTagName("dhCont")->item(0)->nodevalue : '';
-                $xJust = !empty($dom->getElementsByTagName("xJust")->item(0)->nodevalue) ? $dom->getElementsByTagName("xJust")->item(0)->nodevalue : '';
-                $verProc = !empty($dom->getElementsByTagName("verProc")->item(0)->nodevalue) ? $dom->getElementsByTagName("verProc")->item(0)->nodevalue : '';
-                if ($tpEmiss == '4' && $dhCont != '' && $xJust != '' && $verProc != '' && $xtpAmb == $tpAmb ){
+                $matriz[]=$aNFe;
+            }
+            $i = 0;
+            
+            foreach($matriz as $n){
+                $errors = null;
+                $dom = null;
+                $dom = new DomDocument; //cria objeto DOM
+                if (is_file($n)){
+                    $dom->load($n,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
+                } else {
+                    $dom->loadXML($n,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
+                }
+                $errors = libxml_get_errors(); 
+                if (!empty($errors)) { 
+                    //o dado passado como $docXml não é um xml
+                    $msg = "O dado informado não é um XML. $n " . implode('; ',$erros);
+                    throw new nfephpException($msg);
+                } else {
+                    //pegar os dados necessários para DPEC
                     $infNFe = $dom->getElementsByTagName("infNFe")->item(0);
+                    $ide = $dom->getElementsByTagName("ide")->item(0);
+                    
+                    $xtpAmb = $ide->getElementsByTagName("tpAmb")->item(0)->nodeValue;
+                    $tpEmis = $ide->getElementsByTagName("tpEmis")->item(0)->nodeValue;
+                    $dhCont = !empty($dom->getElementsByTagName("dhCont")->item(0)->nodeValue) ? $dom->getElementsByTagName("dhCont")->item(0)->nodeValue : '';
+                    $xJust = !empty($dom->getElementsByTagName("xJust")->item(0)->nodeValue) ? $dom->getElementsByTagName("xJust")->item(0)->nodeValue : '';
+                    $verProc = !empty($dom->getElementsByTagName("verProc")->item(0)->nodeValue) ? $dom->getElementsByTagName("verProc")->item(0)->nodeValue : '';
                     $chNFe = preg_replace('/[^0-9]/','', trim($infNFe->getAttribute("Id")));
+                    if ($tpEmis != '4'){
+                        $msg = "O tipo de emissão deve ser igual a 4 e não $tpEmiss!!";
+                        throw new nfephpException($msg);
+                    }
+                    if ($xJust == '' || strlen($xJust) < 15 || strlen($xJust > 256) ){
+                        $msg = "A NFe deve conter uma justificativa com 15 até 256 dígitos. Sua justificativa está com " . strlen($xJust). " dígitos";
+                        throw new nfephpException($msg);
+                    }
+                    if ($xtpAmb != $tpAmb){
+                        $msg = "O tipo de ambiente indicado na NFe deve ser o mesmo da chamada do método e estão diferentes!!";
+                        throw new nfephpException($msg);
+                    }
+                    if ($verProc == ''){
+                        $msg = "O campo verProc não pode estar vazio !!";
+                        throw new nfephpException($msg);
+                    }
+                    
                     $dest = $dom->getElementsByTagName("dest")->item(0);
-                    $destCNPJ = !empty($dest->getElementsByTagName("CNPJ")->item(0)->nodevalue) ? $dest->getElementsByTagName("CNPJ")->item(0)->nodevalue : '';
-                    $destCPF  = !empty($dest->getElementsByTagName("CPF")->item(0)->nodevalue) ? $dest->getElementsByTagName("CPF")->item(0)->nodevalue : '';
-                    $destUF = !empty($dest->getElementsByTagName("UF")->item(0)->nodevalue) ? $dest->getElementsByTagName("UF")->item(0)->nodevalue : '';
+                    $destCNPJ = !empty($dest->getElementsByTagName("CNPJ")->item(0)->nodeValue) ? $dest->getElementsByTagName("CNPJ")->item(0)->nodeValue : '';
+                    $destCPF  = !empty($dest->getElementsByTagName("CPF")->item(0)->nodeValue) ? $dest->getElementsByTagName("CPF")->item(0)->nodeValue : '';
+                    $destUF = !empty($dest->getElementsByTagName("UF")->item(0)->nodeValue) ? $dest->getElementsByTagName("UF")->item(0)->nodeValue : '';
                     $ICMSTot = $dom->getElementsByTagName("ICMSTot")->item(0);
-                    $vNF = !empty($ICMSTot->getElementsByTagName("vNF")->item(0)->nodevalue) ? $ICMSTot->getElementsByTagName("vNF")->item(0)->nodevalue : '';
-                    $vICMS = !empty($ICMSTot->getElementsByTagName("vICMS")->item(0)->nodevalue) ? $ICMSTot->getElementsByTagName("vICMS")->item(0)->nodevalue : '';
-                    $vST = !empty($ICMSTot->getElementsByTagName("vST")->item(0)->nodevalue) ? $ICMSTot->getElementsByTagName("vST")->item(0)->nodevalue : '';
+                    $vNF = !empty($ICMSTot->getElementsByTagName("vNF")->item(0)->nodeValue) ? $ICMSTot->getElementsByTagName("vNF")->item(0)->nodeValue : '';
+                    $vICMS = !empty($ICMSTot->getElementsByTagName("vICMS")->item(0)->nodeValue) ? $ICMSTot->getElementsByTagName("vICMS")->item(0)->nodeValue : '';
+                    $vST = !empty($ICMSTot->getElementsByTagName("vST")->item(0)->nodeValue) ? $ICMSTot->getElementsByTagName("vST")->item(0)->nodeValue : '';
                     $aD[$i]['tpAmb'] = $xtpAmb;
                     $aD[$i]['tpEmiss'] = $tpEmiss;
                     $aD[$i]['dhCont'] = $dhCont;
@@ -3371,57 +3390,59 @@ class ToolsNFePHP {
                     $aD[$i]['vICMS'] = $vICMS;
                     $aD[$i]['vST'] = $vST;
                     $i++;
-                } //fim tpEmiss &&    
-            } //fim errors
-        }//fim foreach
-        //com a matriz de dados montada criar o arquivo DPEC para as NFe que atendem os critérios
-        $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . $this->xmlURLfile,$tpAmb,'DPEC');
-        //identificação do serviço
-        $servico = 'SCERecepcaoRFB';
-        //recuperação da versão
-        $versao = $aURL[$servico]['version'];
-        //recuperação da url do serviço
-        $urlservico = $aURL[$servico]['URL'];
-        //recuperação do método
-        $metodo = $aURL[$servico]['method'];
-        //montagem do namespace do serviço
-        $namespace = $this->URLPortal.'/wsdl/'.$servico.'';        
-        $dpec = '';
-        $dpec .= "<envDPEC xmlns=\"$this->URLPortal\" versao=\"$versao\">";
-        $dpec .= "<infDPEC><id>DPEC$this->CNPJ</id>";
-        $dpec .= "<ideDec><cUF>$this->cUF</cUF><tpAmb>$tpAmb</tpAmb><verProc>$verProc</verProc><CNPJ>$this->CNPJ</CNPJ><IE>$this->IE</IE></ideDec>";
-        foreach($aD as $d){
-            if ($d['CPF'] != ''){
-                $cnpj = "<CPF>".$d['CPF']."</CPF>";
-            } else {
-                $cnpj = "<CNPJ>".$d['CNPJ']."</CNPJ>";
+                } //fim errors
+            }//fim foreach
+            //com a matriz de dados montada criar o arquivo DPEC para as NFe que atendem os critérios
+            $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . $this->xmlURLfile,$tpAmb,'DPEC');
+            //identificação do serviço
+            $servico = 'SCERecepcaoRFB';
+            //recuperação da versão
+            $versao = $aURL[$servico]['version'];
+            //recuperação da url do serviço
+            $urlservico = $aURL[$servico]['URL'];
+            //recuperação do método
+            $metodo = $aURL[$servico]['method'];
+            //montagem do namespace do serviço
+            $namespace = $this->URLPortal.'/wsdl/'.$servico.'';        
+            $dpec = '';
+            $dpec .= "<envDPEC xmlns=\"$this->URLPortal\" versao=\"$versao\">";
+            $dpec .= "<infDPEC><id>DPEC$this->CNPJ</id>";
+            $dpec .= "<ideDec><cUF>$this->cUF</cUF><tpAmb>$tpAmb</tpAmb><verProc>$verProc</verProc><CNPJ>$this->CNPJ</CNPJ><IE>$this->IE</IE></ideDec>";
+            foreach($aD as $d){
+                if ($d['CPF'] != ''){
+                    $cnpj = "<CPF>".$d['CPF']."</CPF>";
+                } else {
+                    $cnpj = "<CNPJ>".$d['CNPJ']."</CNPJ>";
+                }
+                $dpec .= "<resNFe><chNFe>".$d['chNFe']."</chNFe>$cnpj<UF>".$d['UF']."</UF><vNF>".$d['vNF']."</vNF><vICMS>".$d['vICMS']."</vICMS><vST>".$d['vST']."</vST></resNFe>";
             }
-            $dpec .= "<resNFe>".$d['chNFe']."<chNFe></chNFe>$cnpj<UF>".$d['UF']."</UF><vNF>".$d['vNF']."</vNF><vICMS>".$d['vICMS']."</vICMS><vST>".$d['vST']."</vST></resNFe>";
-        }
-        $dpec .= "</infDPEC></envDPEC>";
-        //assinar a mensagem
-        $dpec = $this->signXML($dpec, 'infDPEC');
-        //montagem do cabeçalho da comunicação SOAP
-        $cabec = '<sceCabecMsg xmlns="'. $namespace . '"><versaoDados>'.$versao.'</versaoDados></sceCabecMsg>';
-        //montagem dos dados da cumunicação SOAP
-        $dados = '<sceDadosMsg xmlns="'. $namespace . '">'.$dpec.'</sceDadosMsg>';
-        //remove as tags xml que porventura tenham sido inclusas ou quebas de linhas
-        $dados = str_replace('<?xml version="1.0"?>','', $dados);
-        $dados = str_replace('<?xml version="1.0" encoding="utf-8"?>','', $dados);
-        $dados = str_replace('<?xml version="1.0" encoding="UTF-8"?>','', $dados);
-        $dados = str_replace(array("\r","\n","\s"),"", $dados);
-        return $dados;
-        //grava a solicitação na pasta depec
-        if( !file_put_contents($this->dpcDir.$this->CNPJ.'-depc.xml', '<?xml version="1.0" encoding="utf-8"?>'.$dpec)){
-            $msg = "Falha na gravação do pedido contingencia DPEC.";
-            $this->__setError($msg);
-            if ($this->exceptions) {
+            $dpec .= "</infDPEC></envDPEC>";
+            //assinar a mensagem
+            $dpec = $this->signXML($dpec, 'infDPEC');
+            //montagem do cabeçalho da comunicação SOAP
+            $cabec = '<sceCabecMsg xmlns="'. $namespace . '"><versaoDados>'.$versao.'</versaoDados></sceCabecMsg>';
+            //montagem dos dados da cumunicação SOAP
+            $dados = '<sceDadosMsg xmlns="'. $namespace . '">'.$dpec.'</sceDadosMsg>';
+            //remove as tags xml que porventura tenham sido inclusas ou quebas de linhas
+            $dados = str_replace('<?xml version="1.0"?>','', $dados);
+            $dados = str_replace('<?xml version="1.0" encoding="utf-8"?>','', $dados);
+            $dados = str_replace('<?xml version="1.0" encoding="UTF-8"?>','', $dados);
+            $dados = str_replace(array("\r","\n","\s"),"", $dados);
+            //grava a solicitação na pasta depec
+            if( !file_put_contents($this->dpcDir.$this->CNPJ.'-depc.xml', '<?xml version="1.0" encoding="utf-8"?>'.$dpec)){
+                $msg = "Falha na gravação do pedido contingencia DPEC.";
                 throw new nfephpException($msg);
             }
-        }
-        //..... continua ainda falta bastante coisa
-        
-    }//fim __criaDPEC
+            //..... continua ainda falta bastante coisa
+        } catch (nfephpException $e) {
+            $this->__setError($e->getMessage());
+            if ($this->exceptions) {
+                throw $e;
+            }
+            return false;
+        }    
+        return $dados;
+    }//fim envDPEC
     
     /**
      * __verifySignatureXML
