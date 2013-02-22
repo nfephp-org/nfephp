@@ -23,7 +23,7 @@
  *
  * @package     NFePHP
  * @name        DanfeNFePHP.class.php
- * @version     2.1.19
+ * @version     2.1.20
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2012 &copy; NFePHP
@@ -1884,10 +1884,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
     /**
      * __itensDANFE
      * Monta o campo de itens da DANFE ( retrato e paisagem )
-     * @package NFePHP
      * @name __itensDANFE
-     * @version 1.8.0
-     * @author Roberto L. Machado
      * @param number $x Posição horizontal canto esquerdo
      * @param number $y Posição vertical canto superior
      * @param number $nInicio Número do item inicial
@@ -2118,13 +2115,13 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
                 // %ICMS
                 $x += $w12;
                 if (isset($ICMS)){
-                   $texto = !empty($ICMS->getElementsByTagName("pICMS")->item(0)->nodeValue) ? number_format($ICMS->getElementsByTagName("pICMS")->item(0)->nodeValue, 0, ",", ".") : '0,00';
+                   $texto = !empty($ICMS->getElementsByTagName("pICMS")->item(0)->nodeValue) ? number_format($ICMS->getElementsByTagName("pICMS")->item(0)->nodeValue, 2, ",", ".") : '0,00';
                    $this->__textBox($x,$y,$w13,$h,$texto,$aFont,'T','C',0,'');
                 }
                 //%IPI
                 $x += $w13;
                 if ( isset($IPI) ){
-                    $texto = !empty($IPI->getElementsByTagName("pIPI")->item(0)->nodeValue) ? number_format($IPI->getElementsByTagName("pIPI")->item(0)->nodeValue, 0, ",", ".") : '';
+                    $texto = !empty($IPI->getElementsByTagName("pIPI")->item(0)->nodeValue) ? number_format($IPI->getElementsByTagName("pIPI")->item(0)->nodeValue, 2, ",", ".") : '';
                 } else {
                     $texto = '';
                 }
