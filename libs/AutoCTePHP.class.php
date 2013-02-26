@@ -25,14 +25,14 @@
  *
  * @package   NFePHP
  * @name      AutoCTeNFePHP
- * @version   1.00
+ * @version   1.0.1
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2011 &copy; NFePHP
  * @link      http://www.nfephp.org/
  * @author    Roberto L. Machado <linux.rlm at gmail dot com>
  *
  *        CONTRIBUIDORES (em ordem alfabetica):
- * 
+ *          Lucimar A. Magalhaes <lucimar.magalhaes at assistsolucoes dot com dot br>
  * 
  */
 //define o caminho base da instalação do sistema
@@ -43,8 +43,10 @@ if (!defined('PATH_ROOT')) {
 require_once('CTeNFePHP.class.php');
 //carrega a classe de impressao da DANFE
 require_once('DacteNFePHP.class.php');
+//carrega a classe de conversões de txt para xml
+require_once('ConvertCTePHP.class.php');
 
-class AutoCTeNFePHP extends CteNFePHP {
+class AutoCTeNFePHP extends CTeNFePHP {
     
     /**
      * __construct
@@ -69,6 +71,47 @@ class AutoCTeNFePHP extends CteNFePHP {
     }
     
     /**
+     * autoTXTtoXML
+     * Método para converter todas as nf em formato txt para o formato xml
+     * localizadas na pasta "entradas". Os arquivos txt apoś terem sido
+     * convertidos com sucesso são removidos da pasta.
+     * Os arquivos txt devem ser nomeados como "<qualquer coisa>-nfe.txt"
+     * @version 2.02
+     * @package NFePHP
+     * @author Roberto L. Machado <linux.rlm at gmail dot com>
+     * @param none
+     * @return boolean true sucesso false Erro
+     */
+    public function autoTXTtoXML(){
+        //varre pasta "entradas" a procura de CTes em txt
+        $aName = $this->listDir($this->entDir,'*-cte.txt',false);
+        // se foi retornado algum arquivo
+        $totTXT = count($aName);
+        if ( $totTXT > 0){
+            for ( $x=0; $x < $totTXT; $x++ ) {
+                //carrega cte em txt para converter em xml
+                $filename = $this->entDir.$aName[$x];
+                $newname = $this->temDir.$aName[$x];
+                //instancia a classe de conversão
+                $oXML = new ConvertCTePHP();
+                //convere o arquivo
+                $xml = $oXML->ctetxt2xml($filename);
+                //salvar o xml
+                $xmlname = $this->entDir.$oXML->chave.'-cte.xml';
+                if ( !file_put_contents($xmlname, $xml) ){
+                    $this->errStatus = true;
+                    $this->errMsg .= "FALHA na gravação do CTe em xml.\n";
+                    return false;
+                } else {
+                    //mover o txt para pasta temp
+                    rename($filename,$newname);
+                } //fim do teste de gravação
+            } // fim do for
+        } //fim do teste de contagem
+        return true;
+    } //fim autoTXTtoXML
+
+    /**
      * autoSignCTe
      * Método para assinatura em lote das CTe em XML
      * Este método verifica todas as CTe existentes na pasta de ENTRADAS e as assina
@@ -76,9 +119,6 @@ class AutoCTeNFePHP extends CteNFePHP {
      * ASSINADAS.
      * IMPORTANTE : Em ambiente Linux manter os nomes dos arquivos e terminações em LowerCase.
      *
-     * @version 1.00
-     * @package CTePHP
-     * @author  Roberto L. Machado <linux.rlm at gmail dot com>
      * @param  none
      * @return boolean true sucesso false Erro
      */
@@ -97,7 +137,7 @@ class AutoCTeNFePHP extends CteNFePHP {
                     // Assinador usando somente o PHP da classe classCTe
                     // mantenha desse jeito mesmo com um unico =
                     // a atribuição da variavel e o teste são simultâneos
-                    if ($signn = $this->signXML($ctefile, 'infCTe') ) {
+                    if ($signn = $this->signXML($ctefile, 'infCte') ) {
                         // XML retornado gravar
                         $file = $this->assDir . $aName[$x];
                         if (!file_put_contents($file, $signn)) {
@@ -129,9 +169,6 @@ class AutoCTeNFePHP extends CteNFePHP {
      * com o shema XSD. Caso a CTe seja valida será movida para a pasta VALIDADAS, caso contrario
      * será movida para a pasta REPROVADAS.
      *
-     * @version 1.00
-     * @package CTePHP
-     * @author  Roberto L. Machado <linux.rlm at gmail dot com>
      * @param   none
      * @return  boolean true sucesso false Erro
      */
@@ -155,21 +192,23 @@ class AutoCTeNFePHP extends CteNFePHP {
                     $xmldoc->loadXML($ctefile, LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
                     $root = $xmldoc->documentElement;
                     // Extrair a tag com o numero da versão da CTe
-                    $node = $xmldoc->getElementsByTagName('infCTe')->item(0);
+                    $node = $xmldoc->getElementsByTagName('infCte')->item(0);
                     // Obtem a versão do layout da CTe
                     $ver = trim($node->getAttribute("versao"));
                     // Buscar o nome do scheme
-                    $filexsd = $this->listDir($this->xsdDir . $this->schemeVer . DIRECTORY_SEPARATOR, 'cte_v*.xsd', true);
+                    $filexsd = $this->listDir($this->xsdDir . $this->cteSchemeVer . DIRECTORY_SEPARATOR, 'cte_v*.xsd', true);
                     if (!$filexsd[0]) {
                         $this->errMsg = 'Erro na localização do shema xsd';
                         $this->errStatus = true;
                         return false;
                     }
-                    $aRet = $this->validXML($ctefile, $filexsd[0]);
-                    if ($aRet['status']) {
+					$aError = array();
+                    //$aRet = $this->validXML($ctefile, $filexsd[0], $aError);
+                    //if ($aRet['status']) {
+					if ( $this->validXML($ctefile, $filexsd[0], $aError) ) {
                         // Validado => transferir para pasta validados
                         $file = $this->valDir . $aName[$x];
-                        if (!file_put_contents($file, $nfefile))
+                        if (!file_put_contents($file, $ctefile))
                             $this->errStatus = false;
                         else
                             unlink($filename);
@@ -177,7 +216,7 @@ class AutoCTeNFePHP extends CteNFePHP {
                         // CTe com erros transferir de pasta rejeitadas
                         $file = $this->rejDir . $aName[$x];
                         $this->errStatus = true;
-                        $this->errMsg .= $aName[$x] . ' ... ' . $aRet['error'] . "\n";
+                        $this->errMsg .= $aName[$x] . ' ... ' . $aError['error'] . "\n";
                         if (!file_put_contents($file, $ctefile))
                             $this->errStatus = true;
                         else
@@ -197,9 +236,6 @@ class AutoCTeNFePHP extends CteNFePHP {
      * e em saso de sucesso no envio move o arquivo para a pasta das enviadas
      * ATENÇÃO : Existe um limite para o tamanho do arquivo a ser enviado ao SEFAZ
      *
-     * @version 1.00
-     * @package CTePHP
-     * @author  Roberto L. Machado <linux.rlm at gmail dot com>
      * @param   none
      * @return  mixed boolean false erro ou string $recibo
      */
@@ -276,15 +312,12 @@ class AutoCTeNFePHP extends CteNFePHP {
      *
      * Caso não haja resposta ainda não faz nada.
      *
-     * @version 1.00
-     * @package CTePHP
-     * @author  Roberto L. Machado <linux.rlm at gmail dot com> 
      * @param   none
      * @return  array   [n]['cStat']['xMotivo']['ctepath']
      */
     public function autoProtCTe() {
         //condição inicial da variável de retorno
-        $aRetorno = array(0=>array('cStat'=>'','xMotivo'=>'','nfepath'=>''));
+        $aRetorno = array(0=>array('cStat'=>'','xMotivo'=>'','ctepath'=>''));
         $n = 0;
         //varre a pasta de enviadas
         $aName = $this->listDir($this->envDir,'*-cte.xml',false);
@@ -295,7 +328,7 @@ class AutoCTeNFePHP extends CteNFePHP {
                 $idCTe = substr($file,0,44);
                 $cteFile = $this->envDir.$file;
                 //primeiro verificar se o protocolo existe na pasta temporarias
-                $protFile = $this->temDir.$idNFe.'-cteprot.xml';
+                $protFile = $this->temDir.$idCTe.'-cteprot.xml';
                 if (file_exists($protFile)){
                     $docxml = file_get_contents($protFile);
                     $dom = new DOMDocument(); //cria objeto DOM
@@ -307,25 +340,25 @@ class AutoCTeNFePHP extends CteNFePHP {
                     $aRet['xMotivo'] = $dom->getElementsByTagName('xMotivo')->item(0)->nodeValue;
                     $aRet['bStat'] = true;
                 } else {
-                    //caso não exista então buscar pela chave da NFe
+                    //caso não exista então buscar pela chave do CTe
                     $aRet = $this->getProtocol('',$idCTe,$this->tpAmb,$this->modSOAP);
                 }    
                 if ( $aRet['cStat'] == 100) {
-                    //NFe aprovada
+                    //CTe aprovado
                     $pasta = $this->aprDir;
                 }//endif
                 if ( $aRet['cStat'] == 110) {
-                    //NFe denegada
+                    //CTe denegado
                     $pasta = $this->denDir;
                 }//endif
                 if ( $aRet['cStat'] > 199 ) {
-                    //NFe reprovada
+                    //CTe reprovado
                     $pasta = $this->repDir;
-                    //mover a NFe para a pasta repovadas
+                    //mover o CTe para a pasta repovadas
                     rename($cteFile, $pasta.$idCTe.'-cte.xml');
                 }//endif
                 if ( $aRet['bStat'] ) {
-                    //montar a NFe com o protocolo
+                    //montar a CTe com o protocolo
                     if ( is_file($protFile) && is_file($cteFile) ) {
                         //se aprovada ou denegada adicionar o protocolo e mover o arquivo
                         if ($aRet['cStat'] == 100 || $aRet['cStat'] == 110 ) {

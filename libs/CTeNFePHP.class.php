@@ -27,7 +27,7 @@
  * 
  * @package   NFePHP
  * @name      CTeNFePHP
- * @version   1.0.15
+ * @version   1.0.16
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; CTePHP
  * @link      http://www.nfephp.org/
@@ -39,6 +39,7 @@
  *          Chrystian Toigo <ctoigo at gmail dot com>
  *          Fernando Mertins <fernando.mertins at gmail dot com>
  *          Herbert Silva <hebert2 at gmail dot com>
+ *          Lucimar A. Magalhaes <lucimar.magalhaes at assistsolucoes dot com dot br>
  *	    Roberto Spadim  <roberto at spadim dot com dot br>
  *          Rodrigo Rysdyk <rodrigo_rysdyk at hotmail dot com>
  * 
@@ -997,116 +998,118 @@ class CTeNFePHP {
 	elseif($tmp_nome_modal=='Ferroviario')	$tmp_tag='ferrov';
 	elseif($tmp_nome_modal=='Dutoviario')	$tmp_tag='duto';
 	$tmp_modal=$dom->getElementsByTagName('infModal')->item(0);
-	$tmp_modal2=$tmp_modal->getElementsByTagName($tmp_tag)->item(0);
-	if(empty($tmp_modal2)){
-		$msg = "Erro para localizar a tag do modal $tmp_tag no xml da CTe.\n";
-                $this->__setError($msg);
-                if ($this->exceptions) {
-                    throw new nfephpException($msg, self::STOP_CRITICAL);
-                }
-                $aError[] = "Erro para localizar a tag do modal $tmp_tag no xml da CTe.";
-                return false;
-	}
-	// limpa dom antigo...
-	$dom = new DOMDocument('1.0', 'utf-8');
-	$dom->formatOutput = true;
-	$dom->preserveWhiteSpace = false;
-	$tmp_modal2=$dom->importNode( $tmp_modal2 ,true);
-	$dom->appendChild($tmp_modal2);
-	
-	//limpa erros anteriores
-        libxml_clear_errors();
-        // valida o xml com o xsd
-	if ( !$dom->schemaValidate($xsdFile_modal) ) {
+	if ( !empty($tmp_modal) ) {
+		$tmp_modal2=$tmp_modal->getElementsByTagName($tmp_tag)->item(0);
+		if(empty($tmp_modal2)){
+			$msg = "Erro para localizar a tag do modal $tmp_tag no xml da CTe.\n";
+					$this->__setError($msg);
+					if ($this->exceptions) {
+						throw new nfephpException($msg, self::STOP_CRITICAL);
+					}
+					$aError[] = "Erro para localizar a tag do modal $tmp_tag no xml da CTe.";
+					return false;
+		}
+		// limpa dom antigo...
+		$dom = new DOMDocument('1.0', 'utf-8');
+		$dom->formatOutput = true;
+		$dom->preserveWhiteSpace = false;
+		$tmp_modal2=$dom->importNode( $tmp_modal2 ,true);
+		$dom->appendChild($tmp_modal2);
+		
+		//limpa erros anteriores
+			libxml_clear_errors();
+			// valida o xml com o xsd
+		if ( !$dom->schemaValidate($xsdFile_modal) ) {
 
-            /**
-             * Se não foi possível validar, você pode capturar
-             * todos os erros em um array
-             * Cada elemento do array $arrayErrors
-             * será um objeto do tipo LibXmlError
-             */
-            // carrega os erros em um array
-            $aIntErrors = libxml_get_errors();
-            $flagOK = false;
-            if (!isset($Signature)){
-                // remove o erro de falta de assinatura
-                foreach ($aIntErrors as $k=>$intError){
-                    if(strpos($intError->message,'( {http://www.w3.org/2000/09/xmldsig#}Signature )')!==false){	
-                        // isso é inutil, mas é bom ter por via das duvidas....
-			// remove o erro da assinatura, se tiver outro meio melhor (atravez dos erros de codigo) e alguem souber como tratar por eles, por favor contribua...
-                        unset($aIntErrors[$k]);
-			continue;
-                    }
-                }
-                reset($aIntErrors);
-                $flagOK = true;
-            }//fim teste Signature    
-	    $msg = '';
-            foreach ($aIntErrors as $intError){
-                $flagOK = false;
-                $en = array("{http://www.portalfiscal.inf.br/cte}"
-                            ,"[facet 'pattern']"
-                            ,"The value"
-                            ,"is not accepted by the pattern"
-                            ,"has a length of"
-                            ,"[facet 'minLength']"
-                            ,"this underruns the allowed minimum length of"
-                            ,"[facet 'maxLength']"
-                            ,"this exceeds the allowed maximum length of"
-                            ,"Element"
-                            ,"attribute"
-                            ,"is not a valid value of the local atomic type"
-                            ,"is not a valid value of the atomic type"
-                            ,"Missing child element(s). Expected is"
-                            ,"The document has no document element"
-                            ,"[facet 'enumeration']"
-                            ,"one of"
-                            ,"This element is not expected. Expected is"                     
-                            ,"is not an element of the set");
-              
-                $pt = array(""
-                            ,"[Erro 'Layout']"
-                            ,"O valor"
-                            ,"não é aceito para o padrão."
-                            ,"tem o tamanho"
-                            ,"[Erro 'Tam. Min']"
-                            ,"deve ter o tamanho mínimo de"
-                            ,"[Erro 'Tam. Max']"
-                            ,"Tamanho máximo permitido"
-                            ,"Elemento"
-                            ,"Atributo"
-                            ,"não é um valor válido"
-                            ,"não é um valor válido"
-                            ,"Elemento filho faltando. Era esperado"
-                            ,"Falta uma tag no documento"
-                            ,"[Erro 'Conteúdo']"
-                            ,"um de"
-                            ,"Este elemento não é esperado. Esperado é"
-                            ,"não é um dos seguintes possiveis");
-                
-                switch ($intError->level) {
-                    case LIBXML_ERR_WARNING:
-                        $aError[] = " Atençao $intError->code: " . str_replace($en,$pt,$intError->message);
-                        break;
-                    case LIBXML_ERR_ERROR:
-                        $aError[] = " Erro $intError->code: " . str_replace($en,$pt,$intError->message);
-                        break;
-                    case LIBXML_ERR_FATAL:
-                        $aError[] = " Erro Fatal $intError->code: " . str_replace($en,$pt,$intError->message);
-                        break;
-                }
-                $msg .= str_replace($en,$pt,$intError->message);
-            }
-#die($xml. "\n" .$msg); 
-        } else {
-            $flagOK = true;
-        }
-        if(!$flagOK){
-            $this->__setError($msg, self::STOP_MESSAGE);
-            if ($this->exceptions) {
-                throw new nfephpException($msg);
-            }
-        }
+				/**
+				 * Se não foi possível validar, você pode capturar
+				 * todos os erros em um array
+				 * Cada elemento do array $arrayErrors
+				 * será um objeto do tipo LibXmlError
+				 */
+				// carrega os erros em um array
+				$aIntErrors = libxml_get_errors();
+				$flagOK = false;
+				if (!isset($Signature)){
+					// remove o erro de falta de assinatura
+					foreach ($aIntErrors as $k=>$intError){
+						if(strpos($intError->message,'( {http://www.w3.org/2000/09/xmldsig#}Signature )')!==false){	
+							// isso é inutil, mas é bom ter por via das duvidas....
+				// remove o erro da assinatura, se tiver outro meio melhor (atravez dos erros de codigo) e alguem souber como tratar por eles, por favor contribua...
+							unset($aIntErrors[$k]);
+				continue;
+						}
+					}
+					reset($aIntErrors);
+					$flagOK = true;
+				}//fim teste Signature    
+			$msg = '';
+				foreach ($aIntErrors as $intError){
+					$flagOK = false;
+					$en = array("{http://www.portalfiscal.inf.br/cte}"
+								,"[facet 'pattern']"
+								,"The value"
+								,"is not accepted by the pattern"
+								,"has a length of"
+								,"[facet 'minLength']"
+								,"this underruns the allowed minimum length of"
+								,"[facet 'maxLength']"
+								,"this exceeds the allowed maximum length of"
+								,"Element"
+								,"attribute"
+								,"is not a valid value of the local atomic type"
+								,"is not a valid value of the atomic type"
+								,"Missing child element(s). Expected is"
+								,"The document has no document element"
+								,"[facet 'enumeration']"
+								,"one of"
+								,"This element is not expected. Expected is"                     
+								,"is not an element of the set");
+				  
+					$pt = array(""
+								,"[Erro 'Layout']"
+								,"O valor"
+								,"não é aceito para o padrão."
+								,"tem o tamanho"
+								,"[Erro 'Tam. Min']"
+								,"deve ter o tamanho mínimo de"
+								,"[Erro 'Tam. Max']"
+								,"Tamanho máximo permitido"
+								,"Elemento"
+								,"Atributo"
+								,"não é um valor válido"
+								,"não é um valor válido"
+								,"Elemento filho faltando. Era esperado"
+								,"Falta uma tag no documento"
+								,"[Erro 'Conteúdo']"
+								,"um de"
+								,"Este elemento não é esperado. Esperado é"
+								,"não é um dos seguintes possiveis");
+					
+					switch ($intError->level) {
+						case LIBXML_ERR_WARNING:
+							$aError[] = " Atençao $intError->code: " . str_replace($en,$pt,$intError->message);
+							break;
+						case LIBXML_ERR_ERROR:
+							$aError[] = " Erro $intError->code: " . str_replace($en,$pt,$intError->message);
+							break;
+						case LIBXML_ERR_FATAL:
+							$aError[] = " Erro Fatal $intError->code: " . str_replace($en,$pt,$intError->message);
+							break;
+					}
+					$msg .= str_replace($en,$pt,$intError->message);
+				}
+	#die($xml. "\n" .$msg); 
+			} else {
+				$flagOK = true;
+			}
+			if(!$flagOK){
+				$this->__setError($msg, self::STOP_MESSAGE);
+				if ($this->exceptions) {
+					throw new nfephpException($msg);
+				}
+			}
+		}
         return $flagOK;
     } //fim validXML
 
@@ -1116,9 +1119,6 @@ class CTeNFePHP {
      * para impressão e envio ao destinatário.
      *
      * @name addProt
-     * @version 1.00
-     * @package CTePHP
-     * @author  Roberto L. Machado <linux.rlm at gmail dot com>
      * @param   string $ctefile path completo para o arquivo contendo a CTe
      * @param   string $protfile path completo para o arquivo contendo o protocolo
      * @return  mixed false se erro ou string Retorna a CTe com o protocolo
@@ -1215,9 +1215,6 @@ class CTeNFePHP {
      * os arquivos XML
      *
      * @name signXML
-     * @version 2.10
-     * @package NFePHP
-     * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @param	string $docxml String contendo o arquivo XML a ser assinado
      * @param   string $tagid TAG do XML que devera ser assinada
      * @return	mixed false se houve erro ou string com o XML assinado
@@ -1337,10 +1334,6 @@ class CTeNFePHP {
      *        cStat = 109 sistema parado sem previsao de retorno, verificar status SCAN
      *                    se SCAN estiver ativado usar, caso contrário aguardar pacientemente.
      * @name statusServico
-     * @version 1.01
-     * @package CTeNFePHP
-     * @author Roberto L. Machado <linux.rlm at gmail dot com>
-     * @author Fernando Mertins <fernando.mertins at gmail dot com>
      * @param string $UF sigla da Unidade da Federação
      * @param integer $tpAmb tipo de ambiente 1-produção e 2-homologação
      * @param integer 1 usa o __sendSOAP e 2 usa o __sendSOAP2
@@ -1444,9 +1437,6 @@ class CTeNFePHP {
      * retornados podem não ser os mais atuais. Não é recomendado seu uso ainda.
      *
      * @name consultaCadastro
-     * @version 1.01
-     * @package CTePHP
-     * @author Roberto L. Machado <linux.rlm at gmail dot com>      
      * @param	string  $UF
      * @param   string  $IE
      * @param   string  $CNPJ
@@ -1540,9 +1530,6 @@ class CTeNFePHP {
      * Este processo enviará somente até 50 CTe em cada Lote
      *
      * @name sendLot
-     * @version 1.00
-     * @package CTePHP
-     * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @param	array   $aCTe conhecimento de transporte em xml uma em cada campo do array unidimensional MAX 50
      * @param   integer $id     id do lote e um numero que deve ser gerado pelo sistema
      *                          a cada envio mesmo que seja de apenas uma CTe
@@ -1634,9 +1621,6 @@ class CTeNFePHP {
      * Caso $this->cStat == 105 Tentar novamente mais tarde
      *
      * @name getProtocol
-     * @version 1.01
-     * @package CTePHP
-     * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @param	string   $recibo numero do recibo do envio do lote
      * @param	string   $chave  numero da chave da CTe de 44 digitos
      * @param   string   $tpAmb  numero do ambiente 1 - producao e 2 - homologação
@@ -2013,9 +1997,6 @@ class CTeNFePHP {
      * Solicita o cancelamento do CT enviado
      *
      * @name cancelCT
-     * @version 1.00
-     * @package CTePHP
-     * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @param	string  $id      ID da CTe com 44 digitos (sem o CTe na frente dos numeros)
      * @param   string  $protId     Numero do protocolo de aceitaçao do lote de CTe enviado anteriormente pelo SEFAZ
      * @param   boolean $modSOAP    1 usa __sendSOAP e 2 usa __sendSOAP2
@@ -2108,10 +2089,7 @@ class CTeNFePHP {
     /**
      * verifySignatureXML
      * Verifica correção da assinatura no xml
-     * 
-     * @version 1.00
-     * @package CTePHP
-     * @author Bernardo Silva <bernardo at datamex dot com dot br>
+     * @name verifySignatureXML
      * @param string $conteudoXML xml a ser verificado 
      * @param string $tag tag que é assinada
      * @return boolean false se não confere e true se confere
@@ -2164,10 +2142,8 @@ class CTeNFePHP {
     /**
      * verifyCTe
      * Verifica a validade da CTe recebida de terceiros
-     *
-     * @version 1.02
-     * @package NFePHP
-     * @author Roberto L. Machado <linux dot rlm at gmail dot com>
+     * 
+     * @name verifyCTe
      * @param string $file Path completo para o arquivo xml a ser verificado
      * @return boolean false se nÃ£o confere e true se confere
      */
@@ -2252,9 +2228,7 @@ class CTeNFePHP {
     /**
      * __splitLines
      * Divide a string do certificado publico em linhas com 76 caracteres (padrão original)
-     * @version 1.00
-     * @package CTePHP
-     * @author Bernardo Silva <bernardo at datamex dot com dot br>
+     * @name __splitLines
      * @param string $cnt certificado
      * @return string certificado reformatado 
      */
@@ -2285,9 +2259,6 @@ class CTeNFePHP {
     * </ws>
     *
     * @name loadSEFAZ
-    * @version 1.01
-    * @package CTePHP
-    * @author Roberto L. Machado <linux.rlm at gmail dot com>
     * @param  string $spathXML  Caminho completo para o arquivo xml
     * @param  string $tpAmb  Pode ser "2-homologacao" ou "1-producao"
     * @param  string $sUF       Sigla da Unidade da Federação (ex. SP, RS, etc..)
@@ -2363,9 +2334,7 @@ class CTeNFePHP {
      *   $this->passKey
      *
      * @name __loadCerts
-     * @version 1.00
-     * @package CTePHP
-     * @author Roberto L. Machado <linux.rlm at gmail dot com>
+     * @param   none
      * @return	boolean true se o certificado foi carregado e false se nao
      **/
     protected function __loadCerts(){
@@ -2465,9 +2434,6 @@ class CTeNFePHP {
     * certificados de forma a garantir que sempre estejam validos
     *
     * @name __validCerts
-    * @version  1.00
-    * @package  CTePHP
-    * @author Roberto L. Machado <linux.rlm at gmail dot com>
     * @param    string  $cert Certificado digital no formato pem
     * @return	array ['status'=>true,'meses'=>8,'dias'=>245]
     */
@@ -2520,9 +2486,6 @@ class CTeNFePHP {
      * para inclusão do mesmo na tag assinatura do xml
      *
      * @name __cleanCerts
-     * @version 1.00
-     * @package CTePHP
-     * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @param    $certFile
      * @return   string contendo a chave digital limpa
      * @access   private
@@ -2550,9 +2513,6 @@ class CTeNFePHP {
      * listDir
      * Método para obter todo o conteúdo de um diretorio, e
      * que atendam ao critério indicado.
-     * @version 2.11
-     * @package CTePHP
-     * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @param string $dir Diretorio a ser pesquisado
      * @param string $fileMatch Critério de seleção pode ser usados coringas como *-cte.xml
      * @param boolean $retpath se true retorna o path completo dos arquivos se false so retorna o nome dos arquivos
@@ -2613,9 +2573,6 @@ class CTeNFePHP {
      * Conforme Manual de Integração Versão 4.0.1 
      *
      * @name __sendSOAP
-     * @version 2.11
-     * @package NFePHP
-     * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @param string $urlsefaz
      * @param string $namespace
      * @param string $cabecalho
@@ -2720,10 +2677,6 @@ class CTeNFePHP {
      * Conforme Manual de Integração Versão 4.0.1 Utilizando cURL e não o SOAP nativo
      *
      * @name __sendSOAP2
-     * @version 2.15
-     * @package NFePHP
-     * @author Roberto L. Machado <linux.rlm at gmail dot com>
-     * @author Jorge Luiz Rodrigues Tomé <jlrodriguestome at hotmail dot com>
      * @param string $urlsefaz
      * @param string $namespace
      * @param string $cabecalho
@@ -2879,7 +2832,7 @@ class CTeNFePHP {
         $txtInfo .= "Upload Content Length=$info[upload_content_length]\n";
         $txtInfo .= "Start Transfer Time=$info[starttransfer_time]\n";
         $txtInfo .= "Redirect Time=$info[redirect_time]\n";
-        $txtInfo .= "Certinfo=$info[certinfo]\n";
+//        $txtInfo .= "Certinfo=$info[certinfo]\n";
         $n = strlen($__xml);
         $x = stripos($__xml, "<");
         $xml = substr($__xml, $x, $n-$x);
@@ -2903,9 +2856,6 @@ class CTeNFePHP {
     * em um timestamp unix
     *
     * @name __convertTime
-    * @version 1.00
-    * @package CTePHP
-    * @author Roberto L. Machado <linux.rlm at gmail dot com>
     * @param    string   $DH
     * @return   timestamp
     * @access   private
@@ -2923,10 +2873,9 @@ class CTeNFePHP {
     /**
      * __getNumLot
      * Obtêm o numero do último lote de envio
-     *  
-     * @version 1.01
-     * @package NFePHP
-     * @author  Roberto L. Machado <linux.rlm at gmail dot com>
+     * 
+     * @name __getNumLot
+     * @param none 
      * @return numeric Numero do Lote
      */
     protected function __getNumLot(){
@@ -2946,9 +2895,7 @@ class CTeNFePHP {
      * __putNumLot
      * Grava o numero do lote de envio usado
      *
-     * @version 1.01
-     * @package NFePHP
-     * @author  Roberto L. Machado <linux.rlm at gmail dot com>
+     * @name __putNumLot
      * @param numeric $num Inteiro com o numero do lote enviado
      * @return boolean true sucesso ou FALSO erro
      */
@@ -2967,9 +2914,7 @@ class CTeNFePHP {
      * __setError
      * Adiciona descrição do erro ao contenedor dos erros 
      *  
-     * @version 0.0.1
-     * @package NFePHP
-     * @author  Roberto L. Machado <linux.rlm at gmail dot com>
+     * @name __setError
      * @param   string $msg Descrição do erro
      * @return  none
      */
