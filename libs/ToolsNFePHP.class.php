@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.0.56
+ * @version   3.0.57
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -66,6 +66,7 @@
  *              Paulo Henrique Demori <phdemori at hotmail dot com>
  *              Rafael Stavarengo <faelsta at gmail dot com>
  *              Roberto Spadim <rspadim at gmail dot com>
+ *              Romulo Cordeiro <rrromulo at gmail dot com>
  *              Vinicius L. Azevedo <vinilazev at gmail dot com>
  *              Walber da Silva Sales <eng dot walber at gmail dot com>
  *
@@ -2809,7 +2810,7 @@ class ToolsNFePHP {
             $eventProc_att1->appendChild($xmlprocEvento->createTextNode($versao));
             //estabelece o atributo xmlns
             $eventProc_att2 = $procEventoNFe->appendChild($xmlprocEvento->createAttribute('xmlns'));
-            $eventProc_att2->appendChild($xmlprocEvento->createTextNode($this->URLportal));
+            $eventProc_att2->appendChild($xmlprocEvento->createTextNode($this->URLPortal));
             //carrega o node evento
             $node1 = $xmlprocEvento->importNode($evento, true);
             $procEventoNFe->appendChild($node1);
@@ -3014,7 +3015,7 @@ class ToolsNFePHP {
             $eventProc_att1->appendChild($xmlprocCCe->createTextNode($versao));
             //estabelece o atributo xmlns
             $eventProc_att2 = $procEventoNFe->appendChild($xmlprocCCe->createAttribute('xmlns'));
-            $eventProc_att2->appendChild($xmlprocCCe->createTextNode($this->URLportal));
+            $eventProc_att2->appendChild($xmlprocCCe->createTextNode($this->URLPortal));
             //carrega o node evento
             $node1 = $xmlprocCCe->importNode($evento, true);
             $procEventoNFe->appendChild($node1);
@@ -3241,7 +3242,7 @@ class ToolsNFePHP {
             $eventProc_att1->appendChild($xmlprocMDe->createTextNode($versao));
             //estabelece o atributo xmlns
             $eventProc_att2 = $procEventoNFe->appendChild($xmlprocMDe->createAttribute('xmlns'));
-            $eventProc_att2->appendChild($xmlprocMDe->createTextNode($this->URLportal));
+            $eventProc_att2->appendChild($xmlprocMDe->createTextNode($this->URLPortal));
             //carrega o node evento
             $node1 = $xmlprocMDe->importNode($evento, true);
             $procEventoNFe->appendChild($node1);
