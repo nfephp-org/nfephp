@@ -20,10 +20,10 @@
  * Caso contrário consulte <http://www.fsfla.org/svnwiki/trad/GPLv3> ou
  * <http://www.fsfla.org/svnwiki/trad/LGPLv3>. 
  *
- *
+  *
  * @package   NFePHP
  * @name      MailNFePHP
- * @version   2.2.12
+ * @version   2.2.13
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -148,12 +148,12 @@ class MailNFePHP {
                 $this->mailIMAPnocerts = $mailIMAPnocerts;
                 $this->mailIMAPbox = $mailIMAPbox;
                 if ($ambiente == 1){
-                    $caminho = '/producao';
+                    $caminho = DIRECTORY_SEPARATOR . 'producao';
                 } else {
-                    $caminho = '/homologacao';
+                    $caminho = DIRECTORY_SEPARATOR . 'homologacao';
                 }
-                $this->recebidasDir = "$arquivosDir$caminho/recebidas";
-                $this->temporariasDir = "$arquivosDir$caminho/temporarias";
+                $this->recebidasDir = $arquivosDir.$caminho.DIRECTORY_SEPARATOR.'recebidas'.DIRECTORY_SEPARATOR;
+                $this->temporariasDir = $arquivosDir.DIRECTORY_SEPARATOR.$caminho.DIRECTORY_SEPARATOR.'temporarias'.DIRECTORY_SEPARATOR;
                 $this->CNPJ = $cnpj;
                 if($mailLayoutFile != ''){
                     if (is_file(PATH_ROOT.'config/'.$mailLayoutFile)){
@@ -168,10 +168,7 @@ class MailNFePHP {
      * enviaMail 
      * Função de envio de emails da NFe a partir dos endereços de email inclusos no próprio xml
      *
-     * @package NFePHP
      * @name    enviaMail
-     * @version 1.10
-     * @author  Roberto L. Machado <linux dot rlm at gmail dot com>
      * @param   string $filename passar uma string com o caminho completo para o arquivo XML
      * @param   string $para Força o envio da comunicação apenas para o email indicado
      * @return  boolean TRUE sucesso ou FALSE falha
@@ -261,8 +258,6 @@ class MailNFePHP {
      *
      * @package NFePHP
      * @name sendNFe
-     * @version 2.1.9
-     * @author    Roberto L. Machado <linux dot rlm at gmail dot com>
      * @param string $docXML arquivo XML, é obrigatório
      * @param string $docPDF DANFE em formato PDF, se não quizer mandar o pdf deixe em branco
      * @param string $nomeXML Nome do arquivo XML, é obrigatório
@@ -374,10 +369,7 @@ class MailNFePHP {
      * __sendM
      * Função de envio do email
      * 
-     * @package NFePHP
      * @name __sendM
-     * @version 1.01
-     * @author    Roberto L. Machado <linux dot rlm at gmail dot com>
      * @param string $to            endereço de email do destinatário 
      * @param string $contato       Nome do contato - empresa
      * @param string $subject       Assunto
@@ -437,7 +429,6 @@ class MailNFePHP {
      * validEmailAdd
      * Função de validação dos endereços de email
      * 
-     * @package NFePHP
      * @name validEmailAdd
      * @version 1.02
      * @author  Douglas Lovell <http://www.linuxjournal.com/article/9585>
@@ -511,11 +502,7 @@ class MailNFePHP {
      * 3 - caso na caixa postal tenha email com xml de NFe e não seja possivel 
      *     salvar o xml na pasta do sistema o email não será movido nem deletado    
      *       
-     * @package NFePHP
      * @name buscaEmail
-     * @version 1.11
-     * @author  Roberto L. Machado <linux dot rlm at gmail dot com>
-     * @author  Leandro C. Lopez <leandro dot castoldi at gmail dot com> 
      * @return boolean True se verdadeiro ou false caso haja algum erro 
      */
     public function buscaEmail(){
@@ -664,11 +651,9 @@ class MailNFePHP {
      * Método que extrai os anexos xml do email e os retorna para posterior
      * processamento e arquivo
      * 
-     * @package NFePHP
      * @name __getAnexosXML
-     * @version 1.13
-     * @author  Leandro C. Lopez <leandro dot castoldi at gmail dot com>
-     * @author  Roberto L. Machado <linux dot rlm at gmail dot com>
+     * @param object $connection Objeto da conexão IMAP
+     * @param integer $message_number Numero de ordem da mensagem na pasta IMAP
      * @return mixed vazio ou array 
      */
     private function __getAnexosXML($connection, $message_number) {
@@ -778,11 +763,9 @@ class MailNFePHP {
     }//fim __getAnexosXML
     
     /**
-     * Remove as tag html para deixar o texto puro
-     * @package NFePHP
+     * __html2txt
+     * Remove as tags html para deixar em texto puro
      * @name    html2txt
-     * @version 1.00
-     * @author  Roberto L. Machado <linux dot rlm at gmail dot com>
      * @param   string $str
      * @return  string texto puro sem as tags html
      */
