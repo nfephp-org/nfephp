@@ -95,7 +95,6 @@ foreach($aS as $s){
  * Usage:
  *       $array = XML2Array::createArray($xml);
  */
-
 class XML2Array {
 
     private static $xml = null;
