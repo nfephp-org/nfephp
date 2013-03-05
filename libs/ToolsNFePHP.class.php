@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.0.58
+ * @version   3.0.59
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -3762,15 +3762,15 @@ class ToolsNFePHP {
             }
             //criar novos arquivos PEM
             if ($flagNovo){
-				if(file_exists($this->pubKEY){
-					unlink($this->pubKEY);
-				}
-				if (file_exists($this->priKEY){	
-					unlink($this->priKEY);
-				}
-				if (file_exists($this->certKEY){
-					unlink($this->certKEY);
-				}
+                if(file_exists($this->pubKEY)){
+                    unlink($this->pubKEY);
+                }
+                if (file_exists($this->priKEY)){	
+                    unlink($this->priKEY);
+                }
+                if (file_exists($this->certKEY)){
+                    unlink($this->certKEY);
+                }
                 //recriar os arquivos pem com o arquivo pfx
                 if (!file_put_contents($this->priKEY,$x509certdata['pkey'])) {
                     $msg = "Impossivel gravar no diretório!!! Permissão negada!!";
@@ -4474,9 +4474,9 @@ class ToolsNFePHP {
                 $ex = $e;
             }
             //remove o arquivo temporário
-			if (file_exists($tempName){
-				unlink($tempName);
-			}
+            if (file_exists($tempName)){
+                unlink($tempName);
+            }
             if (isset($ex)) {
                 throw $ex;
             }
