@@ -27,7 +27,7 @@
  * 
  * @package   NFePHP
  * @name      CTeNFePHP
- * @version   1.0.16
+ * @version   1.0.17
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; CTePHP
  * @link      http://www.nfephp.org/
@@ -40,10 +40,10 @@
  *          Fernando Mertins <fernando.mertins at gmail dot com>
  *          Herbert Silva <hebert2 at gmail dot com>
  *          Lucimar A. Magalhaes <lucimar.magalhaes at assistsolucoes dot com dot br>
- *	    Roberto Spadim  <roberto at spadim dot com dot br>
+ *          Roberto Spadim  <roberto at spadim dot com dot br>
  *          Rodrigo Rysdyk <rodrigo_rysdyk at hotmail dot com>
- * 
- *               
+ *
+ *
  */
 // Define o caminho base da instalação do sistema
 if (!defined('PATH_ROOT')) {
@@ -604,7 +604,7 @@ class CTeNFePHP {
             $this->dacteprinter = $aConfig['dactePrinter'];
             $this->cteSchemeVer = $aConfig['schemesCTe'];
             if(isset($aConfig['arquivoURLxmlCTe'])){
-		$this->xmlURLfile = $aConfig['arquivoURLxmlCTe'];
+                $this->xmlURLfile = $aConfig['arquivoURLxmlCTe'];
             }
             if ($aConfig['proxyIP'] != '') {
                 $this->aProxy = 
@@ -793,7 +793,7 @@ class CTeNFePHP {
         // Habilita a manipulaçao de erros da libxml
         libxml_use_internal_errors(true);
         //verifica se foi passado o xml
-	if(strlen($xml)==0){
+        if(strlen($xml)==0){
             $msg = 'Você deve passar o conteudo do xml assinado como parâmetro.';
             $this->__setError($msg);
             if ($this->exceptions) {
@@ -818,7 +818,7 @@ class CTeNFePHP {
         if (!empty($errors)) { 
             //o dado passado como $docXml não é um xml
             $msg = 'O dado informado não é um XML ou não foi encontrado. Você deve passar o conteudo de um arquivo xml assinado como parâmetro.';
-	    foreach ($errors as $k=>$intError){
+            foreach ($errors as $k=>$intError){
                 switch ($intError->level) {
                     case LIBXML_ERR_WARNING:
                         $aError[] = " Atençao $intError->code: " . $intError->message;
@@ -831,7 +831,7 @@ class CTeNFePHP {
                         break;
                 }
                 $msg .= $intError->message;
-	    }
+            }
             $this->__setError($msg);
             if ($this->exceptions) {
                 throw new nfephpException($msg, self::STOP_MESSAGE);
@@ -871,37 +871,37 @@ class CTeNFePHP {
                 $xsdFile = $aFile[0];
             }
         }
-	// VAMOS PEGAR O XSD DO MODAL BASEADO NO NOME DO ARQUIVO XSD QUE RECEBEMOS, ELE DEVE ESTAR NA MESMA PASTA COM NOME:
-	//	cte_v1.04.xsd -> cteModalXXXXXXXX_v1.04.xsd
-	// 	ou seja 3 primeiras letras iguais, e ultimas 10 letras também, e no meio escrito Modal e o nome do modal...
-	$tmp1=dirname($xsdFile);
-	$tmp2=basename($xsdFile);
-	$tmp_nome_modal=$nfeProc = $dom->getElementsByTagName('modal')->item(0);
-	if(!empty($tmp_nome_modal)){
-		$tmp_nome_modal=$tmp_nome_modal->nodeValue;
-		if($tmp_nome_modal=='01')	$tmp_nome_modal='Rodoviario';
-		elseif($tmp_nome_modal=='02')	$tmp_nome_modal='Aereo';
-		elseif($tmp_nome_modal=='03')	$tmp_nome_modal='Aquaviario';
-		elseif($tmp_nome_modal=='04')	$tmp_nome_modal='Ferroviario';
-		elseif($tmp_nome_modal=='05')	$tmp_nome_modal='Dutoviario';
-		else				$tmp_nome_modal='';
-	}else{
-		$tmp_nome_modal='';
-	}
-	$xsdFile_modal=$tmp1. DIRECTORY_SEPARATOR . substr($tmp2,0,3)."Modal".$tmp_nome_modal.substr($tmp2,-10);
-	if(!is_file($xsdFile_modal)){
-		$msg = "Erro na localização do schema xsd para o modal $tmp_nome_modal.\n";
-                $this->__setError($msg);
-                if ($this->exceptions) {
-                    throw new nfephpException($msg, self::STOP_CRITICAL);
-                }
-                $aError[] = "Erro na localização do schema xsd do modal.";
-                return false;
-	}
+        // VAMOS PEGAR O XSD DO MODAL BASEADO NO NOME DO ARQUIVO XSD QUE RECEBEMOS, ELE DEVE ESTAR NA MESMA PASTA COM NOME:
+        //  cte_v1.04.xsd -> cteModalXXXXXXXX_v1.04.xsd
+        //  ou seja 3 primeiras letras iguais, e ultimas 10 letras também, e no meio escrito Modal e o nome do modal...
+        $tmp1=dirname($xsdFile);
+        $tmp2=basename($xsdFile);
+        $tmp_nome_modal=$nfeProc = $dom->getElementsByTagName('modal')->item(0);
+        if(!empty($tmp_nome_modal)){
+            $tmp_nome_modal=$tmp_nome_modal->nodeValue;
+            if($tmp_nome_modal=='01')    $tmp_nome_modal='Rodoviario';
+            elseif($tmp_nome_modal=='02')    $tmp_nome_modal='Aereo';
+            elseif($tmp_nome_modal=='03')    $tmp_nome_modal='Aquaviario';
+            elseif($tmp_nome_modal=='04')    $tmp_nome_modal='Ferroviario';
+            elseif($tmp_nome_modal=='05')    $tmp_nome_modal='Dutoviario';
+            else    $tmp_nome_modal='';
+        }else{
+            $tmp_nome_modal='';
+        }
+        $xsdFile_modal=$tmp1. DIRECTORY_SEPARATOR . substr($tmp2,0,3)."Modal".$tmp_nome_modal.substr($tmp2,-10);
+        if(!is_file($xsdFile_modal)){
+            $msg = "Erro na localização do schema xsd para o modal $tmp_nome_modal.\n";
+            $this->__setError($msg);
+            if ($this->exceptions) {
+                throw new nfephpException($msg, self::STOP_CRITICAL);
+            }
+            $aError[] = "Erro na localização do schema xsd do modal.";
+            return false;
+        }
         //limpa erros anteriores
         libxml_clear_errors();
         // valida o xml com o xsd
-	if ( !$dom->schemaValidate($xsdFile) ) {
+        if ( !$dom->schemaValidate($xsdFile) ) {
 
             /**
              * Se não foi possível validar, você pode capturar
@@ -915,16 +915,16 @@ class CTeNFePHP {
             if (!isset($Signature)){
                 // remove o erro de falta de assinatura
                 foreach ($aIntErrors as $k=>$intError){
-                    if(strpos($intError->message,'( {http://www.w3.org/2000/09/xmldsig#}Signature )')!==false){	
+                    if(strpos($intError->message,'( {http://www.w3.org/2000/09/xmldsig#}Signature )')!==false){    
                         // remove o erro da assinatura, se tiver outro meio melhor (atravez dos erros de codigo) e alguem souber como tratar por eles, por favor contribua...
                         unset($aIntErrors[$k]);
-			continue;
+                        continue;
                     }
                 }
                 reset($aIntErrors);            
                 $flagOK = true;
             }//fim teste Signature    
-	    $msg = '';
+            $msg = '';
             foreach ($aIntErrors as $intError){
                 $flagOK = false;
                 $en = array("{http://www.portalfiscal.inf.br/cte}"
@@ -990,126 +990,122 @@ class CTeNFePHP {
                 throw new nfephpException($msg);
             }
         }
-	
-	// validar o schema do modal agora.....
-	if($tmp_nome_modal=='Rodoviario')	$tmp_tag='rodo';
-	elseif($tmp_nome_modal=='Aereo')	$tmp_tag='aereo';
-	elseif($tmp_nome_modal=='Aquaviario')	$tmp_tag='aquav';
-	elseif($tmp_nome_modal=='Ferroviario')	$tmp_tag='ferrov';
-	elseif($tmp_nome_modal=='Dutoviario')	$tmp_tag='duto';
-	$tmp_modal=$dom->getElementsByTagName('infModal')->item(0);
-	if ( !empty($tmp_modal) ) {
-		$tmp_modal2=$tmp_modal->getElementsByTagName($tmp_tag)->item(0);
-		if(empty($tmp_modal2)){
-			$msg = "Erro para localizar a tag do modal $tmp_tag no xml da CTe.\n";
-					$this->__setError($msg);
-					if ($this->exceptions) {
-						throw new nfephpException($msg, self::STOP_CRITICAL);
-					}
-					$aError[] = "Erro para localizar a tag do modal $tmp_tag no xml da CTe.";
-					return false;
-		}
-		// limpa dom antigo...
-		$dom = new DOMDocument('1.0', 'utf-8');
-		$dom->formatOutput = true;
-		$dom->preserveWhiteSpace = false;
-		$tmp_modal2=$dom->importNode( $tmp_modal2 ,true);
-		$dom->appendChild($tmp_modal2);
-		
-		//limpa erros anteriores
-			libxml_clear_errors();
-			// valida o xml com o xsd
-		if ( !$dom->schemaValidate($xsdFile_modal) ) {
-
-				/**
-				 * Se não foi possível validar, você pode capturar
-				 * todos os erros em um array
-				 * Cada elemento do array $arrayErrors
-				 * será um objeto do tipo LibXmlError
-				 */
-				// carrega os erros em um array
-				$aIntErrors = libxml_get_errors();
-				$flagOK = false;
-				if (!isset($Signature)){
-					// remove o erro de falta de assinatura
-					foreach ($aIntErrors as $k=>$intError){
-						if(strpos($intError->message,'( {http://www.w3.org/2000/09/xmldsig#}Signature )')!==false){	
-							// isso é inutil, mas é bom ter por via das duvidas....
-				// remove o erro da assinatura, se tiver outro meio melhor (atravez dos erros de codigo) e alguem souber como tratar por eles, por favor contribua...
-							unset($aIntErrors[$k]);
-				continue;
-						}
-					}
-					reset($aIntErrors);
-					$flagOK = true;
-				}//fim teste Signature    
-			$msg = '';
-				foreach ($aIntErrors as $intError){
-					$flagOK = false;
-					$en = array("{http://www.portalfiscal.inf.br/cte}"
-								,"[facet 'pattern']"
-								,"The value"
-								,"is not accepted by the pattern"
-								,"has a length of"
-								,"[facet 'minLength']"
-								,"this underruns the allowed minimum length of"
-								,"[facet 'maxLength']"
-								,"this exceeds the allowed maximum length of"
-								,"Element"
-								,"attribute"
-								,"is not a valid value of the local atomic type"
-								,"is not a valid value of the atomic type"
-								,"Missing child element(s). Expected is"
-								,"The document has no document element"
-								,"[facet 'enumeration']"
-								,"one of"
-								,"This element is not expected. Expected is"                     
-								,"is not an element of the set");
-				  
-					$pt = array(""
-								,"[Erro 'Layout']"
-								,"O valor"
-								,"não é aceito para o padrão."
-								,"tem o tamanho"
-								,"[Erro 'Tam. Min']"
-								,"deve ter o tamanho mínimo de"
-								,"[Erro 'Tam. Max']"
-								,"Tamanho máximo permitido"
-								,"Elemento"
-								,"Atributo"
-								,"não é um valor válido"
-								,"não é um valor válido"
-								,"Elemento filho faltando. Era esperado"
-								,"Falta uma tag no documento"
-								,"[Erro 'Conteúdo']"
-								,"um de"
-								,"Este elemento não é esperado. Esperado é"
-								,"não é um dos seguintes possiveis");
-					
-					switch ($intError->level) {
-						case LIBXML_ERR_WARNING:
-							$aError[] = " Atençao $intError->code: " . str_replace($en,$pt,$intError->message);
-							break;
-						case LIBXML_ERR_ERROR:
-							$aError[] = " Erro $intError->code: " . str_replace($en,$pt,$intError->message);
-							break;
-						case LIBXML_ERR_FATAL:
-							$aError[] = " Erro Fatal $intError->code: " . str_replace($en,$pt,$intError->message);
-							break;
-					}
-					$msg .= str_replace($en,$pt,$intError->message);
-				}
-	#die($xml. "\n" .$msg); 
-			} else {
-				$flagOK = true;
-			}
-			if(!$flagOK){
-				$this->__setError($msg, self::STOP_MESSAGE);
-				if ($this->exceptions) {
-					throw new nfephpException($msg);
-				}
-			}
-		}
+        // validar o schema do modal agora.....
+        if($tmp_nome_modal=='Rodoviario')    $tmp_tag='rodo';
+        elseif($tmp_nome_modal=='Aereo')    $tmp_tag='aereo';
+        elseif($tmp_nome_modal=='Aquaviario')    $tmp_tag='aquav';
+        elseif($tmp_nome_modal=='Ferroviario')    $tmp_tag='ferrov';
+        elseif($tmp_nome_modal=='Dutoviario')    $tmp_tag='duto';
+        $tmp_modal=$dom->getElementsByTagName('infModal')->item(0);
+        if ( !empty($tmp_modal) ) {
+            $tmp_modal2=$tmp_modal->getElementsByTagName($tmp_tag)->item(0);
+            if(empty($tmp_modal2)){
+                $msg = "Erro para localizar a tag do modal $tmp_tag no xml da CTe.\n";
+                $this->__setError($msg);
+                if ($this->exceptions) {
+                    throw new nfephpException($msg, self::STOP_CRITICAL);
+                }
+                $aError[] = "Erro para localizar a tag do modal $tmp_tag no xml da CTe.";
+                return false;
+            }
+            // limpa dom antigo...
+            $dom = new DOMDocument('1.0', 'utf-8');
+            $dom->formatOutput = true;
+            $dom->preserveWhiteSpace = false;
+            $tmp_modal2=$dom->importNode( $tmp_modal2 ,true);
+            $dom->appendChild($tmp_modal2);
+            //limpa erros anteriores
+            libxml_clear_errors();
+            // valida o xml com o xsd
+            if ( !$dom->schemaValidate($xsdFile_modal) ) {
+                /**
+                 * Se não foi possível validar, você pode capturar
+                 * todos os erros em um array
+                 * Cada elemento do array $arrayErrors
+                 * será um objeto do tipo LibXmlError
+                 */
+                 // carrega os erros em um array
+                 $aIntErrors = libxml_get_errors();
+                 $flagOK = false;
+                 if (!isset($Signature)){
+                    // remove o erro de falta de assinatura
+                    foreach ($aIntErrors as $k=>$intError){
+                        if(strpos($intError->message,'( {http://www.w3.org/2000/09/xmldsig#}Signature )')!==false){    
+                            // isso é inutil, mas é bom ter por via das duvidas....
+                            // remove o erro da assinatura, se tiver outro meio melhor (atravez dos erros de codigo) e alguem souber como tratar por eles, por favor contribua...
+                            unset($aIntErrors[$k]);
+                            continue;
+                         }
+                    }
+                    reset($aIntErrors);
+                    $flagOK = true;
+                 }//fim teste Signature    
+                 $msg = '';
+                 foreach ($aIntErrors as $intError){
+                    $flagOK = false;
+                    $en = array("{http://www.portalfiscal.inf.br/cte}"
+                        ,"[facet 'pattern']"
+                        ,"The value"
+                                ,"is not accepted by the pattern"
+                                ,"has a length of"
+                                ,"[facet 'minLength']"
+                                ,"this underruns the allowed minimum length of"
+                                ,"[facet 'maxLength']"
+                                ,"this exceeds the allowed maximum length of"
+                                ,"Element"
+                                ,"attribute"
+                                ,"is not a valid value of the local atomic type"
+                                ,"is not a valid value of the atomic type"
+                                ,"Missing child element(s). Expected is"
+                                ,"The document has no document element"
+                                ,"[facet 'enumeration']"
+                                ,"one of"
+                                ,"This element is not expected. Expected is"                     
+                                ,"is not an element of the set");
+                  
+                    $pt = array(""
+                                ,"[Erro 'Layout']"
+                                ,"O valor"
+                                ,"não é aceito para o padrão."
+                                ,"tem o tamanho"
+                                ,"[Erro 'Tam. Min']"
+                                ,"deve ter o tamanho mínimo de"
+                                ,"[Erro 'Tam. Max']"
+                                ,"Tamanho máximo permitido"
+                                ,"Elemento"
+                                ,"Atributo"
+                                ,"não é um valor válido"
+                                ,"não é um valor válido"
+                                ,"Elemento filho faltando. Era esperado"
+                                ,"Falta uma tag no documento"
+                                ,"[Erro 'Conteúdo']"
+                                ,"um de"
+                                ,"Este elemento não é esperado. Esperado é"
+                                ,"não é um dos seguintes possiveis");
+                    
+                    switch ($intError->level) {
+                        case LIBXML_ERR_WARNING:
+                            $aError[] = " Atençao $intError->code: " . str_replace($en,$pt,$intError->message);
+                            break;
+                        case LIBXML_ERR_ERROR:
+                            $aError[] = " Erro $intError->code: " . str_replace($en,$pt,$intError->message);
+                            break;
+                        case LIBXML_ERR_FATAL:
+                            $aError[] = " Erro Fatal $intError->code: " . str_replace($en,$pt,$intError->message);
+                            break;
+                    }
+                    $msg .= str_replace($en,$pt,$intError->message);
+                }
+            } else {
+                $flagOK = true;
+            }
+            if(!$flagOK){
+                $this->__setError($msg, self::STOP_MESSAGE);
+                if ($this->exceptions) {
+                    throw new nfephpException($msg);
+                }
+            }
+        }
         return $flagOK;
     } //fim validXML
 
@@ -1215,64 +1211,65 @@ class CTeNFePHP {
      * os arquivos XML
      *
      * @name signXML
-     * @param	string $docxml String contendo o arquivo XML a ser assinado
+     * @param    string $docxml String contendo o arquivo XML a ser assinado
      * @param   string $tagid TAG do XML que devera ser assinada
-     * @return	mixed false se houve erro ou string com o XML assinado
+     * @return    mixed false se houve erro ou string com o XML assinado
      */
     public function signXML($docxml, $tagid=''){
- 	if(!function_exists('openssl_get_privatekey'))
-		return false;
-	if ( $tagid == '' ){
-                $this->errMsg = 'Uma tag deve ser indicada para que seja assinada!!';
-                $this->errStatus = true;
-                return false;
-            }
-            if ( $docxml == '' ){
-                $this->errMsg = 'Um xml deve ser passado para que seja assinado!!';
-                $this->errStatus = true;
-                return false;
-            }
-            // obter o chave privada para a ssinatura
-            $fp = fopen($this->priKEY, "r");
-            $priv_key = fread($fp, 8192);
-            fclose($fp);
-            $pkeyid = openssl_get_privatekey($priv_key);
-            // limpeza do xml com a retirada dos CR, LF e TAB
-            $order = array("\r\n", "\n", "\r", "\t");
-            $replace = '';
-            $docxml = str_replace($order, $replace, $docxml);
-            // carrega o documento no DOM
-            $xmldoc = new DOMDocument();
-            $xmldoc->preservWhiteSpace = false; //elimina espaços em branco
-            $xmldoc->formatOutput = false;
-            // muito importante deixar ativadas as opçoes para limpar os espacos em branco
-            // e as tags vazias
-            $xmldoc->loadXML($docxml,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
-            $root = $xmldoc->documentElement;
-            //extrair a tag com os dados a serem assinados
-            $node = $xmldoc->getElementsByTagName($tagid)->item(0);
-            $id = trim($node->getAttribute("Id"));
-            $idnome = preg_replace('/[^0-9]/','', $id);
-            //extrai os dados da tag para uma string
-            $dados = $node->C14N(false,false,NULL,NULL);
-            //calcular o hash dos dados
-            $hashValue = hash('sha1',$dados,true);
-            //converte o valor para base64 para serem colocados no xml
-            $digValue = base64_encode($hashValue);
-            //monta a tag da assinatura digital
-            $Signature = $xmldoc->createElementNS($this->URLdsig,'Signature');
-            $root->appendChild($Signature);
-            $SignedInfo = $xmldoc->createElement('SignedInfo');
-            $Signature->appendChild($SignedInfo);
-            //Cannocalization
-            $newNode = $xmldoc->createElement('CanonicalizationMethod');
-            $SignedInfo->appendChild($newNode);
-            $newNode->setAttribute('Algorithm', $this->URLCanonMeth);
-            //SignatureMethod
-            $newNode = $xmldoc->createElement('SignatureMethod');
-            $SignedInfo->appendChild($newNode);
-            $newNode->setAttribute('Algorithm', $this->URLSigMeth);
-            //Reference
+        if(!function_exists('openssl_get_privatekey')){
+            return false;
+        }
+        if ( $tagid == '' ){
+            $this->errMsg = 'Uma tag deve ser indicada para que seja assinada!!';
+            $this->errStatus = true;
+            return false;
+        }
+        if ( $docxml == '' ){
+            $this->errMsg = 'Um xml deve ser passado para que seja assinado!!';
+            $this->errStatus = true;
+            return false;
+        }
+        // obter o chave privada para a ssinatura
+        $fp = fopen($this->priKEY, "r");
+        $priv_key = fread($fp, 8192);
+        fclose($fp);
+        $pkeyid = openssl_get_privatekey($priv_key);
+        // limpeza do xml com a retirada dos CR, LF e TAB
+        $order = array("\r\n", "\n", "\r", "\t");
+        $replace = '';
+        $docxml = str_replace($order, $replace, $docxml);
+        // carrega o documento no DOM
+        $xmldoc = new DOMDocument();
+        $xmldoc->preservWhiteSpace = false; //elimina espaços em branco
+        $xmldoc->formatOutput = false;
+        // muito importante deixar ativadas as opçoes para limpar os espacos em branco
+        // e as tags vazias
+        $xmldoc->loadXML($docxml,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
+        $root = $xmldoc->documentElement;
+        //extrair a tag com os dados a serem assinados
+        $node = $xmldoc->getElementsByTagName($tagid)->item(0);
+        $id = trim($node->getAttribute("Id"));
+        $idnome = preg_replace('/[^0-9]/','', $id);
+        //extrai os dados da tag para uma string
+        $dados = $node->C14N(false,false,NULL,NULL);
+        //calcular o hash dos dados
+        $hashValue = hash('sha1',$dados,true);
+        //converte o valor para base64 para serem colocados no xml
+        $digValue = base64_encode($hashValue);
+        //monta a tag da assinatura digital
+        $Signature = $xmldoc->createElementNS($this->URLdsig,'Signature');
+        $root->appendChild($Signature);
+        $SignedInfo = $xmldoc->createElement('SignedInfo');
+        $Signature->appendChild($SignedInfo);
+        //Cannocalization
+        $newNode = $xmldoc->createElement('CanonicalizationMethod');
+        $SignedInfo->appendChild($newNode);
+        $newNode->setAttribute('Algorithm', $this->URLCanonMeth);
+        //SignatureMethod
+        $newNode = $xmldoc->createElement('SignatureMethod');
+        $SignedInfo->appendChild($newNode);
+        $newNode->setAttribute('Algorithm', $this->URLSigMeth);
+        //Reference
             $Reference = $xmldoc->createElement('Reference');
             $SignedInfo->appendChild($Reference);
             $Reference->setAttribute('URI', '#'.$id);
@@ -1321,7 +1318,7 @@ class CTeNFePHP {
             // libera a memoria
             openssl_free_key($pkeyid);
             //retorna o documento assinado
-            return $docxml;
+        return $docxml;
     } //fim signXML
 
 
@@ -1337,7 +1334,7 @@ class CTeNFePHP {
      * @param string $UF sigla da Unidade da Federação
      * @param integer $tpAmb tipo de ambiente 1-produção e 2-homologação
      * @param integer 1 usa o __sendSOAP e 2 usa o __sendSOAP2
-     * @return	mixed false ou array conforme exemplo abaixo:
+     * @return    mixed false ou array conforme exemplo abaixo:
      * array(10) {
      * ["bStat"]     =>  bool(true),
      * ["cStat"]     =>  string(3)  "107",
@@ -1437,13 +1434,13 @@ class CTeNFePHP {
      * retornados podem não ser os mais atuais. Não é recomendado seu uso ainda.
      *
      * @name consultaCadastro
-     * @param	string  $UF
+     * @param    string  $UF
      * @param   string  $IE
      * @param   string  $CNPJ
      * @param   string  $CPF
      * @param   string  $tpAmb
      * @param   integer $modSOAP    1 usa __sendSOAP e 2 usa __sendSOAP2
-     * @return	mixed false se falha ou array se retornada informação
+     * @return    mixed false se falha ou array se retornada informação
      **/
     public function consultaCadastro($UF, $CNPJ = '', $IE = '', $CPF = '', $tpAmp = '', $modSOAP = '2') {
         // Variavel de retorno do metodo
@@ -1530,11 +1527,11 @@ class CTeNFePHP {
      * Este processo enviará somente até 50 CTe em cada Lote
      *
      * @name sendLot
-     * @param	array   $aCTe conhecimento de transporte em xml uma em cada campo do array unidimensional MAX 50
+     * @param    array   $aCTe conhecimento de transporte em xml uma em cada campo do array unidimensional MAX 50
      * @param   integer $id     id do lote e um numero que deve ser gerado pelo sistema
      *                          a cada envio mesmo que seja de apenas uma CTe
      * @param   integer $modSOAP 1 usa __sendSOP e 2 usa __sendSOAP2
-     * @return	mixed	false ou array ['bStat'=>false,'cStat'=>'','xMotivo'=>'','dhRecbto'=>'','nRec'=>'']
+     * @return    mixed    false ou array ['bStat'=>false,'cStat'=>'','xMotivo'=>'','dhRecbto'=>'','nRec'=>'']
      * @todo Incluir regra de validação para ambiente de homologação/produção vide NT2011.002
     **/
     public function sendLot($aCTe, $id, $modSOAP = '2') {
@@ -1548,7 +1545,7 @@ class CTeNFePHP {
         }
         // Identificação do serviço
         $servico = 'CteRecepcao';
-		//var_dump($aURL);
+        //var_dump($aURL);
         // Recuperação da versão
         $versao = $aURL[$servico]['version'];
         // Recuperação da url do serviço
@@ -1621,11 +1618,11 @@ class CTeNFePHP {
      * Caso $this->cStat == 105 Tentar novamente mais tarde
      *
      * @name getProtocol
-     * @param	string   $recibo numero do recibo do envio do lote
-     * @param	string   $chave  numero da chave da CTe de 44 digitos
+     * @param    string   $recibo numero do recibo do envio do lote
+     * @param    string   $chave  numero da chave da CTe de 44 digitos
      * @param   string   $tpAmb  numero do ambiente 1 - producao e 2 - homologação
      * @param   integer   $modSOAP 1 usa __sendSOAP e 2 usa __sendSOAP2
-     * @return	mixed     false ou array
+     * @return    mixed     false ou array
     **/
     public function getProtocol($recibo = '', $chave = '', $tpAmb = '', $modSOAP = '2') {
         // Carrega defaults
@@ -1641,7 +1638,7 @@ class CTeNFePHP {
         $tpAmb = $this->tpAmb;
         $aURL = $this->aURL;
         // Verifica se a chave foi passada
-        
+        $scan = '';
         if($chave != '') {
             // Se sim extrair o cUF da chave
             $cUF = substr($chave, 0, 2);
@@ -1660,7 +1657,7 @@ class CTeNFePHP {
                 $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . $this->xmlURLfile,$tpAmb,'SVSP');
             }else{
                 $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . $this->xmlURLfile,$tpAmb,'SVRS');
-            }			
+            }            
         }
         
         if ($recibo == '' && $chave == '') {
@@ -1780,6 +1777,7 @@ class CTeNFePHP {
                 // motivo da resposta (opcional)
                 $aRetorno['xMotivo'] = !empty($doc->getElementsByTagName('xMotivo')->item(0)->nodeValue) ? $doc->getElementsByTagName('xMotivo')->item(0)->nodeValue : '';
                 if ($cStat == '104'){
+                    $aProt = '';
                     //aqui podem ter varios retornos dependendo do numero de CTe enviados no Lote e já processadas
                     $protCTe = $doc->getElementsByTagName('protCTe');
                     foreach ($protCTe as $d){
@@ -1835,13 +1833,13 @@ class CTeNFePHP {
      * Solicita inutilizaçao de uma serie de numeros de CT
      *
      * @name inutNF
-     * @param	string  $nAno       ano com 2 digitos
+     * @param    string  $nAno       ano com 2 digitos
      * @param   string  $nSerie     serie do CT 1 até 3 digitos
      * @param   integer $nIni       numero inicial 1 até 9 digitos zero a esq
      * @param   integer $nFin       numero Final 1 até 9 digitos zero a esq
      * @param   string  $xJust      justificativa 15 até 255 digitos
      * @param   integer $modSOAP    1 usa __sendSOAP e 2 usa __sendSOAP2
-     * @return	mixed false ou array ['bStat'=>boolean,'cStat'=>'','xMotivo'=>'','dhRecbto'=>'','nProt'=>'']
+     * @return    mixed false ou array ['bStat'=>boolean,'cStat'=>'','xMotivo'=>'','dhRecbto'=>'','nProt'=>'']
      */
     public function inutCT($nAno = '', $nSerie = '1', $nIni = '', $nFin = '', $xJust = '', $modSOAP = '2') {
         // Variavel de retorno do metodo
@@ -1997,10 +1995,10 @@ class CTeNFePHP {
      * Solicita o cancelamento do CT enviado
      *
      * @name cancelCT
-     * @param	string  $id      ID da CTe com 44 digitos (sem o CTe na frente dos numeros)
+     * @param    string  $id      ID da CTe com 44 digitos (sem o CTe na frente dos numeros)
      * @param   string  $protId     Numero do protocolo de aceitaçao do lote de CTe enviado anteriormente pelo SEFAZ
      * @param   boolean $modSOAP    1 usa __sendSOAP e 2 usa __sendSOAP2
-     * @return	mixed false se falha ou array [
+     * @return    mixed false se falha ou array [
     **/
     public function cancelCT($id, $protId, $xJust, $modSOAP = '2') {
         // Variável de retorno
@@ -2095,45 +2093,45 @@ class CTeNFePHP {
      * @return boolean false se não confere e true se confere
      */
     public function verifySignatureXML($conteudoXML, $tag) {
-	if(!function_exists('openssl_pkey_get_public'))
-		return false;
+    if(!function_exists('openssl_pkey_get_public'))
+        return false;
         $dom = new DOMDocument();
-	$dom->preserveWhiteSpace = false;
-	$dom->formatOutput = false;
-	$dom->loadXML($conteudoXML);
-	$tagBase = $dom->getElementsByTagName($tag)->item(0);
-	// validar digest value 
-	$tagInf = $tagBase->C14N(false, false, null, null);
-	$tagInf = str_replace(' xmlns:ds="http://www.w3.org/2000/09/xmldsig#"', '', $tagInf);
+    $dom->preserveWhiteSpace = false;
+    $dom->formatOutput = false;
+    $dom->loadXML($conteudoXML);
+    $tagBase = $dom->getElementsByTagName($tag)->item(0);
+    // validar digest value 
+    $tagInf = $tagBase->C14N(false, false, null, null);
+    $tagInf = str_replace(' xmlns:ds="http://www.w3.org/2000/09/xmldsig#"', '', $tagInf);
         $digestCalculado = base64_encode(sha1($tagInf, true));
-	$digestInformado = $dom->getElementsByTagName('DigestValue')->item(0)->nodeValue;            
-	if ($digestCalculado != $digestInformado){
+    $digestInformado = $dom->getElementsByTagName('DigestValue')->item(0)->nodeValue;            
+    if ($digestCalculado != $digestInformado){
             $this->errStatus = true;
             $this->errMsg = "O conteúdo do XML não confere com o Digest Value.\nDigest calculado [{$digestCalculado}], informado no XML [{$digestInformado}].\nO arquivo pode estar corrompido ou ter sido adulterado.";
             return false;
         }
-	// Remontando o certificado 
-	$X509Certificate = $dom->getElementsByTagName('X509Certificate')->item(0)->nodeValue;
-	$X509Certificate =  "-----BEGIN CERTIFICATE-----\n".
-	$this->__splitLines($X509Certificate)."\n-----END CERTIFICATE-----\n";
-	$pubKey = openssl_pkey_get_public($X509Certificate);
-	if ($pubKey === false){
+    // Remontando o certificado 
+    $X509Certificate = $dom->getElementsByTagName('X509Certificate')->item(0)->nodeValue;
+    $X509Certificate =  "-----BEGIN CERTIFICATE-----\n".
+    $this->__splitLines($X509Certificate)."\n-----END CERTIFICATE-----\n";
+    $pubKey = openssl_pkey_get_public($X509Certificate);
+    if ($pubKey === false){
             $this->errStatus = true;
             $this->errMsg = 'Ocorreram problemas ao remontar a chave pública. Certificado incorreto ou corrompido!!';
             return false;
         }                
-	// remontando conteudo que foi assinado 
-	$conteudoAssinado = $dom->getElementsByTagName('SignedInfo')->item(0)->C14N(false, false, null, null);
-	$conteudoAssinado = str_replace(array('xmlns:ds="http://www.w3.org/2000/09/xmldsig#"',' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"'),'',$conteudoAssinado);
-	// validando assinatura do conteudo 
-	$conteudoAssinadoNoXML = $dom->getElementsByTagName('SignatureValue')->item(0)->nodeValue;
-	$conteudoAssinadoNoXML = base64_decode(str_replace(array("\r", "\n"), '', $conteudoAssinadoNoXML));
-	$ok = openssl_verify($conteudoAssinado, $conteudoAssinadoNoXML, $pubKey);
-	if ($ok != 1){
+    // remontando conteudo que foi assinado 
+    $conteudoAssinado = $dom->getElementsByTagName('SignedInfo')->item(0)->C14N(false, false, null, null);
+    $conteudoAssinado = str_replace(array('xmlns:ds="http://www.w3.org/2000/09/xmldsig#"',' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"'),'',$conteudoAssinado);
+    // validando assinatura do conteudo 
+    $conteudoAssinadoNoXML = $dom->getElementsByTagName('SignatureValue')->item(0)->nodeValue;
+    $conteudoAssinadoNoXML = base64_decode(str_replace(array("\r", "\n"), '', $conteudoAssinadoNoXML));
+    $ok = openssl_verify($conteudoAssinado, $conteudoAssinadoNoXML, $pubKey);
+    if ($ok != 1){
             $this->errStatus = true;
             $this->errMsg = "Problema ({$ok}) ao verificar a assinatura do digital!!";
             return false;
-	}
+    }
         $this->errStatus = false;
         $this->errMsg = "";
         return true;
@@ -2233,9 +2231,9 @@ class CTeNFePHP {
      * @return string certificado reformatado 
      */
     private function __splitLines($cnt){
-	    return rtrim(chunk_split(str_replace(array("\r", "\n"), '', $cnt), 76, "\n"));
+        return rtrim(chunk_split(str_replace(array("\r", "\n"), '', $cnt), 76, "\n"));
     } // Fim __splitLines
-	
+    
    /**
     * loadSEFAZ
     * Função para extrair o URL, nome do serviço e versão dos webservices das SEFAZ de
@@ -2335,17 +2333,17 @@ class CTeNFePHP {
      *
      * @name __loadCerts
      * @param   none
-     * @return	boolean true se o certificado foi carregado e false se nao
+     * @return    boolean true se o certificado foi carregado e false se nao
      **/
     protected function __loadCerts(){
-	if(!function_exists('openssl_pkcs12_read')){
+    if(!function_exists('openssl_pkcs12_read')){
             $msg = "Função não existente: openssl_pkcs12_read!! ";
             $this->__setError($msg);
             if ($this->exceptions) {
                 throw new nfephpException($msg);
             }
             return false;
-	}
+    }
         // Monta o path completo com o nome da chave privada
         $this->priKEY = $this->certsDir . $this->cnpj . '_priKEY.pem';
         // Monta o path completo com o nome da chave publica
@@ -2435,11 +2433,11 @@ class CTeNFePHP {
     *
     * @name __validCerts
     * @param    string  $cert Certificado digital no formato pem
-    * @return	array ['status'=>true,'meses'=>8,'dias'=>245]
+    * @return    array ['status'=>true,'meses'=>8,'dias'=>245]
     */
     protected function __validCerts($cert){
-	if(!function_exists('openssl_x509_read'))
-		return false;
+    if(!function_exists('openssl_x509_read'))
+        return false;
         $flagOK = true;
         $errorMsg = "";
         $data = openssl_x509_read($cert);
@@ -2632,7 +2630,7 @@ class CTeNFePHP {
         }
         //completa a url do serviço para baixar o arquivo WSDL
         $URL = $urlsefaz.'?WSDL';
-	    $this->soapDebug = $urlsefaz;
+        $this->soapDebug = $urlsefaz;
         $options = array(
             'encoding'      => 'UTF-8',
             'verifypeer'    => false,
@@ -2650,7 +2648,7 @@ class CTeNFePHP {
             
         $oSoapClient = new CTeSOAP2Client($URL,$options);
         //monta o cabeçalho da mensagem
-    	$varCabec = new SoapVar($cabecalho,XSD_ANYXML);
+        $varCabec = new SoapVar($cabecalho,XSD_ANYXML);
         $header = new SoapHeader($namespace,'cteCabecMsg',$varCabec);
         //instancia o cabeçalho
         $oSoapClient->__setSoapHeaders($header);
@@ -2935,15 +2933,15 @@ class CTeNFePHP {
  *
  */
 if(class_exists("SoapClient")){
-	class CTeSOAP2Client extends SoapClient {
-	    function __doRequest($request, $location, $action, $version) {
-		$request = str_replace(':ns1', '', $request);
-		$request = str_replace('ns1:', '', $request);
-		$request = str_replace("\n", '', $request);
-		$request = str_replace("\r", '', $request);
-		return parent::__doRequest($request, $location, $action, $version);
-	    }
-	} // Fim CTeSOAP2Client
+    class CTeSOAP2Client extends SoapClient {
+        function __doRequest($request, $location, $action, $version) {
+        $request = str_replace(':ns1', '', $request);
+        $request = str_replace('ns1:', '', $request);
+        $request = str_replace("\n", '', $request);
+        $request = str_replace("\r", '', $request);
+        return parent::__doRequest($request, $location, $action, $version);
+        }
+    } // Fim CTeSOAP2Client
 }
 
 /**
@@ -2955,12 +2953,12 @@ if(class_exists("SoapClient")){
  * 
  */
 if(!class_exists('nfephpException')){
-	class nfephpException extends Exception {
-	    public function errorMessage() {
-		$errorMsg = $this->getMessage()."\n";
-		return $errorMsg;
-	    }
-	}
+    class nfephpException extends Exception {
+        public function errorMessage() {
+        $errorMsg = $this->getMessage()."\n";
+        return $errorMsg;
+        }
+    }
 }
 
 ?>
