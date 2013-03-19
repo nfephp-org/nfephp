@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.0.59
+ * @version   3.0.60
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -3061,11 +3061,12 @@ class ToolsNFePHP {
      * @param   string $xJust Justificativa quando tpEvento = 40 ou 210240
      * @param   integer $tpAmb Tipo de ambiente 
      * @param   integer $modSOAP 1 usa __sendSOP e 2 usa __sendSOAP2
+     * @param   mixed  $resp variável passada como referencia e irá conter o retorno da função em um array
      * @return	mixed false 
      * 
      * TODO : terminar o código não funcional e não testado
      */
-    public function manifDest($chNFe='',$tpEvento='',$xJust='',$tpAmb='',$modSOAP='2'){
+    public function manifDest($chNFe='',$tpEvento='',$xJust='',$tpAmb='',$modSOAP='2',&$resp=''){
         try {
             if ($chNFe == ''){
                 $msg = "A chave da NFe recebida é obrigatória.";
@@ -3110,6 +3111,7 @@ class ToolsNFePHP {
                     $msg = "O código do tipo de evento informado não corresponde a nenhum evento de manifestação de destinatário.";
                     throw new nfephpException($msg);
             }
+            $resp = array('bStat'=>false,'cStat'=>'','xMotivo'=>'','arquivo'=>'');
             if ($tpEvento == '210240' && $xJust == ''){
                     $msg = "Uma Justificativa é obrigatória para o evento de Operação não Realizada.";
                     throw new nfephpException($msg);
@@ -3120,21 +3122,13 @@ class ToolsNFePHP {
             if ($tpAmb == ''){
                 $tpAmb = $this->tpAmb;
             }
-            //verifica se o SCAN esta habilitado
-            if (!$this->enableSCAN){
-                $aURL = $this->aURL;
-            } else {
-                $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . $this->xmlURLfile,$tpAmb,'SCAN');
-            }
+            //utilizar AN para enviar o manifesto
+            $sigla = 'AN';
+            $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . $this->xmlURLfile,$tpAmb,$sigla);
+            $cOrgao='91';
             $numLote = substr(str_replace(',','',number_format(microtime(true)*1000000,0)),0,15);
             //Data e hora do evento no formato AAAA-MM-DDTHH:MM:SSTZD (UTC)
             $dhEvento = date('Y-m-d').'T'.date('H:i:s').$this->timeZone;
-            //se o envio for para svan mudar o numero no orgão para 91
-            if ($this->enableSVAN){
-                $cOrgao='91';
-            } else {
-                $cOrgao=$this->cUF;
-            }
             //montagem do namespace do serviço
             $servico = 'RecepcaoEvento';
             //recuperação da versão
@@ -3214,8 +3208,14 @@ class ToolsNFePHP {
                 $msg = "cStat está em branco, houve erro na comunicação Soap verifique a mensagem de erro e o debug!!";
                 throw new nfephpException($msg);
             }
+            //tratar erro de versão do XML
+            if ($cStat == '238' || $cStat == '239'){
+                $this->__trata239($retorno, $sigla, $tpAmb, $servico, $versao);
+                $msg = "Versão do arquivo XML não suportada no webservice!!";
+                throw new nfephpException($msg);
+            }    
             //erro no processamento
-            if ($cStat != '135' and $cStat != '136' ){
+            if ($cStat != '135' && $cStat != '136' ){
                 //se cStat <> 135 houve erro e o lote foi rejeitado
                 $msg = "O Lote foi rejeitado : $cStat - $xMotivo\n";
                 throw new nfephpException($msg);
@@ -3258,8 +3258,10 @@ class ToolsNFePHP {
             $procXML = str_replace("\n",'',$procXML);
             $procXML = str_replace("\r",'',$procXML);
             $procXML = str_replace("\s",'',$procXML);
+            $filename = $this->evtDir."$chNFe-$tpEvento-$nSeqEvento-procMDe.xml";
+            $resp = array('bStat'=>true,'cStat'=>$cStat,'xMotivo'=>$xMotivo,'arquivo'=>$filename);
             //salva o arquivo xml
-            if (!file_put_contents($this->evtDir."$chNFe-$tpEvento-$nSeqEvento-procMDe.xml", $procXML)){
+            if (!file_put_contents($filename, $procXML)){
                 $msg = "Falha na gravação do arquivo procMDe!!";
                 throw new nfephpException($msg);
             }
@@ -3268,9 +3270,10 @@ class ToolsNFePHP {
             if ($this->exceptions) {
                 throw $e;
             }
+            $resp = array('bStat'=>false,'cStat'=>$cStat,'xMotivo'=>$xMotivo,'arquivo'=>'');
             return false;
         }    
-        return $procXML;
+        return $retorno;
     } //fim manifDest
     
     /**
