@@ -27,7 +27,7 @@
  * 
  * @package   NFePHP
  * @name      CTeNFePHP
- * @version   1.0.17
+ * @version   1.0.18
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; CTePHP
  * @link      http://www.nfephp.org/
@@ -307,6 +307,11 @@ class CTeNFePHP {
      * @var string
      */
     private $UF = '';
+     /**
+     * timeZone
+     * Zona de tempo GMT
+     */
+    protected $timeZone = '-03:00';
     /**
      * dactelogopath
      * Variável que contem o path completo para a logo a ser impressa na DACTE
@@ -771,6 +776,26 @@ class CTeNFePHP {
         if (!$retorno = $this->__loadCerts()){
             $this->errStatus = true;
         }
+        //estados que participam do horario de verão
+        $aUFhv = array('BA','ES','GO','MG','MS','PR','RJ','RS','SP','SC','TO');
+        //corrigir o timeZone
+        if ($this->UF == 'AC' ||
+            $this->UF == 'AM' ||   
+            $this->UF == 'MT' ||
+            $this->UF == 'MS' ||
+            $this->UF == 'RO' ||
+            $this->UF == 'RR' ){
+            $this->timeZone = '-04:00';
+        }
+        //verificar se estamos no horário de verão *** depende da configuração do servidor ***
+        if (date('I') == 1){
+            //estamos no horario de verão verificar se o estado está incluso
+            if(in_array($this->UF, $aUFhv)) {
+                $tz = (int) $this->timeZone;
+                $tz++;
+                $this->timeZone = '-'.sprintf("%02d",abs($tz)).':00'; //poderia ser obtido com date('P')
+            }
+        }//fim check horario verao        
         return true;
     } //fim __construct
 
@@ -795,6 +820,34 @@ class CTeNFePHP {
         //verifica se foi passado o xml
         if(strlen($xml)==0){
             $msg = 'Você deve passar o conteudo do xml assinado como parâmetro.';
+            $this->__setError($msg);
+            if ($this->exceptions) {
+                throw new nfephpException($msg);
+            }
+            $aError[] = $msg;
+            return false;
+        }
+        //verificar se existem [CR][LF] ou [TAB] no arquivo
+        if (strpos($xml,"\r") !== false){
+            $msg = 'O xml contêm [CR] Carriage Return, um caractere não permitido, remova todos os caracteres PROIBIDOS!!.';
+            $this->__setError($msg);
+            if ($this->exceptions) {
+                throw new nfephpException($msg);
+            }
+            $aError[] = $msg;
+            return false;
+        }
+        if (strpos($xml,"\n") !== false){
+            $msg = 'O xml contêm [LF] Line Feed, um caractere não permitido, remova todos os caracteres PROIBIDOS!!.';
+            $this->__setError($msg);
+            if ($this->exceptions) {
+                throw new nfephpException($msg);
+            }
+            $aError[] = $msg;
+            return false;
+        }
+        if (strpos($xml,"\t") !== false){
+            $msg = 'O xml contêm [TAB] Tabulação, um caractere não permitido, remova todos os caracteres PROIBIDOS!!.';
             $this->__setError($msg);
             if ($this->exceptions) {
                 throw new nfephpException($msg, self::STOP_CRITICAL);

@@ -23,7 +23,7 @@
  *
  * @package   NFePHP
  * @name      install.php
- * @version   1.3.4
+ * @version   1.3.5
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2011 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -41,7 +41,7 @@ error_reporting(E_ALL);ini_set('display_errors', 'On');
 require_once('config/config.php');
 require_once('libs/ToolsNFePHP.class.php');
 
-$installVer = '1.3.3';
+$installVer = '1.3.5';
 //cores
 $cRed = '#FF0000';
 $cGreen = '#00CC00';
@@ -229,22 +229,24 @@ if (is_dir($arquivosDir)) {
 //teste do diretorio de arquivo dos xml CTe
 $ccteDir = $cRed;
 $wctedDir = 'FALHA';
-if (is_dir($arquivosDirCTe)) {
-    if (mkdir($arquivosDirCTe. DIRECTORY_SEPARATOR . "teste", 0777)) {
-        rmdir($arquivosDirCTe. DIRECTORY_SEPARATOR . "teste");
-        $ccteDir = $cGreen;
-        $wctedDir= ' Permiss&atilde;o OK';
-        $obscteDir = $arquivosDirCTe;
+if (isset($arquivosDirCTe)){
+    if (is_dir($arquivosDirCTe)) {
+        if (mkdir($arquivosDirCTe. DIRECTORY_SEPARATOR . "teste", 0777)) {
+            rmdir($arquivosDirCTe. DIRECTORY_SEPARATOR . "teste");
+            $ccteDir = $cGreen;
+            $wctedDir= ' Permiss&atilde;o OK';
+            $obscteDir = $arquivosDirCTe;
+        } else {
+            //sem permissao
+            $obscteDir= ' Sem permiss&atilde;o !!';
+        }
     } else {
-        //sem permissao
-        $obscteDir= ' Sem permiss&atilde;o !!';
+        //dir não existe
+        $obscteDir= " Diretório $arquivosDirCTe n&atilde;o existe !!";
     }
 } else {
-    //dir não existe
-    $obscteDir= " Diretório $arquivosDirCTe n&atilde;o existe !!";
+    $obscteDir= " Diretório CTe n&atilde;o especificado !!";
 }
-
-
 //verificação da validade do certificado
 $nfe = new ToolsNFePHP('',0);
 if ($nfe->certDaysToExpire > 0){
