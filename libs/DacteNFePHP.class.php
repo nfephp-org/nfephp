@@ -23,7 +23,7 @@
  *
  * @package     NFePHP
  * @name        DacteNFePHP.class.php
- * @version     1.2.6
+ * @version     1.2.7
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2011 &copy; NFePHP
@@ -45,7 +45,9 @@ if (!defined('PATH_ROOT')) {
 //ajuste do tempo limite de resposta do processo
 set_time_limit(1800);
 //definição do caminho para o diretorio com as fontes do FDPF
-define('FPDF_FONTPATH','font/');
+if (!defined('FPDF_FONTPATH')) {
+    define('FPDF_FONTPATH','font/');
+}
 //classe extendida da classe FPDF para montagem do arquivo pfd
 require_once('PdfNFePHP.class.php');
 require_once('CommonNFePHP.class.php');

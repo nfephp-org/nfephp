@@ -23,7 +23,7 @@
  *
  * @package     NFePHP
  * @name        DanfeNFePHP.class.php
- * @version     2.1.21
+ * @version     2.1.22
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2012 &copy; NFePHP
@@ -61,7 +61,9 @@ if (!defined('PATH_ROOT')) {
 //ajuste do tempo limite de resposta do processo
 set_time_limit(1800);
 //definição do caminho para o diretorio com as fontes do FDPF
-define('FPDF_FONTPATH','font/');
+if (!defined('FPDF_FONTPATH')) {
+    define('FPDF_FONTPATH','font/');
+}
 //situação externa do documento
 if(!defined('NFEPHP_SITUACAO_EXTERNA_CANCELADA')){
 	define('NFEPHP_SITUACAO_EXTERNA_CANCELADA'	,1);
@@ -80,7 +82,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
     //publicas
     public $logoAlign='C'; //alinhamento do logo
     public $yDados=0;
-	public $situacao_externa=0;
+    public $situacao_externa=0;
     //privadas
     protected $pdf; // objeto fpdf()
     protected $xml; // string XML NFe
@@ -92,7 +94,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
     protected $destino = 'I'; //destivo do arquivo pdf I-borwser, S-retorna o arquivo, D-força download, F-salva em arquivo local
     protected $pdfDir=''; //diretorio para salvar o pdf com a opção de destino = F
     protected $fontePadrao='Times'; //Nome da Fonte para gerar o DANFE
-    protected $version = '2.1.21';
+    protected $version = '2.1.22';
     protected $textoAdic = '';
     protected $wAdic = 0;
     protected $wPrint; //largura imprimivel
