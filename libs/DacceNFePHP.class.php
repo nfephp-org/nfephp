@@ -23,7 +23,7 @@
  *
  * @package     NFePHP
  * @name        DacceNFePHP.class.php
- * @version     0.1.2
+ * @version     0.1.3
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2012 &copy; NFePHP
@@ -31,6 +31,7 @@
  * @author      Roberto L. Machado <linux.rlm at gmail dot com>
  *
  *        CONTRIBUIDORES (por ordem alfabetica):
+ *              Fernando Mertins <fernando dot mertins at gmail dot com> 
  *              Leandro C. Lopez <leandro dot castoldi at gmail dot com>
  */
 //define o caminho base da instalação do sistema
@@ -85,6 +86,7 @@ class DacceNFePHP extends CommonNFePHP {
     protected $CPFDest = '';
     protected $dhRegEvento;
     protected $nProt;
+    protected $debugMode=2;
     //objetos
     private $dom;
     private $procEventoNFe;
@@ -107,9 +109,9 @@ class DacceNFePHP extends CommonNFePHP {
     * @param array $aEnd array com o endereço do emitente
     * @param string $sDirPDF Caminho para o diretorio de armazenamento dos arquivos PDF
     * @param string $fonteDANFE Nome da fonte alternativa do DAnfe
-    * @param number $mododebug 1-SIM e 0-Não (0 default)
+    * @param number $mododebug 0-Não 1-Sim e 2-nada (2 default)
     */
-    function __construct($xmlfile='', $sOrientacao='',$sPapel='',$sPathLogo='', $sDestino='I', $aEnd='',$sDirPDF='', $fontePDF='', $mododebug=0) {
+    function __construct($xmlfile='', $sOrientacao='',$sPapel='',$sPathLogo='', $sDestino='I', $aEnd='',$sDirPDF='',$fontePDF='',$mododebug=2) {
         if(is_numeric($mododebug)){
             $this->debugMode = $mododebug;
         }

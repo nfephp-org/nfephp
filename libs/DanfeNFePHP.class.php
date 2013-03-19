@@ -23,7 +23,7 @@
  *
  * @package     NFePHP
  * @name        DanfeNFePHP.class.php
- * @version     2.1.22
+ * @version     2.1.23
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2012 &copy; NFePHP
@@ -124,7 +124,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
     protected $tpEmis;
     protected $tpImp; //1-Retrato/ 2-Paisagem
     protected $compra;
-    protected $debugMode=0; //ativa ou desativa o modo de debug
+    protected $debugMode=2; //ativa ou desativa o modo de debug
     /**
      *__construct
      * @package NFePHP
@@ -138,16 +138,17 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
      * @param string $sDirPDF Caminho para o diretorio de armazenamento dos arquivos PDF
      * @param string $fonteDANFE Nome da fonte alternativa do DAnfe
      * @param number $exibirPIS 1-SIM e 0-Não
-     * @param number $mododebug 1-SIM e 0-Não (0 default)
+     * @param number $mododebug 0-Não 1-Sim e 2-nada (2 default)
      */
-    function __construct($docXML='', $sOrientacao='',$sPapel='',$sPathLogo='', $sDestino='I',$sDirPDF='',$fonteDANFE='',$exibirPIS=1,$mododebug=0) {
+    function __construct($docXML='', $sOrientacao='',$sPapel='',$sPathLogo='', $sDestino='I',$sDirPDF='',$fonteDANFE='',$exibirPIS=1,$mododebug=2) {
         if(is_numeric($mododebug)){
             $this->debugMode = $mododebug;
         }
-        if($this->debugMode){
+        if($mododebug == 1){
             //ativar modo debug
             error_reporting(E_ALL);ini_set('display_errors', 'On');
-        } else {
+        }
+        if($mododebug == 0){
             //desativar modo debug
             error_reporting(0);ini_set('display_errors', 'Off');
         }

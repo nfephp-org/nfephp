@@ -23,7 +23,7 @@
  *
  * @package     NFePHP
  * @name        DacteNFePHP.class.php
- * @version     1.2.7
+ * @version     1.2.8
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2011 &copy; NFePHP
@@ -31,8 +31,8 @@
  * @author      Roberto L. Machado <linux.rlm at gmail dot com>
  *
  *        CONTRIBUIDORES (por ordem alfabetica):
- * 
- *          Joao Eduardo Silva Correa <jcorrea at sucden dot com dot br> 
+ *          Fernando Mertins <fernando dot mertins at gmail dot com> 
+ *          Joao Eduardo Silva Correa <jcorrea at sucden dot com dot br>
  *          Marcos Diez               <marcos at unitron dot com dot br>
  *          Rodrigo Rysdyk            <rodrigo_rysdyk at hotmail dot com>         
  * 
@@ -107,7 +107,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP {
     protected $vPrest;
     protected $wAdic = 150;
     protected $textoAdic = '';
-    
+    protected $debugMode = 2;
     protected $formatPadrao;
     protected $formatNegrito;
 
@@ -123,8 +123,20 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP {
      * @param string $sDestino Estabelece a direção do envio do documento PDF I-browser D-browser com download S-
      * @param string $sDirPDF Caminho para o diretorio de armazenamento dos arquivos PDF
      * @param string $fonteDACTE Nome da fonte a ser utilizada
+     * @param number $mododebug 0-Não 1-Sim e 2-nada (2 default)
      */
-    function __construct($docXML='', $sOrientacao='',$sPapel='',$sPathLogo='', $sDestino='I',$sDirPDF='',$fonteDACTE='') {
+    function __construct($docXML='', $sOrientacao='',$sPapel='',$sPathLogo='', $sDestino='I',$sDirPDF='',$fonteDACTE='',$mododebug=2) {
+        if(is_numeric($mododebug)){
+            $this->debugMode = $mododebug;
+        }
+        if($mododebug == 1){
+            //ativar modo debug
+            error_reporting(E_ALL);ini_set('display_errors', 'On');
+        }
+        if($mododebug == 0){
+            //desativar modo debug
+            error_reporting(0);ini_set('display_errors', 'Off');
+        }
         $this->orientacao = $sOrientacao;
         $this->papel = $sPapel;
         $this->pdf = '';

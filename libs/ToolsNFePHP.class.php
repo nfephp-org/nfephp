@@ -405,7 +405,7 @@ class ToolsNFePHP {
      * Ativa ou desativa as mensagens de debug da classe
      * @var string
      */
-    protected $debugMode=0;
+    protected $debugMode=2;
      /**
      * URLxsi
      * Instância do WebService
