@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <WS xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
-
 <!--
-Versao AAAAMMDD_3
-Descrever aqui as alteracoes realizadas na versao 3.
-
 Versao 20120220_2
 Revisao de adequacao de maiusculas/minusculas nos nomes dos webservices e nomes dos
 metodos, utilizando "Cte" ao inves de "CTe", pois ocorria erro no estado do RS.
@@ -12,33 +8,26 @@ metodos, utilizando "Cte" ao inves de "CTe", pois ocorria erro no estado do RS.
 Versao 20110322_1
 Correcao da nomenclarura dos servicos. Nota: URL homologacao SP colocados com letras
 maiusculas so para ficar igual ao site da SEFAZ.
--->
 
+Versao 20130320_1 Inclusão dos webservices do Paraná 
+-->
 <UF>
-    <sigla>MT</sigla>
+    <sigla>MG</sigla>
     <homologacao>
-        <CteRecepcao method='CTeRecepcao' version='1.04'>https://homologacao.sefaz.mt.gov.br/ctews/services/CteRecepcao</CteRecepcao>
-        <CteRetRecepcao method='CTeRetRecepcao' version='1.04'>https://homologacao.sefaz.mt.gov.br/ctews/services/CteRetRecepcao</CteRetRecepcao>
-        <CteCancelamento method='CTeCancelamento' version='1.04'>https://homologacao.sefaz.mt.gov.br/ctews/services/CteCancelamento</CteCancelamento>
-        <CteInutilizacao method='CTeInutilizacao' version='1.04'>https://homologacao.sefaz.mt.gov.br/ctews/services/CteInutilizacao</CteInutilizacao>
-        <CteConsultaProtocolo method='cteConsultaCT' version='1.04'>https://homologacao.sefaz.mt.gov.br/ctews/services/CteConsulta</CteConsultaProtocolo>
-        <CteStatusServico method='cteStatusServicoCT' version='1.04'>https://homologacao.sefaz.mt.gov.br/ctews/services/CteStatusServico</CteStatusServico>
+        <CteRecepcao method='CTeRecepcao' version='1.04'>https://hcte.fazenda.mg.gov.br/cte/services/CteRecepcao</CteRecepcao>
+        <CteRetRecepcao method='CTeRetRecepcao' version='1.04'>https://hcte.fazenda.mg.gov.br/cte/services/CteRetRecepcao</CteRetRecepcao>
+        <CteCancelamento method='CTeCancelamento' version='1.04'>https://hcte.fazenda.mg.gov.br/cte/services/CteCancelamento</CteCancelamento>
+        <CteInutilizacao method='CTeInutilizacao' version='1.04'>https://hcte.fazenda.mg.gov.br/cte/services/CteInutilizacao</CteInutilizacao>
+        <CteConsultaProtocolo method='cteConsultaCT' version='1.04'>https://hcte.fazenda.mg.gov.br/cte/services/CteConsulta</CteConsultaProtocolo>
+        <CteStatusServico method='cteStatusServicoCT' version='1.04'>https://hcte.fazenda.mg.gov.br/cte/services/CteStatusServico</CteStatusServico>
     </homologacao>
     <producao>
-        <CteRecepcao method='CTeRecepcao' version='1.04'>https://cte.sefaz.mt.gov.br/ctews/services/CteRecepcao</CteRecepcao>
-        <CteRetRecepcao method='CTeRetRecepcao' version='1.04'>https://cte.sefaz.mt.gov.br/ctews/services/CteRetRecepcao</CteRetRecepcao>
-        <CteCancelamento method='CTeCancelamento' version='1.04'>https://cte.sefaz.mt.gov.br/ctews/services/CteCancelamento</CteCancelamento>
-        <CteInutilizacao method='CTeInutilizacao' version='1.04'>https://cte.sefaz.mt.gov.br/ctews/services/CteInutilizacao</CteInutilizacao>
-        <CteConsultaProtocolo method='cteConsultaCT' version='1.04'>https://cte.sefaz.mt.gov.br/ctews/services/CteConsulta</CteConsultaProtocolo>
-        <CteStatusServico method='cteStatusServicoCT' version='1.04'>https://cte.sefaz.mt.gov.br/ctews/services/CteStatusServico</CteStatusServico>
-    </producao>
-</UF>
-<UF>
-    <sigla>PR</sigla>
-    <homologacao>        
-    </homologacao>
-    <producao>
-        <CteConsultaProtocolo method='cteConsultaCT' version='1.04'>https://cte.fazenda.pr.gov.br/cte/CteConsulta?wsdl</CteConsultaProtocolo>
+        <CteRecepcao method='CTeRecepcao' version='1.04'>https://cte.fazenda.mg.gov.br/cte/services/CteRecepcao</CteRecepcao>
+        <CteRetRecepcao method='CTeRetRecepcao' version='1.04'>https://cte.fazenda.mg.gov.br/cte/services/CteRetRecepcao</CteRetRecepcao>
+        <CteCancelamento method='CTeCancelamento' version='1.04'>https://cte.fazenda.mg.gov.br/cte/services/CteCancelamento</CteCancelamento>
+        <CteInutilizacao method='CTeInutilizacao' version='1.04'>https://cte.fazenda.mg.gov.br/cte/services/CteInutilizacao</CteInutilizacao>
+        <CteConsultaProtocolo method='cteConsultaCT' version='1.04'>https://cte.fazenda.mg.gov.br/cte/services/CteConsulta</CteConsultaProtocolo>
+        <CteStatusServico method='cteStatusServicoCT' version='1.04'>https://cte.fazenda.mg.gov.br/cte/services/CteStatusServico</CteStatusServico>
     </producao>
 </UF>
 <UF>
@@ -63,22 +52,41 @@ maiusculas so para ficar igual ao site da SEFAZ.
     </producao>
 </UF>
 <UF>
-    <sigla>MG</sigla>
+    <sigla>MT</sigla>
     <homologacao>
-        <CteRecepcao method='CTeRecepcao' version='1.04'>https://hcte.fazenda.mg.gov.br/cte/services/CteRecepcao</CteRecepcao>
-        <CteRetRecepcao method='CTeRetRecepcao' version='1.04'>https://hcte.fazenda.mg.gov.br/cte/services/CteRetRecepcao</CteRetRecepcao>
-        <CteCancelamento method='CTeCancelamento' version='1.04'>https://hcte.fazenda.mg.gov.br/cte/services/CteCancelamento</CteCancelamento>
-        <CteInutilizacao method='CTeInutilizacao' version='1.04'>https://hcte.fazenda.mg.gov.br/cte/services/CteInutilizacao</CteInutilizacao>
-        <CteConsultaProtocolo method='cteConsultaCT' version='1.04'>https://hcte.fazenda.mg.gov.br/cte/services/CteConsulta</CteConsultaProtocolo>
-        <CteStatusServico method='cteStatusServicoCT' version='1.04'>https://hcte.fazenda.mg.gov.br/cte/services/CteStatusServico</CteStatusServico>
+        <CteRecepcao method='CTeRecepcao' version='1.04'>https://homologacao.sefaz.mt.gov.br/ctews/services/CteRecepcao</CteRecepcao>
+        <CteRetRecepcao method='CTeRetRecepcao' version='1.04'>https://homologacao.sefaz.mt.gov.br/ctews/services/CteRetRecepcao</CteRetRecepcao>
+        <CteCancelamento method='CTeCancelamento' version='1.04'>https://homologacao.sefaz.mt.gov.br/ctews/services/CteCancelamento</CteCancelamento>
+        <CteInutilizacao method='CTeInutilizacao' version='1.04'>https://homologacao.sefaz.mt.gov.br/ctews/services/CteInutilizacao</CteInutilizacao>
+        <CteConsultaProtocolo method='cteConsultaCT' version='1.04'>https://homologacao.sefaz.mt.gov.br/ctews/services/CteConsulta</CteConsultaProtocolo>
+        <CteStatusServico method='cteStatusServicoCT' version='1.04'>https://homologacao.sefaz.mt.gov.br/ctews/services/CteStatusServico</CteStatusServico>
     </homologacao>
     <producao>
-        <CteRecepcao method='CTeRecepcao' version='1.04'>https://cte.fazenda.mg.gov.br/cte/services/CteRecepcao</CteRecepcao>
-        <CteRetRecepcao method='CTeRetRecepcao' version='1.04'>https://cte.fazenda.mg.gov.br/cte/services/CteRetRecepcao</CteRetRecepcao>
-        <CteCancelamento method='CTeCancelamento' version='1.04'>https://cte.fazenda.mg.gov.br/cte/services/CteCancelamento</CteCancelamento>
-        <CteInutilizacao method='CTeInutilizacao' version='1.04'>https://cte.fazenda.mg.gov.br/cte/services/CteInutilizacao</CteInutilizacao>
-        <CteConsultaProtocolo method='cteConsultaCT' version='1.04'>https://cte.fazenda.mg.gov.br/cte/services/CteConsulta</CteConsultaProtocolo>
-        <CteStatusServico method='cteStatusServicoCT' version='1.04'>https://cte.fazenda.mg.gov.br/cte/services/CteStatusServico</CteStatusServico>
+        <CteRecepcao method='CTeRecepcao' version='1.04'>https://cte.sefaz.mt.gov.br/ctews/services/CteRecepcao</CteRecepcao>
+        <CteRetRecepcao method='CTeRetRecepcao' version='1.04'>https://cte.sefaz.mt.gov.br/ctews/services/CteRetRecepcao</CteRetRecepcao>
+        <CteCancelamento method='CTeCancelamento' version='1.04'>https://cte.sefaz.mt.gov.br/ctews/services/CteCancelamento</CteCancelamento>
+        <CteInutilizacao method='CTeInutilizacao' version='1.04'>https://cte.sefaz.mt.gov.br/ctews/services/CteInutilizacao</CteInutilizacao>
+        <CteConsultaProtocolo method='cteConsultaCT' version='1.04'>https://cte.sefaz.mt.gov.br/ctews/services/CteConsulta</CteConsultaProtocolo>
+        <CteStatusServico method='cteStatusServicoCT' version='1.04'>https://cte.sefaz.mt.gov.br/ctews/services/CteStatusServico</CteStatusServico>
+    </producao>
+</UF>
+<UF>
+    <sigla>PR</sigla>
+    <homologacao>
+        <CteRecepcao method='CTeRecepcao' version='1.04'>https://homologacao.cte.fazenda.pr.gov.br/cte/CteRecepcao</CteRecepcao>
+        <CteRetRecepcao method='CTeRetRecepcao' version='1.04'>https://homologacao.cte.fazenda.pr.gov.br/cte/CteRetRecepcao</CteRetRecepcao>
+        <CteCancelamento method='CTeCancelamento' version='1.04'>https://homologacao.cte.fazenda.pr.gov.br/cte/CteCancelamento</CteCancelamento>
+        <CteInutilizacao method='CTeInutilizacao' version='1.04'>https://homologacao.cte.fazenda.pr.gov.br/cte/CteInutilizacao</CteInutilizacao>
+        <CteConsultaProtocolo method='cteConsultaCT' version='1.04'>https://homologacao.cte.fazenda.pr.gov.br/cte/CteConsulta</CteConsultaProtocolo>
+        <CteStatusServico method='cteStatusServicoCT' version='1.04'>https://homologacao.cte.fazenda.pr.gov.br/cte/CteStatusServico</CteStatusServico>
+    </homologacao>
+    <producao>
+        <CteRecepcao method='CTeRecepcao' version='1.04'>https://cte.fazenda.pr.gov.br/cte/CteRecepcao</CteRecepcao>
+        <CteRetRecepcao method='CTeRetRecepcao' version='1.04'>https://cte.fazenda.pr.gov.br/cte/CteRetRecepcao</CteRetRecepcao>
+        <CteCancelamento method='CTeCancelamento' version='1.04'>https://cte.fazenda.pr.gov.br/cte/CteCancelamento</CteCancelamento>
+        <CteInutilizacao method='CTeInutilizacao' version='1.04'>https://cte.fazenda.pr.gov.br/cte/CteInutilizacao</CteInutilizacao>
+        <CteConsultaProtocolo method='cteConsultaCT' version='1.04'>https://cte.fazenda.pr.gov.br/cte/CteConsulta</CteConsultaProtocolo>
+        <CteStatusServico method='cteStatusServicoCT' version='1.04'>https://cte.fazenda.pr.gov.br/cte/CteStatusServico</CteStatusServico>
     </producao>
 </UF>
 <UF>
@@ -120,25 +128,6 @@ maiusculas so para ficar igual ao site da SEFAZ.
     </producao>
 </UF>
 <UF>
-    <sigla>SVSP</sigla>
-    <homologacao>
-        <CteRecepcao method='CTeRecepcao' version='1.04'>https://homologacao.nfe.fazenda.sp.gov.br/cteWEB/services/cteRecepcao.asmx</CteRecepcao>
-        <CteRetRecepcao method='CTeRetRecepcao' version='1.04'>https://homologacao.nfe.fazenda.sp.gov.br/cteWEB/services/cteRetRecepcao.asmx</CteRetRecepcao>
-        <CteCancelamento method='CTeCancelamento' version='1.04'>https://homologacao.nfe.fazenda.sp.gov.br/cteWEB/services/cteCancelamento.asmx</CteCancelamento>
-        <CteInutilizacao method='CTeInutilizacao' version='1.04'>https://homologacao.nfe.fazenda.sp.gov.br/cteWEB/services/cteInutilizacao.asmx</CteInutilizacao>
-        <CteConsultaProtocolo method='cteConsultaCT' version='1.04'>https://homologacao.nfe.fazenda.sp.gov.br/cteWEB/services/cteConsulta.asmx</CteConsultaProtocolo>
-        <CteStatusServico method='cteStatusServicoCT' version='1.04'>https://homologacao.nfe.fazenda.sp.gov.br/cteWEB/services/cteStatusServico.asmx</CteStatusServico>        
-    </homologacao>
-    <producao>
-        <CteRecepcao method='CTeRecepcao' version='1.04'>https://nfe.fazenda.sp.gov.br/cteWEB/services/cteRecepcao.asmx</CteRecepcao>
-        <CteRetRecepcao method='CTeRetRecepcao' version='1.04'>https://nfe.fazenda.sp.gov.br/cteWEB/services/cteRetRecepcao.asmx</CteRetRecepcao>
-        <CteCancelamento method='CTeCancelamento' version='1.04'>https://nfe.fazenda.sp.gov.br/cteWEB/services/cteCancelamento.asmx</CteCancelamento>
-        <CteInutilizacao method='CTeInutilizacao' version='1.04'>https://nfe.fazenda.sp.gov.br/cteWEB/services/cteInutilizacao.asmx</CteInutilizacao>
-        <CteConsultaProtocolo method='cteConsultaCT' version='1.04'>https://nfe.fazenda.sp.gov.br/cteWEB/services/CteConsulta.asmx</CteConsultaProtocolo>
-        <CteStatusServico method='cteStatusServicoCT' version='1.04'>https://nfe.fazenda.sp.gov.br/cteWEB/services/cteStatusServico.asmx</CteStatusServico>
-    </producao>
-</UF>
-<UF>
     <sigla>SVRS</sigla>
     <homologacao>
         <CteRecepcao method='CTeRecepcao' version='1.04'>https://homologacao.cte.sefaz.rs.gov.br/ws/cterecepcao/CteRecepcao.asmx</CteRecepcao>
@@ -155,6 +144,25 @@ maiusculas so para ficar igual ao site da SEFAZ.
         <CteInutilizacao method='CTeInutilizacao' version='1.04'>https://cte.sefaz.rs.gov.br/ws/cteinutilizacao/cteinutilizacao.asmx</CteInutilizacao>
         <CteConsultaProtocolo method='cteConsultaCT' version='1.04'>https://cte.sefaz.rs.gov.br/ws/cteconsulta/cteconsulta.asmx</CteConsultaProtocolo>
         <CteStatusServico method='cteStatusServicoCT' version='1.04'>https://cte.sefaz.rs.gov.br/ws/ctestatusservico/ctestatusservico.asmx</CteStatusServico>
+    </producao>
+</UF>
+<UF>
+    <sigla>SVSP</sigla>
+    <homologacao>
+        <CteRecepcao method='CTeRecepcao' version='1.04'>https://homologacao.nfe.fazenda.sp.gov.br/cteWEB/services/cteRecepcao.asmx</CteRecepcao>
+        <CteRetRecepcao method='CTeRetRecepcao' version='1.04'>https://homologacao.nfe.fazenda.sp.gov.br/cteWEB/services/cteRetRecepcao.asmx</CteRetRecepcao>
+        <CteCancelamento method='CTeCancelamento' version='1.04'>https://homologacao.nfe.fazenda.sp.gov.br/cteWEB/services/cteCancelamento.asmx</CteCancelamento>
+        <CteInutilizacao method='CTeInutilizacao' version='1.04'>https://homologacao.nfe.fazenda.sp.gov.br/cteWEB/services/cteInutilizacao.asmx</CteInutilizacao>
+        <CteConsultaProtocolo method='cteConsultaCT' version='1.04'>https://homologacao.nfe.fazenda.sp.gov.br/cteWEB/services/cteConsulta.asmx</CteConsultaProtocolo>
+        <CteStatusServico method='cteStatusServicoCT' version='1.04'>https://homologacao.nfe.fazenda.sp.gov.br/cteWEB/services/cteStatusServico.asmx</CteStatusServico>        
+    </homologacao>
+    <producao>
+        <CteRecepcao method='CTeRecepcao' version='1.04'>https://nfe.fazenda.sp.gov.br/cteWEB/services/cteRecepcao.asmx</CteRecepcao>
+        <CteRetRecepcao method='CTeRetRecepcao' version='1.04'>https://nfe.fazenda.sp.gov.br/cteWEB/services/cteRetRecepcao.asmx</CteRetRecepcao>
+        <CteCancelamento method='CTeCancelamento' version='1.04'>https://nfe.fazenda.sp.gov.br/cteWEB/services/cteCancelamento.asmx</CteCancelamento>
+        <CteInutilizacao method='CTeInutilizacao' version='1.04'>https://nfe.fazenda.sp.gov.br/cteWEB/services/cteInutilizacao.asmx</CteInutilizacao>
+        <CteConsultaProtocolo method='cteConsultaCT' version='1.04'>https://nfe.fazenda.sp.gov.br/cteWEB/services/CteConsulta.asmx</CteConsultaProtocolo>
+        <CteStatusServico method='cteStatusServicoCT' version='1.04'>https://nfe.fazenda.sp.gov.br/cteWEB/services/cteStatusServico.asmx</CteStatusServico>
     </producao>
 </UF>
 </WS>
