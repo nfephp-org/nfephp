@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.0.61
+ * @version   3.0.62
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -1244,10 +1244,11 @@ class ToolsNFePHP {
      * Adiciona o xml referente a comunicação B2B à NFe, conforme padrão ANFAVEA+GS1
      * 
      * @param string $nfefile path para o arquivo com a nfe protocolada e autorizada
-     * @param string $b2bfile path para o arquivo xml padrão ANFAVEA+GS1
+     * @param string $b2bfile path para o arquivo xml padrão ANFAVEA+GS1 e NT2013_002
+     * @param string $tagB2B Tag principar do xml B2B pode ser NFeB2B ou NFeB2BFin
      * @return mixed FALSE se houve erro ou xml com a nfe+b2b  
      */
-    public function addB2B($nfefile='',$b2bfile=''){
+    public function addB2B($nfefile='',$b2bfile='',$tagB2B=''){
         try {
             if($nfefile == '' || $b2bfile == ''){
                 $msg = 'Para adicionar o arquivo B2B, ambos os caminhos devem ser passados. Para a nota e para o B2B!';
@@ -1256,6 +1257,9 @@ class ToolsNFePHP {
             if(!is_file($nfefile) || !is_file($b2bfile) ){
                 $msg = 'Algum dos arquivos não foi localizado no caminho indicado ! ' . $nfefile. ' ou ' .$b2bfile;
                 throw new nfephpException($msg, self::STOP_CRITICAL);
+            }
+            if ($tagB2B == ''){
+                $tagB2B = 'NFeB2BFin'; //padrão anfavea
             }
             //carrega o arquivo na variável
             $docnfe = new DOMDocument('1.0', 'utf-8'); //cria objeto DOM
@@ -1285,7 +1289,7 @@ class ToolsNFePHP {
                 $msg = 'O arquivo indicado como Protocolo não é um XML! ' . $protfile;
                 throw new nfephpException($msg, self::STOP_CRITICAL);
             }
-            $NFeB2BFin = $b2b->getElementsByTagName("NFeB2BFin")->item(0);
+            $NFeB2BFin = $b2b->getElementsByTagName($tagB2B)->item(0);
             if (!isset($NFeB2BFin)){
                 $msg = 'O arquivo indicado como B2B não é um XML de B2B! ' . $b2bfile;
                 throw new nfephpException($msg, self::STOP_CRITICAL);
