@@ -23,7 +23,7 @@
  *
  * @package     NFePHP
  * @name        DacteNFePHP.class.php
- * @version     1.2.8
+ * @version     1.2.9
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2011 &copy; NFePHP
@@ -1622,7 +1622,9 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP {
         $this->__textBox($x+1,$y,$w,$h,$texto,$aFont,'T','L',0,'');
         
         $texto = $this->__simpleGetValue( $this->infCarga ,  "vCarga") == "" ? $this->__simpleGetValue( $this->infCarga ,  "vCarga") : $this->__simpleGetValue( $this->infCarga ,  "vMerc");
-        $texto = number_format($texto, 2, ",", ".");
+        if($texto != ""){
+            $texto = number_format($texto, 2, ",", ".");
+        }    
         $aFont = $this->formatNegrito;
         $this->__textBox($x+1,$y+3,$w,$h,$texto,$aFont,'T','L',0,'');
         
