@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.0.62
+ * @version   3.0.63
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -535,6 +535,7 @@ class ToolsNFePHP {
                              'SP'=>'35',
                              'TO'=>'17',
                              'SVAN'=>'91');
+    
     /**
      * cUFlist
      * Lista dos numeros identificadores dos estados
@@ -568,6 +569,40 @@ class ToolsNFePHP {
                           '52'=>'GO',
                           '53'=>'DF',
                           '91'=>'SVAN');
+
+    /**
+     * tzUFlist
+     * Lista das zonas de tempo para os estados brasileiros
+     * @var array
+     */
+    private $tzUFlist = array('AC'=>'America/Rio_Branco',
+                              'AL'=>'America/Sao_Paulo',
+                              'AM'=>'America/Manaus',
+                              'AP'=>'America/Sao_Paulo',
+                              'BA'=>'America/Bahia',
+                              'CE'=>'America/Fortaleza',
+                              'DF'=>'America/Sao_Paulo',
+                              'ES'=>'America/Sao_Paulo',
+                              'GO'=>'America/Sao_Paulo',
+                              'MA'=>'America/Sao_Paulo',
+                              'MG'=>'America/Sao_Paulo',
+                              'MS'=>'America/Campo_Grande',
+                              'MT'=>'America/Cuiaba',
+                              'PA'=>'America/Belem',
+                              'PB'=>'America/Sao_Paulo',
+                              'PE'=>'America/Recife',
+                              'PI'=>'America/Sao_Paulo',
+                              'PR'=>'America/Sao_Paulo',
+                              'RJ'=>'America/Sao_Paulo',
+                              'RN'=>'America/Sao_Paulo',
+                              'RO'=>'America/Porto_Velho',
+                              'RR'=>'America/Boa_Vista',
+                              'RS'=>'America/Sao_Paulo',
+                              'SC'=>'America/Sao_Paulo',
+                              'SE'=>'America/Sao_Paulo',
+                              'SP'=>'America/Sao_Paulo',
+                              'TO'=>'America/Sao_Paulo');
+    
     /**
      * aMail
      * Matriz com os dados para envio de emails
@@ -838,8 +873,11 @@ class ToolsNFePHP {
                 throw new nfephpException($msg, self::STOP_CRITICAL);
             }
         }
+        //definir o timezone default para o estado do emitente
+        $tz = $this->tzUFlist[$this->UF];
+        date_default_timezone_set($tz);
         //estados que participam do horario de verão
-        $aUFhv = array('BA','ES','GO','MG','MS','PR','RJ','RS','SP','SC','TO');
+        $aUFhv = array('ES','GO','MG','MS','PR','RJ','RS','SP','SC','TO');
         //corrigir o timeZone
         if ($this->UF == 'AC' ||
             $this->UF == 'AM' ||   
