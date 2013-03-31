@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema elementFormDefault="qualified"
+	targetNamespace="http://www.ginfes.com.br/servico_consultar_nfse_envio" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:tns="http://www.ginfes.com.br/servico_consultar_nfse_envio" xmlns:tipos="http://www.ginfes.com.br/tipos">
+
+	<xsd:import schemaLocation="xmldsig-core-schema_v02.xsd"
+		namespace="http://www.w3.org/2000/09/xmldsig#" />
+	<xsd:import schemaLocation="tipos_v02.xsd" namespace="http://www.ginfes.com.br/tipos" />
+	<xsd:element name="ConsultarNfseEnvio">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="Prestador" type="tipos:tcIdentificacaoPrestador"
+					maxOccurs="1" minOccurs="1"></xsd:element>
+				<xsd:element name="NumeroNfse" type="tipos:TsNumeroNfse"
+					maxOccurs="1" minOccurs="0"></xsd:element>
+				<xsd:element name="PeriodoEmissao" maxOccurs="1"
+					minOccurs="0">
+
+					<xsd:complexType>
+
+						<xsd:sequence>
+							<xsd:element name="DataInicial" type="xsd:date"
+								maxOccurs="1" minOccurs="1"></xsd:element>
+							<xsd:element name="DataFinal" type="xsd:date"
+								maxOccurs="1" minOccurs="1"></xsd:element>
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="Tomador" type="tipos:tcIdentificacaoTomador"
+					maxOccurs="1" minOccurs="0">
+				</xsd:element>
+				<xsd:element name="IntermediarioServico"
+					type="tipos:TcIdentificacaoIntermediarioServico" maxOccurs="1"
+					minOccurs="0"></xsd:element>
+				<xsd:element ref="ds:Signature" maxOccurs="1" minOccurs="1" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+
+
+
+
+
+
+
+
+
+
+
+	<!-- Basic Types Defined for Signatures -->
+</xsd:schema>

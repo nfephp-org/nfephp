@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:element name="Identificacao">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="cdConsumidor"/>
+				<xs:element ref="dsIm" minOccurs="0"/>
+				<xs:element ref="dsRazaoSocial"/>
+				<xs:element ref="dsEmail" minOccurs="0"/>
+				<xs:element ref="cdTipoEmpresa"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Enderecos">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="Endereco" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Endereco">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="dsLogradouro"/>
+				<xs:element ref="dsNumero"/>
+				<xs:element ref="dsComplemento" minOccurs="0"/>
+				<xs:element ref="dsBairro"/>
+				<xs:element ref="cdMunicipioIbge"/>
+				<xs:element ref="cdUfIbge"/>
+				<xs:element ref="dsTelefone" minOccurs="0"/>
+				<xs:element ref="dsContato" minOccurs="0"/>
+				<xs:element ref="cdCepPrefixo"/>
+				<xs:element ref="cdCepSufixo"/>
+				<xs:element ref="cdPais"/>
+				<xs:element ref="dsTelefoneDdd" minOccurs="0"/>
+				<xs:element ref="dsTelefoneDdi" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="dsTelefoneDdi">
+		<xs:simpleType>
+			<xs:restriction base="xs:integer"/>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="dsTelefoneDdd">
+		<xs:simpleType>
+			<xs:restriction base="xs:integer"/>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="dsTelefone">
+		<xs:simpleType>
+			<xs:restriction base="xs:integer">
+				<xs:whiteSpace value="collapse"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="dsRazaoSocial">
+		<xs:annotation>
+			<xs:documentation>Razão Social</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string"/>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="dsNumero">
+		<xs:annotation>
+			<xs:documentation>Número do endereço</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="10"/>
+				<xs:minLength value="1"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="dsLogradouro">
+		<xs:annotation>
+			<xs:documentation>Logradouro</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string"/>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="dsIm" nillable="true">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:maxLength value="15"/>
+				<xs:minLength value="1"/>
+				<xs:whiteSpace value="collapse"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="dsEmail">
+		<xs:annotation>
+			<xs:documentation>E-mail do cliente.</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:whiteSpace value="collapse"/>
+				<xs:pattern value="[A-Za-z0-9_]+([-+.'][A-Za-z0-9_]+)*@[A-Za-z0-9_]+([-.][A-Za-z0-9_]+)*\.[A-Za-z0-9_]+([-.][A-Za-z0-9_]+)*"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="dsContato">
+		<xs:annotation>
+			<xs:documentation>Contato</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:minLength value="1"/>
+				<xs:maxLength value="60"/>
+				<xs:whiteSpace value="collapse"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="dsComplemento">
+		<xs:annotation>
+			<xs:documentation>Complemento do Endereço do Cliente.</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:whiteSpace value="collapse"/>
+				<xs:minLength value="1"/>
+				<xs:maxLength value="60"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="dsBairro">
+		<xs:annotation>
+			<xs:documentation>Bairro do Cliente.</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:minLength value="1"/>
+				<xs:maxLength value="60"/>
+				<xs:whiteSpace value="collapse"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="Clientes">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="Cliente" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Cliente">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="Identificacao"/>
+				<xs:element ref="Enderecos"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="cdUfIbge">
+		<xs:annotation>
+			<xs:documentation>Código da Uf no Ibge</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:integer">
+				<xs:pattern value="[0-9]{1,2}"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="cdTipoEmpresa">
+		<xs:annotation>
+			<xs:documentation>1	Pessoa Jurídica Direito Privado	
+0	Pessoa Física	
+2	Pessoa Jurídica Direito Público	</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:integer">
+				<xs:pattern value="[0-2]"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="cdPais">
+		<xs:annotation>
+			<xs:documentation>Código do País</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:integer"/>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="cdMunicipioIbge">
+		<xs:annotation>
+			<xs:documentation>Código do Múnicipio Ibge sem os números referente a uf</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:integer">
+				<xs:whiteSpace value="collapse"/>
+				<xs:pattern value="[0-9]{1,5}"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="cdConsumidor">
+		<xs:annotation>
+			<xs:documentation>Cpf/Cnpj do cliente</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:long">
+				<xs:whiteSpace value="collapse"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="cdCepSufixo">
+		<xs:annotation>
+			<xs:documentation>Sufixo do Cep</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:integer">
+				<xs:pattern value="[0-9]{1,3}"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="cdCepPrefixo">
+		<xs:annotation>
+			<xs:documentation>Prefixo do Cep</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:integer">
+				<xs:whiteSpace value="collapse"/>
+				<xs:pattern value="[0-9]{1,5}"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+</xs:schema>

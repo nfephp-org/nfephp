@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tipos="http://www.ginfes.com.br/tipos_v03.xsd"  targetNamespace="http://www.ginfes.com.br/servico_enviar_lote_rps_envio_v03.xsd"
+            xmlns="http://www.ginfes.com.br/servico_enviar_lote_rps_envio_v03.xsd" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" attributeFormDefault="unqualified" elementFormDefault="qualified">
+	<xsd:import schemaLocation="tipos_v03.xsd"	namespace="http://www.ginfes.com.br/tipos_v03.xsd" />
+	<xsd:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="xmldsig-core-schema20020212_v03.xsd"/>
+	<xsd:element name="EnviarLoteRpsEnvio">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="LoteRps" type="tipos:tcLoteRps"/>
+				<xsd:element ref="dsig:Signature" minOccurs="0" maxOccurs="1"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+</xsd:schema>
