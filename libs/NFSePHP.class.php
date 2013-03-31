@@ -394,9 +394,6 @@ class NFSe {
      * os arquivos XML
      *
      * @name signXML
-     * @version 2.10
-     * @package NFePHP
-     * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @param	string $docxml String contendo o arquivo XML a ser assinado
      * @param   string $tagid TAG do XML que devera ser assinada
      * @return	mixed false se houve erro ou string com o XML assinado
