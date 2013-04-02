@@ -1,6 +1,6 @@
 <?php
 
-// Teste de envio NFS-e Prefeitura São Paulo
+// Teste de envio NFS-e Prefeitura SÃ£o Paulo
 
 require('libs/NFSeSP.class.php');
 require('libs/NFeRPS.class.php');
@@ -9,14 +9,14 @@ $nfse = new NFSeSP();
 
 $rps = new NFeRPS();
 
-$rps->CCM = 'xxxxxxxx';  // inscrição municipal da Empresa
+$rps->CCM = 'xxxxxxxx';  // inscriÃ§Ã£oo municipal da Empresa
 $rps->serie = 'A';       // serie do RPS gerado
 $rps->numero = '1';      // numero do RPS gerado
 
 $rps->dataEmissao = date("Y-m-d");
 $rps->valorServicos = 1;
 $rps->valorDeducoes = 0;
-$rps->codigoServico = '07498';   // codigo do serviço executado
+$rps->codigoServico = '07498';   // codigo do serviÃ§o executado
 $rps->aliquotaServicos = 0.05;
 $rps->tributacao = "T";
 $rps->discriminacao = 'Teste de geracao de NFS-e via sistema proprio';
@@ -28,13 +28,13 @@ $rps->contractorRPS->ccmTomador = '';
 $rps->contractorRPS->type = 'F';		// C=Pessoa Juridica, F=Pessoa Fisica
 $rps->contractorRPS->name = 'nome_do_destinatario';
 $rps->contractorRPS->tipoEndereco = "R";  // Rua
-$rps->contractorRPS->endereco = 'endereço_do_destinatario';
+$rps->contractorRPS->endereco = 'endereÃ§o_do_destinatario';
 $rps->contractorRPS->enderecoNumero = 'numero';
 $rps->contractorRPS->complemento = 'complemento';
 $rps->contractorRPS->bairro = 'bairro_do_destinatario';
 $rps->contractorRPS->cidade = '3550308';
 $rps->contractorRPS->estado = 'SP';
-$rps->contractorRPS->cep = 'cep_do_destinatario_sem_espaco_ou_traço';
+$rps->contractorRPS->cep = 'cep_do_destinatario_sem_espaco_ou_traÃ§o';
 $rps->contractorRPS->email = 'email_do_destinatario';
 
 $rpsArray[] = $rps;
@@ -68,17 +68,18 @@ if ($ret->Cabecalho->Sucesso == "true") {
       $errMsg = "Erro " . $ret->Cabecalho->Erro->Codigo . " - ";
       $errMsg.=  utf8_decode($ret->Cabecalho->Erro->Descricao);
    } else {
-      $errMsg = utf8_decode("Erro no processamento da solicitação");
+      $errMsg = utf8_decode("Erro no processamento da solicitaÃ§Ã£o");
    }
 }
 
-if ($errMsg == "") {   // obtem dados da Nota Fiscal
+if ($errMsg == "") {
+   // obtem dados da Nota Fiscal
    $NumeroNFe = trim($ret->ChaveNFeRPS->ChaveNFe->NumeroNFe);
    $CodVer   = trim($ret->ChaveNFeRPS->ChaveNFe->CodigoVerificacao);
 
-   // Como a Prefeitura de São Paulo desconsidera os dados do destinatario que voce envia
-   // e mantém o que esta cadastrado no banco de dados deles...
-   // Consulta NFS-e para acertar data / hora / Endereço do destinatario
+   // Como a Prefeitura de SÃ£o Paulo desconsidera os dados do destinatario que voce envia
+   // e mantÃªm o que esta cadastrado no banco de dados deles...
+   // Consulta NFS-e para acertar data / hora / EndereÃ§o do destinatario
    $ret = $nfse->queryNFe($NumeroNFe,0,'');
    if ($ret->Cabecalho->Sucesso) {
       $DtEmi = $ret->NFe->DataEmissaoNFe;
@@ -106,7 +107,7 @@ if ($errMsg == "") {   // obtem dados da Nota Fiscal
          $VrCredito = $ret->NFe->ValorCredito;
       }
       //
-      // insira aqui sua rotina de atualização do banco de dados
+      // insira aqui sua rotina de atualizaÃ§Ã£o do banco de dados
       //
    }
 }
