@@ -26,15 +26,4 @@ echo '<BR><BR><h1>DEBUG DA COMUNICAÇÕO SOAP</h1><BR><BR>';
 echo '<PRE>';
 echo htmlspecialchars($nfe->soapDebug);
 echo '</PRE><BR>';
-
-//ou isso 
-//este é modo interno e vai enviar todoas as nf que estiverem na pasta validadas
-/*
-if ($recibo  = $nfe->autoEnvNFe()){
-    echo "Numero do Recibo : " . $recibo .", use este numero para obter o protocolo ou informações de erro no xml.";  
-} else {
-    echo "Houve erro !! $nfe->errMsg";
-}
-*/
-
 ?>
