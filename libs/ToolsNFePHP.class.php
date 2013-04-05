@@ -4,7 +4,7 @@
  *
  * Este programa é um software livre: você pode redistribuir e/ou modificá-lo
  * sob os termos da Licença Pública Geral GNU (GPL)como é publicada pela Fundação
- * para o Software Livre, na versão 3 da licença, ou qualquer versão posterior
+ * para o Software Livre, na versão 3 da licença, ou qualquer versão posteriorgetN
  * e/ou 
  * sob os termos da Licença Pública Geral Menor GNU (LGPL) como é publicada pela Fundação
  * para o Software Livre, na versão 3 da licença, ou qualquer versão posterior.
@@ -2177,6 +2177,8 @@ class ToolsNFePHP {
                 $cStat = !empty($retConsNFeDest->getElementsByTagName('cStat')->item(0)->nodeValue) ? $retConsNFeDest->getElementsByTagName('cStat')->item(0)->nodeValue : '';
                 $xMotivo = !empty($retConsNFeDest->getElementsByTagName('xMotivo')->item(0)->nodeValue) ? $retConsNFeDest->getElementsByTagName('xMotivo')->item(0)->nodeValue : '';
                 $ultNSU  = !empty($retConsNFeDest->getElementsByTagName('ultNSU')->item(0)->nodeValue) ? $retConsNFeDest->getElementsByTagName('ultNSU')->item(0)->nodeValue : '';
+                //flag que indica se o ult NSU deve ser atualizado ou, enquanto o valor vier com 1, o NSU deverá ser atualizado 
+                $indCont = !empty($retConsNFeDest->getElementsByTagName('indCont')->item(0)->nodeValue) ? $retConsNFeDest->getElementsByTagName('indCont')->item(0)->nodeValue : 0;
             } else {    
                 $cStat = '';
             }
@@ -2242,7 +2244,7 @@ class ToolsNFePHP {
                 $msg = "Falha na gravação do arquivo resLNFe!!";
                 $this->__setError($msg);
             }
-            if ($ultNSU != ''){
+            if ($ultNSU != '' && $indCont == 1){
                 //grava o ultimo NSU informado no arquivo
                 $this->__putUltNSU($sigla, $tpAmb, $ultNSU);
             }
