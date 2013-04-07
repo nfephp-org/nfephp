@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.0.63
+ * @version   3.0.64
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -2212,6 +2212,7 @@ class ToolsNFePHP {
                 throw new nfephpException($msg);
             }
             //tratar dados de retorno
+            $indCont = 0;
             $xmlLNFe = new DOMDocument('1.0', 'utf-8'); //cria objeto DOM
             $xmlLNFe->formatOutput = false;
             $xmlLNFe->preserveWhiteSpace = false;
@@ -2221,6 +2222,7 @@ class ToolsNFePHP {
                 $cStat = !empty($retConsNFeDest->getElementsByTagName('cStat')->item(0)->nodeValue) ? $retConsNFeDest->getElementsByTagName('cStat')->item(0)->nodeValue : '';
                 $xMotivo = !empty($retConsNFeDest->getElementsByTagName('xMotivo')->item(0)->nodeValue) ? $retConsNFeDest->getElementsByTagName('xMotivo')->item(0)->nodeValue : '';
                 $ultNSU  = !empty($retConsNFeDest->getElementsByTagName('ultNSU')->item(0)->nodeValue) ? $retConsNFeDest->getElementsByTagName('ultNSU')->item(0)->nodeValue : '';
+                $indCont = !empty($retConsNFeDest->getElementsByTagName('indCont')->item(0)->nodeValue) ? $retConsNFeDest->getElementsByTagName('indCont')->item(0)->nodeValue : 0;
             } else {    
                 $cStat = '';
             }
@@ -2286,7 +2288,7 @@ class ToolsNFePHP {
                 $msg = "Falha na gravação do arquivo resLNFe!!";
                 $this->__setError($msg);
             }
-            if ($ultNSU != ''){
+            if ($ultNSU != '' && $indCont == 1){
                 //grava o ultimo NSU informado no arquivo
                 $this->__putUltNSU($sigla, $tpAmb, $ultNSU);
             }
