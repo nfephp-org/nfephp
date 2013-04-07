@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.0.64
+ * @version   3.0.65
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -927,7 +927,7 @@ class ToolsNFePHP {
             if(strlen($xml)==0){
                 $msg = 'Você deve passar o conteudo do xml assinado como parâmetro ou o caminho completo até o arquivo.';
                 $aError[] = $msg;
-                throw new nfephpException($msg, self::STOP_CRITICAL);
+                throw new nfephpException($msg);
             }
             // instancia novo objeto DOM
             $dom = new DOMDocument('1.0', 'utf-8');
@@ -945,7 +945,7 @@ class ToolsNFePHP {
                 //o dado passado como $docXml não é um xml
                 $msg = 'O dado informado não é um XML ou não foi encontrado. Você deve passar o conteudo de um arquivo xml assinado como parâmetro.';
                 $aError[] = $msg;
-                throw new nfephpException($msg, self::STOP_MESSAGE);
+                throw new nfephpException($msg);
             }
             if($xsdFile==''){
                 if (is_file($xml)){
@@ -1017,7 +1017,7 @@ class ToolsNFePHP {
                 if (!$aFile[0]) {
                     $msg = "Erro na localização do schema xsd.\n";
                     $aError[] = $msg;
-                    throw new nfephpException($msg, self::STOP_CRITICAL);
+                    throw new nfephpException($msg);
                 } else {
                     $xsdFile = $aFile[0];
                 }
@@ -1368,10 +1368,7 @@ class ToolsNFePHP {
      * os arquivos XML
      *
      * @name signXML
-     * @version 2.11
-     * @package NFePHP
-     * @author Roberto L. Machado <linux.rlm at gmail dot com>
-     * @param	string $docxml String contendo o arquivo XML a ser assinado
+     * @param	mixed $docxml Path para o arquivo xml ou String contendo o arquivo XML a ser assinado
      * @param   string $tagid TAG do XML que devera ser assinada
      * @return	mixed false se houve erro ou string com o XML assinado
      */
@@ -1385,6 +1382,11 @@ class ToolsNFePHP {
                 $msg = "Um xml deve ser passado para que seja assinado!!";
                     throw new nfephpException($msg);
             }
+            if (is_file($docxml)){
+                $xml = file_get_contents($docxml);
+            } else {
+                $xml = $docxml;
+            }
             // obter o chave privada para a ssinatura
             $fp = fopen($this->priKEY, "r");
             $priv_key = fread($fp, 8192);
@@ -1393,17 +1395,29 @@ class ToolsNFePHP {
             // limpeza do xml com a retirada dos CR, LF e TAB
             $order = array("\r\n", "\n", "\r", "\t");
             $replace = '';
-            $docxml = str_replace($order, $replace, $docxml);
+            $xml = str_replace($order, $replace, $xml);
+            // Habilita a manipulaçao de erros da libxml
+            libxml_use_internal_errors(true);
+            //limpar erros anteriores que possam estar em memória
+            libxml_clear_errors();  
             // carrega o documento no DOM
             $xmldoc = new DOMDocument('1.0', 'utf-8');
             $xmldoc->preservWhiteSpace = false; //elimina espaços em branco
             $xmldoc->formatOutput = false;
             // muito importante deixar ativadas as opçoes para limpar os espacos em branco
             // e as tags vazias
-            if ($xmldoc->loadXML($docxml,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG)){
+            if ($xmldoc->loadXML($xml,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG)){
                 $root = $xmldoc->documentElement;
             } else {
-                $msg = "Erro ao carregar XML, provavel erro na passagem do parâmetro docxml!!";
+                $msg = "Erro ao carregar XML, provavel erro na passagem do parâmetro docxml ou no próprio xml!!";
+                $errors = libxml_get_errors(); 
+                if (!empty($errors)) {
+                   $i = 1; 
+                   foreach($errors as $error){
+                        $msg .= "\n  [$i]-" . trim($error->message);
+                    }
+                    libxml_clear_errors();
+                }
                 throw new nfephpException($msg);
             }
             //extrair a tag com os dados a serem assinados
@@ -1478,7 +1492,7 @@ class ToolsNFePHP {
             $newNode = $xmldoc->createElement('X509Certificate',$cert);
             $X509Data->appendChild($newNode);
             //grava na string o objeto DOM
-            $docxml = $xmldoc->saveXML();
+            $xml = $xmldoc->saveXML();
             // libera a memoria
             openssl_free_key($pkeyid);
         } catch (nfephpException $e) {
@@ -1489,7 +1503,7 @@ class ToolsNFePHP {
             return false;
         }
         //retorna o documento assinado
-        return $docxml;
+        return $xml;
     } //fim signXML
 
     /**
