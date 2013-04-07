@@ -189,7 +189,7 @@ class UnConvertNFePHP {
 	$dhCont	= $ide->getElementsByTagName('dhCont')->item(0)->nodeValue;
 	$xJust	= $ide->getElementsByTagName('xJust')->item(0)->nodeValue;
         $txt .= "B|$cUF|$cNF|$natOp|$indPag|$mod|$serie|$nNF|$dEmi|$dSaiEnt|$hSaiEnt|$tpNF|$cMunFG|$tpImp|$tpEmis|$cDV|$tpAmb|$finNFe|$procEmi|$verProc|$dhCont|$xJust|\r\n";
-           
+
         //B13|refNFe|
         if ( isset($refNFe) ) {
             foreach ($refNFe as $n => $r){
@@ -351,7 +351,7 @@ class UnConvertNFePHP {
             
             if( isset($entrega) ) {
                 $CNPJ	= !empty($entrega->getElementsByTagName("CNPJ")->item(0)->nodeValue) ? $entrega->getElementsByTagName("CNPJ")->item(0)->nodeValue : '';
-                $CPF	= !empty($entrega->getElementsByTagName("CNPJ")->item(0)->nodeValue) ? $entrega->getElementsByTagName("CNPJ")->item(0)->nodeValue : '';
+                $CPF	= !empty($entrega->getElementsByTagName("CPF")->item(0)->nodeValue) ? $entrega->getElementsByTagName("CNPJ")->item(0)->nodeValue : '';
                 $xLgr	= !empty($entrega->getElementsByTagName("xLgr")->item(0)->nodeValue) ? $entrega->getElementsByTagName("xLgr")->item(0)->nodeValue : '';
                 $nro	= !empty($entrega->getElementsByTagName("nro")->item(0)->nodeValue) ? $entrega->getElementsByTagName("nro")->item(0)->nodeValue : '';
                 $xCpl	= !empty($entrega->getElementsByTagName("xCpl")->item(0)->nodeValue) ? $entrega->getElementsByTagName("xCpl")->item(0)->nodeValue : '';
