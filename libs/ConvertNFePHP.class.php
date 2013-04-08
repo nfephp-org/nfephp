@@ -26,7 +26,7 @@
  *
  * @package     NFePHP
  * @name        ConvertNFePHP
- * @version     3.1.5
+ * @version     3.1.6
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2011 &copy; NFePHP
@@ -366,17 +366,17 @@ class ConvertNFePHP {
 
                 case "B20d": //CNPJ [refNFP]
                     //B20d|CNPJ
-                    if(!isset($refNFP)){
+                    if(isset($refNFP)){
                         $CNPJ = $dom->createElement("CNPJ", $dados[1]);
-                        $refNFP->appendChild($CNPJ);
+                        $refNFP->insertBefore($ide->appendChild($CNPJ),$IE);
                     }
                     break;
 
                 case "B20e": //CPF [refNFP]
                     //B20e|CPF
-                    if(!isset($refNFP)){
+                    if(isset($refNFP)){
                         $CPF = $dom->createElement("CPF", $dados[1]);
-                        $refNFP->appendChild($CPF);
+                        $refNFP->insertBefore($ide->appendChild($CPF),$IE);
                     }
                     break;
 
