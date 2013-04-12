@@ -38,6 +38,7 @@
  *        CONTRIBUIDORES (em ordem alfabetica):
  *              Alberto  Leal <ees.beto at gmail dot com>
  *              Andre Noel <andrenoel at ubuntu dot com>
+ *              Bruno Porto <brunotporto at gmail dot com>
  *              Clauber Santos <cload_info at yahoo dot com dot br>
  *              Crercio <crercio at terra dot com dot br>
  *              Diogo Mosela <diego dot caicai at gmail dot com>
