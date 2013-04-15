@@ -1240,15 +1240,17 @@ class NFSePHPGinfes extends ToolsNFePHP {
             mkdir($this->nfseDir, 0777);
         }
         
-        $aSubDirs = array("temp", 
-                        "lotes/assinados", 
-                        "lotes/validados", 
-                        "lotes/enviados", 
-                        "lotes/enviados/aprovados",
-                        "lotes/enviados/reprovados",
-                        "canceladas",
-                        "aprovadas",
-                        "pdf"
+        $aSubDirs = array(
+			"aprovadas",
+			"canceladas",
+        	"lotes",
+			"lotes/assinados",  
+			"lotes/enviados", 
+			"lotes/enviados/aprovados",
+			"lotes/enviados/reprovados",
+			"lotes/validados",
+			"pdf",
+			"temp"
         );
         
         $count = count($aSubDirs);
