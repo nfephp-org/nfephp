@@ -59,7 +59,7 @@ class NFSePHPGinfesPDF extends FPDF {
     /**
      * 
      */
-    protected function Header() {
+    public function Header() {
 
         $xml =  file_get_contents($this->arquivo_xml_origem) ;
 
@@ -438,7 +438,7 @@ class NFSePHPGinfesPDF extends FPDF {
      * @param type $align
      * @param type $fill
      */
-    protected function MultiCell($w, $h, $txt, $border=0, $align='J', $fill=false){
+    public function MultiCell($w, $h, $txt, $border=0, $align='J', $fill=false){
         parent::MultiCell($w, $h, utf8_decode($txt), $border, $align, $fill);
     }
     
@@ -453,7 +453,7 @@ class NFSePHPGinfesPDF extends FPDF {
      * @param type $fill
      * @param type $link
      */
-    protected function Cell($w, $h=0, $txt='', $border=0, $ln=0, $align='', $fill=false, $link=''){
+    public function Cell($w, $h=0, $txt='', $border=0, $ln=0, $align='', $fill=false, $link=''){
          parent::Cell($w, $h, utf8_decode($txt), $border, $ln, $align, $fill, $link);
     }    
 
