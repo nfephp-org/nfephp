@@ -1243,6 +1243,7 @@ class NFSePHPGinfes extends ToolsNFePHP {
         $aSubDirs = array(
 			"aprovadas",
 			"canceladas",
+        	"lotes",
 			"lotes/assinados",  
 			"lotes/enviados", 
 			"lotes/enviados/aprovados",
