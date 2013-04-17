@@ -976,7 +976,7 @@ class ToolsNFePHP {
                         break;
                 }
                 $aFile = $this->listDir($this->xsdDir . $this->schemeVer. DIRECTORY_SEPARATOR,$xsdFile,true);
-                if (!$aFile[0]) {
+                if (isset($aFile[0]) && !$aFile[0]) {
                     $msg = "Erro na localização do schema xsd.\n";
                     $aError[] = $msg;
                     throw new nfephpException($msg, self::STOP_CRITICAL);
