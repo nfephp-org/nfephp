@@ -26,7 +26,7 @@
  *
  * @package     NFePHP
  * @name        ConvertNFePHP
- * @version     3.1.6
+ * @version     3.1.7
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2011 &copy; NFePHP
@@ -38,6 +38,7 @@
  *        CONTRIBUIDORES (em ordem alfabetica):
  *              Alberto  Leal <ees.beto at gmail dot com>
  *              Andre Noel <andrenoel at ubuntu dot com>
+ *              Bruno Porto <brunotporto at gmail dot com>
  *              Clauber Santos <cload_info at yahoo dot com dot br>
  *              Crercio <crercio at terra dot com dot br>
  *              Diogo Mosela <diego dot caicai at gmail dot com>
@@ -1308,7 +1309,7 @@ class ConvertNFePHP {
                         $vBCSTRet = $dom->createElement("vBCSTRet", $dados[3]);
                         $ICMSST->appendChild($vBCSTRet);
                         $vICMSSTRet = $dom->createElement("vICMSSTRet", $dados[4]);
-                        $ICMSST->ppendChild($vICMSSTRet);
+                        $ICMSST->appendChild($vICMSSTRet);
                         $vBCSTDest = $dom->createElement("vBCSTDest", $dados[5]);
                         $ICMSST->appendChild($vBCSTDest);
                         $vICMSSTDest = $dom->createElement("vICMSSTDest", $dados[6]);
