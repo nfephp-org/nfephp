@@ -10,6 +10,7 @@ Correcao da nomenclarura dos servicos. Nota: URL homologacao SP colocados com le
 maiusculas so para ficar igual ao site da SEFAZ.
 
 Versao 20130320_1 Inclusão dos webservices do Paraná 
+Versao 20130418_1 Correção CteConsula => CteConsultaProtocolo [RS]
 -->
 <UF>
     <sigla>MG</sigla>
@@ -96,7 +97,7 @@ Versao 20130320_1 Inclusão dos webservices do Paraná
         <CteRetRecepcao method='CTeRetRecepcao' version='1.04'>https://homologacao.cte.sefaz.rs.gov.br/ws/cteretrecepcao/cteRetRecepcao.asmx</CteRetRecepcao>
         <CteCancelamento method='CTeCancelamento' version='1.04'>https://homologacao.cte.sefaz.rs.gov.br/ws/ctecancelamento/ctecancelamento.asmx</CteCancelamento>
         <CteInutilizacao method='CTeInutilizacao' version='1.04'>https://homologacao.cte.sefaz.rs.gov.br/ws/cteinutilizacao/cteinutilizacao.asmx</CteInutilizacao>
-        <CteConsulta method='cteConsultaCT' version='1.04'>https://homologacao.cte.sefaz.rs.gov.br/ws/cteconsulta/CteConsulta.asmx</CteConsulta>
+        <CteConsultaProtocolo method='cteConsultaCT' version='1.04'>https://homologacao.cte.sefaz.rs.gov.br/ws/cteconsulta/CteConsulta.asmx</CteConsultaProtocolo>
         <CteStatusServico method='cteStatusServicoCT' version='1.04'>https://homologacao.cte.sefaz.rs.gov.br/ws/ctestatusservico/CteStatusServico.asmx</CteStatusServico>
     </homologacao>
     <producao>
