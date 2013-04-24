@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.0.65
+ * @version   3.0.66
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -2829,9 +2829,9 @@ class ToolsNFePHP {
             $xmlretEvent->formatOutput = false;
             $xmlretEvent->preserveWhiteSpace = false;
             $xmlretEvent->loadXML($retorno,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
-            $retEvento = $xmlretEvent->getElementsByTagName("retEvento")->item(0);
-            $cStat = !empty($retEvento->getElementsByTagName('cStat')->item(0)->nodeValue) ? $retEvento->getElementsByTagName('cStat')->item(0)->nodeValue : '';
-            $xMotivo = !empty($retEvento->getElementsByTagName('xMotivo')->item(0)->nodeValue) ? $retEvento->getElementsByTagName('xMotivo')->item(0)->nodeValue : '';
+            $retEnvEvento = $xmlretEvent->getElementsByTagName("retEnvEvento")->item(0);
+            $cStat = !empty($retEnvEvento->getElementsByTagName('cStat')->item(0)->nodeValue) ? $retEnvEvento->getElementsByTagName('cStat')->item(0)->nodeValue : '';
+            $xMotivo = !empty($retEnvEvento->getElementsByTagName('xMotivo')->item(0)->nodeValue) ? $retEnvEvento->getElementsByTagName('xMotivo')->item(0)->nodeValue : '';
             if ($cStat == ''){
                 //houve erro
                 $msg = "cStat está em branco, houve erro na comunicação Soap verifique a mensagem de erro e o debug!!";
@@ -2843,13 +2843,22 @@ class ToolsNFePHP {
                 $msg = "Versão do arquivo XML não suportada no webservice!!";
                 throw new nfephpException($msg);
             }    
-            //erro no processamento cStat <> 135
-            if ($cStat != 135 ){
+            //erro no processamento cStat <> 128
+            if ($cStat != 128){
                 //se cStat <> 135 houve erro e o lote foi rejeitado
                 $msg = "Retorno de ERRO: $cStat - $xMotivo";
                 throw new nfephpException($msg);
             }
-            //o evento foi aceito cStat == 135
+            //o lote foi processado cStat == 128
+            $retEvento = $xmlretEvent->getElementsByTagName("retEvento")->item(0);
+            $cStat = !empty($retEvento->getElementsByTagName('cStat')->item(0)->nodeValue) ? $retEvento->getElementsByTagName('cStat')->item(0)->nodeValue : '';
+            $xMotivo = !empty($retEvento->getElementsByTagName('xMotivo')->item(0)->nodeValue) ? $retEvento->getElementsByTagName('xMotivo')->item(0)->nodeValue : '';
+            if ($cStat != 135 && $cStat != 155){
+                //se cStat <> 135 houve erro e o lote foi rejeitado
+                $msg = "Retorno de ERRO: $cStat - $xMotivo";
+                throw new nfephpException($msg);
+            }
+            //o evento foi aceito cStat == 135 ou cStat == 155
             //carregar o evento
             $xmlenvEvento = new DOMDocument('1.0', 'utf-8'); //cria objeto DOM
             $xmlenvEvento->formatOutput = false;
