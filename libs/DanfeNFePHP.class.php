@@ -23,7 +23,7 @@
  *
  * @package     NFePHP
  * @name        DanfeNFePHP.class.php
- * @version     2.1.24
+ * @version     2.1.25
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2012 &copy; NFePHP
@@ -94,7 +94,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
     protected $destino = 'I'; //destivo do arquivo pdf I-borwser, S-retorna o arquivo, D-força download, F-salva em arquivo local
     protected $pdfDir=''; //diretorio para salvar o pdf com a opção de destino = F
     protected $fontePadrao='Times'; //Nome da Fonte para gerar o DANFE
-    protected $version = '2.1.24';
+    protected $version = '2.1.25';
     protected $textoAdic = '';
     protected $wAdic = 0;
     protected $wPrint; //largura imprimivel
@@ -404,6 +404,27 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
                 }
             }
         }
+        //INCLUSO pela NT 2013.003 Lei da Transparência
+        $vTotTrib = 0;
+        if (isset($this->ISSQNtot)) {
+            $vTotTrib += $this->ISSQNtot->getElementsByTagName("vISS")->item(0)->nodeValue;
+            $vTotTtib += $this->ISSQNtot->getElementsByTagName("vIRRF")->item(0)->nodeValue;
+            $vTotTtib += $this->ISSQNtot->getElementsByTagName("vPIS")->item(0)->nodeValue;
+            $vTotTtib += $this->ISSQNtot->getElementsByTagName("vCOFINS")->item(0)->nodeValue;
+            $vTotTtib += $this->ISSQNtot->getElementsByTagName("vRetPIS")->item(0)->nodeValue;
+            $vTotTtib += $this->ISSQNtot->getElementsByTagName("vRetCOFINS")->item(0)->nodeValue;
+            $vTotTtib += $this->ISSQNtot->getElementsByTagName("vRetCSLL")->item(0)->nodeValue;
+            $vTotTtib += $this->ISSQNtot->getElementsByTagName("vRetPrev")->item(0)->nodeValue;
+        }
+        //total aproximado de impostos vICMS, vIPI, vII, vPIS, vCOFINS 
+        $vTotTtib += $this->ICMSTot->getElementsByTagName("vICMS")->item(0)->nodeValue;
+        $vTotTtib += $this->ICMSTot->getElementsByTagName("vIPI")->item(0)->nodeValue;
+        $vTotTtib += $this->ICMSTot->getElementsByTagName("vII")->item(0)->nodeValue;
+        $vTotTtib += $this->ICMSTot->getElementsByTagName("vPIS")->item(0)->nodeValue;
+        $vTotTtib += $this->ICMSTot->getElementsByTagName("vCOFINS")->item(0)->nodeValue;
+        $this->textoAdic .= "\n Valor Aproximado dos Tributos : R$ " . number_format($vTotTtib, 2, ",", ".");  
+        //fim da alteração NT 2013.003 Lei da Transparência
+        
         $this->textoAdic = str_replace( ";" , "\n" , $this->textoAdic );
         $alinhas = explode("\n",$this->textoAdic);
         $numlinhasdados = 0;
@@ -2251,7 +2272,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
         //$this->textoAdic com o texto completo do campo
         $y += 1;
         $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'');
-        $this->__textBox($x,$y+2,$w-2,$h-3, $this->textoAdic   ,$aFont,'T','L',0,'',FALSE);
+        $this->__textBox($x,$y+2,$w-2,$h-3, $this->textoAdic, $aFont,'T','L',0,'',FALSE);
         //RESERVADO AO FISCO
         $texto = "RESERVADO AO FISCO";
         $x += $w;
