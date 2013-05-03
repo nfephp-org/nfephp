@@ -23,7 +23,7 @@
  *
  * @package     NFePHP
  * @name        DanfeNFePHP.class.php
- * @version     2.1.26
+ * @version     2.1.27
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2012 &copy; NFePHP
@@ -405,8 +405,14 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
             }
         }
         //INCLUSO pela NT 2013.003 Lei da Transparência
+        //verificar se a informação sobre o valor aproximado dos tributos 
+        //já se encontra no campo de informações adicionais
+        $flagVTT = strpos(strtolower(trim($this->textoAdic)),'valor');
+        $flagVTT = $flagVTT || strpos(strtolower(trim($this->textoAdic)),'vl');
+        $flagVTT = $flagVTT && strpos(strtolower(trim($this->textoAdic)),'aprox');
+        $flagVTT = $flagVTT && (strpos(strtolower(trim($this->textoAdic)),'trib') || strpos(strtolower(trim($textoAdic)),'imp'));
         $vTotTrib = !empty($this->ICMSTot->getElementsByTagName("vTotTrib")->item(0)->nodeValue) ? $this->ICMSTot->getElementsByTagName("vTotTrib")->item(0)->nodeValue : '';
-        if ($vTotTrib != '') {
+        if ($vTotTrib != '' && !flagVTT) {
             $this->textoAdic .= "\n Valor Aproximado dos Tributos : R$ " . number_format($vTotTtib, 2, ",", ".");  
         }    
         //fim da alteração NT 2013.003 Lei da Transparência
