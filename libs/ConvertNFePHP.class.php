@@ -27,7 +27,7 @@
  *
  * @package     NFePHP
  * @name        ConvertNFePHP
- * @version     3.1.8
+ * @version     3.1.9
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2011 &copy; NFePHP
@@ -114,26 +114,20 @@ class ConvertNFePHP
      * contruct
      * Método contrutor da classe
      *
-     * @package NFePHP
      * @name contruct
-     * @version 3.0.0
      * @param boolean $limparString Ativa flag para limpar os caracteres especiais e acentos
      * @return none
      */
     public function __construct($limparString = true)
     {
         $this->limparString = $limparString;
-    }
+    } //fim __contruct
 
     /**
      * nfetxt2xml
-     * Método de conversão das NFe de txt para xml, conforme
-     * especificações do Manual de Importação/Exportação TXT
-     * Notas Fiscais eletrônicas versão 2.0.0 (24/08/2010)
-     * Referente ao modelo de NFe contido na versão 4.0.1-NT2009.006
-     * de Dezembro de 2009 do manual de integração da NFe, incluindo a 
-     * Nota Técnica 2011/002 de março de 2011
+     * Converte o arquivo txt em um array para ser mais facilmente tratado
      *
+     * @name nfetxt2xml
      * @param mixed $txt Path para o arquivo txt, array ou o conteudo do txt em uma string
      * @return string xml construido
      */
@@ -151,21 +145,15 @@ class ConvertNFePHP
             }
         }
         return $this->nfeTxt2XmlArrayComLinhas($aDados);
-    }
-    //fim nfetxt2xml
+    } //fim nfetxt2xml
 
     /**
-     * nfetxt2xml_arrayComLinhas
+     * nfeTxt2XmlArrayComLinhas
      * Método de conversão das NFe de txt para xml, conforme
      * especificações do Manual de Importação/Exportação TXT
      * Notas Fiscais eletrônicas versão 2.0.0 (24/08/2010)
-     * Referente ao modelo de NFe contido na versão 4.0.1-NT2009.006
-     * de Dezembro de 2009 do manual de integração da NFe, incluindo a 
-     * Nota Técnica 2011/002 de março de 2011
      *
-     * @package NFePHP
-     * @name nfetxt2xml
-     * @version 2.2.2
+     * @name nfeTxt2XmlArrayComLinhas
      * @param string $arrayComAsLinhasDoArquivo Array de Strings onde cada elemento é uma linha do arquivo
      * @return string xml construido
      */
@@ -173,13 +161,12 @@ class ConvertNFePHP
     {
         $arquivo = $arrayComAsLinhasDoArquivo;
         $notas = array();
-        $cur_nota = -1;
+        $currnota = -1;
 
         //lê linha por linha do arquivo txt
         for ($l = 0; $l < count($arquivo); $l++) {
             //separa os elementos do arquivo txt usando o pipe "|"
             $dados = explode("|", $arquivo[$l]);
-
             //remove todos os espaços adicionais, tabs, linefeed, e CR
             //de todos os campos de dados retirados do TXT
             for ($x = 0; $x < count($dados); $x++) {
@@ -192,74 +179,77 @@ class ConvertNFePHP
             } //end for
             //monta o dado conforme o tipo, inicia lendo o primeiro campo da matriz
             switch ($dados[0]) {
-                case "NOTA FISCAL": // primeiro elemento não faz nada, aqui é informado o número de NF contidas no TXT
+                case "NOTA FISCAL":
+                    // primeiro elemento não faz nada, aqui é informado o
+                    //número de NF contidas no TXT
                     break;
-                case "A":  //atributos da NFe, campos obrigatórios [NFe]
+                case "A":
+                    //atributos da NFe, campos obrigatórios [NFe]
                     //A|versão do schema|id
                     // cria nota no array
-                    $cur_nota++;
+                    $currnota++;
                     unset($dom, $NFe, $infNFe, $NFref, $refNFP);
-                    /// limpar todas variaveis utilizadas por cada nota fiscal.... (evitar que o produto entre 2 vezes ou q o endereço anterior seja usado, e coisas do tipo....)
-                    unset(
-                            $dom, $NFe, $infNFe, $ide, $cUF, $cNF, $NatOp, 
-                            $indPag, $mod, $serie, $nNF, $dEmi, $dSaiEnt, 
-                            $hSaiEnt, $tpNF, $cMunFG, $tpImp, $tpEmis, $CDV, 
-                            $tpAmb, $finNFe, $procEmi, $verProc, $dhCont, 
-                            $xJust, $NFref, $refNFe, $refNF, $AAMM, $CNPJ, 
-                            $refNFP, $IE, $CPF, $refCTe, $refECF, $nECF, 
-                            $nCOO, $emit, $xNome, $xFant, $IEST, $IM, $cnae, 
-                            $CRT, $cnpj, $cpf, $enderEmi, $xLgr, $nro, $xCpl, 
-                            $xBairro, $cMin, $xMin, $cMun, $xMun, $UF, $CEP, 
-                            $cPais, $xPais, $fone, $dest, $ISUF, $email, 
-                            $enderDest, $retirada, $entrega, $det, $infAdProd, 
-                            $prod, $cProd, $cEAN, $xProd, $NCM, $EXTIPI, $CFOP, 
-                            $uCom, $qCom, $vUnCom, $vProd, $cEANTrib, $uTrib, 
-                            $qtrib, $vUnTrib, $vFrete, $vSeg, $vDesc, $vOutro, 
-                            $indTot, $xPed, $nItemPed, $DI, $dDI, $xLocDesemb, 
-                            $UFDesemb, $dDesemb, $cExportador, $adi, $nAdicao, 
-                            $nSeqAdic, $cFabricante, $vDescDI, $veicProd, $tpOP, 
-                            $chassi, $cCor, $xCor, $pot, $cilin, $pesoL, $pesoB, 
-                            $nSerie, $tpComb, $nMotor, $CMT, $dist, $anoMod, 
-                            $anoFab, $tpPint, $tpVeic, $espVeic, $VIN, $condVeic, 
-                            $cMod, $cCorDENATRAN, $lota, $tpRest, $med, $nLote, 
-                            $qLote, $dFab, $dVal, $vPMC, $arm, $tpArma, $nCano, 
-                            $descr, $comb, $cProdANP, $CODIG, $qTemp, $UFCons, 
-                            $CIDE, $qBCprod, $vAliqProd, $vCIDE, $imposto, $ICMS, 
-                            $ICMS00, $orig, $CST, $modBC, $vBC, $pICMS, $vICMS, 
-                            $ICMS10, $modBCST, $pMVAST, $pRedBCST, $vBCST, $pICMSST, 
-                            $vICMSST, $ICMS20, $pRedBC, $ICMS30, $ICMS40, $motDesICMS, 
-                            $ICMS51, $ICMS60, $ICMS70, $ICMS90, $ICMSPart, 
-                            $pBCOp, $UFST, $ICMSST, $vICMSSTRet, $vBCSTRet, 
-                            $vBCSTDest, $vICMSSTDest, $ICMSSN101, $CSOSN, 
-                            $pCredSN, $vCredICMSSN, $ICMSSN102, $ICMSSN201, 
-                            $ICMSSN202, $ICMSSN500, $ICMSSN900, $IPI, $clEnq, 
-                            $CNPJProd, $cSelo, $qSelo, $cEnq, $IPITrib, $vIPI, 
-                            $pIPI, $qUnid, $vUnid, $IPINT, $II, $vDespAdu, 
-                            $vII, $vIOF, $PIS, $PISAliq, $pPIS, $vPIS, 
-                            $PIDQtde, $qBCProd, $PISNT, $PISOutr, $pPIST, 
-                            $PISST, $COFINS, $COFINSAliq, $pCOFINS, $vCOFINS, 
-                            $COFINSQtde, $COFINSNT, $COFINSOutr, $COFINSST, 
-                            $ISSQN, $vISSQN, $cListServ, $cSitTrib, $total, 
-                            $ICMSTot, $vST, $vNF, $ISSQNtot, $vServ, $vISS, 
-                            $retTrib, $vRetPIS, $vRetCOFINS, $vRetCSLL, 
-                            $vBCIRRF, $vIRRF, $vBCRetPrev, $vRetPrev, 
-                            $transp, $modFrete, $transportadora, $xEnder, 
-                            $retTransp, $vBCRet, $pICMSRet, $veicTransp, 
-                            $placa, $RNTC, $reboque, $vagao, $balsa, $vol, 
-                            $qVol, $esp, $marca, $nVol, $lacres, $nLacres, 
-                            $cobr, $fat, $nFat, $vOrig, $vLiq, $dup, $nDup, 
-                            $dVenc, $vDup, $infAdic, $infAdFisco, $infCpl, 
-                            $infNFE, $obsCont, $xTexto, $obsFisco, $procRef, 
-                            $nProc, $exporta, $UFEmbarq, $xLocEmbarq, $compra, 
-                            $xNEmp, $xCont, $cana, $safra, $qTotMes, $qTotAnt, 
-                            $qTotGer, $vFor, $vTotDed, $vLiqFor, $forDia, $dia, 
-                            $qtde, $deduc, $xDed, $vDed);
+                    /// limpar todas variaveis utilizadas por cada nota fiscal....
+                    //(evitar que o produto entre 2 vezes ou q o endereço anterior seja usado, e coisas do tipo....)
+                    unset($dom, $NFe, $infNFe, $ide, $cUF, $cNF, $NatOp,
+                          $indPag, $mod, $serie, $nNF, $dEmi, $dSaiEnt,
+                          $hSaiEnt, $tpNF, $cMunFG, $tpImp, $tpEmis, $CDV,
+                          $tpAmb, $finNFe, $procEmi, $verProc, $dhCont,
+                          $xJust, $NFref, $refNFe, $refNF, $AAMM, $CNPJ,
+                          $refNFP, $IE, $CPF, $refCTe, $refECF, $nECF,
+                          $nCOO, $emit, $xNome, $xFant, $IEST, $IM, $cnae,
+                          $CRT, $cnpj, $cpf, $enderEmi, $xLgr, $nro, $xCpl,
+                          $xBairro, $cMin, $xMin, $cMun, $xMun, $UF, $CEP,
+                          $cPais, $xPais, $fone, $dest, $ISUF, $email,
+                          $enderDest, $retirada, $entrega, $det, $infAdProd,
+                          $prod, $cProd, $cEAN, $xProd, $NCM, $EXTIPI, $CFOP,
+                          $uCom, $qCom, $vUnCom, $vProd, $cEANTrib, $uTrib,
+                          $qtrib, $vUnTrib, $vFrete, $vSeg, $vDesc, $vOutro,
+                          $indTot, $xPed, $nItemPed, $DI, $dDI, $xLocDesemb,
+                          $UFDesemb, $dDesemb, $cExportador, $adi, $nAdicao,
+                          $nSeqAdic, $cFabricante, $vDescDI, $veicProd, $tpOP,
+                          $chassi, $cCor, $xCor, $pot, $cilin, $pesoL, $pesoB,
+                          $nSerie, $tpComb, $nMotor, $CMT, $dist, $anoMod,
+                          $anoFab, $tpPint, $tpVeic, $espVeic, $VIN, $condVeic,
+                          $cMod, $cCorDENATRAN, $lota, $tpRest, $med, $nLote,
+                          $qLote, $dFab, $dVal, $vPMC, $arm, $tpArma, $nCano,
+                          $descr, $comb, $cProdANP, $CODIG, $qTemp, $UFCons,
+                          $CIDE, $qBCprod, $vAliqProd, $vCIDE, $imposto, $ICMS,
+                          $ICMS00, $orig, $CST, $modBC, $vBC, $pICMS, $vICMS,
+                          $ICMS10, $modBCST, $pMVAST, $pRedBCST, $vBCST, $pICMSST,
+                          $vICMSST, $ICMS20, $pRedBC, $ICMS30, $ICMS40, $motDesICMS,
+                          $ICMS51, $ICMS60, $ICMS70, $ICMS90, $ICMSPart,
+                          $pBCOp, $UFST, $ICMSST, $vICMSSTRet, $vBCSTRet,
+                          $vBCSTDest, $vICMSSTDest, $ICMSSN101, $CSOSN,
+                          $pCredSN, $vCredICMSSN, $ICMSSN102, $ICMSSN201,
+                          $ICMSSN202, $ICMSSN500, $ICMSSN900, $IPI, $clEnq,
+                          $CNPJProd, $cSelo, $qSelo, $cEnq, $IPITrib, $vIPI,
+                          $pIPI, $qUnid, $vUnid, $IPINT, $II, $vDespAdu,
+                          $vII, $vIOF, $PIS, $PISAliq, $pPIS, $vPIS,
+                          $PIDQtde, $qBCProd, $PISNT, $PISOutr, $pPIST,
+                          $PISST, $COFINS, $COFINSAliq, $pCOFINS, $vCOFINS,
+                          $COFINSQtde, $COFINSNT, $COFINSOutr, $COFINSST,
+                          $ISSQN, $vISSQN, $cListServ, $cSitTrib, $total,
+                          $ICMSTot, $vST, $vNF, $ISSQNtot, $vServ, $vISS,
+                          $retTrib, $vRetPIS, $vRetCOFINS, $vRetCSLL,
+                          $vBCIRRF, $vIRRF, $vBCRetPrev, $vRetPrev,
+                          $transp, $modFrete, $transportadora, $xEnder,
+                          $retTransp, $vBCRet, $pICMSRet, $veicTransp,
+                          $placa, $RNTC, $reboque, $vagao, $balsa, $vol,
+                          $qVol, $esp, $marca, $nVol, $lacres, $nLacres,
+                          $cobr, $fat, $nFat, $vOrig, $vLiq, $dup, $nDup,
+                          $dVenc, $vDup, $infAdic, $infAdFisco, $infCpl,
+                          $infNFE, $obsCont, $xTexto, $obsFisco, $procRef,
+                          $nProc, $exporta, $UFEmbarq, $xLocEmbarq, $compra,
+                          $xNEmp, $xCont, $cana, $safra, $qTotMes, $qTotAnt,
+                          $qTotGer, $vFor, $vTotDed, $vLiqFor, $forDia, $dia,
+                          $qtde, $deduc, $xDed, $vDed, $vTotTrib);
 
                     $this->chave = '';
                     $this->tpAmb = '';
                     $this->xml = '';
 
-                    $notas[$cur_nota] = array(
+                    $notas[$currnota] = array(
                         'dom' => false,
                         'NFe' => false,
                         'infNFe' => false,
@@ -268,21 +258,20 @@ class ConvertNFePHP
                         'tpAmb' => '');
 
                     //cria o objeto DOM para o xml
-                    $notas[$cur_nota]['dom'] = new DOMDocument('1.0', 'UTF-8');
-                    $dom = & $notas[$cur_nota]['dom'];
+                    $notas[$currnota]['dom'] = new DOMDocument('1.0', 'UTF-8');
+                    $dom = & $notas[$currnota]['dom'];
                     $dom->formatOutput = true;
                     $dom->preserveWhiteSpace = false;
-                    $notas[$cur_nota]['NFe'] = $dom->createElement("NFe");
-                    $NFe = & $notas[$cur_nota]['NFe'];
+                    $notas[$currnota]['NFe'] = $dom->createElement("NFe");
+                    $NFe = & $notas[$currnota]['NFe'];
                     $NFe->setAttribute("xmlns", "http://www.portalfiscal.inf.br/nfe");
-
-                    $notas[$cur_nota]['infNFe'] = $dom->createElement("infNFe");
-                    $infNFe = &$notas[$cur_nota]['infNFe'];
+                    $notas[$currnota]['infNFe'] = $dom->createElement("infNFe");
+                    $infNFe = &$notas[$currnota]['infNFe'];
                     $infNFe->setAttribute("Id", $dados[2]);
                     $infNFe->setAttribute("versao", $dados[1]);
                     //pega a chave de 44 digitos excluindo o a sigla NFe
                     $this->chave = substr($dados[2], 3, 44);
-                    $notas[$cur_nota]['chave'] = $this->chave;
+                    $notas[$currnota]['chave'] = $this->chave;
                     //$pk_nItem = $dom->createElement("pk_nItem");
                     //$infNFe->appendChild($pk_nItem);
                     break;
@@ -328,7 +317,7 @@ class ConvertNFePHP
                     $tpAmb = $dom->createElement("tpAmb", $dados[16]);
                     //guardar a variavel para uso posterior
                     $this->tpAmb = $dados[16];
-                    $notas[$cur_nota]['tpAmb'] = $this->tpAmb;
+                    $notas[$currnota]['tpAmb'] = $this->tpAmb;
                     $ide->appendChild($tpAmb);
                     $finNFe = $dom->createElement("finNFe", $dados[17]);
                     $ide->appendChild($finNFe);
@@ -350,8 +339,8 @@ class ConvertNFePHP
                 case "B13":
                     //NFe referenciadas [ide]
                     if (!isset($NFref)) {
-                        $notas[$cur_nota]['NFref'] = $dom->createElement("NFref");
-                        $NFref = & $notas[$cur_nota]['NFref'];
+                        $notas[$currnota]['NFref'] = $dom->createElement("NFref");
+                        $NFref = & $notas[$currnota]['NFref'];
                         $ide->insertBefore($ide->appendChild($NFref), $tpImp);
                     }
                     $refNFe = $dom->createElement("refNFe", $dados[1]);
@@ -361,8 +350,8 @@ class ConvertNFePHP
                     //NF referenciadas [NFref]
                     //B14|cUF|AAMM(ano mês)|CNPJ|Mod|serie|nNF|
                     if (!isset($NFref)) {
-                        $notas[$cur_nota]['NFref'] = $dom->createElement("NFref");
-                        $NFref = & $notas[$cur_nota]['NFref'];
+                        $notas[$currnota]['NFref'] = $dom->createElement("NFref");
+                        $NFref = & $notas[$currnota]['NFref'];
                         $ide->insertBefore($ide->appendChild($NFref), $tpImp);
                     }
                     $refNF = $dom->createElement("refNF");
@@ -383,8 +372,8 @@ class ConvertNFePHP
                 case "B20a":
                     //Grupo de informações da NF [NFref]
                     if (!isset($NFref)) {
-                        $notas[$cur_nota]['NFref'] = $dom->createElement("NFref");
-                        $NFref = & $notas[$cur_nota]['NFref'];
+                        $notas[$currnota]['NFref'] = $dom->createElement("NFref");
+                        $NFref = & $notas[$currnota]['NFref'];
                         $ide->insertBefore($ide->appendChild($NFref), $tpImp);
                     }
                     $refNFP = $dom->createElement("refNFP");
@@ -421,8 +410,8 @@ class ConvertNFePHP
                 case "B20i":
                     // CTE [NFref]
                     if (!isset($NFref)) {
-                        $notas[$cur_nota]['NFref'] = $dom->createElement("NFref");
-                        $NFref = & $notas[$cur_nota]['NFref'];
+                        $notas[$currnota]['NFref'] = $dom->createElement("NFref");
+                        $NFref = & $notas[$currnota]['NFref'];
                         $ide->insertBefore($ide->appendChild($NFref), $tpImp);
                     }
                     //B20i|refCTe|
@@ -432,8 +421,8 @@ class ConvertNFePHP
                 case "B20j":
                     // ECF [NFref]
                     if (!isset($NFref)) {
-                        $notas[$cur_nota]['NFref'] = $dom->createElement("NFref");
-                        $NFref = & $notas[$cur_nota]['NFref'];
+                        $notas[$currnota]['NFref'] = $dom->createElement("NFref");
+                        $NFref = & $notas[$currnota]['NFref'];
                         $ide->insertBefore($ide->appendChild($NFref), $tpImp);
                     }
                     //B20j|mod|nECF|nCOO|
@@ -1053,6 +1042,12 @@ class ConvertNFePHP
                 case "M":
                     //GRUPO DE TRIBUTOS INCIDENTES NO PRODUTO SERVICO
                     $imposto = $dom->createElement("imposto");
+                    //lei da transparencia 12.741/12
+                    //Nota Técnica 2013/003
+                    if (!empty($dados[1])) {
+                        $vTotTrib = $dom->createElement("vTotTrib", $dados[1]);
+                        $imposto->appendChild($vTotTrib);
+                    }
                     if (!isset($infAdProd)) {
                         $det->appendChild($imposto);
                     } else {
@@ -1337,7 +1332,7 @@ class ConvertNFePHP
                     $ICMS->appendChild($ICMSPart);
                     break;
                 case "N10b":
-                    //ICMS ST repasse de ICMS ST retido anteriormente em operações interestaduais com repasses 
+                    //ICMS ST repasse de ICMS ST retido anteriormente em operações interestaduais com repasses
                     //através do Substituto Tributário [ICMS]
                     //N10b|Orig|CST|vBCSTRet|vICMSSTRet|vBCSTDest|vICMSSTDest|
                     $ICMSST = $dom->createElement("ICMSST");
@@ -1825,6 +1820,12 @@ class ConvertNFePHP
                     $ICMSTot->appendChild($vOutro);
                     $vNF = $dom->createElement("vNF", $dados[14]);
                     $ICMSTot->appendChild($vNF);
+                    //lei da transparencia 12.741/12
+                    //Nota Técnica 2013/003
+                    if (!empty($dados[15])) {
+                        $vTotTrib = $dom->createElement("vTotTrib", $dados[15]);
+                        $ICMSTot->appendChild($vTotTrib);
+                    }
                     $total->appendChild($ICMSTot);
                     break;
                 case "W17":
@@ -2189,7 +2190,6 @@ class ConvertNFePHP
                     break;
             } //end switch
         } //end for
-
         $arquivos_xml = array();
         foreach ($notas as $nota) {
             unset($dom, $NFe, $infNFe);
@@ -2223,25 +2223,29 @@ class ConvertNFePHP
      * limpaString
      * Remove todos dos caracteres especiais do texto e os acentos
      * preservando apenas letras de A-Z numeros de 0-9 e os caracteres @ , - ; : / _
-     *  
-     * @version 1.0.4
-     * @package NFePHP
-     * @author  Roberto L. Machado <linux.rlm at gmail dot com>
+     * 
+     * @name limpaString
+     * @param string $texto String a ser limpa
      * @return  string Texto sem caractere especiais
      */
     private function limpaString($texto)
     {
-        $aFind = array('&', 'á', 'à', 'ã', 'â', 'é', 'ê', 'í', 'ó', 'ô', 'õ', 'ú', 'ü', 'ç', 'Á', 'À', 'Ã', 'Â', 'É', 'Ê', 'Í', 'Ó', 'Ô', 'Õ', 'Ú', 'Ü', 'Ç');
-        $aSubs = array('e', 'a', 'a', 'a', 'a', 'e', 'e', 'i', 'o', 'o', 'o', 'u', 'u', 'c', 'A', 'A', 'A', 'A', 'E', 'E', 'I', 'O', 'O', 'O', 'U', 'U', 'C');
+        $aFind = array('&', 'á', 'à', 'ã', 'â', 'é', 'ê',
+            'í', 'ó', 'ô', 'õ', 'ú', 'ü', 'ç', 'Á', 'À', 'Ã', 'Â',
+            'É', 'Ê', 'Í', 'Ó', 'Ô', 'Õ', 'Ú', 'Ü', 'Ç');
+        $aSubs = array('e', 'a', 'a', 'a', 'a', 'e', 'e',
+            'i', 'o', 'o', 'o', 'u', 'u', 'c', 'A', 'A', 'A', 'A',
+            'E', 'E', 'I', 'O', 'O', 'O', 'U', 'U', 'C');
         $novoTexto = str_replace($aFind, $aSubs, $texto);
         $novoTexto = preg_replace("/[^a-zA-Z0-9 @,-.;:\/_]/", "", $novoTexto);
         return $novoTexto;
-    }
-    //fim limpaString
+    } //fim limpaString
 
     /**
      * calculaDV
      * Função para o calculo o digito verificador da chave da NFe
+     * 
+     * @name calculaDV
      * @param string $chave43
      * @return string 
      */
@@ -2263,12 +2267,14 @@ class ConvertNFePHP
             $cDV = 11 - $resto;
         }
         return $cDV;
-    }
-    //fim calculaDV
+    } //fim calculaDV
 
     /**
-     * calculaChave
+     * montaChaveXML
+     * Monta a chave da NFe de 44 digitos com base em seus dados
+     * Isso é útil no caso da chave formada no txt estar errada
      * 
+     * @name montaChaveXML
      * @param object $dom 
      */
     private function montaChaveXML($dom)
@@ -2287,9 +2293,8 @@ class ConvertNFePHP
             $cNF = $ide->getElementsByTagName('cNF')->item(0)->nodeValue = rand(10000001, 99999999);
         }
         $tempData = $dt = explode("-", $dEmi);
-        $forma = "%02d%02d%02d%s%02d%03d%09d%01d%08d"; //%01d";
+        $forma = "%02d%02d%02d%s%02d%03d%09d%01d%08d";
         $tempChave = sprintf($forma, $cUF, $tempData[0] - 2000, $tempData[1], $CNPJ, $mod, $serie, $nNF, $tpEmis, $cNF);
-
         $cDV = $ide->getElementsByTagName('cDV')->item(0)->nodeValue = $this->calculaDV($tempChave);
         $chave = $tempChave .= $cDV;
         $infNFe = $dom->getElementsByTagName("infNFe")->item(0);
