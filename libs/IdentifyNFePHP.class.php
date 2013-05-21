@@ -76,8 +76,6 @@ if(!defined('NFEPHP_TIPO_ARQUIVO_DESCONHECIDO')){
 	define('NFEPHP_TIPO_ARQUIVO_PDF_NFE'		,400);
 	define('NFEPHP_TIPO_ARQUIVO_PDF_NFCE'		,401);
 	define('NFEPHP_TIPO_ARQUIVO_PDF_CTE'		,402);
-	
-	
 }
 if(!class_exists('IdentifyNFePHP')){
 	class IdentifyNFePHP {
