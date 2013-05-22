@@ -68,6 +68,7 @@ Mantenedores
 * NFSe - `Hugo Cegana`
 * CTe  - `Luciano Antony` `Roberto Spadim` 
 * MDFe - `não definido`
+* CLe  - `não definido`
 
 Pull Request
 --------
