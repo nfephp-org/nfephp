@@ -22,7 +22,7 @@
  * <http://www.fsfla.org/svnwiki/trad/LGPLv3>.
  *
  * @package     NFePHP
- * @name        IdentifyNFePHP.class.php
+ * @name        DocumentoNFePHP.interface.php
  * @version     2.05
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
@@ -32,6 +32,7 @@
  * 
  *
  * Este arquivo contem funções para identificar conteúdo de arquivos 
+ * 2.06 - uso de fileinfo e adição de boleto/contas
  * 2.05 - PSR-2 (não vai ter namescape)
  *           atenção NAS CONSTANTES!! NF>>e<< virou NF>>E<<
  * 2.04 - correção de bug para identificar nfe
@@ -78,9 +79,11 @@ if (!defined('NFEPHP_TIPO_ARQUIVO_DESCONHECIDO')) {
     define('NFEPHP_TIPO_ARQUIVO_TXT_NFE', 300);
     define('NFEPHP_TIPO_ARQUIVO_TXT_CTE', 301);
     
-    define('NFEPHP_TIPO_ARQUIVO_PDF_NFE', 400);
-    define('NFEPHP_TIPO_ARQUIVO_PDF_NFCE', 401);
-    define('NFEPHP_TIPO_ARQUIVO_PDF_CTE', 402);
+    define('NFEPHP_TIPO_ARQUIVO_PDF_NFE', 400);		  // BARCODE NFE
+    define('NFEPHP_TIPO_ARQUIVO_PDF_NFCE', 401);          // QRCODE
+    define('NFEPHP_TIPO_ARQUIVO_PDF_CTE', 402);		  // BARCODE CTE
+    define('NFEPHP_TIPO_ARQUIVO_PDF_BOLETO', 403);	  // BOLETO DE BANCO
+    define('NFEPHP_TIPO_ARQUIVO_PDF_CONTAS', 404);	  // CONTAS (AGUA LUZ TELEFONE)
 }
 if (!class_exists('IdentifyNFePHP')) {
     class IdentifyNFePHP
@@ -100,7 +103,170 @@ if (!class_exists('IdentifyNFePHP')) {
                 $this->path_tmp=$path_tmp;
             }
         }
-        public function identifyQRCode($codigo_barra)
+	/* boletos e contas */
+	public function identifyBoletoContas($codigo_barra){
+		// pelo codigo de barra pega se é um boleto ou uma contas
+		$codigo_barra=preg_replace("/[^0-9]/", "", $codigo_barra);
+		$retorno=array();
+		// I2/5:03392526000002900229439278700000000003850101
+		if (strlen($codigo_barra)==44) {
+			// boletos
+			$dv=substr($codigo_barra,4,1);
+			$dv_calc=$this->boleto_modulo11_codigo_barra(
+					substr($codigo_barra,0,4).
+					substr($codigo_barra,5));
+			if ($dv_calc==$dv && $dv_calc!==false) {
+				$linha_digitavel=$this->linhaDigitavel_Boleto($codigo_barra);
+				$linha_digitavel='03399.43920 78700.000009 00038.501011 2 52610000290022';
+				// 03399.43920 78700.000009 00038.501011 2 52610000290022
+				$data_vencimento=substr($linha_digitavel,40,4);
+				if($data_vencimento!='0000'){
+					$data_vencimento_ymd=($data_vencimento-1000)*86400 +  gmmktime(0,0,0,"07","03","2000") + 5000;	// 5000 para não dar problema de fuso
+					$data_vencimento_ymd=gmdate('Y-m-d',$data_vencimento_ymd);
+				}else{
+					$data_vencimento_ymd='0000-00-00';
+				}
+				//$fator_vencimento = ((mktime(0,0,0,$mes,$dia,$ano) - mktime(0,0,0,"07","03","2000"))/86400)+1000;
+				$valor=substr($linha_digitavel,44,10)/100;
+				return array(	'codigo_barra'   	=>$codigo_barra,
+						'linha_digitavel'	=>$linha_digitavel,
+						'banco'			=>substr($linha_digitavel,0,3),
+						'moeda'			=>substr($linha_digitavel,3,1),
+						'valor'		 	=>$valor,
+						'data_vencimento_ymd'	=>$data_vencimento_ymd,
+						'data_vencimento'	=>$data_vencimento,
+						'tipo'		 	=>NFEPHP_TIPO_ARQUIVO_PDF_BOLETO);
+			}
+			// contas (http://www.febraban.org.br/7Rof7SWg6qmyvwJcFwF7I0aSDf9jyV/sitefebraban/Codbar4-v28052004.pdf)
+			$tipo_dv=substr($codigo_barra,2,1);
+			if($tipo_dv=='6' || $tipo_dv=='7' || $tipo_dv=='8' || $tipo_dv=='9'){
+				$cod_sem_dv=substr($codigo_barra,0,3).substr($codigo_barra,4);
+				$dv=substr($codigo_barra,3,1);
+				if($tipo_dv=='6' || $tipo_dv=='7')
+					$dv_calc=$this->boleto_modulo_10_linha_digitavel($cod_sem_dv);
+				else
+					$dv_calc=$this->boleto_modulo11_codigo_barra($cod_sem_dv);
+				if ($dv_calc==$dv && $dv_calc!==false || true) {
+					#84640000003  87561029115  89415310390  05130130601 =>
+					#846400000036 875610291150 894153103904 051301306018
+					$p1=substr($codigo_barra, 0,11);
+					$p2=substr($codigo_barra,11,11);
+					$p3=substr($codigo_barra,22,11);
+					$p4=substr($codigo_barra,33,11);
+					$valor=(substr($codigo_barra,4,11))/100;
+					$linha_digitavel=
+							$p1.$this->boleto_modulo11_codigo_barra($p1).' '.
+							$p2.$this->boleto_modulo11_codigo_barra($p2).' '.
+							$p3.$this->boleto_modulo11_codigo_barra($p3).' '.
+							$p4.$this->boleto_modulo11_codigo_barra($p4);
+					$segmentos=array(	'1'=>'Prefeituras',
+								'2'=>'Saneamento',
+								'3'=>'Energia Elétrica e Gás',
+								'4'=>'Telecomunicações',
+								'5'=>'Órgãos Governamentais',
+								'6'=>'Carnes e Assemelhados ou demais Empresas / Órgãos que serão identificadas através do CNPJ',
+								'7'=>'Multas de trânsito',
+								'9'=>'Uso exclusivo do banco');
+					$tipo_valores=array(	'6'=>'Valor a ser cobrado efetivamente em reais',
+								'7'=>'Quantidade de moeda',
+								'8'=>'Valor a ser cobrado efetivamente em reais',
+								'9'=>'Quantidade de moeda');
+					$segmento	=substr($codigo_barra,1,1);
+					$tipo_valor	=substr($codigo_barra,2,1);
+					return array(	'codigo_barra'   =>$codigo_barra,
+							'linha_digitavel'=>$linha_digitavel,
+							'valor'		 =>$valor,
+							'tipo_valor'	 =>$tipo_valor,
+							'tipo_valor_nome'=>$tipo_valores[$tipo_valor],
+							'segmento'	 =>$segmento,
+							'segmento_nome'	 =>$segmentos[$segmento],
+							'tipo'		 =>NFEPHP_TIPO_ARQUIVO_PDF_CONTAS);
+				}
+			}
+			////////////////
+		}
+		return false;
+	}
+	private function boleto_modulo11_codigo_barra($numero='',$peso=2){
+		$numero=preg_replace("/[^0-9]/", "", $numero);
+		#if (strlen($numero)!=43) return(false);
+		//123456789.123456789.123456789.123456789.123
+		//4329876543298765432987654329876543298765432
+		#$peso=2;$soma=0;
+		$soma=0;
+		for ($i=strlen($numero)-1;$i>=0;$i--){
+	#$tmp_peso=$peso.$tmp_peso;
+			$parcial=0;
+			$parcial=(double)(substr($numero,$i,1));
+			$parcial=$parcial*$peso;
+			$peso++;if ($peso==10) $peso=2;
+			$soma+=$parcial;
+		}
+	#echo "$tmp_peso\nsoma=$soma\n";
+		$resto=($soma % 11);
+		$sub_11=11-$resto;
+		if ($sub_11==1 || $sub_11==0 || $sub_11>9)	return(1);
+		return($sub_11);
+	}
+
+	private function boleto_modulo_10_linha_digitavel($numero,$fator=2){
+		$num		=$numero;
+		$numtotal10	=0;
+		#$fator		=2;
+		// Separacao dos numeros
+		for ($i=strlen($num);$i>0;$i--) {
+			// pega cada numero isoladamente
+			$numeros[$i] = substr($num,$i-1,1);
+			// Efetua multiplicacao do numero pelo (falor 10)
+			// 2002-07-07 01:33:34 Macete para adequar ao Mod10 do Itaú
+			$temp	=$numeros[$i]*$fator; 
+			$temp0	=0;
+			foreach (preg_split('//',$temp,-1,PREG_SPLIT_NO_EMPTY) as $k=>$v){
+				$temp0+=$v;
+			}
+			$parcial10[$i]	=$temp0; //$numeros[$i] * $fator;
+			// monta sequencia para soma dos digitos no (modulo 10)
+			$numtotal10	+=$parcial10[$i];
+			if ($fator == 2){
+				$fator	=1;
+			}else{
+				$fator	=2; // intercala fator de multiplicacao (modulo 10)
+			}
+		}
+		
+		// várias linhas removidas, vide função original
+		// Calculo do modulo 10
+		$resto	=$numtotal10 % 10;
+		$digito	=10 - $resto;
+		if ($resto == 0) {
+			$digito	= 0;
+		}
+		return($digito);
+	}
+	private function linhaDigitavel_Boleto($codigo){
+		if (strlen($codigo)!=44) return('');
+		$p1 = substr($codigo, 0, 4);				// Numero do banco + moeda
+		$p2 = substr($codigo, 19, 5);				// 5 primeiras posições do campo livre
+		$p3 = $this->boleto_modulo_10_linha_digitavel("$p1$p2");	// Digito do campo 1
+		$p4 = "$p1$p2$p3";					// União
+		$campo1 = substr($p4, 0, 5).'.'.substr($p4, 5);
+		$p1 = substr($codigo, 24, 10);				//Posições de 6 a 15 do campo livre
+		$p2 = $this->boleto_modulo_10_linha_digitavel($p1);		//Digito do campo 2	
+		$p3 = "$p1$p2";
+		$campo2 = substr($p3, 0, 5).'.'.substr($p3, 5);
+		$p1 = substr($codigo, 34, 10);				//Posições de 16 a 25 do campo livre
+		$p2 = $this->boleto_modulo_10_linha_digitavel($p1);		//Digito do Campo 3
+		$p3 = "$p1$p2";
+		$campo3 = substr($p3, 0, 5).'.'.substr($p3, 5);
+		$campo4 = substr($codigo, 4, 1);
+		$p1 = substr($codigo, 5, 4);
+		$p2 = substr($codigo, 9, 10);
+		$campo5 = "$p1$p2";
+		return "$campo1 $campo2 $campo3 $campo4 $campo5"; 
+	}
+
+	/* nfe nfce cte */
+	public function identifyQRCode($codigo_barra)
         {
             // QR-Code:https://nfce.set.rn.gov.br/consultarNFCe.aspx?
             //     chNFe=24130411982113000237650020000000071185945690&nVersao=100&tpAmb=2&
@@ -133,9 +299,6 @@ if (!class_exists('IdentifyNFePHP')) {
         {
             $chave_numeros=preg_replace("/[^0-9]/", "", $chave);
             if (strlen($chave_numeros)==44) {
-                // procura o modelo
-                
-                
                 // nfe, nfce e cte
                 //                modelo                digito
                 //                |                |
@@ -156,10 +319,10 @@ if (!class_exists('IdentifyNFePHP')) {
         }
         private function calculadv($numero)
         {
-            $chave43=str_pad($numero, '0', STR_PAD_LEFT);
-            $multiplicadores = array(2, 3, 4, 5, 6, 7, 8, 9);
-            $i = 42;
-            $soma_ponderada=0;
+            $chave43		=str_pad($numero, '0', STR_PAD_LEFT);
+            $multiplicadores	=array(2, 3, 4, 5, 6, 7, 8, 9);
+            $i			=42;
+            $soma_ponderada	=0;
             while ($i >= 0) {
                 for ($m=0; $m<count($multiplicadores) && $i>=0; $m++) {
                     $soma_ponderada+= ((int)substr($chave43, $i, 1)) * $multiplicadores[$m];
@@ -175,6 +338,7 @@ if (!class_exists('IdentifyNFePHP')) {
             return $cDV;
         } //fim calculadv
 
+	/* nfeb2b */
         public function extractNFeB2B($parm, $b2b_nfe = 'b2b')
         {
             if (is_string($parm)) {
@@ -227,6 +391,9 @@ if (!class_exists('IdentifyNFePHP')) {
             $dom2->appendChild($tmp_nfe);
             return($dom2);
         }
+	
+	
+	/* identificação de arquivos */
         public function identifyFileTXT($parm)
         {
             // ARQUIVOS TXT
@@ -551,7 +718,14 @@ if (!class_exists('IdentifyNFePHP')) {
                         }
                     }
                     unset($tmp_chave);
-                }
+                } elseif ($tipo_cod_barra=='I2/5') { // boletos / contas
+                    $tmp_chave=$this->identifyBoletoContas($cod_barra);
+		    echo 'aki:';
+		    print_r($tmp_chave);
+                    if ($tmp_chave!==false) {
+			$ret[]=$tmp_cache;
+		    }
+		}
             }
             if (count($ret)==1) {
                 return($ret[0]);
@@ -567,7 +741,32 @@ if (!class_exists('IdentifyNFePHP')) {
                 }
                 // parm é o conteudo do arquivo e não o local do arquivo
             }
+	    if(function_exists('finfo_buffer')){
+		// oba assim é mais rapido pra acha o formato do arquivo
+		$finfo	=new finfo(FILEINFO_MIME_TYPE);
+		$mime	=finfo_buffer($parm);
+		if($mime=='application/pdf' || substr($mime,0,6)=='image/'){
+		    $tmp=$this->identifyFilePDFImage($parm);
+		    if ($tmp!==false) {
+			return($tmp);
+		    }
+		}elseif($mime=='application/xml'){
+		    $tmp=$this->identifyFileXML($parm);
+		    if ($tmp!==false) {
+			$tmp['mime']='application/xml';
+			return($tmp);
+		    }
+		}elseif($mime=='text/plain'){
+		    // txt de importação de nfe,cte
+		    $tmp=$this->identifyFileTXT($parm);
+		    if ($tmp!==false) {
+			$tmp['mime']='text/plain';
+			return($tmp);
+		    }
+		}
+	    }
             
+	    // vai um por um... faze oq... melhor doque nada
             // txt de importação de nfe,cte
             $tmp=$this->identifyFileTXT($parm);
             if ($tmp!==false) {
@@ -596,5 +795,7 @@ if (!class_exists('IdentifyNFePHP')) {
 
 
 // teste
-//$v=new IdentifyNFePHP('/usr/local/bin/zbarimg','/usr/bin/convert','/tmp');
-//var_dump($v->identifyFilePDF_Image(file_get_contents('../exemplos/dacte.png')));
+#$v=new IdentifyNFePHP('/usr/local/bin/zbarimg','/usr/bin/convert','/tmp');
+#var_dump($v->identifyBoletoContas('84640000003875610291158941531039005130130601'));
+#var_dump($v->identifyBoletoContas('03392526000002900229439278700000000003850101'));
+#var_dump($v->identifyFilePDFImage(file_get_contents('../exemplos/boleto.png')));
