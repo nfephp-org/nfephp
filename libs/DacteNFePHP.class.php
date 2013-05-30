@@ -30,7 +30,7 @@
  * @author    Roberto L. Machado <linux.rlm@gmail.com>
  * @copyright 2009-2013 &copy; NFePHP
  * @license   GNU/GPL v.3 or GNU/LGPL v.3
- * @version   GIT: 1.2.11
+ * @version   GIT: 1.2.12
  * @link      http://www.nfephp.org/
  *
  *        CONTRIBUIDORES (por ordem alfabetica):
@@ -38,6 +38,7 @@
  *          Joao Eduardo Silva Correa <jcorrea at sucden dot com dot br>
  *          Marcos Diez               <marcos at unitron dot com dot br>
  *          Rodrigo Rysdyk            <rodrigo_rysdyk at hotmail dot com>
+ *          Roberto Spadim            <roberto at spadim dot com dot br>
  *
  *
  */
@@ -53,6 +54,13 @@ set_time_limit(1800);
 //definição do caminho para o diretorio com as fontes do FDPF
 if (!defined('FPDF_FONTPATH')) {
     define('FPDF_FONTPATH', 'font/');
+}
+//situação externa do documento
+if(!defined('NFEPHP_SITUACAO_EXTERNA_CANCELADA')){
+	define('NFEPHP_SITUACAO_EXTERNA_CANCELADA'	,1);
+	define('NFEPHP_SITUACAO_EXTERNA_DENEGADA'	,2);
+	define('NFEPHP_SITUACAO_EXTERNA_DPEC'		,3);
+	define('NFEPHP_SITUACAO_EXTERNA_NONE'		,0);
 }
 //classe extendida da classe FPDF para montagem do arquivo pfd
 require_once 'PdfNFePHP.class.php';
@@ -73,6 +81,8 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
     //publicas
     public $logoAlign = 'C'; //alinhamento do logo
     public $yDados = 0;
+    public $situacao_externa=0;
+    public $numero_registro_dpec='';
     //privadas
     protected $pdf; // objeto fpdf()
     protected $xml; // string XML NFe
@@ -89,7 +99,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
     protected $pdfDir = ''; //diretorio para salvar o pdf com a opção de
     //destino = F
     protected $fontePadrao = 'Times'; //Nome da Fonte para gerar o DACTE
-    protected $version = '1.2.11';
+    protected $version = '1.2.12';
     protected $wPrint; //largura imprimivel
     protected $hPrint; //comprimento imprimivel
     //objetos DOM da CTe
@@ -304,9 +314,9 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
      * @param  string $logoAlign  C, L ou R
      * @return string montagem
      */
-    public function monta($orientacao = '', $papel = 'A4', $logoAlign = 'C')
+    public function monta($orientacao = '', $papel = 'A4', $logoAlign = 'C',$situacao_externa=NFEPHP_SITUACAO_EXTERNA_NONE,$CLASSE_PDF=false)
     {
-        return $this->montaDACTE($orientacao, $papel, $logoAlign);
+        return $this->montaDACTE($orientacao, $papel, $logoAlign,$situacao_externa,$CLASSE_PDF);
     }
 
     /**
@@ -322,6 +332,20 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         return $this->printDACTE($nome, $destino, $printer);
     }
 
+    protected function __cteCancelada(){	/* NÃO ERA NECESSÁRIO ESSA FUNÇÃO POIS SÓ SE USA 1 VEZ NO ARQUIVO INTEIRO) */
+        $cStat = $this->__simpleGetValue( $this->cteProc , "cStat");
+        return $cStat == '101' || $cStat == '135' || $this->situacao_externa==NFEPHP_SITUACAO_EXTERNA_CANCELADA;
+    }
+
+    protected function __cteDPEC(){
+        return $this->situacao_externa==NFEPHP_SITUACAO_EXTERNA_DPEC && $this->numero_registro_dpec!='';
+    }
+    
+    protected function __cteDenegada(){	/* NÃO ERA NECESSÁRIO ESSA FUNÇÃO POIS SÓ SE USA 1 VEZ NO ARQUIVO INTEIRO) */
+        $cStat = $this->__simpleGetValue( $this->cteProc , "cStat");
+        return $cStat == '110' || $cStat == '301' || $cStat == '302' || $this->situacao_externa==NFEPHP_SITUACAO_EXTERNA_DENEGADA;
+    }
+
     /**
      * montaDACTE
      * Esta função monta a DACTE conforme as informações fornecidas para a classe
@@ -335,7 +359,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
      * @param  string $papel      (Opcional) Estabelece o tamanho do papel (ex. A4)
      * @return string O ID da NFe numero de 44 digitos extraido do arquivo XML
      */
-    public function montaDACTE($orientacao = '', $papel = 'A4', $logoAlign = 'L')
+    public function montaDACTE($orientacao = '', $papel = 'A4', $logoAlign = 'L',$situacao_externa=NFEPHP_SITUACAO_EXTERNA_NONE,$CLASSE_PDF=false)
     {
         //se a orientação estiver em branco utilizar o padrão estabelecido na NF
         if ($orientacao == '') {
@@ -349,8 +373,14 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $this->__adicionaLogoPeloCnpj();
         $this->papel = $papel;
         $this->logoAlign = $logoAlign;
+        $this->situacao_externa = $situacao_externa;
+	$this->numero_registro_dpec = $DPEC_NUMERO_REGISTRO;
         //instancia a classe pdf
-        $this->pdf = new PdfNFePHP($this->orientacao, 'mm', $this->papel);
+        if($CLASSE_PDF!==false){
+            $this->pdf = $CLASSE_PDF;
+	}else{
+            $this->pdf = new PdfNFePHP($this->orientacao, 'mm', $this->papel);
+	}
         if ($this->orientacao == 'P') {
             // margens do PDF
             $margSup = 2;
@@ -485,7 +515,14 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
             $this->rodapeDACTE($xInic, $this->hPrint + 2.3);
         }
         //retorna o ID na CTe
-        return str_replace('CTe', '', $this->infCte->getAttribute("Id"));
+	if($CLASSE_PDF!==false){
+            $aR = array(
+		'id'=>str_replace('CTe', '', $this->infCte->getAttribute("Id")),
+		'classe_PDF'=>$this->pdf);
+            return $aR;
+        } else {
+            return str_replace('CTe', '', $this->infCte->getAttribute("Id"));
+        }
     } //fim da função montaDACTE
 
     /**
@@ -867,12 +904,19 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $h = 8.5;
         $wa = $w;
         $this->__textBox($x, $y + 7.5, $w + 0.5, $h);
-        $texto = 'PROTOCOLO DE AUTORIZAÇÃO DE USO';
+	if($this->__cteDPEC())
+		$cabecalhoProtoAutorizacao = 'NÚMERO DE REGISTRO DPEC';
+	else
+		$cabecalhoProtoAutorizacao = 'PROTOCOLO DE AUTORIZAÇÃO DE USO';
         $aFont = $this->formatPadrao;
         $this->__textBox($x, $y + 7.5, $wa, $h, $texto, $aFont, 'T', 'L', 0, '');
-        $texto = $this->__simpleGetValue($this->protCTe, "nProt") . " - ";
-        $texto .= date('d/m/Y   H:i:s', $this->__convertTime($this->__simpleGetValue($this->protCTe, "dhRecbto")));
-        $texto = $this->__simpleGetValue($this->protCTe, "nProt") == '' ? '' : $texto;
+        if($this->__cteDPEC()){
+	    $texto = $this->numero_registro_dpec;
+	}else{
+            $texto = $this->__simpleGetValue($this->protCTe, "nProt") . " - ";
+            $texto .= date('d/m/Y   H:i:s', $this->__convertTime($this->__simpleGetValue($this->protCTe, "dhRecbto")));
+            $texto = $this->__simpleGetValue($this->protCTe, "nProt") == '' ? '' : $texto;
+	}
         $aFont = $this->formatNegrito;
         $this->__textBox($x, $y + 12, $wa, $h, $texto, $aFont, 'T', 'C', 0, '');
         //CFOP
@@ -910,10 +954,14 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $texto = $this->__simpleGetValue($this->ide, "xMunFim") . ' - ' . $this->__simpleGetValue($this->ide, "UFFim");
         $aFont = $this->formatNegrito;
         $this->__textBox($x, $y + 3.5, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
-        if ($this->tpEmis == 2 || $this->tpEmis == 5) {
-            $aFont = array('font' => $this->fontePadrao, 'size' => 8, 'style' => 'B');
-            $texto = $this->__format($chaveContingencia, "#### #### #### #### #### #### #### #### ####");
-            $cStat = '';
+/* // parece código morto
+        if($this->__cteDPEC()){
+	     $texto = $this->numero_registro_dpec;
+	     $cStat = '';
+	} else if ( ($this->tpEmis == 2 || $this->tpEmis == 5) ){
+             $aFont = array('font' => $this->fontePadrao, 'size' => 8, 'style' => 'B');
+             $texto = $this->__format($chaveContingencia, "#### #### #### #### #### #### #### #### ####");
+             $cStat = '';
         } else {
             $aFont = array('font' => $this->fontePadrao, 'size' => 10, 'style' => 'B');
             if (isset($this->cteProc)) {
@@ -930,11 +978,12 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
                 $cStat = '';
             }
         }
+*/
         //#########################################################################
         //Indicação de CTe Homologação, cancelamento e falta de protocolo
         $tpAmb = $this->ide->getElementsByTagName('tpAmb')->item(0)->nodeValue;
         //indicar cancelamento
-        if ($cStat == '101') {
+        if ( $this->__cteCancelada() ) {
             //101 Cancelamento
             $x = 10;
             $y = $this->hPrint - 130;
@@ -946,7 +995,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
             $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'C', 'C', 0, '');
             $this->pdf->SetTextColor(0, 0, 0);
         }
-        if ($cStat == '110') {
+        if ( $this->__cteDenegada() ) {
             //110 Denegada
             $x = 10;
             $y = $this->hPrint - 130;
@@ -993,7 +1042,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
             $w = $maxW - (2 * $x);
             $this->pdf->SetTextColor(90, 90, 90);
             //indicar FALTA DO PROTOCOLO se NFe não for em contingência
-            if ($this->tpEmis == 2 || $this->tpEmis == 5) {
+            if ( ($this->tpEmis == 2 || $this->tpEmis == 5) && !$this->__cteDPEC()){
                 //Contingência
                 $texto = "DACTE Emitido em Contingência";
                 $aFont = array('font' => $this->fontePadrao, 'size' => 48, 'style' => 'B');
@@ -1003,12 +1052,18 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
                 $this->__textBox($x, $y + 12, $w, $h, $texto, $aFont, 'C', 'C', 0, '');
             } else {
                 if (!isset($this->cteProc)) {
-                    $texto = "SEM VALOR FISCAL";
-                    $aFont = array('font' => $this->fontePadrao, 'size' => 48, 'style' => 'B');
-                    $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'C', 'C', 0, '');
+		    if(!$this->__cteDPEC()){
+                        $texto = "SEM VALOR FISCAL";
+                        $aFont = array('font' => $this->fontePadrao, 'size' => 48, 'style' => 'B');
+                        $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'C', 'C', 0, '');
+		    }
                     $aFont = array('font' => $this->fontePadrao, 'size' => 30, 'style' => 'B');
                     $texto = "FALTA PROTOCOLO DE APROVAÇÃO DA SEFAZ";
-                    $this->__textBox($x, $y + 12, $w, $h, $texto, $aFont, 'C', 'C', 0, '');
+		    if(!$this->__cteDPEC()){
+		        $this->__textBox($x,$y+12,$w,$h,$texto,$aFont,'C','C',0,'');
+		    }else{
+		        $this->__textBox($x,$y+25,$w,$h,$texto,$aFont,'C','C',0,'');
+		    }
                 } //fim nefProc
             } //fim tpEmis
             $this->pdf->SetTextColor(0, 0, 0);
