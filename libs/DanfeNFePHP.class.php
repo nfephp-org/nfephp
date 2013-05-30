@@ -946,12 +946,12 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
         $y1 = $y+12+$bH;
         $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'');
         $chaveContingencia="";
-	if(__notaDPEC())
+	if($this->__notaDPEC())
 		$cabecalhoProtoAutorizacao = 'NÚMERO DE REGISTRO DPEC';
 	else
 		$cabecalhoProtoAutorizacao = 'PROTOCOLO DE AUTORIZAÇÃO DE USO';
         
-	if ( ($this->tpEmis == 2 || $this->tpEmis == 5) && !__notaDPEC()){
+	if ( ($this->tpEmis == 2 || $this->tpEmis == 5) && !$this->__notaDPEC()){
             $cabecalhoProtoAutorizacao = "DADOS DA NF-E";
             $chaveContingencia = $this->__geraChaveAdicionalDeContingencia();
             $this->pdf->SetFillColor(0,0,0);
@@ -989,13 +989,13 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
         // NOTA : DANFE sem protocolo deve existir somente no caso de contingência !!!
         // Além disso, existem várias NFes em contingência que eu recebo com protocolo de autorização.
         // Na minha opinião, deveríamos mostra-lo, mas o  manual  da NFe v4.01 diz outra coisa...
-        if( ($this->tpEmis == 2 || $this->tpEmis == 5) && !__notaDPEC() ){
+        if( ($this->tpEmis == 2 || $this->tpEmis == 5) && !$this->__notaDPEC() ){
             $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
             $texto = $this->__format( $chaveContingencia, "#### #### #### #### #### #### #### #### ####" );
             $cStat = '';
         }else{
             $aFont = array('font'=>$this->fontePadrao,'size'=>10,'style'=>'B');
-	    if(__notaDPEC()){
+	    if($this->__notaDPEC()){
 		$texto = $this->numero_registro_dpec;
 		$cStat = '';
 	    }else{
@@ -1061,7 +1061,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
             $this->pdf->SetTextColor(0,0,0);
         }
 	
-        if ( $this->__notaDPEC() ) {
+        if ( $this->__notaDPEC() || $this->tpEmis == 4) {
             //DPEC
             $x = 10;
             $y = $this->hPrint-130;
@@ -1133,13 +1133,13 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
             } else {    
                 if ( !isset($this->nfeProc) ) {
 		    if(!$this->__notaDPEC()){
-			    $texto = "SEM VALOR FISCAL";
-			    $aFont = array('font'=>$this->fontePadrao,'size'=>48,'style'=>'B');
-			    $this->__textBox($x,$y,$w,$h,$texto,$aFont,'C','C',0,'');
-	            }
-		    $aFont = array('font'=>$this->fontePadrao,'size'=>30,'style'=>'B');
+                        $texto = "SEM VALOR FISCAL";
+                        $aFont = array('font'=>$this->fontePadrao,'size'=>48,'style'=>'B');
+                        $this->__textBox($x,$y,$w,$h,$texto,$aFont,'C','C',0,'');
+		    }
+                    $aFont = array('font'=>$this->fontePadrao,'size'=>30,'style'=>'B');
                     $texto = "FALTA PROTOCOLO DE APROVAÇÃO DA SEFAZ";
-                    if(!$this->__notaDPEC()){
+		    if(!$this->__notaDPEC()){
 		        $this->__textBox($x,$y+12,$w,$h,$texto,$aFont,'C','C',0,'');
 		    }else{
 		        $this->__textBox($x,$y+25,$w,$h,$texto,$aFont,'C','C',0,'');

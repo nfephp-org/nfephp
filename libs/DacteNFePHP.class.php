@@ -1064,7 +1064,21 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
 		    }else{
 		        $this->__textBox($x,$y+25,$w,$h,$texto,$aFont,'C','C',0,'');
 		    }
-                } //fim nefProc
+		} //fim cteProc
+		if ( $this->tpEmis == 4) {
+		    //DPEC
+		    $x = 10;
+		    $y = $this->hPrint-130;
+		    $h = 25;
+		    $w = $maxW-(2*$x);
+		    $this->pdf->SetTextColor(90,90,90);
+		    $texto = "DANFE impresso em contingência -\n".
+			     "DPEC regularmente recebido pela Receita\n".
+			     "Federal do Brasil";
+		    $aFont = array('font'=>$this->fontePadrao,'size'=>48,'style'=>'B');
+		    $this->__textBox($x,$y,$w,$h,$texto,$aFont,'C','C',0,'');
+		    $this->pdf->SetTextColor(0,0,0);
+		}
             } //fim tpEmis
             $this->pdf->SetTextColor(0, 0, 0);
         }
