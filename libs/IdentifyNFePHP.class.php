@@ -23,7 +23,7 @@
  *
  * @package     NFePHP
  * @name        DocumentoNFePHP.interface.php
- * @version     2.05
+ * @version     2.09
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2013 &copy; NFePHP
@@ -32,6 +32,7 @@
  * 
  *
  * Este arquivo contem funções para identificar conteúdo de arquivos 
+ * 2.09 - adicionado comentarios
  * 2.08 - adicionado arquivo tipo DPEC - CTE
  * 2.07 - adicionado arquivo tipo DPEC
  * 2.06 - uso de fileinfo e adição de boleto/contas
@@ -57,8 +58,10 @@
  */
 // tipos arquivos 
 if (!defined('NFEPHP_TIPO_ARQUIVO_DESCONHECIDO')) {
+    /* -1 e 0 => tipos especiais (array=-1 retorna varios documentos, 0=não reconhecido) */
     define('NFEPHP_TIPO_ARQUIVO_ARRAY', -1);
     define('NFEPHP_TIPO_ARQUIVO_DESCONHECIDO', 0);
+    /* 1 a 99 => xml de documentos, autorizados ou sem protocolo */
     define('NFEPHP_TIPO_ARQUIVO_NFE', 1);
     define('NFEPHP_TIPO_ARQUIVO_NFE_SEM_PROTOCOLO', 2);
     define('NFEPHP_TIPO_ARQUIVO_CTE', 3);
@@ -69,6 +72,7 @@ if (!defined('NFEPHP_TIPO_ARQUIVO_DESCONHECIDO')) {
     define('NFEPHP_TIPO_ARQUIVO_DPEC_NFE', 8);		  // dpec de nfe
     define('NFEPHP_TIPO_ARQUIVO_DPEC_CTE', 9);		  // dpec de cte
     
+    /* 100 => eventos */
     define('NFEPHP_TIPO_ARQUIVO_EVENTONFE', 100);         // modelo novo (v2 e v3) - modelo 55 -nfe
     define('NFEPHP_TIPO_ARQUIVO_NFE_PROCCANCNFE', 101);   // modelo antigo de cancelamento (v1)
     define('NFEPHP_TIPO_ARQUIVO_CTE_PROCCANCCTE', 102);   // modelo antigo (v1.04)
@@ -77,12 +81,17 @@ if (!defined('NFEPHP_TIPO_ARQUIVO_DESCONHECIDO')) {
                                                           // este é para documento modelo 65
                                                           //    nfce(será q vai ser utilizado?)
     
+    /* 200 => inutilizações e operações com a série do documento fiscal */
     define('NFEPHP_TIPO_ARQUIVO_NFE_INUTFAIXA', 200);
     define('NFEPHP_TIPO_ARQUIVO_CTE_INUTFAIXA', 201);
     
+    /* 300 => arquivos TXT para conversão para documentos (normalmente XML) */
     define('NFEPHP_TIPO_ARQUIVO_TXT_NFE', 300);
     define('NFEPHP_TIPO_ARQUIVO_TXT_CTE', 301);
     
+    /* 400 => arquivos que representam graficamente um documento,
+		ou que contenham código de barra referente a documentos fiscais/boletos/contas
+    */
     define('NFEPHP_TIPO_ARQUIVO_PDF_NFE', 400);		  // BARCODE NFE
     define('NFEPHP_TIPO_ARQUIVO_PDF_NFCE', 401);          // QRCODE NFCE
     define('NFEPHP_TIPO_ARQUIVO_PDF_CTE', 402);		  // BARCODE CTE
