@@ -23,7 +23,7 @@
  *
  * @package     NFePHP
  * @name        DanfeNFePHP.class.php
- * @version     2.1.27
+ * @version     2.1.28
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2012 &copy; NFePHP
@@ -46,7 +46,7 @@
  *              Paulo Gabriel Coghi < paulocoghi at gmail dot com>
  *              Rafael Stavarengo <faelsta at gmail dot com>
  *              Renato Zaccaron Gonzaga <renato at zaccaron dot com dot br>
- *              Roberto Spadim <rspadim at gmail dot com>
+ *              Roberto Spadim <roberto at spadim dot com dot br>
  *              Vinicius Souza <vdssgmu at gmail dot com>
  *
  *
@@ -68,6 +68,7 @@ if (!defined('FPDF_FONTPATH')) {
 if(!defined('NFEPHP_SITUACAO_EXTERNA_CANCELADA')){
 	define('NFEPHP_SITUACAO_EXTERNA_CANCELADA'	,1);
 	define('NFEPHP_SITUACAO_EXTERNA_DENEGADA'	,2);
+	define('NFEPHP_SITUACAO_EXTERNA_DPEC'		,3);
 	define('NFEPHP_SITUACAO_EXTERNA_NONE'		,0);
 }
 //classe extendida da classe FPDF para montagem do arquivo pdf
@@ -83,6 +84,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
     public $logoAlign='C'; //alinhamento do logo
     public $yDados=0;
     public $situacao_externa=0;
+    public $numero_registro_dpec='';
     //privadas
     protected $pdf; // objeto fpdf()
     protected $xml; // string XML NFe
@@ -94,7 +96,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
     protected $destino = 'I'; //destivo do arquivo pdf I-borwser, S-retorna o arquivo, D-força download, F-salva em arquivo local
     protected $pdfDir=''; //diretorio para salvar o pdf com a opção de destino = F
     protected $fontePadrao='Times'; //Nome da Fonte para gerar o DANFE
-    protected $version = '2.1.26';
+    protected $version = '2.1.28';
     protected $textoAdic = '';
     protected $wAdic = 0;
     protected $wPrint; //largura imprimivel
@@ -225,8 +227,8 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
      * @param type $logoAlign
      * @return type 
      */    
-    public function monta($orientacao='',$papel='A4',$logoAlign='C',$situacao_externa=NFEPHP_SITUACAO_EXTERNA_NONE,$CLASSE_PDF=false){
-        return $this->montaDANFE($orientacao,$papel,$logoAlign,$situacao_externa,$CLASSE_PDF);
+    public function monta($orientacao='',$papel='A4',$logoAlign='C',$situacao_externa=NFEPHP_SITUACAO_EXTERNA_NONE,$CLASSE_PDF=false,$DPEC_NUMERO_REGISTRO=''){
+        return $this->montaDANFE($orientacao,$papel,$logoAlign,$situacao_externa,$CLASSE_PDF,$DPEC_NUMERO_REGISTRO);
     }//fim monta
     
     /**
@@ -259,7 +261,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
      * @param string $papel (Opcional) Estabelece o tamanho do papel (ex. A4)
      * @return string O ID da NFe numero de 44 digitos extraido do arquivo XML
      */
-    public function montaDANFE($orientacao='',$papel='A4',$logoAlign='C',$situacao_externa=NFEPHP_SITUACAO_EXTERNA_NONE,$CLASSE_PDF=false){
+    public function montaDANFE($orientacao='',$papel='A4',$logoAlign='C',$situacao_externa=NFEPHP_SITUACAO_EXTERNA_NONE,$CLASSE_PDF=false,$DPEC_NUMERO_REGISTRO=''){
         //se a orientação estiver em branco utilizar o padrão estabelecido na NF
         if ($orientacao == ''){
             if($this->tpImp == '1'){
@@ -273,6 +275,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
         $this->papel = $papel;
         $this->logoAlign = $logoAlign;
         $this->situacao_externa = $situacao_externa;
+	$this->numero_registro_dpec = $DPEC_NUMERO_REGISTRO;
         //instancia a classe pdf
 	if($CLASSE_PDF!==false){
             $this->pdf = $CLASSE_PDF;
@@ -414,7 +417,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
         $vTotTrib = !empty($this->ICMSTot->getElementsByTagName("vTotTrib")->item(0)->nodeValue) ? $this->ICMSTot->getElementsByTagName("vTotTrib")->item(0)->nodeValue : '';
         if ($vTotTrib != '' && !flagVTT) {
             $this->textoAdic .= "\n Valor Aproximado dos Tributos : R$ " . number_format($vTotTtib, 2, ",", ".");  
-        }    
+        }
         //fim da alteração NT 2013.003 Lei da Transparência
         
         $this->textoAdic = str_replace( ";" , "\n" , $this->textoAdic );
@@ -738,12 +741,16 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
     } //fim função printDANFE
 
     
-    protected function __notaCancelada(){        
+    protected function __notaCancelada(){	/* NÃO ERA NECESSÁRIO ESSA FUNÇÃO POIS SÓ SE USA 1 VEZ NO ARQUIVO INTEIRO) */
         $cStat = $this->__simpleGetValue( $this->nfeProc , "cStat");
         return $cStat == '101' || $cStat == '135' || $this->situacao_externa==NFEPHP_SITUACAO_EXTERNA_CANCELADA;
     }
+
+    protected function __notaDPEC(){
+        return $this->situacao_externa==NFEPHP_SITUACAO_EXTERNA_DPEC && $this->numero_registro_dpec!='';
+    }
     
-    protected function __notaDenegada(){
+    protected function __notaDenegada(){	/* NÃO ERA NECESSÁRIO ESSA FUNÇÃO POIS SÓ SE USA 1 VEZ NO ARQUIVO INTEIRO) */
         $cStat = $this->__simpleGetValue( $this->nfeProc , "cStat");
         return $cStat == '110' || $cStat == '301' || $cStat == '302' || $this->situacao_externa==NFEPHP_SITUACAO_EXTERNA_DENEGADA;
     }
@@ -869,7 +876,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
         $h = 32;
         $this->__textBox($x,$y,$w,$h);
 
-        if( ! $this->__notaCancelada() ) {
+        if( ! $this->__notaCancelada() ) {	/* A PRINCIPIO NÃO PRECISAVA, POIS A NFE ESTÁ AUTORIZADA, SÓ SE RETIRA O DANFE PARA NOTAS NÃO AUTORIZADAS */
             $texto = "DANFE";
             $aFont = array('font'=>$this->fontePadrao,'size'=>14,'style'=>'B');
             $this->__textBox($x,$y+1,$w,$h,$texto,$aFont,'T','C',0,'');
@@ -939,8 +946,12 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
         $y1 = $y+12+$bH;
         $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'');
         $chaveContingencia="";
-        $cabecalhoProtoAutorizacao = 'PROTOCOLO DE AUTORIZAÇÃO DE USO';
-        if ( $this->tpEmis == 2 || $this->tpEmis == 5 ){
+	if(__notaDPEC())
+		$cabecalhoProtoAutorizacao = 'NÚMERO DE REGISTRO DPEC';
+	else
+		$cabecalhoProtoAutorizacao = 'PROTOCOLO DE AUTORIZAÇÃO DE USO';
+        
+	if ( ($this->tpEmis == 2 || $this->tpEmis == 5) && !__notaDPEC()){
             $cabecalhoProtoAutorizacao = "DADOS DA NF-E";
             $chaveContingencia = $this->__geraChaveAdicionalDeContingencia();
             $this->pdf->SetFillColor(0,0,0);
@@ -978,23 +989,28 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
         // NOTA : DANFE sem protocolo deve existir somente no caso de contingência !!!
         // Além disso, existem várias NFes em contingência que eu recebo com protocolo de autorização.
         // Na minha opinião, deveríamos mostra-lo, mas o  manual  da NFe v4.01 diz outra coisa...
-        if( $this->tpEmis == 2 || $this->tpEmis == 5 ){
+        if( ($this->tpEmis == 2 || $this->tpEmis == 5) && !__notaDPEC() ){
             $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'B');
             $texto = $this->__format( $chaveContingencia, "#### #### #### #### #### #### #### #### ####" );
             $cStat = '';
         }else{
             $aFont = array('font'=>$this->fontePadrao,'size'=>10,'style'=>'B');
-            if( isset( $this->nfeProc ) ) {
-                $texto = !empty($this->nfeProc->getElementsByTagName("nProt")->item(0)->nodeValue) ? $this->nfeProc->getElementsByTagName("nProt")->item(0)->nodeValue : '';
-                $tsHora = $this->__convertTime($this->nfeProc->getElementsByTagName("dhRecbto")->item(0)->nodeValue);
-                if ($texto != ''){
-                    $texto .= "  -  " . date('d/m/Y   H:i:s',$tsHora);
-                }
-                $cStat = $this->nfeProc->getElementsByTagName("cStat")->item(0)->nodeValue;
-            } else {
-                $texto = '';
-                $cStat = '';
-            }
+	    if(__notaDPEC()){
+		$texto = $this->numero_registro_dpec;
+		$cStat = '';
+	    }else{
+		    if( isset( $this->nfeProc ) ) {
+			$texto = !empty($this->nfeProc->getElementsByTagName("nProt")->item(0)->nodeValue) ? $this->nfeProc->getElementsByTagName("nProt")->item(0)->nodeValue : '';
+			$tsHora = $this->__convertTime($this->nfeProc->getElementsByTagName("dhRecbto")->item(0)->nodeValue);
+			if ($texto != ''){
+			    $texto .= "  -  " . date('d/m/Y   H:i:s',$tsHora);
+			}
+			$cStat = $this->nfeProc->getElementsByTagName("cStat")->item(0)->nodeValue;
+		    } else {
+			$texto = '';
+			$cStat = '';
+		    }
+	    }
         }
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'B','C',0,'');
         //####################################################################################
@@ -1040,6 +1056,21 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
             $w = $maxW-(2*$x);
             $this->pdf->SetTextColor(90,90,90);
             $texto = "NFe CANCELADA";
+            $aFont = array('font'=>$this->fontePadrao,'size'=>48,'style'=>'B');
+            $this->__textBox($x,$y,$w,$h,$texto,$aFont,'C','C',0,'');
+            $this->pdf->SetTextColor(0,0,0);
+        }
+	
+        if ( $this->__notaDPEC() ) {
+            //DPEC
+            $x = 10;
+            $y = $this->hPrint-130;
+            $h = 25;
+            $w = $maxW-(2*$x);
+            $this->pdf->SetTextColor(90,90,90);
+            $texto = "DANFE impresso em contingência -\n".
+                     "DPEC regularmente recebido pela Receita\n".
+                     "Federal do Brasil";
             $aFont = array('font'=>$this->fontePadrao,'size'=>48,'style'=>'B');
             $this->__textBox($x,$y,$w,$h,$texto,$aFont,'C','C',0,'');
             $this->pdf->SetTextColor(0,0,0);
@@ -1383,10 +1414,15 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
                 $vDup = 'R$ ' . number_format($this->dup->item($k)->getElementsByTagName('vDup')->item(0)->nodeValue, 2, ",", ".");
                 $h = 8;
                 $texto = '';
-                $aFont = array('font'=>$this->fontePadrao,'size'=>6,'style'=>'');
-                $this->__textBox($x,$y,$w,$h,'Num.',$aFont,'T','L',1,'');
-                $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'B');
-                $this->__textBox($x,$y,$w,$h,$nDup,$aFont,'T','R',0,'');
+        	if($nDup!='0' && $nDup!=''){
+                    $aFont = array('font'=>$this->fontePadrao,'size'=>6,'style'=>'');
+                    $this->__textBox($x,$y,$w,$h,'Num.',$aFont,'T','L',1,'');
+                    $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'B');
+                    $this->__textBox($x,$y,$w,$h,$nDup,$aFont,'T','R',0,'');
+		}else{
+		    $aFont = array('font'=>$this->fontePadrao,'size'=>6,'style'=>'');
+		    $this->__textBox($x,$y,$w,$h,($dupcont+1)."",$aFont,'T','L',1,'');
+		}
                 $aFont = array('font'=>$this->fontePadrao,'size'=>6,'style'=>'');
                 $this->__textBox($x,$y,$w,$h,'Venc.',$aFont,'C','L',0,'');
                 $aFont = array('font'=>$this->fontePadrao,'size'=>7,'style'=>'B');
@@ -1855,12 +1891,17 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
         $ivaTxt = '';
         if (!empty($ICMS)){
             $ivaTxt = !empty($ICMS->getElementsByTagName("pMVAST")->item(0)->nodeValue) ? number_format($ICMS->getElementsByTagName("pMVAST")->item(0)->nodeValue, 2, ",", ".") : '';
+            if ($icmsBCTxt != 0){	// redução ICMS
+                $ivaTxt .= " pRedBC = ".number_format($icmsBCTxt, 2, ",", ".")."%";
+
+
+            }
             if ($ivaTxt != ''){
                 $ivaTxt = " IVA=$ivaTxt%";
             }
             $icmsStTxt = !empty($ICMS->getElementsByTagName("pICMSST")->item(0)->nodeValue) ? number_format($ICMS->getElementsByTagName("pICMSST")->item(0)->nodeValue, 2, ",", ".") : '';
             if ($icmsStTxt != ''){
-                $ivaTxt .= " IcmsSt=$icmsStTxt%";
+                $ivaTxt .= " pIcmsSt=$icmsStTxt%";
             }
             $bcIcmsSt = !empty($ICMS->getElementsByTagName("vBCST")->item(0)->nodeValue) ? number_format($ICMS->getElementsByTagName("vBCST")->item(0)->nodeValue, 2, ",", ".") : '';
             if ($icmsStTxt != ''){
