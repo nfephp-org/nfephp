@@ -1071,7 +1071,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
 		    $y = $this->hPrint-130;
 		    $h = 25;
 		    $w = $maxW-(2*$x);
-		    $this->pdf->SetTextColor(90,90,90);
+		    $this->pdf->SetTextColor(200,200,200);	// 90,90,90 é muito escuro
 		    $texto = "DANFE impresso em contingência -\n".
 			     "DPEC regularmente recebido pela Receita\n".
 			     "Federal do Brasil";
