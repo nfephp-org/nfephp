@@ -1122,7 +1122,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
             $w = $maxW-(2*$x);
             $this->pdf->SetTextColor(90,90,90);
             //indicar FALTA DO PROTOCOLO se NFe não for em contingência
-            if( $this->tpEmis == 2 || $this->tpEmis == 5 ){
+            if( ($this->tpEmis == 2 || $this->tpEmis == 5) && !$this->__notaDPEC()){
                 //Contingência
                 $texto = "DANFE Emitido em Contingência";
                 $aFont = array('font'=>$this->fontePadrao,'size'=>48,'style'=>'B');
@@ -1132,12 +1132,18 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
                 $this->__textBox($x,$y+12,$w,$h,$texto,$aFont,'C','C',0,'');
             } else {    
                 if ( !isset($this->nfeProc) ) {
-                    $texto = "SEM VALOR FISCAL";
-                    $aFont = array('font'=>$this->fontePadrao,'size'=>48,'style'=>'B');
-                    $this->__textBox($x,$y,$w,$h,$texto,$aFont,'C','C',0,'');
-                    $aFont = array('font'=>$this->fontePadrao,'size'=>30,'style'=>'B');
+		    if(!$this->__notaDPEC()){
+			    $texto = "SEM VALOR FISCAL";
+			    $aFont = array('font'=>$this->fontePadrao,'size'=>48,'style'=>'B');
+			    $this->__textBox($x,$y,$w,$h,$texto,$aFont,'C','C',0,'');
+	            }
+		    $aFont = array('font'=>$this->fontePadrao,'size'=>30,'style'=>'B');
                     $texto = "FALTA PROTOCOLO DE APROVAÇÃO DA SEFAZ";
-                    $this->__textBox($x,$y+12,$w,$h,$texto,$aFont,'C','C',0,'');
+                    if(!$this->__notaDPEC()){
+		        $this->__textBox($x,$y+12,$w,$h,$texto,$aFont,'C','C',0,'');
+		    }else{
+		        $this->__textBox($x,$y+25,$w,$h,$texto,$aFont,'C','C',0,'');
+		    }
                 }//fim nefProc
             }//fim tpEmis
             $this->pdf->SetTextColor(0,0,0);
