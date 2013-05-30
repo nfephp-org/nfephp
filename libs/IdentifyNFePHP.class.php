@@ -32,6 +32,7 @@
  * 
  *
  * Este arquivo contem funções para identificar conteúdo de arquivos 
+ * 2.08 - adicionado arquivo tipo DPEC - CTE
  * 2.07 - adicionado arquivo tipo DPEC
  * 2.06 - uso de fileinfo e adição de boleto/contas
  * 2.05 - PSR-2 (não vai ter namescape)
@@ -66,6 +67,7 @@ if (!defined('NFEPHP_TIPO_ARQUIVO_DESCONHECIDO')) {
     define('NFEPHP_TIPO_ARQUIVO_NFCE', 6);
     define('NFEPHP_TIPO_ARQUIVO_NFCE_SEM_PROTOCOLO', 7);  // será que existe?!
     define('NFEPHP_TIPO_ARQUIVO_DPEC_NFE', 8);		  // dpec de nfe
+    define('NFEPHP_TIPO_ARQUIVO_DPEC_CTE', 9);		  // dpec de cte
     
     define('NFEPHP_TIPO_ARQUIVO_EVENTONFE', 100);         // modelo novo (v2 e v3) - modelo 55 -nfe
     define('NFEPHP_TIPO_ARQUIVO_NFE_PROCCANCNFE', 101);   // modelo antigo de cancelamento (v1)
@@ -434,14 +436,18 @@ if (!class_exists('IdentifyNFePHP')) {
             if (get_class($dom)!='DOMDocument') {
                 return(array('tipo'=>NFEPHP_TIPO_ARQUIVO_DESCONHECIDO));
             }
-	    // DPEC NFE
+	    // DPEC NFE/CTE
 	    $retDPEC    = $dom->getElementsByTagName("retDPEC")->item(0);
             $infDPECReg = $dom->getElementsByTagName("infDPECReg")->item(0);
+	    $infresCTe = $dom->getElementsByTagName("resCTe")->item(0);
+	    $infresNFe = $dom->getElementsByTagName("resNFe")->item(0);
 	    if(!empty($retDPEC) && !empty($infDPECReg)){
 		$tmp_DPECReg=$infDPECReg->getAttribute("Id");
 		if(substr($tmp_DPECReg,0,7)=='RETDPEC' && strlen($tmp_DPECReg)==21){	//RETDPEC07668027000104
-		    $tmp_DPECReg=substr($tmp_DPECReg,7);
-		    return(array('tipo'=>NFEPHP_TIPO_ARQUIVO_DPEC_NFE));
+		    if(!empty($infresCTe))
+		        return(array('tipo'=>NFEPHP_TIPO_ARQUIVO_DPEC_CTE));
+		    if(!empty($infresNFe))
+		        return(array('tipo'=>NFEPHP_TIPO_ARQUIVO_DPEC_NFE));
 		}
 	    }
 
