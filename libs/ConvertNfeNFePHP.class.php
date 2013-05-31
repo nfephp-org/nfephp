@@ -1187,9 +1187,11 @@ class ConvertNfeNFePHP{ //implements ConvertNFePHP{
 					}elseif($v2['TAG']=='M' && isset($I_prod) && !isset($M_imposto)){
 						$M_imposto = $dom->createElement("imposto");
 						// lei da transparencia
-						$vTotTrib = $dom->createElement("vTotTrib", $v2['vTotTrib']);
-						$M_imposto->appendChild($vTotTrib);
-						unset($vTotTrib);
+						if(!empty($v2['vTotTrib']) && strlen(trim($v2['vTotTrib']))>0){
+							$vTotTrib = $dom->createElement("vTotTrib", $v2['vTotTrib']);
+							$M_imposto->appendChild($vTotTrib);
+							unset($vTotTrib);
+						}
 						//
 						
 						if (!isset($H_infAdProd))
@@ -2157,7 +2159,11 @@ class ConvertNfeNFePHP{ //implements ConvertNFePHP{
 					// lei da transparencia
 					$imposto=$item->getElementsByTagName("imposto")->item(0);
 					$vTotTrib=$imposto->getElementsByTagName('vTotTrib')->item(0);
-					$CUR_TXT	.="M|$vTotTrib|\n";
+					if(!empty($vTotTrib) && strlen(trim($vTotTrib))>0){
+						$CUR_TXT	.="M|$vTotTrib|\n";
+					}else{
+						$CUR_TXT	.="M|\n";
+					}
 					// N - ICMS
 					$CUR_TXT	.="N|\n";
 					// NXXXX

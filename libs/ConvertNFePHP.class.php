@@ -1044,7 +1044,7 @@ class ConvertNFePHP
                     $imposto = $dom->createElement("imposto");
                     //lei da transparencia 12.741/12
                     //Nota Técnica 2013/003
-                    if (!empty($dados[1])) {
+                    if (!empty($dados[1]) && strlen(trim($dados[1]))>0) {
                         $vTotTrib = $dom->createElement("vTotTrib", $dados[1]);
                         $imposto->appendChild($vTotTrib);
                     }
@@ -1822,7 +1822,7 @@ class ConvertNFePHP
                     $ICMSTot->appendChild($vNF);
                     //lei da transparencia 12.741/12
                     //Nota Técnica 2013/003
-                    if (!empty($dados[15])) {
+                    if (!empty($dados[15]) && strlen(trim($dados[15]))>0) {
                         $vTotTrib = $dom->createElement("vTotTrib", $dados[15]);
                         $ICMSTot->appendChild($vTotTrib);
                     }
