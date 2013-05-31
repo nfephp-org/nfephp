@@ -1378,8 +1378,10 @@ class ConvertNfeNFePHP{ //implements ConvertNFePHP{
 						$infNFe->appendChild($W_total);
 					}elseif($v2['TAG']=='W02' && isset($W_total)){
 						$tmp_grupo = $dom->createElement("ICMSTot");	// porque diabos é 'icmstot', se é o total da nota
-						foreach($campos as $nome_campo)
-							$tmp_grupo->appendChild( $dom->createElement($nome_campo,$v2[$nome_campo]) );
+						foreach($campos as $nome_campo){
+							if(($nome_campo=='vTotTrib' && $v2[$nome_campo]!='') || $nome_campo!='vTotTrib')
+								$tmp_grupo->appendChild( $dom->createElement($nome_campo,$v2[$nome_campo]) );
+						}
 						$W_total->appendChild($tmp_grupo);
 					}elseif($v2['TAG']=='W17' && isset($W_total)){
 						$tmp_grupo = $dom->createElement("ISSQNtot");
