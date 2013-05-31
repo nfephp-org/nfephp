@@ -1928,7 +1928,7 @@ class ToolsNFePHP {
         try {
             //carrega defaults
             $i = 0;
-            $aRetorno = array('bStat'=>false,'cStat'=>'','xMotivo'=>'','aProt'=>'','aCanc'=>'');
+            $aRetorno = array('bStat'=>false,'cStat'=>'','xMotivo'=>'','aProt'=>'','aCanc'=>'','xmlRetorno'=>'');
             $cUF = $this->cUF;
             $UF = $this->UF;
             if ($tpAmb == ''){
@@ -2021,6 +2021,9 @@ class ToolsNFePHP {
                     $msg = "Erro cStat está vazio.";
                     throw new nfephpException($msg);
                 } 
+                $envelopeBodyNode = $doc->getElementsByTagNameNS('http://www.w3.org/2003/05/soap-envelope', 'Body')->item(0)->childNodes->item(0);
+                //Disponibiliza o conteúdo xml do pacote de resposta (soap:Body) através do array de retorno
+                $aRetorno['xmlRetorno'] = $doc->saveXML($envelopeBodyNode);
                 //o retorno vai variar se for buscado o protocolo ou recibo
                 //Retorno nda consulta pela Chave da NFe
                 //retConsSitNFe 100 aceita 110 denegada 101 cancelada ou outro recusada
