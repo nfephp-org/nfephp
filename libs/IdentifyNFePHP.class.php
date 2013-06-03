@@ -23,7 +23,7 @@
  *
  * @package     NFePHP
  * @name        DocumentoNFePHP.interface.php
- * @version     2.09
+ * @version     2.10
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2013 &copy; NFePHP
@@ -32,6 +32,7 @@
  * 
  *
  * Este arquivo contem funções para identificar conteúdo de arquivos 
+ * 2.10 - adicionado novos tipos de TXT, erro no evento - !empty($chave) deveria ser empty($chave)
  * 2.09 - adicionado comentarios
  * 2.08 - adicionado arquivo tipo DPEC - CTE
  * 2.07 - adicionado arquivo tipo DPEC
@@ -88,6 +89,10 @@ if (!defined('NFEPHP_TIPO_ARQUIVO_DESCONHECIDO')) {
     /* 300 => arquivos TXT para conversão para documentos (normalmente XML) */
     define('NFEPHP_TIPO_ARQUIVO_TXT_NFE', 300);
     define('NFEPHP_TIPO_ARQUIVO_TXT_CTE', 301);
+    define('NFEPHP_TIPO_ARQUIVO_TXT_NFE_EMITENTE', 302);
+    define('NFEPHP_TIPO_ARQUIVO_TXT_NFE_CLIENTE', 303);
+    define('NFEPHP_TIPO_ARQUIVO_TXT_NFE_PRODUTO', 304);
+    define('NFEPHP_TIPO_ARQUIVO_TXT_NFE_TRANSPORTADORA', 305);
     
     /* 400 => arquivos que representam graficamente um documento,
 		ou que contenham código de barra referente a documentos fiscais/boletos/contas
@@ -424,6 +429,21 @@ if (!class_exists('IdentifyNFePHP')) {
                 if (strpos($TMP_TXT, 'REGISTROSCTE|')===0 || strpos($TMP_TXT, 'REGISTROS CTE|')===0) {
                     return(array('tipo'=>NFEPHP_TIPO_ARQUIVO_TXT_CTE));
                 }
+		/*
+		TXT AUXILIARES DA NFE
+		*/
+                if (strpos($TMP_TXT, 'EMITENTE|')===0) {
+                    return(array('tipo'=>NFEPHP_TIPO_ARQUIVO_TXT_NFE_EMITENTE));
+                }
+                if (strpos($TMP_TXT, 'CLIENTE|')===0) {
+                    return(array('tipo'=>NFEPHP_TIPO_ARQUIVO_TXT_NFE_CLIENTE));
+                }
+                if (strpos($TMP_TXT, 'PRODUTO|')===0) {
+                    return(array('tipo'=>NFEPHP_TIPO_ARQUIVO_TXT_NFE_PRODUTO));
+                }
+                if (strpos($TMP_TXT, 'TRANSPORTADORA|')===0) {
+                    return(array('tipo'=>NFEPHP_TIPO_ARQUIVO_TXT_NFE_TRANSPORTADORA)
+                }
                 unset($TMP_TXT);
             }
             return false;
@@ -474,7 +494,7 @@ if (!class_exists('IdentifyNFePHP')) {
                 
                 // verificar se é nfc-e (mod=65)    // verificar se está ok!
                 $chave        = $dom->getElementsByTagName("chNFe")->item(0);
-                if (!empty($chave)) {
+                if (empty($chave)) {
                     return(array('tipo'=>NFEPHP_TIPO_ARQUIVO_DESCONHECIDO));
                 }
                 $chave =$chave->nodeValue;
