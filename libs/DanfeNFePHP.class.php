@@ -23,7 +23,7 @@
  *
  * @package     NFePHP
  * @name        DanfeNFePHP.class.php
- * @version     2.1.28
+ * @version     2.1.29
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2012 &copy; NFePHP
@@ -96,7 +96,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
     protected $destino = 'I'; //destivo do arquivo pdf I-borwser, S-retorna o arquivo, D-força download, F-salva em arquivo local
     protected $pdfDir=''; //diretorio para salvar o pdf com a opção de destino = F
     protected $fontePadrao='Times'; //Nome da Fonte para gerar o DANFE
-    protected $version = '2.1.28';
+    protected $version = '2.1.29';
     protected $textoAdic = '';
     protected $wAdic = 0;
     protected $wPrint; //largura imprimivel
@@ -122,6 +122,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
     protected $transp;
     protected $transporta;
     protected $veicTransp;
+    protected $reboque;
     protected $infAdic;
     protected $tpEmis;
     protected $tpImp; //1-Retrato/ 2-Paisagem
@@ -189,6 +190,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
             $this->transp     = $this->dom->getElementsByTagName("transp")->item(0);
             $this->transporta = $this->dom->getElementsByTagName("transporta")->item(0);
             $this->veicTransp = $this->dom->getElementsByTagName("veicTransp")->item(0);
+	    $this->reboque    = $this->dom->getElementsByTagName("reboque")->item(0);
             $this->infAdic    = $this->dom->getElementsByTagName("infAdic")->item(0);
             $this->compra     = $this->dom->getElementsByTagName("compra")->item(0);
             $this->tpEmis     = $this->ide->getElementsByTagName("tpEmis")->item(0)->nodeValue;
@@ -1695,6 +1697,8 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
         $this->__textBox($x,$y,$w2,$h,$texto,$aFont,'T','L',1,'');
         if ( isset($this->veicTransp) ){
             $texto = !empty($this->veicTransp->getElementsByTagName("placa")->item(0)->nodeValue) ? $this->veicTransp->getElementsByTagName("placa")->item(0)->nodeValue : '';
+        } else if ( isset($this->reboque) ){
+            $texto = !empty($this->reboque->getElementsByTagName("placa")->item(0)->nodeValue) ? $this->reboque->getElementsByTagName("placa")->item(0)->nodeValue : '';
         } else {
             $texto = '';
         }
@@ -1708,6 +1712,8 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
         $this->__textBox($x,$y,$w3,$h,$texto,$aFont,'T','L',1,'');
         if ( isset($this->veicTransp) ){
             $texto = !empty($this->veicTransp->getElementsByTagName("UF")->item(0)->nodeValue) ? $this->veicTransp->getElementsByTagName("UF")->item(0)->nodeValue : '';
+        } else if ( isset($this->reboque) ){
+            $texto = !empty($this->reboque->getElementsByTagName("UF")->item(0)->nodeValue) ? $this->reboque->getElementsByTagName("UF")->item(0)->nodeValue : '';
         } else {
             $texto = '';
         }
