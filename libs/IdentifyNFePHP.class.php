@@ -23,7 +23,7 @@
  *
  * @package     NFePHP
  * @name        DocumentoNFePHP.interface.php
- * @version     2.10
+ * @version     2.11
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2013 &copy; NFePHP
@@ -32,6 +32,7 @@
  * 
  *
  * Este arquivo contem funções para identificar conteúdo de arquivos 
+ * 2.11 - faltou um ); na linha 446
  * 2.10 - adicionado novos tipos de TXT, erro no evento - !empty($chave) deveria ser empty($chave)
  * 2.09 - adicionado comentarios
  * 2.08 - adicionado arquivo tipo DPEC - CTE
@@ -442,7 +443,7 @@ if (!class_exists('IdentifyNFePHP')) {
                     return(array('tipo'=>NFEPHP_TIPO_ARQUIVO_TXT_NFE_PRODUTO));
                 }
                 if (strpos($TMP_TXT, 'TRANSPORTADORA|')===0) {
-                    return(array('tipo'=>NFEPHP_TIPO_ARQUIVO_TXT_NFE_TRANSPORTADORA)
+                    return(array('tipo'=>NFEPHP_TIPO_ARQUIVO_TXT_NFE_TRANSPORTADORA));
                 }
                 unset($TMP_TXT);
             }
@@ -852,3 +853,4 @@ if (!class_exists('IdentifyNFePHP')) {
 #var_dump($v->identifyBoletoContas('84640000003875610291158941531039005130130601'));
 #var_dump($v->identifyBoletoContas('03392526000002900229439278700000000003850101'));
 #var_dump($v->identifyFilePDFImage(file_get_contents('../exemplos/boleto.png')));
+?>
