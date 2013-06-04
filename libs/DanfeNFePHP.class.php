@@ -23,7 +23,7 @@
  *
  * @package     NFePHP
  * @name        DanfeNFePHP.class.php
- * @version     2.1.29
+ * @version     2.1.30
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2012 &copy; NFePHP
@@ -56,20 +56,20 @@
  */
 //define o caminho base da instalação do sistema
 if (!defined('PATH_ROOT')) {
-   define('PATH_ROOT', dirname(dirname( __FILE__ )) . DIRECTORY_SEPARATOR);
+    define('PATH_ROOT', dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR);
 }
 //ajuste do tempo limite de resposta do processo
 set_time_limit(1800);
 //definição do caminho para o diretorio com as fontes do FDPF
 if (!defined('FPDF_FONTPATH')) {
-    define('FPDF_FONTPATH','font/');
+    define('FPDF_FONTPATH', 'font/');
 }
 //situação externa do documento
-if(!defined('NFEPHP_SITUACAO_EXTERNA_CANCELADA')){
-	define('NFEPHP_SITUACAO_EXTERNA_CANCELADA'	,1);
-	define('NFEPHP_SITUACAO_EXTERNA_DENEGADA'	,2);
-	define('NFEPHP_SITUACAO_EXTERNA_DPEC'		,3);
-	define('NFEPHP_SITUACAO_EXTERNA_NONE'		,0);
+if (!defined('NFEPHP_SITUACAO_EXTERNA_CANCELADA')) {
+	define('NFEPHP_SITUACAO_EXTERNA_CANCELADA', 1);
+	define('NFEPHP_SITUACAO_EXTERNA_DENEGADA', 2);
+	define('NFEPHP_SITUACAO_EXTERNA_DPEC', 3);
+	define('NFEPHP_SITUACAO_EXTERNA_NONE', 0);
 }
 //classe extendida da classe FPDF para montagem do arquivo pdf
 require_once('PdfNFePHP.class.php');
@@ -79,7 +79,8 @@ require_once('CommonNFePHP.class.php');
 require_once('DocumentoNFePHP.interface.php');
 
 //classe principal
-class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
+class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
+{
     //publicas
     public $logoAlign='C'; //alinhamento do logo
     public $yDados=0;
@@ -90,13 +91,13 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
     protected $xml; // string XML NFe
     protected $logomarca=''; // path para logomarca em jpg
     protected $errMsg=''; // mesagens de erro
-    protected $errStatus=FALSE;// status de erro TRUE um erro ocorreu FALSE sem erros
+    protected $errStatus=false;// status de erro TRUE um erro ocorreu FALSE sem erros
     protected $orientacao='P'; //orientação da DANFE P-Retrato ou L-Paisagem
     protected $papel='A4'; //formato do papel
     protected $destino = 'I'; //destivo do arquivo pdf I-borwser, S-retorna o arquivo, D-força download, F-salva em arquivo local
     protected $pdfDir=''; //diretorio para salvar o pdf com a opção de destino = F
     protected $fontePadrao='Times'; //Nome da Fonte para gerar o DANFE
-    protected $version = '2.1.29';
+    protected $version = '2.1.30';
     protected $textoAdic = '';
     protected $wAdic = 0;
     protected $wPrint; //largura imprimivel
@@ -415,7 +416,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
         $flagVTT = $flagVTT && strpos(strtolower(trim($this->textoAdic)),'aprox');
         $flagVTT = $flagVTT && (strpos(strtolower(trim($this->textoAdic)),'trib') || strpos(strtolower(trim($textoAdic)),'imp'));
         $vTotTrib = !empty($this->ICMSTot->getElementsByTagName("vTotTrib")->item(0)->nodeValue) ? $this->ICMSTot->getElementsByTagName("vTotTrib")->item(0)->nodeValue : '';
-        if ($vTotTrib != '' && !flagVTT) {
+        if ($vTotTrib != '' && !$flagVTT) {
             $this->textoAdic .= "\n Valor Aproximado dos Tributos : R$ " . number_format($vTotTrib, 2, ",", ".");  
         }
         //fim da alteração NT 2013.003 Lei da Transparência
