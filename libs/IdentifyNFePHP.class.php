@@ -23,7 +23,7 @@
  *
  * @package     NFePHP
  * @name        DocumentoNFePHP.interface.php
- * @version     2.11
+ * @version     2.12
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2013 &copy; NFePHP
@@ -32,6 +32,7 @@
  * 
  *
  * Este arquivo contem funções para identificar conteúdo de arquivos 
+ * 2.12 - Adicionado descrição das constantes para facilitar a interpretação do tipo do arquivo
  * 2.11 - faltou um ); na linha 446
  * 2.10 - adicionado novos tipos de TXT, erro no evento - !empty($chave) deveria ser empty($chave)
  * 2.09 - adicionado comentarios
@@ -107,7 +108,49 @@ if (!defined('NFEPHP_TIPO_ARQUIVO_DESCONHECIDO')) {
 if (!class_exists('IdentifyNFePHP')) {
     class IdentifyNFePHP
     {
-        public $path_zbarimg='';
+         public $tipos_nomes=array(
+		NFEPHP_TIPO_ARQUIVO_ARRAY => 'Array',
+		NFEPHP_TIPO_ARQUIVO_DESCONHECIDO => 'Desconhecido',
+		/* 1 a 99 => xml de documentos, autorizados ou sem protocolo */
+		NFEPHP_TIPO_ARQUIVO_NFE => 'XML - NFe',
+		NFEPHP_TIPO_ARQUIVO_NFE_SEM_PROTOCOLO => 'XML - NFe Sem protocolo',
+		NFEPHP_TIPO_ARQUIVO_CTE => 'XML - CTe',
+		NFEPHP_TIPO_ARQUIVO_CTE_SEM_PROTOCOLO => 'XML - CTe Sem protocolo',
+		NFEPHP_TIPO_ARQUIVO_NFE_NFEB2B => 'XML - NFeB2B',
+		NFEPHP_TIPO_ARQUIVO_NFCE => 'XML - NFCe',
+		NFEPHP_TIPO_ARQUIVO_NFCE_SEM_PROTOCOLO => 'XML - NFCe Sem protocolo',
+		NFEPHP_TIPO_ARQUIVO_DPEC_NFE => 'XML - DPEC NFe',
+		NFEPHP_TIPO_ARQUIVO_DPEC_CTE => 'XML - DPEC CTe',
+
+		/* 100 => eventos */
+		NFEPHP_TIPO_ARQUIVO_EVENTONFE => 'XML - Evento NFe',
+		NFEPHP_TIPO_ARQUIVO_NFE_PROCCANCNFE => 'XML - ProcCanc NFe',
+		NFEPHP_TIPO_ARQUIVO_CTE_PROCCANCCTE => 'XML - ProcCanc CTe',
+		NFEPHP_TIPO_ARQUIVO_EVENTOCTE => 'XML - Evento CTe',
+		NFEPHP_TIPO_ARQUIVO_EVENTONFCE => 'XML - Evento NFCe',
+
+		/* 200 => inutilizações e operações com a série do documento fiscal */
+		NFEPHP_TIPO_ARQUIVO_NFE_INUTFAIXA => 'XML - Inutilização NFe',
+		NFEPHP_TIPO_ARQUIVO_CTE_INUTFAIXA => 'XML - Inutilização CTe',
+
+		/* 300 => arquivos TXT para conversão para documentos (normalmente XML) */
+		NFEPHP_TIPO_ARQUIVO_TXT_NFE => 'TXT - NFe',
+		NFEPHP_TIPO_ARQUIVO_TXT_CTE => 'TXT - CTe',
+		NFEPHP_TIPO_ARQUIVO_TXT_NFE_EMITENTE => 'TXT - Emitente',
+		NFEPHP_TIPO_ARQUIVO_TXT_NFE_CLIENTE => 'TXT - Cliente',
+		NFEPHP_TIPO_ARQUIVO_TXT_NFE_PRODUTO => 'TXT - Produto',
+		NFEPHP_TIPO_ARQUIVO_TXT_NFE_TRANSPORTADORA => 'TXT - Transportadora',
+
+		/* 400 => arquivos que representam graficamente um documento,
+		ou que contenham código de barra referente a documentos fiscais/boletos/contas
+		*/
+		NFEPHP_TIPO_ARQUIVO_PDF_NFE => 'Codigo Barra - NFe',
+		NFEPHP_TIPO_ARQUIVO_PDF_NFCE => 'Codigo Barra - NFCe',
+		NFEPHP_TIPO_ARQUIVO_PDF_CTE => 'Codigo Barra - CTe',
+		NFEPHP_TIPO_ARQUIVO_PDF_BOLETO => 'Codigo Barra - Boleto Bancário',
+		NFEPHP_TIPO_ARQUIVO_PDF_CONTAS => 'Codigo Barra - Contas'
+         );
+         public $path_zbarimg='';
         public $path_convert='';
         public $path_tmp='';
         public function __construct($path_zbarimg = '', $path_convert = '', $path_tmp = '')
