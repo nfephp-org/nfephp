@@ -27,7 +27,7 @@
  * 
  * @package   NFePHP
  * @name      CTeNFePHP
- * @version   1.0.18
+ * @version   1.0.19
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; CTePHP
  * @link      http://www.nfephp.org/
@@ -40,8 +40,10 @@
  *          Fernando Mertins <fernando.mertins at gmail dot com>
  *          Herbert Silva <hebert2 at gmail dot com>
  *          Lucimar A. Magalhaes <lucimar.magalhaes at assistsolucoes dot com dot br>
+ *          Matheus Marabesi <matheusmarabesi at gmail dot com>
  *          Roberto Spadim  <roberto at spadim dot com dot br>
  *          Rodrigo Rysdyk <rodrigo_rysdyk at hotmail dot com>
+ *          
  *
  *
  */
@@ -1986,8 +1988,8 @@ class CTeNFePHP {
         $dXML .= '<CNPJ>' . $this->cnpj . '</CNPJ>';
         $dXML .= '<mod>57</mod>';
         $dXML .= '<serie>' . $nSerie . '</serie>';
-        $dXML .= '<nNFIni>' . $nIni . '</nNFIni>';
-        $dXML .= '<nNFFin>' . $nFin . '</nNFFin>';
+        $dXML .= '<nCTIni>' . $nIni . '</nCTIni>';
+        $dXML .= '<nCTFin>' . $nFin . '</nCTFin>';
         $dXML .= '<xJust>' . $xJust . '</xJust>';
         $dXML .= '</infInut>';
         $dXML .= '</inutCTe>';
