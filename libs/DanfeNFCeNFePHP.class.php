@@ -376,9 +376,6 @@ class DanfeNFCeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
 	if(is_array($papel) && strtolower($papel[1])=='one-page'){
 		$mpdf=new mPDF('',array($papel[0],841,89),0,'',0,0,0,0,0,'P');
 		$mpdf->WriteHTML($HTML,0,true,false);
-#die($HTML);
-#print_r($mpdf);
-#die();
 		$height=$mpdf->y;
 		$papel=array($papel[0],$mpdf->y);
 	}
