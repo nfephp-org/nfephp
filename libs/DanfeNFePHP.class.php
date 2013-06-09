@@ -123,6 +123,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
     protected $transp;
     protected $transporta;
     protected $veicTransp;
+    protected $reboque;
     protected $infAdic;
     protected $tpEmis;
     protected $tpImp; //1-Retrato/ 2-Paisagem
@@ -190,6 +191,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
             $this->transp     = $this->dom->getElementsByTagName("transp")->item(0);
             $this->transporta = $this->dom->getElementsByTagName("transporta")->item(0);
             $this->veicTransp = $this->dom->getElementsByTagName("veicTransp")->item(0);
+	    $this->reboque    = $this->dom->getElementsByTagName("reboque")->item(0);
             $this->infAdic    = $this->dom->getElementsByTagName("infAdic")->item(0);
             $this->compra     = $this->dom->getElementsByTagName("compra")->item(0);
             $this->tpEmis     = $this->ide->getElementsByTagName("tpEmis")->item(0)->nodeValue;
@@ -1696,6 +1698,8 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $this->__textBox($x,$y,$w2,$h,$texto,$aFont,'T','L',1,'');
         if ( isset($this->veicTransp) ){
             $texto = !empty($this->veicTransp->getElementsByTagName("placa")->item(0)->nodeValue) ? $this->veicTransp->getElementsByTagName("placa")->item(0)->nodeValue : '';
+        } else if ( isset($this->reboque) ){
+            $texto = !empty($this->reboque->getElementsByTagName("placa")->item(0)->nodeValue) ? $this->reboque->getElementsByTagName("placa")->item(0)->nodeValue : '';
         } else {
             $texto = '';
         }
@@ -1709,6 +1713,8 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $this->__textBox($x,$y,$w3,$h,$texto,$aFont,'T','L',1,'');
         if ( isset($this->veicTransp) ){
             $texto = !empty($this->veicTransp->getElementsByTagName("UF")->item(0)->nodeValue) ? $this->veicTransp->getElementsByTagName("UF")->item(0)->nodeValue : '';
+        } else if ( isset($this->reboque) ){
+            $texto = !empty($this->reboque->getElementsByTagName("UF")->item(0)->nodeValue) ? $this->reboque->getElementsByTagName("UF")->item(0)->nodeValue : '';
         } else {
             $texto = '';
         }
