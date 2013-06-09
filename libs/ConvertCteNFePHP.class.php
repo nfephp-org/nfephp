@@ -985,7 +985,7 @@ class ConvertCteNFePHP{ //implements ConvertCTePHP{
 						if(!empty($v2['infAdFisco']))
 							$IMP->appendChild($dom->createElement('infAdFisco',$v2['infAdFisco']));
 						// lei da transparencia
-						if(!empty($v2['vTotTrib']))
+						if(!empty($v2['vTotTrib']) && strlen(trim($v2['vTotTrib']))>0)
 							$IMP->appendChild($dom->createElement('vTotTrib',$v2['vTotTrib']));
 						// lei da transparencia
 						$infCte->appendChild($IMP);

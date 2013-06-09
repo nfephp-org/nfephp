@@ -1187,8 +1187,11 @@ class ConvertNfeNFePHP{ //implements ConvertNFePHP{
 					}elseif($v2['TAG']=='M' && isset($I_prod) && !isset($M_imposto)){
 						$M_imposto = $dom->createElement("imposto");
 						// lei da transparencia
-						$vTotTrib = $dom->createElement("vTotTrib", $v2['vTotTrib']);
-						$M_imposto->appendChild($vTotTrib);
+						$vTotTrib=trim($v2['vTotTrib']);
+						if(strlen($vTotTrib)>0){
+							$vTotTrib = $dom->createElement("vTotTrib", $vTotTrib);
+							$M_imposto->appendChild($vTotTrib);
+						}
 						unset($vTotTrib);
 						//
 						
@@ -1375,8 +1378,10 @@ class ConvertNfeNFePHP{ //implements ConvertNFePHP{
 						$infNFe->appendChild($W_total);
 					}elseif($v2['TAG']=='W02' && isset($W_total)){
 						$tmp_grupo = $dom->createElement("ICMSTot");	// porque diabos é 'icmstot', se é o total da nota
-						foreach($campos as $nome_campo)
-							$tmp_grupo->appendChild( $dom->createElement($nome_campo,$v2[$nome_campo]) );
+						foreach($campos as $nome_campo){
+							if(($nome_campo=='vTotTrib' && $v2[$nome_campo]!='') || $nome_campo!='vTotTrib')
+								$tmp_grupo->appendChild( $dom->createElement($nome_campo,$v2[$nome_campo]) );
+						}
 						$W_total->appendChild($tmp_grupo);
 					}elseif($v2['TAG']=='W17' && isset($W_total)){
 						$tmp_grupo = $dom->createElement("ISSQNtot");
@@ -2156,8 +2161,12 @@ class ConvertNfeNFePHP{ //implements ConvertNFePHP{
 					
 					// lei da transparencia
 					$imposto=$item->getElementsByTagName("imposto")->item(0);
-					$vTotTrib=$imposto->getElementsByTagName('vTotTrib')->item(0);
-					$CUR_TXT	.="M|$vTotTrib|\n";
+					$vTotTrib=trim($imposto->getElementsByTagName('vTotTrib')->item(0));
+					if(strlen($vTotTrib)>0){
+						$CUR_TXT	.="M|$vTotTrib|\n";
+					}else{
+						$CUR_TXT	.="M|\n";
+					}
 					// N - ICMS
 					$CUR_TXT	.="N|\n";
 					// NXXXX

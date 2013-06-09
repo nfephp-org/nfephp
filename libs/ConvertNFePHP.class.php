@@ -1044,10 +1044,12 @@ class ConvertNFePHP
                     $imposto = $dom->createElement("imposto");
                     //lei da transparencia 12.741/12
                     //Nota Técnica 2013/003
-                    if (!empty($dados[1])) {
-                        $vTotTrib = $dom->createElement("vTotTrib", $dados[1]);
+		    $vTotTrib=trim($dados[1]);
+                    if (strlen($vTotTrib)>0) {
+                        $vTotTrib = $dom->createElement("vTotTrib", $vTotTrib);
                         $imposto->appendChild($vTotTrib);
                     }
+		    unset($vTotTrib);
                     if (!isset($infAdProd)) {
                         $det->appendChild($imposto);
                     } else {
@@ -1822,10 +1824,12 @@ class ConvertNFePHP
                     $ICMSTot->appendChild($vNF);
                     //lei da transparencia 12.741/12
                     //Nota Técnica 2013/003
-                    if (!empty($dados[15])) {
-                        $vTotTrib = $dom->createElement("vTotTrib", $dados[15]);
+		    $vTotTrib=trim($dados[15]);
+                    if (strlen($vTotTrib)>0) {
+                        $vTotTrib = $dom->createElement("vTotTrib", $vTotTrib);
                         $ICMSTot->appendChild($vTotTrib);
                     }
+		    unset($vTotTrib);
                     $total->appendChild($ICMSTot);
                     break;
                 case "W17":
