@@ -24,7 +24,7 @@
  *
  * @category  NFePHP
  * @package   NFePHP
- * @name      DocumentoNFePHP.interface.php
+ * @name      IdentifyNFePHP.class.php
  * @author    Roberto Spadim <roberto at spadim dot com dot br>
  * @copyright 2009-2013 &copy; NFePHP
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
