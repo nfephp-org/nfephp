@@ -929,7 +929,6 @@ class ConvertNfeNFePHP{ //implements ConvertNFePHP{
 							$B_NFref->appendChild($B_refNFP);
 						}elseif($v2['TAG']=='B20d' && isset($B_refNFP) && !isset($B_refNFP_CPF_CNPJ)){
 							$B_refNFP->insertBefore( $dom->createElement("CNPJ", 	$v2['CNPJ']) , $B20a_IE);
-							unset($tmp_cnpj);
 							$B_refNFP_CPF_CNPJ=true;
 						}elseif($v2['TAG']=='B20e' && isset($B_refNFP) && !isset($B_refNFP_CPF_CNPJ)){
 							$B_refNFP->insertBefore( $B_refNFP->appendChild( $dom->createElement("CPF", 	$v2['CPF']) ) , $B20a_IE);
