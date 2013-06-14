@@ -1901,28 +1901,27 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
     protected function __descricaoProduto( $itemProd ){
         $prod = $itemProd->getElementsByTagName('prod')->item(0);
         $ICMS = $itemProd->getElementsByTagName("ICMS")->item(0);
-        $ivaTxt = '';
+        $impostsos = '';
         if (!empty($ICMS)){
-            $ivaTxt = !empty($ICMS->getElementsByTagName("pMVAST")->item(0)->nodeValue) ? number_format($ICMS->getElementsByTagName("pMVAST")->item(0)->nodeValue, 2, ",", ".") : '';
-            if ($icmsBCTxt != 0){	// redução ICMS
-                $ivaTxt .= " pRedBC = ".number_format($icmsBCTxt, 2, ",", ".")."%";
-
-
+            $pRedBC = !empty($ICMS->getElementsByTagName("pRedBC")->item(0)->nodeValue) ? number_format($ICMS->getElementsByTagName("pRedBC")->item(0)->nodeValue, 2, ",", ".") : '';
+            if ($pRedBC != 0){	// redução da base de cáclulo do ICMS
+                $impostsos .= " pRedBC=".number_format($pRedBC, 2, ",", ".")."%";
             }
+            $ivaTxt = !empty($ICMS->getElementsByTagName("pMVAST")->item(0)->nodeValue) ? number_format($ICMS->getElementsByTagName("pMVAST")->item(0)->nodeValue, 2, ",", ".") : '';
             if ($ivaTxt != ''){
-                $ivaTxt = " IVA=$ivaTxt%";
+                $impostsos = " IVA=$ivaTxt%";
             }
             $icmsStTxt = !empty($ICMS->getElementsByTagName("pICMSST")->item(0)->nodeValue) ? number_format($ICMS->getElementsByTagName("pICMSST")->item(0)->nodeValue, 2, ",", ".") : '';
             if ($icmsStTxt != ''){
-                $ivaTxt .= " pIcmsSt=$icmsStTxt%";
+                $impostsos .= " pIcmsSt=$icmsStTxt%";
             }
             $bcIcmsSt = !empty($ICMS->getElementsByTagName("vBCST")->item(0)->nodeValue) ? number_format($ICMS->getElementsByTagName("vBCST")->item(0)->nodeValue, 2, ",", ".") : '';
-            if ($icmsStTxt != ''){
-                $ivaTxt .= " BcIcmsSt=$bcIcmsSt";
+            if ($bcIcmsSt != ''){
+                $impostsos .= " BcIcmsSt=$bcIcmsSt";
             }
             $vIcmsSt = !empty($ICMS->getElementsByTagName("vICMSST")->item(0)->nodeValue) ? number_format($ICMS->getElementsByTagName("vICMSST")->item(0)->nodeValue, 2, ",", ".") : '';
-            if ($icmsStTxt != ''){
-                $ivaTxt .= " vIcmsSt=$vIcmsSt";
+            if ($vIcmsSt != ''){
+                $impostsos .= " vIcmsSt=$vIcmsSt";
             }
         }
         $infAdProd = substr(!empty($itemProd->getElementsByTagName('infAdProd')->item(0)->nodeValue) ? $this->__anfavea($itemProd->getElementsByTagName('infAdProd')->item(0)->nodeValue) : '',0,500);
@@ -1946,7 +1945,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
                 $medTxt.= ' ';
             }
         }
-	$tmp_ad=$infAdProd . $medTxt . $ivaTxt;
+	$tmp_ad=$infAdProd . $medTxt . $impostsos;
 	$texto = $prod->getElementsByTagName("xProd")->item(0)->nodeValue . (strlen($tmp_ad)!=0?"\n    ".$tmp_ad:'');
         $texto = str_replace( ";" , "\n" , $texto );
         return $texto;
