@@ -86,7 +86,6 @@ class DacceNFePHP extends CommonNFePHP {
     protected $CPFDest = '';
     protected $dhRegEvento;
     protected $nProt;
-    protected $debugMode=2;
     //objetos
     private $dom;
     private $procEventoNFe;
