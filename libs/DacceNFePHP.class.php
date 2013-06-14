@@ -31,7 +31,7 @@
  * @author      Roberto L. Machado <linux.rlm at gmail dot com>
  *
  *        CONTRIBUIDORES (por ordem alfabetica):
- *              Fernando Mertins <fernando dot mertins at gmail dot com> 
+ *              Fernando Mertins <fernando dot mertins at gmail dot com>
  *              Leandro C. Lopez <leandro dot castoldi at gmail dot com>
  */
 //define o caminho base da instalação do sistema
@@ -50,7 +50,7 @@ require_once('PdfNFePHP.class.php');
 require_once('CommonNFePHP.class.php');
 
 class DacceNFePHP extends CommonNFePHP {
-    
+
     //publicas
     public $logoAlign='C'; //alinhamento do logo
     public $yDados=0;
@@ -94,8 +94,8 @@ class DacceNFePHP extends CommonNFePHP {
     private $infEvento;
     private $retEvento;
     private $rinfEvento;
-    
-    
+
+
    /**
     *__construct
     * @package NFePHP
@@ -177,9 +177,9 @@ class DacceNFePHP extends CommonNFePHP {
         $this->dhRegEvento = $this->rinfEvento->getElementsByTagName("dhRegEvento")->item(0)->nodeValue;
         $this->nProt = $this->rinfEvento->getElementsByTagName("nProt")->item(0)->nodeValue;
     }//fim __construct
-    
+
     /**
-     * 
+     *
      */
     private function __buildCCe(){
         $this->pdf = new PdfNFePHP($this->orientacao, 'mm', $this->papel);
@@ -194,7 +194,7 @@ class DacceNFePHP extends CommonNFePHP {
             if($this->papel =='A4'){ //A4 210x297mm
                 $maxW = 210;
                 $maxH = 297;
-            }    
+            }
         } else {
             // margens do PDF
             $margSup = 3;
@@ -208,7 +208,7 @@ class DacceNFePHP extends CommonNFePHP {
                 $maxW = 297;
             }
         }//orientação
-        
+
         //largura imprimivel em mm
         $this->wPrint = $maxW-($margEsq+$xInic);
         //comprimento imprimivel em mm
@@ -236,11 +236,11 @@ class DacceNFePHP extends CommonNFePHP {
         //coloca os dados da CCe
         $y = $this->__footerCCe($x,$y+$this->hPrint-20);
 
-        
+
     } //fim __buildCCe
-    
+
     /**
-     * 
+     *
      * @param type $x
      * @param type $y
      * @param type $pag
@@ -350,7 +350,7 @@ class DacceNFePHP extends CommonNFePHP {
 
         $aFont = array('font'=>$this->fontePadrao,'size'=>12,'style'=>'I');
         $this->__textBox($x,$y+7,$w2,8,'(Carta de Correção Eletrônica)',$aFont,'T','C',0,'');
-        
+
         $texto = 'ID do Evento: '.$this->id;
         $aFont = array('font'=>$this->fontePadrao,'size'=>10,'style'=>'');
         $this->__textBox($x,$y+15,$w2,8,$texto,$aFont,'T','L',0,'');
@@ -362,7 +362,7 @@ class DacceNFePHP extends CommonNFePHP {
         $tsHora = $this->__convertTime($this->dhRegEvento);
         $texto = 'Prococolo: '.$this->nProt.'  -  Registrado na SEFAZ em: '.date('d/m/Y   H:i:s',$tsHora);
         $this->__textBox($x,$y+25,$w2,8,$texto,$aFont,'T','L',0,'');
-        
+
         //$cStat;
         //$tpAmb;
         //####################################################
@@ -381,7 +381,7 @@ class DacceNFePHP extends CommonNFePHP {
             $texto = 'CNPJ do Destinatário: '.$this->__format($this->CNPJDest,"##.###.###/####-##");
         }
         if ($this->CPFDest != ''){
-            $texto = 'CPF do Destinatário: '.$this->__format($this->CPFDest,"###.###.###-##");            
+            $texto = 'CPF do Destinatário: '.$this->__format($this->CPFDest,"###.###.###-##");
         }
         $aFont = array('font'=>$this->fontePadrao,'size'=>12,'style'=>'B');
         $this->__textBox($x+2,$y+13,$w2,8,$texto,$aFont,'T','L',0,'');
@@ -391,7 +391,7 @@ class DacceNFePHP extends CommonNFePHP {
         $numNF = $this->__format($numNF,"###.###.###");
         $texto = "Nota Fiscal: " . $numNF .'  -   Série: '.$serie;
         $this->__textBox($x+2,$y+19,$w2,8,$texto,$aFont,'T','L',0,'');
-        
+
         $bW = 87;
         $bH = 15;
         $x = 55;
@@ -411,13 +411,13 @@ class DacceNFePHP extends CommonNFePHP {
         $texto = $this->xCondUso;
         $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'I');
         $this->__textBox($x+2,$sY+2,$maxW-2,15,$texto,$aFont,'T','L',0,'',false);
-        
+
         return $sY+2;
-        
+
     }// fim __headerCCe
-    
+
     /**
-     * 
+     *
      * @param type $x
      * @param int $y
      */
@@ -432,13 +432,13 @@ class DacceNFePHP extends CommonNFePHP {
         $texto = $this->xCorrecao;
         $aFont = array('font'=>$this->fontePadrao,'size'=>12,'style'=>'B');
         $this->__textBox($x+2,$y+2,$maxW-2,150,$texto,$aFont,'T','L',0,'',false);
-        
-        
+
+
     }//fim __bodyCCe
-    
-    
+
+
     /**
-     * 
+     *
      * @param type $x
      * @param type $y
      */
@@ -460,7 +460,7 @@ class DacceNFePHP extends CommonNFePHP {
     }//fim __footerCCe
 
     /**
-     * 
+     *
      * @param type $nome
      * @param string $destino
      * @param type $printer
@@ -479,10 +479,10 @@ class DacceNFePHP extends CommonNFePHP {
         }
         if ($printer != ''){
             $command = "-P $printer";
-        } 
+        }
         $this->__buildCCe();
         $arq = $this->pdf->Output($file,$destino);
-        
+
         if ( $destino == 'S' ){
             //aqui pode entrar a rotina de impressão direta
             $command = "lpr $command $file";
@@ -491,7 +491,7 @@ class DacceNFePHP extends CommonNFePHP {
         return $arq;
 
     }//fim printCCe
-     
+
 } //fim CCeNFePHP
 
 ?>

@@ -141,7 +141,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
     protected $debugMode = 2;
     protected $formatPadrao;
     protected $formatNegrito;
-    
+
 
     /**
      * __construct
@@ -340,7 +340,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
     protected function __cteDPEC(){
         return $this->situacao_externa==NFEPHP_SITUACAO_EXTERNA_DPEC && $this->numero_registro_dpec!='';
     }
-    
+
     protected function __cteDenegada(){	/* NÃO ERA NECESSÁRIO ESSA FUNÇÃO POIS SÓ SE USA 1 VEZ NO ARQUIVO INTEIRO) */
         $cStat = $this->__simpleGetValue( $this->cteProc , "cStat");
         return $cStat == '110' || $cStat == '301' || $cStat == '302' || $this->situacao_externa==NFEPHP_SITUACAO_EXTERNA_DENEGADA;
@@ -353,8 +353,8 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
      * A definição de margens e posições iniciais para a impressão são estabelecidas no
      * pelo conteúdo da funçao e podem ser modificados.
      *
-     * @param  string $orientacao (Opcional) Estabelece a orientação da 
-     *                impressão (ex. P-retrato), se nada for fornecido será 
+     * @param  string $orientacao (Opcional) Estabelece a orientação da
+     *                impressão (ex. P-retrato), se nada for fornecido será
      *                usado o padrão da NFe
      * @param  string $papel      (Opcional) Estabelece o tamanho do papel (ex. A4)
      * @return string O ID da NFe numero de 44 digitos extraido do arquivo XML
