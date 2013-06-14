@@ -314,7 +314,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
      * @param  string $logoAlign  C, L ou R
      * @return string montagem
      */
-    public function monta($orientacao = '', $papel = 'A4', $logoAlign = 'C',$situacao_externa=NFEPHP_SITUACAO_EXTERNA_NONE,$CLASSE_PDF=false)
+    public function monta($orientacao = '', $papel = 'A4', $logoAlign = 'C',$situacao_externa=NFEPHP_SITUACAO_EXTERNA_NONE,$CLASSE_PDF=false,$DPEC_NUMERO_REGISTRO='')
     {
         return $this->montaDACTE($orientacao, $papel, $logoAlign,$situacao_externa,$CLASSE_PDF);
     }
@@ -359,7 +359,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
      * @param  string $papel      (Opcional) Estabelece o tamanho do papel (ex. A4)
      * @return string O ID da NFe numero de 44 digitos extraido do arquivo XML
      */
-    public function montaDACTE($orientacao = '', $papel = 'A4', $logoAlign = 'L',$situacao_externa=NFEPHP_SITUACAO_EXTERNA_NONE,$CLASSE_PDF=false)
+    public function montaDACTE($orientacao = '', $papel = 'A4', $logoAlign = 'L',$situacao_externa=NFEPHP_SITUACAO_EXTERNA_NONE,$CLASSE_PDF=false, $DPEC_NUMERO_REGISTRO='')
     {
         //se a orientação estiver em branco utilizar o padrão estabelecido na NF
         if ($orientacao == '') {
