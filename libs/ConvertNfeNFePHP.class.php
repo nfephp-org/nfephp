@@ -5,6 +5,7 @@
 */
 class ConvertNfeNFePHP{ //implements ConvertNFePHP{
 /*
+ *      versão 1.01 - 13/06/2013 - corrigido referencia de nota de produtor (ie estava antes do cnpj/cpf)
  *	TXT2XML, pode receber uma string com o conteudo TXT, ou uma string com o nome do arquivo, ou um array com o conteudo do TXT ja 'parcialmente' interpretado
  *			o retorno é um array no seguinte formato:
  *			array(
@@ -836,7 +837,8 @@ class ConvertNfeNFePHP{ //implements ConvertNFePHP{
 			$dom->preserveWhiteSpace = false;
 			$cur_version='';
 			unset(	$NFe, $infNFe, $ZC01_cana, $Z_infAdic, $X26_vol, $X_transp, $W_total, $G_entrega, 
-				$F_retirada, $E_dest, $C_emit, $B_refNFP, $B_refNFP_CPF_CNPJ, $B_NFref, $ide, $H_det, $Y_cobr,
+				$F_retirada, $E_dest, $C_emit, $B_refNFP, $B_refNFP_CPF_CNPJ, $B_NFref, $B20a_IE,
+				$ide, $H_det, $Y_cobr,
 				$C_xNome, $C_IE, $G_xLgr, $X03_transporta,
 				
 				$M_imposto, $I_prod, $I18_DI, $H_infAdProd, 
@@ -918,16 +920,18 @@ class ConvertNfeNFePHP{ //implements ConvertNFePHP{
 							$B_refNFP = $dom->createElement("refNFP");
 							$B_refNFP->appendChild( $dom->createElement("cUF",	$v2['cUF']) );
 							$B_refNFP->appendChild( $dom->createElement("AAMM",	$v2['AAMM']) );
-							$B_refNFP->appendChild( $dom->createElement("IE",	$v2['IE']) );
+							// CPF OU CNPJ VEM AKI
+							$B20a_IE = $dom->createElement("IE",	$v2['IE']);
+							$B_refNFP->appendChild( $B20a_IE );
 							$B_refNFP->appendChild( $dom->createElement("mod",	$v2['mod']) );
 							$B_refNFP->appendChild( $dom->createElement("serie",	$v2['serie']) );
 							$B_refNFP->appendChild( $dom->createElement("nNF",	$v2['nNF']) );
 							$B_NFref->appendChild($B_refNFP);
 						}elseif($v2['TAG']=='B20d' && isset($B_refNFP) && !isset($B_refNFP_CPF_CNPJ)){
-							$B_refNFP->appendChild( $dom->createElement("CNPJ", 	$v2['CNPJ']) );
+							$B_refNFP->insertBefore( $dom->createElement("CNPJ", 	$v2['CNPJ']) , $B20a_IE);
 							$B_refNFP_CPF_CNPJ=true;
 						}elseif($v2['TAG']=='B20e' && isset($B_refNFP) && !isset($B_refNFP_CPF_CNPJ)){
-							$B_refNFP->appendChild( $dom->createElement("CPF", 	$v2['CPF']) );
+							$B_refNFP->insertBefore( $B_refNFP->appendChild( $dom->createElement("CPF", 	$v2['CPF']) ) , $B20a_IE);
 							$B_refNFP_CPF_CNPJ=true;
 						}elseif($v2['TAG']=='B13' || $v2['TAG']=='B20i'){
 							// tags com 1 unico elemento (NFe, CTe)
