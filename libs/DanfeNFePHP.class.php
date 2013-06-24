@@ -23,7 +23,7 @@
  *
  * @package     NFePHP
  * @name        DanfeNFePHP.class.php
- * @version     2.1.30
+ * @version     2.1.31
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2012 &copy; NFePHP
@@ -97,7 +97,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
     protected $destino = 'I'; //destivo do arquivo pdf I-borwser, S-retorna o arquivo, D-força download, F-salva em arquivo local
     protected $pdfDir=''; //diretorio para salvar o pdf com a opção de destino = F
     protected $fontePadrao='Times'; //Nome da Fonte para gerar o DANFE
-    protected $version = '2.1.30';
+    protected $version = '2.1.31';
     protected $textoAdic = '';
     protected $wAdic = 0;
     protected $wPrint; //largura imprimivel
@@ -126,6 +126,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
     protected $reboque;
     protected $infAdic;
     protected $tpEmis;
+    protected $infProt;
     protected $tpImp; //1-Retrato/ 2-Paisagem
     protected $compra;
     protected $debugMode=2; //ativa ou desativa o modo de debug
@@ -196,6 +197,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
             $this->compra     = $this->dom->getElementsByTagName("compra")->item(0);
             $this->tpEmis     = $this->ide->getElementsByTagName("tpEmis")->item(0)->nodeValue;
             $this->tpImp      = $this->ide->getElementsByTagName("tpImp")->item(0)->nodeValue;
+            $this->infProt    = $this->dom->getElementsByTagName("infProt")->item(0); 
        }
     } //fim construct
 
@@ -1091,7 +1093,12 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
             $y += $h;
             $h = 5;
             $w = $maxW-(2*$x);
-            $texto = "SEM VALOR FISCAL";
+            if (isset($this->infProt)) {
+                $xMotivo = $this->infProt->getElementsByTagName("xMotivo")->item(0)->nodeValue;
+            } else {
+                $xMotivo = '';
+            }
+            $texto = "SEM VALOR FISCAL\n".$xMotivo;
             $aFont = array('font'=>$this->fontePadrao,'size'=>48,'style'=>'B');
             $this->__textBox($x,$y,$w,$h,$texto,$aFont,'C','C',0,'');
             $this->pdf->SetTextColor(0,0,0);
