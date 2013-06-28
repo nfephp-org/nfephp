@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.0.66
+ * @version   3.0.67
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -73,12 +73,13 @@
  */
 //define o caminho base da instalação do sistema
 if (!defined('PATH_ROOT')) {
-   define('PATH_ROOT', dirname(dirname( __FILE__ )) . DIRECTORY_SEPARATOR);
+    define('PATH_ROOT', dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR);
 }
 /**
  * Classe principal "CORE class"
  */
-class ToolsNFePHP {
+class ToolsNFePHP
+{
 
     // propriedades da classe
     /**
@@ -474,7 +475,7 @@ class ToolsNFePHP {
     private $aliaslist = array('AC'=>'SVRS',
                                'AL'=>'SVRS',
                                'AM'=>'AM',
-                               'AN'=>'AN', 
+                               'AN'=>'AN',
                                'AP'=>'SVRS',
                                'BA'=>'BA',
                                'CE'=>'CE',
@@ -500,7 +501,7 @@ class ToolsNFePHP {
                                'SP'=>'SP',
                                'TO'=>'SVRS',
                                'SCAN'=>'SCAN',
-                               'SVAN'=>'SVAN', 
+                               'SVAN'=>'SVAN',
                                'DPEC'=>'DPEC');
     /**
      * cUFlist
@@ -650,7 +651,7 @@ class ToolsNFePHP {
      * @var string
      */
     public $danfefont = 'Times';
-   /**
+    /**
      * danfeprinter
      * Estabelece a printer padrão a ser utilizada na impressão da DANFE
      * @var string
@@ -684,25 +685,28 @@ class ToolsNFePHP {
      * @param number $mododebug Opcional 2-Não altera nenhum paraâmetro 1-SIM ou 0-NÃO (2 default)
      * @return  boolean true sucesso false Erro
      */
-    function __construct($aConfig='',$mododebug=2,$exceptions=false) {
-        if(is_numeric($mododebug)){
+    function __construct($aConfig = '', $mododebug = 2, $exceptions = false)
+    {
+        if (is_numeric($mododebug)) {
             $this->debugMode = $mododebug;
         }
-        if($mododebug == 1){
+        if ($mododebug == 1) {
             //ativar modo debug
-            error_reporting(E_ALL);ini_set('display_errors', 'On');
+            error_reporting(E_ALL);
+            ini_set('display_errors', 'On');
         }
-        if($mododebug == 0){
+        if ($mododebug == 0) {
             //desativar modo debug
-            error_reporting(0);ini_set('display_errors', 'Off');
+            error_reporting(0);
+            ini_set('display_errors', 'Off');
         }
-        if ($exceptions){
+        if ($exceptions) {
             $this->exceptions = true;
         }
         //obtem o path da biblioteca
-        $this->raizDir = dirname(dirname( __FILE__ )) . DIRECTORY_SEPARATOR;
+        $this->raizDir = dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR;
         //verifica se foi passado uma matriz de configuração na inicialização da classe
-        if(is_array($aConfig)) {
+        if (is_array($aConfig)) {
             $this->tpAmb=$aConfig['ambiente'];
             $this->empName=$aConfig['empresa'];
             $this->UF=$aConfig['UF'];
@@ -722,18 +726,18 @@ class ToolsNFePHP {
             $this->danfefont = $aConfig['danfeFonte'];
             $this->danfeprinter = $aConfig['danfePrinter'];
             $this->schemeVer = $aConfig['schemes'];
-            if (isset($aConfig['certsDir'])) { 
+            if (isset($aConfig['certsDir'])) {
                 $this->certsDir =  $aConfig['certsDir'];
             }
-            if ($aConfig['proxyIP'] != ''){
+            if ($aConfig['proxyIP'] != '') {
                 $this->aProxy = array('IP'=>$aConfig['proxyIP'],'PORT'=>$aConfig['proxyPORT'],'USER'=>$aConfig['proxyUSER'],'PASS'=>$aConfig['proxyPASS']);
             }
-            if ($aConfig['mailFROM'] != ''){
+            if ($aConfig['mailFROM'] != '') {
                 $this->aMail = array('mailFROM'=>$aConfig['mailFROM'],'mailHOST'=>$aConfig['mailHOST'],'mailUSER'=>$aConfig['mailUSER'],'mailPASS'=>$aConfig['mailPASS'],'mailPROTOCOL'=>$aConfig['mailPROTOCOL'],'mailFROMmail'=>$aConfig['mailFROMmail'],'mailFROMname'=>$aConfig['mailFROMname'],'mailREPLYTOmail'=>$aConfig['mailREPLYTOmail'],'mailREPLYTOname'=>$aConfig['mailREPLYTOname']);
             }
         } else {
             //testa a existencia do arquivo de configuração
-            if ( is_file($this->raizDir . 'config' . DIRECTORY_SEPARATOR . 'config.php') ){
+            if (is_file($this->raizDir . 'config' . DIRECTORY_SEPARATOR . 'config.php')) {
                 //carrega o arquivo de configuração
                 include($this->raizDir . 'config' . DIRECTORY_SEPARATOR . 'config.php');
                 // carrega propriedades da classe com os dados de configuração
@@ -759,13 +763,13 @@ class ToolsNFePHP {
                 $this->danfefont = $danfeFonte;
                 $this->danfeprinter = $danfePrinter;
                 $this->schemeVer = $schemes;
-                if (isset($certsDir)) { 
+                if (isset($certsDir)) {
                     $this->certsDir =  $certsDir;
                 }
-                if ($proxyIP != ''){
+                if ($proxyIP != '') {
                     $this->aProxy = array('IP'=>$proxyIP,'PORT'=>$proxyPORT,'USER'=>$proxyUSER,'PASS'=>$proxyPASS);
                 }
-                if ($mailFROM != ''){
+                if ($mailFROM != '') {
                     $this->aMail = array('mailFROM'=>$mailFROM,'mailHOST'=>$mailHOST,'mailUSER'=>$mailUSER,'mailPASS'=>$mailPASS,'mailPROTOCOL'=>$mailPROTOCOL,'mailFROMmail'=>$mailFROMmail,'mailFROMname'=>$mailFROMname,'mailREPLYTOmail'=>$mailREPLYTOmail,'mailREPLYTOname'=>$mailREPLYTOname);
                 }
             } else {
@@ -779,7 +783,7 @@ class ToolsNFePHP {
             }
         }
         //estabelece o ambiente
-        $sAmb = ($this->tpAmb == 2) ? 'homologacao' : 'producao'; 
+        $sAmb = ($this->tpAmb == 2) ? 'homologacao' : 'producao';
         //carrega propriedade com ano e mes ex. 200911
         $this->anoMes = date('Ym');
         //carrega o caminho para os schemas
@@ -792,12 +796,12 @@ class ToolsNFePHP {
         $this->imgDir =  $this->raizDir . 'images'. DIRECTORY_SEPARATOR;
         //verifica o ultimo caracter da variável $arqDir
         // se não for um DIRECTORY_SEPARATOR então colocar um
-        if (substr($this->arqDir, -1, 1) != DIRECTORY_SEPARATOR){
+        if (substr($this->arqDir, -1, 1) != DIRECTORY_SEPARATOR) {
             $this->arqDir .= DIRECTORY_SEPARATOR;
         }
         // monta a estrutura de diretorios utilizados na manipulação das NFe
         $this->entDir=$this->arqDir . $sAmb . DIRECTORY_SEPARATOR . 'entradas' . DIRECTORY_SEPARATOR;
-        $this->assDir=$this->arqDir . $sAmb . DIRECTORY_SEPARATOR . 'assinadas' . DIRECTORY_SEPARATOR;        
+        $this->assDir=$this->arqDir . $sAmb . DIRECTORY_SEPARATOR . 'assinadas' . DIRECTORY_SEPARATOR;
         $this->valDir=$this->arqDir . $sAmb . DIRECTORY_SEPARATOR . 'validadas' . DIRECTORY_SEPARATOR;
         $this->rejDir=$this->arqDir . $sAmb . DIRECTORY_SEPARATOR . 'rejeitadas' . DIRECTORY_SEPARATOR;
         $this->envDir=$this->arqDir . $sAmb . DIRECTORY_SEPARATOR . 'enviadas' . DIRECTORY_SEPARATOR;
@@ -814,94 +818,94 @@ class ToolsNFePHP {
         $this->conDir=$this->arqDir . $sAmb . DIRECTORY_SEPARATOR . 'consultadas' . DIRECTORY_SEPARATOR;
         $this->pdfDir=$this->arqDir . $sAmb . DIRECTORY_SEPARATOR . 'pdf' . DIRECTORY_SEPARATOR;
         //monta a arvore de diretórios necessária e estabelece permissões de acesso
-        if ( !is_dir($this->arqDir) ){
+        if (!is_dir($this->arqDir)) {
             mkdir($this->arqDir, 0777);
         }
-        if ( !is_dir($this->arqDir . DIRECTORY_SEPARATOR . $sAmb) ){
+        if (!is_dir($this->arqDir . DIRECTORY_SEPARATOR . $sAmb)) {
             mkdir($this->arqDir . DIRECTORY_SEPARATOR . $sAmb, 0777);
         }
-        if ( !is_dir($this->entDir) ){
+        if (!is_dir($this->entDir)) {
             mkdir($this->entDir, 0777);
         }
-        if ( !is_dir($this->assDir) ){
+        if (!is_dir($this->assDir)) {
             mkdir($this->assDir, 0777);
         }
-        if ( !is_dir($this->valDir) ){
+        if (!is_dir($this->valDir)) {
             mkdir($this->valDir, 0777);
         }
-        if ( !is_dir($this->rejDir) ){
+        if (!is_dir($this->rejDir)) {
             mkdir($this->rejDir, 0777);
         }
-        if ( !is_dir($this->envDir) ){
+        if (!is_dir($this->envDir)) {
             mkdir($this->envDir, 0777);
         }
-        if ( !is_dir($this->aprDir) ){
+        if (!is_dir($this->aprDir)) {
             mkdir($this->aprDir, 0777);
         }
-        if ( !is_dir($this->denDir) ){
+        if (!is_dir($this->denDir)) {
             mkdir($this->denDir, 0777);
         }
-        if ( !is_dir($this->repDir) ){
+        if (!is_dir($this->repDir)) {
             mkdir($this->repDir, 0777);
         }
-        if ( !is_dir($this->canDir) ){
+        if (!is_dir($this->canDir)) {
             mkdir($this->canDir, 0777);
         }
-        if ( !is_dir($this->inuDir) ){
+        if (!is_dir($this->inuDir)) {
             mkdir($this->inuDir, 0777);
         }
-        if ( !is_dir($this->cccDir) ){
+        if (!is_dir($this->cccDir)) {
             mkdir($this->cccDir, 0777);
         }
-        if ( !is_dir($this->evtDir) ){
+        if (!is_dir($this->evtDir)) {
             mkdir($this->evtDir, 0777);
         }
-        if ( !is_dir($this->dpcDir) ){
+        if (!is_dir($this->dpcDir)) {
             mkdir($this->dpcDir, 0777);
         }
-        if ( !is_dir($this->temDir) ){
+        if (!is_dir($this->temDir)) {
             mkdir($this->temDir, 0777);
         }
-        if ( !is_dir($this->recDir) ){
+        if (!is_dir($this->recDir)) {
             mkdir($this->recDir, 0777);
         }
-        if ( !is_dir($this->conDir) ){
+        if (!is_dir($this->conDir)) {
             mkdir($this->conDir, 0777);
         }
-        if ( !is_dir($this->pdfDir) ){
+        if (!is_dir($this->pdfDir)) {
             mkdir($this->pdfDir, 0777);
         }
         //carregar uma matriz com os dados para acesso aos WebServices SEFAZ
         $this->aURL = $this->loadSEFAZ($this->raizDir . 'config'. DIRECTORY_SEPARATOR . $this->xmlURLfile,$this->tpAmb,$this->UF);
         //se houver erro no carregamento dos certificados passe para erro
-        if ( !$retorno = $this->__loadCerts() ) {
+        if (!$retorno = $this->__loadCerts()) {
             $msg = "Erro no carregamento dos certificados.";
             $this->__setError($msg);
             if ($this->exceptions) {
-                throw new nfephpException($msg, self::STOP_CRITICAL);
+                throw new nfephpException($msg);
             }
         }
         //definir o timezone default para o estado do emitente
-        $tz = $this->tzUFlist[$this->UF];
-        date_default_timezone_set($tz);
+        $timezone = $this->tzUFlist[$this->UF];
+        date_default_timezone_set($timezone);
         //estados que participam do horario de verão
         $aUFhv = array('ES','GO','MG','MS','PR','RJ','RS','SP','SC','TO');
         //corrigir o timeZone
         if ($this->UF == 'AC' ||
-            $this->UF == 'AM' ||   
+            $this->UF == 'AM' ||
             $this->UF == 'MT' ||
             $this->UF == 'MS' ||
             $this->UF == 'RO' ||
-            $this->UF == 'RR' ){
+            $this->UF == 'RR' ) {
             $this->timeZone = '-04:00';
         }
         //verificar se estamos no horário de verão *** depende da configuração do servidor ***
-        if (date('I') == 1){
+        if (date('I') == 1) {
             //estamos no horario de verão verificar se o estado está incluso
-            if(in_array($this->UF, $aUFhv)) {
-                $tz = (int) $this->timeZone;
-                $tz++;
-                $this->timeZone = '-'.sprintf("%02d",abs($tz)).':00'; //poderia ser obtido com date('P')
+            if (in_array($this->UF, $aUFhv)) {
+                $itz = (int) $this->timeZone;
+                $itz++;
+                $this->timeZone = '-'.sprintf("%02d",abs($itz)).':00'; //poderia ser obtido com date('P')
             }
         }//fim check horario verao
         return true;
@@ -2180,7 +2184,7 @@ class ToolsNFePHP {
      * @param array $resp Array com os retornos parametro passado por REFRENCIA
      * @return mixed False ou xml com os dados
      */
-    public function getListNFe($AN=false,$indNFe='0',$indEmi='0',$ultNSU='',$tpAmb='',$modSOAP='2',&$resp=''){
+    public function getListNFe($AN=true,$indNFe='0',$indEmi='0',$ultNSU='',$tpAmb='',$modSOAP='2',&$resp=''){
         try {
             $datahora = date('Ymd_His');
             if($tpAmb == ''){
@@ -4810,4 +4814,4 @@ class nfephpException extends Exception {
         return $errorMsg;
     }
 }
-?>
+
