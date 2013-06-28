@@ -951,6 +951,8 @@ class ToolsNFePHP
             } else {
                 $dom->loadXML($xml,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
             }
+            // pega a assinatura
+            $Signature = $dom->getElementsByTagName('Signature')->item(0);    
             //recupera os erros da libxml
             $errors = libxml_get_errors(); 
             if (!empty($errors)) { 
@@ -1047,6 +1049,17 @@ class ToolsNFePHP
                 // carrega os erros em um array
                 $aIntErrors = libxml_get_errors();
                 $flagOK = false;
+                if (!isset($Signature)){
+                    // remove o erro de falta de assinatura
+                    foreach ($aIntErrors as $k=>$intError){
+                        if(strpos($intError->message,'( {http://www.w3.org/2000/09/xmldsig#}Signature )')!==false){	
+                            // remove o erro da assinatura, se tiver outro meio melhor (atravez dos erros de codigo) e alguem souber como tratar por eles, por favor contribua...
+                            unset($aIntErrors[$k]);
+                        }    
+                    }
+                    reset($aIntErrors);            
+                    $flagOK = true;
+                }//fim teste Signature  
                 $msg = '';
                 foreach ($aIntErrors as $intError){
                     $flagOK = false;
