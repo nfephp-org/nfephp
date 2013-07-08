@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.0.69
+ * @version   3.0.70
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -60,7 +60,7 @@
  *              Jorge Luiz Rodrigues Tomé <jlrodriguestome at hotmail dot com>
  *              Leandro C. Lopez <leandro dot castoldi at gmail dot com>
  *              Mario Almeida <prog dot almeida at gmail.com>
- *		Nataniel Fiuza <natan at laxus dot com dot br>
+ *              Nataniel Fiuza <natan at laxus dot com dot br>
  *              Odair Jose Santos Junior <odairsantosjunior at gmail dot com>
  *              Paulo Gabriel Coghi <paulocoghi at gmail dot com>
  *              Paulo Henrique Demori <phdemori at hotmail dot com>
@@ -682,7 +682,7 @@ class ToolsNFePHP
      * através de um array passado na instanciação da classe.
      * 
      * @param array $aConfig Opcional dados de configuração
-     * @param number $mododebug Opcional 2-Não altera nenhum paraâmetro 1-SIM ou 0-NÃO (2 default)
+     * @param number $mododebug Opcional 2-Não altera nenhum parâmetro 1-SIM ou 0-NÃO (2 default)
      * @return  boolean true sucesso false Erro
      */
     function __construct($aConfig = '', $mododebug = 2, $exceptions = false)
@@ -952,7 +952,7 @@ class ToolsNFePHP
                 $dom->loadXML($xml,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
             }
             // pega a assinatura
-            $Signature = $dom->getElementsByTagName('Signature')->item(0);    
+            $Signature = $dom->getElementsByTagName('Signature')->item(0);
             //recupera os erros da libxml
             $errors = libxml_get_errors(); 
             if (!empty($errors)) { 
@@ -1052,7 +1052,7 @@ class ToolsNFePHP
                 if (!isset($Signature)){
                     // remove o erro de falta de assinatura
                     foreach ($aIntErrors as $k=>$intError){
-                        if(strpos($intError->message,'( {http://www.w3.org/2000/09/xmldsig#}Signature )')!==false){	
+                        if(strpos($intError->message,'( {http://www.w3.org/2000/09/xmldsig#}Signature )')!==false){  
                             // remove o erro da assinatura, se tiver outro meio melhor (atravez dos erros de codigo) e alguem souber como tratar por eles, por favor contribua...
                             unset($aIntErrors[$k]);
                         }    
@@ -1393,9 +1393,9 @@ class ToolsNFePHP
      * os arquivos XML
      *
      * @name signXML
-     * @param	mixed $docxml Path para o arquivo xml ou String contendo o arquivo XML a ser assinado
+     * @param  mixed $docxml Path para o arquivo xml ou String contendo o arquivo XML a ser assinado
      * @param   string $tagid TAG do XML que devera ser assinada
-     * @return	mixed false se houve erro ou string com o XML assinado
+     * @return mixed false se houve erro ou string com o XML assinado
      */
     public function signXML($docxml, $tagid=''){
         try{
@@ -1542,11 +1542,11 @@ class ToolsNFePHP
      *        cStat = 114 SCAN dasativado pela SEFAZ de origem    
      * se SCAN estiver ativado usar, caso contrario aguardar pacientemente.
      * @name statusServico
-     * @param	string $UF sigla da unidade da Federação
+     * @param  string $UF sigla da unidade da Federação
      * @param   integer $tpAmb tipo de ambiente 1-produção e 2-homologação
      * @param   integer 1 usa o __sendSOAP e 2 usa o __sendSOAP2
      * @param  array $aRetorno parametro passado por referencia irá conter a resposta da consulta em um array
-     * @return	mixed false ou array ['bStat'=>boolean,'cStat'=>107,'tMed'=>1,'dhRecbto'=>'12/12/2009','xMotivo'=>'Serviço em operação','xObs'=>'']
+     * @return mixed false ou array ['bStat'=>boolean,'cStat'=>107,'tMed'=>1,'dhRecbto'=>'12/12/2009','xMotivo'=>'Serviço em operação','xObs'=>'']
      */
     public function statusServico($UF='',$tpAmb='',$modSOAP='2', &$aRetorno=''){
         try {
@@ -1642,13 +1642,13 @@ class ToolsNFePHP
      * retornados podem ser bastante incompletos. Não é recomendado seu uso.
      *
      * @name consultaCadastro
-     * @param	string  $UF sigla da unidade da federação
+     * @param  string  $UF sigla da unidade da federação
      * @param   string  $IE opcional numero da inscrição estadual
      * @param   string  $CNPJ opcional numero do cnpj
      * @param   string  $CPF opcional numero do cpf
      * @param   string  $tpAmb tipo de ambiente se não informado será usado o ambiente default
      * @param   integer $modSOAP    1 usa __sendSOAP e 2 usa __sendSOAP2
-     * @return	mixed false se falha ou array se retornada informação
+     * @return mixed false se falha ou array se retornada informação
      */
     public function consultaCadastro($UF,$CNPJ='',$IE='',$CPF='',$tpAmb='',$modSOAP='2'){
         //variavel de retorno do metodo
@@ -1822,11 +1822,11 @@ class ToolsNFePHP
      * @version 2.1.11
      * @package NFePHP
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
-     * @param	mixed    $mNFe string com uma nota fiscal em xml ou um array com as NFe em xml, uma em cada campo do array unidimensional MAX 50
+     * @param  mixed    $mNFe string com uma nota fiscal em xml ou um array com as NFe em xml, uma em cada campo do array unidimensional MAX 50
      * @param   integer $idLote     id do lote e um numero que deve ser gerado pelo sistema
      *                          a cada envio mesmo que seja de apenas uma NFe
      * @param   integer $modSOAP 1 usa __sendSOP e 2 usa __sendSOAP2
-     * @return	mixed	false ou array ['bStat'=>false,'cStat'=>'','xMotivo'=>'','dhRecbto'=>'','nRec'=>'','tMed'=>'','tpAmb'=>'','verAplic'=>'','cUF'=>'']
+     * @return mixed false ou array ['bStat'=>false,'cStat'=>'','xMotivo'=>'','dhRecbto'=>'','nRec'=>'','tMed'=>'','tpAmb'=>'','verAplic'=>'','cUF'=>'']
      * @todo Incluir regra de validação para ambiente de homologação/produção vide NT2011.002
      */
     public function sendLot($mNFe,$idLote,$modSOAP='2') {
@@ -1934,12 +1934,12 @@ class ToolsNFePHP
      * Caso $this->cStat == 105 Tentar novamente mais tarde
      *
      * @name getProtocol
-     * @param	string   $recibo numero do recibo do envio do lote
-     * @param	string   $chave  numero da chave da NFe de 44 digitos
+     * @param  string   $recibo numero do recibo do envio do lote
+     * @param  string   $chave  numero da chave da NFe de 44 digitos
      * @param   string   $tpAmb  numero do ambiente 1-producao e 2-homologação
      * @param   integer  $modSOAP 1 usa __sendSOAP e 2 usa __sendSOAP2
      * @param   array    $aRetorno Array com os dados do protocolo 
-     * @return	mixed    false ou xml 
+     * @return mixed    false ou xml 
      */
     public function getProtocol($recibo='',$chave='',$tpAmb='',$modSOAP='2',&$aRetorno=''){
         try {
@@ -2541,14 +2541,14 @@ class ToolsNFePHP
      * - o processo de inutilização será gravado na pasta Inutilizadas
      * 
      * @name inutNF
-     * @param	string  $nAno       ano com 2 digitos
+     * @param  string  $nAno       ano com 2 digitos
      * @param   string  $nSerie     serie da NF 1 até 3 digitos
      * @param   integer $nIni       numero inicial 1 até 9 digitos zero a esq
      * @param   integer $nFin       numero Final 1 até 9 digitos zero a esq
      * @param   string  $xJust      justificativa 15 até 255 digitos
      * @param   string  $tpAmb      Tipo de ambiente 1-produção ou 2 homologação
      * @param   integer $modSOAP    1 usa __sendSOAP e 2 usa __sendSOAP2
-     * @return	mixed false ou string com o xml do processo de inutilização
+     * @return mixed false ou string com o xml do processo de inutilização
      */
     public function inutNF($nAno='',$nSerie='1',$nIni='',$nFin='',$xJust='',$tpAmb='',$modSOAP='2'){
         //valida dos dados de entrada
@@ -3008,9 +3008,38 @@ class ToolsNFePHP
      *                             e nem controla a ordem crescente
      * @param   integer $tpAmb Tipo de ambiente 
      * @param   integer $modSOAP 1 usa __sendSOP e 2 usa __sendSOAP2
-     * @return	mixed false ou xml com a CCe
+     * @param   array    $aResp Array com os dados do protocolo 
+     * @return mixed false ou xml com a CCe
      */
-    public function envCCe($chNFe='',$xCorrecao='',$nSeqEvento='1',$tpAmb='',$modSOAP='2'){
+    public function envCCe($chNFe='',$xCorrecao='',$nSeqEvento='1',$tpAmb='',$modSOAP='2',&$aResp=''){
+       $aResp = array(
+       'versao' => NULL,
+       'idLote' => NULL,
+       'tpAmb' => NULL,
+       'verAplic' => NULL,
+       'cOrgao' => NULL,
+       'cStat' => NULL,
+       'xMotivo' => NULL,
+       'retEvento' => array(
+          'versao' => NULL,
+          'xMotivo' => NULL,
+          'infEvento' => array(
+             'id' => NULL,
+             'tpAmb' => NULL,
+             'verAplic' => NULL,
+             'cOrgao' => NULL,
+             'cStat' => NULL,
+             'xMotivo' => NULL,
+             'chNFe' => NULL,
+             'tpEvento' => NULL,
+             'xEvento' => NULL,
+             'nSeqEvento' => NULL,
+             'CNPJDest' => NULL,
+             'CPFDest' => NULL,
+             'emailDest' => NULL,
+             'dhRegEvento' => NULL,
+             'nProt' => NULL)));
+        
         try {
             //testa se os dados da carta de correção foram passados
             if ($chNFe == '' || $xCorrecao == '' ){
@@ -3133,6 +3162,7 @@ class ToolsNFePHP
             $xmlretCCe->formatOutput = false;
             $xmlretCCe->preserveWhiteSpace = false;
             $xmlretCCe->loadXML($retorno,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
+            $retEnvEvento = $xmlretCCe->getElementsByTagName('retEnvEvento')->item(0);
             $retEvento = $xmlretCCe->getElementsByTagName("retEvento")->item(0);
             $cStat = !empty($retEvento->getElementsByTagName('cStat')->item(0)->nodeValue) ? $retEvento->getElementsByTagName('cStat')->item(0)->nodeValue : '';
             $xMotivo = !empty($retEvento->getElementsByTagName('xMotivo')->item(0)->nodeValue) ? $retEvento->getElementsByTagName('xMotivo')->item(0)->nodeValue : '';
@@ -3182,6 +3212,38 @@ class ToolsNFePHP
             $procXML = str_replace("\n",'',$procXML);
             $procXML = str_replace("\r",'',$procXML);
             $procXML = str_replace("\s",'',$procXML);
+            //estrutura "retEnvEvento"
+            $aRespVersao = $retEnvEvento->getAttribute('versao');
+            $aResp['versao'] = !empty($aRespVersao) ? $retEnvEvento->getAttribute('versao') : '';
+            $aResp['idLote'] = !empty($retEnvEvento->getElementsByTagName('idLote')->item(0)->nodeValue) ? $retEnvEvento->getElementsByTagName('idLote')->item(0)->nodeValue : '';
+            $aResp['tpAmb'] = !empty($retEnvEvento->getElementsByTagName('tpAmb')->item(0)->nodeValue) ? $retEnvEvento->getElementsByTagName('tpAmb')->item(0)->nodeValue : '';
+            $aResp['verAplic'] = !empty($retEnvEvento->getElementsByTagName('verAplic')->item(0)->nodeValue) ? $retEnvEvento->getElementsByTagName('verAplic')->item(0)->nodeValue : '';
+            $aResp['cOrgao'] = !empty($retEnvEvento->getElementsByTagName('cOrgao')->item(0)->nodeValue) ? $retEnvEvento->getElementsByTagName('cOrgao')->item(0)->nodeValue : '';
+            $aResp['cStat'] = !empty($retEnvEvento->getElementsByTagName('cStat')->item(0)->nodeValue) ? $retEnvEvento->getElementsByTagName('cStat')->item(0)->nodeValue : '';
+            $aResp['xMotivo'] = !empty($retEnvEvento->getElementsByTagName('xMotivo')->item(0)->nodeValue) ? $retEnvEvento->getElementsByTagName('xMotivo')->item(0)->nodeValue : '';
+            //estrutura "retEvento"/"infEvento"
+            $aRetEvento = array();
+            $aInfEvento = array();
+            $aRetEventoVersao = $retEvento->getAttribute('versao');
+            $aInfEventoId = $retEvento->getElementsByTagName('infEvento')->item(0)->getAttribute('id');
+            $aRetEvento['versao'] = !empty($aRetEventoVersao) ? $aRetEventoVersao : '';
+            $aInfEvento['id'] = !empty($aInfEventoId) ? $aInfEventoId : '';
+            $aInfEvento['tpAmb'] = !empty($retEvento->getElementsByTagName('tpAmb')->item(0)->nodeValue) ? $retEvento->getElementsByTagName('tpAmb')->item(0)->nodeValue : '';
+            $aInfEvento['verAplic'] = !empty($retEvento->getElementsByTagName('verAplic')->item(0)->nodeValue) ? $retEvento->getElementsByTagName('verAplic')->item(0)->nodeValue : '';
+            $aInfEvento['cOrgao'] = !empty($retEvento->getElementsByTagName('cOrgao')->item(0)->nodeValue) ? $retEvento->getElementsByTagName('cOrgao')->item(0)->nodeValue : '';
+            $aInfEvento['cStat'] = !empty($retEvento->getElementsByTagName('cStat')->item(0)->nodeValue) ? $retEvento->getElementsByTagName('cStat')->item(0)->nodeValue : '';
+            $aInfEvento['xMotivo'] = !empty($retEvento->getElementsByTagName('xMotivo')->item(0)->nodeValue) ? $retEvento->getElementsByTagName('xMotivo')->item(0)->nodeValue : '';
+            $aInfEvento['chNFe'] = !empty($retEvento->getElementsByTagName('chNFe')->item(0)->nodeValue) ? $retEvento->getElementsByTagName('chNFe')->item(0)->nodeValue : '';
+            $aInfEvento['tpEvento'] = !empty($retEvento->getElementsByTagName('tpEvento')->item(0)->nodeValue) ? $retEvento->getElementsByTagName('tpEvento')->item(0)->nodeValue : '';
+            $aInfEvento['nSeqEvento'] = !empty($retEvento->getElementsByTagName('nSeqEvento')->item(0)->nodeValue) ? $retEvento->getElementsByTagName('nSeqEvento')->item(0)->nodeValue : '';
+            $aInfEvento['CNPJDest'] = !empty($retEvento->getElementsByTagName('CNPJDest')->item(0)->nodeValue) ? $retEvento->getElementsByTagName('CNPJDest')->item(0)->nodeValue : '';
+            $aInfEvento['CPFDest'] = !empty($retEvento->getElementsByTagName('CPFDest')->item(0)->nodeValue) ? $retEvento->getElementsByTagName('CPFDest')->item(0)->nodeValue : '';
+            $aInfEvento['emailDest'] = !empty($retEvento->getElementsByTagName('emailDest')->item(0)->nodeValue) ? $retEvento->getElementsByTagName('emailDest')->item(0)->nodeValue : '';
+            $aInfEvento['dhRegEvento'] = !empty($retEvento->getElementsByTagName('dhRegEvento')->item(0)->nodeValue) ? $retEvento->getElementsByTagName('dhRegEvento')->item(0)->nodeValue : '';
+            $aInfEvento['nProt'] = !empty($retEvento->getElementsByTagName('nProt')->item(0)->nodeValue) ? $retEvento->getElementsByTagName('nProt')->item(0)->nodeValue : '';
+            //adiciona os arrays na estrutura de retorno ficando retorno = array('retEvento'=>array('infEvento'=>array()))
+            $aRetEvento['infEvento'] = $aInfEvento;
+            $aResp['retEvento'] = $aRetEvento; 
             //salva o arquivo xml
             if (!file_put_contents($this->cccDir."$chNFe-$nSeqEvento-procCCe.xml", $procXML)){
                 $msg = "Falha na gravação da procCCe!!";
@@ -3213,7 +3275,7 @@ class ToolsNFePHP
      * @param   integer $tpAmb Tipo de ambiente 
      * @param   integer $modSOAP 1 usa __sendSOP e 2 usa __sendSOAP2
      * @param   mixed  $resp variável passada como referencia e irá conter o retorno da função em um array
-     * @return	mixed false 
+     * @return mixed false 
      * 
      * TODO : terminar o código não funcional e não testado
      */
@@ -3593,7 +3655,7 @@ class ToolsNFePHP
         $tagInf = $tagBase->C14N(false, false, NULL, NULL);
         $hashValue = hash('sha1',$tagInf,true);
         $digestCalculado = base64_encode($hashValue);
-        $digestInformado = $dom->getElementsByTagName('DigestValue')->item(0)->nodeValue;		
+        $digestInformado = $dom->getElementsByTagName('DigestValue')->item(0)->nodeValue;    
         if ($digestCalculado != $digestInformado){
             $msg = "O conteúdo do XML não confere com o Digest Value.\nDigest calculado [{$digestCalculado}], informado no XML [{$digestInformado}].\nO arquivo pode estar corrompido ou ter sido adulterado.";
             $err = $msg;
@@ -3611,15 +3673,15 @@ class ToolsNFePHP
         }                
         // remontando conteudo que foi assinado 
         $conteudoAssinado = $dom->getElementsByTagName('SignedInfo')->item(0)->C14N(false, false, null, null);
-	// validando assinatura do conteudo 
-	$conteudoAssinadoNoXML = $dom->getElementsByTagName('SignatureValue')->item(0)->nodeValue;
-	$conteudoAssinadoNoXML = base64_decode(str_replace(array("\r", "\n"), '', $conteudoAssinadoNoXML));
-	$ok = openssl_verify($conteudoAssinado, $conteudoAssinadoNoXML, $pubKey);
-	if ($ok != 1){
+        // validando assinatura do conteudo 
+        $conteudoAssinadoNoXML = $dom->getElementsByTagName('SignatureValue')->item(0)->nodeValue;
+        $conteudoAssinadoNoXML = base64_decode(str_replace(array("\r", "\n"), '', $conteudoAssinadoNoXML));
+        $ok = openssl_verify($conteudoAssinado, $conteudoAssinadoNoXML, $pubKey);
+        if ($ok != 1){
             $msg = "Problema ({$ok}) ao verificar a assinatura do digital!!";
             $err = $msg;
             return false;
-	}
+        }
         return true;
     } // fim __verifySignatureXML
 
@@ -3830,8 +3892,8 @@ class ToolsNFePHP
      *   $this->passKey
      *
      * @name __loadCerts
-     * @param	boolean $testaVal True testa a validade do certificado ou false não testa
-     * @return	boolean true se o certificado foi carregado e false se não
+     * @param  boolean $testaVal True testa a validade do certificado ou false não testa
+     * @return boolean true se o certificado foi carregado e false se não
      */
     protected function __loadCerts($testaVal=true){
         try {
@@ -3919,7 +3981,7 @@ class ToolsNFePHP
                 if(file_exists($this->pubKEY)){
                     unlink($this->pubKEY);
                 }
-                if (file_exists($this->priKEY)){	
+                if (file_exists($this->priKEY)){   
                     unlink($this->priKEY);
                 }
                 if (file_exists($this->certKEY)){
@@ -3955,7 +4017,7 @@ class ToolsNFePHP
     * @name __validCerts
     * @param    string  $cert Certificado digital no formato pem
     * @param    array   $aRetorno variavel passa por referência Array com os dados do certificado
-    * @return	boolean true ou false
+    * @return  boolean true ou false
     */
     protected function __validCerts($cert='',&$aRetorno=''){
         try{
@@ -4109,7 +4171,7 @@ class ToolsNFePHP
                 chdir($oldDir);
             }//endif do teste se é um diretorio
         }//endif
-	sort($aName);
+        sort($aName);
         return $aName;
     } //fim listDir
 
@@ -4432,7 +4494,7 @@ class ToolsNFePHP
             $lotfile = $this->raizDir . 'config/numloteenvio.xml';
             $numLot = '<?xml version="1.0" encoding="UTF-8"?><root><num>' . $num . '</num></root>';
             if (!file_put_contents($lotfile,$numLot)) {
-		//em caso de falha retorna falso
+                //em caso de falha retorna falso
                 $msg = "Falha ao tentar gravar o arquivo numloteenvio.xml.";
                 $this->__setError($msg);
                 return false;
@@ -4883,4 +4945,3 @@ class nfephpException extends Exception {
         return $errorMsg;
     }
 }
-
