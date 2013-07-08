@@ -2488,8 +2488,8 @@ class ToolsNFePHP
                 $dhResp = !empty($retDownloadNFe->getElementsByTagName('dhResp')->item(0)->nodeValue) ? $retDownloadNFe->getElementsByTagName('dhResp')->item(0)->nodeValue : '';
                 //existem 2 cStat, um com nó pai retDownloadNFe ($cStat) e outro no 
                 //nó filho retNFe($cStatRetorno)
-                //para que o download seja efetuado corretamente o $cStat deve vir com valor 139 
-                //e o $cStatRetorno com valor 140
+                //para que o download seja efetuado corretamente o $cStat deve vir com valor 139-Pedido de download Processado 
+                //e o $cStatRetorno com valor 140-Download disponibilizado
                 $retNFe = $xmlDNFe->getElementsByTagName("retNFe")->item(0);        
                 if (isset($retNFe)){
                     $cStatRetorno = !empty($retNFe->getElementsByTagName('cStat')->item(0)->nodeValue) ? $retNFe->getElementsByTagName('cStat')->item(0)->nodeValue : '';
@@ -2518,9 +2518,30 @@ class ToolsNFePHP
                 $msg = "Não houve o download da NF : $cStatRetorno - $xMotivoRetorno\n";
                 throw new nfephpException($msg);
             }
-            //grava arquivo XML iniciando com a tag nfeProc, sem o cabeçalho de retorno da SEFAZ
-            $content = $xmlDNFe->getElementsByTagName("nfeProc")->item(0);
-            $xml =  $content->ownerDocument->saveXML($content);
+            //verifica como deve extrair o XML da NF-e, pois existem 3 possibilidades:
+            //JR13-procNFeZip ~ou~ JR14-procNFe ~ou~ JR17-procNFeGrupoZip onde JR13 e JR14
+            //são elementos e JR17 é um grupo
+            $retNFe_procNFeZip = $retNFe->getElementsByTagName('procNFeZip')->item(0);
+            $retNFe_procNFe = $retNFe->getElementsByTagName('procNFe')->item(0);
+            $retNFe_procNFeGrupoZip = $retNFe->getElementsByTagName('procNFeGrupoZip')->item(0);
+            if (isset($retNFe_procNFeZip)) {
+               $xml = ''; //implementar...
+            } else if (isset($retNFe_procNFe)) {
+               //grava arquivo XML iniciando com a tag nfeProc, sem o cabeçalho de retorno da SEFAZ
+               $content = $xmlDNFe->getElementsByTagName("nfeProc")->item(0);
+               $xml = $content->saveXML($content);
+            } else if (isset($retNFe_procNFeGrupoZip)) {
+               //grupo contendo a NF-e compactada e o Protocolo de Autorização compactado (padrão gZip).
+               //extrai a NF-e do elemento JR18_NFeZip e extrai o protocolo de autorização de uso do elemento
+               //JR19_protNFeZip (ambos são obrigatórios)
+               $nfe = $this->__gunzip2(base64_decode($retNFe_procNFeGrupoZip->getElementsByTagName('NFeZip')->item(0)->nodeValue));
+               $prot = $this->__gunzip2(base64_decode($retNFe_procNFeGrupoZip->getElementsByTagName('protNFeZip')->item(0)->nodeValue));
+               // tem a NF-e e o protocolo de autorização, agora adiciona o protocolo; para isso,
+               //cria dois arquivos temporários e chama o addProt()
+               $nfeTempFile = file_put_contents($this->temDir . $chNFe . '-nfe.xml', $nfe);
+               $protTempFile = file_put_contents($this->temDir . $chNFe . '-prot.xml', $prot);
+               $xml = $this->addProt($this->temDir . $chNFe . '-nfe.xml', $this->temDir . $chNFe . '-prot.xml');
+            }
             $fileName = $this->recDir."$chNFe-procNFe.xml";
             if (!file_put_contents($fileName, $xml)){
                 $msg = "Falha na gravação do arquivo NFe $fileName!!";
