@@ -1912,7 +1912,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         if (!empty($ICMS)){
             $pRedBC = !empty($ICMS->getElementsByTagName("pRedBC")->item(0)->nodeValue) ? number_format($ICMS->getElementsByTagName("pRedBC")->item(0)->nodeValue, 2, ",", ".") : '';
             if ($pRedBC != 0){	// redução da base de cáclulo do ICMS
-                $impostsos .= " pRedBC=".number_format($pRedBC, 2, ",", ".")."%";
+                $impostsos .= " pRedBC=".number_format((float)$pRedBC, 2, ",", ".")."%";
             }
             $ivaTxt = !empty($ICMS->getElementsByTagName("pMVAST")->item(0)->nodeValue) ? number_format($ICMS->getElementsByTagName("pMVAST")->item(0)->nodeValue, 2, ",", ".") : '';
             if ($ivaTxt != ''){
