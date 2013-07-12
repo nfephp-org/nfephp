@@ -854,7 +854,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
             $tw = $w;
         }
         // monta as informações apenas se diferente de full logo
-        if ($this->logoAlign <> 'F') {
+        if ($this->logoAlign !== 'F') {
            //Nome emitente
            $aFont = array('font'=>$this->fontePadrao,'size'=>12,'style'=>'B');
            $texto = $this->emit->getElementsByTagName("xNome")->item(0)->nodeValue;
@@ -2681,4 +2681,3 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
     } // fim __geraInformacoesDasNotasReferenciadas
 
 } //fim da classe DanfeNFePHP
-?>
