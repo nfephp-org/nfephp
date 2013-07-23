@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- PL_006r - 23/07/13 - correção do tipo "TIeDest" pois a regex não aceitava tag vazia da IE do destinatário (casos de exportação)
+<!-- PL_006r - 23/07/13 - correção do tipo "TIeDest" pois a regex não aceitava tag vazia da IE do destinatário (casos de exportação) -->
 <!-- PL_006h - 13/05/11 - correções da NT 2011/004  // v2.0-->
 <!-- PL_006f - 29/05/10 - correcao do tipo TDec_1504 para limitar a quantidade de decimais para 4  // v2.0-->
 <!-- PL_006f - 09/05/10 - eliminação da possibilidade informar a Inscrição produtor rural na IEDest  // v2.0-->
