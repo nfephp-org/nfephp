@@ -13,8 +13,8 @@ $nfse = new NFSePHPGinfes(false, 1, false);
 $tarefa = $_GET['t'];
 //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 // CNPJ E INSCRIÇÃO MUNICIPAL DO EMISSOR
-$cnpj         = '02097394000173';
-$im           = '67387';
+$cnpj         = '00000000000000';
+$im           = '000000';
 $razaoSocial  = 'EMISSOR DE SERVICOS LTDA';
 $nomeFantasia = 'EMISSOR DE SERVICOS ';
 //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
