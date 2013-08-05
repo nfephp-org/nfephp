@@ -177,7 +177,7 @@ switch ($tarefa) {
          * *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  */
 
         //- - - - - - - - - - - - - - DADOS DO TOMADOR DO SERVIÇO - - - - - - - 
-        $oNF->set('tomaCPF', '54480447784');
+        $oNF->set('tomaCPF', '00000000000000');
         //$oNF->set('tomaCNPJ', '');
         $oNF->set('tomaRazaoSocial', 'TOMADOR EXEMPLO 1');
         $oNF->set('tomaEndLogradouro', 'RUA ABILIO FIGUEIREDO 590');
@@ -199,8 +199,8 @@ switch ($tarefa) {
         //- - - - - - - - - - - - - - DADOS DO EMISSOR - - - - - - - - - - - - -
         $oNF->set('razaoSocial', $razaoSocial);
         $oNF->set('nomeFantasia', $nomeFantasia);
-        $oNF->set('CNPJ', '02097394000173');
-        $oNF->set('IM', '67387');
+        $oNF->set('CNPJ', '00000000000000');
+        $oNF->set('IM', '00000');
 
         // série da nota fiscal
         $oNF->set('numSerie', '1');
@@ -267,7 +267,7 @@ switch ($tarefa) {
          * *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  */
 
         //- - - - - - - - - - - - - - DADOS DO TOMADOR DO SERVIÇO - - - - - - - 
-        $oNF->set('tomaCPF', '72402845570');
+        $oNF->set('tomaCPF', '0000000000000');
         //$oNF->set('tomaCNPJ', '');
 
         $oNF->set('tomaRazaoSocial', 'TOMADOR EXEMPLO 2');
