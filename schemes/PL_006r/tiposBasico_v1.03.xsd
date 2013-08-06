@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- PL_006r - 23/07/13 - correção do tipo "TIeDest" pois a regex não aceitava tag vazia da IE do destinatário (casos de exportação) -->
 <!-- PL_006h - 13/05/11 - correções da NT 2011/004  // v2.0-->
 <!-- PL_006f - 29/05/10 - correcao do tipo TDec_1504 para limitar a quantidade de decimais para 4  // v2.0-->
 <!-- PL_006f - 09/05/10 - eliminação da possibilidade informar a Inscrição produtor rural na IEDest  // v2.0-->
@@ -282,7 +283,7 @@
 		</xs:annotation>
 		<xs:restriction base="xs:string">
 			<xs:whiteSpace value="preserve"/>
-			<xs:pattern value="ISENTO|[0-9]{0,14}"/>
+			<xs:pattern value="[0]{0,}|ISENTO|[0-9]{0,14}"/>
 		</xs:restriction>
 	</xs:simpleType>
 	<xs:simpleType name="TIeST">
