@@ -23,7 +23,7 @@
  *
  * @package     NFePHP
  * @name        CommonNFePHP.class.php
- * @version     1.0.4
+ * @version     1.0.5
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2012 &copy; NFePHP
@@ -49,9 +49,13 @@ class CommonNFePHP {
      * @return none
      */
     protected function __adicionaLogoPeloCnpj(){
+    if(!isset($this->logomarca))
+        return;
         if( $this->logomarca != '' ){
             return;
         }
+		if(!isset($this->emit))
+			return;
         //se não foi passado o caminho para o logo procurar diretorio abaixo
         $imgPath = "logos/" . $this->emit->getElementsByTagName("CNPJ")->item(0)->nodeValue . ".jpg";
         if( file_exists( $imgPath ) ){
@@ -545,4 +549,3 @@ class CommonNFePHP {
     } // fim função __textBox90
 
 }//fim CommonNFePHP
-?>
