@@ -428,7 +428,7 @@ class DacceNFePHP extends CommonNFePHP {
 
         $y += 5;
         $this->__textBox($x,$y,$maxW,190);
-        $texto = $this->xCorrecao;
+        $texto = str_replace( ";" , PHP_EOL , $this->xCorrecao);
         $aFont = array('font'=>$this->fontePadrao,'size'=>12,'style'=>'B');
         $this->__textBox($x+2,$y+2,$maxW-2,150,$texto,$aFont,'T','L',0,'',false);
 
