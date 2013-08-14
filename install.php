@@ -223,7 +223,7 @@ if (is_dir($arquivosDir)) {
     }
 } else {
     //dir não existe
-    $obsDir= ' Diretório $arquivosDir n&atilde;o existe !!';
+    $obsDir= " Diretório $arquivosDir n&atilde;o existe !!";
 }
 
 //teste do diretorio de arquivo dos xml CTe
