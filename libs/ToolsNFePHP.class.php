@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.0.70
+ * @version   3.0.71
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -1829,11 +1829,12 @@ class ToolsNFePHP
      * @return mixed false ou array ['bStat'=>false,'cStat'=>'','xMotivo'=>'','dhRecbto'=>'','nRec'=>'','tMed'=>'','tpAmb'=>'','verAplic'=>'','cUF'=>'']
      * @todo Incluir regra de validação para ambiente de homologação/produção vide NT2011.002
      */
-    public function sendLot($mNFe,$idLote,$modSOAP='2') {
+    public function sendLot($mNFe,$idLote,$modSOAP='2')
+    {
         //variavel de retorno do metodo
         $aRetorno = array('bStat'=>false,'cStat'=>'','xMotivo'=>'','dhRecbto'=>'','nRec'=>'','tMed'=>'','tpAmb'=>'','verAplic'=>'','cUF'=>'');
         //verifica se o SCAN esta habilitado
-        if (!$this->enableSCAN){
+        if (!$this->enableSCAN) {
             $aURL = $this->aURL;
         } else {
             $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . $this->xmlURLfile,$this->tpAmb,'SCAN');
@@ -1850,6 +1851,14 @@ class ToolsNFePHP
         $namespace = $this->URLPortal.'/wsdl/'.$servico.'2';
         // limpa a variavel
         $sNFe = '';
+        if (empty($mNFe)) {
+            $msg = "Pelo menos uma NFe deve ser passada no parâmetro!!";
+            $this->__setError($msg);
+            if ($this->exceptions) {
+                throw new nfephpException($msg);
+            }
+            return false;
+        }
         if (is_array($mNFe)){
             // verificar se foram passadas até 50 NFe
             if ( count($mNFe) > 50 ) {
