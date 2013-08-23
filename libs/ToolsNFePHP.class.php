@@ -1874,7 +1874,7 @@ class ToolsNFePHP
         } else {
             $sNFe = $mNFe;
         }    
-        //remover <?xml version="1.0" encoding=... das NFe pois somente uma dessas tags pode exitir na mensagem
+        //remover <?xml version="1.0" encoding=... das NFe pois somente uma dessas tags pode existir na mensagem
         $sNFe = str_replace(array('<?xml version="1.0" encoding="utf-8"?>','<?xml version="1.0" encoding="UTF-8"?>'),'',$sNFe);
         $sNFe = str_replace(array("\r","\n","\s"),"",$sNFe);
         //montagem do cabeçalho da comunicação SOAP
@@ -2506,10 +2506,10 @@ class ToolsNFePHP
                 } else {
                     $cStatRetorno = '';
                     $xMotivoRetorno = '';
-                }    
+                }
             } else {
                 $cStat = '';
-            }   
+            }
             //status de retorno nao podem vir vazios
             if (empty($cStat)){
                 //houve erro
@@ -2536,16 +2536,23 @@ class ToolsNFePHP
             if (isset($retNFe_procNFeZip)) {
                $xml = ''; //implementar...
             } else if (isset($retNFe_procNFe)) {
-               //grava arquivo XML iniciando com a tag nfeProc, sem o cabeçalho de retorno da SEFAZ
-               $content = $xmlDNFe->getElementsByTagName("nfeProc")->item(0);
-               $xml = $content->saveXML($content);
+               //elemento "JR14_procNFe" contendo a estrutura “nfeProc”, já descompactada.
+               $nfeProc = $xmlDNFe->getElementsByTagName("nfeProc")->item(0);
+               //cria novo documento DOM para importar e adicionar o elemento
+               $dom = new DOMDocument('1.0', 'UTF-8');
+               $dom->formatOutput = false;
+               $dom->preserveWhiteSpace = false;
+               // Importa o node e todo o seu conteudo e acrescenta ao node principal
+               $node = $dom->importNode($nfeProc, true);
+               $dom->appendChild($node);
+               $xml = $dom->saveXML();
             } else if (isset($retNFe_procNFeGrupoZip)) {
                //grupo contendo a NF-e compactada e o Protocolo de Autorização compactado (padrão gZip).
                //extrai a NF-e do elemento JR18_NFeZip e extrai o protocolo de autorização de uso do elemento
                //JR19_protNFeZip (ambos são obrigatórios)
                $nfe = $this->__gunzip2(base64_decode($retNFe_procNFeGrupoZip->getElementsByTagName('NFeZip')->item(0)->nodeValue));
                $prot = $this->__gunzip2(base64_decode($retNFe_procNFeGrupoZip->getElementsByTagName('protNFeZip')->item(0)->nodeValue));
-               // tem a NF-e e o protocolo de autorização, agora adiciona o protocolo; para isso,
+               //tem a NF-e e o protocolo de autorização, agora adiciona o protocolo; para isso,
                //cria dois arquivos temporários e chama o addProt()
                $nfeTempFile = file_put_contents($this->temDir . $chNFe . '-nfe.xml', $nfe);
                $protTempFile = file_put_contents($this->temDir . $chNFe . '-prot.xml', $prot);
