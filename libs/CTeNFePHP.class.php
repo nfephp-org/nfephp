@@ -2690,7 +2690,7 @@ class CTeNFePHP {
             'local_cert'    => $this->certKEY,
             'trace'         => true,
             'compression'   => 0,
-            'exceptions'    => true,
+            'exceptions'    => false,
             'cache_wsdl'    => WSDL_CACHE_NONE
         );
         //instancia a classe soap
@@ -2703,11 +2703,9 @@ class CTeNFePHP {
         $oSoapClient->__setSoapHeaders($header);
         //monta o corpo da mensagem soap
         $varBody = new SoapVar($dados,XSD_ANYXML);
-        try {
-            //faz a chamada ao metodo do webservices
-            $resp = $oSoapClient->__soapCall($metodo, array($varBody));
-        } catch (SoapFault $fault) {
-            $soapFault = "SOAP Fault: (faultcode: {$fault->faultcode}, faultstring: {$fault->faultstring})";
+        $resp = $oSoapClient->__soapCall($metodo, array($varBody) );
+            if (is_soap_fault($resp)) {
+           $soapFault = "SOAP Fault: (faultcode: {$resp->faultcode}, faultstring: {$resp->faultstring})";
         }
         $resposta = $oSoapClient->__getLastResponse();
         $this->soapDebug .= "\n" . $soapFault;
