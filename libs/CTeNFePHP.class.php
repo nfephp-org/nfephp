@@ -501,7 +501,7 @@ class CTeNFePHP {
             'SE' => 'SVRS',
             'SP' => 'SP',
             'TO' => 'SVRS',
-            'SCAN' => 'SCAN'
+            'SCAN' => 'SVSP'
         );
 
     /**
@@ -2644,27 +2644,24 @@ class CTeNFePHP {
         }
         //monta a terminação do URL
         switch ($metodo){
-                case 'cteRecepcaoLote2':
-                    $usef = "_CTeRecepcao2.asmx";
-                    break;
-                case 'cteRetRecepcao2':
-                    $usef = "_CTeRetRecepcao2.asmx";
-                    break;
-                case 'cteCancelamentoNF2':
-                    $usef = "_CTeCancelamento2.asmx";
-                    break;
-                case 'cteInutilizacaoNF2':
-                    $usef = "_CTeInutilizacao2.asmx";
-                    break;
-                case 'cteConsultaNF2':
-                    $usef = "_CTeConsulta2.asmx";
-                    break;
-                case 'cteStatusServicoNF2':
-                    $usef = "_CTeStatusServico2.asmx";
-                    break;
-                case 'consultaCadastro':
-                    $usef = "";
-                    break;
+            case 'CTeRecepcao':
+                $usef = "CteRecepcao";
+                break;
+            case 'CTeRetRecepcao':
+                $usef = "CteRetRecepcao";
+                break;
+            case 'CTeCancelamento':
+                $usef = "CteCancelamento";
+                break;
+            case 'CTeInutilizacao':
+                $usef = "CteInutilizacao";
+                break;
+            case 'cteConsultaCT':
+                $usef = "CteConsulta";
+                break;
+            case 'cteStatusServicoCT':
+                $usef = "CteStatusServico";
+                break;
         }
 
         //para os estados de AM, MT e PR é necessário usar wsdl baixado para acesso ao webservice
@@ -2706,10 +2703,11 @@ class CTeNFePHP {
         $oSoapClient->__setSoapHeaders($header);
         //monta o corpo da mensagem soap
         $varBody = new SoapVar($dados,XSD_ANYXML);
-        //faz a chamada ao metodo do webservices
-        $resp = $oSoapClient->__soapCall($metodo, array($varBody) );
-            if (is_soap_fault($resp)) {
-           $soapFault = "SOAP Fault: (faultcode: {$resp->faultcode}, faultstring: {$resp->faultstring})";
+        try {
+            //faz a chamada ao metodo do webservices
+            $resp = $oSoapClient->__soapCall($metodo, array($varBody));
+        } catch (SoapFault $fault) {
+            $soapFault = "SOAP Fault: (faultcode: {$fault->faultcode}, faultstring: {$fault->faultstring})";
         }
         $resposta = $oSoapClient->__getLastResponse();
         $this->soapDebug .= "\n" . $soapFault;
@@ -2808,26 +2806,23 @@ class CTeNFePHP {
         if($this->enableSCAN){
             //monta a terminação do URL
             switch ($metodo){
-                case 'cteRecepcaoLote2':
+                case 'CTeRecepcao':
                     $servico = "CteRecepcao";
                     break;
-                case 'cteRetRecepcao2':
+                case 'CTeRetRecepcao':
                     $servico = "CteRetRecepcao";
                     break;
-                case 'cteCancelamentoNF2':
+                case 'CTeCancelamento':
                     $servico = "CteCancelamento";
                     break;
-                case 'cteInutilizacaoNF2':
+                case 'CTeInutilizacao':
                     $servico = "CteInutilizacao";
                     break;
-                case 'cteConsultaNF2':
+                case 'cteConsultaCT':
                     $servico = "CteConsulta";
                     break;
-                case 'cteStatusServicoNF2':
+                case 'cteStatusServicoCT':
                     $servico = "CteStatusServico";
-                    break;
-                case 'consultaCadastro':
-                    $servico = "CadConsultaCadastro";
                     break;
             }
             $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . "cte_ws1.xml",$ambiente,'SCAN');
