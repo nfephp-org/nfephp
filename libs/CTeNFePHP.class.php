@@ -501,7 +501,7 @@ class CTeNFePHP {
             'SE' => 'SVRS',
             'SP' => 'SP',
             'TO' => 'SVRS',
-            'SCAN' => 'SVSP'
+            'SCAN' => 'SCAN'
         );
 
     /**
@@ -829,37 +829,9 @@ class CTeNFePHP {
             $aError[] = $msg;
             return false;
         }
-        //verificar se existem [CR][LF] ou [TAB] no arquivo
-        if (strpos($xml,"\r") !== false){
-            $msg = 'O xml contêm [CR] Carriage Return, um caractere não permitido, remova todos os caracteres PROIBIDOS!!.';
-            $this->__setError($msg);
-            if ($this->exceptions) {
-                throw new nfephpException($msg);
-            }
-            $aError[] = $msg;
-            return false;
-        }
-        if (strpos($xml,"\n") !== false){
-            $msg = 'O xml contêm [LF] Line Feed, um caractere não permitido, remova todos os caracteres PROIBIDOS!!.';
-            $this->__setError($msg);
-            if ($this->exceptions) {
-                throw new nfephpException($msg);
-            }
-            $aError[] = $msg;
-            return false;
-        }
-        if (strpos($xml,"\t") !== false){
-            $msg = 'O xml contêm [TAB] Tabulação, um caractere não permitido, remova todos os caracteres PROIBIDOS!!.';
-            $this->__setError($msg);
-            if ($this->exceptions) {
-                throw new nfephpException($msg, self::STOP_CRITICAL);
-            }
-            $aError[] = $msg;
-            return false;
-        }
         // instancia novo objeto DOM
         $dom = new DOMDocument('1.0', 'utf-8');
-        $dom->preservWhiteSpace = false; //elimina espaços em branco
+        $dom->preserveWhiteSpace = false; //elimina espaços em branco
         $dom->formatOutput = false;
         // carrega o xml tanto pelo string contento o xml como por um path
         libxml_clear_errors();
