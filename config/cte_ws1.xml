@@ -9,7 +9,7 @@ Versao 20110322_1
 Correcao da nomenclarura dos servicos. Nota: URL homologacao SP colocados com letras
 maiusculas so para ficar igual ao site da SEFAZ.
 
-Versao 20130320_1 Inclusão dos webservices do Paraná 
+Versao 20130320_1 Inclusão dos webservices do Paraná
 Versao 20130418_1 Correção CteConsula => CteConsultaProtocolo [RS]
 -->
 <UF>
@@ -112,18 +112,18 @@ Versao 20130418_1 Correção CteConsula => CteConsultaProtocolo [RS]
 <UF>
     <sigla>SP</sigla>
     <homologacao>
-        <CteRecepcao method='CTeRecepcao' version='1.04'>https://homologacao.nfe.fazenda.sp.gov.br/cteWEB/services/cteRecepcao.asmx</CteRecepcao>
-        <CteRetRecepcao method='CTeRetRecepcao' version='1.04'>https://homologacao.nfe.fazenda.sp.gov.br/cteWEB/services/cteRetRecepcao.asmx</CteRetRecepcao>
-        <CteCancelamento method='CTeCancelamento' version='1.04'>https://homologacao.nfe.fazenda.sp.gov.br/cteWEB/services/cteCancelamento.asmx</CteCancelamento>
-        <CteInutilizacao method='CTeInutilizacao' version='1.04'>https://homologacao.nfe.fazenda.sp.gov.br/cteWEB/services/cteInutilizacao.asmx</CteInutilizacao>
+        <CteRecepcao method='cteRecepcaoLote' version='1.04'>https://homologacao.nfe.fazenda.sp.gov.br/cteWEB/services/cteRecepcao.asmx</CteRecepcao>
+        <CteRetRecepcao method='cteRetRecepcao' version='1.04'>https://homologacao.nfe.fazenda.sp.gov.br/cteWEB/services/cteRetRecepcao.asmx</CteRetRecepcao>
+        <CteCancelamento method='cteCancelamentoCT' version='1.04'>https://homologacao.nfe.fazenda.sp.gov.br/cteWEB/services/cteCancelamento.asmx</CteCancelamento>
+        <CteInutilizacao method='cteInutilizacaoCT' version='1.04'>https://homologacao.nfe.fazenda.sp.gov.br/cteWEB/services/cteInutilizacao.asmx</CteInutilizacao>
         <CteConsultaProtocolo method='cteConsultaCT' version='1.04'>https://homologacao.nfe.fazenda.sp.gov.br/cteWEB/services/cteConsulta.asmx</CteConsultaProtocolo>
-        <CteStatusServico method='cteStatusServicoCT' version='1.04'>https://homologacao.nfe.fazenda.sp.gov.br/cteWEB/services/cteStatusServico.asmx</CteStatusServico>        
+        <CteStatusServico method='cteStatusServicoCT' version='1.04'>https://homologacao.nfe.fazenda.sp.gov.br/cteWEB/services/cteStatusServico.asmx</CteStatusServico>
     </homologacao>
     <producao>
-        <CteRecepcao method='CTeRecepcao' version='1.04'>https://nfe.fazenda.sp.gov.br/cteWEB/services/cteRecepcao.asmx</CteRecepcao>
-        <CteRetRecepcao method='CTeRetRecepcao' version='1.04'>https://nfe.fazenda.sp.gov.br/cteWEB/services/cteRetRecepcao.asmx</CteRetRecepcao>
-        <CteCancelamento method='CTeCancelamento' version='1.04'>https://nfe.fazenda.sp.gov.br/cteWEB/services/cteCancelamento.asmx</CteCancelamento>
-        <CteInutilizacao method='CTeInutilizacao' version='1.04'>https://nfe.fazenda.sp.gov.br/cteWEB/services/cteInutilizacao.asmx</CteInutilizacao>
+        <CteRecepcao method='cteRecepcaoLote' version='1.04'>https://nfe.fazenda.sp.gov.br/cteWEB/services/cteRecepcao.asmx</CteRecepcao>
+        <CteRetRecepcao method='cteRetRecepcao' version='1.04'>https://nfe.fazenda.sp.gov.br/cteWEB/services/cteRetRecepcao.asmx</CteRetRecepcao>
+        <CteCancelamento method='cteCancelamentoCT' version='1.04'>https://nfe.fazenda.sp.gov.br/cteWEB/services/cteCancelamento.asmx</CteCancelamento>
+        <CteInutilizacao method='cteInutilizacaoCT' version='1.04'>https://nfe.fazenda.sp.gov.br/cteWEB/services/cteInutilizacao.asmx</CteInutilizacao>
         <CteConsultaProtocolo method='cteConsultaCT' version='1.04'>https://nfe.fazenda.sp.gov.br/cteWEB/services/cteConsulta.asmx</CteConsultaProtocolo>
         <CteStatusServico method='cteStatusServicoCT' version='1.04'>https://nfe.fazenda.sp.gov.br/cteWEB/services/cteStatusServico.asmx</CteStatusServico>
     </producao>
@@ -155,7 +155,7 @@ Versao 20130418_1 Correção CteConsula => CteConsultaProtocolo [RS]
         <CteCancelamento method='CTeCancelamento' version='1.04'>https://homologacao.nfe.fazenda.sp.gov.br/cteWEB/services/cteCancelamento.asmx</CteCancelamento>
         <CteInutilizacao method='CTeInutilizacao' version='1.04'>https://homologacao.nfe.fazenda.sp.gov.br/cteWEB/services/cteInutilizacao.asmx</CteInutilizacao>
         <CteConsultaProtocolo method='cteConsultaCT' version='1.04'>https://homologacao.nfe.fazenda.sp.gov.br/cteWEB/services/cteConsulta.asmx</CteConsultaProtocolo>
-        <CteStatusServico method='cteStatusServicoCT' version='1.04'>https://homologacao.nfe.fazenda.sp.gov.br/cteWEB/services/cteStatusServico.asmx</CteStatusServico>        
+        <CteStatusServico method='cteStatusServicoCT' version='1.04'>https://homologacao.nfe.fazenda.sp.gov.br/cteWEB/services/cteStatusServico.asmx</CteStatusServico>
     </homologacao>
     <producao>
         <CteRecepcao method='CTeRecepcao' version='1.04'>https://nfe.fazenda.sp.gov.br/cteWEB/services/cteRecepcao.asmx</CteRecepcao>
