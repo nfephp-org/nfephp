@@ -1,4 +1,4 @@
-<?
+<?php
 /**
  * NFS-e (Nota Fiscal Eletronica de Serviço)
  * 
