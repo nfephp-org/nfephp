@@ -30,7 +30,7 @@
  * @author    Roberto L. Machado <linux.rlm@gmail.com>
  * @copyright 2009-2013 &copy; NFePHP
  * @license   GNU/GPL v.3 or GNU/LGPL v.3
- * @version   GIT: 1.2.12
+ * @version   GIT: 1.2.13
  * @link      http://www.nfephp.org/
  *
  *        CONTRIBUIDORES (por ordem alfabetica):
@@ -99,7 +99,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
     protected $pdfDir = ''; //diretorio para salvar o pdf com a opção de
     //destino = F
     protected $fontePadrao = 'Times'; //Nome da Fonte para gerar o DACTE
-    protected $version = '1.2.12';
+    protected $version = '1.2.13';
     protected $wPrint; //largura imprimivel
     protected $hPrint; //comprimento imprimivel
     //objetos DOM da CTe
@@ -1611,8 +1611,8 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $texto = 'VALOR TOTAL DA MERCADORIA';
         $this->__textBox($x + 1, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $texto = $this->__simpleGetValue($this->infCarga, "vCarga") == "" ?
-                $this->__simpleGetValue($this->infCarga, "vCarga") :
-                $this->__simpleGetValue($this->infCarga, "vMerc");
+                $this->__simpleGetValue($this->infCarga, "vMerc") :
+                $this->__simpleGetValue($this->infCarga, "vCarga");
         $texto = number_format($texto, 2, ",", ".");
         $aFont = $this->formatNegrito;
         $this->__textBox($x + 1, $y + 3, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
