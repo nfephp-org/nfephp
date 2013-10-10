@@ -1716,7 +1716,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $texto = 'NÚMERO DA AVERBAÇÃO';
         $aFont = $this->formatPadrao;
         $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
-        $texto = $this->__simpleGetValue($this->seg, "vCarga");
+        $texto = $this->__simpleGetValue($this->seg, "nAver");
         $aFont = array('font' => $this->fontePadrao, 'size' => 7, 'style' => 'B');
         $this->__textBox($x, $y + 3, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
     } //fim da função descricaoCargaDACTE
