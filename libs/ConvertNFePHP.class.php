@@ -27,7 +27,7 @@
  *
  * @package     NFePHP
  * @name        ConvertNFePHP
- * @version     3.1.9
+ * @version     3.1.10
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2011 &copy; NFePHP
@@ -798,6 +798,10 @@ class ConvertNFePHP
                         if (!empty($dados[21])) {
                             $nItemPed = $dom->createElement("nItemPed", $dados[21]);
                             $prod->appendChild($nItemPed);
+                        }
+                        if (!empty($dados[22])) {
+                            $nFCI = $dom->createElement("nFCI", $dados[22]);
+                            $prod->appendChild($nFCI);
                         }
                     }
                     if (!isset($infAdProd)) {
