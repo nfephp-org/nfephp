@@ -23,7 +23,7 @@
  *
  * @package     NFePHP
  * @name        DanfeNFePHP.class.php
- * @version     2.1.33
+ * @version     2.1.34
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2012 &copy; NFePHP
@@ -97,7 +97,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
     protected $destino = 'I'; //destivo do arquivo pdf I-borwser, S-retorna o arquivo, D-força download, F-salva em arquivo local
     protected $pdfDir=''; //diretorio para salvar o pdf com a opção de destino = F
     protected $fontePadrao='Times'; //Nome da Fonte para gerar o DANFE
-    protected $version = '2.1.33';
+    protected $version = '2.1.34';
     protected $textoAdic = '';
     protected $wAdic = 0;
     protected $wPrint; //largura imprimivel
@@ -1918,27 +1918,27 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
     protected function __descricaoProduto( $itemProd ){
         $prod = $itemProd->getElementsByTagName('prod')->item(0);
         $ICMS = $itemProd->getElementsByTagName("ICMS")->item(0);
-        $impostsos = '';
+        $impostos = '';
         if (!empty($ICMS)){
             $pRedBC = !empty($ICMS->getElementsByTagName("pRedBC")->item(0)->nodeValue) ? number_format($ICMS->getElementsByTagName("pRedBC")->item(0)->nodeValue, 2, ",", ".") : '';
             if ($pRedBC != 0){	// redução da base de cáclulo do ICMS
-                $impostsos .= " pRedBC=".number_format((float)$pRedBC, 2, ",", ".")."%";
+                $impostos .= " pRedBC=".number_format((float)$pRedBC, 2, ",", ".")."%";
             }
             $ivaTxt = !empty($ICMS->getElementsByTagName("pMVAST")->item(0)->nodeValue) ? number_format($ICMS->getElementsByTagName("pMVAST")->item(0)->nodeValue, 2, ",", ".") : '';
             if ($ivaTxt != ''){
-                $impostsos = " IVA=$ivaTxt%";
+                $impostos = " IVA=$ivaTxt%";
             }
             $icmsStTxt = !empty($ICMS->getElementsByTagName("pICMSST")->item(0)->nodeValue) ? number_format($ICMS->getElementsByTagName("pICMSST")->item(0)->nodeValue, 2, ",", ".") : '';
             if ($icmsStTxt != ''){
-                $impostsos .= " pIcmsSt=$icmsStTxt%";
+                $impostos .= " pIcmsSt=$icmsStTxt%";
             }
             $bcIcmsSt = !empty($ICMS->getElementsByTagName("vBCST")->item(0)->nodeValue) ? number_format($ICMS->getElementsByTagName("vBCST")->item(0)->nodeValue, 2, ",", ".") : '';
             if ($bcIcmsSt != ''){
-                $impostsos .= " BcIcmsSt=$bcIcmsSt";
+                $impostos .= " BcIcmsSt=$bcIcmsSt";
             }
             $vIcmsSt = !empty($ICMS->getElementsByTagName("vICMSST")->item(0)->nodeValue) ? number_format($ICMS->getElementsByTagName("vICMSST")->item(0)->nodeValue, 2, ",", ".") : '';
             if ($vIcmsSt != ''){
-                $impostsos .= " vIcmsSt=$vIcmsSt";
+                $impostos .= " vIcmsSt=$vIcmsSt";
             }
         }
         $infAdProd = substr(!empty($itemProd->getElementsByTagName('infAdProd')->item(0)->nodeValue) ? $this->__anfavea($itemProd->getElementsByTagName('infAdProd')->item(0)->nodeValue) : '',0,500);
@@ -1962,7 +1962,10 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
                 $medTxt.= ' ';
             }
         }
-        $tmp_ad=$infAdProd . $medTxt . $impostsos;
+        //NT2013.006 FCI
+        $nFCI = (!empty($itemProd->getElementsByTagName('nFCI')->item(0)->nodeValue)) ? ' FCI:'.$itemProd->getElementsByTagName('nFCI')->item(0)->nodeValue : '';
+        
+        $tmp_ad=$infAdProd . $medTxt . $impostos . $nFCI;
         $texto = $prod->getElementsByTagName("xProd")->item(0)->nodeValue . (strlen($tmp_ad)!=0?"\n    ".$tmp_ad:'');
         $texto = str_replace( ";" , "\n" , $texto );
         return $texto;
