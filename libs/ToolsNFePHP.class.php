@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.0.71
+ * @version   3.0.72
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -889,7 +889,7 @@ class ToolsNFePHP
         $timezone = $this->tzUFlist[$this->UF];
         date_default_timezone_set($timezone);
         //estados que participam do horario de verão
-        $aUFhv = array('ES','GO','MG','MS','PR','RJ','RS','SP','SC','TO');
+        $aUFhv = array('ES','GO','MG','MS','PR','RJ','RS','SP','SC');
         //corrigir o timeZone
         if ($this->UF == 'AC' ||
             $this->UF == 'AM' ||
