@@ -23,7 +23,7 @@
  *
  * @package     NFePHP
  * @name        DanfeNFePHP.class.php
- * @version     2.1.34
+ * @version     2.1.35
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2012 &copy; NFePHP
@@ -97,7 +97,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
     protected $destino = 'I'; //destivo do arquivo pdf I-borwser, S-retorna o arquivo, D-força download, F-salva em arquivo local
     protected $pdfDir=''; //diretorio para salvar o pdf com a opção de destino = F
     protected $fontePadrao='Times'; //Nome da Fonte para gerar o DANFE
-    protected $version = '2.1.34';
+    protected $version = '2.1.35';
     protected $textoAdic = '';
     protected $wAdic = 0;
     protected $wPrint; //largura imprimivel
@@ -1816,12 +1816,10 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
 	$marca = '';
 	$numero = '';
         $texto = '';
-	$pesoBruto = 0;
-	$pesoLiquido = 0;
         foreach($volumes as $volume){
             $quantidade += !empty($volume->getElementsByTagName("qVol")->item(0)->nodeValue) ? $volume->getElementsByTagName("qVol")->item(0)->nodeValue : 0;
-            $pesoBruto += !empty($volume->getElementsByTagName("pesoB")->item(0)->nodeValue) ? $volume->getElementsByTagName("pesoB")->item(0)->nodeValue : 0;
-            $pesoLiquido += !empty($volume->getElementsByTagName("pesoL")->item(0)->nodeValue) ? $volume->getElementsByTagName("pesoL")->item(0)->nodeValue : 0;
+            $pesoBruto += !empty($volume->getElementsByTagName("pesoB")->item(0)->nodeValue) ? $volume->getElementsByTagName("pesoB")->item(0)->nodeValue : '';
+            $pesoLiquido += !empty($volume->getElementsByTagName("pesoL")->item(0)->nodeValue) ? $volume->getElementsByTagName("pesoL")->item(0)->nodeValue : '';
             $texto = !empty($this->transp->getElementsByTagName("esp")->item(0)->nodeValue) ? $this->transp->getElementsByTagName("esp")->item(0)->nodeValue : '';
             if ($texto != $especie && $especie != ''){
                 //tem várias especies
@@ -1888,8 +1886,11 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $texto = 'PESO BRUTO';
         $aFont = array('font'=>$this->fontePadrao,'size'=>6,'style'=>'');
         $this->__textBox($x,$y,$w3,$h,$texto,$aFont,'T','L',1,'');
-        $texto = $pesoBruto;
-        $texto = number_format($texto, 3, ",", ".");
+        if (is_numeric($pesoBruto)) {
+            $texto = number_format($pesoBruto, 3, ",", ".");
+        } else {
+            $texto = '';
+        }    
         $aFont = array('font'=>$this->fontePadrao,'size'=>10,'style'=>'B');
         $this->__textBox($x,$y,$w3,$h,$texto,$aFont,'B','R',0,'');
         //PESO LÍQUIDO
@@ -1898,8 +1899,11 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $texto = 'PESO LÍQUIDO';
         $aFont = array('font'=>$this->fontePadrao,'size'=>6,'style'=>'');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',1,'');
-        $texto = $pesoLiquido;
-        $texto = number_format($texto, 3, ",", ".");
+        if (is_numeric($pesoLiquido)) {
+            $texto = number_format($pesoLiquido, 3, ",", ".");
+        } else {
+            $texto = '';
+        }    
         $aFont = array('font'=>$this->fontePadrao,'size'=>10,'style'=>'B');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'B','R',0,'');
         return ($y+$h);
