@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <nfeProc xmlns="http://www.portalfiscal.inf.br/nfe" versao="3.00">
     <NFe xmlns="http://www.portalfiscal.inf.br/nfe">
-        <infNFe Id="NFe13130604501136000136650020000136261010222458" versao="3.00">
+        <infNFe Id="NFe13130604501136000136650020000973882010222458" versao="3.00">
             <ide>
                 <cUF>13</cUF>
                 <cNF>01022245</cNF>
@@ -9,7 +9,7 @@
                 <indPag>1</indPag>
                 <mod>65</mod>
                 <serie>2</serie>
-                <nNF>13626</nNF>
+                <nNF>97388</nNF>
                 <dhEmi>2013-06-11T08:50:26-04:00</dhEmi>
                 <tpNF>1</tpNF>
                 <idDest>1</idDest>
@@ -246,7 +246,7 @@ MzVDDMRQpJddtajP16cvGjZQe0CSnHuDELN3AQJRntdRqs1uMKGUcUzu3Oa5nJSLx6HygqU4z6Ve</X5
     <infProt>
         <tpAmb>1</tpAmb>
         <verAplic>XXXX</verAplic>
-        <chNFe>13130604501136000136650020000136261010222458</chNFe>
+        <chNFe>13130604501136000136650020000973882010222458</chNFe>
         <dhRecbto>2013-06-11T08:52:33-04:00</dhRecbto>
         <nProt>113130093474232</nProt>
         <digVal>a3XXXoUSXXBBWl234FNRdA1673U=</digVal>
