@@ -32,6 +32,7 @@
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2013 &copy; NFePHP
  * @link      http://www.nfephp.org/
+ * @author    Leandro C. Lopez <leandro dot castoldi at gmail dot com>
  * @author    Roberto L. Machado <linux.rlm at gmail dot com>
  *
  *        CONTRIBUIDORES (em ordem alfabetica):
