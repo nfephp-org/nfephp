@@ -22,7 +22,7 @@
  *
  * @package   NFePHP
  * @name      ImapNFePHP
- * @version   0.0.1
+ * @version   0.1.0
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2013 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -40,20 +40,38 @@ class ImapNFePHP
     public $imaperror = '';
     
     protected $imapconn = false;
-    protected $mbox = '';
-    protected $host = '';
-    protected $user = '';
-    protected $pass = '';
+    protected $mbox = '';//{imap.gmail.com:993/imap/ssl/novalidate-cert}INBOX por exemplo
+    protected $host = '';//imap.gmail.com por exemplo
+    protected $user = '';//seumnome@gmail.com por exemplo
+    protected $pass = '';//passW0rd por exemplo
     protected $port = '';//143, 993
     protected $protocol = ''; //imap, pop3, nntp
     protected $security = ''; //tls, notls, ssl
     protected $validcerts = ''; //validate-cert, novalidate-cert
     protected $imapfolder = 'INBOX'; //INBOX
-    protected $downfolder = '';
+    protected $downfolder = '';//../exemplos
+    protected $imapaction = 'del'; //del ou mov
+    protected $imapnewfolder = ''; //essa pasta já deve existir na caixa postal
     
-    private $imapchange = false;
+    private $imapchange = false;// marca indica se houve modificações na caixa postal a serem atualizadas
+    private $imapmod = false; //indica se o modulo imap está ativado no php
     
-    public function __contruct(
+    /**
+     * Construtor da classe
+     * @param string $host url do servidor
+     * @param string $user nome do usuário geralmente o prórpio endereço de email
+     * @param string $pass password
+     * @param string $port porta para a conexão usuaçmente 143 ou 993
+     * @param string $protocol protocolo de comunicação, usualmente imap, mas pode ser pop3 ou nntp
+     * @param string $security segurança do servidor usualmente ssl, ou tls ou nenhum notls
+     * @param string $validcerts caso o servidor possua um certifica assinado por ele mesmo
+     *                           use novalidate-cert, caso contrario use validate-cert
+     * @param string $imapfolder pasta imap que será consultada, normalmente INBOX
+     * @param string $downfolder pasta onde serão colocados os xml baixados
+     * @param string $action del as mensagens serão deletadas ou mov as mensagens serão apenas movidas para outra pasta
+     * @param string $newfolder nova pasta da caixa postal para onde deverão ser movidas as mensagens 
+     */
+    public function __construct(
         $host = '',
         $user = '',
         $pass = '',
@@ -62,7 +80,9 @@ class ImapNFePHP
         $security = '',
         $validcerts = '',
         $imapfolder = '',
-        $downfolder = ''
+        $downfolder = '',
+        $action = '',
+        $newfolder = ''
     ) {
         $this->setHost($host);
         $this->setUser($user);
@@ -73,9 +93,15 @@ class ImapNFePHP
         $this->setValidCerts($validcerts);
         $this->setImapfolder($imapfolder);
         $this->setDownfolder($downfolder);
-        $this->mboxExpress();
+        $this->setImapAction($action);
+        $this->setImapNewFolder($newfolder);
+        $this->checkImapModule();
+        $this->mboxExpression();
     }//fim construct
     
+    /**
+     * destrutor da classe
+     */
     public function __destruct()
     {
         if ($this->imapconn != false) {
@@ -86,6 +112,17 @@ class ImapNFePHP
         }
     }
     
+    private function checkImapModule()
+    {
+        if (!extension_loaded('imap')) {
+            $this->imapmod = false;
+            $this->imaperror = 'Modulo IMAP não está carregado no PHP';
+        } else {
+            $this->imapmod = true;
+        }
+    }
+    
+    //parametros
     public function setHost($str)
     {
         if ($str != '') {
@@ -137,10 +174,10 @@ class ImapNFePHP
     public function setProtocol($str)
     {
         if ($str != '') {
-            if ($str != 'imap' || $str != 'pop3' || $str != 'nntp') {
-                $this->protocol = '';
-            } else {
+            if ($str == 'imap' || $str == 'pop3' || $str == 'nntp') {
                 $this->protocol = $str;
+            } else {
+                $this->protocol = '';
             }
         }
     }
@@ -153,10 +190,10 @@ class ImapNFePHP
     public function setSecurity($str)
     {
         if ($str != '') {
-            if ($str != 'ssl' || $str != 'tls' || $str != 'notls') {
-                $this->security = '';
-            } else {
+            if ($str == 'ssl' || $str == 'tls' || $str == 'notls') {
                 $this->security = $str;
+            } else {
+                $this->security = '';
             }
         }
     }
@@ -169,10 +206,10 @@ class ImapNFePHP
     public function setValidCerts($str)
     {
         if ($str != '') {
-            if ($str != 'novalidate-cert' || $str != 'validate-cert') {
-                $this->validcerts = '';
-            } else {
+            if ($str == 'novalidate-cert' || $str == 'validate-cert') {
                 $this->validcerts = $str;
+            } else {
+                $this->validcerts = '';
             }
         }
     }
@@ -203,6 +240,30 @@ class ImapNFePHP
         }
     }
     
+    public function setImapAction($str)
+    {
+        if ($str == 'del' || $str == 'mov') {
+            $this->imapaction = $str;
+        } else {
+            $this->imapaction = 'del';
+        }
+    }
+    
+    public function getImapAction()
+    {
+        return $this->imapaction;
+    }
+    
+    public function setImapNewFolder($str)
+    {
+        $this->imapnewfolder = $str;
+    }
+    
+    public function getImapNewFolder()
+    {
+        return $this->imapnewfolder;
+    }
+    
     public function getDownfolder()
     {
         return $this->downfolder;
@@ -212,10 +273,18 @@ class ImapNFePHP
     {
         return $this->mbox;
     }
-
-    protected function mboxExpress()
+    
+    public function getImapError()
     {
-        if ($this->host != '' && $this->port != '' && $this->imapfolder != '' && $this->downfolder != '') {
+        return $this->imaperror;
+    }
+    
+    /**
+     * Monta expressão para conexão imap
+     */
+    protected function mboxExpression()
+    {
+        if ($this->imapmod && $this->host != '' && $this->port != '' && $this->imapfolder != '' && $this->downfolder != '') {
             $tProtocol = ($this->protocol != '') ? '/'. $this->protocol : '';
             $tSecurity = ($this->security != '') ? '/'. $this->security : '';
             $tValidcerts = ($this->validcerts != '') ? '/'. $this->validcerts : '';
@@ -225,6 +294,23 @@ class ImapNFePHP
         }
     }
     
+    /**
+     * Estabelece conexão com servidor IMAP
+     * 
+     * @param string $host url do servidor
+     * @param string $user nome do usuário geralmente o prórpio endereço de email
+     * @param string $pass password
+     * @param string $port porta para a conexão usuaçmente 143 ou 993
+     * @param string $protocol protocolo de comunicação, usualmente imap, mas pode ser pop3 ou nntp
+     * @param string $security segurança do servidor usualmente ssl, ou tls ou nenhum notls
+     * @param string $validcerts caso o servidor possua um certifica assinado por ele mesmo
+     *                           use novalidate-cert, caso contrario use validate-cert
+     * @param string $imapfolder pasta imap que será consultada, normalmente INBOX
+     * @param string $downfolder pasta onde serão colocados os xml baixados
+     * @param string $action del as mensagens serão deletadas ou mov as mensagens serão apenas movidas para outra pasta
+     * @param string $newfolder nova pasta da caixa postal para onde deverão ser movidas as mensagens 
+     * @return boolean true sucesso ou false fracasso, nesse caso consulte a variável imaperror
+     */
     public function imapConnect(
         $host = '',
         $user = '',
@@ -234,7 +320,9 @@ class ImapNFePHP
         $security = '',
         $validcerts = '',
         $imapfolder = '',
-        $downfolder = ''
+        $downfolder = '',
+        $action = '',
+        $newfolder = ''
     ) {
         if ($this->imapconn !== false) {
             return true;
@@ -248,26 +336,27 @@ class ImapNFePHP
         $this->setValidCerts($validcerts);
         $this->setImapfolder($imapfolder);
         $this->setDownfolder($downfolder);
-        if ($this->imapconn === false) {
-            $this->mboxExpress();
-            if ($this->mbox != '') {
-                $this->imapconn = imap_open($this->mbox, $this->user, $this->pass);
-                if ($this->imapconn !== false) {
-                    //sucesso
-                    return true;
-                } else {
-                    //fracasso
-                    $this->imaperror = imap_last_error();
-                    return false;
-                }
+        $this->setImapAction($action);
+        $this->setImapNewFolder($newfolder);
+        $this->mboxExpression();
+        if ($this->mbox != '') {
+            $this->imapconn = imap_open($this->mbox, $this->user, $this->pass);
+            if ($this->imapconn !== false) {
+                //sucesso
+                return true;
             } else {
+                //fracasso
+                $this->imaperror .= imap_last_error();
                 return false;
             }
         } else {
-            return true;
+            return false;
         }
     }//fim connect
 
+    /**
+     * Finaliza a comunicação IMAP anteriormente iniciada, se houver
+     */
     public function imapDisconnect()
     {
         if ($this->imapconn != false) {
@@ -279,47 +368,103 @@ class ImapNFePHP
         }
     }
     
-    public function imapGetMessages()
+    /**
+     * Busca por toda a pasta imap da caixa de correio por mensagens contendo arquivos xml
+     * anexados, caso existam estes serão baixados para a pasta de download indicada.
+     * Todas as mensagens serão removidas da pasta da caixa postal, 
+     * aquelas sem anexos em xml imeditamente e as com anexos xml após os mesmos serem 
+     * baixados com sucesso
+     * @param array $response retorna array com a lista de mensagens 
+     * @return boolean
+     */
+    public function imapGetXmlFiles(&$response = '')
     {
+        $response = array();
         if ($this->imapConnect()) {
-            $qtde = @imap_num_msg($this->imapconn);
-            for ($nMsg = 1; $nMsg <= $qtde; $nMsg++) {
+            $qtd = @imap_num_msg($this->imapconn);
+            for ($nMsg = 1; $nMsg <= $qtd; $nMsg++) {
                 $uid = @imap_uid($this->imapconn, $nMsg);
                 $aResults = @imap_fetch_overview($this->imapconn, $uid, FT_UID);
                 foreach ($aResults as $message) {
                     $msgno = $message->msgno;
-                    $aArqs = $this->imapAttachments($this->imapconn, $msgno);
-                    foreach ($aArqs as $arq) {
-                        if ($arq['is_attachment'] == true) {
-                            $attachname = strtolower($arq['filename']);
-                            if (substr($attachname, -3) != "xml") {
-                                //marcar para deleção
-                                imap_delete($this->imapconn, $message->uid, FT_UID);
+                    $delete = $this->downXML($msgno, $aAtt);
+                    //comando de deleção
+                    $response[]['deleted'] = $delete;
+                    $response[]['from'] = $message->from;
+                    $response[]['subject'] = $message->subject;
+                    $response[]['date'] = $message->date;
+                    $response[]['attachments'] = $aAtt;
+                    if ($delete) {
+                        if ($this->imapaction == 'del') {
+                            if (imap_delete($this->imapconn, $message->uid, FT_UID)) {
                                 $this->imapchange = true;
-                                continue;
+                            } else {
+                                $this->imaperror .= imap_last_error();
                             }
-                            $filename = date('Ymd').$msgno.str_replace(' ', '_', $attachname);
-                            $content = str_replace(array("\n","\r","\t"), "", $arq['attachment']);
-                            $fileH = fopen($this->downfolder.DIRECTORY_SEPARATOR.$filename, "w");
-                            if (fwrite($fileH, $content)) {
-                                fclose($fileH);
-                                @chmod($this->downfolder.DIRECTORY_SEPARATOR.$filename, 0755);
-                                imap_mail_move($this->imapconn, "$msgno:$msgno", "NFe");
-                                imap_delete($this->imapconn, $message->uid, FT_UID);
+                        } else {
+                            if (imap_mail_move($this->imapconn, "$msgno:$msgno", $this->imapnewfolder)) {
                                 $this->imapchange = true;
+                            } else {
+                                $this->imaperror .= imap_last_error();
                             }
                         }
                     }
-                }
-            }
-        }
+                }//fim foreach message
+            }//fim for $qtd
+        }//fim imapConnect
         return true;
     }//fim imapGet
     
-    protected function imapAttachments($connection, $message_number)
+    /**
+     * Executa o download propriamente dito do xml anexado ao email
+     * @param string $msgno numero da mensagem
+     * @param array $aAtt array com os dados dos anexos e dos resultados do download
+     * @return boolean $delete indica se a mensagem deve ser deixada ou (movida ou deletada)
+     */
+    protected function downXML($msgno, &$aAtt)
+    {
+        $aArqs = $this->imapAttachments($this->imapconn, $msgno);
+        $delete = true;
+        foreach ($aArqs as $arq) {
+            $aAtt = array();
+            if ($arq['is_attachment'] == false) {
+                continue; //foreach $arq
+            }
+            $attachname = strtolower($arq['filename']);
+            if (substr($attachname, -3) != "xml") {
+                //tem anexo mas não é um xml, então marcar para deleção
+                $aAtt[]['attachments'] = $attachname;
+                $aAtt[]['download'] = false;
+                continue; //foreach $arq
+            }
+            $filename = date('Ymd').$msgno.str_replace(' ', '_', $attachname);
+            $content = str_replace(array("\n","\r","\t"), "", $arq['attachment']);
+            $fileH = fopen($this->downfolder.DIRECTORY_SEPARATOR.$filename, "w");
+            if (fwrite($fileH, $content)) {
+                fclose($fileH);
+                @chmod($this->downfolder.DIRECTORY_SEPARATOR.$filename, 0755);
+                //arquivo xml salvo com sucesso, então marcar para deleção
+                $aAtt[]['attachments'] = $attachname;
+                $aAtt[]['download'] = true;
+            } else {
+                //como não foi possivel fazer o download manter o email
+                $this->imaperror .= 'Falha ao tentar gravar o xml.';
+                $delete = false;
+            }
+        }//fim foreach $arq
+        return $delete;
+    }
+    
+    /**
+     * Recupera todos os anexos da mensagem
+     * @param object $connection
+     * @param string $messageNumber
+     * @return array com os dados dos anexos
+     */
+    protected function imapAttachments($connection, $messageNumber)
     {
         $attachments = array();
-        $structure = imap_fetchstructure($connection, $message_number);
+        $structure = imap_fetchstructure($connection, $messageNumber);
         if (isset($structure->parts) && count($structure->parts)) {
             for ($iCount = 0; $iCount < count($structure->parts); $iCount++) {
                 $attachments[$iCount] = array(
@@ -345,7 +490,7 @@ class ImapNFePHP
                     }
                 }
                 if ($attachments[$iCount]['is_attachment']) {
-                    $attachments[$iCount]['attachment'] = imap_fetchbody($connection, $message_number, $iCount+1);
+                    $attachments[$iCount]['attachment'] = imap_fetchbody($connection, $messageNumber, $iCount+1);
                     if ($structure->parts[$iCount]->encoding == 3) { // 3 = BASE64
                         $attachments[$iCount]['attachment'] = base64_decode($attachments[$iCount]['attachment']);
                     } elseif ($structure->parts[$iCount]->encoding == 4) { // 4 = QUOTED-PRINTABLE
@@ -354,7 +499,7 @@ class ImapNFePHP
                         );
                     }
                 }
-            }
+            }//fim for
         }
         return $attachments;
     }//fim
