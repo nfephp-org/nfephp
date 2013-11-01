@@ -20,12 +20,6 @@
  * Caso contrário consulte <http://www.fsfla.org/svnwiki/trad/GPLv3> ou
  * <http://www.fsfla.org/svnwiki/trad/LGPLv3>.
  *
- * Está atualizada para :
- *      PHP 5.3
- *      Versão 2 dos webservices da SEFAZ com comunicação via SOAP 1.2
- *      e conforme Manual de Integração Versão 5
- *
- *
  * @package   NFePHP
  * @name      ImapNFePHP
  * @version   0.0.1
