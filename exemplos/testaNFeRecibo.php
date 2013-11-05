@@ -1,6 +1,6 @@
 <?php
 /*
- * Exemplo de solicitação da situação da NFe atraves do numero do 
+ * Exemplo de solicitação da situação da NFe atraves do numero do
  * recibo de uma nota enviada e recebida com sucesso pelo SEFAZ
  */
 require_once('../libs/ToolsNFePHP.class.php');
@@ -18,5 +18,5 @@ if ($aResp = $nfe->getProtocol($recibo, $chave, $tpAmb, $modSOAP)){
     //não houve retorno mostrar erro de comunicação
     echo "Houve erro !! $nfe->errMsg";
 }
-        
+
 ?>

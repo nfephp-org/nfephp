@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nfeProc xmlns="http://www.portalfiscal.inf.br/nfe" versao="3.00">
+    <NFe xmlns="http://www.portalfiscal.inf.br/nfe">
+        <infNFe Id="NFe13130604501136000136650020000973882010222458" versao="3.00">
+            <ide>
+                <cUF>13</cUF>
+                <cNF>01022245</cNF>
+                <natOp>VENDA DE MERCADORIA</natOp>
+                <indPag>1</indPag>
+                <mod>65</mod>
+                <serie>2</serie>
+                <nNF>97388</nNF>
+                <dhEmi>2013-06-11T08:50:26-04:00</dhEmi>
+                <tpNF>1</tpNF>
+                <idDest>1</idDest>
+                <cMunFG>1302603</cMunFG>
+                <tpImp>4</tpImp>
+                <tpEmis>1</tpEmis>
+                <cDV>8</cDV>
+                <tpAmb>2</tpAmb>
+                <finNFe>1</finNFe>
+                <indFinal>1</indFinal>
+                <indPres>1</indPres>
+                <procEmi>0</procEmi>
+                <verProc>V2.245</verProc>
+            </ide>
+            <emit>
+                <CNPJ>04501136000136</CNPJ>
+                <xNome>L J GUERRA E CIA LTDA</xNome>
+                <enderEmit>
+                    <xLgr>AV GEN RODRIGO OTAVIO</xLgr>
+                    <nro>4050</nro>
+                    <xCpl>01-1</xCpl>
+                    <xBairro>JAPIIM</xBairro>
+                    <cMun>1302603</cMun>
+                    <xMun>MANAUS</xMun>
+                    <UF>AM</UF>
+                    <CEP>69077000</CEP>
+                    <cPais>1058</cPais>
+                    <xPais>Brasil</xPais>
+                    <fone>9221211500</fone>
+                </enderEmit>
+                <IE>041616740</IE>
+                <CRT>3</CRT>
+            </emit>
+            <dest>
+                <CPF>00500113456</CPF>
+                <xNome>GUSTAVO SILVA OLIVEIRA</xNome>
+                <enderDest>
+                    <xLgr>RUA JOÃO PAULO I</xLgr>
+                    <nro>201</nro>
+                    <xCpl>fundos</xCpl>
+                    <xBairro>BETANIA</xBairro>
+                    <cMun>1302603</cMun>
+                    <xMun>MANAUS</xMun>
+                    <UF>AM</UF>
+                    <CEP>69073070</CEP>
+                    <cPais>1058</cPais>
+                    <xPais>BRASIL</xPais>
+                    <fone>9281833171</fone>
+                </enderDest>
+            </dest>
+            <det nItem="1">
+                <prod>
+                    <cProd>84776</cProd>
+                    <cEAN/>
+                    <xProd>SUP LAV BEGE LA 30YY 65 171 5296 P16L</xProd>
+                    <NCM>32091010</NCM>
+                    <CFOP>5405</CFOP>
+                    <uCom>UN</uCom>
+                    <qCom>1.0000</qCom>
+                    <vUnCom>230.0000</vUnCom>
+                    <vProd>230.00</vProd>
+                    <cEANTrib/>
+                    <uTrib>UN</uTrib>
+                    <qTrib>1.0000</qTrib>
+                    <vUnTrib>230.0000</vUnTrib>
+                    <indTot>1</indTot>
+                </prod>
+                <imposto>
+                    <ICMS>
+                        <ICMS60>
+                            <orig>0</orig>
+                            <CST>60</CST>
+                            <vBCSTRet>0.00</vBCSTRet>
+                            <vICMSSTRet>0.00</vICMSSTRet>
+                        </ICMS60>
+                    </ICMS>
+                    <PIS>
+                        <PISAliq>
+                            <CST>01</CST>
+                            <vBC>230.00</vBC>
+                            <pPIS>0.65</pPIS>
+                            <vPIS>1.50</vPIS>
+                        </PISAliq>
+                    </PIS>
+                    <COFINS>
+                        <COFINSAliq>
+                            <CST>01</CST>
+                            <vBC>230.00</vBC>
+                            <pCOFINS>3.00</pCOFINS>
+                            <vCOFINS>6.90</vCOFINS>
+                        </COFINSAliq>
+                    </COFINS>
+                </imposto>
+            </det>
+            <det nItem="2">
+                <prod>
+                    <cProd>14508</cProd>
+                    <cEAN>7891019152452</cEAN>
+                    <xProd>TINTA ACR DECORA SUPER LAV BRANCO ACET 3,6LT CORAL</xProd>
+                    <NCM>32091010</NCM>
+                    <CFOP>5405</CFOP>
+                    <uCom>UN</uCom>
+                    <qCom>1.0000</qCom>
+                    <vUnCom>55.0000</vUnCom>
+                    <vProd>55.00</vProd>
+                    <cEANTrib>7891019152452</cEANTrib>
+                    <uTrib>UN</uTrib>
+                    <qTrib>1.0000</qTrib>
+                    <vUnTrib>55.0000</vUnTrib>
+                    <vDesc>2.20</vDesc>
+                    <indTot>1</indTot>
+                </prod>
+                <imposto>
+                    <ICMS>
+                        <ICMS60>
+                            <orig>0</orig>
+                            <CST>60</CST>
+                            <vBCSTRet>0.00</vBCSTRet>
+                            <vICMSSTRet>0.00</vICMSSTRet>
+                        </ICMS60>
+                    </ICMS>
+                    <PIS>
+                        <PISAliq>
+                            <CST>01</CST>
+                            <vBC>52.80</vBC>
+                            <pPIS>0.65</pPIS>
+                            <vPIS>0.34</vPIS>
+                        </PISAliq>
+                    </PIS>
+                    <COFINS>
+                        <COFINSAliq>
+                            <CST>01</CST>
+                            <vBC>52.80</vBC>
+                            <pCOFINS>3.00</pCOFINS>
+                            <vCOFINS>1.58</vCOFINS>
+                        </COFINSAliq>
+                    </COFINS>
+                </imposto>
+            </det>
+            <total>
+                <ICMSTot>
+                    <vBC>0.00</vBC>
+                    <vICMS>0.00</vICMS>
+                    <vBCST>0.00</vBCST>
+                    <vST>0.00</vST>
+                    <vProd>285.00</vProd>
+                    <vFrete>0.00</vFrete>
+                    <vSeg>0.00</vSeg>
+                    <vDesc>2.20</vDesc>
+                    <vII>0.00</vII>
+                    <vIPI>0.00</vIPI>
+                    <vPIS>1.84</vPIS>
+                    <vCOFINS>8.48</vCOFINS>
+                    <vOutro>0.00</vOutro>
+                    <vNF>282.80</vNF>
+                </ICMSTot>
+            </total>
+            <transp>
+                <modFrete>9</modFrete>
+            </transp>
+            <pag>
+                <tPag>03</tPag>
+                <vPag>141.40</vPag>
+                <card>
+                    <CNPJ>60889128000422</CNPJ>
+                    <tBand>02</tBand>
+                    <cAut>110011</cAut>
+                </card>
+            </pag>
+            <pag>
+                <tPag>03</tPag>
+                <vPag>141.40</vPag>
+                <card>
+                    <CNPJ>60889128000422</CNPJ>
+                    <tBand>02</tBand>
+                    <cAut>110011</cAut>
+                </card>
+            </pag>
+            <infAdic/>
+        </infNFe>
+        <Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
+            <SignedInfo>
+                <CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
+                <SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
+                <Reference URI="#NFe13130604501136000136650020000136261010222458">
+                    <Transforms>
+                        <Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
+                        <Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
+                    </Transforms>
+                    <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+                    <DigestValue>a3XXXoUSXXBBWl234FNRdA1673U=</DigestValue>
+                </Reference>
+            </SignedInfo>
+            <SignatureValue>ZYZo8lq1RLEo/q6TewsRamDweKn0jEXV29rirKm63b7o6qrSNmSreUKpZOGzwPiZz8xNeLjDdS6g
+U1K1FyBup2NhNuqE4X2oE9MahEJEdektHaF/GZDfff9A48GmaNwQo3LQ7Im+KmZLO8kHCX3eZqFz
+vqaaPrZjwHtr6ZUj/LMMMbClxaR0M4VfbEtL74YPUVqfKIZC/gcPp2WFlnGtm1rRI//LK3KDEc2v
+pJXDWj5sNJaE0z9FjzLZp2lXWAJdyAVHijCpSE4uZeMQrwTj4F8hcO1WwRYd96MwmG1VDfNGM8a6
+B/7zD19uU/TE4Ep4Bp9dx3gkOoNtLP5Fyo0fdw==</SignatureValue><KeyInfo><X509Data><X509Certificate>MIIHxzCCBa+gAwIBAgIISGin1tcEtYswDQYJKoZIhvcNAQELBQAwTDELMAkGA1UEBhMCQlIxEzAR
+BgNVBAoTCklDUC1CcmFzaWwxKDAmBgNVBAMTH1NFUkFTQSBDZXJ0aWZpY2Fkb3JhIERpZ2l0YWwg
+djIwHhcNMTIxMDI1MTk1MzAwWhcNMTMxMDI1MTk1MzAwWjCB4DELMAkGA1UEBhMCQlIxEzARBgNV
+BAoTCklDUC1CcmFzaWwxFDASBgNVBAsTCyhFTSBCUkFOQ08pMRgwFgYDVQQLEw8wMDAwMDEwMDM2
+NjE3MzUxFDASBgNVBAsTCyhFTSBCUkFOQ08pMRQwEgYDVQQLEwsoRU0gQlJBTkNPKTEUMBIGA1UE
+CxMLKEVNIEJSQU5DTykxFDASBgNVBAsTCyhFTSBCUkFOQ08pMRQwEgYDVQQLEwsoRU0gQlJBTkNP
+KTEeMBwGA1UEAxMVTCBKIEdVRVJSQSBFIENJQSBMVERBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A
+MIIBCgKCAQEAxVJUqBH+hsxaNkihIR9SwLOJ/MaME288DQD7AUw/Dyincl1EOEx77rWrRoVw3+bL
+0+fzHEAreEioA/MmLb6N9hHchs9OgICchvdQSXU7AdAuHjJpRhC8WNgdu3G8RoQK0C7NkKgvHDT+
+q4RVmae5nmzG+Gq+mfu5cZqHKoMJNjzgMoaUSX0mqv9ST3yT8oVE04Y64CW0vWHG8B+Lt2IUr/B6
+eyTsJps5NhqC6Eo5kJPjcD18ZmM3SmoLWGhfbEU7/NjGCH8rrx6KpxToJvt7gV9m4tZmZo/uShQH
+nhrsittXXqsZMIkA/AVK413GC6nq2w+sCOm19IM9fQ9H509glwIDAQABo4IDFjCCAxIwgZcGCCsG
+AQUFBwEBBIGKMIGHMEcGCCsGAQUFBzAChjtodHRwOi8vd3d3LmNlcnRpZmljYWRvZGlnaXRhbC5j
+b20uYnIvY2FkZWlhcy9zZXJhc2FjZHYyLnA3YjA8BggrBgEFBQcwAYYwaHR0cDovL29jc3AuY2Vy
+dGlmaWNhZG9kaWdpdGFsLmNvbS5ici9zZXJhc2FjZHYyMB8GA1UdIwQYMBaAFJrggxDXJpvputqC
+soHOORrTh3CGMHEGA1UdIARqMGgwZgYGYEwBAgEGMFwwWgYIKwYBBQUHAgEWTmh0dHA6Ly9wdWJs
+aWNhY2FvLmNlcnRpZmljYWRvZGlnaXRhbC5jb20uYnIvcmVwb3NpdG9yaW8vZHBjL2RlY2xhcmFj
+YW8tc2NkLnBkZjCB8AYDVR0fBIHoMIHlMEmgR6BFhkNodHRwOi8vd3d3LmNlcnRpZmljYWRvZGln
+aXRhbC5jb20uYnIvcmVwb3NpdG9yaW8vbGNyL3NlcmFzYWNkdjIuY3JsMEOgQaA/hj1odHRwOi8v
+bGNyLmNlcnRpZmljYWRvcy5jb20uYnIvcmVwb3NpdG9yaW8vbGNyL3NlcmFzYWNkdjIuY3JsMFOg
+UaBPhk1odHRwOi8vcmVwb3NpdG9yaW8uaWNwYnJhc2lsLmdvdi5ici9sY3IvU2VyYXNhL3JlcG9z
+aXRvcmlvL2xjci9zZXJhc2FjZHYyLmNybDAOBgNVHQ8BAf8EBAMCBeAwHQYDVR0lBBYwFAYIKwYB
+BQUHAwIGCCsGAQUFBwMEMIG/BgNVHREEgbcwgbSBF0NQREBDQVNBREFTQ09SUkVJQVMuQ09NoD4G
+BWBMAQMEoDUTMzAyMDExOTYzMDIyMzI2NjQ4NTYwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMKAlBgVgTAEDAqAcExpKT0RJQkVSVE8gTEVNQVIgREFMTCBPR0xJT6AZBgVgTAEDA6AQEw4w
+NDUwMTEzNjAwMDEzNqAXBgVgTAEDB6AOEwwwMDAwMDAwMDAwMDAwDQYJKoZIhvcNAQELBQADggIB
+ADxraixJl/YJK8pKDIv1iR4UuPBx4KjpDSSJj48T12T0jxFK1woTQQqGzBFBpv6ShqIRmlux/V8P
+xqhF30LMObq4mNjLkn9l2Fk7vbYCFrLU+f5ag+0y5e4YbNUtVlfc2Rva9IodaOp8MOzNIEhBcvaw
+ODL826iTkJkMNWYytygDZaJWLGjXI7JN/XvXCg0thrQ5s2MlGIkMYdV7MxvilN5Qsk5Prt4P59hx
+NZJ3fvAJ9zCE/tUH0QqpOFIVWrpEOelUad6ZOVZFIbRIGXykfRFM6Rj/aqnH/me7Kmyb7jPewQnz
+TtSs1GNQqQHknJRtQn4LsrJV/qo2ZyxTOnqtvuXu8tzbrnXwuTmlaUYkcK7do4w6QjIrKr8qp2Zy
+dJ63seLxiixrEioXwZ/m68Qyx6abxLndPTPDHDjvdi8JvM/ckzaQiF9+uFR63mlc0omkE9PhElLA
+6wGhvTs0co8QRvLYvOUt8HbF1hqnSWmroivq/WwKgvSf2b3kuMBYGhKmC0vqwzGU6s/Ml9LZky4j
+0K1xxRMV0+pG/R3huuS0WRz3uJ2k7d1WK3mymQ1+gBlcNFBqCtCjo5wGLMLmL9P9ETLQwm+5yCxf
+MzVDDMRQpJddtajP16cvGjZQe0CSnHuDELN3AQJRntdRqs1uMKGUcUzu3Oa5nJSLx6HygqU4z6Ve</X509Certificate></X509Data></KeyInfo></Signature></NFe>
+<protNFe versao="3.00">
+    <infProt>
+        <tpAmb>1</tpAmb>
+        <verAplic>XXXX</verAplic>
+        <chNFe>13130604501136000136650020000973882010222458</chNFe>
+        <dhRecbto>2013-06-11T08:52:33-04:00</dhRecbto>
+        <nProt>113130093474232</nProt>
+        <digVal>a3XXXoUSXXBBWl234FNRdA1673U=</digVal>
+        <cStat>100</cStat>
+        <xMotivo>Autorizado o uso da NF-e</xMotivo>
+    </infProt>
+</protNFe>
+</nfeProc>

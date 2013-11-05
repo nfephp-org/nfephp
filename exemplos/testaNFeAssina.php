@@ -2,7 +2,7 @@
 require_once('../libs/ToolsNFePHP.class.php');
 $nfe = new ToolsNFePHP;
 
-$file = '35130471780456000160550010000000411000000410-nfe.xml';
+$file = 'xml/35130471780456000160550010000000411000000410-nfe.xml';
 $arq = file_get_contents($file);
 
 if ($xml = $nfe->signXML($arq, 'infNFe')){

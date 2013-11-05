@@ -9,7 +9,7 @@ if (!isset($_REQUEST['o'])) {
     $saida = 'pdf';
 }
 
-$arq = './exemploNFCe.xml';
+$arq = 'xml/exemploNFCe.xml';
 if (is_file($arq)) {
     $docxml = file_get_contents($arq);
     $danfe = new DanfeNFCeNFePHP($docxml, '', 0);
