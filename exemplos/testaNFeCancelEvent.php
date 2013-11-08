@@ -1,9 +1,9 @@
 <?php
 /**
  * testaCancelaEvent
- * 
+ *
  * Rotina de teste de cancelamento por evento
- * 
+ *
  * Corrija os dados para o cancelamento antes de testar
  */
 require_once('../libs/ToolsNFePHP.class.php');
@@ -25,5 +25,5 @@ if ($resp = $nfe->cancelEvent($chNFe,$nProt,$xJust,$tpAmb,$modSOAP)){
     echo '<PRE>';
     echo htmlspecialchars($nfe->soapDebug);
     echo '</PRE><BR>';
-}    
+}
 ?>
