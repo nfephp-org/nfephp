@@ -21,6 +21,7 @@
 <!-- Versao 20130120 Correção da URL de Recepcao do Evento da BA -->
 <!-- Versão 20130201 Inclusão das URL's de Consulta de Cadastro SC, ES e RN -->
 <!-- Versão 20131108 Inclusão da estrutura para NFCe modelo 65 conforme versões do PL_008a -->  
+<!-- Versão 20131116 Inclusão dos webservices SVC-AN e SVC-RS que irão substituir o SCAN (ws estão ainda incompletos)-->  
 <NFe>
   <modelo>55</modelo>
   <UF>
@@ -412,6 +413,60 @@
       <RecepcaoEvento method='nfeRecepcaoEvento' version='1.00'>https://www.sefazvirtual.fazenda.gov.br/RecepcaoEvento/RecepcaoEvento.asmx</RecepcaoEvento>
       <NfeConsultaDest method='nfeConsultaNFDest' version='1.00'></NfeConsultaDest>
       <NfeDownloadNF method='nfeDownloadNF' version='1.00'>https://www.sefazvirtual.fazenda.gov.br/NfeDownloadNF/NfeDownloadNF.asmx</NfeDownloadNF>
+    </producao>
+  </UF>
+  <UF>
+    <sigla>SVC-AN</sigla>
+    <homologacao>
+      <NfeRecepcao method='nfeRecepcaoLote2' version='2.00'>https://hom.nfe.fazenda.gov.br/SVC/NfeRecepcao/NfeRecepcao2.asmx</NfeRecepcao>
+      <NfeRetRecepcao method='nfeRetRecepcao2' version='2.00'>https://hom.nfe.fazenda.gov.br/SVC/NfeRetRecepcao//NfeRetRecepcao2.asmx</NfeRetRecepcao>
+      <NfeCancelamento method='nfeCancelamentoNF2' version='2.00'>https://hom.nfe.fazenda.gov.br/SVC/NfeCancelamento/NfeCancelamento2.asmx</NfeCancelamento>
+      <NfeInutilizacao method='nfeInutilizacaoNF2' version='2.00'></NfeInutilizacao>
+      <NfeConsulta method='nfeConsultaNF2' version='2.01'>https://hom.nfe.fazenda.gov.br/SVC/NfeConsulta/NfeConsulta2.asmx</NfeConsulta>
+      <NfeStatusServico method='nfeStatusServicoNF2' version='2.00'>https://hom.nfe.fazenda.gov.br/SVC/NfeStatusServico/NfeStatusServico2.asmx</NfeStatusServico>
+      <CadConsultaCadastro method='consultaCadastro2' version='2.00'></CadConsultaCadastro>
+      <RecepcaoEvento method='nfeRecepcaoEvento' version='1.00'></RecepcaoEvento>
+      <NfeConsultaDest method='nfeConsultaNFDest' version='1.00'></NfeConsultaDest>
+      <NfeDownloadNF method='nfeDownloadNF' version='1.00'></NfeDownloadNF>
+    </homologacao>
+    <producao>
+      <NfeRecepcao method='nfeRecepcaoLote2' version='2.00'></NfeRecepcao>
+      <NfeRetRecepcao method='nfeRetRecepcao2' version='2.00'></NfeRetRecepcao>
+      <NfeCancelamento method='nfeCancelamentoNF2' version='2.00'></NfeCancelamento>
+      <NfeInutilizacao method='nfeInutilizacaoNF2' version='2.00'></NfeInutilizacao>
+      <NfeConsulta method='nfeConsultaNF2' version='2.01'></NfeConsulta>
+      <NfeStatusServico method='nfeStatusServicoNF2' version='2.00'></NfeStatusServico>
+      <CadConsultaCadastro method='consultaCadastro2' version='2.00'></CadConsultaCadastro>
+      <RecepcaoEvento method='nfeRecepcaoEvento' version='1.00'></RecepcaoEvento>
+      <NfeConsultaDest method='nfeConsultaNFDest' version='1.00'></NfeConsultaDest>
+      <NfeDownloadNF method='nfeDownloadNF' version='1.00'></NfeDownloadNF>
+    </producao>
+  </UF>
+  <UF>
+    <sigla>SVC-RS</sigla>
+    <homologacao>
+      <NfeRecepcao method='nfeRecepcaoLote2' version='2.00'>https://homologacao.nfe.sefazvirtual.rs.gov.br/ws/Nferecepcao/NFeRecepcao2.asmx</NfeRecepcao>
+      <NfeRetRecepcao method='nfeRetRecepcao2' version='2.00'>https://homologacao.nfe.sefazvirtual.rs.gov.br/ws/NfeRetRecepcao/NfeRetRecepcao2.asmx</NfeRetRecepcao>
+      <NfeCancelamento method='nfeCancelamentoNF2' version='2.00'>https://homologacao.nfe.sefazvirtual.rs.gov.br/ws/NfeCancelamento/NfeCancelamento2.asmx</NfeCancelamento>
+      <NfeInutilizacao method='nfeInutilizacaoNF2' version='2.00'></NfeInutilizacao>
+      <NfeConsulta method='nfeConsultaNF2' version='2.01'>https://homologacao.nfe.sefazvirtual.rs.gov.br/ws/nfeconsulta/NfeConsulta2.asmx</NfeConsulta>
+      <NfeStatusServico method='nfeStatusServicoNF2' version='2.00'>https://homologacao.nfe.sefazvirtual.rs.gov.br/ws/NfeStatusServico/NfeStatusServico2.asmx</NfeStatusServico>
+      <CadConsultaCadastro method='consultaCadastro2' version='2.00'></CadConsultaCadastro>
+      <RecepcaoEvento method='nfeRecepcaoEvento' version='1.00'></RecepcaoEvento>
+      <NfeConsultaDest method='nfeConsultaNFDest' version='1.00'></NfeConsultaDest>
+      <NfeDownloadNF method='nfeDownloadNF' version='1.00'></NfeDownloadNF>
+    </homologacao>
+    <producao>
+      <NfeRecepcao method='nfeRecepcaoLote2' version='2.00'>https://nfe.sefazvirtual.rs.gov.br/ws/Nferecepcao/NFeRecepcao2.asmx</NfeRecepcao>
+      <NfeRetRecepcao method='nfeRetRecepcao2' version='2.00'>https://nfe.sefazvirtual.rs.gov.br/ws/NfeRetRecepcao/NfeRetRecepcao2.asmx</NfeRetRecepcao>
+      <NfeCancelamento method='nfeCancelamentoNF2' version='2.00'>https://nfe.sefazvirtual.rs.gov.br/ws/NfeCancelamento/NfeCancelamento2.asmx</NfeCancelamento>
+      <NfeInutilizacao method='nfeInutilizacaoNF2' version='2.00'></NfeInutilizacao>
+      <NfeConsulta method='nfeConsultaNF2' version='2.01'>https://nfe.sefazvirtual.rs.gov.br/ws/NfeConsulta/NfeConsulta2.asmx</NfeConsulta>
+      <NfeStatusServico method='nfeStatusServicoNF2' version='2.00'>https://nfe.sefazvirtual.rs.gov.br/ws/NfeStatusServico/NfeStatusServico2.asmx</NfeStatusServico>
+      <CadConsultaCadastro method='consultaCadastro2' version='2.00'></CadConsultaCadastro>
+      <RecepcaoEvento method='nfeRecepcaoEvento' version='1.00'></RecepcaoEvento>
+      <NfeConsultaDest method='nfeConsultaNFDest' version='1.00'></NfeConsultaDest>
+      <NfeDownloadNF method='nfeDownloadNF' version='1.00'></NfeDownloadNF>
     </producao>
   </UF>
   <UF>
@@ -879,6 +934,87 @@
       <NfeConsultaQR method='QR-CODE' version='3.10'></NfeConsultaQR>
       <NfeConsultaDest method='nfeConsultaNFDest' version='3.10'></NfeConsultaDest>
       <NfeDownloadNF method='nfeDownloadNF' version='3.10'>https://www.sefazvirtual.fazenda.gov.br/NfeDownloadNF/NfeDownloadNF.asmx</NfeDownloadNF>
+    </producao>
+  </UF>
+  <UF>
+    <sigla>SVC-AN</sigla>
+    <homologacao>
+      <NfeRecepcao method='nfeRecepcaoLote2' version='2.00'></NfeRecepcao>
+      <NfeRetRecepcao method='nfeRetRecepcao2' version='2.00'></NfeRetRecepcao>
+      <NfeCancelamento method='nfeCancelamentoNF2' version='2.00'></NfeCancelamento>
+      <NfeInutilizacao method='nfeInutilizacaoNF2' version='2.00'></NfeInutilizacao>
+      <NfeConsulta method='nfeConsultaNF2' version='2.01'></NfeConsulta>
+      <NfeStatusServico method='nfeStatusServicoNF2' version='2.00'></NfeStatusServico>
+      <CadConsultaCadastro method='consultaCadastro2' version='2.00'></CadConsultaCadastro>
+      <RecepcaoEvento method='nfeRecepcaoEvento' version='1.00'></RecepcaoEvento>
+      <NfeConsultaDest method='nfeConsultaNFDest' version='1.00'></NfeConsultaDest>
+      <NfeDownloadNF method='nfeDownloadNF' version='1.00'></NfeDownloadNF>
+    </homologacao>
+    <producao>
+      <NfeRecepcao method='nfeRecepcaoLote2' version='2.00'></NfeRecepcao>
+      <NfeRetRecepcao method='nfeRetRecepcao2' version='2.00'></NfeRetRecepcao>
+      <NfeCancelamento method='nfeCancelamentoNF2' version='2.00'></NfeCancelamento>
+      <NfeInutilizacao method='nfeInutilizacaoNF2' version='2.00'></NfeInutilizacao>
+      <NfeConsulta method='nfeConsultaNF2' version='2.01'></NfeConsulta>
+      <NfeStatusServico method='nfeStatusServicoNF2' version='2.00'></NfeStatusServico>
+      <CadConsultaCadastro method='consultaCadastro2' version='2.00'></CadConsultaCadastro>
+      <RecepcaoEvento method='nfeRecepcaoEvento' version='1.00'></RecepcaoEvento>
+      <NfeConsultaDest method='nfeConsultaNFDest' version='1.00'></NfeConsultaDest>
+      <NfeDownloadNF method='nfeDownloadNF' version='1.00'></NfeDownloadNF>
+    </producao>
+  </UF>
+  <UF>
+    <sigla>SVC-RS</sigla>
+    <homologacao>
+      <NfeRecepcao method='nfeRecepcaoLote2' version='2.00'></NfeRecepcao>
+      <NfeRetRecepcao method='nfeRetRecepcao2' version='2.00'></NfeRetRecepcao>
+      <NfeCancelamento method='nfeCancelamentoNF2' version='2.00'></NfeCancelamento>
+      <NfeInutilizacao method='nfeInutilizacaoNF2' version='2.00'></NfeInutilizacao>
+      <NfeConsulta method='nfeConsultaNF2' version='2.01'></NfeConsulta>
+      <NfeStatusServico method='nfeStatusServicoNF2' version='2.00'></NfeStatusServico>
+      <CadConsultaCadastro method='consultaCadastro2' version='2.00'></CadConsultaCadastro>
+      <RecepcaoEvento method='nfeRecepcaoEvento' version='1.00'></RecepcaoEvento>
+      <NfeConsultaDest method='nfeConsultaNFDest' version='1.00'></NfeConsultaDest>
+      <NfeDownloadNF method='nfeDownloadNF' version='1.00'></NfeDownloadNF>
+    </homologacao>
+    <producao>
+      <NfeRecepcao method='nfeRecepcaoLote2' version='2.00'></NfeRecepcao>
+      <NfeRetRecepcao method='nfeRetRecepcao2' version='2.00'></NfeRetRecepcao>
+      <NfeCancelamento method='nfeCancelamentoNF2' version='2.00'></NfeCancelamento>
+      <NfeInutilizacao method='nfeInutilizacaoNF2' version='2.00'></NfeInutilizacao>
+      <NfeConsulta method='nfeConsultaNF2' version='2.01'></NfeConsulta>
+      <NfeStatusServico method='nfeStatusServicoNF2' version='2.00'></NfeStatusServico>
+      <CadConsultaCadastro method='consultaCadastro2' version='2.00'></CadConsultaCadastro>
+      <RecepcaoEvento method='nfeRecepcaoEvento' version='1.00'></RecepcaoEvento>
+      <NfeConsultaDest method='nfeConsultaNFDest' version='1.00'></NfeConsultaDest>
+      <NfeDownloadNF method='nfeDownloadNF' version='1.00'></NfeDownloadNF>
+    </producao>
+  </UF>
+  <UF>
+    <sigla>SVRS</sigla>
+    <homologacao>
+      <NfeRecepcao method='nfeRecepcaoLote2' version='2.00'>https://homologacao.nfe.sefazvirtual.rs.gov.br/ws/Nferecepcao/NFeRecepcao2.asmx</NfeRecepcao>
+      <NfeRetRecepcao method='nfeRetRecepcao2' version='2.00'>https://homologacao.nfe.sefazvirtual.rs.gov.br/ws/NfeRetRecepcao/NfeRetRecepcao2.asmx</NfeRetRecepcao>
+      <NfeCancelamento method='nfeCancelamentoNF2' version='2.00'>https://homologacao.nfe.sefazvirtual.rs.gov.br/ws/NfeCancelamento/NfeCancelamento2.asmx</NfeCancelamento>
+      <NfeInutilizacao method='nfeInutilizacaoNF2' version='2.00'>https://homologacao.nfe.sefazvirtual.rs.gov.br/ws/NfeInutilizacao/NfeInutilizacao2.asmx</NfeInutilizacao>
+      <NfeConsulta method='nfeConsultaNF2' version='2.01'>https://homologacao.nfe.sefazvirtual.rs.gov.br/ws/nfeconsulta/NfeConsulta2.asmx</NfeConsulta>
+      <NfeStatusServico method='nfeStatusServicoNF2' version='2.00'>https://homologacao.nfe.sefazvirtual.rs.gov.br/ws/NfeStatusServico/NfeStatusServico2.asmx</NfeStatusServico>
+      <CadConsultaCadastro method='consultaCadastro2' version='2.00'></CadConsultaCadastro>
+      <RecepcaoEvento method='nfeRecepcaoEvento' version='1.00'>https://homologacao.nfe.sefazvirtual.rs.gov.br/ws/recepcaoevento/recepcaoevento.asmx</RecepcaoEvento>
+      <NfeConsultaDest method='nfeConsultaNFDest' version='1.00'></NfeConsultaDest>
+      <NfeDownloadNF method='nfeDownloadNF' version='1.00'></NfeDownloadNF>
+    </homologacao>
+    <producao>
+      <NfeRecepcao method='nfeRecepcaoLote2' version='2.00'>https://nfe.sefazvirtual.rs.gov.br/ws/Nferecepcao/NFeRecepcao2.asmx</NfeRecepcao>
+      <NfeRetRecepcao method='nfeRetRecepcao2' version='2.00'>https://nfe.sefazvirtual.rs.gov.br/ws/NfeRetRecepcao/NfeRetRecepcao2.asmx</NfeRetRecepcao>
+      <NfeCancelamento method='nfeCancelamentoNF2' version='2.00'>https://nfe.sefazvirtual.rs.gov.br/ws/NfeCancelamento/NfeCancelamento2.asmx</NfeCancelamento>
+      <NfeInutilizacao method='nfeInutilizacaoNF2' version='2.00'>https://nfe.sefazvirtual.rs.gov.br/ws/nfeinutilizacao/nfeinutilizacao2.asmx</NfeInutilizacao>
+      <NfeConsulta method='nfeConsultaNF2' version='2.01'>https://nfe.sefazvirtual.rs.gov.br/ws/NfeConsulta/NfeConsulta2.asmx</NfeConsulta>
+      <NfeStatusServico method='nfeStatusServicoNF2' version='2.00'>https://nfe.sefazvirtual.rs.gov.br/ws/NfeStatusServico/NfeStatusServico2.asmx</NfeStatusServico>
+      <CadConsultaCadastro method='consultaCadastro2' version='2.00'></CadConsultaCadastro>
+      <RecepcaoEvento method='nfeRecepcaoEvento' version='1.00'>https://nfe.sefazvirtual.rs.gov.br/ws/recepcaoevento/recepcaoevento.asmx</RecepcaoEvento>
+      <NfeConsultaDest method='nfeConsultaNFDest' version='1.00'></NfeConsultaDest>
+      <NfeDownloadNF method='nfeDownloadNF' version='1.00'></NfeDownloadNF>
     </producao>
   </UF>
   <UF>
