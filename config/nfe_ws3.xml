@@ -718,27 +718,27 @@
   <UF>
     <sigla>MT</sigla>
     <homologacao>
-      <NfeRecepcao method='nfeRecepcaoLote2' version='3.10'>https://homologacao.sefaz.mt.gov.br/nfews/v2/services/NfeRecepcao2</NfeRecepcao>
-      <NfeRetRecepcao method='nfeRetRecepcao2' version='3.10'>https://homologacao.sefaz.mt.gov.br/nfews/v2/services/NfeRetRecepcao2</NfeRetRecepcao>
-      <NfeCancelamento method='nfeCancelamentoNF2' version='3.10'>https://homologacao.sefaz.mt.gov.br/nfews/v2/services/NfeCancelamento2</NfeCancelamento>
-      <NfeInutilizacao method='nfeInutilizacaoNF2' version='3.10'>https://homologacao.sefaz.mt.gov.br/nfews/v2/services/NfeInutilizacao2</NfeInutilizacao>
-      <NfeConsulta method='nfeConsultaNF2' version='3.10'>https://homologacao.sefaz.mt.gov.br/nfews/v2/services/NfeConsulta2</NfeConsulta>
-      <NfeStatusServico method='nfeStatusServicoNF2' version='3.10'>https://homologacao.sefaz.mt.gov.br/nfews/v2/services/NfeStatusServico2</NfeStatusServico>
-      <CadConsultaCadastro method='consultaCadastro2' version='3.10'>https://homologacao.sefaz.mt.gov.br/nfews/v2/services/CadConsultaCadastro2</CadConsultaCadastro>
-      <RecepcaoEvento method='nfeRecepcaoEvento' version='1.00'>https://homologacao.sefaz.mt.gov.br/nfews/v2/services/RecepcaoEvento</RecepcaoEvento>
+      <NfeRecepcao method='nfeRecepcaoLote2' version='3.10'>https://homologacao.sefaz.mt.gov.br/nfcews/services/NfeRecepcao2</NfeRecepcao>
+      <NfeRetRecepcao method='nfeRetRecepcao2' version='3.10'>https://homologacao.sefaz.mt.gov.br/nfcews/services/NfeRetRecepcao2</NfeRetRecepcao>
+      <NfeCancelamento method='nfeCancelamentoNF2' version='3.10'>https://homologacao.sefaz.mt.gov.br/nfcews/services/NfeCancelamento2</NfeCancelamento>
+      <NfeInutilizacao method='nfeInutilizacaoNF2' version='3.10'>https://homologacao.sefaz.mt.gov.br/nfcews/services/NfeInutilizacao2</NfeInutilizacao>
+      <NfeConsulta method='nfeConsultaNF2' version='3.10'>https://homologacao.sefaz.mt.gov.br/nfcews/services/NfeConsulta2</NfeConsulta>
+      <NfeStatusServico method='nfeStatusServicoNF2' version='3.10'>https://homologacao.sefaz.mt.gov.br/nfcews/services/NfeStatusServico2</NfeStatusServico>
+      <CadConsultaCadastro method='consultaCadastro2' version='3.10'></CadConsultaCadastro>
+      <RecepcaoEvento method='nfeRecepcaoEvento' version='1.00'>https://homologacao.sefaz.mt.gov.br/nfcews/services/RecepcaoEvento</RecepcaoEvento>
       <NfeConsultaQR method='QR-CODE' version='3.10'>http://www.hom.nfe.sefaz.mt.gov.br/portal/consultarNFCe.jsp</NfeConsultaQR>      
       <NfeConsultaDest method='nfeConsultaNFDest' version='3.10'></NfeConsultaDest>
       <NfeDownloadNF method='nfeDownloadNF' version='3.10'></NfeDownloadNF>
     </homologacao>
     <producao>
-      <NfeRecepcao method='nfeRecepcaoLote2' version='3.10'>https://nfe.sefaz.mt.gov.br/nfews/v2/services/NfeRecepcao2</NfeRecepcao>
-      <NfeRetRecepcao method='nfeRetRecepcao2' version='3.10'>https://nfe.sefaz.mt.gov.br/nfews/v2/services/NfeRetRecepcao2</NfeRetRecepcao>
-      <NfeCancelamento method='nfeCancelamentoNF2' version='3.10'>https://nfe.sefaz.mt.gov.br/nfews/v2/services/NfeCancelamento2</NfeCancelamento>
-      <NfeInutilizacao method='nfeInutilizacaoNF2' version='3.10'>https://nfe.sefaz.mt.gov.br/nfews/v2/services/NfeInutilizacao2</NfeInutilizacao>
-      <NfeConsulta method='nfeConsultaNF2' version='3.10'>https://nfe.sefaz.mt.gov.br/nfews/v2/services/NfeConsulta2</NfeConsulta>
-      <NfeStatusServico method='nfeStatusServicoNF2' version='3.10'>https://nfe.sefaz.mt.gov.br/nfews/v2/services/NfeStatusServico2</NfeStatusServico>
-      <CadConsultaCadastro method='consultaCadastro2' version='3.10'>https://nfe.sefaz.mt.gov.br/nfews/v2/services/CadConsultaCadastro2</CadConsultaCadastro>
-      <RecepcaoEvento method='nfeRecepcaoEvento' version='3.10'>https://nfe.sefaz.mt.gov.br/nfews/v2/services/RecepcaoEvento</RecepcaoEvento>
+      <NfeRecepcao method='nfeRecepcaoLote2' version='3.10'>https://nfce.sefaz.mt.gov.br/nfcews/services/NfeRecepcao2</NfeRecepcao>
+      <NfeRetRecepcao method='nfeRetRecepcao2' version='3.10'>https://nfce.sefaz.mt.gov.br/nfcews/services/NfeRetRecepcao2</NfeRetRecepcao>
+      <NfeCancelamento method='nfeCancelamentoNF2' version='3.10'>https://nfce.sefaz.mt.gov.br/nfcews/services/NfeCancelamento2</NfeCancelamento>
+      <NfeInutilizacao method='nfeInutilizacaoNF2' version='3.10'>https://nfce.sefaz.mt.gov.br/nfcews/services/NfeInutilizacao2</NfeInutilizacao>
+      <NfeConsulta method='nfeConsultaNF2' version='3.10'>https://nfce.sefaz.mt.gov.br/nfcews/services/NfeConsulta2</NfeConsulta>
+      <NfeStatusServico method='nfeStatusServicoNF2' version='3.10'>https://nfce.sefaz.mt.gov.br/nfcews/services/NfeStatusServico2</NfeStatusServico>
+      <CadConsultaCadastro method='consultaCadastro2' version='3.10'></CadConsultaCadastro>
+      <RecepcaoEvento method='nfeRecepcaoEvento' version='3.10'>https://nfce.sefaz.mt.gov.br/nfcews/services/RecepcaoEvento</RecepcaoEvento>
       <NfeConsultaQR method='QR-CODE' version='1.00'>http://www.sefaz.mt.gov.br/nfe/portal/consultanfce</NfeConsultaQR>            
       <NfeConsultaDest method='nfeConsultaNFDest' version='3.10'></NfeConsultaDest>
       <NfeDownloadNF method='nfeDownloadNF' version='3.10'></NfeDownloadNF>
