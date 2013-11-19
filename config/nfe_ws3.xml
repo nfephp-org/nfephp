@@ -21,7 +21,8 @@
 <!-- Versao 20130120 Correção da URL de Recepcao do Evento da BA -->
 <!-- Versão 20130201 Inclusão das URL's de Consulta de Cadastro SC, ES e RN -->
 <!-- Versão 20131108 Inclusão da estrutura para NFCe modelo 65 conforme versões do PL_008a -->  
-<!-- Versão 20131116 Inclusão dos webservices SVC-AN e SVC-RS que irão substituir o SCAN (ws estão ainda incompletos)-->  
+<!-- Versão 20131116 Inclusão dos webservices SVC-AN e SVC-RS que irão substituir o SCAN (ws estão ainda incompletos)-->
+<!-- Versão 20131119 Correção dos webservices de MT -->  
 <NFe>
   <modelo>55</modelo>
   <UF>
@@ -718,30 +719,30 @@
   <UF>
     <sigla>MT</sigla>
     <homologacao>
-      <NfeRecepcao method='nfeRecepcaoLote2' version='3.10'>https://homologacao.sefaz.mt.gov.br/nfcews/services/NfeRecepcao2</NfeRecepcao>
-      <NfeRetRecepcao method='nfeRetRecepcao2' version='3.10'>https://homologacao.sefaz.mt.gov.br/nfcews/services/NfeRetRecepcao2</NfeRetRecepcao>
-      <NfeCancelamento method='nfeCancelamentoNF2' version='3.10'>https://homologacao.sefaz.mt.gov.br/nfcews/services/NfeCancelamento2</NfeCancelamento>
-      <NfeInutilizacao method='nfeInutilizacaoNF2' version='3.10'>https://homologacao.sefaz.mt.gov.br/nfcews/services/NfeInutilizacao2</NfeInutilizacao>
+      <NfeRecepcao method='nfeRecepcaoLote2' version='3.00'>https://homologacao.sefaz.mt.gov.br/nfcews/services/NfeRecepcao2</NfeRecepcao>
+      <NfeRetRecepcao method='nfeRetRecepcao2' version='3.00'>https://homologacao.sefaz.mt.gov.br/nfcews/services/NfeRetRecepcao2</NfeRetRecepcao>
+      <NfeCancelamento method='nfeCancelamentoNF2' version='3.00'>https://homologacao.sefaz.mt.gov.br/nfcews/services/NfeCancelamento2</NfeCancelamento>
+      <NfeInutilizacao method='nfeInutilizacaoNF2' version='3.00'>https://homologacao.sefaz.mt.gov.br/nfcews/services/NfeInutilizacao2</NfeInutilizacao>
       <NfeConsulta method='nfeConsultaNF2' version='3.10'>https://homologacao.sefaz.mt.gov.br/nfcews/services/NfeConsulta2</NfeConsulta>
-      <NfeStatusServico method='nfeStatusServicoNF2' version='3.10'>https://homologacao.sefaz.mt.gov.br/nfcews/services/NfeStatusServico2</NfeStatusServico>
-      <CadConsultaCadastro method='consultaCadastro2' version='3.10'></CadConsultaCadastro>
-      <RecepcaoEvento method='nfeRecepcaoEvento' version='1.00'>https://homologacao.sefaz.mt.gov.br/nfcews/services/RecepcaoEvento</RecepcaoEvento>
-      <NfeConsultaQR method='QR-CODE' version='3.10'>http://www.hom.nfe.sefaz.mt.gov.br/portal/consultarNFCe.jsp</NfeConsultaQR>      
-      <NfeConsultaDest method='nfeConsultaNFDest' version='3.10'></NfeConsultaDest>
-      <NfeDownloadNF method='nfeDownloadNF' version='3.10'></NfeDownloadNF>
+      <NfeStatusServico method='nfeStatusServicoNF2' version='3.00'>https://homologacao.sefaz.mt.gov.br/nfcews/services/NfeStatusServico2</NfeStatusServico>
+      <CadConsultaCadastro method='consultaCadastro2' version='3.00'></CadConsultaCadastro>
+      <RecepcaoEvento method='nfeRecepcaoEvento' version='3.00'>https://homologacao.sefaz.mt.gov.br/nfcews/services/RecepcaoEvento</RecepcaoEvento>
+      <NfeConsultaQR method='QR-CODE' version='100'>http://www.hom.nfe.sefaz.mt.gov.br/portal/consultarNFCe.jsp</NfeConsultaQR>      
+      <NfeConsultaDest method='nfeConsultaNFDest' version='3.00'></NfeConsultaDest>
+      <NfeDownloadNF method='nfeDownloadNF' version='3.00'></NfeDownloadNF>
     </homologacao>
     <producao>
-      <NfeRecepcao method='nfeRecepcaoLote2' version='3.10'>https://nfce.sefaz.mt.gov.br/nfcews/services/NfeRecepcao2</NfeRecepcao>
-      <NfeRetRecepcao method='nfeRetRecepcao2' version='3.10'>https://nfce.sefaz.mt.gov.br/nfcews/services/NfeRetRecepcao2</NfeRetRecepcao>
-      <NfeCancelamento method='nfeCancelamentoNF2' version='3.10'>https://nfce.sefaz.mt.gov.br/nfcews/services/NfeCancelamento2</NfeCancelamento>
-      <NfeInutilizacao method='nfeInutilizacaoNF2' version='3.10'>https://nfce.sefaz.mt.gov.br/nfcews/services/NfeInutilizacao2</NfeInutilizacao>
-      <NfeConsulta method='nfeConsultaNF2' version='3.10'>https://nfce.sefaz.mt.gov.br/nfcews/services/NfeConsulta2</NfeConsulta>
-      <NfeStatusServico method='nfeStatusServicoNF2' version='3.10'>https://nfce.sefaz.mt.gov.br/nfcews/services/NfeStatusServico2</NfeStatusServico>
-      <CadConsultaCadastro method='consultaCadastro2' version='3.10'></CadConsultaCadastro>
-      <RecepcaoEvento method='nfeRecepcaoEvento' version='3.10'>https://nfce.sefaz.mt.gov.br/nfcews/services/RecepcaoEvento</RecepcaoEvento>
-      <NfeConsultaQR method='QR-CODE' version='1.00'>http://www.sefaz.mt.gov.br/nfe/portal/consultanfce</NfeConsultaQR>            
-      <NfeConsultaDest method='nfeConsultaNFDest' version='3.10'></NfeConsultaDest>
-      <NfeDownloadNF method='nfeDownloadNF' version='3.10'></NfeDownloadNF>
+      <NfeRecepcao method='nfeRecepcaoLote2' version='3.00'>https://nfce.sefaz.mt.gov.br/nfcews/services/NfeRecepcao2</NfeRecepcao>
+      <NfeRetRecepcao method='nfeRetRecepcao2' version='3.00'>https://nfce.sefaz.mt.gov.br/nfcews/services/NfeRetRecepcao2</NfeRetRecepcao>
+      <NfeCancelamento method='nfeCancelamentoNF2' version='3.00'>https://nfce.sefaz.mt.gov.br/nfcews/services/NfeCancelamento2</NfeCancelamento>
+      <NfeInutilizacao method='nfeInutilizacaoNF2' version='3.00'>https://nfce.sefaz.mt.gov.br/nfcews/services/NfeInutilizacao2</NfeInutilizacao>
+      <NfeConsulta method='nfeConsultaNF2' version='3.00'>https://nfce.sefaz.mt.gov.br/nfcews/services/NfeConsulta2</NfeConsulta>
+      <NfeStatusServico method='nfeStatusServicoNF2' version='3.00'>https://nfce.sefaz.mt.gov.br/nfcews/services/NfeStatusServico2</NfeStatusServico>
+      <CadConsultaCadastro method='consultaCadastro2' version='3.00'></CadConsultaCadastro>
+      <RecepcaoEvento method='nfeRecepcaoEvento' version='3.00'>https://nfce.sefaz.mt.gov.br/nfcews/services/RecepcaoEvento</RecepcaoEvento>
+      <NfeConsultaQR method='QR-CODE' version='100'>http://www.sefaz.mt.gov.br/nfe/portal/consultanfce</NfeConsultaQR>            
+      <NfeConsultaDest method='nfeConsultaNFDest' version='3.00'></NfeConsultaDest>
+      <NfeDownloadNF method='nfeDownloadNF' version='3.00'></NfeDownloadNF>
     </producao>
   </UF>
   <UF>
