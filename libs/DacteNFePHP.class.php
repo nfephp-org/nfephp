@@ -1021,13 +1021,25 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $this->__textBox($x, $y + $h1 + 8, $w + 0.5, $h1 - 4.5);
         $texto = "Consulta de autenticidade no portal nacional do CT-e, ";
         $texto .= "no site da Sefaz Autorizadora, \r\n ou em http://www.cte.fazenda.gov.br";
-        if ($this->tpEmis == 5)
+        if ($this->tpEmis == 5 || $this->tpEmis == 7 || $this->tpEmis == 8)
         {
             $texto = "";
-            $chaveContingencia = $this->__geraChaveAdicionalDeContingencia();
             $this->pdf->SetFillColor(0, 0, 0);
+            if ($this->tpEmis == 5)
+            {
+
+                $chaveContingencia = $this->__geraChaveAdicionalDeContingencia();
+                $this->pdf->Code128($x + 20, $y1 + 10, $chaveContingencia, $bW * .9, $bH / 2);
+
+            } else
+            {
+                $chaveContingencia = $this->__simpleGetValue($this->protCTe, "nProt");
+                $this->pdf->Code128($x + 40, $y1 + 10, $chaveContingencia, $bW * .4 , $bH / 2);
+            }
+
+
             //codigo de barras
-            $this->pdf->Code128($x + 20, $y1 + 10, $chaveContingencia, $bW * .9, $bH / 2);
+
         }
 
         $aFont = array(
@@ -1043,7 +1055,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         if ($this->__cteDPEC())
         {
             $texto = 'NÚMERO DE REGISTRO DPEC';
-        } elseif ($this->tpEmis == 5)
+        } elseif ($this->tpEmis == 5 || $this->tpEmis == 7 || $this->tpEmis == 8)
         {
             $texto = "DADOS DO CT-E";
         } else
