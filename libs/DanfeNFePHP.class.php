@@ -198,7 +198,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
             $this->compra     = $this->dom->getElementsByTagName("compra")->item(0);
             $this->tpEmis     = $this->ide->getElementsByTagName("tpEmis")->item(0)->nodeValue;
             $this->tpImp      = $this->ide->getElementsByTagName("tpImp")->item(0)->nodeValue;
-            $this->infProt    = $this->dom->getElementsByTagName("infProt")->item(0); 
+            $this->infProt    = $this->dom->getElementsByTagName("infProt")->item(0);
        }
     } //fim construct
 
@@ -845,7 +845,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
                 $yImg = $y+3;
                 $x1 = $x;
                 $y1 = round($yImg + $nImgH + 1,0);
-                $tw = $w;               
+                $tw = $w;
             }
             $this->pdf->Image($this->logomarca, $xImg, $yImg, $nImgW, $nImgH, 'jpeg');
         } else {
@@ -1816,10 +1816,12 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
 	$marca = '';
 	$numero = '';
         $texto = '';
+        $pesoBruto=0;
+        $pesoLiquido=0;
         foreach($volumes as $volume){
             $quantidade += !empty($volume->getElementsByTagName("qVol")->item(0)->nodeValue) ? $volume->getElementsByTagName("qVol")->item(0)->nodeValue : 0;
-            $pesoBruto += !empty($volume->getElementsByTagName("pesoB")->item(0)->nodeValue) ? $volume->getElementsByTagName("pesoB")->item(0)->nodeValue : '';
-            $pesoLiquido += !empty($volume->getElementsByTagName("pesoL")->item(0)->nodeValue) ? $volume->getElementsByTagName("pesoL")->item(0)->nodeValue : '';
+            $pesoBruto += !empty($volume->getElementsByTagName("pesoB")->item(0)->nodeValue) ? $volume->getElementsByTagName("pesoB")->item(0)->nodeValue : 0;
+            $pesoLiquido += !empty($volume->getElementsByTagName("pesoL")->item(0)->nodeValue) ? $volume->getElementsByTagName("pesoL")->item(0)->nodeValue : 0;
             $texto = !empty($this->transp->getElementsByTagName("esp")->item(0)->nodeValue) ? $this->transp->getElementsByTagName("esp")->item(0)->nodeValue : '';
             if ($texto != $especie && $especie != ''){
                 //tem várias especies
@@ -1886,11 +1888,11 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $texto = 'PESO BRUTO';
         $aFont = array('font'=>$this->fontePadrao,'size'=>6,'style'=>'');
         $this->__textBox($x,$y,$w3,$h,$texto,$aFont,'T','L',1,'');
-        if (is_numeric($pesoBruto)) {
+        if (is_numeric($pesoBruto) && $pesoBruto > 0) {
             $texto = number_format($pesoBruto, 3, ",", ".");
         } else {
             $texto = '';
-        }    
+        }
         $aFont = array('font'=>$this->fontePadrao,'size'=>10,'style'=>'B');
         $this->__textBox($x,$y,$w3,$h,$texto,$aFont,'B','R',0,'');
         //PESO LÍQUIDO
@@ -1899,11 +1901,11 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $texto = 'PESO LÍQUIDO';
         $aFont = array('font'=>$this->fontePadrao,'size'=>6,'style'=>'');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',1,'');
-        if (is_numeric($pesoLiquido)) {
+        if (is_numeric($pesoLiquido) && $pesoLiquido > 0 ) {
             $texto = number_format($pesoLiquido, 3, ",", ".");
         } else {
             $texto = '';
-        }    
+        }
         $aFont = array('font'=>$this->fontePadrao,'size'=>10,'style'=>'B');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'B','R',0,'');
         return ($y+$h);
@@ -1926,7 +1928,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         if (!empty($ICMS)){
             $pRedBC = !empty($ICMS->getElementsByTagName("pRedBC")->item(0)->nodeValue) ? number_format($ICMS->getElementsByTagName("pRedBC")->item(0)->nodeValue, 2, ",", ".") : '';
             if ($pRedBC != 0){	// redução da base de cáclulo do ICMS
-                $impostos .= " pRedBC=".number_format((float)$pRedBC, 2, ",", ".")."%";
+                $impostos .= " pRedBC=$pRedBC%";
             }
             $ivaTxt = !empty($ICMS->getElementsByTagName("pMVAST")->item(0)->nodeValue) ? number_format($ICMS->getElementsByTagName("pMVAST")->item(0)->nodeValue, 2, ",", ".") : '';
             if ($ivaTxt != ''){
@@ -1968,7 +1970,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         }
         //NT2013.006 FCI
         $nFCI = (!empty($itemProd->getElementsByTagName('nFCI')->item(0)->nodeValue)) ? ' FCI:'.$itemProd->getElementsByTagName('nFCI')->item(0)->nodeValue : '';
-        
+
         $tmp_ad=$infAdProd . $medTxt . $impostos . $nFCI;
         $texto = $prod->getElementsByTagName("xProd")->item(0)->nodeValue . (strlen($tmp_ad)!=0?"\n    ".$tmp_ad:'');
         $texto = str_replace( ";" , "\n" , $texto );
