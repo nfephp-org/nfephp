@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.0.72
+ * @version   3.0.73
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -2338,7 +2338,7 @@ class ToolsNFePHP
                         'xNome'=>$xNome,
                         'dEmi'=>$dEmi,
                         'dhRecbto'=>$dhRecbto,
-                        '$tpNF'=>$tpNF,
+                        'tpNF'=>$tpNF,
                         'cSitNFe'=>$cSitNFe,
                         'cSitconf'=>$cSitConf
                     );
@@ -2361,7 +2361,7 @@ class ToolsNFePHP
                         'xNome'=>$xNome,
                         'dEmi'=>$dEmi,
                         'dhRecbto'=>$dhRecbto,
-                        '$tpNF'=>$tpNF,
+                        'tpNF'=>$tpNF,
                         'cSitNFe'=>$cSitNFe,
                         'cSitconf'=>$cSitConf
                     );
