@@ -78,6 +78,13 @@ while ($indCont != 0) {
         }        
     }
     flush();
+    //atençao o tempo de execução desse loop pode exceder 
+    //o tempo limite de processamento do php e o script pode ser interrompido
+    //é recomendável que a pesquisa seja feita em etapas usando o numero do ultNSU
+    //registrado 
     $limite++;
+    //tem de haver um intervalo de tempo entre cada pesquisa caso contrario o 
+    //webservice pode parar de responder, considerando ou um excesso de consultas
+    //ou um ataque DoS
     sleep(5);
 }
