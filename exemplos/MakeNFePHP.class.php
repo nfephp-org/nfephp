@@ -1,17 +1,35 @@
 <?php
-
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 /**
- * Description of MakeNFe
+ * Este arquivo é parte do projeto NFePHP - Nota Fiscal eletrônica em PHP.
  *
- * @author administrador
+ * Este programa é um software livre: você pode redistribuir e/ou modificá-lo
+ * sob os termos da Licença Pública Geral GNU (GPL)como é publicada pela Fundação
+ * para o Software Livre, na versão 3 da licença, ou qualquer versão posterior
+ * e/ou
+ * sob os termos da Licença Pública Geral Menor GNU (LGPL) como é publicada pela Fundação
+ * para o Software Livre, na versão 3 da licença, ou qualquer versão posterior.
+ *
+ *
+ * Este programa é distribuído na esperança que será útil, mas SEM NENHUMA
+ * GARANTIA; nem mesmo a garantia explícita definida por qualquer VALOR COMERCIAL
+ * ou de ADEQUAÇÃO PARA UM PROPÓSITO EM PARTICULAR,
+ * veja a Licença Pública Geral GNU para mais detalhes.
+ *
+ * Você deve ter recebido uma cópia da Licença Publica GNU e da
+ * Licença Pública Geral Menor GNU (LGPL) junto com este programa.
+ * Caso contrário consulte <http://www.fsfla.org/svnwiki/trad/GPLv3> ou
+ * <http://www.fsfla.org/svnwiki/trad/LGPLv3>.
+ *
+ * @package   NFePHP
+ * @name      MakeNFePHP
+ * @version   1.0.0
+ * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
+ * @copyright 2009-2014 &copy; NFePHP
+ * @link      http://www.nfephp.org/
+ * @author    Roberto L. Machado <linux.rlm at gmail dot com>
  */
-//namespace SpedPHP\Components\Xml;
+
+//namespace SpedPHP\NFe;
 
 //use \DOMDocument;
 //use \DOMElement;
@@ -39,12 +57,38 @@ class MakeNFe
     public $dest; //DOMNode
     public $enderDest; //DOMNode
     public $retirada; //DOMNode
-    public $aAutXML; //array de DOMNode
+    public $aAutXML = array(); //array de DOMNode
     public $aProd; //array de DOMNode
     public $aDet; //array de DOMNode
     public $aDetExport; //array de DOMNode
     public $aDI; //array de DOMNode
     public $aAdi; //array de DOMNode
+    
+    public $pag; //DOMNode
+    public $card; //DOMNOde
+    public $cobr; //DOMNode
+    public $fat; //DOMNode
+    public $aDup = array(); //array de DOMNode
+    
+    public $transp; //DOMNode
+    public $transporta; //DOMNode
+    public $veicTransp; //DOMNode
+    public $aReboque = array(); //array de DOMNode
+    public $aVol = array(); //array de DOMNode
+    
+    
+    public $infAdic; //DOMNode
+    public $aObsCont = array(); //array de DOMNode
+    public $aObsFisco = array(); //array de DOMNode
+    
+    public $aProcRef = array(); //array de DOMNode
+    
+    public $exporta; //DOMNode
+    public $compra; //DOMNode
+    
+    public $cana; //DOMNode
+    public $aForDia = array(); //array de DOMNode
+    public $aDeduc = array(); //array de DOMNode
     
     //cria DOM document
     public function __construct()
@@ -61,23 +105,23 @@ class MakeNFe
         //cria e insere as subtags da tag NFref
         if (isset($this->refNFe)) {
             $this->tagNFref();
-            $this->NFeref->appendChild($this->refNFe);
+            $this->NFref->appendChild($this->refNFe);
         }
         if (isset($this->refNF)) {
             $this->tagNFref();
-            $this->NFeref->appendChild($this->refNF);
+            $this->NFref->appendChild($this->refNF);
         }
         if (isset($this->refNFP)) {
             $this->tagNFref();
-            $this->NFeref->appendChild($this->refNFP);
+            $this->NFref->appendChild($this->refNFP);
         }
-        if (isset($this->refCTE)) {
+        if (isset($this->refCTe)) {
             $this->tagNFref();
-            $this->NFeref->appendChild($this->refCTe);
+            $this->NFref->appendChild($this->refCTe);
         }
         if (isset($this->ECFref)) {
             $this->tagNFref();
-            $this->NFeref->appendChild($this->ECFref);
+            $this->NFref->appendChild($this->ECFref);
         }
         //coloca NFref na tag ide
         if (isset($this->ide)) {
@@ -115,12 +159,107 @@ class MakeNFe
         if (isset($this->entrega)) {
             $this->infNFe->appendChild($this->entrega);
         }
-        if (isset($aAutXML)  && $this->versao > 2.00) {
-            foreach ($aAutXML as $aut) {
+        if (isset($this->aAutXML)  && $this->versao > 2.00) {
+            foreach ($this->aAutXML as $aut) {
                 $this->infNFe->appendChild($aut);
             }
         }
+        if (isset($this->transp) && isset($this->transporta)) {
+            $this->transp->appendChild($this->transporta);
+        }
+        if (isset($this->transp) && isset($this->retTransp)) {
+            $this->transp->appendChild($this->retTransp);
+        }
+        if (isset($this->transp) && isset($this->veicTransp)) {
+            $this->transp->appendChild($this->veicTransp);
+        }
+        if (isset($this->transp) && isset($this->aReboque)) {
+            foreach ($this->aReboque as $reboque) {
+                $this->transp->appendChild($reboque);
+            }
+        }
+        if (isset($this->aVol) && isset($this->transp)) {
+            foreach ($this->aVol as $vol) {
+                $this->transp->appendChild($vol);
+            }
+        }
+        if (isset($this->transp)) {
+            $this->infNFe->appendChild($this->transp);
+        }
+        if (isset($this->fat)) {
+            $this->tagcobr();
+            $this->cobr->appendChild($this->fat);
+        }
+        if (isset($this->aDup)) {
+            $this->tagcobr();
+            foreach ($this->aDup as $dup) {
+                $this->cobr->appendChild($dup);
+            }
+        }
+        if (isset($this->cobr)) {
+            $this->infNFe->appendChild($this->cobr);
+        }
         
+        if (isset($this->card)) {
+            if (isset($this->pag)) {
+                $this->pag->appendChild($this->card);
+            }
+        }
+        if (isset($this->pag)) {
+            $this->infNFe->appendChild($this->pag);
+        }
+        
+        
+        
+        if (isset($this->aObsCont)) {
+            foreach ($this->aObsCont as $obsCont) {
+                if (!isset($this->infAdic)) {
+                    $this->taginfAdic();
+                }
+                $this->infAdic->appendChild($obsCont);
+            }
+        }
+        if (isset($this->aObsFisco)) {
+            foreach ($this->aObsFisco as $obsFisco) {
+                if (!isset($this->infAdic)) {
+                    $this->taginfAdic();
+                }
+                $this->infAdic->appendChild($obsFisco);
+            }
+        }
+        if (isset($this->aProcRef)) {
+            foreach ($this->aProcRef as $procRef) {
+                if (!isset($this->infAdic)) {
+                    $this->taginfAdic();
+                }
+                $this->infAdic->appendChild($procRef);
+            }
+        }
+        
+        
+        
+        if (isset($this->infAdic)) {
+            $this->infNFe->appendChild($this->infAdic);
+        }
+        if (isset($this->exporta)) {
+            $this->infNFe->appendChild($this->exporta);
+        }
+        if (isset($this->compra)) {
+            $this->infNFe->appendChild($this->compra);
+        }
+        if (isset($this->cana) && isset($this->aForDia)) {
+            foreach ($this->aForDia as $forDia) {
+                $this->cana->appendChild($forDia);
+            }
+        }
+        if (isset($this->cana) && isset($this->aDeduc)) {
+            foreach ($this->aDeduc as $deduc) {
+                $this->cana->appendChild($deduc);
+            }
+        }
+        if (isset($this->cana)) {
+            $this->infNFe->appendChild($this->cana);
+        }
         $this->NFe->appendChild($this->infNFe);
         $this->dom->appendChild($this->NFe);
         return $this->dom->saveXML();
@@ -255,8 +394,7 @@ class MakeNFe
     public function tagNFref()
     {
         if (!isset($this->NFref)) {
-            //$NFref
-            $this->NFref = $this->dom->createElement("NFref", $NFref);
+            $this->NFref = $this->dom->createElement("NFref");
         }
     }
     
@@ -545,14 +683,14 @@ class MakeNFe
         return $this->entrega;
     }
     
-    //tag autXML
+    //tag autXML (somente versão 3.1)
     public function tagautoXML($CNPJ = '', $CPF = '')
     {
         $autXML = $this->dom->createElement("autXML");
         if ($CNPJ != '') {
             $this->addChild($autXML, "CNPJ", $CNPJ);
         } else {
-            $this->addChild($autXML, "CPF", $CPF);
+             $this->addChild($autXML, "CPF", $CPF);
         }
         $this->aAutXML[]=$autXML;
         return $autXML;
@@ -870,23 +1008,163 @@ class MakeNFe
     //tag total/reTrib (opcional)
     
     //tag transp
-    public function tagtransp()
+    public function tagtransp($modFrete = '')
     {
-        
+        $this->transp = $this->dom->createElement("transp");
+        $this->addChild($this->transp, "modFrete", $modFrete);
+        return $this->transp;
     }
     //tag transp/tranporta (opcional)
-    //tag transp/veiculo (opcional)
+    public function tagtransporta($CNPJ = '', $CPF = '', $xNome = '', $IE = '', $xEnder = '', $xMun = '', $UF = '')
+    {
+        $this->transporta = $this->dom->createElement("transporta");
+        if ($CNPJ != '') {
+            $this->addChild($this->transporta, "CNPJ", $CNPJ);
+        }
+        if ($CPF != '') {
+            $this->addChild($this->transporta, "CPF", $CPF);
+        }
+        if ($xNome != '') {
+            $this->addChild($this->transporta, "xNome", $xNome);
+        }
+        if ($IE != '') {
+            $this->addChild($this->transporta, "IE", $IE);
+        }
+        if ($xEnder != '') {
+            $this->addChild($this->transporta, "xEnder", $xEnder);
+        }
+        if ($xMun != '') {
+            $this->addChild($this->transporta, "xMun", $xMun);
+        }
+        if ($UF != '') {
+            $this->addChild($this->transporta, "UF", $UF);
+        }
+        return $this->transporta;
+    }
+    //tag transp/veicTransp (opcional)
+    public function tagveicTransp($placa = '', $UF = '', $RNTC = '')
+    {
+        $this->veicTransp = $this->dom->createElement("veicTransp");
+        $this->addChild($this->veicTransp, "placa", $placa);
+        $this->addChild($this->veicTransp, "UF", $UF);
+        if ($RNTC != '') {
+            $this->addChild($this->veicTransp, "RNTC", $RNTC);
+        }
+        return $this->veicTransp;
+    }
     //tag transp/reboque (opcional)
-    //tag transp/reTransp (opcional)
+    public function tagreboque($placa = '', $UF = '', $RNTC = '', $vagao = '', $balsa = '')
+    {
+        $reboque = $this->dom->createElement("reboque");
+        $this->addChild($reboque, "placa", $placa);
+        $this->addChild($reboque, "UF", $UF);
+        if ($RNTC != '') {
+            $this->addChild($reboque, "RNTC", $RNTC);
+        }
+        if ($vagao != '') {
+            $this->addChild($reboque, "vagao", $vagao);
+        }
+        if ($balsa != '') {
+            $this->addChild($reboque, "balsa", $balsa);
+        }
+        $this->aReboque[] = $reboque;
+        return $reboque;
+    }
+    //tag transp/retTransp (opcional)
+    public function tagretTransp($vServ = '', $vBCRet = '', $pICMSRet = '', $vICMSRet = '', $CFOP = '', $cMunFG = '')
+    {
+        $this->retTransp = $this->dom->createElement("retTransp");
+        $this->addChild($this->retTransp, "vServ", $vServ);
+        $this->addChild($this->retTransp, "vBCRet", $vBCRet);
+        $this->addChild($this->retTransp, "pICMSRet", $pICMSRet);
+        $this->addChild($this->retTransp, "vICMSRet", $vICMSRet);
+        $this->addChild($this->retTransp, "CFOP", $CFOP);
+        $this->addChild($this->retTransp, "cMunFG", $cMunFG);
+        return $this->retTransp;
+    }
     //tag transp/vol (opcional)
+    public function tagvol($qVol = '', $esp = '', $marca = '', $nVol = '', $pesoL = '', $pesoB = '', $aLacres = '')
+    {
+        $vol = $this->dom->createElement("vol");
+        if ($qVol != '') {
+            $this->addChild($vol, "qVol", $qVol);
+        }
+        if ($esp != '') {
+            $this->addChild($vol, "esp", $esp);
+        }
+        if ($marca != '') {
+            $this->addChild($vol, "marca", $marca);
+        }
+        if ($nVol != '') {
+            $this->addChild($vol, "nVol", $nVol);
+        }
+        if ($pesoL != '') {
+            $this->addChild($vol, "pesoL", $pesoL);
+        }
+        if ($pesoB != '') {
+            $this->addChild($vol, "pesoB", $pesoB);
+        }
+        if ($aLacres != '') {
+            if (is_array($aLacres)) {
+                //tag transp/vol/lacres (opcional)
+                foreach ($aLacres as $nLacre) {
+                    $lacre = $this->taglacres($nLacre);
+                    $vol->appendChild($lacre);
+                    $lacre - null;
+                }
+            }
+        }
+        $this->aVol[] = $vol;
+        return $vol;
+    }
+    //tag transp/vol/lacres (opcional)
+    public function taglacres($nLacre = '')
+    {
+        $lacre = $this->dom->createElement("lacres");
+        $this->addChild($lacre, "nLacre", $nLacre);
+        return $lacre;
+    }
+    
     
     //tag infNFe/cobr (opcional)
     public function tagcobr()
     {
-        
+        if (!isset($this->cobr)) {
+            $this->cobr = $this->dom->createElement("cobr");
+        }
     }
     //tag infNFe/cobr/fat (opcional)
+    public function tagfat($nFat = '', $vOrig = '', $vDesc = '', $vLiq = '')
+    {
+        $this->fat = $this->dom->createElement("fat");
+        if ($nFat != '') {
+            $this->addChild($this->fat, "nFat", $nFat);
+        }
+        if ($vOrig != '') {
+            $this->addChild($this->fat, "vOrig", $vOrig);
+        }
+        if ($vDesc != '') {
+            $this->addChild($this->fat, "vDesc", $vDesc);
+        }
+        if ($vLiq != '') {
+            $this->addChild($this->fat, "vLiq", $vLiq);
+        }
+        return $this->fat;
+    }
     //tag infNFe/cobr/fat/dup (opcional)
+    public function tagdup($nDup = '', $dVenc = '', $vDup = '')
+    {
+        $dup = $this->dom->createElement("dup");
+        if ($nDup != '') {
+            $this->addChild($dup, "nDup", $nDup);
+        }
+        if ($dVenc != '') {
+            $this->addChild($dup, "dVenc", $dVenc);
+        }
+        $this->addChild($dup, "vDup", $vDup);
+        $this->aDup[] = $dup;
+        return $dup;
+    }
     
     //tag infNFe/pag (opcional)
     public function tagpag(
@@ -916,35 +1194,45 @@ class MakeNFe
         return $this->card;
     }
     
-    //tag infAdic (opcional)
+    //tag infNFe/infAdic (opcional)
     public function taginfAdic(
         $infAdFisco = '',
         $infCpl = ''
     ) {
-        $this->infAdic = $this->dom->createElement("infAdic");
+        if (!isset($this->infAdic)) {
+            $this->infAdic = $this->dom->createElement("infAdic");
+        }
         if ($infAdFisco != '') {
-            $this->addChild($this->infAdic, "$infAdFisco", $infAdFisco);
+            $this->addChild($this->infAdic, "infAdFisco", $infAdFisco);
         }
         if ($infCpl != '') {
-            $this->addChild($this->infAdic, "$infCpl", $infCpl);
+            $this->addChild($this->infAdic, "infCpl", $infCpl);
         }
         return $this->infAdic;
     }
     
-    //tag infAdic/obsCont (opcional)
+    //tag infNFe/infAdic/obsCont (opcional)
     public function tagobsCont(
         $xCampo = '',
         $xTexto = ''
     ) {
-        
+        $obsCont = $this->dom->createElement("obsCont");
+        $this->addChild($obsCont, "xCampo", $xCampo);
+        $this->addChild($obsCont, "xTexto", $xTexto);
+        $this->aObsCont[]=$obsCont;
+        return $obsCont;
     }
     
-    //tag infAdic/obsFisco (opcional)
+    //tag infNFe/infAdic/obsFisco (opcional)
     public function tagobsFisco(
         $xCampo = '',
         $xTexto = ''
     ) {
-        
+        $obsFisco = $this->dom->createElement("obsFisco");
+        $this->addChild($obsFisco, "xCampo", $xCampo);
+        $this->addChild($obsFisco, "xTexto", $xTexto);
+        $this->aObsFisco[]=$obsFisco;
+        return $obsFisco;
     }
     
     //tag infAdic/procRef (opcional)
@@ -952,6 +1240,11 @@ class MakeNFe
         $nProc = '',
         $indProc = ''
     ) {
+        $procRef = $this->dom->createElement("procRef");
+        $this->addChild($procRef, "nProc", $nProc);
+        $this->addChild($procRef, "indProc", $indProc);
+        $this->aProcRef[]=$procRef;
+        return $procRef;
         
     }
     
@@ -961,7 +1254,11 @@ class MakeNFe
         $xLocExporta = '',
         $xLocDespacho = ''
     ) {
-        
+        $this->exporta = $this->dom->createElement("exporta");
+        $this->addChild($this->exporta, "UFSaidaPais", $UFSaidaPais);
+        $this->addChild($this->exporta, "xLocExporta", $xLocExporta);
+        $this->addChild($this->exporta, "xLocDespacho", $xLocDespacho);
+        return $this->exporta;
     }
     
     //tag infNFe/compra (opcional)
@@ -970,7 +1267,20 @@ class MakeNFe
         $xPed = '',
         $xCont = ''
     ) {
-        
+        if (($xNEmp.$xPed.$xCont) == '') {
+            return false;
+        }
+        $this->compra = $this->dom->createElement("compra");
+        if ($NEmp != '') {
+            $this->addChild($this->compra, "xNEmp", $NEmp);
+        }
+        if ($xPed != '') {
+            $this->addChild($this->compra, "xPed", $xPed);
+        }
+        if ($xCont != '') {
+            $this->addChild($this->compra, "xCont", $xCont);
+        }
+        return $this->compra;
     }
     
     //tag infNFe/cana (opcional)
@@ -978,7 +1288,10 @@ class MakeNFe
         $safra = '',
         $ref = ''
     ) {
-        
+        $this->cana = $this->dom->createElement("cana");
+        $this->addChild($this->cana, "safra", $safra);
+        $this->addChild($this->cana, "ref", $ref);
+        return $this->cana;
     }
     
     //tag infNFe/cana/forDia
@@ -989,7 +1302,14 @@ class MakeNFe
         $qTotAnt = '',
         $qTotGer = ''
     ) {
-        
+        $forDia = $this->dom->createElement("forDia");
+        $this->addChild($forDia, "dia", $dia);
+        $this->addChild($forDia, "qtde", $qtde);
+        $this->addChild($forDia, "qTotMes", $qTotMes);
+        $this->addChild($forDia, "qTotAnt", $dTotAnt);
+        $this->addChild($forDia, "qTotGer", $qTotGer);
+        $this->aForDia[] = $forDia;
+        return $forDia;
     }
     
     //tag infNFe/cana/deduc (opcional)
@@ -1000,7 +1320,14 @@ class MakeNFe
         $vTotDed = '',
         $vLiqFor = ''
     ) {
-        
+        $deduc = $this->dom->createElement("deduc");
+        $this->addChild($deduc, "xDed", $xDed);
+        $this->addChild($deduc, "vDed", $vDed);
+        $this->addChild($deduc, "vFor", $vFor);
+        $this->addChild($deduc, "vTotDed", $vTotDed);
+        $this->addChild($deduc, "vLiqFor", $vLiqFor);
+        $this->aDeduc[] = $deduc;
+        return $deduc;
     }
     
     public function validChave($chave)
