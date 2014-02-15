@@ -1,5 +1,15 @@
 <?php
 
+//ATENÇÃO o intervalo mínimo entre cada chamada desse script é de no mínimo 1 hora
+//caso ocorram chamadas em tempo menores o sistema da SEFAZ irá parar de responder.
+//
+//a pesquisa sempre inicia do ultNSU consultado e registrado no xml config/numNSU.xml
+//e portanto as NFe retornadas são apenas as recebidas após essa última consulta.
+//
+//É recomendável que o usuário não tenha acesso a essa chamada e que a mesma seja
+//feita periódicamente (usando um agendador) por exemplo 3 ou 4 vezes ao dia no 
+//máximo.
+
 require_once('../libs/ToolsNFePHP.class.php');
 $nfe = new ToolsNFePHP('',1,false);
 $modSOAP = '2'; //usando cURL
