@@ -27,7 +27,7 @@
  *
  * @package     NFePHP
  * @name        ConvertNFePHP
- * @version     3.1.10
+ * @version     3.1.11
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2011 &copy; NFePHP
@@ -1048,12 +1048,12 @@ class ConvertNFePHP
                     $imposto = $dom->createElement("imposto");
                     //lei da transparencia 12.741/12
                     //Nota Técnica 2013/003
-		    $vTotTrib=trim($dados[1]);
+                    $vTotTrib=trim($dados[1]);
                     if (strlen($vTotTrib)>0) {
                         $vTotTrib = $dom->createElement("vTotTrib", $vTotTrib);
                         $imposto->appendChild($vTotTrib);
                     }
-		    unset($vTotTrib);
+                    unset($vTotTrib);
                     if (!isset($infAdProd)) {
                         $det->appendChild($imposto);
                     } else {
@@ -1828,12 +1828,12 @@ class ConvertNFePHP
                     $ICMSTot->appendChild($vNF);
                     //lei da transparencia 12.741/12
                     //Nota Técnica 2013/003
-		    $vTotTrib=trim($dados[15]);
+                    $vTotTrib=trim($dados[15]);
                     if (strlen($vTotTrib)>0) {
                         $vTotTrib = $dom->createElement("vTotTrib", $vTotTrib);
                         $ICMSTot->appendChild($vTotTrib);
                     }
-		    unset($vTotTrib);
+                    unset($vTotTrib);
                     $total->appendChild($ICMSTot);
                     break;
                 case "W17":
@@ -2304,8 +2304,8 @@ class ConvertNFePHP
         $forma = "%02d%02d%02d%s%02d%03d%09d%01d%08d";
         $tempChave = sprintf($forma, $cUF, $tempData[0] - 2000, $tempData[1], $CNPJ, $mod, $serie, $nNF, $tpEmis, $cNF);
         $cDV = $ide->getElementsByTagName('cDV')->item(0)->nodeValue = $this->calculaDV($tempChave);
-        $chave = $tempChave .= $cDV;
+        $this->chave = $tempChave .= $cDV;
         $infNFe = $dom->getElementsByTagName("infNFe")->item(0);
-        $infNFe->setAttribute("Id", "NFe" . $chave);
+        $infNFe->setAttribute("Id", "NFe" . $this->chave);
     } //fim calculaChave
 }//fim da classe
