@@ -27,7 +27,7 @@
  *
  * @package     NFePHP
  * @name        ConvertNFePHP
- * @version     3.1.11
+ * @version     3.1.12
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2011 &copy; NFePHP
@@ -48,6 +48,7 @@
  *              Fabio Ananias Silva <binhoouropreto at gmail dot com>
  *              Giovani Paseto <giovaniw2 at gmail dot com>
  *              Giuliano Nascimento <giusoft at hotmail dot com>
+ *              Guilherme Calabria Filho <guiga at gmail dot com>
  *              Helder Ferreira <helder.mauricicio at gmail dot com>
  *              João Eduardo Silva Corrêa <jscorrea2 at gmail dot com>
  *              Leandro C. Lopez <leandro.castoldi at gmail dot com>
@@ -838,10 +839,14 @@ class ConvertNFePHP
                         $cExportador = $dom->createElement("cExportador", $dados[6]);
                         $DI->appendChild($cExportador);
                     }
-                    if (!isset($xPed)) {
+                    if (!isset($xPed) && !isset($nItemPed)) {
                         $prod->appendChild($DI);
                     } else {
-                        $prod->insertBefore($prod->appendChild($DI), $xPed);
+                        if (!isset($xPed)) {
+                            $prod->insertBefore($prod->appendChild($DI), $nItemPed);
+                        } else {
+                            $prod->insertBefore($prod->appendChild($DI), $xPed);
+                        }
                     }
                     break;
                 case "I25":
