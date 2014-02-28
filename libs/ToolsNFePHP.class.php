@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.0.74
+ * @version   3.0.75
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -1394,51 +1394,56 @@ class ToolsNFePHP
      *
      * @name signXML
      * @param  mixed $docxml Path para o arquivo xml ou String contendo o arquivo XML a ser assinado
-     * @param   string $tagid TAG do XML que devera ser assinada
+     * @param  string $tagid TAG do XML que devera ser assinada
      * @return mixed false se houve erro ou string com o XML assinado
      */
-    public function signXML($docxml, $tagid=''){
-        try{
-            if ( $tagid == '' ){
+    public function signXML($docxml, $tagid = '')
+    {
+        try {
+            if ($tagid == '') {
                 $msg = "Uma tag deve ser indicada para que seja assinada!!";
                 throw new nfephpException($msg);
             }
-            if ( $docxml == '' ){
+            if ($docxml == '') {
                 $msg = "Um xml deve ser passado para que seja assinado!!";
                     throw new nfephpException($msg);
             }
-            if (is_file($docxml)){
+            if (is_file($docxml)) {
                 $xml = file_get_contents($docxml);
             } else {
                 $xml = $docxml;
             }
-            // obter o chave privada para a ssinatura
+            //obter o chave privada para a assinatura
+            //modificado para permitir a leitura de arquivos maiores
+            //que o normal que é cerca de 2kBytes.
             $fp = fopen($this->priKEY, "r");
-            $priv_key = fread($fp, 8192);
+            while (!feof($fp)) {
+                $priv_key .= fread($fp, 8192);
+            }
             fclose($fp);
             $pkeyid = openssl_get_privatekey($priv_key);
-            // limpeza do xml com a retirada dos CR, LF e TAB
+            //limpeza do xml com a retirada dos CR, LF e TAB
             $order = array("\r\n", "\n", "\r", "\t");
             $replace = '';
             $xml = str_replace($order, $replace, $xml);
             // Habilita a manipulaçao de erros da libxml
             libxml_use_internal_errors(true);
-            //limpar erros anteriores que possam estar em memória
+            //limpa erros anteriores que possam estar em memória
             libxml_clear_errors();
-            // carrega o documento no DOM
+            //carrega o documento DOM
             $xmldoc = new DOMDocument('1.0', 'utf-8');
             $xmldoc->preservWhiteSpace = false; //elimina espaços em branco
             $xmldoc->formatOutput = false;
-            // muito importante deixar ativadas as opçoes para limpar os espacos em branco
-            // e as tags vazias
-            if ($xmldoc->loadXML($xml,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG)){
+            //é muito importante deixar ativadas as opçoes para limpar os espacos em branco
+            //e as tags vazias
+            if ($xmldoc->loadXML($xml, LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG)) {
                 $root = $xmldoc->documentElement;
             } else {
                 $msg = "Erro ao carregar XML, provavel erro na passagem do parâmetro docxml ou no próprio xml!!";
                 $errors = libxml_get_errors();
                 if (!empty($errors)) {
-                   $i = 1;
-                   foreach($errors as $error){
+                    $i = 1;
+                    foreach ($errors as $error) {
                         $msg .= "\n  [$i]-" . trim($error->message);
                     }
                     libxml_clear_errors();
@@ -1447,65 +1452,64 @@ class ToolsNFePHP
             }
             //extrair a tag com os dados a serem assinados
             $node = $xmldoc->getElementsByTagName($tagid)->item(0);
-            if (!isset($node)){
+            if (!isset($node)) {
                 $msg = "A tag < $tagid > não existe no XML!!";
                 throw new nfephpException($msg);
             }
+            //extrai o atributo ID com o numero da NFe de 44 digitos
             $id = trim($node->getAttribute("Id"));
-            $idnome = preg_replace('/[^0-9]/','', $id);
-            //extrai os dados da tag para uma string
-            $dados = $node->C14N(false,false,NULL,NULL);
+            $idnome = preg_replace('/[^0-9]/', '', $id);
+            //extrai e canoniza os dados da tag para uma string
+            $dados = $node->C14N(false, false, null, null);
             //calcular o hash dos dados
-            $hashValue = hash('sha1',$dados,true);
+            $hashValue = hash('sha1', $dados, true);
             //converte o valor para base64 para serem colocados no xml
             $digValue = base64_encode($hashValue);
             //monta a tag da assinatura digital
-            $Signature = $xmldoc->createElementNS($this->URLdsig,'Signature');
+            $Signature = $xmldoc->createElementNS($this->URLdsig, 'Signature');
             $root->appendChild($Signature);
             $SignedInfo = $xmldoc->createElement('SignedInfo');
             $Signature->appendChild($SignedInfo);
-            //Cannocalization
+            //estabelece o método de canonização
             $newNode = $xmldoc->createElement('CanonicalizationMethod');
             $SignedInfo->appendChild($newNode);
             $newNode->setAttribute('Algorithm', $this->URLCanonMeth);
-            //SignatureMethod
+            //estabelece o método de assinatura
             $newNode = $xmldoc->createElement('SignatureMethod');
             $SignedInfo->appendChild($newNode);
             $newNode->setAttribute('Algorithm', $this->URLSigMeth);
-            //Reference
+            //indica a referencia da assinatura
             $Reference = $xmldoc->createElement('Reference');
             $SignedInfo->appendChild($Reference);
             $Reference->setAttribute('URI', '#'.$id);
-            //Transforms
+            //estabelece as tranformações
             $Transforms = $xmldoc->createElement('Transforms');
             $Reference->appendChild($Transforms);
-            //Transform
             $newNode = $xmldoc->createElement('Transform');
             $Transforms->appendChild($newNode);
             $newNode->setAttribute('Algorithm', $this->URLTransfMeth_1);
-            //Transform
             $newNode = $xmldoc->createElement('Transform');
             $Transforms->appendChild($newNode);
             $newNode->setAttribute('Algorithm', $this->URLTransfMeth_2);
-            //DigestMethod
+            //estabelece o método de calculo do hash
             $newNode = $xmldoc->createElement('DigestMethod');
             $Reference->appendChild($newNode);
             $newNode->setAttribute('Algorithm', $this->URLDigestMeth);
-            //DigestValue
-            $newNode = $xmldoc->createElement('DigestValue',$digValue);
+            //carrega o valor do hash
+            $newNode = $xmldoc->createElement('DigestValue', $digValue);
             $Reference->appendChild($newNode);
-            // extrai os dados a serem assinados para uma string
-            $dados = $SignedInfo->C14N(false,false,NULL,NULL);
+            //extrai e canoniza os dados a serem assinados para uma string
+            $dados = $SignedInfo->C14N(false, false, null, null);
             //inicializa a variavel que irá receber a assinatura
             $signature = '';
             //executa a assinatura digital usando o resource da chave privada
-            $resp = openssl_sign($dados,$signature,$pkeyid);
-            //codifica assinatura para o padrao base64
+            $resp = openssl_sign($dados, $signature, $pkeyid);
+            //codifica assinatura para o padrão base64
             $signatureValue = base64_encode($signature);
-            //SignatureValue
-            $newNode = $xmldoc->createElement('SignatureValue',$signatureValue);
+            //insere o valor da assinatura digtal
+            $newNode = $xmldoc->createElement('SignatureValue', $signatureValue);
             $Signature->appendChild($newNode);
-            //KeyInfo
+            //insere a chave publica usada para conferencia da assinatura digital
             $KeyInfo = $xmldoc->createElement('KeyInfo');
             $Signature->appendChild($KeyInfo);
             //X509Data
@@ -1514,11 +1518,11 @@ class ToolsNFePHP
             //carrega o certificado sem as tags de inicio e fim
             $cert = $this->__cleanCerts($this->pubKEY);
             //X509Certificate
-            $newNode = $xmldoc->createElement('X509Certificate',$cert);
+            $newNode = $xmldoc->createElement('X509Certificate', $cert);
             $X509Data->appendChild($newNode);
-            //grava na string o objeto DOM
+            //grava em uma string o objeto DOM
             $xml = $xmldoc->saveXML();
-            // libera a memoria
+            //libera a chave privada da memoria
             openssl_free_key($pkeyid);
         } catch (nfephpException $e) {
             $this->__setError($e->getMessage());
@@ -1527,7 +1531,7 @@ class ToolsNFePHP
             }
             return false;
         }
-        //retorna o documento assinado
+        //retorna o documento xml assinado
         return $xml;
     } //fim signXML
 
