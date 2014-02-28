@@ -1417,6 +1417,7 @@ class ToolsNFePHP
             //modificado para permitir a leitura de arquivos maiores
             //que o normal que é cerca de 2kBytes.
             $fp = fopen($this->priKEY, "r");
+            $priv_key = '';
             while (!feof($fp)) {
                 $priv_key .= fread($fp, 8192);
             }
