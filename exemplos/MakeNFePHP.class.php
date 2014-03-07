@@ -20,13 +20,17 @@
  * Caso contrário consulte <http://www.fsfla.org/svnwiki/trad/GPLv3> ou
  * <http://www.fsfla.org/svnwiki/trad/LGPLv3>.
  *
- * @package   NFePHP
- * @name      MakeNFePHP
- * @version   1.0.0
- * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
- * @copyright 2009-2014 &copy; NFePHP
- * @link      http://www.nfephp.org/
- * @author    Roberto L. Machado <linux.rlm at gmail dot com>
+ * Estrutura baseada nas notas técnicas:
+ *          NT2013.005 versão 1.02 Dezembro de 2013
+ *          NT2013.006 versão 1.00 Agosto de 2013
+ * 
+ * @package     NFePHP
+ * @name        MakeNFePHP
+ * @version     1.0.0
+ * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
+ * @copyright   2009-2014 &copy; NFePHP
+ * @link        http://www.nfephp.org/
+ * @author      Roberto L. Machado <linux.rlm at gmail dot com>
  */
 
 //namespace SpedPHP\NFe;
@@ -57,38 +61,58 @@ class MakeNFe
     public $dest; //DOMNode
     public $enderDest; //DOMNode
     public $retirada; //DOMNode
-    public $aAutXML = array(); //array de DOMNode
-    public $aProd; //array de DOMNode
-    public $aDet; //array de DOMNode
-    public $aDetExport; //array de DOMNode
-    public $aDI; //array de DOMNode
-    public $aAdi; //array de DOMNode
+    public $aAutXML = array(); //array de DOMNodes
+    
+    public $aDet; //array de DOMNodes
+    public $aProd; //array de DOMNodes
+    public $aDetExport; //array de DOMNodes
+    public $aDI; //array de DOMNodes
+    public $aAdi; //array de DOMNodes
+    public $detExport; //array de DOMNodes
+    public $aVeicProd; //array de DOMNodes
+    public $aMed; //array de DOMNodes
+    public $aArma; //array de DOMNodes
+    public $aComb; //array de DOMNodes
+    
+    public $aImposto; //array de DOMNodes
+    public $aICMS; //array de DOMNodes
+    public $aIPI; //array de DOMNodes
+    public $aII; //array de DOMNodes
+    public $aISSQN; //array de DOMNodes
+    public $aPIS; //array de DOMNodes
+    public $aPISST; //array de DOMNodes
+    public $aCOFINS; //array de DOMNodes
+    public $aCOFINSST; //array de DOMNodes
+    
+    public $total; //DOMNode
+    public $ICMSTot; //DOMNode
+    public $ISSQNTot; //DOMNode
+    public $reTrib; //DOMNode
     
     public $pag; //DOMNode
     public $card; //DOMNOde
     public $cobr; //DOMNode
     public $fat; //DOMNode
-    public $aDup = array(); //array de DOMNode
+    public $aDup = array(); //array de DOMNodes
     
     public $transp; //DOMNode
     public $transporta; //DOMNode
     public $veicTransp; //DOMNode
-    public $aReboque = array(); //array de DOMNode
-    public $aVol = array(); //array de DOMNode
-    
+    public $aReboque = array(); //array de DOMNodes
+    public $aVol = array(); //array de DOMNodes
     
     public $infAdic; //DOMNode
-    public $aObsCont = array(); //array de DOMNode
-    public $aObsFisco = array(); //array de DOMNode
+    public $aObsCont = array(); //array de DOMNodes
+    public $aObsFisco = array(); //array de DOMNodes
     
-    public $aProcRef = array(); //array de DOMNode
+    public $aProcRef = array(); //array de DOMNodes
     
     public $exporta; //DOMNode
     public $compra; //DOMNode
     
     public $cana; //DOMNode
-    public $aForDia = array(); //array de DOMNode
-    public $aDeduc = array(); //array de DOMNode
+    public $aForDia = array(); //array de DOMNodes
+    public $aDeduc = array(); //array de DOMNodes
     
     //cria DOM document
     public function __construct()
@@ -101,8 +125,68 @@ class MakeNFe
     public function montaNFe()
     {
         //as tags deven ser montadas e inseridas umas nas outras de dentro para fora
-        
-        //cria e insere as subtags da tag NFref
+        //tags em ordem de montagem por método:
+        //                            Modelo 55                 Modelo 65
+        //  1 - tag infNFe        Obrigatório               Obrigatório
+        //  2 - tag ide           Obrigatório               Obrigatório
+        //  3 - tag refNFe        Opcional (se houver)      Opcional (se houver)
+        //  4 - tag refNF         Opcional (se houver)      Opcional (se houver)
+        //  5 - tag refNFP        Opcional (se houver)      Opcional (se houver)
+        //  6 - tag refCTe        Opcional (se houver)      Opcional (se houver)
+        //  7 - tag ECFref        Opcional (se houver)      Opcional (se houver)
+        //  8 - tag emit          Obrigatório               Obrigatório
+        //  9 - tag enderEmit     Obrigatório               Obrigatório
+        // 10 - tag dest          Obrigatório               Opcional (se houver)
+        // 11 - tag enderDest     Obrigatório               Opcional (se houver)
+        // 12 - tag retirada      Opcional (se houver)      Opcional (se houver)
+        // 13 - tag entrega       Opcional (se houver)      Opcional (se houver)
+        // 14 - tag autXML        Opcional (se houver)      Opcional (se houver)
+        // 15 - tag prod          Obrigatório               Obrigatório
+        // 16 - tag DI            Opcional (se houver)      Opcional (se houver)
+        // 17 - tag adi           Opcional (se houver)      Opcional (se houver)
+        // 18 - tag veicProd      Opcional (se houver)      Opcional (se houver)
+        // 19 - tag med           Opcional (se houver)      Opcional (se houver)
+        // 20 - tag arma          Opcional (se houver)      Opcional (se houver)
+        // 21 - tag comb          Opcional (se houver)      Opcional (se houver)
+        // 22 - tag ICMS          Obrigatório               Obrigatório
+        // 23 - tag IPI           Obrigatório               Obrigatório
+        // 24 - tag II            Opcional (se houver)      Opcional (se houver)
+        // 25 - tag PIS           Opcional (se houver)      Opcional (se houver)
+        // 26 - tag COFINS        Opcional (se houver)      Opcional (se houver)
+        // 27 - tag ISSQN         Opcional (se houver)      Opcional (se houver)
+        // 28 - tag ICMSTot       Obrigatório               Obrigatório
+        // 29 - tag ISSQNTot      Opcional (se houver)      Opcional (se houver)
+        // 30 - tag retTrib       Opcional (se houver)      Opcional (se houver)
+        // 31 - tag transp        Obrigatório               Obrigatório
+        // 32 - tag transporta    Opcional (se houver)      Opcional (se houver)
+        // 33 - tag retTransp     Opcional (se houver)      Opcional (se houver)
+        // 34 - tag veicTransp    Opcional (se houver)      Opcional (se houver)
+        // 35 - tag reboque       Opcional (se houver)      Opcional (se houver)
+        // 36 - tag lacres        Opcional (se houver)      Opcional (se houver)
+        // 37 - tag vol           Opcional (se houver)      Opcional (se houver)
+        // 38 - tag fat           Opcional (se houver)      Opcional (se houver)
+        // 39 - tag dup           Opcional (se houver)      Opcional (se houver)
+        // 40 - tag pag           Opcional (se houver)      Obrigatorio
+        // 41 - tag card          Não aplicável             Opcional (se houver)
+        // 42 - tag infAdic       Opcional (se houver)      Opcional (se houver)
+        // 43 - tag obsCont       Opcional (se houver)      Opcional (se houver)
+        // 44 - tag obsFisco      Opcional (se houver)      Opcional (se houver)
+        // 45 - tag procRef       Opcional (se houver)      Opcional (se houver)
+        // 46 - tag exporta       Opcional (se houver)      Opcional (se houver)
+        // 47 - tag compra        Opcional (se houver)      Opcional (se houver)
+        // 48 - tag cana          Opcional (se houver)      Não aplicavel
+        // 49 - tag forDia        Opcional (se houver)      Não aplicavel
+        // 50 - tag deduc         Opcional (se houver)      Não aplicavel
+
+        //tag NFe
+        $this->tagNFe();
+
+        //tag NFe/infNFe
+        if (!isset($this->infNFe)) {
+            return false;
+        }
+
+        //tag NFe/infNFe/ide
         if (isset($this->refNFe)) {
             $this->tagNFref();
             $this->NFref->appendChild($this->refNFe);
@@ -123,17 +207,21 @@ class MakeNFe
             $this->tagNFref();
             $this->NFref->appendChild($this->ECFref);
         }
-        //coloca NFref na tag ide
         if (isset($this->ide)) {
             if (isset($this->NFref)) {
                 $this->ide->appendChild($this->NFref);
             }
         }
-        
+        $this->infNFe->appendChild($this->ide);
+
+        //tag NFe/infNFe/emit
         if (isset($this->emit) && isset($this->enderEmit)) {
             $node = $this->emit->getElementsByTagName("IE")->item(0);
             $this->emit->insertBefore($this->enderEmit, $node);
         }
+        $this->infNFe->appendChild($this->emit);
+
+        //tag NFe/infNFe/dest
         if (isset($this->dest) && isset($this->enderDest)) {
             $node = $this->dest->getElementsByTagName("indIEDest")->item(0);
             if (!isset($node)) {
@@ -141,29 +229,65 @@ class MakeNFe
             }
             $this->dest->insertBefore($this->enderDest, $node);
         }
-
-        
-        $this->tagNFe();
-        if (!isset($this->infNFe)) {
-            return false;
-        }
-        
-        $this->infNFe->appendChild($this->ide);
-        $this->infNFe->appendChild($this->emit);
         if (isset($this->dest)) {
             $this->infNFe->appendChild($this->dest);
         }
+        
+        //tag NFe/infNFe/retirada
         if (isset($this->retirada)) {
             $this->infNFe->appendChild($this->retirada);
         }
+        
+        //tag NFe/infNFe/entrega
         if (isset($this->entrega)) {
             $this->infNFe->appendChild($this->entrega);
         }
+
+        //tag NFe/infNFe/autXML
         if (isset($this->aAutXML)  && $this->versao > 2.00) {
             foreach ($this->aAutXML as $aut) {
                 $this->infNFe->appendChild($aut);
             }
         }
+
+        //tag NFe/infNFe/det/DI/adi
+        if (isset($this->aAdi)) {
+            
+        }
+        //tag NFe/infNFe/det/DI
+        if (isset($this->aDI)) {
+            
+        }
+        
+        //tag NFe/infNFe/det
+        if (isset($this->aProd)) {
+            $this->tagdet();
+        }
+        if (isset($this->aDet)) {
+            foreach ($this->aDet as $det) {
+                
+                $this->infNFe->appendChild($det);
+            }
+        }
+        
+        //tag NFe/infNFe/total
+        if (isset($this->ICMSTot)) {
+            $this->tagtotal();
+            $this->total->appendChild($this->ICMSTot);
+        }
+        if (isset($this->ISSQNTot)) {
+            $this->tagtotal();
+            $this->total->appendChild($this->ISSQNTot);
+        }
+        if (isset($this->reTrib)) {
+            $this->tagtotal();
+            $this->total->appendChild($this->reTrib);
+        }
+        if (isset($this->total)) {
+            $this->infNFe->appendChild($this->total);
+        }
+
+        //tag NFe/infNFe/transp
         if (isset($this->transp) && isset($this->transporta)) {
             $this->transp->appendChild($this->transporta);
         }
@@ -186,6 +310,8 @@ class MakeNFe
         if (isset($this->transp)) {
             $this->infNFe->appendChild($this->transp);
         }
+        
+        //tag NFe/infNFe/cobr
         if (isset($this->fat)) {
             $this->tagcobr();
             $this->cobr->appendChild($this->fat);
@@ -200,6 +326,7 @@ class MakeNFe
             $this->infNFe->appendChild($this->cobr);
         }
         
+        //tag NFe/infNFe/pag
         if (isset($this->card)) {
             if (isset($this->pag)) {
                 $this->pag->appendChild($this->card);
@@ -208,9 +335,8 @@ class MakeNFe
         if (isset($this->pag)) {
             $this->infNFe->appendChild($this->pag);
         }
-        
-        
-        
+
+        //tag NFe/infNFe/infAdic
         if (isset($this->aObsCont)) {
             foreach ($this->aObsCont as $obsCont) {
                 if (!isset($this->infAdic)) {
@@ -235,18 +361,21 @@ class MakeNFe
                 $this->infAdic->appendChild($procRef);
             }
         }
-        
-        
-        
         if (isset($this->infAdic)) {
             $this->infNFe->appendChild($this->infAdic);
         }
+
+        //tag NFe/infNFe/exporta
         if (isset($this->exporta)) {
             $this->infNFe->appendChild($this->exporta);
         }
+
+        //tag NFe/infNFe/compra
         if (isset($this->compra)) {
             $this->infNFe->appendChild($this->compra);
         }
+
+        //tag NFe/infNFe/cana
         if (isset($this->cana) && isset($this->aForDia)) {
             foreach ($this->aForDia as $forDia) {
                 $this->cana->appendChild($forDia);
@@ -257,15 +386,19 @@ class MakeNFe
                 $this->cana->appendChild($deduc);
             }
         }
+        
         if (isset($this->cana)) {
             $this->infNFe->appendChild($this->cana);
         }
+        
+        //tag NFe/infNFe
         $this->NFe->appendChild($this->infNFe);
+        //tag NFe
         $this->dom->appendChild($this->NFe);
         return $this->dom->saveXML();
     }
     
-    //cria a tag NFe
+    //tag NFe DOMNode
     protected function tagNFe()
     {
         if (!isset($this->NFe)) {
@@ -274,7 +407,7 @@ class MakeNFe
         }
     }
     
-    //tag infNFe
+    //tag NFe/infNFe DOMNode
     public function taginfNFe($chave = '', $versao = '')
     {
         if (!ereg('[0-9]{44}', $chave)) {
@@ -293,7 +426,7 @@ class MakeNFe
         return $this->infNFe;
     }
     
-    //tag ide
+    //tag NFe/infNFe/ide DOMNode
     public function tagide(
         $cUF = '',
         $cNF = '',
@@ -320,21 +453,21 @@ class MakeNFe
         $xJust = ''
     ) {
         $ide = $this->dom->createElement("ide");
-        //$cUF
+        //cUF
         $this->addChild($ide, "cUF", $cUF);
-        //$cNF
+        //cNF
         $this->addChild($ide, "cNF", $cNF);
-        //$natOp
+        //natOp
         $this->addChild($ide, "natOp", $natOp);
-        //$indPag
+        //indPag
         $this->addChild($ide, "indPag", $indPag);
-        //$mod
+        //mod
         $this->addChild($ide, "mod", $mod);
-        //$serie
+        //serie
         $this->addChild($ide, "serie", $serie);
-        //$nNF
+        //nNF
         $this->addChild($ide, "nNF", $nNF);
-        //$dhEmi nome e formato diferente a partir da versao 3.00
+        //dhEmi nome e formato diferente a partir da versao 3.00
         if ($this->versao > 2.00) {
             $this->addChild($ide, "dhEmi", $dhEmi);
         } else {
@@ -348,41 +481,41 @@ class MakeNFe
                 $this->addChild($ide, "dSaiEnt", $dhSaiEnt);
             }
         }
-        //$tpNF
+        //tpNF
         $this->addChild($ide, "tpNF", $tpNF);
-        //$idDest essa tag existe somente a partir da versão 3.00
+        //idDest essa tag existe somente a partir da versão 3.00
         if ($this->versao > 2.00) {
             $this->addChild($ide, "idDest", $idDest);
         }
-        //$cMunFG
+        //cMunFG
         $this->addChild($ide, "cMunFG", $cMunFG);
-        //$tpImp
+        //tpImp
         $this->addChild($ide, "tpImp", $tpImp);
-        //$tpEmis
+        //tpEmis
         $this->addChild($ide, "tpEmis", $tpEmis);
-        //$cDV
+        //cDV
         $this->addChild($ide, "cDV", $cDV);
-        //$tpAmb
+        //tpAmb
         $this->addChild($ide, "tpAmb", $tpAmb);
-        //$finNFe
+        //finNFe
         $this->addChild($ide, "finNFe", $finNFe);
-        //$indFinal
+        //indFinal
         if ($this->versao > 2.00) {
             $this->addChild($ide, "indFinal", $indFinal);
         }
-        //$indPres
+        //indPres
         if ($this->versao > 2.00) {
             $this->addChild($ide, "indPres", $indPres);
         }
-        //$procEmi
+        //procEmi
         $this->addChild($ide, "procEmi", $procEmi);
-        //$verProc
+        //verProc
         $this->addChild($ide, "verProc", $verProc);
         if ($this->versao > 2.00) {
-            //$dhCont
+            //dhCont
             if ($dhCont != '' && $xJust != '') {
                 $this->addChild($ide, "dhCont", $dhCont);
-                //$xJust
+                //xJust
                 $this->addChild($ide, "xJust", $xJust);
             }
         }
@@ -391,6 +524,7 @@ class MakeNFe
         return $ide;
     }
 
+    //tag NFe/infNFe/ide/NFref DOMNode
     public function tagNFref()
     {
         if (!isset($this->NFref)) {
@@ -398,12 +532,14 @@ class MakeNFe
         }
     }
     
+    //tag NFe/infNFe/ide/NFref/refNFe DOMNode
     public function tagrefNFe($refNFe = '')
     {
         $this->refNFe = $this->dom->createElement("refNFe", $refNFe);
         return $this->refNFe;
     }
     
+    //tag NFe/infNFe/ide/NFref/NF DOMNode
     public function tagrefNF(
         $cUF = '',
         $AAMM = '',
@@ -421,7 +557,8 @@ class MakeNFe
         $this->addChild($this->refNF, "nNF", $nNF);
         return $this->refNF;
     }
-
+    
+    //tag NFe/infNFe/ide/NFref/NFPref DOMNode
     public function tagNFPref(
         $cUF = '',
         $AAMM = '',
@@ -444,12 +581,14 @@ class MakeNFe
         return $this->refNFP;
     }
     
+    //tag NFe/infNFe/ide/NFref/refCTe DOMNode
     public function tagCTeref($refCTe = '')
     {
         $this->refCTe = $this->dom->createElement("refCTe", $refCTe);
         return $this->refCTe;
     }
     
+    //tag NFe/infNFe/ide/NFref/ECFref DOMNode
     public function tagECFref(
         $mod = '',
         $nECF = '',
@@ -461,7 +600,7 @@ class MakeNFe
         return $this->ECFref;
     }
     
-    //tag emit
+    //tag NFe/infNFe/emit DOMNode
     public function tagemit(
         $CNPJ = '',
         $CPF = '',
@@ -498,7 +637,7 @@ class MakeNFe
         }
     }
     
-    //tagendEmit
+    //tag NFe/infNFe/emit/endEmit DOMNode
     public function tagenderEmit(
         $xLgr = '',
         $nro = '',
@@ -535,7 +674,7 @@ class MakeNFe
         return $this->enderEmit;
     }
     
-    //tag dest (opcional para modelo 65)
+    //tag NFe/infNFe/dest (opcional para modelo 65) DOMNode
     public function tagdest(
         $CNPJ = '',
         $CPF = '',
@@ -585,6 +724,7 @@ class MakeNFe
         return $this->dest;
     }
     
+    //tag NFe/infNFe/dest/enderDest DOMNode
     public function tagenderDest(
         $xLgr = '',
         $nro = '',
@@ -623,7 +763,7 @@ class MakeNFe
         return $this->enderDest;
     }
     
-    //tag retirada (opcional)
+    //tag NFe/infNFe/retirada (opcional) DOMNode
     public function tagretirada(
         $CNPJ = '',
         $CPF = '',
@@ -653,7 +793,7 @@ class MakeNFe
         return $this->retirada;
     }
     
-    //tag entrega (opcional)
+    //tag NFe/infNFe/entrega (opcional) DOMNode
     public function tagentrega(
         $CNPJ = '',
         $CPF = '',
@@ -683,7 +823,7 @@ class MakeNFe
         return $this->entrega;
     }
     
-    //tag autXML (somente versão 3.1)
+    //tag NFe/infNFe/autXML (somente versão 3.1) array de DOMNodes
     public function tagautoXML($CNPJ = '', $CPF = '')
     {
         $autXML = $this->dom->createElement("autXML");
@@ -696,21 +836,22 @@ class MakeNFe
         return $autXML;
     }
     
-    //tag det
+    //tag NFe/infNFe/det array de DOMNodes
     public function tagdet()
     {
         if (isset($this->aProd)) {
-            foreach ($this->aProd as $prod) {
+            foreach ($this->aProd as $key => $prod) {
                 $det = $this->dom->createElement("det");
-                $nItem = $prod['nItem'];
+                $nItem = $key;
                 $det->setAttribute("nItem", $nItem);
+                $det->appendChild($prod);
                 $this->aDet[] = $det;
                 $det = null;
             }
         }
-        
     }
-    //tag det/prod
+
+    //tag NFe/infNFe/det/prod array de DOMNodes
     public function tagprod(
         $nItem = '',
         $cProd = '',
@@ -735,7 +876,8 @@ class MakeNFe
         $indTot = '',
         $xPed = '',
         $nItemPed = '',
-        $nFCI = ''
+        $nFCI = '',
+        $nRECOPI = ''
     ) {
         $prod = $this->dom->createElement("prod");
         $this->addChild($prod, "cProd", $cProd);
@@ -779,11 +921,14 @@ class MakeNFe
         if ($nFCI != '') {
             $this->addChild($prod, "nFCI", $nFCI);
         }
+        if ($nRECOPI != '') {
+            $this->addChild($prod, "nRECOPI", $nRECOPI);
+        }
         $this->aProd[$nItem] = $prod;
         return $prod;
     }
     
-    //tag det/prod/DI
+    //tag NFe/infNFe/det/prod/DI array de DOMNodes
     public function tagDI(
         $nItem = '',
         $nDI = '',
@@ -816,11 +961,22 @@ class MakeNFe
             $this->addChild($DI, "UFTerceiro", $UFTerceiro);
         }
         $this->addChild($DI, "cExportador", $cExportador);
+        if (isset($this->aAdi)) {
+            foreach ($this->aAdi as $key => $nadi) {
+                if ($key == $nItem) {
+                    foreach ($nadi as $n => $jadi) {
+                        if ($n == $nDI) {
+                            $DI->appendChild($jadi[0]);
+                        }
+                    }
+                }
+            }
+        }
         $this->aDI[$nItem][$nDI] = $DI;
         return $DI;
     }
     
-    //tag det/prod/DI/adi
+    //tag NFe/infNFe/det/prod/DI/adi array de DOMNodes
     public function tagadi(
         $nItem = '',
         $nDI = '',
@@ -844,7 +1000,7 @@ class MakeNFe
         return $adi;
     }
     
-    //tag det/prod/detExport
+    //tag NFe/infNFe/det/prod/detExport array de DOMNodes
     public function tagdetExport(
         $nItem = '',
         $nDraw = '',
@@ -868,7 +1024,7 @@ class MakeNFe
         }
     }
     
-    //tag det/prod/veicProd (opcional)
+    //tag NFe/infNFe/det/prod/veicProd (opcional) array de DOMNodes
     public function tagveicProd(
         $nItem = '',
         $tpOp = '',
@@ -925,7 +1081,7 @@ class MakeNFe
         return $veicProd;
     }
     
-    //tag det/prod/med (opcional)
+    //tag NFe/infNFe/det/prod/med (opcional) array de DOMNodes
     public function tagmed(
         $nItem = '',
         $nLote = '',
@@ -944,7 +1100,7 @@ class MakeNFe
         return $med;
     }
     
-    //tag det/prod/arma (opcional)
+    //tag NFe/infNFe/det/prod/arma (opcional) array de DOMNodes
     public function tagarma(
         $nItem = '',
         $tpArma = '',
@@ -961,7 +1117,7 @@ class MakeNFe
         return $arma;
     }
     
-    //tag det/prod/comb (opcional)
+    //tag NFe/infNFe/det/prod/comb (opcional) array de DOMNodes
     public function tagcomb(
         $nItem = '',
         $cProdANP = '',
@@ -988,26 +1144,171 @@ class MakeNFe
         return $comb;
     }
 
-    //tag det/imposto
-    //tag det/imposto/ICMS
-    //tag det/imposto/IPI (opcional)
-    //tag det/imposto/II (opcional)
-    //tag det/imposto/ISSQN (opcional)
-    //tag det/imposto/PIS
-    //tag det/imposto/PISST (opcional)
-    //tag det/imposto/COFINS
-    //tag det/imposto/COFINSST (opcional)
+    //tag NFe/infNFe/det/imposto array de DOMNodes
+    public function tagimposto($nItem = '', $vTotTrib = '')
+    {
+        $imposto = $this->dom->createElement("imposto");
+        $this->addChild($imposto, "vTotTrib", $vTotTrib);
+        $this->aImposto[$nItem] = $imposto;
+        return $imposto;
+    }
     
-    //tag total
-    public function tagtotal()
+    //tag det/imposto/ICMS array de DOMNodes
+    public function tagICMS(
+        $nItem = '',
+        $orig = '',
+        $CST = '',
+        $vBC = '',
+        $pICMS = '',
+        $vICMS = ''
+    ) {
+        switch ($CST) {
+            case '00':
+                $ICMS = $this->dom->createElement("ICMS00");
+                break;
+            case '10':
+                $ICMS = $this->dom->createElement("ICMS10");
+                break;
+            case '30':
+                $ICMS = $this->dom->createElement("ICMS30");
+                break;
+            case '40':
+                $ICMS = $this->dom->createElement("ICMS40");
+                break;
+            case '41':
+                $ICMS = $this->dom->createElement("ICMS40");
+                break;
+            case '50':
+                $ICMS = $this->dom->createElement("ICMS40");
+                break;
+            case '51':
+                $ICMS = $this->dom->createElement("ICMS51");
+                break;
+            case '60':
+                $ICMS = $this->dom->createElement("ICMS60");
+                break;
+            case '70':
+                $ICMS = $this->dom->createElement("ICMS70");
+                break;
+            case '90':
+                $ICMS = $this->dom->createElement("ICMS40");
+                break;
+                
+            
+        }
+    }
+
+    //tag det/imposto/IPI (opcional) array de DOMNodes
+    public function tagIPI()
     {
         
     }
-    //tag total/ICMSTot
-    //tag total/ISSQNTot (opcional)
-    //tag total/reTrib (opcional)
     
-    //tag transp
+    //tag det/imposto/II (opcional) array de DOMNodes
+    public function tagII()
+    {
+        
+    }
+    
+    //tag det/imposto/ISSQN (opcional) array de DOMNodes
+    public function tagISSQN()
+    {
+        
+    }
+    
+    //tag det/imposto/PIS array de DOMNodes
+    public function tagPIS()
+    {
+        
+    }
+    
+    //tag det/imposto/PISST (opcional) array de DOMNodes
+    
+    //tag det/imposto/COFINS array de DOMNodes
+    public function tagCOFINS()
+    {
+        
+    }
+    
+    //tag det/imposto/COFINSST (opcional) array de DOMNodes
+    
+    //tag NFe/infNFe/total DOMNode
+    public function tagtotal()
+    {
+        if (isset($this->total)) {
+            $this->total = $this->dom->createElement("total");
+        }
+    }
+    
+    //tag NFe/infNFe/total/ICMSTot DOMNode
+    public function tagICMSTot(
+        $vBC = '',
+        $vICMS = '',
+        $vBCST = '',
+        $vST = '',
+        $vProd = '',
+        $vFrete = '',
+        $vSeg = '',
+        $vDesc = '',
+        $vII = '',
+        $vIPI = '',
+        $vPIS = '',
+        $vCOFINS = '',
+        $vOutro = '',
+        $vNF = ''
+    ) {
+        $this->ICMSTot = $this->dom->createElement("ICMSTot");
+        $this->addChild($this->ICMSTot, "vBC", $vBC);
+        $this->addChild($this->ICMSTot, "vICMS", $vICMS);
+        $this->addChild($this->ICMSTot, "vBCST", $vBCST);
+        $this->addChild($this->ICMSTot, "vST", $vST);
+        $this->addChild($this->ICMSTot, "vProd", $vProd);
+        $this->addChild($this->ICMSTot, "vFrete", $vFrete);
+        $this->addChild($this->ICMSTot, "vSeg", $vSeg);
+        $this->addChild($this->ICMSTot, "vDesc", $vDesc);
+        $this->addChild($this->ICMSTot, "vII", $vII);
+        $this->addChild($this->ICMSTot, "vIPI", $vIPI);
+        $this->addChild($this->ICMSTot, "vPIS", $vPIS);
+        $this->addChild($this->ICMSTot, "vCOFINS", $vCOFINS);
+        $this->addChild($this->ICMSTot, "vOutro", $vOutro);
+        $this->addChild($this->ICMSTot, "vNF", $vNF);
+        return $this->ICMSTot;
+    }
+    
+    //tag NFe/infNFe/total/ISSQNTot (opcional) DOMNode
+    public function tagISSQNTot($vServ = '', $vBC = '', $vISS = '', $vPIS = '', $vCOFINS = '')
+    {
+        $this->ISSQNTot = $this->dom->createElement("ISSQNTot");
+        $this->addChild($this->ISSQNTot, "vServ", $vServ);
+        $this->addChild($this->ISSQNTot, "vBC", $vBC);
+        $this->addChild($this->ISSQNTot, "vISS", $vISS);
+        $this->addChild($this->ISSQNTot, "vPIS", $vPIS);
+        $this->addChild($this->ISSQNTot, "vCOFINS", $vCOFINS);
+        return $this->ISSQNTot;
+    }
+    
+    //tag NFe/infNFe/total/reTrib (opcional) DOMNode
+    public function tagreTrib(
+        $vRetPIS = '',
+        $vRetCOFINS = '',
+        $vRetCSLL = '',
+        $vBCIRRF = '',
+        $vIRRF = '',
+        $vBCRetPrev = '',
+        $vRetPrev = ''
+    ) {
+        $this->reTrib = $this->dom->createElement("reTrib");
+        $this->addChild($this->reTrib, "vRetPIS", $vRetPIS);
+        $this->addChild($this->reTrib, "vRetCOFINS", $vRetCOFINS);
+        $this->addChild($this->reTrib, "vRetCSLL", $vRetCSLL);
+        $this->addChild($this->reTrib, "vBCIRRF", $vBCIRRF);
+        $this->addChild($this->reTrib, "vIRRF", $vIRRF);
+        $this->addChild($this->reTrib, "vBCRetPrev", $vBCRetPrev);
+        $this->addChild($this->reTrib, "vRetPrev", $vRetPrev);
+        return $this->reTrib;
+    }
+    
+    //tag NFe/infNFe/transp
     public function tagtransp($modFrete = '')
     {
         $this->transp = $this->dom->createElement("transp");
@@ -1041,7 +1342,7 @@ class MakeNFe
         }
         return $this->transporta;
     }
-    //tag transp/veicTransp (opcional)
+    //tag NFe/infNFe/transp/veicTransp (opcional)
     public function tagveicTransp($placa = '', $UF = '', $RNTC = '')
     {
         $this->veicTransp = $this->dom->createElement("veicTransp");
@@ -1052,7 +1353,8 @@ class MakeNFe
         }
         return $this->veicTransp;
     }
-    //tag transp/reboque (opcional)
+    
+    //tag NFe/infNFe/transp/reboque (opcional)
     public function tagreboque($placa = '', $UF = '', $RNTC = '', $vagao = '', $balsa = '')
     {
         $reboque = $this->dom->createElement("reboque");
@@ -1070,7 +1372,8 @@ class MakeNFe
         $this->aReboque[] = $reboque;
         return $reboque;
     }
-    //tag transp/retTransp (opcional)
+    
+    //tag NFe/infNFe/transp/retTransp (opcional)
     public function tagretTransp($vServ = '', $vBCRet = '', $pICMSRet = '', $vICMSRet = '', $CFOP = '', $cMunFG = '')
     {
         $this->retTransp = $this->dom->createElement("retTransp");
@@ -1082,7 +1385,8 @@ class MakeNFe
         $this->addChild($this->retTransp, "cMunFG", $cMunFG);
         return $this->retTransp;
     }
-    //tag transp/vol (opcional)
+    
+    //tag NFe/infNFe/transp/vol (opcional)
     public function tagvol($qVol = '', $esp = '', $marca = '', $nVol = '', $pesoL = '', $pesoB = '', $aLacres = '')
     {
         $vol = $this->dom->createElement("vol");
@@ -1117,7 +1421,8 @@ class MakeNFe
         $this->aVol[] = $vol;
         return $vol;
     }
-    //tag transp/vol/lacres (opcional)
+    
+    //tag NFe/infNFe/transp/vol/lacres (opcional)
     public function taglacres($nLacre = '')
     {
         $lacre = $this->dom->createElement("lacres");
@@ -1126,14 +1431,15 @@ class MakeNFe
     }
     
     
-    //tag infNFe/cobr (opcional)
+    //tag NFe/infNFe/cobr (opcional)
     public function tagcobr()
     {
         if (!isset($this->cobr)) {
             $this->cobr = $this->dom->createElement("cobr");
         }
     }
-    //tag infNFe/cobr/fat (opcional)
+    
+    //tag NFe/infNFe/cobr/fat (opcional)
     public function tagfat($nFat = '', $vOrig = '', $vDesc = '', $vLiq = '')
     {
         $this->fat = $this->dom->createElement("fat");
@@ -1151,7 +1457,8 @@ class MakeNFe
         }
         return $this->fat;
     }
-    //tag infNFe/cobr/fat/dup (opcional)
+    
+    //tag NFe/infNFe/cobr/fat/dup (opcional)
     public function tagdup($nDup = '', $dVenc = '', $vDup = '')
     {
         $dup = $this->dom->createElement("dup");
@@ -1166,7 +1473,7 @@ class MakeNFe
         return $dup;
     }
     
-    //tag infNFe/pag (opcional)
+    //tag NFe/infNFe/pag (opcional)
     public function tagpag(
         $tPag = '',
         $vPag = ''
@@ -1179,7 +1486,7 @@ class MakeNFe
         return $this->pag;
     }
     
-    //tag infNFe/pag/card
+    //tag NFe/infNFe/pag/card
     public function tagcard(
         $CNPJ = '',
         $tBand = '',
@@ -1194,7 +1501,7 @@ class MakeNFe
         return $this->card;
     }
     
-    //tag infNFe/infAdic (opcional)
+    //tag NFe/infNFe/infAdic (opcional)
     public function taginfAdic(
         $infAdFisco = '',
         $infCpl = ''
@@ -1211,7 +1518,7 @@ class MakeNFe
         return $this->infAdic;
     }
     
-    //tag infNFe/infAdic/obsCont (opcional)
+    //tag NFe/infNFe/infAdic/obsCont (opcional)
     public function tagobsCont(
         $xCampo = '',
         $xTexto = ''
@@ -1223,7 +1530,7 @@ class MakeNFe
         return $obsCont;
     }
     
-    //tag infNFe/infAdic/obsFisco (opcional)
+    //tag NFe/infNFe/infAdic/obsFisco (opcional)
     public function tagobsFisco(
         $xCampo = '',
         $xTexto = ''
@@ -1235,7 +1542,7 @@ class MakeNFe
         return $obsFisco;
     }
     
-    //tag infAdic/procRef (opcional)
+    //tag NFe/infNFe/procRef (opcional)
     public function tagprocRef(
         $nProc = '',
         $indProc = ''
@@ -1248,7 +1555,7 @@ class MakeNFe
         
     }
     
-    //tag infNFe/exporta (opcional)
+    //tag NFe/infNFe/exporta (opcional)
     public function tagexporta(
         $UFSaidaPais = '',
         $xLocExporta = '',
@@ -1261,7 +1568,7 @@ class MakeNFe
         return $this->exporta;
     }
     
-    //tag infNFe/compra (opcional)
+    //tag NFe/infNFe/compra (opcional)
     public function tagcompra(
         $xNEmp = '',
         $xPed = '',
@@ -1283,7 +1590,7 @@ class MakeNFe
         return $this->compra;
     }
     
-    //tag infNFe/cana (opcional)
+    //tag NFe/infNFe/cana (opcional)
     public function tagcana(
         $safra = '',
         $ref = ''
@@ -1294,7 +1601,7 @@ class MakeNFe
         return $this->cana;
     }
     
-    //tag infNFe/cana/forDia
+    //tag NFe/infNFe/cana/forDia
     public function tagforDia(
         $dia = '',
         $qtde = '',
@@ -1303,16 +1610,16 @@ class MakeNFe
         $qTotGer = ''
     ) {
         $forDia = $this->dom->createElement("forDia");
-        $this->addChild($forDia, "dia", $dia);
+        $forDia->setAttribute("dia", $dia);
         $this->addChild($forDia, "qtde", $qtde);
         $this->addChild($forDia, "qTotMes", $qTotMes);
-        $this->addChild($forDia, "qTotAnt", $dTotAnt);
+        $this->addChild($forDia, "qTotAnt", $qTotAnt);
         $this->addChild($forDia, "qTotGer", $qTotGer);
         $this->aForDia[] = $forDia;
         return $forDia;
     }
     
-    //tag infNFe/cana/deduc (opcional)
+    //tag NFe/infNFe/cana/deduc (opcional)
     public function tagdeduc(
         $xDed = '',
         $vDed = '',
