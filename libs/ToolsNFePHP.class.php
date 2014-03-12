@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.0.75
+ * @version   3.0.76
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -3093,13 +3093,13 @@ class ToolsNFePHP
                 $msg = "Uma chave de NFe válida não foi passada como parâmetro $chNFe.";
                 throw new nfephpException($msg);
             }
-            //se o numero sequencial do evento não foi informado ou se for maior que 1 digito
-            if ($nSeqEvento == '' || strlen($nSeqEvento) > 2 || !is_numeric($nSeqEvento)){
-                $msg .= "Número sequencial da correção não encontrado ou é maior que 99 ou contêm caracteres não numéricos [$nSeqEvento]";
+            //se o numero sequencial do evento não foi informado ou se for invalido
+            if ($nSeqEvento == '' || strlen($nSeqEvento) > 2 || !is_numeric($nSeqEvento) || $nSeqEvento < 1){
+                $msg = "Número sequencial da correção não encontrado ou é maior que 99 ou contêm caracteres não numéricos [$nSeqEvento]";
                 throw new nfephpException($msg);
             }
             if (strlen($xCorrecao) < 15 || strlen($xCorrecao) > 1000){
-                $msg .= "O texto da correção deve ter entre 15 e 1000 caracteres!";
+                $msg = "O texto da correção deve ter entre 15 e 1000 caracteres!";
                 throw new nfephpException($msg);
             }
             //limpa o texto de correção para evitar surpresas
