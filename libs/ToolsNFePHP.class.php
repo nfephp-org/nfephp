@@ -246,6 +246,12 @@ class ToolsNFePHP
      */
     public $enableSVAN=false;
     /**
+     * enableSVRS
+     * Indica o acesso ao serviço SVRS
+     * @var boolean
+     */
+    public $enableSVRS=false;
+    /**
      * modSOAP
      * Indica o metodo SOAP a usar 1-SOAP Nativo ou 2-cURL
      * @var string
@@ -502,6 +508,7 @@ class ToolsNFePHP
                                'TO'=>'SVRS',
                                'SCAN'=>'SCAN',
                                'SVAN'=>'SVAN',
+                               'SVRS'=>'SVRS',
                                'DPEC'=>'DPEC');
     /**
      * cUFlist
@@ -687,6 +694,11 @@ class ToolsNFePHP
      */
     function __construct($aConfig = '', $mododebug = 2, $exceptions = false)
     {
+        // A partir de 04/02 vai usar o SVRS para o ES
+        if (date('Ymd')>='20140204') {
+            $this->aliaslist['ES'] = 'SVRS';
+        }
+
         if (is_numeric($mododebug)) {
             $this->debugMode = $mododebug;
         }
@@ -1598,7 +1610,7 @@ class ToolsNFePHP
                 $doc = new DOMDocument('1.0', 'utf-8'); //cria objeto DOM
                 $doc->formatOutput = false;
                 $doc->preserveWhiteSpace = false;
-                $doc->loadXML($retorno,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
+                @$doc->loadXML($retorno,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
                 $cStat = !empty($doc->getElementsByTagName('cStat')->item(0)->nodeValue) ? $doc->getElementsByTagName('cStat')->item(0)->nodeValue : '';
                 if ($cStat == ''){
                     $msg = "Não houve retorno Soap verifique a mensagem de erro e o debug!!";
@@ -1880,8 +1892,9 @@ class ToolsNFePHP
         } else {
             $sNFe = $mNFe;
         }
-        //remover <?xml version="1.0" encoding=... das NFe pois somente uma dessas tags pode existir na mensagem
-        $sNFe = str_replace(array('<?xml version="1.0" encoding="utf-8"?>','<?xml version="1.0" encoding="UTF-8"?>'),'',$sNFe);
+        //remover <?xml version="1.0" encoding=... das NFe pois somente uma dessas tags pode exitir na mensagem
+        //usando preg_replace, pega qualquer variação...
+        $sNFe = preg_replace("/<\?xml.*\?>/", "", $sNFe);
         $sNFe = str_replace(array("\r","\n","\s"),"",$sNFe);
         //montagem do cabeçalho da comunicação SOAP
         $cabec = '<nfeCabecMsg xmlns="'.$namespace.'"><cUF>'.$this->cUF.'</cUF><versaoDados>'.$versao.'</versaoDados></nfeCabecMsg>';
@@ -2874,11 +2887,8 @@ class ToolsNFePHP
             //Data e hora do evento no formato AAAA-MM-DDTHH:MM:SSTZD (UTC)
             $dhEvento = date('Y-m-d').'T'.date('H:i:s').$this->timeZone;
             //se o envio for para svan mudar o numero no orgão para 91
-            if ($this->enableSVAN){
-                $cOrgao='90';
-            } else {
-                $cOrgao=$this->cUF;
-            }
+            //--> ES nao pode ir como 90, e usa o SVAN
+            $cOrgao=$this->cUF;
             //montagem do namespace do serviço
             $servico = 'RecepcaoEvento';
             //recuperação da versão
