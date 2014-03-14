@@ -1,0 +1,3140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <pesquisa num="1">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>138</cStat>
+                        <xMotivo>Documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:46:50</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9281882232</ultNSU>
+                        <ret>
+                            <resNFe NSU="9281672967">
+                                <chNFe>35140243651066000154550000000179011141401274</chNFe>
+                                <CNPJ>43651066000154</CNPJ>
+                                <xNome>SEIREN DO BRASIL INDUSTRIA TEXTIL LTDA</xNome>
+                                <IE>669063034115</IE>
+                                <dEmi>2014-02-27</dEmi>
+                                <tpNF>1</tpNF>
+                                <vNF>38642.73</vNF>
+                                <digVal>rmZ5WsCqyEBw3AhwOXnMvpc3tSs=</digVal>
+                                <dhRecbto>2014-02-27T14:12:19</dhRecbto>
+                                <cSitNFe>1</cSitNFe>
+                                <cSitConf>0</cSitConf>
+                            </resNFe>
+                        </ret>
+                        <ret>
+                            <resNFe NSU="9281673152">
+                                <chNFe>35140243651066000154550000000179031141402275</chNFe>
+                                <CNPJ>43651066000154</CNPJ>
+                                <xNome>SEIREN DO BRASIL INDUSTRIA TEXTIL LTDA</xNome>
+                                <IE>669063034115</IE>
+                                <dEmi>2014-02-27</dEmi>
+                                <tpNF>1</tpNF>
+                                <vNF>5578.61</vNF>
+                                <digVal>jmgEx7/BUwQNE9Xig5XLIp+bRb4=</digVal>
+                                <dhRecbto>2014-02-27T14:12:24</dhRecbto>
+                                <cSitNFe>1</cSitNFe>
+                                <cSitConf>0</cSitConf>
+                            </resNFe>
+                        </ret>
+                        <ret>
+                            <resNFe NSU="9281673686">
+                                <chNFe>35140243651066000154550000000179021141402278</chNFe>
+                                <CNPJ>43651066000154</CNPJ>
+                                <xNome>SEIREN DO BRASIL INDUSTRIA TEXTIL LTDA</xNome>
+                                <IE>669063034115</IE>
+                                <dEmi>2014-02-27</dEmi>
+                                <tpNF>1</tpNF>
+                                <vNF>1688.16</vNF>
+                                <digVal>bk2dB8BYAsh5j0TYMyU3XW89Lg4=</digVal>
+                                <dhRecbto>2014-02-27T14:12:22</dhRecbto>
+                                <cSitNFe>1</cSitNFe>
+                                <cSitConf>0</cSitConf>
+                            </resNFe>
+                        </ret>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="2">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:47:14</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9282382232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="3">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:47:28</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9282882232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="4">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>138</cStat>
+                        <xMotivo>Documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:47:33</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9283382232</ultNSU>
+                        <ret>
+                            <resNFe NSU="9283114848">
+                                <chNFe>35140271805063000163550010000150191010186779</chNFe>
+                                <CNPJ>71805063000163</CNPJ>
+                                <xNome>DITIN INDUSTRIA TEXTIL LTDA</xNome>
+                                <IE>734001594115</IE>
+                                <dEmi>2014-02-27</dEmi>
+                                <tpNF>1</tpNF>
+                                <vNF>17370.28</vNF>
+                                <digVal>XfBNzx7r80D09pm40QiWEFw9spw=</digVal>
+                                <dhRecbto>2014-02-27T16:00:50</dhRecbto>
+                                <cSitNFe>1</cSitNFe>
+                                <cSitConf>0</cSitConf>
+                            </resNFe>
+                        </ret>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="5">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>138</cStat>
+                        <xMotivo>Documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:47:39</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9283882232</ultNSU>
+                        <ret>
+                            <resNFe NSU="9283402987">
+                                <chNFe>42140281786121000102550010001784261580824001</chNFe>
+                                <CNPJ>81786121000102</CNPJ>
+                                <xNome>DASS SUL CALCADOS E ARTIGOS ESPORTIVOS LTDA</xNome>
+                                <IE>251969584</IE>
+                                <dEmi>2014-02-27</dEmi>
+                                <tpNF>1</tpNF>
+                                <vNF>707.77</vNF>
+                                <digVal>/BrkwyVRScQ7pY7skj+9clzbKeY=</digVal>
+                                <dhRecbto>2014-02-27T16:08:27</dhRecbto>
+                                <cSitNFe>1</cSitNFe>
+                                <cSitConf>0</cSitConf>
+                            </resNFe>
+                        </ret>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="6">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:47:44</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9284382232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="7">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:47:49</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9284882232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="8">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:47:55</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9285382232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="9">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:48:00</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9285882232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="10">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:48:06</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9286382232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="11">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:48:11</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9286882232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="12">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>138</cStat>
+                        <xMotivo>Documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:48:16</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9287382232</ultNSU>
+                        <ret>
+                            <resNFe NSU="9287243682">
+                                <chNFe>50140203681757000186550000000884831020200006</chNFe>
+                                <CNPJ>03681757000186</CNPJ>
+                                <xNome>AVANTI IND COM IMP E EXP LTDA</xNome>
+                                <IE>283131004</IE>
+                                <dEmi>2014-02-27</dEmi>
+                                <tpNF>1</tpNF>
+                                <vNF>7936.00</vNF>
+                                <digVal>pyCF53FI0BYcgRug6jgZPU/XJGo=</digVal>
+                                <dhRecbto>2014-02-27T21:12:28</dhRecbto>
+                                <cSitNFe>1</cSitNFe>
+                                <cSitConf>0</cSitConf>
+                            </resNFe>
+                        </ret>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="13">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>138</cStat>
+                        <xMotivo>Documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:48:21</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9287882232</ultNSU>
+                        <ret>
+                            <resNFe NSU="9287607733">
+                                <chNFe>50140203681757000186550000000885131790750025</chNFe>
+                                <CNPJ>03681757000186</CNPJ>
+                                <xNome>AVANTI IND COM IMP E EXP LTDA</xNome>
+                                <IE>283131004</IE>
+                                <dEmi>2014-02-27</dEmi>
+                                <tpNF>1</tpNF>
+                                <vNF>18135.00</vNF>
+                                <digVal>Ca0KZIURm3UIosx92NqSPWM31Oc=</digVal>
+                                <dhRecbto>2014-02-27T22:13:31</dhRecbto>
+                                <cSitNFe>1</cSitNFe>
+                                <cSitConf>0</cSitConf>
+                            </resNFe>
+                        </ret>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="14">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:48:27</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9288382232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="15">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:48:32</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9288882232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="16">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:48:37</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9289382232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="17">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:48:43</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9289882232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="18">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:48:48</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9290382232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="19">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>138</cStat>
+                        <xMotivo>Documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:48:53</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9290882232</ultNSU>
+                        <ret>
+                            <resNFe NSU="9290500986">
+                                <chNFe>35140211290482000188550010000077711000009081</chNFe>
+                                <CNPJ>11290482000188</CNPJ>
+                                <xNome>MAVELLO TEXTIL INDUSTRIA E COMERCIO DE MALHAS LTDA</xNome>
+                                <IE>148870628115</IE>
+                                <dEmi>2014-02-28</dEmi>
+                                <tpNF>1</tpNF>
+                                <vNF>6065.64</vNF>
+                                <digVal>1PvT7FeJ/L8N4QtNJM6Sqn2I9KU=</digVal>
+                                <dhRecbto>2014-02-28T09:43:01</dhRecbto>
+                                <cSitNFe>1</cSitNFe>
+                                <cSitConf>0</cSitConf>
+                            </resNFe>
+                        </ret>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="20">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>138</cStat>
+                        <xMotivo>Documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:48:59</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9291382232</ultNSU>
+                        <ret>
+                            <resNFe NSU="9290961967">
+                                <chNFe>42140262781778001538550020000385331771233267</chNFe>
+                                <CNPJ>62781778001538</CNPJ>
+                                <xNome>IND. TEXTIL SUECO LTDA - ITAJAI</xNome>
+                                <IE>255072732</IE>
+                                <dEmi>2014-02-28</dEmi>
+                                <tpNF>1</tpNF>
+                                <vNF>4118.40</vNF>
+                                <digVal>HJT34MMAHIWSdEHktbwbUxthPQM=</digVal>
+                                <dhRecbto>2014-02-28T10:18:12</dhRecbto>
+                                <cSitNFe>1</cSitNFe>
+                                <cSitConf>0</cSitConf>
+                            </resNFe>
+                        </ret>
+                        <ret>
+                            <resNFe NSU="9291092624">
+                                <chNFe>35140211290482000188550010000077721024501005</chNFe>
+                                <CNPJ>11290482000188</CNPJ>
+                                <xNome>MAVELLO TEXTIL INDUSTRIA E COMERCIO DE MALHAS LTDA</xNome>
+                                <IE>148870628115</IE>
+                                <dEmi>2014-02-28</dEmi>
+                                <tpNF>1</tpNF>
+                                <vNF>1461.46</vNF>
+                                <digVal>hqUcu0uf1bgZzlARCdFdkKBQHGw=</digVal>
+                                <dhRecbto>2014-02-28T10:29:10</dhRecbto>
+                                <cSitNFe>1</cSitNFe>
+                                <cSitConf>0</cSitConf>
+                            </resNFe>
+                        </ret>
+                        <ret>
+                            <resNFe NSU="9291116730">
+                                <chNFe>35140211290482000188550010000077731004001063</chNFe>
+                                <CNPJ>11290482000188</CNPJ>
+                                <xNome>MAVELLO TEXTIL INDUSTRIA E COMERCIO DE MALHAS LTDA</xNome>
+                                <IE>148870628115</IE>
+                                <dEmi>2014-02-28</dEmi>
+                                <tpNF>1</tpNF>
+                                <vNF>4440.59</vNF>
+                                <digVal>EsO4nraEx+A5+ykOG3gcwJjhUik=</digVal>
+                                <dhRecbto>2014-02-28T10:30:48</dhRecbto>
+                                <cSitNFe>1</cSitNFe>
+                                <cSitConf>0</cSitConf>
+                            </resNFe>
+                        </ret>
+                        <ret>
+                            <resNFe NSU="9291294893">
+                                <chNFe>35140211290482000188550010000077741600050009</chNFe>
+                                <CNPJ>11290482000188</CNPJ>
+                                <xNome>MAVELLO TEXTIL INDUSTRIA E COMERCIO DE MALHAS LTDA</xNome>
+                                <IE>148870628115</IE>
+                                <dEmi>2014-02-28</dEmi>
+                                <tpNF>1</tpNF>
+                                <vNF>143.84</vNF>
+                                <digVal>EB+ezZbWQnqCWiej999vhMaSlHw=</digVal>
+                                <dhRecbto>2014-02-28T10:44:10</dhRecbto>
+                                <cSitNFe>1</cSitNFe>
+                                <cSitConf>0</cSitConf>
+                            </resNFe>
+                        </ret>
+                        <ret>
+                            <resNFe NSU="9291308900">
+                                <chNFe>35140211290482000188550010000077751650850170</chNFe>
+                                <CNPJ>11290482000188</CNPJ>
+                                <xNome>MAVELLO TEXTIL INDUSTRIA E COMERCIO DE MALHAS LTDA</xNome>
+                                <IE>148870628115</IE>
+                                <dEmi>2014-02-28</dEmi>
+                                <tpNF>1</tpNF>
+                                <vNF>1789.84</vNF>
+                                <digVal>Cr1zkxnNiCJkJ47Q2SuWD2dU3RE=</digVal>
+                                <dhRecbto>2014-02-28T10:45:13</dhRecbto>
+                                <cSitNFe>1</cSitNFe>
+                                <cSitConf>0</cSitConf>
+                            </resNFe>
+                        </ret>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="21">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>138</cStat>
+                        <xMotivo>Documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:49:04</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9291882232</ultNSU>
+                        <ret>
+                            <resNFe NSU="9291685704">
+                                <chNFe>35140211290482000188550010000077771320406204</chNFe>
+                                <CNPJ>11290482000188</CNPJ>
+                                <xNome>MAVELLO TEXTIL INDUSTRIA E COMERCIO DE MALHAS LTDA</xNome>
+                                <IE>148870628115</IE>
+                                <dEmi>2014-02-28</dEmi>
+                                <tpNF>1</tpNF>
+                                <vNF>448.50</vNF>
+                                <digVal>yCqPeDLdhDxGOa+Js+BbUwGXyC8=</digVal>
+                                <dhRecbto>2014-02-28T11:14:22</dhRecbto>
+                                <cSitNFe>1</cSitNFe>
+                                <cSitConf>0</cSitConf>
+                            </resNFe>
+                        </ret>
+                        <ret>
+                            <resNFe NSU="9291696751">
+                                <chNFe>35140211290482000188550010000077781010090168</chNFe>
+                                <CNPJ>11290482000188</CNPJ>
+                                <xNome>MAVELLO TEXTIL INDUSTRIA E COMERCIO DE MALHAS LTDA</xNome>
+                                <IE>148870628115</IE>
+                                <dEmi>2014-02-28</dEmi>
+                                <tpNF>1</tpNF>
+                                <vNF>3745.87</vNF>
+                                <digVal>j3vRIWSt2Cem1eCfD4cFbUyWDys=</digVal>
+                                <dhRecbto>2014-02-28T11:15:38</dhRecbto>
+                                <cSitNFe>1</cSitNFe>
+                                <cSitConf>0</cSitConf>
+                            </resNFe>
+                        </ret>
+                        <ret>
+                            <resNFe NSU="9291744894">
+                                <chNFe>35140215179682002324550010000777251407569936</chNFe>
+                                <CNPJ>15179682002324</CNPJ>
+                                <xNome>RHODIA POLIAMIDA E ESPECIALIDADES L</xNome>
+                                <IE>392000706118</IE>
+                                <dEmi>2014-02-28</dEmi>
+                                <tpNF>1</tpNF>
+                                <vNF>42672.06</vNF>
+                                <digVal>M+t/Fzh6I0T5tfIB7Io4+Is/h7Q=</digVal>
+                                <dhRecbto>2014-02-28T11:19:31</dhRecbto>
+                                <cSitNFe>1</cSitNFe>
+                                <cSitConf>0</cSitConf>
+                            </resNFe>
+                        </ret>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="22">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:49:09</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9292382232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="23">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:49:14</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9292882232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="24">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>138</cStat>
+                        <xMotivo>Documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:49:20</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9293382232</ultNSU>
+                        <ret>
+                            <resNFe NSU="9292908470">
+                                <chNFe>35140243651066000154550000000179331132627285</chNFe>
+                                <CNPJ>43651066000154</CNPJ>
+                                <xNome>SEIREN DO BRASIL INDUSTRIA TEXTIL LTDA</xNome>
+                                <IE>669063034115</IE>
+                                <dEmi>2014-02-28</dEmi>
+                                <tpNF>1</tpNF>
+                                <vNF>30654.42</vNF>
+                                <digVal>+HgA0fQYrdftflO39113Mfx/nus=</digVal>
+                                <dhRecbto>2014-02-28T13:24:45</dhRecbto>
+                                <cSitNFe>1</cSitNFe>
+                                <cSitConf>0</cSitConf>
+                            </resNFe>
+                        </ret>
+                        <ret>
+                            <resNFe NSU="9292909425">
+                                <chNFe>35140243651066000154550000000179341132627282</chNFe>
+                                <CNPJ>43651066000154</CNPJ>
+                                <xNome>SEIREN DO BRASIL INDUSTRIA TEXTIL LTDA</xNome>
+                                <IE>669063034115</IE>
+                                <dEmi>2014-02-28</dEmi>
+                                <tpNF>1</tpNF>
+                                <vNF>1697.41</vNF>
+                                <digVal>aP6jhQVjQ9nV+PhN3MmAMVL6dwg=</digVal>
+                                <dhRecbto>2014-02-28T13:24:47</dhRecbto>
+                                <cSitNFe>1</cSitNFe>
+                                <cSitConf>0</cSitConf>
+                            </resNFe>
+                        </ret>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="25">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>138</cStat>
+                        <xMotivo>Documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:49:26</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9293882232</ultNSU>
+                        <ret>
+                            <resCCe NSU="9293509553">
+                                <chNFe>50140203681757000186550000000885131790750025</chNFe>
+                                <dhEvento>2014-02-28T13:18:48-03:00</dhEvento>
+                                <tpEvento>110110</tpEvento>
+                                <nSeqEvento>1</nSeqEvento>
+                                <descEvento>Carta de Correcao</descEvento>
+                                <xCorrecao>IRREGULARIDADE: Transportadora/Dados do transportador. CONSIDERAR: TRANSGUAÇUANO TRANSPORTES LTDA, AV YOUSSEF AHMAD EL JAROUCHE, S/N, BAIRRO DISTRISTO INDUSTRIAL II, TRES LAGOAS/MS (CNPJ 49.612.377/0008-67, INSCRICAO ESTADUAL 28.368.280-9). IRREGULARIDADE: Dados Adicionais / Informações Complementares de interesse do contribuinte. CONSIDERAR: Redespacho: (838)- TRANSPORTADORA CAMPINENSE LTDA - EPP, RUA DOMINGOS PACHECO, 59, QD 4 L 4, SÃO PAULO-SP,CNPJ 05.169.983/0002-99 IE 116.519.145.111,/ REDESPACHO POR CONTA DO EMITENTE / DESCONSIDERAR: Icms s/Transp Retido pelo Remetente BC R$: 960,00 Vr Icms R$: 115,20.</xCorrecao>
+                                <tpNF>1</tpNF>
+                                <dhRecbto>2014-02-27T22:13:31</dhRecbto>
+                            </resCCe>
+                        </ret>
+                        <ret>
+                            <resNFe NSU="9293715913">
+                                <chNFe>35140215179682002324550010000777501590796146</chNFe>
+                                <CNPJ>15179682002324</CNPJ>
+                                <xNome>RHODIA POLIAMIDA E ESPECIALIDADES L</xNome>
+                                <IE>392000706118</IE>
+                                <dEmi>2014-02-28</dEmi>
+                                <tpNF>1</tpNF>
+                                <vNF>20541.23</vNF>
+                                <digVal>qg/w5GgpCBYwaat2j8wAid5H83g=</digVal>
+                                <dhRecbto>2014-02-28T14:34:16</dhRecbto>
+                                <cSitNFe>1</cSitNFe>
+                                <cSitConf>0</cSitConf>
+                            </resNFe>
+                        </ret>
+                        <ret>
+                            <resNFe NSU="9293757606">
+                                <chNFe>35140215179682002324550010000777521593083927</chNFe>
+                                <CNPJ>15179682002324</CNPJ>
+                                <xNome>RHODIA POLIAMIDA E ESPECIALIDADES L</xNome>
+                                <IE>392000706118</IE>
+                                <dEmi>2014-02-28</dEmi>
+                                <tpNF>1</tpNF>
+                                <vNF>45885.29</vNF>
+                                <digVal>0BrMAVRAsHt4248/NBhDxGjhh3w=</digVal>
+                                <dhRecbto>2014-02-28T14:36:55</dhRecbto>
+                                <cSitNFe>1</cSitNFe>
+                                <cSitConf>0</cSitConf>
+                            </resNFe>
+                        </ret>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="26">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:49:31</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9294382232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="27">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:49:37</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9294882232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="28">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>138</cStat>
+                        <xMotivo>Documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:49:42</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9295382232</ultNSU>
+                        <ret>
+                            <resNFe NSU="9295111082">
+                                <chNFe>35140215179682002324550010000777671679439838</chNFe>
+                                <CNPJ>15179682002324</CNPJ>
+                                <xNome>RHODIA POLIAMIDA E ESPECIALIDADES L</xNome>
+                                <IE>392000706118</IE>
+                                <dEmi>2014-02-28</dEmi>
+                                <tpNF>1</tpNF>
+                                <vNF>35230.40</vNF>
+                                <digVal>9pqMfcxicCfv/7FC11Iy7GX/ljc=</digVal>
+                                <dhRecbto>2014-02-28T16:08:33</dhRecbto>
+                                <cSitNFe>1</cSitNFe>
+                                <cSitConf>0</cSitConf>
+                            </resNFe>
+                        </ret>
+                        <ret>
+                            <resNFe NSU="9295113338">
+                                <chNFe>35140215179682002324550010000777681679768901</chNFe>
+                                <CNPJ>15179682002324</CNPJ>
+                                <xNome>RHODIA POLIAMIDA E ESPECIALIDADES L</xNome>
+                                <IE>392000706118</IE>
+                                <dEmi>2014-02-28</dEmi>
+                                <tpNF>1</tpNF>
+                                <vNF>35043.47</vNF>
+                                <digVal>wUrZxxT556TokkqHz1/KEhk2IYI=</digVal>
+                                <dhRecbto>2014-02-28T16:08:54</dhRecbto>
+                                <cSitNFe>1</cSitNFe>
+                                <cSitConf>0</cSitConf>
+                            </resNFe>
+                        </ret>
+                        <ret>
+                            <resNFe NSU="9295120356">
+                                <chNFe>35140215179682002324550010000777691679956934</chNFe>
+                                <CNPJ>15179682002324</CNPJ>
+                                <xNome>RHODIA POLIAMIDA E ESPECIALIDADES L</xNome>
+                                <IE>392000706118</IE>
+                                <dEmi>2014-02-28</dEmi>
+                                <tpNF>1</tpNF>
+                                <vNF>32298.73</vNF>
+                                <digVal>NNSbS+J4g423k1bqQeq2/Cdro9w=</digVal>
+                                <dhRecbto>2014-02-28T16:09:16</dhRecbto>
+                                <cSitNFe>1</cSitNFe>
+                                <cSitConf>0</cSitConf>
+                            </resNFe>
+                        </ret>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="29">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>138</cStat>
+                        <xMotivo>Documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:49:47</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9295882232</ultNSU>
+                        <ret>
+                            <resNFe NSU="9295635260">
+                                <chNFe>23140289850341000160550110020223671139131144</chNFe>
+                                <CNPJ>89850341000160</CNPJ>
+                                <xNome>GRENDENE S/A - MATRIZ (SOB)</xNome>
+                                <IE>069161135</IE>
+                                <dEmi>2014-02-28</dEmi>
+                                <tpNF>1</tpNF>
+                                <vNF>1296.75</vNF>
+                                <digVal>1MUVPaR6mReEYHTAcYdhEpq9nM0=</digVal>
+                                <dhRecbto>2014-02-28T16:43:31</dhRecbto>
+                                <cSitNFe>1</cSitNFe>
+                                <cSitConf>0</cSitConf>
+                            </resNFe>
+                        </ret>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="30">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:49:52</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9296382232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="31">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:49:58</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9296882232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="32">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:50:03</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9297382232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="33">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:50:08</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9297882232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="34">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:50:14</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9298382232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="35">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:50:19</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9298882232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="36">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:50:24</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9299382232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="37">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:50:29</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9299882232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="38">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:50:35</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9300382232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="39">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:50:40</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9300882232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="40">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:50:45</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9301382232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="41">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:50:50</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9301882232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="42">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:50:56</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9302382232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="43">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:51:01</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9302882232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="44">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:51:06</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9303382232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="45">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:51:12</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9303882232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="46">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:51:17</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9304382232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="47">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:51:22</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9304882232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="48">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>138</cStat>
+                        <xMotivo>Documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:51:28</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9305382232</ultNSU>
+                        <ret>
+                            <resNFe NSU="9304922318">
+                                <chNFe>35140371805063000163550010000150431010187030</chNFe>
+                                <CNPJ>71805063000163</CNPJ>
+                                <xNome>DITIN INDUSTRIA TEXTIL LTDA</xNome>
+                                <IE>734001594115</IE>
+                                <dEmi>2014-03-03</dEmi>
+                                <tpNF>1</tpNF>
+                                <vNF>46803.14</vNF>
+                                <digVal>bSpdaS3di8/QuvxZJhiru8R++cQ=</digVal>
+                                <dhRecbto>2014-03-03T08:16:43</dhRecbto>
+                                <cSitNFe>1</cSitNFe>
+                                <cSitConf>0</cSitConf>
+                            </resNFe>
+                        </ret>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="49">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>138</cStat>
+                        <xMotivo>Documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:51:33</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9305882232</ultNSU>
+                        <ret>
+                            <resNFe NSU="9305538004">
+                                <chNFe>35140304494204000187550010000013611030038107</chNFe>
+                                <CNPJ>04494204000187</CNPJ>
+                                <xNome>CUT SYSTEM CORTES E CONFECÇOES LTDA.</xNome>
+                                <IE>116485170114</IE>
+                                <dEmi>2014-03-03</dEmi>
+                                <tpNF>1</tpNF>
+                                <vNF>6511.05</vNF>
+                                <digVal>1yULEZ0bNqpwit2qug0NwvFC+jI=</digVal>
+                                <dhRecbto>2014-03-03T10:19:25</dhRecbto>
+                                <cSitNFe>1</cSitNFe>
+                                <cSitConf>0</cSitConf>
+                            </resNFe>
+                        </ret>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="50">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:51:38</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9306382232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="51">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:51:44</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9306882232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="52">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:51:49</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9307382232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="53">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:51:54</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9307882232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="54">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:51:59</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9308382232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="55">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:52:05</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9308882232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="56">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>138</cStat>
+                        <xMotivo>Documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:52:10</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9309382232</ultNSU>
+                        <ret>
+                            <resNFe NSU="9309301797">
+                                <chNFe>35140343651066000154550000000179801112850047</chNFe>
+                                <CNPJ>43651066000154</CNPJ>
+                                <xNome>SEIREN DO BRASIL INDUSTRIA TEXTIL LTDA</xNome>
+                                <IE>669063034115</IE>
+                                <dEmi>2014-03-04</dEmi>
+                                <tpNF>1</tpNF>
+                                <vNF>21979.42</vNF>
+                                <digVal>lsm4LG702qFrDEEme1EXkot++Vc=</digVal>
+                                <dhRecbto>2014-03-04T11:33:52</dhRecbto>
+                                <cSitNFe>1</cSitNFe>
+                                <cSitConf>0</cSitConf>
+                            </resNFe>
+                        </ret>
+                        <ret>
+                            <resNFe NSU="9309302938">
+                                <chNFe>35140343651066000154550000000179811112851040</chNFe>
+                                <CNPJ>43651066000154</CNPJ>
+                                <xNome>SEIREN DO BRASIL INDUSTRIA TEXTIL LTDA</xNome>
+                                <IE>669063034115</IE>
+                                <dEmi>2014-03-04</dEmi>
+                                <tpNF>1</tpNF>
+                                <vNF>14334.12</vNF>
+                                <digVal>ev6S/HwyAhiTVso2TtyIeQF5IFc=</digVal>
+                                <dhRecbto>2014-03-04T11:34:23</dhRecbto>
+                                <cSitNFe>1</cSitNFe>
+                                <cSitConf>0</cSitConf>
+                            </resNFe>
+                        </ret>
+                        <ret>
+                            <resNFe NSU="9309303391">
+                                <chNFe>35140343651066000154550000000179821112851048</chNFe>
+                                <CNPJ>43651066000154</CNPJ>
+                                <xNome>SEIREN DO BRASIL INDUSTRIA TEXTIL LTDA</xNome>
+                                <IE>669063034115</IE>
+                                <dEmi>2014-03-04</dEmi>
+                                <tpNF>1</tpNF>
+                                <vNF>27883.72</vNF>
+                                <digVal>wzmJqlCfGGC/DAI0KtGmmbD3MuM=</digVal>
+                                <dhRecbto>2014-03-04T11:34:41</dhRecbto>
+                                <cSitNFe>1</cSitNFe>
+                                <cSitConf>0</cSitConf>
+                            </resNFe>
+                        </ret>
+                        <ret>
+                            <resNFe NSU="9309339791">
+                                <chNFe>35140343651066000154550000000179831115546049</chNFe>
+                                <CNPJ>43651066000154</CNPJ>
+                                <xNome>SEIREN DO BRASIL INDUSTRIA TEXTIL LTDA</xNome>
+                                <IE>669063034115</IE>
+                                <dEmi>2014-03-04</dEmi>
+                                <tpNF>1</tpNF>
+                                <vNF>10351.55</vNF>
+                                <digVal>KKZb69shm8sFLqNP+QCoP3u8gSE=</digVal>
+                                <dhRecbto>2014-03-04T11:54:08</dhRecbto>
+                                <cSitNFe>1</cSitNFe>
+                                <cSitConf>0</cSitConf>
+                            </resNFe>
+                        </ret>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="57">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:52:15</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9309882232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="58">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:52:21</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9310382232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="59">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:52:26</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9310882232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="60">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:52:31</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9311382232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="61">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:52:36</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9311882232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="62">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>138</cStat>
+                        <xMotivo>Documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:52:42</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9312382232</ultNSU>
+                        <ret>
+                            <resNFe NSU="9312118094">
+                                <chNFe>35140343651066000154550000000180011102738050</chNFe>
+                                <CNPJ>43651066000154</CNPJ>
+                                <xNome>SEIREN DO BRASIL INDUSTRIA TEXTIL LTDA</xNome>
+                                <IE>669063034115</IE>
+                                <dEmi>2014-03-05</dEmi>
+                                <tpNF>1</tpNF>
+                                <vNF>8744.95</vNF>
+                                <digVal>zT4B0rwau9hPm3X6EjIoCBhYc48=</digVal>
+                                <dhRecbto>2014-03-05T10:26:01</dhRecbto>
+                                <cSitNFe>1</cSitNFe>
+                                <cSitConf>0</cSitConf>
+                            </resNFe>
+                        </ret>
+                        <ret>
+                            <resNFe NSU="9312118314">
+                                <chNFe>35140343651066000154550000000180001102737056</chNFe>
+                                <CNPJ>43651066000154</CNPJ>
+                                <xNome>SEIREN DO BRASIL INDUSTRIA TEXTIL LTDA</xNome>
+                                <IE>669063034115</IE>
+                                <dEmi>2014-03-05</dEmi>
+                                <tpNF>1</tpNF>
+                                <vNF>21011.44</vNF>
+                                <digVal>hY/1XacMMkgymXBjJOmQXcdOmLA=</digVal>
+                                <dhRecbto>2014-03-05T10:25:59</dhRecbto>
+                                <cSitNFe>1</cSitNFe>
+                                <cSitConf>0</cSitConf>
+                            </resNFe>
+                        </ret>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="63">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:52:47</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9312882232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="64">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>138</cStat>
+                        <xMotivo>Documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:52:52</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9313382232</ultNSU>
+                        <ret>
+                            <resNFe NSU="9312974790">
+                                <chNFe>35140343651066000154550000000180021120010051</chNFe>
+                                <CNPJ>43651066000154</CNPJ>
+                                <xNome>SEIREN DO BRASIL INDUSTRIA TEXTIL LTDA</xNome>
+                                <IE>669063034115</IE>
+                                <dEmi>2014-03-05</dEmi>
+                                <tpNF>1</tpNF>
+                                <vNF>52285.59</vNF>
+                                <digVal>WpLt1H6vwOC6+qAbbH1hmvLlHJA=</digVal>
+                                <dhRecbto>2014-03-05T11:58:34</dhRecbto>
+                                <cSitNFe>1</cSitNFe>
+                                <cSitConf>0</cSitConf>
+                            </resNFe>
+                        </ret>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="65">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:52:58</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9313882232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="66">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>138</cStat>
+                        <xMotivo>Documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:53:03</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9314382232</ultNSU>
+                        <ret>
+                            <resNFe NSU="9313985784">
+                                <chNFe>35140311290482000188550010000077941130520000</chNFe>
+                                <CNPJ>11290482000188</CNPJ>
+                                <xNome>MAVELLO TEXTIL INDUSTRIA E COMERCIO DE MALHAS LTDA</xNome>
+                                <IE>148870628115</IE>
+                                <dEmi>2014-03-05</dEmi>
+                                <tpNF>1</tpNF>
+                                <vNF>1716.00</vNF>
+                                <digVal>3xP746g7y1aryt4d82WYgcXSjBk=</digVal>
+                                <dhRecbto>2014-03-05T14:12:22</dhRecbto>
+                                <cSitNFe>1</cSitNFe>
+                                <cSitConf>0</cSitConf>
+                            </resNFe>
+                        </ret>
+                        <ret>
+                            <resNFe NSU="9313996009">
+                                <chNFe>35140311290482000188550010000077951000083015</chNFe>
+                                <CNPJ>11290482000188</CNPJ>
+                                <xNome>MAVELLO TEXTIL INDUSTRIA E COMERCIO DE MALHAS LTDA</xNome>
+                                <IE>148870628115</IE>
+                                <dEmi>2014-03-05</dEmi>
+                                <tpNF>1</tpNF>
+                                <vNF>5306.40</vNF>
+                                <digVal>vKJs5nT8cWwWkHC/UP8yvGtdw30=</digVal>
+                                <dhRecbto>2014-03-05T14:13:19</dhRecbto>
+                                <cSitNFe>1</cSitNFe>
+                                <cSitConf>0</cSitConf>
+                            </resNFe>
+                        </ret>
+                        <ret>
+                            <resNFe NSU="9314053183">
+                                <chNFe>35140311290482000188550010000077961629307009</chNFe>
+                                <CNPJ>11290482000188</CNPJ>
+                                <xNome>MAVELLO TEXTIL INDUSTRIA E COMERCIO DE MALHAS LTDA</xNome>
+                                <IE>148870628115</IE>
+                                <dEmi>2014-03-05</dEmi>
+                                <tpNF>1</tpNF>
+                                <vNF>758.13</vNF>
+                                <digVal>2AFaHzZW4zUrKl+wlsLbjPBWQ2I=</digVal>
+                                <dhRecbto>2014-03-05T14:18:27</dhRecbto>
+                                <cSitNFe>1</cSitNFe>
+                                <cSitConf>0</cSitConf>
+                            </resNFe>
+                        </ret>
+                        <ret>
+                            <resNFe NSU="9314061500">
+                                <chNFe>35140311290482000188550010000077971008002590</chNFe>
+                                <CNPJ>11290482000188</CNPJ>
+                                <xNome>MAVELLO TEXTIL INDUSTRIA E COMERCIO DE MALHAS LTDA</xNome>
+                                <IE>148870628115</IE>
+                                <dEmi>2014-03-05</dEmi>
+                                <tpNF>1</tpNF>
+                                <vNF>6331.86</vNF>
+                                <digVal>ulGF2yGrmRoKPZnmDLNSrLXj0k4=</digVal>
+                                <dhRecbto>2014-03-05T14:19:10</dhRecbto>
+                                <cSitNFe>1</cSitNFe>
+                                <cSitConf>0</cSitConf>
+                            </resNFe>
+                        </ret>
+                        <ret>
+                            <resNFe NSU="9314301299">
+                                <chNFe>41140304062323000160550050000151911284552450</chNFe>
+                                <CNPJ>04062323000160</CNPJ>
+                                <xNome>VANTEX INDUSTRIAL LTDA</xNome>
+                                <IE>9022914313</IE>
+                                <dEmi>2014-03-05</dEmi>
+                                <tpNF>1</tpNF>
+                                <vNF>5219.30</vNF>
+                                <digVal>u5ndshHHVAvsM4YWM4kAm+75mBw=</digVal>
+                                <dhRecbto>2014-03-05T14:39:36</dhRecbto>
+                                <cSitNFe>1</cSitNFe>
+                                <cSitConf>0</cSitConf>
+                            </resNFe>
+                        </ret>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="67">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>138</cStat>
+                        <xMotivo>Documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:53:12</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9314882232</ultNSU>
+                        <ret>
+                            <resNFe NSU="9314428595">
+                                <chNFe>35140311290482000188550010000077981783090051</chNFe>
+                                <CNPJ>11290482000188</CNPJ>
+                                <xNome>MAVELLO TEXTIL INDUSTRIA E COMERCIO DE MALHAS LTDA</xNome>
+                                <IE>148870628115</IE>
+                                <dEmi>2014-03-05</dEmi>
+                                <tpNF>1</tpNF>
+                                <vNF>1853.02</vNF>
+                                <digVal>cvc+zTJjZyo6PzvCoaDI/Qn5bYQ=</digVal>
+                                <dhRecbto>2014-03-05T14:51:06</dhRecbto>
+                                <cSitNFe>1</cSitNFe>
+                                <cSitConf>0</cSitConf>
+                            </resNFe>
+                        </ret>
+                        <ret>
+                            <resNFe NSU="9314446080">
+                                <chNFe>35140311290482000188550010000077991012097058</chNFe>
+                                <CNPJ>11290482000188</CNPJ>
+                                <xNome>MAVELLO TEXTIL INDUSTRIA E COMERCIO DE MALHAS LTDA</xNome>
+                                <IE>148870628115</IE>
+                                <dEmi>2014-03-05</dEmi>
+                                <tpNF>1</tpNF>
+                                <vNF>5653.99</vNF>
+                                <digVal>f+ubraSlDqN42J/+N76XUyz/lkg=</digVal>
+                                <dhRecbto>2014-03-05T14:52:40</dhRecbto>
+                                <cSitNFe>1</cSitNFe>
+                                <cSitConf>0</cSitConf>
+                            </resNFe>
+                        </ret>
+                        <ret>
+                            <resNFe NSU="9314499344">
+                                <chNFe>35140311290482000188550010000078001305064008</chNFe>
+                                <CNPJ>11290482000188</CNPJ>
+                                <xNome>MAVELLO TEXTIL INDUSTRIA E COMERCIO DE MALHAS LTDA</xNome>
+                                <IE>148870628115</IE>
+                                <dEmi>2014-03-05</dEmi>
+                                <tpNF>1</tpNF>
+                                <vNF>725.75</vNF>
+                                <digVal>hXOgFWrvMp7fih2QfuBuWSGn4CA=</digVal>
+                                <dhRecbto>2014-03-05T14:57:26</dhRecbto>
+                                <cSitNFe>1</cSitNFe>
+                                <cSitConf>0</cSitConf>
+                            </resNFe>
+                        </ret>
+                        <ret>
+                            <resNFe NSU="9314506873">
+                                <chNFe>35140311290482000188550010000078011360402707</chNFe>
+                                <CNPJ>11290482000188</CNPJ>
+                                <xNome>MAVELLO TEXTIL INDUSTRIA E COMERCIO DE MALHAS LTDA</xNome>
+                                <IE>148870628115</IE>
+                                <dEmi>2014-03-05</dEmi>
+                                <tpNF>1</tpNF>
+                                <vNF>6061.46</vNF>
+                                <digVal>eHQtgv1PWY15VzcBY2BuLz86FhI=</digVal>
+                                <dhRecbto>2014-03-05T14:58:06</dhRecbto>
+                                <cSitNFe>1</cSitNFe>
+                                <cSitConf>0</cSitConf>
+                            </resNFe>
+                        </ret>
+                        <ret>
+                            <resNFe NSU="9314852393">
+                                <chNFe>35140311290482000188550010000078021204300860</chNFe>
+                                <CNPJ>11290482000188</CNPJ>
+                                <xNome>MAVELLO TEXTIL INDUSTRIA E COMERCIO DE MALHAS LTDA</xNome>
+                                <IE>148870628115</IE>
+                                <dEmi>2014-03-05</dEmi>
+                                <tpNF>1</tpNF>
+                                <vNF>1482.77</vNF>
+                                <digVal>mHGRJtNyhscI0KLJFuJY2LXmork=</digVal>
+                                <dhRecbto>2014-03-05T15:26:34</dhRecbto>
+                                <cSitNFe>1</cSitNFe>
+                                <cSitConf>0</cSitConf>
+                            </resNFe>
+                        </ret>
+                        <ret>
+                            <resNFe NSU="9314865215">
+                                <chNFe>35140311290482000188550010000078031207015004</chNFe>
+                                <CNPJ>11290482000188</CNPJ>
+                                <xNome>MAVELLO TEXTIL INDUSTRIA E COMERCIO DE MALHAS LTDA</xNome>
+                                <IE>148870628115</IE>
+                                <dEmi>2014-03-05</dEmi>
+                                <tpNF>1</tpNF>
+                                <vNF>4667.76</vNF>
+                                <digVal>lPJqc2NY3CeJ7U3v6s75+/EsrsA=</digVal>
+                                <dhRecbto>2014-03-05T15:27:39</dhRecbto>
+                                <cSitNFe>1</cSitNFe>
+                                <cSitConf>0</cSitConf>
+                            </resNFe>
+                        </ret>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="68">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>138</cStat>
+                        <xMotivo>Documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:53:19</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9315382232</ultNSU>
+                        <ret>
+                            <resNFe NSU="9315036435">
+                                <chNFe>35140311290482000188550010000078041001007151</chNFe>
+                                <CNPJ>11290482000188</CNPJ>
+                                <xNome>MAVELLO TEXTIL INDUSTRIA E COMERCIO DE MALHAS LTDA</xNome>
+                                <IE>148870628115</IE>
+                                <dEmi>2014-03-05</dEmi>
+                                <tpNF>1</tpNF>
+                                <vNF>1520.91</vNF>
+                                <digVal>XpxLkN80eBAunb+TNC9dbe79zzY=</digVal>
+                                <dhRecbto>2014-03-05T15:41:14</dhRecbto>
+                                <cSitNFe>1</cSitNFe>
+                                <cSitConf>0</cSitConf>
+                            </resNFe>
+                        </ret>
+                        <ret>
+                            <resNFe NSU="9315043966">
+                                <chNFe>35140311290482000188550010000078051000450024</chNFe>
+                                <CNPJ>11290482000188</CNPJ>
+                                <xNome>MAVELLO TEXTIL INDUSTRIA E COMERCIO DE MALHAS LTDA</xNome>
+                                <IE>148870628115</IE>
+                                <dEmi>2014-03-05</dEmi>
+                                <tpNF>1</tpNF>
+                                <vNF>4933.04</vNF>
+                                <digVal>9/sIa9bK0nJikj+OxlHbnJqfVho=</digVal>
+                                <dhRecbto>2014-03-05T15:41:46</dhRecbto>
+                                <cSitNFe>1</cSitNFe>
+                                <cSitConf>0</cSitConf>
+                            </resNFe>
+                        </ret>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="69">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:53:27</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9315882232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="70">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:53:33</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9316382232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="71">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:53:40</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9316882232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="72">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:53:47</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9317382232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="73">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:53:53</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9317882232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="74">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:53:58</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9318382232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="75">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>138</cStat>
+                        <xMotivo>Documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:54:03</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9318882232</ultNSU>
+                        <ret>
+                            <resNFe NSU="9318719776">
+                                <chNFe>35140319421772000125550010000000181097928000</chNFe>
+                                <CNPJ>19421772000125</CNPJ>
+                                <xNome>G E Morato Artefatos de Papel EPP</xNome>
+                                <IE>362017080110</IE>
+                                <dEmi>2014-03-05</dEmi>
+                                <tpNF>1</tpNF>
+                                <vNF>1824.48</vNF>
+                                <digVal>CLLJMaBpoSoqJZJQgBLoN3yTfps=</digVal>
+                                <dhRecbto>2014-03-05T22:02:37</dhRecbto>
+                                <cSitNFe>1</cSitNFe>
+                                <cSitConf>0</cSitConf>
+                            </resNFe>
+                        </ret>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="76">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:54:09</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9319382232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="77">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:54:17</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9319882232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="78">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:54:22</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9320382232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="79">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>138</cStat>
+                        <xMotivo>Documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:54:28</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9320882232</ultNSU>
+                        <ret>
+                            <resNFe NSU="9320750623">
+                                <chNFe>42140381786121000102550020000047531310482946</chNFe>
+                                <CNPJ>81786121000102</CNPJ>
+                                <xNome>DASS SUL CALCADOS E ARTIGOS ESPORTIVOS LTDA</xNome>
+                                <IE>251969584</IE>
+                                <dEmi>2014-03-06</dEmi>
+                                <tpNF>0</tpNF>
+                                <vNF>6765.00</vNF>
+                                <digVal>JmKUZqnxhSLGWd/cWwCqO5gfH3E=</digVal>
+                                <dhRecbto>2014-03-06T08:37:54</dhRecbto>
+                                <cSitNFe>1</cSitNFe>
+                                <cSitConf>0</cSitConf>
+                            </resNFe>
+                        </ret>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="80">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>138</cStat>
+                        <xMotivo>Documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:54:33</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9321382232</ultNSU>
+                        <ret>
+                            <resNFe NSU="9321226992">
+                                <chNFe>35140371805063000163550010000150731010187366</chNFe>
+                                <CNPJ>71805063000163</CNPJ>
+                                <xNome>DITIN INDUSTRIA TEXTIL LTDA</xNome>
+                                <IE>734001594115</IE>
+                                <dEmi>2014-03-06</dEmi>
+                                <tpNF>1</tpNF>
+                                <vNF>48803.30</vNF>
+                                <digVal>3WUMXeQf09JR4UNn5JyCkenfZmM=</digVal>
+                                <dhRecbto>2014-03-06T09:25:28</dhRecbto>
+                                <cSitNFe>1</cSitNFe>
+                                <cSitConf>0</cSitConf>
+                            </resNFe>
+                        </ret>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="81">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:54:38</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9321882232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="82">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>138</cStat>
+                        <xMotivo>Documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:54:43</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9322382232</ultNSU>
+                        <ret>
+                            <resNFe NSU="9322242960">
+                                <chNFe>35140304494204000187550010000013631908000055</chNFe>
+                                <CNPJ>04494204000187</CNPJ>
+                                <xNome>CUT SYSTEM CORTES E CONFECÇOES LTDA.</xNome>
+                                <IE>116485170114</IE>
+                                <dEmi>2014-03-06</dEmi>
+                                <tpNF>1</tpNF>
+                                <vNF>258.43</vNF>
+                                <digVal>068sInVZA4k/wSv7Bb7JJwl2Dt8=</digVal>
+                                <dhRecbto>2014-03-06T10:48:20</dhRecbto>
+                                <cSitNFe>1</cSitNFe>
+                                <cSitConf>0</cSitConf>
+                            </resNFe>
+                        </ret>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="83">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:54:49</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9322882232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="84">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:54:54</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9323382232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="85">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:55:00</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9323882232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="86">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>138</cStat>
+                        <xMotivo>Documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:55:05</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9324382232</ultNSU>
+                        <ret>
+                            <resNFe NSU="9324134662">
+                                <chNFe>35140343651066000154550000000180321135635060</chNFe>
+                                <CNPJ>43651066000154</CNPJ>
+                                <xNome>SEIREN DO BRASIL INDUSTRIA TEXTIL LTDA</xNome>
+                                <IE>669063034115</IE>
+                                <dEmi>2014-03-06</dEmi>
+                                <tpNF>1</tpNF>
+                                <vNF>53280.88</vNF>
+                                <digVal>N6rBpO4n/VOhqSUe/RRoJmZc7DE=</digVal>
+                                <dhRecbto>2014-03-06T13:54:58</dhRecbto>
+                                <cSitNFe>1</cSitNFe>
+                                <cSitConf>0</cSitConf>
+                            </resNFe>
+                        </ret>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="87">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:55:10</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9324882232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="88">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:55:15</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9325382232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="89">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>138</cStat>
+                        <xMotivo>Documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:55:21</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9325882232</ultNSU>
+                        <ret>
+                            <resNFe NSU="9325430067">
+                                <chNFe>42140311703922000181550020000199701002886332</chNFe>
+                                <CNPJ>11703922000181</CNPJ>
+                                <xNome>HYOSUNG BRASIL INDUSTRIA E COMERCIO DE FIBRAS LTDA</xNome>
+                                <IE>256061564</IE>
+                                <dEmi>2014-03-06</dEmi>
+                                <tpNF>1</tpNF>
+                                <vNF>4992.99</vNF>
+                                <digVal>qkPhWrmfHo7FOvk5zEAyTa14Ssk=</digVal>
+                                <dhRecbto>2014-03-06T15:28:17</dhRecbto>
+                                <cSitNFe>1</cSitNFe>
+                                <cSitConf>0</cSitConf>
+                            </resNFe>
+                        </ret>
+                        <ret>
+                            <resNFe NSU="9325430160">
+                                <chNFe>42140311703922000181550020000199721007611379</chNFe>
+                                <CNPJ>11703922000181</CNPJ>
+                                <xNome>HYOSUNG BRASIL INDUSTRIA E COMERCIO DE FIBRAS LTDA</xNome>
+                                <IE>256061564</IE>
+                                <dEmi>2014-03-06</dEmi>
+                                <tpNF>1</tpNF>
+                                <vNF>4992.99</vNF>
+                                <digVal>/mfVAnS9Oms/WeOnfnci+tyKaKI=</digVal>
+                                <dhRecbto>2014-03-06T15:28:17</dhRecbto>
+                                <cSitNFe>1</cSitNFe>
+                                <cSitConf>0</cSitConf>
+                            </resNFe>
+                        </ret>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="90">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:55:26</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9326382232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="91">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>138</cStat>
+                        <xMotivo>Documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:55:31</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9326882232</ultNSU>
+                        <ret>
+                            <resNFe NSU="9326462964">
+                                <chNFe>35140309469942000198550010000011931010011934</chNFe>
+                                <CNPJ>09469942000198</CNPJ>
+                                <xNome>PHENIX COMERCIO VAREJISTA DE COMBUSTIVEIS LTDA</xNome>
+                                <IE>148071335113</IE>
+                                <dEmi>2014-03-06</dEmi>
+                                <tpNF>1</tpNF>
+                                <vNF>1481.15</vNF>
+                                <digVal>wm89Fco2YDoKQEjhv7shjgAkKdQ=</digVal>
+                                <dhRecbto>2014-03-06T16:38:00</dhRecbto>
+                                <cSitNFe>1</cSitNFe>
+                                <cSitConf>0</cSitConf>
+                            </resNFe>
+                        </ret>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="92">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:55:37</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9327382232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="93">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:55:42</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9327882232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="94">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:55:47</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9328382232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="95">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:55:53</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9328882232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="96">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:55:58</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9329382232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="97">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:56:03</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9329882232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="98">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:56:08</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9330382232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="99">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:56:14</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9330882232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="100">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:56:19</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9331382232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="101">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:56:24</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9331882232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="102">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:56:30</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9332382232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="103">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:56:35</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9332882232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="104">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>138</cStat>
+                        <xMotivo>Documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:56:40</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9333382232</ultNSU>
+                        <ret>
+                            <resNFe NSU="9332886335">
+                                <chNFe>35140343651066000154550000000180551101457074</chNFe>
+                                <CNPJ>43651066000154</CNPJ>
+                                <xNome>SEIREN DO BRASIL INDUSTRIA TEXTIL LTDA</xNome>
+                                <IE>669063034115</IE>
+                                <dEmi>2014-03-07</dEmi>
+                                <tpNF>1</tpNF>
+                                <vNF>49339.47</vNF>
+                                <digVal>XKMH/V9ES+6iCY0LeW1Seshql6g=</digVal>
+                                <dhRecbto>2014-03-07T10:13:19</dhRecbto>
+                                <cSitNFe>1</cSitNFe>
+                                <cSitConf>0</cSitConf>
+                            </resNFe>
+                        </ret>
+                        <ret>
+                            <resNFe NSU="9333028285">
+                                <chNFe>35140311290482000188550010000078091000094286</chNFe>
+                                <CNPJ>11290482000188</CNPJ>
+                                <xNome>MAVELLO TEXTIL INDUSTRIA E COMERCIO DE MALHAS LTDA</xNome>
+                                <IE>148870628115</IE>
+                                <dEmi>2014-03-07</dEmi>
+                                <tpNF>1</tpNF>
+                                <vNF>2109.90</vNF>
+                                <digVal>4ULo5sQZx5VmBvATxW2xJyHk8HI=</digVal>
+                                <dhRecbto>2014-03-07T10:24:34</dhRecbto>
+                                <cSitNFe>1</cSitNFe>
+                                <cSitConf>0</cSitConf>
+                            </resNFe>
+                        </ret>
+                        <ret>
+                            <resNFe NSU="9333042330">
+                                <chNFe>35140311290482000188550010000078101040093079</chNFe>
+                                <CNPJ>11290482000188</CNPJ>
+                                <xNome>MAVELLO TEXTIL INDUSTRIA E COMERCIO DE MALHAS LTDA</xNome>
+                                <IE>148870628115</IE>
+                                <dEmi>2014-03-07</dEmi>
+                                <tpNF>1</tpNF>
+                                <vNF>6410.85</vNF>
+                                <digVal>tDg+i8dk6kYPFqPqJIWUwo6HyPY=</digVal>
+                                <dhRecbto>2014-03-07T10:25:30</dhRecbto>
+                                <cSitNFe>1</cSitNFe>
+                                <cSitConf>0</cSitConf>
+                            </resNFe>
+                        </ret>
+                        <ret>
+                            <resNFe NSU="9333257916">
+                                <chNFe>35140311290482000188550010000078111500323037</chNFe>
+                                <CNPJ>11290482000188</CNPJ>
+                                <xNome>MAVELLO TEXTIL INDUSTRIA E COMERCIO DE MALHAS LTDA</xNome>
+                                <IE>148870628115</IE>
+                                <dEmi>2014-03-07</dEmi>
+                                <tpNF>1</tpNF>
+                                <vNF>566.75</vNF>
+                                <digVal>ZP+bXqPh7IeSr7xmHKzuHs3uqu0=</digVal>
+                                <dhRecbto>2014-03-07T10:42:43</dhRecbto>
+                                <cSitNFe>1</cSitNFe>
+                                <cSitConf>0</cSitConf>
+                            </resNFe>
+                        </ret>
+                        <ret>
+                            <resNFe NSU="9333265174">
+                                <chNFe>35140311290482000188550010000078121400900021</chNFe>
+                                <CNPJ>11290482000188</CNPJ>
+                                <xNome>MAVELLO TEXTIL INDUSTRIA E COMERCIO DE MALHAS LTDA</xNome>
+                                <IE>148870628115</IE>
+                                <dEmi>2014-03-07</dEmi>
+                                <tpNF>1</tpNF>
+                                <vNF>4733.50</vNF>
+                                <digVal>yWyUCsY7adfBd5LyslAA3PN+Rhk=</digVal>
+                                <dhRecbto>2014-03-07T10:43:25</dhRecbto>
+                                <cSitNFe>1</cSitNFe>
+                                <cSitConf>0</cSitConf>
+                            </resNFe>
+                        </ret>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="105">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>138</cStat>
+                        <xMotivo>Documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:56:46</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9333882232</ultNSU>
+                        <ret>
+                            <resNFe NSU="9333690753">
+                                <chNFe>35140311290482000188550010000078131070284508</chNFe>
+                                <CNPJ>11290482000188</CNPJ>
+                                <xNome>MAVELLO TEXTIL INDUSTRIA E COMERCIO DE MALHAS LTDA</xNome>
+                                <IE>148870628115</IE>
+                                <dEmi>2014-03-07</dEmi>
+                                <tpNF>1</tpNF>
+                                <vNF>2041.86</vNF>
+                                <digVal>Rxd36dCInPN9wzHg78RahxcgSNk=</digVal>
+                                <dhRecbto>2014-03-07T11:18:10</dhRecbto>
+                                <cSitNFe>1</cSitNFe>
+                                <cSitConf>0</cSitConf>
+                            </resNFe>
+                        </ret>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="106">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:56:51</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9334382232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="107">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:56:56</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9334882232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="108">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>138</cStat>
+                        <xMotivo>Documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:57:02</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9335382232</ultNSU>
+                        <ret>
+                            <resNFe NSU="9335220297">
+                                <chNFe>35140343651066000154550000000180611140628078</chNFe>
+                                <CNPJ>43651066000154</CNPJ>
+                                <xNome>SEIREN DO BRASIL INDUSTRIA TEXTIL LTDA</xNome>
+                                <IE>669063034115</IE>
+                                <dEmi>2014-03-07</dEmi>
+                                <tpNF>1</tpNF>
+                                <vNF>23241.89</vNF>
+                                <digVal>TrCkiiqdcRTtMM/Laz/bv/Z+7E4=</digVal>
+                                <dhRecbto>2014-03-07T14:04:51</dhRecbto>
+                                <cSitNFe>1</cSitNFe>
+                                <cSitConf>0</cSitConf>
+                            </resNFe>
+                        </ret>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="109">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:57:07</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9335882232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="110">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:57:12</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9336382232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="111">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:57:17</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9336882232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="112">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:57:23</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9337382232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="113">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:57:28</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9337882232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="114">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:57:33</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9338382232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="115">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:57:38</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9338882232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="116">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:57:44</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9339382232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="117">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:57:49</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9339882232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="118">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:57:54</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9340382232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="119">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:57:59</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9340882232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="120">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:58:05</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9341382232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="121">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:58:10</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9341882232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="122">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:58:15</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9342382232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="123">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:58:21</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9342882232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="124">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:58:26</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9343382232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="125">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:58:31</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9343882232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="126">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:58:36</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9344382232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="127">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:58:42</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9344882232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="128">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:58:47</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9345382232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="129">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:58:52</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9345882232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+    <pesquisa num="130">
+        <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <soap:Body>
+                <nfeConsultaNFDestResult xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeConsultaDest">
+                    <retConsNFeDest xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+                        <tpAmb>1</tpAmb>
+                        <verAplic>1.1.0</verAplic>
+                        <cStat>137</cStat>
+                        <xMotivo>Nenhum documento localizado para o destinatario</xMotivo>
+                        <dhResp>2014-03-14T13:58:57</dhResp>
+                        <indCont>1</indCont>
+                        <ultNSU>9346382232</ultNSU>
+                    </retConsNFeDest>
+                </nfeConsultaNFDestResult>
+            </soap:Body>
+        </soap:Envelope>
+    </pesquisa>
+</root>
