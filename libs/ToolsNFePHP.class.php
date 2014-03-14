@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.0.76
+ * @version   3.0.77
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -245,6 +245,12 @@ class ToolsNFePHP
      * @var boolean
      */
     public $enableSVAN=false;
+    /**
+     * enableSVRS
+     * Indica o acesso ao serviço SVRS
+     * @var boolean
+     */
+    public $enableSVRS=false;
     /**
      * modSOAP
      * Indica o metodo SOAP a usar 1-SOAP Nativo ou 2-cURL
@@ -480,7 +486,7 @@ class ToolsNFePHP
                                'BA'=>'BA',
                                'CE'=>'CE',
                                'DF'=>'SVRS',
-                               'ES'=>'SVAN',
+                               'ES'=>'SVRS',
                                'GO'=>'GO',
                                'MA'=>'SVAN',
                                'MG'=>'MG',
@@ -492,7 +498,7 @@ class ToolsNFePHP
                                'PI'=>'SVAN',
                                'PR'=>'PR',
                                'RJ'=>'SVRS',
-                               'RN'=>'SVAN',
+                               'RN'=>'SVRS',
                                'RO'=>'SVRS',
                                'RR'=>'SVRS',
                                'RS'=>'RS',
@@ -502,6 +508,7 @@ class ToolsNFePHP
                                'TO'=>'SVRS',
                                'SCAN'=>'SCAN',
                                'SVAN'=>'SVAN',
+                               'SVRS'=>'SVRS', 
                                'DPEC'=>'DPEC');
     /**
      * cUFlist
@@ -1543,8 +1550,8 @@ class ToolsNFePHP
      * $this->cStat = 107 OK
      *        cStat = 108 sitema paralizado momentaneamente, aguardar retorno
      *        cStat = 109 sistema parado sem previsao de retorno, verificar status SCAN
-     *        cStat = 113 SCAN operando mas irá parar use o serviço Normal
-     *        cStat = 114 SCAN dasativado pela SEFAZ de origem
+     *        cStat = 113 SCAN operando mas irá parar, use o serviço Normal
+     *        cStat = 114 SCAN dasativado pela SEFAZ de origem, use o serviço Normal
      * se SCAN estiver ativado usar, caso contrario aguardar pacientemente.
      * @name statusServico
      * @param  string $UF sigla da unidade da Federação
@@ -1553,25 +1560,26 @@ class ToolsNFePHP
      * @param  array $aRetorno parametro passado por referencia irá conter a resposta da consulta em um array
      * @return mixed false ou array ['bStat'=>boolean,'cStat'=>107,'tMed'=>1,'dhRecbto'=>'12/12/2009','xMotivo'=>'Serviço em operação','xObs'=>'']
      */
-    public function statusServico($UF='',$tpAmb='',$modSOAP='2', &$aRetorno=''){
+    public function statusServico($UF = '', $tpAmb = '', $modSOAP = '2', &$aRetorno = '')
+    {
         try {
             //retorno da funçao
             $aRetorno = array('bStat'=>false,'tpAmb'=>'','verAplic'=>'','cUF'=>'','cStat'=>'','tMed'=>'','dhRetorno'=>'','dhRecbto'=>'','xMotivo'=>'','xObs'=>'');
             // caso o parametro tpAmb seja vazio
-            if ( $tpAmb == '' ){
+            if ($tpAmb == '') {
                 $tpAmb = $this->tpAmb;
             }
             // caso a sigla do estado esteja vazia
-            if ( $UF =='' ){
+            if ($UF == '') {
                 $UF = $this->UF;
             }
             //busca o cUF
             $cUF = $this->cUFlist[$UF];
             //verifica se o SCAN esta habilitado
-            if (!$this->enableSCAN){
-                $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . $this->xmlURLfile,$tpAmb,$UF);
+            if (!$this->enableSCAN) {
+                $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . $this->xmlURLfile, $tpAmb, $UF);
             } else {
-                $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . $this->xmlURLfile,$tpAmb,'SCAN');
+                $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . $this->xmlURLfile, $tpAmb, 'SCAN');
             }
             //identificação do serviço
             $servico = 'NfeStatusServico';
@@ -1587,10 +1595,10 @@ class ToolsNFePHP
             $cabec = '<nfeCabecMsg xmlns="'. $namespace . '"><cUF>'.$cUF.'</cUF><versaoDados>'.$versao.'</versaoDados></nfeCabecMsg>';
             //montagem dos dados da mensagem SOAP
             $dados = '<nfeDadosMsg xmlns="'. $namespace . '"><consStatServ xmlns="'.$this->URLPortal.'" versao="'.$versao.'"><tpAmb>'.$tpAmb.'</tpAmb><cUF>'.$cUF.'</cUF><xServ>STATUS</xServ></consStatServ></nfeDadosMsg>';
-            if ($modSOAP == '2'){
+            if ($modSOAP == '2') {
                 $retorno = $this->__sendSOAP2($urlservico, $namespace, $cabec, $dados, $metodo, $tpAmb);
             } else {
-                $retorno = $this->__sendSOAP($urlservico, $namespace, $cabec, $dados, $metodo, $tpAmb,$UF);
+                $retorno = $this->__sendSOAP($urlservico, $namespace, $cabec, $dados, $metodo, $tpAmb, $UF);
             }
             //verifica o retorno do SOAP
             if ($retorno) {
@@ -1598,13 +1606,13 @@ class ToolsNFePHP
                 $doc = new DOMDocument('1.0', 'utf-8'); //cria objeto DOM
                 $doc->formatOutput = false;
                 $doc->preserveWhiteSpace = false;
-                $doc->loadXML($retorno,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
+                @$doc->loadXML($retorno, LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
                 $cStat = !empty($doc->getElementsByTagName('cStat')->item(0)->nodeValue) ? $doc->getElementsByTagName('cStat')->item(0)->nodeValue : '';
-                if ($cStat == ''){
+                if ($cStat == '') {
                     $msg = "Não houve retorno Soap verifique a mensagem de erro e o debug!!";
                     throw new nfephpException($msg);
                 } else {
-                    if ($cStat == '107'){
+                    if ($cStat == '107') {
                         $aRetorno['bStat'] = true;
                     }
                 }
@@ -1881,7 +1889,8 @@ class ToolsNFePHP
             $sNFe = $mNFe;
         }
         //remover <?xml version="1.0" encoding=... das NFe pois somente uma dessas tags pode existir na mensagem
-        $sNFe = str_replace(array('<?xml version="1.0" encoding="utf-8"?>','<?xml version="1.0" encoding="UTF-8"?>'),'',$sNFe);
+        /*$sNFe = str_replace(array('<?xml version="1.0" encoding="utf-8"?>','<?xml version="1.0" encoding="UTF-8"?>'),'',$sNFe);*/
+        $sNFe = preg_replace("/<\?xml.*\?>/", "", $sNFe);
         $sNFe = str_replace(array("\r","\n","\s"),"",$sNFe);
         //montagem do cabeçalho da comunicação SOAP
         $cabec = '<nfeCabecMsg xmlns="'.$namespace.'"><cUF>'.$this->cUF.'</cUF><versaoDados>'.$versao.'</versaoDados></nfeCabecMsg>';
@@ -3807,38 +3816,39 @@ class ToolsNFePHP
     } // fim verifyNFe
 
 
-   /**
-    * loadSEFAZ
-    * Função para extrair o URL, nome do serviço e versão dos webservices das SEFAZ de
-    * todos os Estados da Federação do arquivo urlWebServicesNFe.xml
-    *
-    * O arquivo xml é estruturado da seguinte forma :
-    * <WS>
-    *   <UF>
-    *      <sigla>AC</sigla>
-    *          <homologacao>
-    *              <Recepcao service='nfeRecepcao' versao='1.10'>http:// .....
-    *              ....
-    *          </homologacao>
-    *          <producao>
-    *              <Recepcao service='nfeRecepcao' versao='1.10'>http:// ....
-    *              ....
-    *          </producao>
-    *   </UF>
-    *   <UF>
-    *      ....
-    * </WS>
-    *
-    * @name loadSEFAZ
-    * @param  string $spathXML  Caminho completo para o arquivo xml
-    * @param  string $tpAmb  Pode ser "2-homologacao" ou "1-producao"
-    * @param  string $sUF       Sigla da Unidade da Federação (ex. SP, RS, etc..)
-    * @return mixed             false se houve erro ou array com os dado do URLs das SEFAZ
-    */
-    public function loadSEFAZ($spathXML,$tpAmb='',$sUF) {
+    /**
+     * loadSEFAZ
+     * Função para extrair o URL, nome do serviço e versão dos webservices das SEFAZ de
+     * todos os Estados da Federação do arquivo urlWebServicesNFe.xml
+     *
+     * O arquivo xml é estruturado da seguinte forma :
+     * <WS>
+     *   <UF>
+     *      <sigla>AC</sigla>
+     *          <homologacao>
+     *              <Recepcao service='nfeRecepcao' versao='1.10'>http:// .....
+     *              ....
+     *          </homologacao>
+     *          <producao>
+     *              <Recepcao service='nfeRecepcao' versao='1.10'>http:// ....
+     *              ....
+     *          </producao>
+     *   </UF>
+     *   <UF>
+     *      ....
+     * </WS>
+     *
+     * @name loadSEFAZ
+     * @param  string $spathXML  Caminho completo para o arquivo xml
+     * @param  string $tpAmb  Pode ser "2-homologacao" ou "1-producao"
+     * @param  string $sUF       Sigla da Unidade da Federação (ex. SP, RS, etc..)
+     * @return mixed             false se houve erro ou array com os dado do URLs das SEFAZ
+     */
+    public function loadSEFAZ($spathXML, $tpAmb = '', $sUF = '')
+    {
         try {
             //verifica se o arquivo xml pode ser encontrado no caminho indicado
-            if ( file_exists($spathXML) ) {
+            if (file_exists($spathXML)) {
                 //carrega o xml
                 $xml = simplexml_load_file($spathXML);
             } else {
@@ -3848,10 +3858,10 @@ class ToolsNFePHP
             }
             $aUrl = null;
             //testa parametro tpAmb
-            if ($tpAmb == ''){
+            if ($tpAmb == '') {
                 $tpAmb = $this->tpAmb;
             }
-            if ($tpAmb == '1'){
+            if ($tpAmb == '1') {
                 $sAmbiente = 'producao';
             } else {
                 //força homologação em qualquer outra situação
@@ -3860,38 +3870,43 @@ class ToolsNFePHP
             }
             //extrai a variável cUF do lista
             $alias = $this->aliaslist[$sUF];
-            if ($alias == 'SVAN'){
+            if ($alias == 'SVAN') {
                 $this->enableSVAN = true;
             } else {
                 $this->enableSVAN = false;
             }
+            if ($alias == 'SVRS') {
+                $this->enableSVRS = true;
+            } else {
+                $this->enableSVRS = false;
+            }
             //estabelece a expressão xpath de busca
             $xpathExpression = "/WS/UF[sigla='" . $alias . "']/$sAmbiente";
             //para cada "nó" no xml que atenda aos critérios estabelecidos
-            foreach ( $xml->xpath( $xpathExpression ) as $gUF ) {
+            foreach ($xml->xpath($xpathExpression) as $gUF) {
                 //para cada "nó filho" retonado
-                foreach ( $gUF->children() as $child ) {
+                foreach ($gUF->children() as $child) {
                     $u = (string) $child[0];
                     $aUrl[$child->getName()]['URL'] = $u;
                     // em cada um desses nós pode haver atributos como a identificação
                     // do nome do webservice e a sua versão
-                    foreach ( $child->attributes() as $a => $b) {
+                    foreach ($child->attributes() as $a => $b) {
                         $aUrl[$child->getName()][$a] = (string) $b;
                     }
                 }
             }
             //verifica se existem outros serviços exclusivos para esse estado
-            if ($alias == 'SVAN' || $alias == 'SVRS'){
+            if ($alias == 'SVAN' || $alias == 'SVRS') {
                 $xpathExpression = "/WS/UF[sigla='" . $sUF . "']/$sAmbiente";
                 //para cada "nó" no xml que atenda aos critérios estabelecidos
-                foreach ( $xml->xpath( $xpathExpression ) as $gUF ) {
+                foreach ($xml->xpath($xpathExpression) as $gUF) {
                     //para cada "nó filho" retonado
-                    foreach ( $gUF->children() as $child ) {
+                    foreach ($gUF->children() as $child) {
                         $u = (string) $child[0];
                         $aUrl[$child->getName()]['URL'] = $u;
                         // em cada um desses nós pode haver atributos como a identificação
                         // do nome do webservice e a sua versão
-                        foreach ( $child->attributes() as $a => $b) {
+                        foreach ($child->attributes() as $a => $b) {
                             $aUrl[$child->getName()][$a] = (string) $b;
                         }
                     }
@@ -4892,31 +4907,32 @@ class ToolsNFePHP
     * @param    string   $DH
     * @return   timestamp
     */
-    protected function __convertTime($DH){
-        if ($DH){
-            $aDH = explode('T',$DH);
-            $adDH = explode('-',$aDH[0]);
-            $atDH = explode(':',$aDH[1]);
-            $timestampDH = mktime($atDH[0],$atDH[1],$atDH[2],$adDH[1],$adDH[2],$adDH[0]);
+    protected function __convertTime($DH)
+    {
+        if ($DH) {
+            $aDH = explode('T', $DH);
+            $adDH = explode('-', $aDH[0]);
+            $atDH = explode(':', $aDH[1]);
+            $timestampDH = mktime($atDH[0], $atDH[1], $atDH[2], $adDH[1], $adDH[2], $adDH[0]);
             return $timestampDH;
         }
     } //fim __convertTime
 
     /**
      * __splitLines
-     * Divide a string do certificado publico em linhas com 76 caracteres (padrão original)
+     * Divide a string do chave publica em linhas com 76 caracteres (padrão original)
      *
      * @name __splitLines
      * @param string $cnt certificado
      * @return string certificado reformatado
      */
-    private function __splitLines($cnt=''){
-        if ($cnt != ''){
+    private function __splitLines($cnt='')
+    {
+        if ($cnt != '') {
             $cnt = rtrim(chunk_split(str_replace(array("\r", "\n"), '', $cnt), 76, "\n"));
         }
         return $cnt;
     }//fim __splitLines
-
 
     /**
      * __cleanString
@@ -4925,10 +4941,11 @@ class ToolsNFePHP
      * @name __cleanString
      * @return  string Texto sem caractere especiais
      */
-     private function __cleanString($texto){
+    private function __cleanString($texto)
+    {
         $aFind = array('&','á','à','ã','â','é','ê','í','ó','ô','õ','ú','ü','ç','Á','À','Ã','Â','É','Ê','Í','Ó','Ô','Õ','Ú','Ü','Ç');
         $aSubs = array('e','a','a','a','a','e','e','i','o','o','o','u','u','c','A','A','A','A','E','E','I','O','O','O','U','U','C');
-        $novoTexto = str_replace($aFind,$aSubs,$texto);
+        $novoTexto = str_replace($aFind, $aSubs, $texto);
         $novoTexto = preg_replace("/[^a-zA-Z0-9 @,-.;:\/]/", "", $novoTexto);
         return $novoTexto;
     }//fim __cleanString
@@ -4941,12 +4958,11 @@ class ToolsNFePHP
      * @param   string $msg Descrição do erro
      * @return  none
      */
-    private function __setError($msg){
+    private function __setError($msg)
+    {
         $this->errMsg .= "$msg\n";
         $this->errStatus = true;
     }
-
-
 } //fim classe ToolsNFePHP
 
 /**
@@ -4960,16 +4976,18 @@ class ToolsNFePHP
  * @name NFeSOAP2Client
  *
  */
-if(class_exists("SoapClient")){
-    class NFeSOAP2Client extends SoapClient {
-        function __doRequest($request, $location, $action, $version,$one_way = 0) {
+if (class_exists("SoapClient")) {
+    class NFeSOAP2Client extends SoapClient
+    {
+        function __doRequest($request, $location, $action, $version, $one_way = 0)
+        {
             $request = str_replace(':ns1', '', $request);
             $request = str_replace('ns1:', '', $request);
             $request = str_replace("\n", '', $request);
             $request = str_replace("\r", '', $request);
             return parent::__doRequest($request, $location, $action, $version);
         }
-    } //fim NFeSOAP2Client
+    }//fim NFeSOAP2Client
 }//fim class exists
 
 /**
@@ -4982,8 +5000,10 @@ if(class_exists("SoapClient")){
  * @name nfephpException
  *
  */
-class nfephpException extends Exception {
-    public function errorMessage() {
+class nfephpException extends Exception
+{
+    public function errorMessage()
+    {
         $errorMsg = $this->getMessage()."\n";
         return $errorMsg;
     }
