@@ -4336,6 +4336,8 @@ class ToolsNFePHP
             $resp = $oSoapClient->__soapCall($metodo, array($varBody) );
             if (is_soap_fault($resp)) {
                 $soapFault = "SOAP Fault: (faultcode: {$resp->faultcode}, faultstring: {$resp->faultstring})";
+            } else {
+                $soapFault = '';
             }
             $resposta = $oSoapClient->__getLastResponse();
             $this->soapDebug .= "\n" . $soapFault;
