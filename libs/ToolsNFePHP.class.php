@@ -4272,9 +4272,6 @@ class ToolsNFePHP
                     case 'nfeRetRecepcao2':
                         $usef = "_NFeRetRecepcao2.asmx";
                         break;
-                    case 'nfeCancelamentoNF2':
-                        $usef = "_NFeCancelamento2.asmx";
-                        break;
                     case 'nfeInutilizacaoNF2':
                         $usef = "_NFeInutilizacao2.asmx";
                         break;
