@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.0.77
+ * @version   4.0.0
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -223,10 +223,11 @@ class ToolsNFePHP
     public $xsdDir='';
     /**
      * xmlURLfile
-     * Arquivo xml com as URL do SEFAZ de todos dos Estados
+     * Arquivo XML com as URLs dos webservices das SEFAZ de todos dos Estados e demais ambientes como AN, virtuais, etc.
      * @var string
+     * @see /config/nfe_ws2.xml (arquivo antigo) ou /config/nfe_ws3.xml (arquivo novo, layout 3.10 da NF-e)
      */
-    public $xmlURLfile='nfe_ws2.xml';
+    public $xmlURLfile='nfe_ws3.xml';
     /**
      * enableSCAN
      * Habilita contingência ao serviço SCAN ao invés do webservice estadual
@@ -508,7 +509,7 @@ class ToolsNFePHP
                                'TO'=>'SVRS',
                                'SCAN'=>'SCAN',
                                'SVAN'=>'SVAN',
-                               'SVRS'=>'SVRS', 
+                               'SVRS'=>'SVRS',
                                'DPEC'=>'DPEC');
     /**
      * cUFlist
@@ -1841,7 +1842,6 @@ class ToolsNFePHP
      *                          a cada envio mesmo que seja de apenas uma NFe
      * @param   integer $modSOAP 1 usa __sendSOP e 2 usa __sendSOAP2
      * @return mixed false ou array ['bStat'=>false,'cStat'=>'','xMotivo'=>'','dhRecbto'=>'','nRec'=>'','tMed'=>'','tpAmb'=>'','verAplic'=>'','cUF'=>'']
-     * @todo Incluir regra de validação para ambiente de homologação/produção vide NT2011.002
      */
     public function sendLot($mNFe,$idLote,$modSOAP='2')
     {
@@ -1853,8 +1853,8 @@ class ToolsNFePHP
         } else {
             $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . $this->xmlURLfile,$this->tpAmb,'SCAN');
         }
-        //identificação do serviço
-        $servico = 'NfeRecepcao';
+        //identificação do serviço: autorização de NF-e
+        $servico = 'NFeAutorizacao';
         //recuperação da versão
         $versao = $aURL[$servico]['version'];
         //recuperação da url do serviço
@@ -1889,7 +1889,6 @@ class ToolsNFePHP
             $sNFe = $mNFe;
         }
         //remover <?xml version="1.0" encoding=... das NFe pois somente uma dessas tags pode existir na mensagem
-        /*$sNFe = str_replace(array('<?xml version="1.0" encoding="utf-8"?>','<?xml version="1.0" encoding="UTF-8"?>'),'',$sNFe);*/
         $sNFe = preg_replace("/<\?xml.*\?>/", "", $sNFe);
         $sNFe = str_replace(array("\r","\n","\s"),"",$sNFe);
         //montagem do cabeçalho da comunicação SOAP
@@ -1904,6 +1903,7 @@ class ToolsNFePHP
         }
         //verifica o retorno
         if ($retorno){
+            var_dump($retorno);
             //tratar dados de retorno
             $doc = new DOMDocument('1.0', 'utf-8'); //cria objeto DOM
             $doc->formatOutput = false;
@@ -1949,7 +1949,6 @@ class ToolsNFePHP
         }
         return $aRetorno;
     }// fim sendLot
-
 
     /**
      * getProtocol
@@ -2341,7 +2340,7 @@ class ToolsNFePHP
                     $chNFe = $resNFe->getElementsByTagName('chNFe')->item(0)->nodeValue;
                     $CNPJ = $resNFe->getElementsByTagName('CNPJ')->item(0)->nodeValue;
                     $xNome = $resNFe->getElementsByTagName('xNome')->item(0)->nodeValue;
-                    $dEmi = $resNFe->getElementsByTagName('dEmi')->item(0)->nodeValue;
+                    $dhEmi = $resNFe->getElementsByTagName('dhEmi')->item(0)->nodeValue;
                     $dhRecbto= $resNFe->getElementsByTagName('dhRecbto')->item(0)->nodeValue;
                     $tpNF = $resNFe->getElementsByTagName('tpNF')->item(0)->nodeValue;
                     $cSitNFe = $resNFe->getElementsByTagName('cSitNFe')->item(0)->nodeValue;
@@ -2351,7 +2350,7 @@ class ToolsNFePHP
                         'NSU'=>$nsu,
                         'CNPJ'=>$CNPJ,
                         'xNome'=>$xNome,
-                        'dEmi'=>$dEmi,
+                        'dhEmi'=>$dhEmi,
                         'dhRecbto'=>$dhRecbto,
                         'tpNF'=>$tpNF,
                         'cSitNFe'=>$cSitNFe,
@@ -2364,7 +2363,7 @@ class ToolsNFePHP
                     $chNFe = $resCanc->getElementsByTagName('chNFe')->item(0)->nodeValue;
                     $CNPJ = $resCanc->getElementsByTagName('CNPJ')->item(0)->nodeValue;
                     $xNome = $resCanc->getElementsByTagName('xNome')->item(0)->nodeValue;
-                    $dEmi = $resCanc->getElementsByTagName('dEmi')->item(0)->nodeValue;
+                    $dhEmi = $resCanc->getElementsByTagName('dhEmi')->item(0)->nodeValue;
                     $dhRecbto= $resCanc->getElementsByTagName('dhRecbto')->item(0)->nodeValue;
                     $tpNF = $resCanc->getElementsByTagName('tpNF')->item(0)->nodeValue;
                     $cSitNFe = $resCanc->getElementsByTagName('cSitNFe')->item(0)->nodeValue;
@@ -2374,7 +2373,7 @@ class ToolsNFePHP
                         'NSU'=>$nsu,
                         'CNPJ'=>$CNPJ,
                         'xNome'=>$xNome,
-                        'dEmi'=>$dEmi,
+                        'dhEmi'=>$dhEmi,
                         'dhRecbto'=>$dhRecbto,
                         'tpNF'=>$tpNF,
                         'cSitNFe'=>$cSitNFe,
@@ -3818,31 +3817,16 @@ class ToolsNFePHP
 
     /**
      * loadSEFAZ
-     * Função para extrair o URL, nome do serviço e versão dos webservices das SEFAZ de
-     * todos os Estados da Federação do arquivo urlWebServicesNFe.xml
-     *
-     * O arquivo xml é estruturado da seguinte forma :
-     * <WS>
-     *   <UF>
-     *      <sigla>AC</sigla>
-     *          <homologacao>
-     *              <Recepcao service='nfeRecepcao' versao='1.10'>http:// .....
-     *              ....
-     *          </homologacao>
-     *          <producao>
-     *              <Recepcao service='nfeRecepcao' versao='1.10'>http:// ....
-     *              ....
-     *          </producao>
-     *   </UF>
-     *   <UF>
-     *      ....
-     * </WS>
+     * Extrai o URL, nome do serviço e versão dos webservices das SEFAZ de
+     * todos os Estados da Federação, a partir do arquivo XML de configurações,
+     * onde este é estruturado para os modelos 55 (NF-e) e 65 (NFC-e) já que
+     * os endereços dos webservices podem ser diferentes.
      *
      * @name loadSEFAZ
      * @param  string $spathXML  Caminho completo para o arquivo xml
-     * @param  string $tpAmb  Pode ser "2-homologacao" ou "1-producao"
+     * @param  string $tpAmb     Pode ser "2-homologacao" ou "1-producao"
      * @param  string $sUF       Sigla da Unidade da Federação (ex. SP, RS, etc..)
-     * @return mixed             false se houve erro ou array com os dado do URLs das SEFAZ
+     * @return mixed             false se houve erro ou array com os dados dos URLs da SEFAZ
      */
     public function loadSEFAZ($spathXML, $tpAmb = '', $sUF = '')
     {
@@ -3881,7 +3865,8 @@ class ToolsNFePHP
                 $this->enableSVRS = false;
             }
             //estabelece a expressão xpath de busca
-            $xpathExpression = "/WS/UF[sigla='" . $alias . "']/$sAmbiente";
+            //busca por padrão o modelo "55" - TODO 20/MAR FERNANDO: talvez refatorar informando qual modelo usar, 55 ou 65?
+            $xpathExpression = "/WS/NFe[@modelo='55']/UF[sigla='$alias']/$sAmbiente"; 
             //para cada "nó" no xml que atenda aos critérios estabelecidos
             foreach ($xml->xpath($xpathExpression) as $gUF) {
                 //para cada "nó filho" retonado
@@ -3897,7 +3882,8 @@ class ToolsNFePHP
             }
             //verifica se existem outros serviços exclusivos para esse estado
             if ($alias == 'SVAN' || $alias == 'SVRS') {
-                $xpathExpression = "/WS/UF[sigla='" . $sUF . "']/$sAmbiente";
+                //busca por padrão o modelo "55" - TODO 20/MAR FERNANDO: talvez refatorar informando qual modelo usar, 55 ou 65?
+                $xpathExpression = "/WS/NFe[@modelo='55']/UF[sigla='$sUF']/$sAmbiente";
                 //para cada "nó" no xml que atenda aos critérios estabelecidos
                 foreach ($xml->xpath($xpathExpression) as $gUF) {
                     //para cada "nó filho" retonado
