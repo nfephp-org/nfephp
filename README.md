@@ -55,6 +55,12 @@ E serão construídas com as seguintes orientações:
 
 Para mais informações, por favor visite <http://semver.org/>.
 
+Desenvolvimento
+-----------
+Para todo o desenvolvimento, correções de bugs, inclusões e testes deverá ser usada branch `develop`. 
+Na branch `master`estarão os coódigos considerados como estáveis.
+Novas branchs poderão surgir em função das necessidades que se apresentarem, seja para manter versionamentos anteriores seja para estabelecer correções de bugs. Mas apenas essas duas branchs estabelecidas é que serão permanentente mantidas. 
+
 Bug tracker
 -----------
 Encontrou um bug? Informe-nos aqui no GitHub!
@@ -67,7 +73,7 @@ Mantenedores
 * NFCe - `Roberto L. Machado`
 * NFSe - `Hugo Cegana`
 * CTe  - `Luciano Antony` `Roberto Spadim` 
-* MDFe - `não definido`
+* MDFe - `Leandro C. LOpes`
 * CLe  - `não definido`
 
 Pull Request
