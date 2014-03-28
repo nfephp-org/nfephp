@@ -1834,7 +1834,6 @@ class ToolsNFePHP
      * Este processo enviará somente até 50 NFe em cada Lote
      *
      * @name sendLot
-     * @version 2.1.11
      * @package NFePHP
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @param  mixed    $mNFe string com uma nota fiscal em xml ou um array com as NFe em xml, uma em cada campo do array unidimensional MAX 50
@@ -1854,7 +1853,7 @@ class ToolsNFePHP
             $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . $this->xmlURLfile,$this->tpAmb,'SCAN');
         }
         //identificação do serviço: autorização de NF-e
-        $servico = 'NFeAutorizacao';
+        $servico = 'NfeAutorizacao';
         //recuperação da versão
         $versao = $aURL[$servico]['version'];
         //recuperação da url do serviço
@@ -1862,7 +1861,7 @@ class ToolsNFePHP
         //recuperação do método
         $metodo = $aURL[$servico]['method'];
         //montagem do namespace do serviço
-        $namespace = $this->URLPortal.'/wsdl/'.$servico.'2';
+        $namespace = $this->URLPortal.'/wsdl/'.$servico;
         // limpa a variavel
         $sNFe = '';
         if (empty($mNFe)) {
@@ -1894,7 +1893,7 @@ class ToolsNFePHP
         //montagem do cabeçalho da comunicação SOAP
         $cabec = '<nfeCabecMsg xmlns="'.$namespace.'"><cUF>'.$this->cUF.'</cUF><versaoDados>'.$versao.'</versaoDados></nfeCabecMsg>';
         //montagem dos dados da mensagem SOAP
-        $dados = '<nfeDadosMsg xmlns="'.$namespace.'"><enviNFe xmlns="'.$this->URLPortal.'" versao="'.$versao.'"><idLote>'.$idLote.'</idLote>'.$sNFe.'</enviNFe></nfeDadosMsg>';
+        $dados = '<nfeDadosMsg xmlns="'.$namespace.'"><enviNFe xmlns="'.$this->URLPortal.'" versao="'.$versao.'"><idLote>'.$idLote.'</idLote><indSinc>0</indSinc>'.$sNFe.'</enviNFe></nfeDadosMsg>';
         //envia dados via SOAP
         if ($modSOAP == '2'){
             $retorno = $this->__sendSOAP2($urlservico, $namespace, $cabec, $dados, $metodo, $this->tpAmb);
@@ -1903,9 +1902,8 @@ class ToolsNFePHP
         }
         //verifica o retorno
         if ($retorno){
-            var_dump($retorno);
             //tratar dados de retorno
-            $doc = new DOMDocument('1.0', 'utf-8'); //cria objeto DOM
+            $doc = new DOMDocument('1.0', 'utf-8');
             $doc->formatOutput = false;
             $doc->preserveWhiteSpace = false;
             $doc->loadXML($retorno,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
@@ -2008,7 +2006,7 @@ class ToolsNFePHP
             if ($recibo != '' && $chave == '') {
                 //buscar os protocolos pelo numero do recibo do lote
                 //identificação do serviço
-                $servico = 'NfeRetRecepcao';
+                $servico = 'NfeRetAutorizacao';
                 //recuperação da versão
                 $versao = $aURL[$servico]['version'];
                 //recuperação da url do serviço
@@ -2016,7 +2014,7 @@ class ToolsNFePHP
                 //recuperação do método
                 $metodo = $aURL[$servico]['method'];
                 //montagem do namespace do serviço
-                $namespace = $this->URLPortal.'/wsdl/'.$servico.'2';
+                $namespace = $this->URLPortal.'/wsdl/'.$servico;
                 //montagem do cabeçalho da comunicação SOAP
                 $cabec = '<nfeCabecMsg xmlns="'.$namespace.'"><cUF>'.$cUF.'</cUF><versaoDados>'.$versao.'</versaoDados></nfeCabecMsg>';
                 //montagem dos dados da mensagem SOAP
@@ -2156,7 +2154,7 @@ class ToolsNFePHP
                                 $novoprot->formatOutput = true;
                                 $novoprot->preserveWhiteSpace = false;
                                 $pNFe = $novoprot->createElement("protNFe");
-                                $pNFe->setAttribute("versao", "2.00");
+                                $pNFe->setAttribute("versao", "3.10");
                                 // Importa o node e todo o seu conteudo
                                 $node = $novoprot->importNode($infProt, true);
                                 // acrescenta ao node principal
@@ -4885,11 +4883,10 @@ class ToolsNFePHP
 
    /**
     * __convertTime
-    * Converte o campo data time retornado pelo webservice
-    * em um timestamp unix
+    * Converte o campo data/hora retornado pelo webservice em um timestamp unix
     *
     * @name __convertTime
-    * @param    string   $DH
+    * @param    string   $DH Exemplo: "2014-03-28T14:39:54-03:00"
     * @return   timestamp
     */
     protected function __convertTime($DH)
@@ -4897,7 +4894,7 @@ class ToolsNFePHP
         if ($DH) {
             $aDH = explode('T', $DH);
             $adDH = explode('-', $aDH[0]);
-            $atDH = explode(':', $aDH[1]);
+            $atDH = explode(':', substr($aDH[1], 0, 8));//substring para recuperar apenas a hora, sem o fuso horário
             $timestampDH = mktime($atDH[0], $atDH[1], $atDH[2], $adDH[1], $adDH[2], $adDH[0]);
             return $timestampDH;
         }

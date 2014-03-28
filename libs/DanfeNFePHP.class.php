@@ -23,7 +23,7 @@
  *
  * @package     NFePHP
  * @name        DanfeNFePHP.class.php
- * @version     2.1.35
+ * @version     3.0.0
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2012 &copy; NFePHP
@@ -349,7 +349,8 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         //verifica se será impresso a linha dos serviços ISSQN
         $linhaISSQN = 0;
         if ( isset($this->ISSQNtot) ){
-            if ($this->ISSQNtot->getElementsByTagName("vServ")->item(0)->nodeValue > 0 ) {
+            //verifica com "isset" se o elemento "vServ" existe, pois é opcional
+            if (isset($this->ISSQNtot->getElementsByTagName("vServ")->item(0)->nodeValue) && $this->ISSQNtot->getElementsByTagName("vServ")->item(0)->nodeValue > 0 ) {
                 $linhaISSQN = 1;
             }
         }
