@@ -218,7 +218,7 @@ class CommonNFePHP
         $aMask = str_split($mascara);
         $z=0;
         $flag=false;
-        foreach ($aMask as $letra) 1{
+        foreach ($aMask as $letra) {
             if ($letra == '#') {
                 $z++;
             }
