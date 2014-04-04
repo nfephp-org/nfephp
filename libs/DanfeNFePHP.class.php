@@ -23,7 +23,7 @@
  *
  * @package     NFePHP
  * @name        DanfeNFePHP.class.php
- * @version     2.1.35
+ * @version     2.1.36
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2012 &copy; NFePHP
@@ -847,7 +847,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
                 $y1 = round($yImg + $nImgH + 1,0);
                 $tw = $w;
             }
-            $this->pdf->Image($this->logomarca, $xImg, $yImg, $nImgW, $nImgH, 'jpeg');
+            $this->pdf->Image($this->logomarca, $xImg, $yImg, $nImgW, $nImgH);
         } else {
             $x1 = $x;
             $y1 = round($h/3+$y,0);
