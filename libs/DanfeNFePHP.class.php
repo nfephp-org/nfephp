@@ -23,7 +23,7 @@
  *
  * @package     NFePHP
  * @name        DanfeNFePHP.class.php
- * @version     2.1.36
+ * @version     2.1.37
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2012 &copy; NFePHP
@@ -1435,9 +1435,9 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
             }
             $increm = 1;
             foreach ($this->dup as $k => $d) {
-                $nDup = $this->dup->item($k)->getElementsByTagName('nDup')->item(0)->nodeValue;
-                $dDup = $this->__ymd2dmy($this->dup->item($k)->getElementsByTagName('dVenc')->item(0)->nodeValue);
-                $vDup = 'R$ ' . number_format($this->dup->item($k)->getElementsByTagName('vDup')->item(0)->nodeValue, 2, ",", ".");
+                $nDup = !empty($this->dup->item($k)->getElementsByTagName('nDup')->item(0)->nodeValue) ? $this->dup->item($k)->getElementsByTagName('nDup')->item(0)->nodeValue : '';
+                $dDup = !empty($this->dup->item($k)->getElementsByTagName('dVenc')->item(0)->nodeValue) ? $this->__ymd2dmy($this->dup->item($k)->getElementsByTagName('dVenc')->item(0)->nodeValue) : '';
+                $vDup = !empty($this->dup->item($k)->getElementsByTagName('vDup')->item(0)->nodeValue) ? 'R$ ' . number_format($this->dup->item($k)->getElementsByTagName('vDup')->item(0)->nodeValue, 2, ",", ".") : '';
                 $h = 8;
                 $texto = '';
         	if($nDup!='0' && $nDup!=''){
