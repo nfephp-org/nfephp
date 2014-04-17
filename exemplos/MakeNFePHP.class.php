@@ -868,6 +868,7 @@ class MakeNFe
          foreach ($this->aImposto  as $key => $imp) {
                 $nItem = $key;  
                 $imp->appendChild($this->aICMS[$nItem]);      
+                $imp->appendChild($this->aPIS[$nItem]);      
             }
             
             // COLOCA TAG imposto dentro do DET
@@ -1263,8 +1264,32 @@ class MakeNFe
     }
     
     //tag det/imposto/PIS array de DOMNodes
-    public function tagPIS()
+    public function tagPIS(
+            $nItem = '',
+            $CST = '',
+            $vBC = '',
+            $pPIS = '',
+            $vPIS = '')
     {
+        
+      
+        
+        
+        $PISAliq = $this->dom->createElement('PISAliq');
+        
+        $this->addChild($PISAliq, 'CST', $CST);
+        $this->addChild($PISAliq, 'vBC', $vBC);
+        $this->addChild($PISAliq, 'pPIS', $pPIS);
+        $this->addChild($PISAliq, 'vPIS', $vPIS);
+        
+        $pis = $this->dom->createElement('PIS');
+          
+        $pis->appendChild($PISAliq);
+        
+        $this->aPIS[$nItem] = $pis;
+        
+        return $pis;
+        
         
     }
     
