@@ -263,9 +263,7 @@ class MakeNFe
         if (isset($this->aProd)) {
             $this->tagdet();
         }    
-        
-        
-        
+
         if (isset($this->aDet)) {
             foreach ($this->aDet as $det) {
                 
@@ -877,12 +875,8 @@ class MakeNFe
                 
                 $det->appendChild($this->aImposto[$det->getAttribute('nItem')]);
                 
-            }
-                
-            
-            
+            }    
     }
-
 
     //tag NFe/infNFe/det/prod array de DOMNodes
     public function tagprod(
@@ -1237,13 +1231,10 @@ class MakeNFe
             $this->addChild($ICMS, 'vICMS', $vICMS);
         
             $tagIcms = $this->dom->createElement('ICMS');
-            
             $tagIcms->appendChild($ICMS);
-            
             $this->aICMS[$nItem] = $tagIcms;
             
-            return $tagIcms;
-        
+            return $tagIcms; 
     }
 
     //tag det/imposto/IPI (opcional) array de DOMNodes
@@ -1270,12 +1261,8 @@ class MakeNFe
             $CST = '',
             $vBC = '',
             $pPIS = '',
-            $vPIS = '')
-    {
-        
-      
-        
-        
+            $vPIS = ''
+    ){
         $PISAliq = $this->dom->createElement('PISAliq');
         
         $this->addChild($PISAliq, 'CST', $CST);
@@ -1284,14 +1271,10 @@ class MakeNFe
         $this->addChild($PISAliq, 'vPIS', $vPIS);
         
         $pis = $this->dom->createElement('PIS');
-          
         $pis->appendChild($PISAliq);
-        
         $this->aPIS[$nItem] = $pis;
         
-        return $pis;
-        
-        
+        return $pis;   
     }
     
     //tag det/imposto/PISST (opcional) array de DOMNodes
@@ -1301,8 +1284,8 @@ class MakeNFe
             $CST = '',
             $vBC = '',
             $pCOFINS = '',
-            $vCOFINS = '')
-    {
+            $vCOFINS = ''
+    ){
         
          $COFINSAliq = $this->dom->createElement('COFINSAliq');
         
@@ -1317,8 +1300,7 @@ class MakeNFe
         
         $this->aCOFINS[$nItem] = $confins;
         
-        return $confins;
-        
+        return $confins;  
     }
     
     //tag det/imposto/COFINSST (opcional) array de DOMNodes
