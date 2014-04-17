@@ -263,11 +263,18 @@ class MakeNFe
         if (isset($this->aProd)) {
             $this->tagdet();
         }    
+        
+        
+        
         if (isset($this->aDet)) {
             foreach ($this->aDet as $det) {
                 
                 $this->infNFe->appendChild($det);
             }
+        }
+        
+        if(isset($this->aImposto) && isset($this->aDet)){
+           $this->tagImp();  
         }
         
         //tag NFe/infNFe/total
@@ -844,12 +851,36 @@ class MakeNFe
                 $det = $this->dom->createElement("det");
                 $nItem = $key;
                 $det->setAttribute("nItem", $nItem);
-                $det->appendChild($prod);
+                $det->appendChild($prod);             
                 $this->aDet[] = $det;
                 $det = null;
             }
         }
     }
+
+    //tag NFe/infNFe/det/imposto
+    /**
+     *  Insere dentro dentro das tags det os seus respectivos impostos
+     * 
+     */
+    public function tagImp()
+    {
+         foreach ($this->aImposto  as $key => $imp) {
+                $nItem = $key;  
+                $imp->appendChild($this->aICMS[$nItem]);      
+            }
+            
+            // COLOCA TAG imposto dentro do DET
+            foreach ($this->aDet as $det) {
+                
+                $det->appendChild($this->aImposto[$det->getAttribute('nItem')]);
+                
+            }
+                
+            
+            
+    }
+
 
     //tag NFe/infNFe/det/prod array de DOMNodes
     public function tagprod(
@@ -1158,10 +1189,11 @@ class MakeNFe
         $nItem = '',
         $orig = '',
         $CST = '',
+        $modBC = '',
         $vBC = '',
         $pICMS = '',
         $vICMS = ''
-    ) {
+    ) {   
         switch ($CST) {
             case '00':
                 $ICMS = $this->dom->createElement("ICMS00");
@@ -1192,10 +1224,24 @@ class MakeNFe
                 break;
             case '90':
                 $ICMS = $this->dom->createElement("ICMS40");
-                break;
-                
-            
+                break;  
         }
+        
+            $this->addChild($ICMS, 'orig', $orig);
+            $this->addChild($ICMS, 'CST', $CST);
+            $this->addChild($ICMS, 'modBC', $modBC);
+            $this->addChild($ICMS, 'vBC', $vBC);
+            $this->addChild($ICMS, 'pICMS', $pICMS);
+            $this->addChild($ICMS, 'vICMS', $vICMS);
+        
+            $tagIcms = $this->dom->createElement('ICMS');
+            
+            $tagIcms->appendChild($ICMS);
+            
+            $this->aICMS[$nItem] = $tagIcms;
+            
+            return $tagIcms;
+        
     }
 
     //tag det/imposto/IPI (opcional) array de DOMNodes
@@ -1235,7 +1281,7 @@ class MakeNFe
     //tag NFe/infNFe/total DOMNode
     public function tagtotal()
     {
-        if (isset($this->total)) {
+        if (!isset($this->total)) {
             $this->total = $this->dom->createElement("total");
         }
     }
