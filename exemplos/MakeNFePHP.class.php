@@ -262,7 +262,7 @@ class MakeNFe
         //tag NFe/infNFe/det
         if (isset($this->aProd)) {
             $this->tagdet();
-        }
+        }    
         if (isset($this->aDet)) {
             foreach ($this->aDet as $det) {
                 
@@ -749,7 +749,7 @@ class MakeNFe
         $this->addChild($this->enderDest, "xMun", $xMun);
         $this->addChild($this->enderDest, "UF", $UF);
         if ($CEP != '') {
-            $this->addChild($this->enderEmit, "CEP", $CEP);
+            $this->addChild($this->enderDest, "CEP", $CEP);
         }
         if ($cPais != '') {
             $this->addChild($this->enderDest, "cPais", $cPais);
@@ -839,7 +839,7 @@ class MakeNFe
     //tag NFe/infNFe/det array de DOMNodes
     public function tagdet()
     {
-        if (isset($this->aProd)) {
+        if (isset($this->aProd)) {  
             foreach ($this->aProd as $key => $prod) {
                 $det = $this->dom->createElement("det");
                 $nItem = $key;
