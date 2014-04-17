@@ -869,6 +869,7 @@ class MakeNFe
                 $nItem = $key;  
                 $imp->appendChild($this->aICMS[$nItem]);      
                 $imp->appendChild($this->aPIS[$nItem]);      
+                $imp->appendChild($this->aCOFINS[$nItem]);      
             }
             
             // COLOCA TAG imposto dentro do DET
@@ -1294,10 +1295,29 @@ class MakeNFe
     }
     
     //tag det/imposto/PISST (opcional) array de DOMNodes
-    
+      
     //tag det/imposto/COFINS array de DOMNodes
-    public function tagCOFINS()
+    public function tagCOFINS($nItem = '',
+            $CST = '',
+            $vBC = '',
+            $pCOFINS = '',
+            $vCOFINS = '')
     {
+        
+         $COFINSAliq = $this->dom->createElement('COFINSAliq');
+        
+        $this->addChild($COFINSAliq, 'CST', $CST);
+        $this->addChild($COFINSAliq, 'vBC', $vBC);
+        $this->addChild($COFINSAliq, 'pCOFINS', $pCOFINS);
+        $this->addChild($COFINSAliq, 'vCOFINS', $vCOFINS);
+        
+        $confins = $this->dom->createElement('COFINS');
+          
+        $confins->appendChild($COFINSAliq);
+        
+        $this->aCOFINS[$nItem] = $confins;
+        
+        return $confins;
         
     }
     
