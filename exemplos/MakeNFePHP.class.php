@@ -31,6 +31,10 @@
  * @copyright   2009-2014 &copy; NFePHP
  * @link        http://www.nfephp.org/
  * @author      Roberto L. Machado <linux.rlm at gmail dot com>
+ * 
+ *        CONTRIBUIDORES (em ordem alfabetica):
+ *              Marcos Balbi
+ * 
  */
 
 //namespace SpedPHP\NFe;
@@ -124,7 +128,7 @@ class MakeNFe
 
     public function montaNFe()
     {
-        //as tags deven ser montadas e inseridas umas nas outras de dentro para fora
+        //as tags devem ser montadas e inseridas umas nas outras de dentro para fora
         //tags em ordem de montagem por método:
         //                            Modelo 55                 Modelo 65
         //  1 - tag infNFe        Obrigatório               Obrigatório
@@ -266,7 +270,6 @@ class MakeNFe
 
         if (isset($this->aDet)) {
             foreach ($this->aDet as $det) {
-                
                 $this->infNFe->appendChild($det);
             }
         }
@@ -391,7 +394,6 @@ class MakeNFe
                 $this->cana->appendChild($deduc);
             }
         }
-        
         if (isset($this->cana)) {
             $this->infNFe->appendChild($this->cana);
         }
