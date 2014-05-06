@@ -1,46 +1,39 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>NFePHP - Nota fiscal eletrônica em PHP - gratuita e aberta</title>
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-    <script src="javascripts/main.js"></script>
-    <!--[if lt IE 9]>
-      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="NFePHP : Nota fiscal eletrônica em PHP - gratuita e aberta" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>NFePHP</title>
   </head>
+
   <body>
 
-      <header>
-        <h1>NFePHP</h1>
-        <p>Nota fiscal eletrônica em PHP - gratuita e aberta</p>
-      </header>
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/nfephp-org/nfephp">View on GitHub</a>
 
-      <div id="banner">
-        <span id="logo"></span>
+          <h1 id="project_title">NFePHP</h1>
+          <h2 id="project_tagline">Nota fiscal eletrônica em PHP - gratuita e aberta</h2>
 
-        <a href="https://github.com/nfephp-org/nfephp" class="button fork"><strong>Fork On GitHub</strong></a>
-        <div class="downloads">
-          <a href="https://github.com/nfephp-org/nfephp/tags" class="button"><strong>Downloads</strong></a>
-        </div>
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/nfephp-org/nfephp/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/nfephp-org/nfephp/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
 
-      </div><!-- end banner -->
-
-    <div class="wrapper">
-      <nav>
-        <ul></ul>
-      </nav>
-      <section>
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
         <blockquote>
-<p><strong>OBS</strong>: Talvez, antes de chegar aqui, você tenha encontrado o site <a href="http://www.assembla.com/spaces/nfephp/" target="_blank">http://www.assembla.com/spaces/nfephp/</a> e talvez você esteja se perguntando qual a diferença entre o NFePHP hospedado lá e o NFePHP hospedado aqui. Veja <a href="https://github.com/nfephp-org/nfephp/wiki/FAQ">nossa FAQ</a> para sanar esta dúvida.</p>
+<p><strong>OBS</strong>: Talvez, antes de chegar aqui, você tenha encontrado o site <a href="http://www.assembla.com/spaces/nfephp/">http://www.assembla.com/spaces/nfephp/</a> e talvez você esteja se perguntando qual a diferença entre o NFePHP hospedado lá e o NFePHP hospedado aqui. Veja <a href="https://github.com/nfephp-org/nfephp/wiki/FAQ">nossa FAQ</a> sanar está dúvida.</p>
 </blockquote>
-
-<h3>Sobre a NFePHP</h3>
 
 <p>O NFePHP é um projeto de software livre para Nota Fiscal Eletrônica. Na versão atual ele já realiza as principais tarefas relacionadas a NFe, tais como:</p>
 
@@ -49,23 +42,31 @@
 <li>Assinatura da nota utilizando certificado digital e-CNPJ e e-NFe A1 (em PHP nativo!);</li>
 <li>Envio e validação das notas em lotes por web services;</li>
 <li>Geração da DANFE;</li>
-</ul><h3>Documentação, download e instalação</h3>
+</ul><h3>
+<a name="documenta%C3%A7%C3%A3o-download-e-instala%C3%A7%C3%A3o" class="anchor" href="#documenta%C3%A7%C3%A3o-download-e-instala%C3%A7%C3%A3o"><span class="octicon octicon-link"></span></a>Documentação, download e instalação</h3>
 
 <p>Antes usar a NFePHP, recomendamos que você leia nossa documentação.</p>
 
 <ol>
-<li>Primeiras instruções: <a href="https://github.com/nfephp-org/nfephp/blob/master/README.md">https://github.com/nfephp-org/nfephp/blob/master/README.md</a>
+<li>Primeiras instruções: <a href="https://github.com/stavarengo/fake-nfephp/blob/master/README.md">https://github.com/stavarengo/fake-nfephp/blob/master/README.md</a>
 </li>
-<li>Nossa Wiki: <a href="https://github.com/nfephp-org/nfephp/wiki">https://github.com/nfephp-org/nfephp/wiki</a>
+<li>Nossa Wiki: <a href="https://github.com/stavarengo/fake-nfephp/wiki">https://github.com/stavarengo/fake-nfephp/wiki</a>
 </li>
-<li>Grupo de discussão do NFePHP: <a target="_blank" href="http://groups.google.com/group/nfephp">http://groups.google.com/group/nfephp</a>
+<li>Grupo de discussão do NFePHP: <a href="http://groups.google.com/group/nfephp">http://groups.google.com/group/nfephp</a>
 </li>
 </ol>
       </section>
-      <footer>
-        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="http://twitter.com/#!/michigangraham">mattgraham</a></small></p>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">NFePHP maintained by <a href="https://github.com/nfephp-org">nfephp-org</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
       </footer>
     </div>
-    <!--[if !IE]><script>fixScale(document);</script><!--<![endif]-->
+
+    
+
   </body>
 </html>
