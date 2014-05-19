@@ -27,7 +27,7 @@
  *
  * @package   NFePHP
  * @name      CTeNFePHP
- * @version   1.0.19
+ * @version   1.0.20
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; CTePHP
  * @link      http://www.nfephp.org/
@@ -478,7 +478,7 @@ class CTeNFePHP {
             'AL' => 'SVRS',
             'AM' => 'SVRS',
             'AP' => 'SVRS',
-            'BA' => 'BA',
+            'BA' => 'SVRS',
             'CE' => 'SVAN',
             'DF' => 'SVRS',
             'ES' => 'SVAN',

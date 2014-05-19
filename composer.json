@@ -31,8 +31,6 @@
         "ext-xmlreader": "*",
         "ext-curl": "*",
         "ext-soap": "*",
-        "ext-gd": "*",
-        "ext-mcrypt": "*",
         "ext-openssl": "*",
         "ext-zip": "*",
         "ext-zlib": "*",
@@ -40,10 +38,6 @@
         "ext-iconv": "*",
         "ext-mbstring": "*"
     },
-    "require-dev": {
-        "ext-xdebug": "*",
-        "phpunit/phpunit": "3.7.*"
-    },  
     "autoload": {
         "psr-0": {
             "NFePHP": "src"
