@@ -23,7 +23,7 @@
  *
  * @package   NFePHP
  * @name      install.php
- * @version   1.3.5
+ * @version   1.3.6
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2011 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -35,79 +35,78 @@
  * 
 **/
 if (!defined('PATH_NFEPHP')) {
-   define('PATH_NFEPHP', dirname( __FILE__ ));
+    define('PATH_NFEPHP', dirname(__FILE__));
 }
-error_reporting(E_ALL);ini_set('display_errors', 'On');
+error_reporting(E_ALL);
+ini_set('display_errors', 'On');
+
 require_once('config/config.php');
 require_once('libs/ToolsNFePHP.class.php');
 
-$installVer = '1.3.5';
+$installVer = '1.3.6';
 //cores
 $cRed = '#FF0000';
 $cGreen = '#00CC00';
 
 //versão do php
-$phpversion = str_replace('-','',substr(PHP_VERSION, 0, 6));
+$phpversion = str_replace('-', '', substr(PHP_VERSION, 0, 6));
 
 $phpver = convVer($phpversion);
-if ($phpver > '050200'){
+if ($phpver > '050200') {
     $phpcor = $cGreen;
 } else {
     $phpcor = $cRed;
 }
-
 //url
-$guessed_url = 'http://'.$_SERVER["SERVER_NAME"].$_SERVER["SCRIPT_NAME"];
-$guessed_url = rtrim(dirname($guessed_url), 'install');
-
+$guessedUrl = 'http://'.$_SERVER["SERVER_NAME"].$_SERVER["SCRIPT_NAME"];
+$guessed_url = rtrim(dirname($guessedUrl), 'install');
 //path
-$pathdir = dirname( __FILE__ );
+$pathdir = dirname(__FILE__);
 
 //teste dos modulos
 $modules = new moduleCheck();
 
-//curl
+//Testa modulo cURL
 $modcurl = false;
-if($modcurl = $modules->isLoaded('curl')) { // Testa se curl esta carregado
-  $modcurl_ver = $modules->getModuleSetting('curl', 'cURL Information'); // Get specific information about a setting in curl
-  $modcurl_ssl = $modules->getModuleSetting('curl', 'SSL Version');
+if ($modcurl = $modules->isLoaded('curl')) {
+    $modcurl_ver = $modules->getModuleSetting('curl', 'cURL Information');
+    $modcurl_ssl = $modules->getModuleSetting('curl', 'SSL Version');
 }
 $cCurl = $cRed;
 $curlver = ' N&atilde;o instalado !!!';
-if ($modcurl){
+if ($modcurl) {
     $curlver = convVer($modcurl_ver);
-    if($curlver > '071002'){
+    if ($curlver > '071002') {
         $curlver = ' vers&atilde;o ' . $modcurl_ver;
         $cCurl = $cGreen;
     }
 }
-
-//openssl
-$modssl = false;
-if( $modssl = $modules->isLoaded('openssl') ){
+//Testa modulo OpenSSL
+$modssl = $modules->isLoaded('openssl');
+if ($modssl) {
     $modssl_ver = $modules->getModuleSetting('openssl', 'OpenSSL Library Version');
     $modssl_enable = $modules->getModuleSetting('openssl', 'OpenSSL support');
 }
 $cSSL = $cRed;
 $sslver = ' N&atilde;o instalado !!!';
-if($modssl){
-    if($modssl_enable=='enabled'){
+if ($modssl) {
+    if ($modssl_enable=='enabled') {
         $cSSL = $cGreen;
         $sslver = $modssl_ver;
     }
 }
 
-//dom
-$moddom = false;
-if($moddom = $modules->isLoaded('dom')) { // Testa se curl esta carregado
-  $moddom_enable = $modules->getModuleSetting('dom', 'DOM/XML');
-  $moddom_libxml = $modules->getModuleSetting('dom', 'libxml Version');
+//Testa modulo DOM
+$moddom = $modules->isLoaded('dom');
+if ($moddom) {
+    $moddom_enable = $modules->getModuleSetting('dom', 'DOM/XML');
+    $moddom_libxml = $modules->getModuleSetting('dom', 'libxml Version');
 }
 $cDOM = $cRed;
 $domver = ' N&atilde;o instalado !!!';
-if ($modcurl){
+if ($moddom) {
     $domver = convVer($moddom_libxml);
-    if($domver > '020600' && $moddom_enable=='enabled' ){
+    if ($domver > '020600' && $moddom_enable=='enabled') {
         $domver = ' libxml vers&atilde;o ' . $moddom_libxml;
         $cDOM = $cGreen;
     } else {
@@ -115,76 +114,76 @@ if ($modcurl){
     }
 }
 
-//gd
-$modgd = false;
-if($modgd = $modules->isLoaded('gd')) { // Testa se gd esta carregado
-  $modgd_ver = $modules->getModuleSetting('gd', 'GD Version');
+//Testa modulo gd
+$modgd = $modules->isLoaded('gd');
+if ($modgd) {
+    $modgd_ver = $modules->getModuleSetting('gd', 'GD Version');
 }
 $cgd = $cRed;
 $gdver = ' N&atilde;o instalado !!!';
-if($modgd){
+if ($modgd) {
     $gdver = convVer($modgd_ver);
-    if($gdver  > '010101'){
+    if ($gdver  > '010101') {
         $cgd = $cGreen;
         $gdver = ' vers&atilde;o ' . $modgd_ver;
     }
 }
 
-//soap
-$modsoap = false;
-if($modsoap = $modules->isLoaded('soap')) { // Testa se curl esta carregado
-  $modsoap_enable = $modules->getModuleSetting('soap', 'Soap Client');
+//Testa modulo SOAP
+$modsoap = $modules->isLoaded('soap');
+if ($modsoap) {
+    $modsoap_enable = $modules->getModuleSetting('soap', 'Soap Client');
 }
 $cSOAP = $cRed;
 $soapver = ' N&atilde;o instalado !!!';
-if($modsoap){
-    if($modsoap_enable=='enabled'){
+if ($modsoap) {
+    if ($modsoap_enable=='enabled') {
         $cSOAP = $cGreen;
         $soapver = $modsoap_enable;
     }
 }
 
-//zip
-$modzip = false;
-if($modzip = $modules->isLoaded('zip')) { // Testa se zip esta carregado
-  $modzip_enable = $modules->getModuleSetting('zip', 'Zip');
-  $modzip_ver = $modules->getModuleSetting('zip', 'Zip version');
+//Testa modulo zip
+$modzip = $modules->isLoaded('zip');
+if ($modzip) {
+    $modzip_enable = $modules->getModuleSetting('zip', 'Zip');
+    $modzip_ver = $modules->getModuleSetting('zip', 'Zip version');
 }
 $cZIP = $cRed;
 $zipver = ' N&atilde;o instalado !!!';
-if($modzip){
-    if($modzip_enable=='enabled'){
+if ($modzip) {
+    if ($modzip_enable=='enabled') {
         $cZIP = $cGreen;
         $zipver = ' vers&atilde;o ' . $modzip_ver;
     }
 }
 
-//teste de escrita no diretorio dos certificados
+//Teste de escrita no diretorio dos certificados
 $filen = $pathdir.DIRECTORY_SEPARATOR.'certs'.DIRECTORY_SEPARATOR.'teste.txt';
 $cdCerts = $cRed;
 $wdCerts= ' Sem permiss&atilde;o !!';
-if ( file_put_contents($filen, "teste\r\n")){
+if (file_put_contents($filen, "teste\r\n")) {
     $cdCerts = $cGreen;
     $wdCerts= ' Permiss&atilde;o OK';
     unlink($filen);
 }
 
-//teste de escrita no diretorio do config
+//Teste de escrita no diretorio do config
 $filen = $pathdir.DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'teste.txt';
 $cdConf = $cRed;
 $wdConf= ' Sem permiss&atilde;o !!';
-if ( file_put_contents($filen, "teste\r\n")){
+if (file_put_contents($filen, "teste\r\n")) {
     $cdConf = $cGreen;
     $wdConf= ' Permiss&atilde;o OK';
     unlink($filen);
 }
 
-//teste de escrita no arquivo config/numloteenvio.xml e config/config.php
+//Teste de escrita no arquivo config/numloteenvio.xml e config/config.php
 $filen = $pathdir.DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'numloteenvio.xml';
-if (file_exists($filen)){
+if (file_exists($filen)) {
     //copia o conteudo
-    if ( $conteudo = file_get_contents($filen) ){
-        if (file_put_contents($filen, "teste\r\n")){
+    if ($conteudo = file_get_contents($filen)) {
+        if (file_put_contents($filen, "teste\r\n")) {
             file_put_contents($filen, $conteudo);
         } else {
             //falhou Sem permissão
@@ -194,11 +193,12 @@ if (file_exists($filen)){
     }
 }
 
+//Teste permissão de escrita em config
 $filen = $pathdir.DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'config.php';
-if (file_exists($filen)){
+if (file_exists($filen)) {
     //copia o conteudo
-    if ( $conteudo = file_get_contents($filen) ){
-        if (file_put_contents($filen, "teste\r\n")){
+    if ($conteudo = file_get_contents($filen)) {
+        if (file_put_contents($filen, "teste\r\n")) {
             file_put_contents($filen, $conteudo);
         } else {
             //falhou Sem permissão
@@ -208,7 +208,7 @@ if (file_exists($filen)){
     }
 }
 
-//teste do diretorio de arquivo dos xml NFe
+//Teste do diretorio de arquivo dos xml NFe
 $cDir = $cRed;
 $wdDir = 'FALHA';
 if (is_dir($arquivosDir)) {
@@ -226,10 +226,10 @@ if (is_dir($arquivosDir)) {
     $obsDir= " Diretório $arquivosDir n&atilde;o existe !!";
 }
 
-//teste do diretorio de arquivo dos xml CTe
+//Teste do diretorio de arquivo dos xml CTe
 $ccteDir = $cRed;
 $wctedDir = 'FALHA';
-if (isset($arquivosDirCTe)){
+if (isset($arquivosDirCTe)) {
     if (is_dir($arquivosDirCTe)) {
         if (mkdir($arquivosDirCTe. DIRECTORY_SEPARATOR . "teste", 0777)) {
             rmdir($arquivosDirCTe. DIRECTORY_SEPARATOR . "teste");
@@ -247,11 +247,12 @@ if (isset($arquivosDirCTe)){
 } else {
     $obscteDir= " Diretório CTe n&atilde;o especificado !!";
 }
-//verificação da validade do certificado
-$nfe = new ToolsNFePHP('',0);
-if ($nfe->certDaysToExpire > 0){
-    if($nfe->certDaysToExpire>365){
-        $dias = round($nfe->certDaysToExpire/10,0);
+
+//Verificação da validade do certificado
+$nfe = new ToolsNFePHP('', 0);
+if ($nfe->certDaysToExpire > 0) {
+    if ($nfe->certDaysToExpire>365) {
+        $dias = round($nfe->certDaysToExpire/10, 0);
     } else {
         $dias = $nfe->certDaysToExpire;
     }
@@ -260,8 +261,8 @@ if ($nfe->certDaysToExpire > 0){
     $certVal = "Certificado INV&Aacute;LIDO !!!";
 }
 
-//tipo de ambiente
-if($ambiente == 1){
+//Tipo de ambiente
+if ($ambiente == 1) {
     $selAmb2 = '';
     $selAmb1 = 'selected';
 } else {
@@ -269,22 +270,22 @@ if($ambiente == 1){
     $selAmb2 = 'selected';
 }
 
-//unidade da federação
+//Unidade da federação
 $aEstados = explode('.', 'AC.AL.AM.AP.BA.CE.DF.ES.GO.MA.MG.MS.MT.PA.PB.PE.PI.PR.RJ.RN.RO.RR.RS.SC.SE.SP.TO');
 foreach ($aEstados as $ufAux) {
-   if ($UF == $ufAux) {
-      $duf = "\$selUF{$ufAux} = \"".'selected=\"selected\"'."\";";
-   } else {
-      $duf = "\$selUF{$ufAux} = '';";
-   }
-   eval($duf);
+    if ($UF == $ufAux) {
+        $duf = "\$selUF{$ufAux} = \"".'selected=\"selected\"'."\";";
+    } else {
+        $duf = "\$selUF{$ufAux} = '';";
+    }
+    eval($duf);
 }
 
-//fontes básicas compiladas no FPDF
-$aFontes = explode('.','Times.Helvetica.Corrier');
+//Fontes básicas compiladas no FPDF
+$aFontes = explode('.', 'Times.Helvetica.Corrier');
 $i = 0;
 foreach ($aFontes as $f) {
-    if ($danfeFonte == $f){
+    if ($danfeFonte == $f) {
         $dfont = "\$selFont{$i} = \"".'selected=\"selected\"'."\";";
     } else {
         $dfont = "\$selFont{$i} = '';";
@@ -292,186 +293,198 @@ foreach ($aFontes as $f) {
     eval($dfont);
     $i++;
 }
-//danfe formato
-if ($danfeFormato=='P'){
+
+//Danfe formato
+if ($danfeFormato=='P') {
     $selFormP = 'selected';
     $selFormL = '';
 } else {
     $selFormL = 'selected';
     $selFormP = '';
 }
-//danfe canhoto
-if ($danfeCanhoto){
+
+//Danfe canhoto
+if ($danfeCanhoto) {
     $selCanh1 = 'selected';
     $selCanh0 = '';
 } else {
     $selCanh0 = 'selected';
     $selCanh1 = '';
 }
-//danfe posicao logo
-if ($danfeLogoPos == 'L'){
+
+//Danfe posicao logo
+if ($danfeLogoPos == 'L') {
     $seldposL = 'selected';
     $seldposC = '';
     $seldposR = '';
 }
-if ($danfeLogoPos == 'C'){
+if ($danfeLogoPos == 'C') {
     $seldposC = 'selected';
     $seldposL = '';
     $seldposR = '';
 }
-if ($danfeLogoPos == 'R'){
+if ($danfeLogoPos == 'R') {
     $seldposR = 'selected';
     $seldposC = '';
     $seldposL = '';
 }
-//dacte formato
-if ($dacteFormato=='P'){
+
+//Dacte formato
+if ($dacteFormato=='P') {
     $selcteFormP = 'selected';
     $selcteFormL = '';
 } else {
     $selcteFormL = 'selected';
     $selcteFormP = '';
 }
-//dacte canhoto
-if ($dacteCanhoto){
+
+//Dacte canhoto
+if ($dacteCanhoto) {
     $selcteCanh1 = 'selected';
     $selcteCanh0 = '';
 } else {
     $selcteCanh0 = 'selected';
     $selcteCanh1 = '';
 }
-//dacte posicao logo
-if ($dacteLogoPos == 'L'){
+
+//Dacte posicao logo
+if ($dacteLogoPos == 'L') {
     $selctedposL = 'selected';
     $selctedposC = '';
     $selctedposR = '';
 }
-if ($dacteLogoPos == 'C'){
+if ($dacteLogoPos == 'C') {
     $selctedposC = 'selected';
     $selctedposL = '';
     $selctedposR = '';
 }
-if ($dacteLogoPos == 'R'){
+if ($dacteLogoPos == 'R') {
     $selctedposR = 'selected';
     $selctedposC = '';
     $selctedposL = '';
 }
-//autenticação obrigatória
-if ($mailAuth == 1){
+
+//Autenticação obrigatória para email
+if ($mailAuth == 1) {
     $selMAuthS = 'selected';
     $selMAuthN = '';
 } else {
     $selMAuthN = 'selected';
     $selMAuthS = '';
 }
-if ($mailPROTOCOL == 'ssl'){
+if ($mailPROTOCOL == 'ssl') {
     $selMprotS = 'selected';
     $selMprotT = '';
     $selMprotN = '';
-}    
-if ($mailPROTOCOL == 'tls'){
+}
+if ($mailPROTOCOL == 'tls') {
     $selMprotT = 'selected';
     $selMprotS = '';
     $selMprotN = '';
 }
-if ($mailPROTOCOL == ''){
+if ($mailPROTOCOL == '') {
     $selMprotN = 'selected';
     $selMprotS = '';
     $selMprotT = '';
 }
-//função para padronização do numero de versões de 2.7.2 para 020702
-function convVer($ver){
+
+//Função para padronização do numero de versões de 2.7.2 para 020702
+function convVer($ver)
+{
     $ver = preg_replace('/[^\d.]/', '', $ver);
-    $aVer = explode('.',$ver);
+    $aVer = explode('.', $ver);
     $nver = str_pad($aVer[0], 2, "0", STR_PAD_LEFT) .
     str_pad(isset($aVer[1]) ? $aVer[1] : '', 2, "0", STR_PAD_LEFT) .
     str_pad(isset($aVer[2]) ? $aVer[2] : '', 2, "0", STR_PAD_LEFT);
     return $nver;
 }
 
-
 //classe de verificação dos modulos instalados no PHP
-class moduleCheck {
+class moduleCheck
+{
+    public $Modules;
 
-  public $Modules;
-
-  //function parseModules() {
-  function __construct() {
-   ob_start(); // Stop output of the code and hold in buffer
-   phpinfo(INFO_MODULES); // get loaded modules and their respective settings.
-   $data = ob_get_contents(); // Get the buffer contents and store in $data variable
-   ob_end_clean(); // Clear buffer
-
-   $data = strip_tags($data,'<h2><th><td>'); // Keep only the items in the <h2>,<th> and <td> tags
-
-   // Use regular expressions to filter out needed data
-   // Replace everything in the <th> tags and put in <info> tags
-   $data = preg_replace('/<th[^>]*>([^<]+)<\/th>/',"<info>\\1</info>",$data);
-
-   // Replace everything in <td> tags and put in <info> tags
-   $data = preg_replace('/<td[^>]*>([^<]+)<\/td>/',"<info>\\1</info>",$data);
-
-   // Split the data into an array
-   $vTmp = preg_split('/(<h2>[^<]+<\/h2>)/',$data,-1,PREG_SPLIT_DELIM_CAPTURE);
-   $vModules = array();
-   $count = count($vTmp);
-   for ($i=1;$i<$count; $i+=2) { // Loop through array and add 2 instead of 1
-
-    if (preg_match('/<h2>([^<]+)<\/h2>/',$vTmp[$i],$vMat)) { // Check to make sure value is a module
-
-     $moduleName = trim($vMat[1]); // Get the module name
-     $vTmp2 = explode("\n",$vTmp[$i+1]);
-     foreach ($vTmp2 AS $vOne) {
-       $vPat = '<info>([^<]+)<\/info>'; // Specify the pattern we created above
-       $vPat3 = "/$vPat\s*$vPat\s*$vPat/"; // Pattern for 2 settings (Local and Master values)
-       $vPat2 = "/$vPat\s*$vPat/"; // Pattern for 1 settings
-       if (preg_match($vPat3,$vOne,$vMat)) { // This setting has a Local and Master value
-         $vModules[$moduleName][trim($vMat[1])] = array(trim($vMat[2]),trim($vMat[3]));
-       } elseif (preg_match($vPat2,$vOne,$vMat)) { // This setting only has a value
-         $vModules[$moduleName][trim($vMat[1])] = trim($vMat[2]);
-       }
-     }
-
-    }
-   }
-   $this->Modules = $vModules; // Store modules in Modules variable
-  }
-
-  // Quick check if module is loaded
-  // Returns true if loaded, false if not
-  public function isLoaded($moduleName) {
-    if($this->Modules[$moduleName]) {
-      return true;
-    }
-    return false;
-  } // End function isLoaded
-
-  // Get a module setting
-  // Can be a single setting by specifying $setting value or all settings by not specifying $setting value
-  public function getModuleSetting($moduleName, $setting = '') {
-    // check if module is loaded before continuing
-    if($this->isLoaded($moduleName)==false) {
-      return 'Modulo não carregado'; // Module not loaded so return error
+    //function parseModules() {
+    public function __construct()
+    {
+        ob_start();
+        phpinfo(INFO_MODULES);
+        $data0 = ob_get_contents();
+        ob_end_clean();
+        $data1 = strip_tags($data0, '<h2><th><td>');
+        $data2 = preg_replace('/<th[^>]*>([^<]+)<\/th>/', "<info>\\1</info>", $data1);
+        $data = preg_replace('/<td[^>]*>([^<]+)<\/td>/', "<info>\\1</info>", $data2);
+        // Split the data into an array
+        $vTmp = preg_split('/(<h2>[^<]+<\/h2>)/', $data, -1, PREG_SPLIT_DELIM_CAPTURE);
+        $vModules = array();
+        $count = count($vTmp);
+        for ($i = 1; $i < $count; $i += 2) {
+            if (preg_match('/<h2>([^<]+)<\/h2>/', $vTmp[$i], $vMat)) {
+                $moduleName = trim($vMat[1]);
+                $vTmp2 = explode("\n", $vTmp[$i+1]);
+                foreach ($vTmp2 as $vOne) {
+                    $vPat = '<info>([^<]+)<\/info>';
+                    $vPat3 = "/$vPat\s*$vPat\s*$vPat/";
+                    $vPat2 = "/$vPat\s*$vPat/";
+                    if (preg_match($vPat3, $vOne, $vMat)) {
+                        $vModules[$moduleName][trim($vMat[1])] = array(trim($vMat[2]),trim($vMat[3]));
+                    } elseif (preg_match($vPat2, $vOne, $vMat)) {
+                        $vModules[$moduleName][trim($vMat[1])] = trim($vMat[2]);
+                    }
+                }
+            }
+        }
+        $this->Modules = $vModules;
     }
 
-    if($this->Modules[$moduleName][$setting]) { // You requested an individual setting
-      return $this->Modules[$moduleName][$setting];
-    } elseif(empty($setting)) { // List all settings
-      return $this->Modules[$moduleName];
+    /**
+     * Quick check if module is loaded
+     * Returns true if loaded, false if not
+     * 
+     * @param type $moduleName
+     * @return boolean
+     */
+    public function isLoaded($moduleName)
+    {
+        if ($this->Modules[$moduleName]) {
+            return true;
+        }
+        return false;
     }
-    // If setting specified and no value found return error
-    return 'Setting not found';
-  } // End function getModuleSetting
 
-  // List all php modules installed with no settings
-  public function listModules() {
-    foreach($this->Modules as $moduleName=>$values) { // Loop through modules
-      // $moduleName is the key of $this->Modules, which is also module name
-      $onlyModules[] = $moduleName;
+    /**
+     * Get a module setting
+     * Can be a single setting by specifying $setting value or all settings by not specifying $setting value
+     * @param type $moduleName
+     * @param type $setting
+     * @return string
+     */
+    public function getModuleSetting($moduleName, $setting = '')
+    {
+        // check if module is loaded before continuing
+        if ($this->isLoaded($moduleName)==false) {
+            return 'Modulo não carregado';
+        }
+        if ($this->Modules[$moduleName][$setting]) {
+            return $this->Modules[$moduleName][$setting];
+        } elseif (empty($setting)) {
+            return $this->Modules[$moduleName];
+        }
+        // If setting specified and no value found return error
+        return 'Setting not found';
     }
-    return $onlyModules; // Return array of all module names
-  } // End function listModules();
-}?>
+
+    // List all php modules installed with no settings
+    public function listModules()
+    {
+        foreach (array_keys($this->Modules) as $moduleName) {
+            // $moduleName is the key of $this->Modules, which is also module name
+            $onlyModules[] = $moduleName;
+        }
+        return $onlyModules;
+    }
+}
+?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
@@ -681,7 +694,7 @@ class moduleCheck {
             <tr>
               <td><div align="right">Path completo</div></td>
               <td><input name="caminho" type="text" id="caminho" value="<?php echo $pathdir;?>" size="30" maxlength="200"></td>
-              <td><i><?echo PATH_NFEPHP;?></i></td>
+              <td><i><?php echo PATH_NFEPHP;?></i></td>
             </tr>
             <tr>
               <td><div align="right">Diret&oacute;rio de arquivo das NFe</div></td>
@@ -707,7 +720,6 @@ class moduleCheck {
               <td><input name="schemacte" type="text" id="schemacte" value="<?php echo $schemesCTe;?>" size="30" maxlength="200"></td>
               <td><i>Indique a versão do schema CTe (veja pasta schemes)</i></td>
             </tr>
-
             <tr bgcolor="#999999">
               <td colspan="3"><strong>Configura&ccedil;&atilde;o do DANFE</strong></td>
             </tr>

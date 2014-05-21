@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   4.0.0
+ * @version   3.0.78
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -4471,7 +4471,7 @@ class ToolsNFePHP
             $txtInfo .= "Upload Content Length=$info[upload_content_length]\n";
             $txtInfo .= "Start Transfer Time=$info[starttransfer_time]\n";
             $txtInfo .= "Redirect Time=$info[redirect_time]\n";
-            $txtInfo .= "Certinfo=$info[certinfo]\n";
+            $txtInfo .= "Certinfo=".print_r($info['certinfo'], true)."\n";
             $n = strlen($__xml);
             $x = stripos($__xml, "<");
             if ($x !== false){

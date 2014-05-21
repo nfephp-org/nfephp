@@ -31,7 +31,7 @@
  * @author    Roberto L. Machado <linux.rlm@gmail.com>
  * @copyright 2009-2013 &copy; NFePHP
  * @license   GNU/GPL v.3 or GNU/LGPL v.3
- * @version   GIT: 1.2.13
+ * @version   GIT: 1.2.14
  * @link      http://www.nfephp.org/
  *
  *        CONTRIBUIDORES (por ordem alfabetica):
@@ -1694,11 +1694,9 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
     {
         $oldX = $x;
         $oldY = $y;
-        if ($this->orientacao == 'P')
-        {
+        if ($this->orientacao == 'P') {
             $maxW = $this->wPrint;
-        } else
-        {
+        } else {
             $maxW = $this->wPrint - $this->wCanhoto;
         }
         $w = $maxW;
@@ -1864,8 +1862,8 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
             'style' => '');
         $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $texto = $this->__simpleGetValue($this->infQ->item(2), "tpMed") . "\r\n";
-        $texto .= number_format($this->__simpleGetValue($this->infQ->item(2), "qCarga") / $this->multiUniPeso($this->__simpleGetValue($this->infQ->item(2),
-            "cUnid")), 3, ".", "");
+        $qCarga = $this->__simpleGetValue($this->infQ->item(2), "qCarga");
+        $texto .= !empty($qCarga) ? number_format($qCarga / $this->multiUniPeso($this->__simpleGetValue($this->infQ->item(2),"cUnid")), 3, ".", "") : '';
         $texto = $this->__simpleGetValue($this->infQ->item(2), "qCarga") == '' ? '' : $texto;
         $texto .= ' ' . $this->unidade($this->__simpleGetValue($this->infQ->item(2), "cUnid"));
         $aFont = array(
@@ -1878,11 +1876,10 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $texto = 'CUBAGEM(M3)';
         $aFont = $this->formatPadrao;
         $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
-        if ($this->__simpleGetValue($this->infQ->item(0), "cUnid") == '00')
-        {
-            $texto = number_format($this->__simpleGetValue($this->infQ->item(0), "qCarga"), 3, ",", ".");
-        } else
-        {
+        if ($this->__simpleGetValue($this->infQ->item(0), "cUnid") == '00') {
+            $qCarga = $this->__simpleGetValue($this->infQ->item(0), "qCarga");
+            $texto = !empty($qCarga) ? number_format($qCarga, 3, ",", ".") : '';
+        } else {
             $texto = '';
         }
         $aFont = array(
@@ -1895,7 +1892,8 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $texto = 'QTDE(VOL)';
         $aFont = $this->formatPadrao;
         $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
-        $texto = number_format($this->__simpleGetValue($this->infQ->item(3), "qCarga"), 3, ",", ".");
+        $qCarga = $this->__simpleGetValue($this->infQ->item(3), "qCarga");
+        $texto = !empty($qCarga) ? number_format($qCarga, 3, ",", ".") : '';
         $aFont = array(
             'font' => $this->fontePadrao,
             'size' => 7,
