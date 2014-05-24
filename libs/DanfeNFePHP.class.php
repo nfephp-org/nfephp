@@ -23,7 +23,7 @@
  *
  * @package     NFePHP
  * @name        DanfeNFePHP.class.php
- * @version     2.1.38
+ * @version     2.1.39
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2012 &copy; NFePHP
@@ -347,8 +347,10 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         }
         //verifica se será impresso a linha dos serviços ISSQN
         $linhaISSQN = 0;
-        if ( isset($this->ISSQNtot) ){
-            if ($this->ISSQNtot->getElementsByTagName("vServ")->item(0)->nodeValue > 0 ) {
+        if (isset($this->ISSQNtot)) {
+            $itemTemp = !empty($this->ISSQNtot->getElementsByTagName("vServ")->item(0)->nodeValue) ?
+                    $this->ISSQNtot->getElementsByTagName("vServ")->item(0)->nodeValue : 0;
+            if ($itemTemp > 0) {
                 $linhaISSQN = 1;
             }
         }
@@ -2298,7 +2300,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $texto = 'VALOR TOTAL DO ISSQN';
         $aFont = array('font'=>$this->fontePadrao,'size'=>6,'style'=>'');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',1,'');
-        if ( isset($this->ISSQNtot) ){
+        if (isset($this->ISSQNtot)) {
             $texto = !empty($this->ISSQNtot->getElementsByTagName("vISS")->item(0)->nodeValue) ? $this->ISSQNtot->getElementsByTagName("vISS")->item(0)->nodeValue : '';
             $texto = !empty($texto) ? number_format($texto, 2, ",", ".") : '';
         } else {
