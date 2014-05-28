@@ -22,14 +22,14 @@
  *
  * Está atualizada para :
  *      PHP 5.3
- *      Versão 2 dos webservices da SEFAZ com comunicação via SOAP 1.2
+ *      Versão 3.10 dos webservices da SEFAZ com comunicação via SOAP 1.2
  *      e conforme Manual de Integração Versão 5
  *
  * Atenção: Esta classe não mantêm a compatibilidade com a versão 2.00 da SEFAZ !!!
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.0.79
+ * @version   3.0.80-alpha
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -73,7 +73,7 @@
  */
 //define o caminho base da instalação do sistema
 if (!defined('PATH_ROOT')) {
-    define('PATH_ROOT', dirname(dirname(FILE)).DIRECTORY_SEPARATOR);
+    define('PATH_ROOT', dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR);
 }
 
 require_once('ExceptionNFePHP.class.php');
@@ -196,12 +196,6 @@ class ToolsNFePHP
      */
     public $conDir='';
     /**
-     * libsDir
-     * Diretorios onde estão as bibliotecas e outras classes
-     * @var string
-     */
-    public $libsDir='';
-    /**
      * certsDir
      * Diretorio onde estão os certificados
      * @var string
@@ -222,44 +216,46 @@ class ToolsNFePHP
     public $xsdDir='';
     /**
      * xmlURLfile
-     * Arquivo XML com as URLs dos webservices das SEFAZ de todos dos Estados e demais ambientes como AN, virtuais, etc.
+     * Arquivo XML com as URLs dos webservices das SEFAZ de todos dos Estados e
+     * demais ambientes como AN, virtuais, etc.
      * @var string
-     * @see /config/nfe_ws2.xml (arquivo antigo) ou /config/nfe_ws3.xml (arquivo novo, layout 3.10 da NF-e)
+     * @see /config/nfe_ws3_modXX.xml (arquivo novo, layout 3.10 da NF-e, onde
+     * "XX" é o modelo da NF-e, "55" ou "65")
      */
-    public $xmlURLfile='nfe_ws3.xml';
+    public $xmlURLfile='nfe_ws3_mod55.xml';
     /**
      * enableSCAN
      * Habilita contingência ao serviço SCAN ao invés do webservice estadual
      * @var boolean
      */
-    public $enableSCAN=false;
+    public $enableSCAN = false;
     /**
      * enableDEPC
      * Habilita contingência por serviço DPEC ao invés do webservice estadual
      * @var boolean
      */
-    public $enableDPEC=false;
+    public $enableDPEC = false;
     /**
      * enableSVAN
-     * Indica o acesso ao serviço SVAN
+     * Indica o acesso ao serviço SVAN: Sefaz Virtual Ambiente Nacional
      * @var boolean
      */
     public $enableSVAN = false;
     /**
      * enableSVRS
-     * Indica o acesso ao serviço SVRS
+     * Indica o acesso ao serviço SVRS: Sefaz Virtual Rio Grande do Sul
      * @var boolean
      */
     public $enableSVRS = false;
     /**
      * enableSVCRS
-     * Habilita contingência ao serviço SVCRS ao invés do webservice estadual
+     * Habilita contingência ao serviço SVC-RS: Sefaz Virtual de Contingência Rio Grande do Sul
      * @var boolean
      */
     public $enableSVCRS = false;
     /**
      * enableSVCAN
-     * Habilita contingência ao serviço SVCAN ao invés do webservice estadual
+     * Habilita contingência ao serviço SVC-AN: Sefaz Virtual de Contingência Ambiente Nacional
      * @var boolean
      */
     public $enableSVCAN = false;
@@ -385,7 +381,7 @@ class ToolsNFePHP
     private $anoMes='';
     /**
      * aURL
-     * Array com as url dos webservices
+     * Array com as URLs dos webservices da SEFAZ
      * @var array
      */
     public $aURL='';
@@ -486,13 +482,13 @@ class ToolsNFePHP
     private $URLPortal='http://www.portalfiscal.inf.br/nfe';
     /**
      * aliaslist
-     * Lista dos aliases para os estados que usam o SEFAZ VIRTUAL
+     * Lista dos aliases para os estados que usam SEFAZ própria ou virtual
      * @var array
      */
-    private $aliaslist = array('AC'=>'SVRS',
+    private $aliaslist = array(//estados do Brasil em ordem alfabética
+                               'AC'=>'SVRS',
                                'AL'=>'SVRS',
                                'AM'=>'AM',
-                               'AN'=>'AN',
                                'AP'=>'SVRS',
                                'BA'=>'BA',
                                'CE'=>'CE',
@@ -517,12 +513,14 @@ class ToolsNFePHP
                                'SE'=>'SVRS',
                                'SP'=>'SP',
                                'TO'=>'SVRS',
-                               'SCAN'=>'SCAN',
+                               //demais autorizadores do projeto NF-e
                                'SVAN'=>'SVAN',
                                'SVRS'=>'SVRS',
-                               'SVCAN'=>'SVSAN',
+                               'SCAN'=>'SCAN',
+                               'SVCAN'=>'SVCAN',
                                'SVCRS'=>'SVCRS',
-                               'DPEC'=>'DPEC');
+                               'DPEC'=>'DPEC',  // TODO 28/05/14 fmertins: candidato a ser excluído, ver método "envDPEC()"
+                               'AN'=>'AN');
     /**
      * cUFlist
      * Lista dos numeros identificadores dos estados
@@ -701,9 +699,10 @@ class ToolsNFePHP
      * Este metodo pode estabelecer as configurações a partir do arquivo config.php ou
      * através de um array passado na instanciação da classe.
      *
-     * @param array $aConfig Opcional dados de configuração
-     * @param number $mododebug Opcional 2-Não altera nenhum parâmetro 1-SIM ou 0-NÃO (2 default)
-     * @return  boolean true sucesso false Erro
+     * @param array   $aConfig   Opcional dados de configuração
+     * @param integer $mododebug Opcional 2-Não altera nenhum parâmetro 1-SIM ou 0-NÃO (2 default)
+     * @param boolean $exceptions Opcional Utilize true para gerar exceções
+     * @return boolean true sucesso false Erro
      */
     function __construct($aConfig = '', $mododebug = 2, $exceptions = false)
     {
@@ -724,7 +723,7 @@ class ToolsNFePHP
             $this->exceptions = true;
         }
         //obtem o path da biblioteca
-        $this->raizDir = dirname(dirname(FILE)).DIRECTORY_SEPARATOR;
+        $this->raizDir = dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR;
         //verifica se foi passado uma matriz de configuração na inicialização da classe
         if (is_array($aConfig)) {
             $this->tpAmb=$aConfig['ambiente'];
@@ -779,8 +778,8 @@ class ToolsNFePHP
                 $this->tpAmb = $ambiente;
                 //carrega as propriedades da classe com as configurações
                 $this->empName = $empresa;
-                $this->siglaUF = $siglaUF;
-                $this->cUF = $this->cUFlist[$siglaUF];
+                $this->siglaUF = $UF;
+                $this->cUF = $this->cUFlist[$UF];
                 $this->cnpj = $cnpj;
                 $this->certName = $certName;
                 $this->keyPass = $keyPass;
@@ -921,19 +920,24 @@ class ToolsNFePHP
         if (!is_dir($this->pdfDir)) {
             mkdir($this->pdfDir, 0777);
         }
-        //carregar uma matriz com os dados para acesso aos WebServices SEFAZ
-        $this->aURL = $this->loadSEFAZ(
-            $this->raizDir.'config'.DIRECTORY_SEPARATOR.$this->xmlURLfile,
-            $this->tpAmb,
-            $this->siglaUF
-        );
+        //carrega um array com os dados para acesso aos WebServices SEFAZ
+        $xmlURLfile = $this->raizDir.'config'.DIRECTORY_SEPARATOR.$this->xmlURLfile;
+        if (!$this->aURL = $this->loadSEFAZ($xmlURLfile, $this->tpAmb, $this->siglaUF)) {
+            $msg = "Erro no carregamento das informacoes da SEFAZ: $this->errMsg";
+            $this->setError($msg);
+            if ($this->exceptions) {
+                throw new nfephpException($msg);
+            }
+            return false;
+        }
         //se houver erro no carregamento dos certificados passe para erro
-        if (! $this->loadCerts()) {
+        if (!$this->loadCerts()) {
             $msg = "Erro no carregamento dos certificados.";
             $this->setError($msg);
             if ($this->exceptions) {
                 throw new nfephpException($msg);
             }
+            return false;
         }
         //definir o timezone default para o estado do emitente
         $timezone = $this->tzUFlist[$this->siglaUF];
@@ -3798,7 +3802,7 @@ class ToolsNFePHP
     /**
      * envDPEC
      * Apenas para teste não funcional
-     *
+     * TODO 28/05/14 fmertins: este método é candidato a ser excluído
      */
     public function envDPEC($aNFe = '', $tpAmb = '')
     {
@@ -4103,49 +4107,44 @@ class ToolsNFePHP
      * @param  string $sUF       Sigla da Unidade da Federação (ex. SP, RS, etc..)
      * @return mixed             false se houve erro ou array com os dados dos URLs da SEFAZ
      */
-    public function loadSEFAZ($spathXML, $tpAmb = '', $sUF = '')
+    protected function loadSEFAZ($spathXML, $tpAmb = '', $sUF = '')
     {
         try {
             //verifica se o arquivo xml pode ser encontrado no caminho indicado
-            if (file_exists($spathXML)) {
-                //carrega o xml
-                $xml = simplexml_load_file($spathXML);
-            } else {
-                //sai caso não possa localizar o xml
-                $msg = "O arquivo xml não pode ser encontrado no caminho indicado $spathXML.";
-                throw new nfephpException($msg);
+            if (!file_exists($spathXML)) {
+                throw new nfephpException("O arquivo XML \"$spathXML\" nao foi encontrado");
             }
-            $aUrl = null;
+            //carrega o xml
+            if (!$xmlWS = simplexml_load_file($spathXML)) {
+               throw new nfephpException("O arquivo XML \"$spathXML\" parece ser invalido");
+            }
+            //variável de retorno do método
+            $aUrl = array();
             //testa parametro tpAmb
             if ($tpAmb == '') {
                 $tpAmb = $this->tpAmb;
-            }
-            if ($tpAmb == '1') {
+            } else if ($tpAmb == '1') {
                 $sAmbiente = 'producao';
             } else {
                 //força homologação em qualquer outra situação
                 $tpAmb = '2';
                 $sAmbiente = 'homologacao';
             }
-            //extrai a variável cUF do lista
+            //extrai a variável cUF da lista
+            if (!isset($this->aliaslist[$sUF])) {
+               throw new nfephpException("UF \"$sUF\" nao encontrada na lista de alias");
+            }
             $alias = $this->aliaslist[$sUF];
+            //verifica se deve habilitar SVAN ou SVRS (ambos por padrão iniciam desabilitados)
             if ($alias == 'SVAN') {
                 $this->enableSVAN = true;
-            } else {
-                $this->enableSVAN = false;
-            }
-            if ($alias == 'SVRS') {
+            } else if ($alias == 'SVRS') {
                 $this->enableSVRS = true;
-            } else {
-                $this->enableSVRS = false;
             }
             //estabelece a expressão xpath de busca
-            //busca por padrão o modelo "55" - 
-            //TODO 20/MAR FERNANDO: talvez refatorar informando qual modelo usar, 
-            //55 ou 65?
-            $xpathExpression = "/WS/NFe[@modelo='55']/UF[sigla='$alias']/$sAmbiente";
+            $xpathExpression = "/WS/$alias/$sAmbiente";
             //para cada "nó" no xml que atenda aos critérios estabelecidos
-            foreach ($xml->xpath($xpathExpression) as $gUF) {
+            foreach ($xmlWS->xpath($xpathExpression) as $gUF) {
                 //para cada "nó filho" retonado
                 foreach ($gUF->children() as $child) {
                     $u = (string) $child[0];
@@ -4159,12 +4158,9 @@ class ToolsNFePHP
             }
             //verifica se existem outros serviços exclusivos para esse estado
             if ($alias == 'SVAN' || $alias == 'SVRS') {
-                //busca por padrão o modelo "55" - 
-                //TODO 20/MAR FERNANDO: talvez refatorar informando qual 
-                //modelo usar, 55 ou 65?
                 $xpathExpression = "/WS/NFe[@modelo='55']/UF[sigla='$sUF']/$sAmbiente";
                 //para cada "nó" no xml que atenda aos critérios estabelecidos
-                foreach ($xml->xpath($xpathExpression) as $gUF) {
+                foreach ($xmlWS->xpath($xpathExpression) as $gUF) {
                     //para cada "nó filho" retonado
                     foreach ($gUF->children() as $child) {
                         $u = (string) $child[0];

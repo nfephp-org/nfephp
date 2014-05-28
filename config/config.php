@@ -21,13 +21,13 @@
  *
  * Está atualizada para:
  *      PHP 5.3
- *      Versão 2 dos webservices da SEFAZ com comunicação via SOAP 1.2
- *      e conforme Manual de Integração Versão 4.0.1 NT2009.006 Dezembro 2009
+ *      Versão 3.10 dos webservices da SEFAZ com comunicação via SOAP 1.2
+ *      e conforme Manual de Integração Versão 5
  *
  * @package   NFePHP
  * @name      config.php
  * @abstract  Definições dos parâmetros do sistema.
- * @version   2.49
+ * @version   2.50
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2011 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -51,10 +51,10 @@ error_reporting(0);
 // contato com o SEFAZ.
 $ambiente=2;
 
-// esta variável contêm o nome do arquivo com todas as url dos webservices do sefaz
-// incluindo a versao dos mesmos, pois alguns estados não estão utilizando as
-// mesmas versões
-$arquivoURLxml='nfe_ws2.xml';
+// Nomes dos arquivos com todas as URLs dos webservices do SEFAZ incluindo a
+// versão dos mesmos, pois alguns estados não estão utilizando as mesmas versões
+// Para NF-e utiliza por padrão o arquivo do modelo "55"
+$arquivoURLxml='nfe_ws3_mod55.xml';
 $arquivoURLxmlCTe="cte_ws1.xml";
 
 // Diretório onde serão mantidos os arquivos com as NFe em xml
@@ -68,7 +68,7 @@ $arquivosDirCTe="/var/www/cte";
 $baseurl='http://localhost/nfephp';
 
 // Versão em uso dos shemas utilizados para validação dos xmls
-$schemes='PL_006n';
+$schemes='PL_008c';
 $schemesCTe="PL_CTE_104";
 
 //###############################
@@ -78,14 +78,12 @@ $schemesCTe="PL_CTE_104";
 $empresa='Sua Razao Social Aqui (sem acentos ou simbolos)';
 //Sigla da UF
 $UF='SP';
-//Código da UF
-$cUF='35';
 //Número do CNPJ
 $cnpj='1234567890001';
 
-//###############################
-//#### CERITIFICADO DIGITAL #####
-//###############################
+//##############################
+//#### CERTIFICADO DIGITAL #####
+//##############################
 //Nome do certificado que deve ser colocado na pasta certs da API
 $certName='certificado_teste.pfx';
 //Senha da chave privada
