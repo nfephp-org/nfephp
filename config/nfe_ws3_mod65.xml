@@ -1,11 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!--
+ATENÇÃO! Este é o XML dos endereços dos webservices da NFC-e (NF-e modelo 65) layout "3.10",
+portanto é incompatível com a versão "2.00" do layout da NF-e, prevista para ser desativada
+em 01/12/2014.
+
+HISTÓRICO DE VERSÕES DESTE XML
+==============================
+
+Versão AAAA-MM-DD: bla bla bla
+Versão 2014-05-27: criação inicial do arquivo
+-->
+
 <WS xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-
-<!-- *** ATENÇÃO! Este é o XML dos endereços dos webservices da NFC-e (NF-e modelo 65), layout "3.10" -->
-
-<!-- HISTÓRICO DE VERSÕES DESTE XML: -->
-<!-- Versão AAAA-MM-DD: bla bla bla -->
-<!-- Versão 2014-05-27: criação inicial do arquivo -->
 
   <!-- LISTA DOS ESTADOS DO BRASIL COM SEFAZ AUTORIZADORA PRÓPRIA -->
 

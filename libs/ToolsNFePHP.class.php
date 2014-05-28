@@ -1931,23 +1931,22 @@ class ToolsNFePHP
     } //fim consultaCadastro
 
     /**
-     * sendLot
-     * Envia lote de Notas Fiscais para a SEFAZ.
-     * Este método pode enviar uma ou mais NFe para o SEFAZ, desde que,
-     * o tamanho do arquivo de envio não ultrapasse 500kBytes
-     * Este processo enviará somente até 50 NFe em cada Lote
+     * autoriza
+     * Envia NFe para a SEFAZ autorizar.
+     * ATENÇÃO! Este é o antigo método "sendLot()" que enviava lotes de NF-e versão "2.00"
+     * consumindo o WS "NfeRecepcao2", agora este método está preparado apenas para a versão
+     * "3.10" e por isso utiliza o WS "NfeAutorizacao" sempre em modo síncrono.
      *
-     * @name sendLot
+     * @name autoriza
      * @package NFePHP
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
-     * @param  mixed    $mNFe string com uma nota fiscal em xml ou um array com as NFe em xml, uma em cada campo do array unidimensional MAX 50
-     * @param   integer $idLote     id do lote e um numero que deve ser gerado pelo sistema
-     *                          a cada envio mesmo que seja de apenas uma NFe
+     * @param  string  $sxml   string com uma nota fiscal em xml
+     * @param  integer $idLote id do lote e um numero (numeração sequencial)
      * @return mixed false ou array 
      * ['bStat'=>false,'cStat'=>'','xMotivo'=>'','dhRecbto'=>'','nRec'=>''
      * ,'tMed'=>'','tpAmb'=>'','verAplic'=>'','cUF'=>'']
      */
-    public function sendLot($mNFe, $idLote)
+    public function autoriza($sxml, $idLote)
     {
         //variavel de retorno do metodo
         $aRetorno = array(
@@ -1959,7 +1958,8 @@ class ToolsNFePHP
             'tMed'=>'',
             'tpAmb'=>'',
             'verAplic'=>'',
-            'cUF'=>'');
+            'cUF'=>'',
+            'protNFe');
         //verifica se o SCAN esta habilitado
         if (!$this->enableSCAN) {
             $aURL = $this->aURL;
@@ -1980,32 +1980,18 @@ class ToolsNFePHP
         $metodo = $aURL[$servico]['method'];
         //montagem do namespace do serviço
         $namespace = $this->URLPortal.'/wsdl/'.$servico;
-        // limpa a variavel
-        $sNFe = '';
-        if (empty($mNFe)) {
-            $msg = "Pelo menos uma NFe deve ser passada no parâmetro!!";
+        //valida o parâmetro da string do XML da NF-e
+        if (empty($sxml) || !simplexml_load_string($sxml)) {
+            $msg = "XML de NF-e para autorizacao recebido no parametro parece invalido, verifique";
             $this->setError($msg);
             if ($this->exceptions) {
                 throw new nfephpException($msg);
             }
             return false;
         }
-        if (is_array($mNFe)) {
-            // verificar se foram passadas até 50 NFe
-            if (count($mNFe) > 50) {
-                $msg = "No maximo 50 NFe devem compor um lote de envio!!";
-                $this->setError($msg);
-                if ($this->exceptions) {
-                    throw new nfephpException($msg);
-                }
-                return false;
-            }
-            // monta string com todas as NFe enviadas no array
-            $sNFe = implode('', $mNFe);
-        } else {
-            $sNFe = $mNFe;
-        }
-        //remover <?xml version="1.0" encoding=... das NFe pois somente uma dessas tags pode existir na mensagem
+        // limpa a variavel
+        $sNFe = $sxml;
+        //remove <?xml version="1.0" encoding=... e demais caracteres indesejados
         $sNFe = preg_replace("/<\?xml.*\?>/", "", $sNFe);
         $sNFe = str_replace(array("\r","\n","\s"), "", $sNFe);
         //montagem do cabeçalho da comunicação SOAP
@@ -2014,10 +2000,11 @@ class ToolsNFePHP
         //montagem dos dados da mensagem SOAP
         $dados = '<nfeDadosMsg xmlns="'.$namespace.'"><enviNFe xmlns="'
                 .$this->URLPortal.'" versao="'.$versao.'"><idLote>'
-                .$idLote.'</idLote><indSinc>0</indSinc>'
+                .$idLote.'</idLote><indSinc>1</indSinc>'
                 .$sNFe.'</enviNFe></nfeDadosMsg>';
         //envia dados via SOAP
         $retorno = $this->sendSOAP($urlservico, $namespace, $cabec, $dados, $metodo, $this->tpAmb);
+        var_dump($retorno);   // TODO 28/05/14 fmertins: remover mais adiante, por enquanto apenas para fins de debug
         //verifica o retorno
         if ($retorno) {
             //tratar dados de retorno
@@ -2075,7 +2062,7 @@ class ToolsNFePHP
             $aRetorno = false;
         }
         return $aRetorno;
-    }// fim sendLot
+    }// fim autoriza
 
     /**
      * getProtocol
@@ -4511,15 +4498,8 @@ class ToolsNFePHP
      * @param string $siglaUF sem uso mantido apenas para compatibilidade com sendSOAP
      * @return mixed false se houve falha ou o retorno em xml do SEFAZ
      */
-    protected function sendSOAP(
-        $urlsefaz,
-        $namespace,
-        $cabecalho,
-        $dados,
-        $metodo,
-        $ambiente = '',
-        $siglaUF = ''
-    ) {
+    protected function sendSOAP($urlsefaz, $namespace, $cabecalho, $dados, $metodo, $ambiente = '', $siglaUF = '')
+    {
         try {
             if ($urlsefaz == '') {
                 $msg = "URL do webservice não disponível no arquivo xml das URLs da SEFAZ.";
