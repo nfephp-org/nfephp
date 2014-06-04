@@ -1,2 +1,6 @@
 nbproject
 *~
+vendor
+/.project
+/.buildpath
+/.settings/

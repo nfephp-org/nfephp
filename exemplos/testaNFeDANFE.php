@@ -5,7 +5,7 @@
 require_once('../libs/DanfeNFePHP.class.php');
 
 //$arq = $_GET['nfe'];
-$arq = './35101158716523000119550010000000011003000000-nfe.xml';
+$arq = 'xml/35101158716523000119550010000000011003000000-nfe.xml';
 
 if ( is_file($arq) ){
     $docxml = file_get_contents($arq);

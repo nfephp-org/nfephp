@@ -27,7 +27,7 @@
  *
  * @package     NFePHP
  * @name        ConvertNFePHP
- * @version     3.1.9
+ * @version     3.1.12
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2011 &copy; NFePHP
@@ -48,6 +48,7 @@
  *              Fabio Ananias Silva <binhoouropreto at gmail dot com>
  *              Giovani Paseto <giovaniw2 at gmail dot com>
  *              Giuliano Nascimento <giusoft at hotmail dot com>
+ *              Guilherme Calabria Filho <guiga at gmail dot com>
  *              Helder Ferreira <helder.mauricicio at gmail dot com>
  *              João Eduardo Silva Corrêa <jscorrea2 at gmail dot com>
  *              Leandro C. Lopez <leandro.castoldi at gmail dot com>
@@ -799,6 +800,10 @@ class ConvertNFePHP
                             $nItemPed = $dom->createElement("nItemPed", $dados[21]);
                             $prod->appendChild($nItemPed);
                         }
+                        if (!empty($dados[22])) {
+                            $nFCI = $dom->createElement("nFCI", $dados[22]);
+                            $prod->appendChild($nFCI);
+                        }
                     }
                     if (!isset($infAdProd)) {
                         $det->appendChild($prod);
@@ -834,10 +839,14 @@ class ConvertNFePHP
                         $cExportador = $dom->createElement("cExportador", $dados[6]);
                         $DI->appendChild($cExportador);
                     }
-                    if (!isset($xPed)) {
+                    if (!isset($xPed) && !isset($nItemPed)) {
                         $prod->appendChild($DI);
                     } else {
-                        $prod->insertBefore($prod->appendChild($DI), $xPed);
+                        if (!isset($xPed)) {
+                            $prod->insertBefore($prod->appendChild($DI), $nItemPed);
+                        } else {
+                            $prod->insertBefore($prod->appendChild($DI), $xPed);
+                        }
                     }
                     break;
                 case "I25":
@@ -1044,12 +1053,12 @@ class ConvertNFePHP
                     $imposto = $dom->createElement("imposto");
                     //lei da transparencia 12.741/12
                     //Nota Técnica 2013/003
-		    $vTotTrib=trim($dados[1]);
+                    $vTotTrib=trim($dados[1]);
                     if (strlen($vTotTrib)>0) {
                         $vTotTrib = $dom->createElement("vTotTrib", $vTotTrib);
                         $imposto->appendChild($vTotTrib);
                     }
-		    unset($vTotTrib);
+                    unset($vTotTrib);
                     if (!isset($infAdProd)) {
                         $det->appendChild($imposto);
                     } else {
@@ -1824,12 +1833,12 @@ class ConvertNFePHP
                     $ICMSTot->appendChild($vNF);
                     //lei da transparencia 12.741/12
                     //Nota Técnica 2013/003
-		    $vTotTrib=trim($dados[15]);
+                    $vTotTrib=trim($dados[15]);
                     if (strlen($vTotTrib)>0) {
                         $vTotTrib = $dom->createElement("vTotTrib", $vTotTrib);
                         $ICMSTot->appendChild($vTotTrib);
                     }
-		    unset($vTotTrib);
+                    unset($vTotTrib);
                     $total->appendChild($ICMSTot);
                     break;
                 case "W17":
@@ -2300,8 +2309,8 @@ class ConvertNFePHP
         $forma = "%02d%02d%02d%s%02d%03d%09d%01d%08d";
         $tempChave = sprintf($forma, $cUF, $tempData[0] - 2000, $tempData[1], $CNPJ, $mod, $serie, $nNF, $tpEmis, $cNF);
         $cDV = $ide->getElementsByTagName('cDV')->item(0)->nodeValue = $this->calculaDV($tempChave);
-        $chave = $tempChave .= $cDV;
+        $this->chave = $tempChave .= $cDV;
         $infNFe = $dom->getElementsByTagName("infNFe")->item(0);
-        $infNFe->setAttribute("Id", "NFe" . $chave);
+        $infNFe->setAttribute("Id", "NFe" . $this->chave);
     } //fim calculaChave
 }//fim da classe

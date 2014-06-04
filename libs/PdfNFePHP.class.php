@@ -176,10 +176,18 @@ class PdfNFePHP extends FPDF {
        }
        $this->Cset="0123456789";
        for ($i=0; $i<96; $i++) {  // convertendo grupos A & B  
-              @$this->SetFrom["A"] .= chr($i);
-              @$this->SetFrom["B"] .= chr($i + 32);
-              @$this->SetTo["A"] .= chr(($i < 32) ? $i+64 : $i-32);
-              @$this->SetTo["B"] .= chr($i);
+           if (isset($this->SetFrom["A"])) {
+               $this->SetFrom["A"] .= chr($i);
+           }
+           if (isset($this->SetFrom["B"])) {
+               $this->SetFrom["B"] .= chr($i + 32);
+           }
+           if (isset($this->SetTo["A"])) {
+               $this->SetTo["A"] .= chr(($i < 32) ? $i+64 : $i-32);
+           }
+           if (isset($this->SetTo["A"])) {
+               $this->SetTo["B"] .= chr($i);
+           }
        }
     }//fim __construct
 

@@ -2,23 +2,56 @@
     "name": "nfephp",
     "type": "library",
     "description": "NFePHP é uma API para gerenciamento das comunicações entre o emitente de NFe e os serviços dos SEFAZ estaduais. Inteiramente construído em PHP para rodar sob qualquer sistema operacional.",
-    "keywords": ["nfe","nfephp"],
+	"keywords": [
+        "nfe",
+        "nfephp",
+        "spedphp",
+        "sped",
+        "nota fiscal eletrônica",
+        "nota fiscal de serviços"
+    ],
     "homepage": "https://github.com/nfephp-org/nfephp",
-    "license": ["GPL 3", "LGPL 3"],
+    "license": [
+        "GPL 3",
+        "LGPL 3"
+    ],
     "authors": [
         {
-            "name": "Roberto Machado",
-            "email": "roberto.machado@superig.com.br",
+            "name": "Roberto L. Machado",
+            "email": "linux.rlm@gmail.com.br",
             "homepage": "http://www.nfephp.org",
             "role": "Developer"
         }
     ],
     "require": {
-        "php": ">=5.3.0"
+        "php": ">=5.3.0",
+        "ext-dom": "*",
+        "ext-xml": "*",
+        "ext-libxml": "*",
+        "ext-xmlreader": "*",
+        "ext-curl": "*",
+        "ext-soap": "*",
+        "ext-gd": "*",
+        "ext-mcrypt": "*",
+        "ext-openssl": "*",
+        "ext-zip": "*",
+        "ext-zlib": "*",
+        "ext-fileinfo": "*",
+        "ext-iconv": "*",
+        "ext-mbstring": "*"
     },
+    "require-dev": {
+        "ext-xdebug": "*",
+        "phpunit/phpunit": "3.7.*"
+    },  
     "autoload": {
         "psr-0": {
             "NFePHP": "src"
-        }
+        },
+        "classmap": [
+            "./libs/ConvertNFePHP.class.php",
+            "./libs/DanfeNFePHP.class.php",
+            "./libs/ToolsNFePHP.class.php"
+        ]
     }
 }
