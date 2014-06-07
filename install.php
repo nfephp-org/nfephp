@@ -41,9 +41,9 @@ error_reporting(E_ALL);
 ini_set('display_errors', 'On');
 
 require_once('config/config.php');
-require_once('libs/ToolsNFePHP.class.php');
+require_once('libs/NFe/ToolsNFePHP.class.php');
 
-$installVer = '1.3.6';
+$installVer = '1.3.7';
 //cores
 $cRed = '#FF0000';
 $cGreen = '#00CC00';
