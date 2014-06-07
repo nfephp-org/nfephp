@@ -355,6 +355,6 @@ foreach ($ws as $webserv) {
 }
 $dom->appendChild($wServ);
 $xml = $dom->saveXML();
-$dom->save('teste.xml');
+$dom->save('../config/nfe_ws3.xml');
 header('Content-type: text/xml; charset=UTF-8');
 echo $xml;
