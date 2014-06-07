@@ -76,7 +76,7 @@ if (!defined('PATH_ROOT')) {
     define('PATH_ROOT', dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR);
 }
 
-require_once('ExceptionNFePHP.class.php');
+require_once('../Common/ExceptionNFePHP.class.php');
 
 class ToolsNFePHP
 {

@@ -46,9 +46,9 @@ if (!defined('FPDF_FONTPATH')) {
     define('FPDF_FONTPATH', 'font/');
 }
 //classe extendida da classe FPDF para montagem do arquivo pdf
-require_once('PdfNFePHP.class.php');
+require_once('../Common/PdfNFePHP.class.php');
 //classe com as funções communs entre DANFE e DACTE
-require_once('CommonNFePHP.class.php');
+require_once('../Common/CommonNFePHP.class.php');
 
 class DamdfeNFePHP extends CommonNFePHP
 {

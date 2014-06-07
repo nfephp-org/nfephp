@@ -40,7 +40,7 @@
  *              Lucimar A. Magalhaes <lucimar.magalhaes at assistsolucoes dot com dot br>
  *              Roberto Spadim <rspadim at gmail dot com>
  */
-require_once ('CommonNFePHP.class.php');
+require_once ('../Common/CommonNFePHP.class.php');
 
 class UnConvertCTePHP {
 

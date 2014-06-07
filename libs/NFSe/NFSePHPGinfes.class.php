@@ -53,7 +53,7 @@ if (!defined('PATH_ROOT')) {
    define('PATH_ROOT', dirname(dirname( __FILE__ )) . DIRECTORY_SEPARATOR);
 }
 include_once 'NuSOAP/nusoap.php';
-require_once "ToolsNFePHP.class.php";
+require_once "../NFe/ToolsNFePHP.class.php";
 require_once "NFSePHPGinfesData.class.php";
 require_once "NFSePHPGinfesPDF.class.php";
 

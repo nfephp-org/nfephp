@@ -36,28 +36,29 @@
  */
 //define o caminho base da instalação do sistema
 if (!defined('PATH_ROOT')) {
-   define('PATH_ROOT', dirname(dirname( __FILE__ )) . DIRECTORY_SEPARATOR);
+    define('PATH_ROOT', dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR);
 }
 //ajuste do tempo limite de resposta do processo
 set_time_limit(1800);
 //definição do caminho para o diretorio com as fontes do FDPF
 if (!defined('FPDF_FONTPATH')) {
-	define('FPDF_FONTPATH','font/');
+    define('FPDF_FONTPATH', 'font/');
 }
 //situação externa do documento
-if(!defined('NFEPHP_SITUACAO_EXTERNA_CANCELADA')){
-	define('NFEPHP_SITUACAO_EXTERNA_CANCELADA'	,1);
-	define('NFEPHP_SITUACAO_EXTERNA_DENEGADA'	,2);
-	define('NFEPHP_SITUACAO_EXTERNA_NONE'		,0);
+if (! defined('NFEPHP_SITUACAO_EXTERNA_CANCELADA')) {
+    define('NFEPHP_SITUACAO_EXTERNA_CANCELADA', 1);
+    define('NFEPHP_SITUACAO_EXTERNA_DENEGADA', 2);
+    define('NFEPHP_SITUACAO_EXTERNA_NONE', 0);
 }
 //classe extendida da classe FPDF para montagem do arquivo pdf
-require_once('PdfNFePHP.class.php');
+require_once('../Common/PdfNFePHP.class.php');
 //classe com as funções communs entre DANFE e DACTE
-require_once('CommonNFePHP.class.php');
+require_once('../Common/CommonNFePHP.class.php');
 //interface 
-require_once('DocumentoNFePHP.interface.php');
+require_once('../Common/DocumentoNFePHP.interface.php');
 
-class DaEventoCTeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
+class DaEventoCTeNFePHP extends CommonNFePHP implements DocumentoNFePHP
+{
     
     //publicas
     public $logoAlign='C'; //alinhamento do logo

@@ -47,10 +47,10 @@ if (!defined('PATH_ROOT')) {
 set_time_limit(1800);
 
 //classes utilizadas
-require_once 'mpdf'.DIRECTORY_SEPARATOR.'mpdf.php';
-require_once 'qrcode'.DIRECTORY_SEPARATOR.'qrcode.class.php';
-require_once 'CommonNFePHP.class.php';
-require_once 'DocumentoNFePHP.interface.php';
+require_once '../External/mpdf/mpdf.php';
+require_once '../External/qrcode/qrcode.class.php';
+require_once '../Common/CommonNFePHP.class.php';
+require_once '../Common/DocumentoNFePHP.interface.php';
 
 /**
  * Classe DanfceNFePHP

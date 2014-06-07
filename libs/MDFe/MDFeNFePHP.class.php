@@ -38,7 +38,7 @@
  */
 //define o caminho base da instalação do sistema
 if (!defined('PATH_ROOT')) {
-   define('PATH_ROOT', dirname(dirname( __FILE__ )) . DIRECTORY_SEPARATOR);
+   define('PATH_ROOT', dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR);
 }
 
 /**

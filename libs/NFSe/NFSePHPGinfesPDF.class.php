@@ -33,7 +33,7 @@
  * 
  */
 
-require_once('FPDF/fpdf.php');
+require_once('../External/FPDF/fpdf.php');
 
 
 class NFSePHPGinfesPDF extends FPDF {

@@ -44,7 +44,7 @@ if (!defined('PATH_ROOT')) {
     define('PATH_ROOT', dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR);
 }
 //carrega as classes do PHPMailer
-require_once('PHPMailer/class.phpmailer.php');
+require_once('../External/PHPMailer/class.phpmailer.php');
 
 class MailNFePHP
 {
