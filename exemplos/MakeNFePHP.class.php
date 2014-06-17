@@ -33,6 +33,8 @@
  * @author      Roberto L. Machado <linux.rlm at gmail dot com>
  * 
  *        CONTRIBUIDORES (em ordem alfabetica):
+ * 
+ *              Elias Müller <elias at oxigennio dot com dot br>
  *              Marcos Balbi
  * 
  */
@@ -266,7 +268,7 @@ class MakeNFe
         //tag NFe/infNFe/det
         if (isset($this->aProd)) {
             $this->tagdet();
-        }    
+        }
 
         if (isset($this->aDet)) {
             foreach ($this->aDet as $det) {
@@ -274,8 +276,8 @@ class MakeNFe
             }
         }
         
-        if(isset($this->aImposto) && isset($this->aDet)){
-           $this->tagImp();  
+        if (isset($this->aImposto) && isset($this->aDet)) {
+            $this->tagImp();
         }
         
         //tag NFe/infNFe/total
@@ -627,7 +629,7 @@ class MakeNFe
         }
         $this->addChild($this->emit, "xNome", $xNome);
         if ($xFant != '') {
-            $this->emit->appendChild($this->emit, "xFant", $xFant);
+            $this->emit->addChild($this->emit, "xFant", $xFant);
         }
         $this->addChild($this->emit, "IE", $IE);
         if ($IEST != '') {
@@ -846,12 +848,12 @@ class MakeNFe
     //tag NFe/infNFe/det array de DOMNodes
     public function tagdet()
     {
-        if (isset($this->aProd)) {  
+        if (isset($this->aProd)) {
             foreach ($this->aProd as $key => $prod) {
                 $det = $this->dom->createElement("det");
                 $nItem = $key;
                 $det->setAttribute("nItem", $nItem);
-                $det->appendChild($prod);             
+                $det->appendChild($prod);
                 $this->aDet[] = $det;
                 $det = null;
             }
@@ -865,19 +867,16 @@ class MakeNFe
      */
     public function tagImp()
     {
-         foreach ($this->aImposto  as $key => $imp) {
-                $nItem = $key;  
-                $imp->appendChild($this->aICMS[$nItem]);      
-                $imp->appendChild($this->aPIS[$nItem]);      
-                $imp->appendChild($this->aCOFINS[$nItem]);      
-            }
-            
-            // COLOCA TAG imposto dentro do DET
-            foreach ($this->aDet as $det) {
-                
-                $det->appendChild($this->aImposto[$det->getAttribute('nItem')]);
-                
-            }    
+        foreach ($this->aImposto as $key => $imp) {
+            $nItem = $key;
+            $imp->appendChild($this->aICMS[$nItem]);
+            $imp->appendChild($this->aPIS[$nItem]);
+            $imp->appendChild($this->aCOFINS[$nItem]);
+        }
+        // COLOCA TAG imposto dentro do DET
+        foreach ($this->aDet as $det) {
+            $det->appendChild($this->aImposto[$det->getAttribute('nItem')]);
+        }
     }
 
     //tag NFe/infNFe/det/prod array de DOMNodes
@@ -1191,7 +1190,7 @@ class MakeNFe
         $vBC = '',
         $pICMS = '',
         $vICMS = ''
-    ) {   
+    ) {
         switch ($CST) {
             case '00':
                 $ICMS = $this->dom->createElement("ICMS00");
@@ -1222,7 +1221,7 @@ class MakeNFe
                 break;
             case '90':
                 $ICMS = $this->dom->createElement("ICMS40");
-                break;  
+                break;
         }
         
             $this->addChild($ICMS, 'orig', $orig);
@@ -1236,7 +1235,7 @@ class MakeNFe
             $tagIcms->appendChild($ICMS);
             $this->aICMS[$nItem] = $tagIcms;
             
-            return $tagIcms; 
+            return $tagIcms;
     }
 
     //tag det/imposto/IPI (opcional) array de DOMNodes
@@ -1259,12 +1258,12 @@ class MakeNFe
     
     //tag det/imposto/PIS array de DOMNodes
     public function tagPIS(
-            $nItem = '',
-            $CST = '',
-            $vBC = '',
-            $pPIS = '',
-            $vPIS = ''
-    ){
+        $nItem = '',
+        $CST = '',
+        $vBC = '',
+        $pPIS = '',
+        $vPIS = ''
+    ) {
         $PISAliq = $this->dom->createElement('PISAliq');
         
         $this->addChild($PISAliq, 'CST', $CST);
@@ -1276,33 +1275,28 @@ class MakeNFe
         $pis->appendChild($PISAliq);
         $this->aPIS[$nItem] = $pis;
         
-        return $pis;   
+        return $pis;
     }
     
     //tag det/imposto/PISST (opcional) array de DOMNodes
       
     //tag det/imposto/COFINS array de DOMNodes
-    public function tagCOFINS($nItem = '',
-            $CST = '',
-            $vBC = '',
-            $pCOFINS = '',
-            $vCOFINS = ''
-    ){
-        
-         $COFINSAliq = $this->dom->createElement('COFINSAliq');
-        
+    public function tagCOFINS(
+        $nItem = '',
+        $CST = '',
+        $vBC = '',
+        $pCOFINS = '',
+        $vCOFINS = ''
+    ) {
+        $COFINSAliq = $this->dom->createElement('COFINSAliq');
         $this->addChild($COFINSAliq, 'CST', $CST);
         $this->addChild($COFINSAliq, 'vBC', $vBC);
         $this->addChild($COFINSAliq, 'pCOFINS', $pCOFINS);
         $this->addChild($COFINSAliq, 'vCOFINS', $vCOFINS);
-        
         $confins = $this->dom->createElement('COFINS');
-          
         $confins->appendChild($COFINSAliq);
-        
         $this->aCOFINS[$nItem] = $confins;
-        
-        return $confins;  
+        return $confins;
     }
     
     //tag det/imposto/COFINSST (opcional) array de DOMNodes
@@ -1390,6 +1384,7 @@ class MakeNFe
         $this->addChild($this->transp, "modFrete", $modFrete);
         return $this->transp;
     }
+    
     //tag transp/tranporta (opcional)
     public function tagtransporta($CNPJ = '', $CPF = '', $xNome = '', $IE = '', $xEnder = '', $xMun = '', $UF = '')
     {
@@ -1417,6 +1412,7 @@ class MakeNFe
         }
         return $this->transporta;
     }
+
     //tag NFe/infNFe/transp/veicTransp (opcional)
     public function tagveicTransp($placa = '', $UF = '', $RNTC = '')
     {
