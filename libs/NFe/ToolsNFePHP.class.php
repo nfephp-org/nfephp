@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.0.80-alpha
+ * @version   3.1.00-alpha
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -922,7 +922,7 @@ class ToolsNFePHP
         }
         //carrega um array com os dados para acesso aos WebServices SEFAZ
         $xmlURLfile = $this->raizDir.'config'.DIRECTORY_SEPARATOR.$this->xmlURLfile;
-        if (!$this->aURL = $this->loadSEFAZ($xmlURLfile, $this->tpAmb, $this->siglaUF)) {
+        if (!$this->aURL = $this->pLoadSEFAZ($xmlURLfile, $this->tpAmb, $this->siglaUF)) {
             $msg = "Erro no carregamento das informacoes da SEFAZ: $this->errMsg";
             $this->setError($msg);
             if ($this->exceptions) {
@@ -931,7 +931,7 @@ class ToolsNFePHP
             return false;
         }
         //se houver erro no carregamento dos certificados passe para erro
-        if (!$this->loadCerts()) {
+        if (!$this->pLoadCerts()) {
             $msg = "Erro no carregamento dos certificados.";
             $this->setError($msg);
             if ($this->exceptions) {
@@ -1578,7 +1578,7 @@ class ToolsNFePHP
             $X509Data = $xmldoc->createElement('X509Data');
             $KeyInfo->appendChild($X509Data);
             //carrega o certificado sem as tags de inicio e fim
-            $cert = $this->cleanCerts($this->pubKEY);
+            $cert = $this->pCleanCerts($this->pubKEY);
             //X509Certificate
             $newNode = $xmldoc->createElement('X509Certificate', $cert);
             $X509Data->appendChild($newNode);
@@ -1640,13 +1640,13 @@ class ToolsNFePHP
             $cUF = $this->cUFlist[$siglaUF];
             //verifica se o SCAN esta habilitado
             if (!$this->enableSCAN) {
-                $aURL = $this->loadSEFAZ(
+                $aURL = $this->pLoadSEFAZ(
                     $this->raizDir.'config'.DIRECTORY_SEPARATOR.$this->xmlURLfile,
                     $tpAmb,
                     $siglaUF
                 );
             } else {
-                $aURL = $this->loadSEFAZ(
+                $aURL = $this->pLoadSEFAZ(
                     $this->raizDir.'config'.DIRECTORY_SEPARATOR.$this->xmlURLfile,
                     $tpAmb,
                     'SCAN'
@@ -1701,13 +1701,13 @@ class ToolsNFePHP
                 $aRetorno['dhRetorno'] = !empty($doc->getElementsByTagName('dhRetorno')->item(0)->nodeValue) ?
                         date(
                             "d/m/Y H:i:s",
-                            $this->convertTime($doc->getElementsByTagName('dhRetorno')->item(0)->nodeValue)
+                            $this->pConvertTime($doc->getElementsByTagName('dhRetorno')->item(0)->nodeValue)
                         ) : '';
                 // data e hora da mensagem (opcional)
                 $aRetorno['dhRecbto'] = !empty($doc->getElementsByTagName('dhRecbto')->item(0)->nodeValue) ?
                         date(
                             "d/m/Y H:i:s",
-                            $this->convertTime($doc->getElementsByTagName('dhRecbto')->item(0)->nodeValue)
+                            $this->pConvertTime($doc->getElementsByTagName('dhRecbto')->item(0)->nodeValue)
                         ) : '';
                 // motivo da resposta (opcional)
                 $aRetorno['xMotivo'] = !empty($doc->getElementsByTagName('xMotivo')->item(0)->nodeValue) ?
@@ -1791,7 +1791,7 @@ class ToolsNFePHP
         // caso a sigla do estado seja diferente do emitente ou o ambiente seja diferente
         if ($siglaUF != $this->siglaUF || $tpAmb != $this->tpAmb) {
             //recarrega as url referentes aos dados passados como parametros para a função
-            $aURL = $this->loadSEFAZ(
+            $aURL = $this->pLoadSEFAZ(
                 $this->raizDir.'config'.DIRECTORY_SEPARATOR.$this->xmlURLfile,
                 $tpAmb,
                 $siglaUF
@@ -1964,7 +1964,7 @@ class ToolsNFePHP
         if (!$this->enableSCAN) {
             $aURL = $this->aURL;
         } else {
-            $aURL = $this->loadSEFAZ(
+            $aURL = $this->pLoadSEFAZ(
                 $this->raizDir.'config'.DIRECTORY_SEPARATOR.$this->xmlURLfile,
                 $this->tpAmb,
                 'SCAN'
@@ -1981,7 +1981,7 @@ class ToolsNFePHP
         //montagem do namespace do serviço
         $namespace = $this->URLPortal.'/wsdl/'.$servico;
         //valida o parâmetro da string do XML da NF-e
-        if (empty($sxml) || !simplexml_load_string($sxml)) {
+        if (empty($sxml) || ! simplexml_load_string($sxml)) {
             $msg = "XML de NF-e para autorizacao recebido no parametro parece invalido, verifique";
             $this->setError($msg);
             if ($this->exceptions) {
@@ -2036,7 +2036,7 @@ class ToolsNFePHP
             $aRetorno['dhRecbto'] = !empty($doc->getElementsByTagName('dhRecbto')->item(0)->nodeValue) ?
                     date(
                         "d/m/Y H:i:s",
-                        $this->convertTime($doc->getElementsByTagName('dhRecbto')->item(0)->nodeValue)
+                        $this->pConvertTime($doc->getElementsByTagName('dhRecbto')->item(0)->nodeValue)
                     ) : '';
             // numero do recibo do lote enviado (opcional)
             $aRetorno['nRec'] = !empty($doc->getElementsByTagName('nRec')->item(0)->nodeValue) ?
@@ -2109,7 +2109,7 @@ class ToolsNFePHP
                     //se não for o mesmo carregar a sigla
                     $siglaUF = $this->siglaUFList[$cUF];
                     //recarrega as url referentes aos dados passados como parametros para a função
-                    $aURL = $this->loadSEFAZ(
+                    $aURL = $this->pLoadSEFAZ(
                         $this->raizDir.'config'.DIRECTORY_SEPARATOR.$this->xmlURLfile,
                         $tpAmb,
                         $siglaUF
@@ -2118,7 +2118,7 @@ class ToolsNFePHP
             }
             //verifica se o SCAN esta habilitado
             if ($this->enableSCAN || $ctpEmissao == '3') {
-                $aURL = $this->loadSEFAZ(
+                $aURL = $this->pLoadSEFAZ(
                     $this->raizDir.'config'.DIRECTORY_SEPARATOR.$this->xmlURLfile,
                     $tpAmb,
                     'SCAN'
@@ -2217,7 +2217,7 @@ class ToolsNFePHP
                         $aProt['dhRecbto'] = !empty($aProt['dhRecbto']) ?
                                 date(
                                     "d/m/Y H:i:s",
-                                    $this->convertTime($aProt['dhRecbto'])
+                                    $this->pConvertTime($aProt['dhRecbto'])
                                 ) : '';
                     }
                     $aCanc = '';
@@ -2228,7 +2228,7 @@ class ToolsNFePHP
                         $aCanc['dhRecbto'] = !empty($aCanc['dhRecbto']) ?
                                 date(
                                     "d/m/Y H:i:s",
-                                    $this->convertTime($aCanc['dhRecbto'])
+                                    $this->pConvertTime($aCanc['dhRecbto'])
                                 ) : '';
                     }
                     $aEventos = '';
@@ -2343,7 +2343,7 @@ class ToolsNFePHP
                             $p['dhRecbto'] = !empty($p['dhRecbto']) ?
                                 date(
                                     "d/m/Y H:i:s",
-                                    $this->convertTime($p['dhRecbto'])
+                                    $this->pConvertTime($p['dhRecbto'])
                                 ) : '';
                         }
                     } else {
@@ -2440,14 +2440,14 @@ class ToolsNFePHP
                 $tpAmb = $this->tpAmb;
             }
             if (!$ambNac) {
-                $aURL = $this->loadSEFAZ(
+                $aURL = $this->pLoadSEFAZ(
                     $this->raizDir.'config'.DIRECTORY_SEPARATOR.$this->xmlURLfile,
                     $tpAmb,
                     $this->siglaUF
                 );
                 $sigla = $this->siglaUF;
             } else {
-                $aURL = $this->loadSEFAZ(
+                $aURL = $this->pLoadSEFAZ(
                     $this->raizDir.'config'.DIRECTORY_SEPARATOR.$this->xmlURLfile,
                     $tpAmb,
                     'AN'
@@ -2456,7 +2456,7 @@ class ToolsNFePHP
             }
             if ($ultNSU == '') {
                 //buscar o último NSU no xml
-                $ultNSU = $this->getUltNSU($sigla, $tpAmb);
+                $ultNSU = $this->pGetUltNSU($sigla, $tpAmb);
             }
             if ($indNFe == '') {
                 $indNFe = '0';
@@ -2662,7 +2662,7 @@ class ToolsNFePHP
                 $tpAmb = $this->tpAmb;
             }
             if ($AN) {
-                $aURL = $this->loadSEFAZ(
+                $aURL = $this->pLoadSEFAZ(
                     $this->raizDir.'config'.DIRECTORY_SEPARATOR.$this->xmlURLfile,
                     $tpAmb,
                     'AN'
@@ -2673,7 +2673,7 @@ class ToolsNFePHP
                 //obtem a SEFAZ do emissor
                 $cUF = substr($chNFe, 0, 2);
                 $siglaUF = $this->siglaUFList[$cUF];
-                $aURL = $this->loadSEFAZ( $this->raizDir.'config'.DIRECTORY_SEPARATOR.$this->xmlURLfile,$tpAmb,$siglaUF);
+                $aURL = $this->pLoadSEFAZ( $this->raizDir.'config'.DIRECTORY_SEPARATOR.$this->xmlURLfile,$tpAmb,$siglaUF);
             }
             //identificação do serviço
             $servico = 'NfeDownloadNF';
@@ -2782,8 +2782,8 @@ class ToolsNFePHP
                 //grupo contendo a NF-e compactada e o Protocolo de Autorização compactado (padrão gZip).
                 //extrai a NF-e do elemento JR18_NFeZip e extrai o protocolo de autorização de uso do elemento
                 //JR19_protNFeZip (ambos são obrigatórios)
-                $nfe = $this->gunzip2(base64_decode($retNFe_procNFeGrupoZip->getElementsByTagName('NFeZip')->item(0)->nodeValue));
-                $prot = $this->gunzip2(base64_decode($retNFe_procNFeGrupoZip->getElementsByTagName('protNFeZip')->item(0)->nodeValue));
+                $nfe = $this->pGunzip2(base64_decode($retNFe_procNFeGrupoZip->getElementsByTagName('NFeZip')->item(0)->nodeValue));
+                $prot = $this->pGunzip2(base64_decode($retNFe_procNFeGrupoZip->getElementsByTagName('protNFeZip')->item(0)->nodeValue));
                 //tem a NF-e e o protocolo de autorização, agora adiciona o protocolo; para isso,
                 //cria dois arquivos temporários e chama o addProt()
                 $nfeTempFile = file_put_contents($this->temDir.$chNFe.'-nfe.xml', $nfe);
@@ -2848,7 +2848,7 @@ class ToolsNFePHP
             return false;
         }
         //remove acentos e outros caracteres da justificativa
-        $xJust = $this->cleanString($xJust);
+        $xJust = $this->pCleanString($xJust);
         // valida o campo ano
         if (strlen($nAno) > 2) {
             $msg = "O ano tem mais de 2 digitos. Corrija e refaça o processo!!";
@@ -2903,14 +2903,14 @@ class ToolsNFePHP
             if ($tpAmb == $this->tpAmb) {
                 $aURL = $this->aURL;
             } else {
-                $aURL = $this->loadSEFAZ(
+                $aURL = $this->pLoadSEFAZ(
                     $this->raizDir.'config'.DIRECTORY_SEPARATOR.$this->xmlURLfile,
                     $tpAmb,
                     $this->siglaUF
                 );
             }
         } else {
-            $aURL = $this->loadSEFAZ(
+            $aURL = $this->pLoadSEFAZ(
                 $this->raizDir.'config'.DIRECTORY_SEPARATOR.$this->xmlURLfile,
                 $this->tpAmb,
                 'SCAN'
@@ -2962,7 +2962,7 @@ class ToolsNFePHP
         $dXML = $this->signXML($dXML, 'infInut');
         $dados = '<nfeDadosMsg xmlns="'.$namespace.'">'.$dXML.'</nfeDadosMsg>';
         //remove as tags xml que porventura tenham sido inclusas
-        $dados = $this->clearXml($dados, true);
+        $dados = $this->pClearXml($dados, true);
         //grava a solicitação de inutilização
         if (!file_put_contents($this->temDir.$id.'-pedInut.xml', $dXML)) {
             $msg = "Falha na gravação do pedido de inutilização!!";
@@ -3042,7 +3042,7 @@ class ToolsNFePHP
         //salva o xml como string em uma variável
         $procXML = $procInut->saveXML();
         //remove as informações indesejadas
-        $procXML  = $this->clearXml($procXML, false);
+        $procXML  = $this->pClearXml($procXML, false);
         //salva o arquivo xml
         if (! file_put_contents($this->inuDir."$id-procInut.xml", $procXML)) {
             $msg = "Falha na gravação da procInut!!\n";
@@ -3095,20 +3095,20 @@ class ToolsNFePHP
             //para cancelamento o numero sequencia do evento sempre será 1
             $nSeqEvento = '1';
             //remove qualquer caracter especial
-            $xJust = $this->cleanString($xJust);
+            $xJust = $this->pCleanString($xJust);
             //decompor a chNFe e pegar o tipo de emissão
             //$tpEmiss = substr($chNFe, 34, 1);
             //verifica se o SCAN esta habilitado
             if (! $this->enableSCAN) {
                 $aURL = $this->aURL;
             } else {
-                $aURL = $this->loadSEFAZ(
+                $aURL = $this->pLoadSEFAZ(
                     $this->raizDir.'config'.DIRECTORY_SEPARATOR.$this->xmlURLfile,
                     $tpAmb,
                     'SCAN'
                 );
             }
-            $numLote = $this->geraLote();
+            $numLote = $this->pGeraNumLote();
             //Data e hora do evento no formato AAAA-MM-DDTHH:MM:SSTZD (UTC)
             $dhEvento = date('Y-m-d').'T'.date('H:i:s').$this->timeZone;
             //se o envio for para svan mudar o numero no orgão para 91
@@ -3157,7 +3157,7 @@ class ToolsNFePHP
             //assinatura dos dados
             $tagid = 'infEvento';
             $Ev = $this->signXML($Ev, $tagid);
-            $Ev = $this->clearXml($Ev, true);
+            $Ev = $this->pClearXml($Ev, true);
             //carrega uma matriz temporária com os eventos assinados
             //montagem dos dados
             $dados = '';
@@ -3251,7 +3251,7 @@ class ToolsNFePHP
             //salva o xml como string em uma variável
             $procXML = $xmlprocEvento->saveXML();
             //remove as informações indesejadas
-            $procXML = $this->clearXml($procXML, false);
+            $procXML = $this->pClearXml($procXML, false);
             //salva o arquivo xml
             $arqName = $this->canDir."$chNFe-$nSeqEvento-procCanc.xml";
             if (!file_put_contents($arqName, $procXML)) {
@@ -3336,7 +3336,7 @@ class ToolsNFePHP
                 throw new nfephpException($msg);
             }
             //limpa o texto de correção para evitar surpresas
-            $xCorrecao = $this->cleanString($xCorrecao);
+            $xCorrecao = $this->pCleanString($xCorrecao);
             //ajusta ambiente
             if ($tpAmb == '') {
                 $tpAmb = $this->tpAmb;
@@ -3347,13 +3347,13 @@ class ToolsNFePHP
             if (!$this->enableSCAN) {
                 $aURL = $this->aURL;
             } else {
-                $aURL = $this->loadSEFAZ(
+                $aURL = $this->pLoadSEFAZ(
                     $this->raizDir.'config'.DIRECTORY_SEPARATOR.$this->xmlURLfile,
                     $tpAmb,
                     'SCAN'
                 );
             }
-            $numLote = $this->geraLote();
+            $numLote = $this->pGeraNumLote();
             //Data e hora do evento no formato AAAA-MM-DDTHH:MM:SSTZD (UTC)
             $dhEvento = date('Y-m-d').'T'.date('H:i:s').$this->timeZone;
             //se o envio for para svan mudar o numero no orgão para 91
@@ -3406,7 +3406,7 @@ class ToolsNFePHP
             //assinatura dos dados
             $tagid = 'infEvento';
             $Ev = $this->signXML($Ev, $tagid);
-            $Ev = $this->clearXml($Ev, true);
+            $Ev = $this->pClearXml($Ev, true);
             //carrega uma matriz temporária com os eventos assinados
             //montagem dos dados
             $dados = '';
@@ -3632,20 +3632,20 @@ class ToolsNFePHP
                     throw new nfephpException($msg);
             }
             //limpa o texto de correção para evitar surpresas
-            $xJust = $this->cleanString($xJust);
+            $xJust = $this->pCleanString($xJust);
             //ajusta ambiente
             if ($tpAmb == '') {
                 $tpAmb = $this->tpAmb;
             }
             //utilizar AN para enviar o manifesto
             $sigla = 'AN';
-            $aURL = $this->loadSEFAZ(
+            $aURL = $this->pLoadSEFAZ(
                 $this->raizDir.'config'.DIRECTORY_SEPARATOR.$this->xmlURLfile,
                 $tpAmb,
                 $sigla
             );
             $cOrgao='91';
-            $numLote = $this->geraLote();
+            $numLote = $this->pGeraNumLote();
             //Data e hora do evento no formato AAAA-MM-DDTHH:MM:SSTZD (UTC)
             $dhEvento = date('Y-m-d').'T'.date('H:i:s').$this->timeZone;
             //montagem do namespace do serviço
@@ -3683,7 +3683,7 @@ class ToolsNFePHP
             //assinatura dos dados
             $tagid = 'infEvento';
             $Ev = $this->signXML($Ev, $tagid);
-            $Ev = $this->clearXml($Ev, true);
+            $Ev = $this->pClearXml($Ev, true);
             //montagem dos dados
             $dados = '';
             $dados .= "<envEvento xmlns=\"$this->URLPortal\" versao=\"$versao\">";
@@ -3767,7 +3767,7 @@ class ToolsNFePHP
             //salva o xml como string em uma variável
             $procXML = $xmlprocMDe->saveXML();
             //remove as informações indesejadas
-            $procXML = $this->clearXml($procXML, false);
+            $procXML = $this->pClearXml($procXML, false);
             $filename = $this->evtDir."$chNFe-$tpEvento-$nSeqEvento-procMDe.xml";
             $resp = array('bStat'=>true,'cStat'=>$cStat,'xMotivo'=>$xMotivo,'arquivo'=>$filename);
             //salva o arquivo xml
@@ -3886,7 +3886,7 @@ class ToolsNFePHP
                 } //fim errors
             }//fim foreach
             //com a matriz de dados montada criar o arquivo DPEC para as NFe que atendem os critérios
-            $aURL = $this->loadSEFAZ(
+            $aURL = $this->pLoadSEFAZ(
                 $this->raizDir.'config'.DIRECTORY_SEPARATOR.$this->xmlURLfile,
                 $tpAmb,
                 'DPEC'
@@ -3922,7 +3922,7 @@ class ToolsNFePHP
             //montagem dos dados da cumunicação SOAP
             $dados = '<sceDadosMsg xmlns="'. $namespace.'">'.$dpec.'</sceDadosMsg>';
             //remove as tags xml que porventura tenham sido inclusas ou quebas de linhas
-            $dados = $this->clearXml($dados, true);
+            $dados = $this->pClearXml($dados, true);
             //grava a solicitação na pasta depec
             if (!file_put_contents($this->dpcDir.$this->CNPJ.'-depc.xml', '<?xml version="1.0" encoding="utf-8"?>'.$dpec)) {
                 $msg = "Falha na gravação do pedido contingencia DPEC.";
@@ -4094,7 +4094,7 @@ class ToolsNFePHP
      * @param  string $sUF       Sigla da Unidade da Federação (ex. SP, RS, etc..)
      * @return mixed             false se houve erro ou array com os dados dos URLs da SEFAZ
      */
-    protected function loadSEFAZ($spathXML, $tpAmb = '', $sUF = '')
+    protected function pLoadSEFAZ($spathXML, $tpAmb = '', $sUF = '')
     {
         try {
             //verifica se o arquivo xml pode ser encontrado no caminho indicado
@@ -4201,7 +4201,7 @@ class ToolsNFePHP
      * @param  boolean $testaVal True testa a validade do certificado ou false não testa
      * @return boolean true se o certificado foi carregado e false se não
      */
-    protected function loadCerts($testaVal = true)
+    protected function pLoadCerts($testaVal = true)
     {
         try {
             if (!function_exists('openssl_pkcs12_read')) {
@@ -4389,7 +4389,7 @@ class ToolsNFePHP
      * @param    $certFile
      * @return   mixed false ou string contendo a chave digital limpa
      */
-    protected function cleanCerts($certFile)
+    protected function pCleanCerts($certFile)
     {
         try {
             //inicializa variavel
@@ -4659,7 +4659,7 @@ class ToolsNFePHP
      * @name getNumLot
      * @return numeric Numero do Lote
      */
-    protected function getNumLot()
+    protected function pGetNumLot()
     {
         $lotfile = $this->raizDir.'config/numloteenvio.xml';
         $domLot = new DomDocument;
@@ -4705,7 +4705,7 @@ class ToolsNFePHP
      * @param type $tpAmb tipo de ambiente 1-produção ou 2 homologação
      * @return mixed o numero encontrado no arquivo ou false em qualquer outro caso
      */
-    private function getUltNSU($sigla = '', $tpAmb = '')
+    private function pGetUltNSU($sigla = '', $tpAmb = '')
     {
         try {
             if ($sigla=='' || $tpAmb=='') {
@@ -4871,7 +4871,7 @@ class ToolsNFePHP
      * @return string xml descompactado
      * @throws Exception
      */
-    private function gunzip2($data)
+    private function pGunzip2($data)
     {
         //cria um nome para o arquivo temporario
         do {
@@ -4909,7 +4909,7 @@ class ToolsNFePHP
      * @param string $data Dados compactados com gzip
      * @return mixed
      */
-    private function gunzip1($data)
+    private function pGunzip1($data)
     {
         $len = strlen($data);
         if ($len < 18 || strcmp(substr($data, 0, 2), "\x1f\x8b")) {
@@ -5047,7 +5047,7 @@ class ToolsNFePHP
      * @param  string $DataHora Exemplo: "2014-03-28T14:39:54-03:00"
      * @return float
      */
-    protected function convertTime($dataHora = '')
+    protected function pConvertTime($dataHora = '')
     {
         $timestampDH = 0;
         if ($dataHora) {
@@ -5082,7 +5082,7 @@ class ToolsNFePHP
      * @name cleanString
      * @return  string Texto sem caractere especiais
      */
-    private function cleanString($texto)
+    private function pCleanString($texto)
     {
         $aFind = array('&','á','à','ã','â','é','ê','í','ó','ô','õ','ú','ü',
             'ç','Á','À','Ã','Â','É','Ê','Í','Ó','Ô','Õ','Ú','Ü','Ç');
@@ -5111,19 +5111,19 @@ class ToolsNFePHP
      * Gera numero de lote com base em microtime
      * @return string 
      */
-    private function geraLote()
+    private function pGeraNumLote()
     {
         return substr(str_replace(',', '', number_format(microtime(true)*1000000, 0)), 0, 15);
     }
     
     /**
-     * clearXml
+     * pClearXml
      * Remove \r \n \s \t 
      * @param string $xml
      * @param boolean $remEnc remover encoding
      * @return string
      */
-    private function clearXml($xml = '', $remEnc = false)
+    private function pClearXml($xml = '', $remEnc = false)
     {
         $retXml = $xml;
         if ($remEnc) {
