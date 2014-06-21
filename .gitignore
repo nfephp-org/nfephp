@@ -1,5 +1,8 @@
 nbproject
 *~
+*.pfx
+*.pem
+config.php
 vendor
 /.project
 /.buildpath
