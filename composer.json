@@ -46,7 +46,7 @@
     },  
     "autoload": {
         "psr-0": {
-            "NFePHP": "src"
+            "NFePHP": "libs"
         },
         "classmap": [
             "./libs/ConvertNFePHP.class.php",
