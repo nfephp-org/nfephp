@@ -7,8 +7,8 @@
         "nfephp",
         "spedphp",
         "sped",
-        "nota fiscal eletrônica",
-        "nota fiscal de serviços"
+        "nota fiscal eletronica",
+        "nota fiscal de servicos"
     ],
     "homepage": "https://github.com/nfephp-org/nfephp",
     "license": [
