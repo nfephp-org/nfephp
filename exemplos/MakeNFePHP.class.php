@@ -629,7 +629,7 @@ class MakeNFe
         }
         $this->addChild($this->emit, "xNome", $xNome);
         if ($xFant != '') {
-            $this->emit->addChild($this->emit, "xFant", $xFant);
+            $this->addChild($this->emit, "xFant", $xFant);
         }
         $this->addChild($this->emit, "IE", $IE);
         if ($IEST != '') {
