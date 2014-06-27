@@ -27,7 +27,7 @@
  *
  * @package   NFePHP
  * @name      CTeNFePHP
- * @version   1.0.20
+ * @version   1.1.00
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; CTePHP
  * @link      http://www.nfephp.org/
@@ -47,15 +47,16 @@
  *
  *
  */
+
 // Define o caminho base da instalação do sistema
 if (!defined('PATH_ROOT')) {
-    define('PATH_ROOT', dirname(dirname( __FILE__ )) . DIRECTORY_SEPARATOR);
+    define('PATH_ROOT', dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR);
 }
 
-/**
- * Classe principal "CORE class"
- */
-class CTeNFePHP {
+require_once(PATH_ROOT.'libs/Common/ExceptionNFePHP.class.php');
+
+class CTeNFePHP
+{
     /**
      * exceptions
      * Ativa ou desativa o uso de exceções para transporte de erros
@@ -63,21 +64,13 @@ class CTeNFePHP {
      */
     protected $exceptions = false;
 
-    /////////////////////////////////////////////////
-    // CONSTANTES usadas no controle das exceções
-    /////////////////////////////////////////////////
-    const STOP_MESSAGE  = 0; // apenas um aviso, o processamento continua
-    const STOP_CONTINUE = 1; // quationamento ?, perecido com OK para continuar o processamento
-    const STOP_CRITICAL = 2; // Erro critico, interrupção total
-
-
     // propriedades da classe
     /**
      * raizDir
      * Diretorio raiz da API
      * @var string
      */
-    public $raizDir = '';
+    public $raizDir = PATH_ROOT;
     /**
      * pdfDir
      * Diretorio onde são armazenados temporariamente as notas em pdf
@@ -145,6 +138,12 @@ class CTeNFePHP {
      */
     public $inuDir = '';
     /**
+     * cccDir
+     * Diretorio onde são armazenados os pedidos das cartas de correção
+     * @var string
+     */
+    public $cccDir = '';
+    /**
      * tempDir
      * Diretorio de arquivos temporarios ou não significativos para a operação do sistema
      * @var string
@@ -205,12 +204,6 @@ class CTeNFePHP {
      * @var string
      */
     public $xmlURLfile='';
-    /**
-     * modSOAP
-     * Indica o metodo SOAP a usar 1-SOAP Nativo ou 2-cURL
-     * @var string
-     */
-    public $modSOAP = '2';
     /**
      * tpAmb
      * Tipo de ambiente 1-produção 2-homologação
@@ -354,7 +347,7 @@ class CTeNFePHP {
      * @var string
      */
     public $dactefont = 'Times';
-   /**
+    /**
      * dacteprinter
      * Estabelece a printer padrão a ser utilizada na impressão da DACTE
      * @var string
@@ -502,7 +495,7 @@ class CTeNFePHP {
             'SP' => 'SP',
             'TO' => 'SVRS',
             'SCAN' => 'SCAN'
-        );
+       );
 
     /**
      * cUFlist
@@ -537,7 +530,7 @@ class CTeNFePHP {
             'SE' => '28',
             'SP' => '35',
             'TO' => '17'
-        );
+       );
 
     /**
      * cUFlist
@@ -572,7 +565,7 @@ class CTeNFePHP {
             '51'=>'MT',
             '52'=>'GO',
             '53'=>'DF'
-        );
+       );
 
     /**
      * __construct
@@ -587,11 +580,10 @@ class CTeNFePHP {
      * @param  array
      * @return boolean true sucesso false Erro
      */
-    public function __construct($aConfig = '') {
-        // Obtem o path da biblioteca
-        $this->raizDir = dirname(dirname( __FILE__ )) . DIRECTORY_SEPARATOR;
+    public function __construct($aConfig = '')
+    {
         // verifica se foi passado uma matriz de configuração na inicialização da classe
-        if(is_array($aConfig)) {
+        if (is_array($aConfig)) {
             $this->tpAmb = $aConfig['ambiente'];
             $this->empName = $aConfig['empresa'];
             $this->UF = $aConfig['UF'];
@@ -610,7 +602,7 @@ class CTeNFePHP {
             $this->dactefont = $aConfig['dacteFonte'];
             $this->dacteprinter = $aConfig['dactePrinter'];
             $this->cteSchemeVer = $aConfig['schemesCTe'];
-            if(isset($aConfig['arquivoURLxmlCTe'])){
+            if (isset($aConfig['arquivoURLxmlCTe'])) {
                 $this->xmlURLfile = $aConfig['arquivoURLxmlCTe'];
             }
             if ($aConfig['proxyIP'] != '') {
@@ -620,7 +612,7 @@ class CTeNFePHP {
                         'PORT' => $aConfig['proxyPORT'],
                         'USER' => $aConfig['proxyUSER'],
                         'PASS' => $aConfig['proxyPASS']
-                    );
+                   );
             }
             if ($aConfig['mailFROM'] != '') {
                 $this->aMAIL = array(
@@ -661,30 +653,29 @@ class CTeNFePHP {
                 $this->dactefont = $dacteFonte;
                 $this->dacteprinter = $dactePrinter;
                 $this->cteSchemeVer = $schemesCTe;
-                if(isset($arquivoURLxmlCTe)){
+                if (isset($arquivoURLxmlCTe)) {
                     $this->xmlURLfile = $arquivoURLxmlCTe;
                 }
                 if ($proxyIP != '') {
                     $this->aProxy = array(
-                            'IP' => $proxyIP,
-                            'PORT' => $proxyPORT,
-                            'USER' => $proxyUSER,
-                            'PASS' => $proxyPASS
-                        );
+                        'IP' => $proxyIP,
+                        'PORT' => $proxyPORT,
+                        'USER' => $proxyUSER,
+                        'PASS' => $proxyPASS
+                    );
                 }
-
                 if ($mailFROM != '') {
                     $this->aMail = array(
-                            'mailFROM' => $mailFROM,
-                            'mailHOST' => $mailHOST,
-                            'mailUSER' => $mailUSER,
-                            'mailPASS' => $mailPASS,
-                            'mailPROTOCOL' => $mailPROTOCOL,
-                            'mailFROMmail' => $mailFROMmail,
-                            'mailFROMname' => $mailFROMname,
-                            'mailREPLYTOmail' => $mailREPLYTOmail,
-                            'mailREPLYTOname' => $mailREPLYTOname
-                        );
+                        'mailFROM' => $mailFROM,
+                        'mailHOST' => $mailHOST,
+                        'mailUSER' => $mailUSER,
+                        'mailPASS' => $mailPASS,
+                        'mailPROTOCOL' => $mailPROTOCOL,
+                        'mailFROMmail' => $mailFROMmail,
+                        'mailFROMname' => $mailFROMname,
+                        'mailREPLYTOmail' => $mailREPLYTOmail,
+                        'mailREPLYTOname' => $mailREPLYTOname
+                    );
                 }
             } else {
                 // Caso não exista arquivo de configuração retorna erro
@@ -705,7 +696,7 @@ class CTeNFePHP {
         $this->imgDir =  $this->raizDir . 'images'. DIRECTORY_SEPARATOR;
         // Verifica o ultimo caracter da variável $arqDir
         // se não for um DIRECTORY_SEPARATOR então colocar um
-        if (substr($this->arqDir, -1, 1) != DIRECTORY_SEPARATOR){
+        if (substr($this->arqDir, -1, 1) != DIRECTORY_SEPARATOR) {
             $this->arqDir .= DIRECTORY_SEPARATOR;
         }
         // monta a estrutura de diretorios utilizados na manipulação das CTe
@@ -719,63 +710,68 @@ class CTeNFePHP {
         $this->repDir=$this->envDir . 'reprovadas' . DIRECTORY_SEPARATOR;
         $this->canDir=$this->arqDir . $sAmb . DIRECTORY_SEPARATOR . 'canceladas' . DIRECTORY_SEPARATOR;
         $this->inuDir=$this->arqDir . $sAmb . DIRECTORY_SEPARATOR . 'inutilizadas' . DIRECTORY_SEPARATOR;
+        $this->cccDir=$this->arqDir . $sAmb . DIRECTORY_SEPARATOR . 'cartacorrecao' . DIRECTORY_SEPARATOR;
         $this->temDir=$this->arqDir . $sAmb . DIRECTORY_SEPARATOR . 'temporarias' . DIRECTORY_SEPARATOR;
         $this->recDir=$this->arqDir . $sAmb . DIRECTORY_SEPARATOR . 'recebidas' . DIRECTORY_SEPARATOR;
         $this->conDir=$this->arqDir . $sAmb . DIRECTORY_SEPARATOR . 'consultadas' . DIRECTORY_SEPARATOR;
         $this->pdfDir=$this->arqDir . $sAmb . DIRECTORY_SEPARATOR . 'pdf' . DIRECTORY_SEPARATOR;
         // Monta a arvore de diretórios necessária e estabelece permissões de acesso
-        if (!is_dir($this->arqDir)){
+        if (!is_dir($this->arqDir)) {
             mkdir($this->arqDir, 0777);
         }
-        if (!is_dir($this->arqDir . DIRECTORY_SEPARATOR . $sAmb)){
+        if (!is_dir($this->arqDir . DIRECTORY_SEPARATOR . $sAmb)) {
             mkdir($this->arqDir . DIRECTORY_SEPARATOR . $sAmb, 0777);
         }
-        if (!is_dir($this->entDir)){
+        if (!is_dir($this->entDir)) {
             mkdir($this->entDir, 0777);
         }
-        if (!is_dir($this->assDir)){
+        if (!is_dir($this->assDir)) {
             mkdir($this->assDir, 0777);
         }
-        if (!is_dir($this->valDir)){
+        if (!is_dir($this->valDir)) {
             mkdir($this->valDir, 0777);
         }
-        if (!is_dir($this->rejDir)){
+        if (!is_dir($this->rejDir)) {
             mkdir($this->rejDir, 0777);
         }
-        if (!is_dir($this->envDir)){
+        if (!is_dir($this->envDir)) {
             mkdir($this->envDir, 0777);
         }
-        if (!is_dir($this->aprDir)){
+        if (!is_dir($this->aprDir)) {
             mkdir($this->aprDir, 0777);
         }
-        if (!is_dir($this->denDir)){
+        if (!is_dir($this->denDir)) {
             mkdir($this->denDir, 0777);
         }
-        if (!is_dir($this->repDir)){
+        if (!is_dir($this->repDir)) {
             mkdir($this->repDir, 0777);
         }
-        if (!is_dir($this->canDir)){
+        if (!is_dir($this->canDir)) {
             mkdir($this->canDir, 0777);
         }
-        if (!is_dir($this->inuDir)){
+        if (!is_dir($this->inuDir)) {
             mkdir($this->inuDir, 0777);
         }
-        if (!is_dir($this->temDir)){
+        if (!is_dir($this->temDir)) {
             mkdir($this->temDir, 0777);
         }
-        if (!is_dir($this->recDir)){
+        if (!is_dir($this->recDir)) {
             mkdir($this->recDir, 0777);
         }
-        if (!is_dir($this->conDir)){
+        if (!is_dir($this->conDir)) {
             mkdir($this->conDir, 0777);
         }
-        if (!is_dir($this->pdfDir)){
+        if (!is_dir($this->pdfDir)) {
             mkdir($this->pdfDir, 0777);
         }
         // Carregar uma matriz com os dados para acesso aos WebServices SEFAZ
-        $this->aURL = $this->loadSEFAZ($this->raizDir . 'config' . DIRECTORY_SEPARATOR . $this->xmlURLfile, $this->tpAmb, $this->UF);
+        $this->aURL = $this->loadSEFAZ(
+            $this->raizDir.'config'.DIRECTORY_SEPARATOR.$this->xmlURLfile,
+            $this->tpAmb,
+            $this->UF
+        );
         // Se houver erro no carregamento dos certificados passe para erro
-        if (!$retorno = $this->__loadCerts()){
+        if (!$retorno = $this->zLoadCerts()) {
             $this->errStatus = true;
         }
         //estados que participam do horario de verão
@@ -786,20 +782,20 @@ class CTeNFePHP {
             $this->UF == 'MT' ||
             $this->UF == 'MS' ||
             $this->UF == 'RO' ||
-            $this->UF == 'RR' ){
+            $this->UF == 'RR') {
             $this->timeZone = '-04:00';
         }
         //verificar se estamos no horário de verão *** depende da configuração do servidor ***
-        if (date('I') == 1){
+        if (date('I') == 1) {
             //estamos no horario de verão verificar se o estado está incluso
-            if(in_array($this->UF, $aUFhv)) {
+            if (in_array($this->UF, $aUFhv)) {
                 $tz = (int) $this->timeZone;
                 $tz++;
-                $this->timeZone = '-'.sprintf("%02d",abs($tz)).':00'; //poderia ser obtido com date('P')
+                $this->timeZone = '-'.sprintf("%02d", abs($tz)).':00'; //poderia ser obtido com date('P')
             }
         }//fim check horario verao
         return true;
-    } //fim __construct
+    }
 
     /**
      * validXML
@@ -815,14 +811,15 @@ class CTeNFePHP {
      * @param    string  $xsdfile Path completo para o arquivo xsd
      * @return   array   ['status','error']
      */
-    public function validXML($xml='', $xsdFile='', &$aError){
+    public function validXML($xml = '', $xsdFile = '', &$aError = array())
+    {
         $flagOK = true;
         // Habilita a manipulaçao de erros da libxml
         libxml_use_internal_errors(true);
         //verifica se foi passado o xml
-        if(strlen($xml)==0){
+        if (strlen($xml)==0) {
             $msg = 'Você deve passar o conteudo do xml assinado como parâmetro.';
-            $this->__setError($msg);
+            $this->zSetError($msg);
             if ($this->exceptions) {
                 throw new nfephpException($msg);
             }
@@ -835,17 +832,18 @@ class CTeNFePHP {
         $dom->formatOutput = false;
         // carrega o xml tanto pelo string contento o xml como por um path
         libxml_clear_errors();
-        if (is_file($xml)){
-            $dom->load($xml,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
+        if (is_file($xml)) {
+            $dom->load($xml, LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
         } else {
-            $dom->loadXML($xml,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
+            $dom->loadXML($xml, LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
         }
         //recupera os erros da libxml
         $errors = libxml_get_errors();
         if (!empty($errors)) {
             //o dado passado como $docXml não é um xml
-            $msg = 'O dado informado não é um XML ou não foi encontrado. Você deve passar o conteudo de um arquivo xml assinado como parâmetro.';
-            foreach ($errors as $k=>$intError){
+            $msg = 'O dado informado não é um XML ou não foi encontrado. Você deve passar o '
+                    . 'conteudo de um arquivo xml assinado como parâmetro.';
+            foreach ($errors as $k => $intError) {
                 switch ($intError->level) {
                     case LIBXML_ERR_WARNING:
                         $aError[] = " Atençao $intError->code: " . $intError->message;
@@ -859,9 +857,9 @@ class CTeNFePHP {
                 }
                 $msg .= $intError->message;
             }
-            $this->__setError($msg);
+            $this->zSetError($msg);
             if ($this->exceptions) {
-                throw new nfephpException($msg, self::STOP_MESSAGE);
+                throw new nfephpException($msg);
             }
             $aError[] = $msg;
             return false;
@@ -869,28 +867,29 @@ class CTeNFePHP {
         //verificar se a nota contem o protocolo !!!
         $nfeProc = $dom->getElementsByTagName('cteProc')->item(0);
         $Signature = $dom->getElementsByTagName('Signature')->item(0);
-        if (isset($nfeProc)){
-            $msg = "Esse CTe já contêm o protocolo. Não é possivel continuar, como alternativa use a verificação de CTe completo.";
-            $this->__setError($msg);
+        if (isset($nfeProc)) {
+            $msg = "Esse CTe já contêm o protocolo. Não é possivel continuar, como alternativa "
+                    . "use a verificação de CTe completo.";
+            $this->zSetError($msg);
             if ($this->exceptions) {
-                throw new nfephpException($msg, self::STOP_MESSAGE);
+                throw new nfephpException($msg);
             }
             $aError[] = "";
             return true;
         }
-        if($xsdFile==''){
+        if ($xsdFile=='') {
             //não foi passado o xsd então determinar qual o arquivo de schema válido
             //buscar o nome do scheme
             //extrair a tag com o numero da versão da CTe
             $node = $dom->getElementsByTagName('infCte')->item(0);
             //obtem a versão do layout da NFe
             $ver = trim($node->getAttribute("versao"));
-            $aFile = $this->listDir($this->xsdDir . $this->schemeVer. DIRECTORY_SEPARATOR,'cte_v*.xsd',true);
+            $aFile = $this->listDir($this->xsdDir.$this->schemeVer.DIRECTORY_SEPARATOR, 'cte_v*.xsd', true);
             if (!$aFile[0]) {
                 $msg = "Erro na localização do schema xsd.\n";
-                $this->__setError($msg);
+                $this->zSetError($msg);
                 if ($this->exceptions) {
-                    throw new nfephpException($msg, self::STOP_CRITICAL);
+                    throw new nfephpException($msg);
                 }
                 $aError[] = "Erro na localização do schema xsd.";
                 return false;
@@ -898,29 +897,38 @@ class CTeNFePHP {
                 $xsdFile = $aFile[0];
             }
         }
-        // VAMOS PEGAR O XSD DO MODAL BASEADO NO NOME DO ARQUIVO XSD QUE RECEBEMOS, ELE DEVE ESTAR NA MESMA PASTA COM NOME:
+        // VAMOS PEGAR O XSD DO MODAL BASEADO NO NOME DO ARQUIVO XSD QUE RECEBEMOS,
+        // ELE DEVE ESTAR NA MESMA PASTA COM NOME:
         //  cte_v1.04.xsd -> cteModalXXXXXXXX_v1.04.xsd
         //  ou seja 3 primeiras letras iguais, e ultimas 10 letras também, e no meio escrito Modal e o nome do modal...
-        $tmp1=dirname($xsdFile);
-        $tmp2=basename($xsdFile);
-        $tmp_nome_modal=$nfeProc = $dom->getElementsByTagName('modal')->item(0);
-        if(!empty($tmp_nome_modal)){
+        $tmp1 = dirname($xsdFile);
+        $tmp2 = basename($xsdFile);
+        $tmp_nome_modal = $nfeProc = $dom->getElementsByTagName('modal')->item(0);
+        if (!empty($tmp_nome_modal)) {
             $tmp_nome_modal=$tmp_nome_modal->nodeValue;
-            if($tmp_nome_modal=='01')    $tmp_nome_modal='Rodoviario';
-            elseif($tmp_nome_modal=='02')    $tmp_nome_modal='Aereo';
-            elseif($tmp_nome_modal=='03')    $tmp_nome_modal='Aquaviario';
-            elseif($tmp_nome_modal=='04')    $tmp_nome_modal='Ferroviario';
-            elseif($tmp_nome_modal=='05')    $tmp_nome_modal='Dutoviario';
-            else    $tmp_nome_modal='';
-        }else{
+            if ($tmp_nome_modal=='01') {
+                $tmp_nome_modal='Rodoviario';
+            } elseif ($tmp_nome_modal=='02') {
+                $tmp_nome_modal='Aereo';
+            } elseif ($tmp_nome_modal=='03') {
+                $tmp_nome_modal='Aquaviario';
+            } elseif ($tmp_nome_modal=='04') {
+                $tmp_nome_modal='Ferroviario';
+            } elseif ($tmp_nome_modal=='05') {
+                $tmp_nome_modal='Dutoviario';
+            } else {
+                $tmp_nome_modal='';
+            }
+        } else {
             $tmp_nome_modal='';
         }
-        $xsdFile_modal=$tmp1. DIRECTORY_SEPARATOR . substr($tmp2,0,3)."Modal".$tmp_nome_modal.substr($tmp2,-10);
-        if(!is_file($xsdFile_modal)){
+        $xsdFile_modal=$tmp1. DIRECTORY_SEPARATOR . substr($tmp2, 0, 3)."Modal"
+                . $tmp_nome_modal.substr($tmp2, -10);
+        if (!is_file($xsdFile_modal)) {
             $msg = "Erro na localização do schema xsd para o modal $tmp_nome_modal.\n";
-            $this->__setError($msg);
+            $this->zSetError($msg);
             if ($this->exceptions) {
-                throw new nfephpException($msg, self::STOP_CRITICAL);
+                throw new nfephpException($msg);
             }
             $aError[] = "Erro na localização do schema xsd do modal.";
             return false;
@@ -928,31 +936,29 @@ class CTeNFePHP {
         //limpa erros anteriores
         libxml_clear_errors();
         // valida o xml com o xsd
-        if ( !$dom->schemaValidate($xsdFile) ) {
-
-            /**
-             * Se não foi possível validar, você pode capturar
-             * todos os erros em um array
-             * Cada elemento do array $arrayErrors
-             * será um objeto do tipo LibXmlError
-             */
+        if (!$dom->schemaValidate($xsdFile)) {
+            //Se não foi possível validar, você pode capturar
+            //todos os erros em um array
+            //Cada elemento do array $arrayErrors será um objeto do tipo LibXmlError
             // carrega os erros em um array
             $aIntErrors = libxml_get_errors();
             $flagOK = false;
-            if (!isset($Signature)){
+            if (!isset($Signature)) {
                 // remove o erro de falta de assinatura
-                foreach ($aIntErrors as $k=>$intError){
-                    if(strpos($intError->message,'( {http://www.w3.org/2000/09/xmldsig#}Signature )')!==false){
-                        // remove o erro da assinatura, se tiver outro meio melhor (atravez dos erros de codigo) e alguem souber como tratar por eles, por favor contribua...
+                foreach ($aIntErrors as $k => $intError) {
+                    if (strpos($intError->message, '({http://www.w3.org/2000/09/xmldsig#}Signature)') !== false) {
+                        // remove o erro da assinatura, se tiver outro meio melhor
+                        // (atraves dos erros de codigo) e alguem souber como tratar por eles,
+                        // por favor contribua...
                         unset($aIntErrors[$k]);
                         continue;
                     }
                 }
                 reset($aIntErrors);
                 $flagOK = true;
-            }//fim teste Signature
+            }
             $msg = '';
-            foreach ($aIntErrors as $intError){
+            foreach ($aIntErrors as $intError) {
                 $flagOK = false;
                 $en = array("{http://www.portalfiscal.inf.br/cte}"
                             ,"[facet 'pattern']"
@@ -996,41 +1002,46 @@ class CTeNFePHP {
 
                 switch ($intError->level) {
                     case LIBXML_ERR_WARNING:
-                        $aError[] = " Atençao $intError->code: " . str_replace($en,$pt,$intError->message);
+                        $aError[] = " Atençao $intError->code: " . str_replace($en, $pt, $intError->message);
                         break;
                     case LIBXML_ERR_ERROR:
-                        $aError[] = " Erro $intError->code: " . str_replace($en,$pt,$intError->message);
+                        $aError[] = " Erro $intError->code: " . str_replace($en, $pt, $intError->message);
                         break;
                     case LIBXML_ERR_FATAL:
-                        $aError[] = " Erro Fatal $intError->code: " . str_replace($en,$pt,$intError->message);
+                        $aError[] = " Erro Fatal $intError->code: " . str_replace($en, $pt, $intError->message);
                         break;
                 }
-                $msg .= str_replace($en,$pt,$intError->message);
+                $msg .= str_replace($en, $pt, $intError->message);
             }
-
         } else {
             $flagOK = true;
         }
-        if(!$flagOK){
-            $this->__setError($msg, self::STOP_MESSAGE);
+        if (!$flagOK) {
+            $this->zSetError($msg);
             if ($this->exceptions) {
                 throw new nfephpException($msg);
             }
         }
         // validar o schema do modal agora.....
-        if($tmp_nome_modal=='Rodoviario')    $tmp_tag='rodo';
-        elseif($tmp_nome_modal=='Aereo')    $tmp_tag='aereo';
-        elseif($tmp_nome_modal=='Aquaviario')    $tmp_tag='aquav';
-        elseif($tmp_nome_modal=='Ferroviario')    $tmp_tag='ferrov';
-        elseif($tmp_nome_modal=='Dutoviario')    $tmp_tag='duto';
+        if ($tmp_nome_modal=='Rodoviario') {
+            $tmp_tag='rodo';
+        } elseif ($tmp_nome_modal=='Aereo') {
+            $tmp_tag='aereo';
+        } elseif ($tmp_nome_modal=='Aquaviario') {
+            $tmp_tag='aquav';
+        } elseif ($tmp_nome_modal=='Ferroviario') {
+            $tmp_tag='ferrov';
+        } elseif ($tmp_nome_modal=='Dutoviario') {
+            $tmp_tag='duto';
+        }
         $tmp_modal=$dom->getElementsByTagName('infModal')->item(0);
-        if ( !empty($tmp_modal) ) {
+        if (!empty($tmp_modal)) {
             $tmp_modal2=$tmp_modal->getElementsByTagName($tmp_tag)->item(0);
-            if(empty($tmp_modal2)){
+            if (empty($tmp_modal2)) {
                 $msg = "Erro para localizar a tag do modal $tmp_tag no xml da CTe.\n";
-                $this->__setError($msg);
+                $this->zSetError($msg);
                 if ($this->exceptions) {
-                    throw new nfephpException($msg, self::STOP_CRITICAL);
+                    throw new nfephpException($msg);
                 }
                 $aError[] = "Erro para localizar a tag do modal $tmp_tag no xml da CTe.";
                 return false;
@@ -1039,36 +1050,37 @@ class CTeNFePHP {
             $dom = new DOMDocument('1.0', 'utf-8');
             $dom->formatOutput = true;
             $dom->preserveWhiteSpace = false;
-            $tmp_modal2=$dom->importNode( $tmp_modal2 ,true);
+            $tmp_modal2=$dom->importNode($tmp_modal2, true);
             $dom->appendChild($tmp_modal2);
             //limpa erros anteriores
             libxml_clear_errors();
             // valida o xml com o xsd
-            if ( !$dom->schemaValidate($xsdFile_modal) ) {
+            if (!$dom->schemaValidate($xsdFile_modal)) {
                 /**
                  * Se não foi possível validar, você pode capturar
                  * todos os erros em um array
                  * Cada elemento do array $arrayErrors
                  * será um objeto do tipo LibXmlError
                  */
-                 // carrega os erros em um array
-                 $aIntErrors = libxml_get_errors();
-                 $flagOK = false;
-                 if (!isset($Signature)){
+                // carrega os erros em um array
+                $aIntErrors = libxml_get_errors();
+                $flagOK = false;
+                if (!isset($Signature)) {
                     // remove o erro de falta de assinatura
-                    foreach ($aIntErrors as $k=>$intError){
-                        if(strpos($intError->message,'( {http://www.w3.org/2000/09/xmldsig#}Signature )')!==false){
+                    foreach ($aIntErrors as $k => $intError) {
+                        if (strpos($intError->message, '({http://www.w3.org/2000/09/xmldsig#}Signature)') !== false) {
                             // isso é inutil, mas é bom ter por via das duvidas....
-                            // remove o erro da assinatura, se tiver outro meio melhor (atravez dos erros de codigo) e alguem souber como tratar por eles, por favor contribua...
+                            // remove o erro da assinatura, se tiver outro meio melhor (atravez dos erros de codigo)
+                            // e alguem souber como tratar por eles, por favor contribua...
                             unset($aIntErrors[$k]);
                             continue;
-                         }
+                        }
                     }
                     reset($aIntErrors);
                     $flagOK = true;
-                 }//fim teste Signature
-                 $msg = '';
-                 foreach ($aIntErrors as $intError){
+                }//fim teste Signature
+                $msg = '';
+                foreach ($aIntErrors as $intError) {
                     $flagOK = false;
                     $en = array("{http://www.portalfiscal.inf.br/cte}"
                         ,"[facet 'pattern']"
@@ -1112,29 +1124,29 @@ class CTeNFePHP {
 
                     switch ($intError->level) {
                         case LIBXML_ERR_WARNING:
-                            $aError[] = " Atençao $intError->code: " . str_replace($en,$pt,$intError->message);
+                            $aError[] = " Atençao $intError->code: " . str_replace($en, $pt, $intError->message);
                             break;
                         case LIBXML_ERR_ERROR:
-                            $aError[] = " Erro $intError->code: " . str_replace($en,$pt,$intError->message);
+                            $aError[] = " Erro $intError->code: " . str_replace($en, $pt, $intError->message);
                             break;
                         case LIBXML_ERR_FATAL:
-                            $aError[] = " Erro Fatal $intError->code: " . str_replace($en,$pt,$intError->message);
+                            $aError[] = " Erro Fatal $intError->code: " . str_replace($en, $pt, $intError->message);
                             break;
                     }
-                    $msg .= str_replace($en,$pt,$intError->message);
+                    $msg .= str_replace($en, $pt, $intError->message);
                 }
             } else {
                 $flagOK = true;
             }
-            if(!$flagOK){
-                $this->__setError($msg, self::STOP_MESSAGE);
+            if (!$flagOK) {
+                $this->zSetError($msg);
                 if ($this->exceptions) {
                     throw new nfephpException($msg);
                 }
             }
         }
         return $flagOK;
-    } //fim validXML
+    }
 
     /**
      * addProt
@@ -1146,90 +1158,89 @@ class CTeNFePHP {
      * @param   string $protfile path completo para o arquivo contendo o protocolo
      * @return  mixed false se erro ou string Retorna a CTe com o protocolo
      */
-    public function addProt($ctefile='', $protfile='') {
-            if($ctefile == '' || $protfile=='' ){
-                $this->errStatus = true;
-                $this->errMsg = ' Não foi passado algum arquivo !! ';
-                return false;
-            }
-            if (!is_file($ctefile) || !is_file($protfile)){
-                $this->errStatus = true;
-                $this->errMsg = ' Arquivo não localizado !! ';
-                return false;
-            }
-            // Protocolo do lote enviado
-            $prot = new DOMDocument();
-            $prot->formatOutput = false;
-            $prot->preserveWhiteSpace = false;
-
-            // CTe enviada
-            $doccte = new DOMDocument();
-            $doccte->formatOutput = false;
-            $doccte->preserveWhiteSpace = false;
-
-            // Carrega o arquivo na veriável
-            $xmlcte = file_get_contents($ctefile);
-            $doccte->loadXML($xmlcte, LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
-            $cte = $doccte->getElementsByTagName("CTe")->item(0);
-            $infCTe = $doccte->getElementsByTagName("infCte")->item(0);
-            $versao = trim($infCTe->getAttribute("versao"));
-            // Carrega o protocolo e seus dados
-            $xmlprot = file_get_contents($protfile);
-            $prot->loadXML($xmlprot, LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
-            $protCTe = $prot->getElementsByTagName("protCTe")->item(0);
-            $protver = trim($protCTe->getAttribute("versao"));
-            $tpAmb = $prot->getElementsByTagName("tpAmb")->item(0)->nodeValue;
-            $verAplic = $prot->getElementsByTagName("verAplic")->item(0)->nodeValue;
-            $chCTe = $prot->getElementsByTagName("chCTe")->item(0)->nodeValue;
-            $dhRecbto = $prot->getElementsByTagName("dhRecbto")->item(0)->nodeValue;
-            $nProt = $prot->getElementsByTagName("nProt")->item(0)->nodeValue;
-            $digVal = $prot->getElementsByTagName("digVal")->item(0)->nodeValue;
-            $cStat = $prot->getElementsByTagName("cStat")->item(0)->nodeValue;
-            $xMotivo = $prot->getElementsByTagName("xMotivo")->item(0)->nodeValue;
-            // Cria a CTe processada com a tag do protocolo
-            $procCTe = new DOMDocument('1.0', 'utf-8');
-            $procCTe->formatOutput = false;
-            $procCTe->preserveWhiteSpace = false;
-            // Cria a tag cteProc
-            $cteProc = $procCTe->createElement('cteProc');
-            $procCTe->appendChild($cteProc);
-            // Estabele o atributo de versão
-            $cteProc_att1 = $cteProc->appendChild($procCTe->createAttribute('versao'));
-            $cteProc_att1->appendChild($procCTe->createTextNode($protver));
-            // Estabelece o atributo xmlns
-            $cteProc_att2 = $cteProc->appendChild($procCTe->createAttribute('xmlns'));
-            $cteProc_att2->appendChild($procCTe->createTextNode($this->URLcte));
-            // Inclui CTe
-            $node = $procCTe->importNode($cte, true);
-            $cteProc->appendChild($node);
-            // Cria tag protCTe
-            $protCTe = $procCTe->createElement('protCTe');
-            $cteProc->appendChild($protCTe);
-            // Estabele o atributo de versão
-            $protCTe_att1 = $protCTe->appendChild($procCTe->createAttribute('versao'));
-            $protCTe_att1->appendChild($procCTe->createTextNode($versao));
-            // Cria tag infProt
-            $infProt = $procCTe->createElement('infProt');
-            $protCTe->appendChild($infProt);
-            $infProt->appendChild($procCTe->createElement('tpAmb', $tpAmb));
-            $infProt->appendChild($procCTe->createElement('verAplic', $verAplic));
-            $infProt->appendChild($procCTe->createElement('chCTe', $chCTe));
-            $infProt->appendChild($procCTe->createElement('dhRecbto', $dhRecbto));
-            $infProt->appendChild($procCTe->createElement('nProt', $nProt));
-            $infProt->appendChild($procCTe->createElement('digVal', $digVal));
-            $infProt->appendChild($procCTe->createElement('cStat', $cStat));
-            $infProt->appendChild($procCTe->createElement('xMotivo', $xMotivo));
-            // Salva o xml como string em uma variável
-            $procXML = $procCTe->saveXML();
-            // Remove as informações indesejadas
-            $procXML = str_replace('default:', '', $procXML);
-            $procXML = str_replace(':default', '', $procXML);
-            $procXML = str_replace("\n", '', $procXML);
-            $procXML = str_replace("\r", '', $procXML);
-            $procXML = str_replace("\s", '', $procXML);
-            $procXML = str_replace('CTe xmlns="http://www.portalfiscal.inf.br/cte" xmlns="http://www.w3.org/2000/09/xmldsig#"', 'CTe xmlns="http://www.portalfiscal.inf.br/cte"', $procXML);
-            return $procXML;
-    } // Fim addProt
+    public function addProt($ctefile = '', $protfile = '')
+    {
+        if ($ctefile == '' || $protfile=='') {
+            $this->errStatus = true;
+            $this->errMsg = ' Não foi passado algum arquivo !! ';
+            return false;
+        }
+        if (!is_file($ctefile) || !is_file($protfile)) {
+            $this->errStatus = true;
+            $this->errMsg = ' Arquivo não localizado !! ';
+            return false;
+        }
+        // Protocolo do lote enviado
+        $prot = new DOMDocument();
+        $prot->formatOutput = false;
+        $prot->preserveWhiteSpace = false;
+        // CTe enviada
+        $doccte = new DOMDocument();
+        $doccte->formatOutput = false;
+        $doccte->preserveWhiteSpace = false;
+        // Carrega o arquivo na veriável
+        $xmlcte = file_get_contents($ctefile);
+        $doccte->loadXML($xmlcte, LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
+        $cte = $doccte->getElementsByTagName("CTe")->item(0);
+        $infCTe = $doccte->getElementsByTagName("infCte")->item(0);
+        $versao = trim($infCTe->getAttribute("versao"));
+        // Carrega o protocolo e seus dados
+        $xmlprot = file_get_contents($protfile);
+        $prot->loadXML($xmlprot, LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
+        $protCTe = $prot->getElementsByTagName("protCTe")->item(0);
+        $protver = trim($protCTe->getAttribute("versao"));
+        $tpAmb = $prot->getElementsByTagName("tpAmb")->item(0)->nodeValue;
+        $verAplic = $prot->getElementsByTagName("verAplic")->item(0)->nodeValue;
+        $chCTe = $prot->getElementsByTagName("chCTe")->item(0)->nodeValue;
+        $dhRecbto = $prot->getElementsByTagName("dhRecbto")->item(0)->nodeValue;
+        $nProt = $prot->getElementsByTagName("nProt")->item(0)->nodeValue;
+        $digVal = $prot->getElementsByTagName("digVal")->item(0)->nodeValue;
+        $cStat = $prot->getElementsByTagName("cStat")->item(0)->nodeValue;
+        $xMotivo = $prot->getElementsByTagName("xMotivo")->item(0)->nodeValue;
+        // Cria a CTe processada com a tag do protocolo
+        $procCTe = new DOMDocument('1.0', 'utf-8');
+        $procCTe->formatOutput = false;
+        $procCTe->preserveWhiteSpace = false;
+        // Cria a tag cteProc
+        $cteProc = $procCTe->createElement('cteProc');
+        $procCTe->appendChild($cteProc);
+        // Estabele o atributo de versão
+        $cteProc_att1 = $cteProc->appendChild($procCTe->createAttribute('versao'));
+        $cteProc_att1->appendChild($procCTe->createTextNode($protver));
+        // Estabelece o atributo xmlns
+        $cteProc_att2 = $cteProc->appendChild($procCTe->createAttribute('xmlns'));
+        $cteProc_att2->appendChild($procCTe->createTextNode($this->URLcte));
+        // Inclui CTe
+        $node = $procCTe->importNode($cte, true);
+        $cteProc->appendChild($node);
+        // Cria tag protCTe
+        $protCTe = $procCTe->createElement('protCTe');
+        $cteProc->appendChild($protCTe);
+        // Estabele o atributo de versão
+        $protCTe_att1 = $protCTe->appendChild($procCTe->createAttribute('versao'));
+        $protCTe_att1->appendChild($procCTe->createTextNode($versao));
+        // Cria tag infProt
+        $infProt = $procCTe->createElement('infProt');
+        $protCTe->appendChild($infProt);
+        $infProt->appendChild($procCTe->createElement('tpAmb', $tpAmb));
+        $infProt->appendChild($procCTe->createElement('verAplic', $verAplic));
+        $infProt->appendChild($procCTe->createElement('chCTe', $chCTe));
+        $infProt->appendChild($procCTe->createElement('dhRecbto', $dhRecbto));
+        $infProt->appendChild($procCTe->createElement('nProt', $nProt));
+        $infProt->appendChild($procCTe->createElement('digVal', $digVal));
+        $infProt->appendChild($procCTe->createElement('cStat', $cStat));
+        $infProt->appendChild($procCTe->createElement('xMotivo', $xMotivo));
+        // Salva o xml como string em uma variável
+        $procXML = $procCTe->saveXML();
+        // Remove as informações indesejadas
+        $procXML = str_replace(array('default:',':default',"\n","\s","\r"), '', $procXML);
+        $procXML = str_replace(
+            'CTe xmlns="http://www.portalfiscal.inf.br/cte" xmlns="http://www.w3.org/2000/09/xmldsig#"',
+            'CTe xmlns="http://www.portalfiscal.inf.br/cte"',
+            $procXML
+        );
+        return $procXML;
+    }
 
     /**
      * signXML
@@ -1238,20 +1249,21 @@ class CTeNFePHP {
      * os arquivos XML
      *
      * @name signXML
-     * @param    string $docxml String contendo o arquivo XML a ser assinado
+     * @param   string $docxml String contendo o arquivo XML a ser assinado
      * @param   string $tagid TAG do XML que devera ser assinada
-     * @return    mixed false se houve erro ou string com o XML assinado
+     * @return  mixed false se houve erro ou string com o XML assinado
      */
-    public function signXML($docxml, $tagid=''){
-        if(!function_exists('openssl_get_privatekey')){
+    public function signXML($docxml, $tagid = '')
+    {
+        if (!function_exists('openssl_get_privatekey')) {
             return false;
         }
-        if ( $tagid == '' ){
+        if ($tagid == '') {
             $this->errMsg = 'Uma tag deve ser indicada para que seja assinada!!';
             $this->errStatus = true;
             return false;
         }
-        if ( $docxml == '' ){
+        if ($docxml == '') {
             $this->errMsg = 'Um xml deve ser passado para que seja assinado!!';
             $this->errStatus = true;
             return false;
@@ -1271,20 +1283,20 @@ class CTeNFePHP {
         $xmldoc->formatOutput = false;
         // muito importante deixar ativadas as opçoes para limpar os espacos em branco
         // e as tags vazias
-        $xmldoc->loadXML($docxml,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
+        $xmldoc->loadXML($docxml, LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
         $root = $xmldoc->documentElement;
         //extrair a tag com os dados a serem assinados
         $node = $xmldoc->getElementsByTagName($tagid)->item(0);
         $id = trim($node->getAttribute("Id"));
-        $idnome = preg_replace('/[^0-9]/','', $id);
+        $idnome = preg_replace('/[^0-9]/', '', $id);
         //extrai os dados da tag para uma string
-        $dados = $node->C14N(false,false,NULL,NULL);
+        $dados = $node->C14N(false, false, null, null);
         //calcular o hash dos dados
-        $hashValue = hash('sha1',$dados,true);
+        $hashValue = hash('sha1', $dados, true);
         //converte o valor para base64 para serem colocados no xml
         $digValue = base64_encode($hashValue);
         //monta a tag da assinatura digital
-        $Signature = $xmldoc->createElementNS($this->URLdsig,'Signature');
+        $Signature = $xmldoc->createElementNS($this->URLdsig, 'Signature');
         $root->appendChild($Signature);
         $SignedInfo = $xmldoc->createElement('SignedInfo');
         $Signature->appendChild($SignedInfo);
@@ -1316,18 +1328,18 @@ class CTeNFePHP {
             $Reference->appendChild($newNode);
             $newNode->setAttribute('Algorithm', $this->URLDigestMeth);
             //DigestValue
-            $newNode = $xmldoc->createElement('DigestValue',$digValue);
+            $newNode = $xmldoc->createElement('DigestValue', $digValue);
             $Reference->appendChild($newNode);
             // extrai os dados a serem assinados para uma string
-            $dados = $SignedInfo->C14N(false,false,NULL,NULL);
+            $dados = $SignedInfo->C14N(false, false, null, null);
             //inicializa a variavel que irá receber a assinatura
             $signature = '';
             //executa a assinatura digital usando o resource da chave privada
-            $resp = openssl_sign($dados,$signature,$pkeyid);
+            $resp = openssl_sign($dados, $signature, $pkeyid);
             //codifica assinatura para o padrao base64
             $signatureValue = base64_encode($signature);
             //SignatureValue
-            $newNode = $xmldoc->createElement('SignatureValue',$signatureValue);
+            $newNode = $xmldoc->createElement('SignatureValue', $signatureValue);
             $Signature->appendChild($newNode);
             //KeyInfo
             $KeyInfo = $xmldoc->createElement('KeyInfo');
@@ -1336,9 +1348,9 @@ class CTeNFePHP {
             $X509Data = $xmldoc->createElement('X509Data');
             $KeyInfo->appendChild($X509Data);
             //carrega o certificado sem as tags de inicio e fim
-            $cert = $this->__cleanCerts($this->pubKEY);
+            $cert = $this->zCleanCerts($this->pubKEY);
             //X509Certificate
-            $newNode = $xmldoc->createElement('X509Certificate',$cert);
+            $newNode = $xmldoc->createElement('X509Certificate', $cert);
             $X509Data->appendChild($newNode);
             //grava na string o objeto DOM
             $docxml = $xmldoc->saveXML();
@@ -1347,7 +1359,6 @@ class CTeNFePHP {
             //retorna o documento assinado
         return $docxml;
     } //fim signXML
-
 
     /**
      * statusServico
@@ -1360,7 +1371,6 @@ class CTeNFePHP {
      * @name statusServico
      * @param string $UF sigla da Unidade da Federação
      * @param integer $tpAmb tipo de ambiente 1-produção e 2-homologação
-     * @param integer 1 usa o __sendSOAP e 2 usa o __sendSOAP2
      * @return    mixed false ou array conforme exemplo abaixo:
      * array(10) {
      * ["bStat"]     =>  bool(true),
@@ -1375,7 +1385,8 @@ class CTeNFePHP {
      * ["dhRetorno"] =>  string(0)  ""
      * }
     **/
-    public function statusServico($UF = '', $tpAmb = '', $modSOAP = '2') {
+    public function statusServico($UF = '', $tpAmb = '')
+    {
         // Retorno da funçao
         $aRetorno = array('bStat' => false,'cStat' => '','tMed'  => '','dhRecbto' => '','xMotivo' => '','xObs' => '');
         // Caso o parametro tpAmb seja vazio
@@ -1389,7 +1400,7 @@ class CTeNFePHP {
         } else {
             if ($UF != $this->UF || $tpAmb != $this->tpAmb) {
                 // Recarrega as url referentes aos dados passados como parametros para a função
-                $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . "cte_ws1.xml", $tpAmb, $UF);
+                $aURL = $this->loadSEFAZ($this->raizDir.'config'.DIRECTORY_SEPARATOR.$this->xmlURLfile, $tpAmb, $UF);
             }
         }
         // Busca o cUF
@@ -1405,14 +1416,13 @@ class CTeNFePHP {
         // Montagem do namespace do serviço
         $namespace = $this->URLPortal . '/wsdl/' . $servico;
         // Montagem do cabeçalho da comunicação SOAP
-        $cabec = '<cteCabecMsg xmlns="'. $namespace . '"><cUF>' . $cUF . '</cUF><versaoDados>' . $versao . '</versaoDados></cteCabecMsg>';
+        $cabec = '<cteCabecMsg xmlns="'. $namespace . '"><cUF>' . $cUF . '</cUF><versaoDados>' . $versao
+                . '</versaoDados></cteCabecMsg>';
         // Montagem dos dados da mensagem SOAP
-        $dados = '<cteDadosMsg xmlns="' . $namespace . '"><consStatServCte xmlns="' . $this->URLPortal . '" versao="' . $versao . '"><tpAmb>' . $tpAmb . '</tpAmb><xServ>STATUS</xServ></consStatServCte></cteDadosMsg>';
-        if ($modSOAP == '2') {
-            $retorno = $this->__sendSOAP2($urlservico, $namespace, $cabec, $dados, $metodo, $tpAmb);
-        } else {
-            $retorno = $this->__sendSOAP($urlservico, $namespace, $cabec, $dados, $metodo, $tpAmb, $UF);
-        }
+        $dados = '<cteDadosMsg xmlns="' . $namespace . '"><consStatServCte xmlns="' . $this->URLPortal
+                . '" versao="' . $versao . '"><tpAmb>' . $tpAmb . '</tpAmb><xServ>STATUS</xServ>'
+                . '</consStatServCte></cteDadosMsg>';
+        $retorno = $this->zSendSOAP($urlservico, $namespace, $cabec, $dados, $metodo, $tpAmb);
         // Verifica o retorno do SOAP
         if (isset($retorno)) {
             // Tratar dados de retorno
@@ -1420,9 +1430,10 @@ class CTeNFePHP {
             $doc->formatOutput = false;
             $doc->preserveWhiteSpace = false;
             $doc->loadXML($retorno, LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
-            $cStat = !empty($doc->getElementsByTagName('cStat')->item(0)->nodeValue) ? $doc->getElementsByTagName('cStat')->item(0)->nodeValue : '';
+            $cStat = !empty($doc->getElementsByTagName('cStat')->item(0)->nodeValue) ?
+                    $doc->getElementsByTagName('cStat')->item(0)->nodeValue : '';
             //certifica que existe o elemento "cStat" no XML de retortno da SEFAZ.
-            if ($cStat == ''){
+            if ($cStat == '') {
                 $this->errStatus = true;
                 $this->errMsg = 'Nao existe o elemento "cStat" no XML de retorno da SEFAZ, erro!!';
                 return false;
@@ -1439,13 +1450,22 @@ class CTeNFePHP {
             // Código da UF que atendeu a solicitação
             $aRetorno['cUF'] = $doc->getElementsByTagName('cUF')->item(0)->nodeValue;
             // Data e hora da mensagem
-            $aRetorno['dhRecbto'] = date('d/m/Y H:i:s', $this->__convertTime($doc->getElementsByTagName('dhRecbto')->item(0)->nodeValue));
+            $aRetorno['dhRecbto'] = date(
+                'd/m/Y H:i:s',
+                $this->zConvertTime($doc->getElementsByTagName('dhRecbto')->item(0)->nodeValue)
+            );
             // Tempo médio de resposta, em segundos (opcional)
-            $aRetorno['tMed'] = !empty($doc->getElementsByTagName('tMed')->item(0)->nodeValue) ? $doc->getElementsByTagName('tMed')->item(0)->nodeValue : '';
+            $aRetorno['tMed'] = !empty($doc->getElementsByTagName('tMed')->item(0)->nodeValue) ?
+                    $doc->getElementsByTagName('tMed')->item(0)->nodeValue : '';
             // Data e hora prevista para o retorno do webservice (opcional)
-            $aRetorno['dhRetorno'] = !empty($doc->getElementsByTagName('dhRetorno')->item(0)->nodeValue) ? date('d/m/Y H:i:s', $this->__convertTime($doc->getElementsByTagName('dhRetorno')->item(0)->nodeValue)) : '';
+            $aRetorno['dhRetorno'] = !empty($doc->getElementsByTagName('dhRetorno')->item(0)->nodeValue) ?
+                    date(
+                        'd/m/Y H:i:s',
+                        $this->zConvertTime($doc->getElementsByTagName('dhRetorno')->item(0)->nodeValue)
+                    ) : '';
             // Obervações (opcional)
-            $aRetorno['xObs'] = !empty($doc->getElementsByTagName('xObs')->item(0)->nodeValue) ? $doc->getElementsByTagName('xObs')->item(0)->nodeValue : '';
+            $aRetorno['xObs'] = !empty($doc->getElementsByTagName('xObs')->item(0)->nodeValue) ?
+                    $doc->getElementsByTagName('xObs')->item(0)->nodeValue : '';
         } else {
             $this->errStatus = true;
             $this->errMsg = 'Nao houve retorno Soap verifique a mensagem de erro e o debug!!';
@@ -1466,10 +1486,10 @@ class CTeNFePHP {
      * @param   string  $CNPJ
      * @param   string  $CPF
      * @param   string  $tpAmb
-     * @param   integer $modSOAP    1 usa __sendSOAP e 2 usa __sendSOAP2
      * @return    mixed false se falha ou array se retornada informação
      **/
-    public function consultaCadastro($UF, $CNPJ = '', $IE = '', $CPF = '', $tpAmp = '', $modSOAP = '2') {
+    public function consultaCadastro($UF, $CNPJ = '', $IE = '', $CPF = '', $tpAmp = '')
+    {
         // Variavel de retorno do metodo
         $aRetorno = array('bStat' => false,'cStat' => '','dados' => array());
         $flagIE = false;
@@ -1514,7 +1534,7 @@ class CTeNFePHP {
         // Caso a sigla do estado seja diferente do emitente ou o ambiente seja diferente
         if ($UF != $this->UF || $tpAmb != $this->tpAmb) {
             // Recarrega as url referentes aos dados passados como parametros para a função
-            $aURL = $this->loadSEFAZ($this->raizDir . 'config' . DIRECTORY_SEPARATOR . "cte_ws1.xml", $tpAmb, $UF);
+            $aURL = $this->loadSEFAZ($this->raizDir.'config'.DIRECTORY_SEPARATOR.$this->xmlURLfile, $tpAmb, $UF);
         }
         // Busca o cUF
         $cUF = $this->cUFlist[$UF];
@@ -1534,19 +1554,18 @@ class CTeNFePHP {
             return false;
         }
         // Montagem do cabeçalho da comunicação SOAP
-        $cabec = '<cteCabecMsg xmlns="' . $namespace . '"><cUF>' . $cUF . '</cUF><versaoDados>' . $versao . '</versaoDados></cteCabecMsg>';
+        $cabec = '<cteCabecMsg xmlns="' . $namespace . '"><cUF>' . $cUF . '</cUF><versaoDados>'
+                . $versao . '</versaoDados></cteCabecMsg>';
         // Montagem dos dados da mensagem SOAP
-        $dados = '<cteDadosMsg xmlns="' . $namespace . '"><consCad xmlns="' . $this->URLcte . '" versao="' . $versao . '"><infCons><xServ>CONS-CAD</xServ><uf>' . $UF . '</uf>' . $filtro . '</infCons></consCad><cteDadosMsg>';
+        $dados = '<cteDadosMsg xmlns="' . $namespace . '"><consCad xmlns="' . $this->URLcte
+                . '" versao="' . $versao . '"><infCons><xServ>CONS-CAD</xServ><uf>' . $UF
+                . '</uf>' . $filtro . '</infCons></consCad><cteDadosMsg>';
         // Envia a solicitação via SOAP
-        if ($modSOAP == 2){
-            $retorno = $this->__sendSOAP2($urlservico, $namespace, $cabec, $dados, $metodo, $tpAmb);
-        } else {
-            $retorno = $this->__sendSOAP($urlservico, $namespace, $cabec, $dados, $metodo, $tpAmb, $UF);
-        }
+        $retorno = $this->zSendSOAP($urlservico, $namespace, $cabec, $dados, $metodo, $tpAmb);
         return $aRetorno;
     } //Fim consultaCadastro
 
-   /**
+    /**
      * sendLot
      * Envia lote de Conhecimento Eletronico para a SEFAZ.
      * Este método pode enviar uma ou mais CTe para o SEFAZ, desde que,
@@ -1554,21 +1573,23 @@ class CTeNFePHP {
      * Este processo enviará somente até 50 CTe em cada Lote
      *
      * @name sendLot
-     * @param    array   $aCTe conhecimento de transporte em xml uma em cada campo do array unidimensional MAX 50
+     * @param   array   $aCTe conhecimento de transporte em xml uma em cada campo do array unidimensional MAX 50
      * @param   integer $id     id do lote e um numero que deve ser gerado pelo sistema
      *                          a cada envio mesmo que seja de apenas uma CTe
-     * @param   integer $modSOAP 1 usa __sendSOP e 2 usa __sendSOAP2
-     * @return    mixed    false ou array ['bStat'=>false,'cStat'=>'','xMotivo'=>'','dhRecbto'=>'','nRec'=>'']
-     * @todo Incluir regra de validação para ambiente de homologação/produção vide NT2011.002
-    **/
-    public function sendLot($aCTe, $id, $modSOAP = '2') {
+     * @return  mixed    false ou array ['bStat'=>false,'cStat'=>'','xMotivo'=>'','dhRecbto'=>'','nRec'=>'']
+     **/
+    public function sendLot($aCTe, $id)
+    {
             // Variavel de retorno do metodo
         $aRetorno = array('bStat'=>false,'cStat'=>'','xMotivo'=>'','dhRecbto'=>'','nRec'=>'');
         // Verifica se o SCAN esta habilitado
-            if (!$this->enableSCAN){
-            $aURL = $this->aURL;
-        } else {
-            $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . "cte_ws1.xml",$this->tpAmb,'SCAN');
+        $aURL = $this->aURL;
+        if ($this->enableSCAN) {
+            $aURL = $this->loadSEFAZ(
+                $this->raizDir.'config'.DIRECTORY_SEPARATOR.$this->xmlURLfile,
+                $this->tpAmb,
+                'SCAN'
+            );
         }
         // Identificação do serviço
         $servico = 'CteRecepcao';
@@ -1594,39 +1615,47 @@ class CTeNFePHP {
         // Monta string com todas as CTe enviadas no array
         $sCTe = implode('', $aCTe);
             // Remover <?xml version="1.0" encoding=... das CTe pois somente uma dessas tags pode exitir na mensagem
-        $sCTe = str_replace(array('<?xml version="1.0" encoding="utf-8"?>', '<?xml version="1.0" encoding="UTF-8"?>'), '', $sCTe);
+        $sCTe = str_replace(
+            array('<?xml version="1.0" encoding="utf-8"?>', '<?xml version="1.0" encoding="UTF-8"?>'),
+            '',
+            $sCTe
+        );
         $sCTe = str_replace(array("\r", "\n", "\s"), "", $sCTe);
         // Montagem do cabeçalho da comunicação SOAP
-        $cabec = '<cteCabecMsg xmlns="' . $namespace . '"><cUF>' . $this->cUF . '</cUF><versaoDados>' . $versao . '</versaoDados></cteCabecMsg>';
+        $cabec = '<cteCabecMsg xmlns="'.$namespace.'"><cUF>'.$this->cUF.'</cUF><versaoDados>'
+                . $versao . '</versaoDados></cteCabecMsg>';
         // Montagem dos dados da mensagem SOAP
-        $dados = '<cteDadosMsg xmlns="' . $namespace . '"><enviCTe xmlns="' . $this->URLPortal . '" versao="' . $versao . '"><idLote>' . $id . '</idLote>'. $sCTe . '</enviCTe></cteDadosMsg>';
+        $dados = '<cteDadosMsg xmlns="'.$namespace.'"><enviCTe xmlns="'.$this->URLPortal
+                . '" versao="'.$versao.'"><idLote>'.$id.'</idLote>'.$sCTe.'</enviCTe></cteDadosMsg>';
         // Envia dados via SOAP
-            if ($modSOAP == '2'){
-            $retorno = $this->__sendSOAP2($urlservico, $namespace, $cabec, $dados, $metodo, $this->tpAmb);
-        } else {
-            $retorno = $this->__sendSOAP($urlservico, $namespace, $cabec, $dados, $metodo, $this->tpAmb, $this->UF);
-        }
+        $retorno = $this->zSendSOAP($urlservico, $namespace, $cabec, $dados, $metodo, $this->tpAmb);
         // Verifica o retorno
-
         if ($retorno) {
             // Tratar dados de retorno
             $doc = new DOMDocument();
             $doc->formatOutput = false;
             $doc->preserveWhiteSpace = false;
             $doc->loadXML($retorno, LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
-            $cStat = !empty($doc->getElementsByTagName('cStat')->item(0)->nodeValue) ? $doc->getElementsByTagName('cStat')->item(0)->nodeValue : '';
-            if ($cStat == ''){
+            $cStat = !empty($doc->getElementsByTagName('cStat')->item(0)->nodeValue) ?
+                    $doc->getElementsByTagName('cStat')->item(0)->nodeValue : '';
+            if ($cStat == '') {
                 return false;
             }
             $aRetorno['bStat'] = ($cStat == '103');
             // Status do serviço
             $aRetorno['cStat'] = $doc->getElementsByTagName('cStat')->item(0)->nodeValue;
             // Motivo da resposta (opcional)
-            $aRetorno['xMotivo'] = !empty($doc->getElementsByTagName('xMotivo')->item(0)->nodeValue) ? $doc->getElementsByTagName('xMotivo')->item(0)->nodeValue : '';
+            $aRetorno['xMotivo'] = !empty($doc->getElementsByTagName('xMotivo')->item(0)->nodeValue) ?
+                    $doc->getElementsByTagName('xMotivo')->item(0)->nodeValue : '';
             // Data e hora da mensagem (opcional)
-            $aRetorno['dhRecbto'] = !empty($doc->getElementsByTagName('dhRecbto')->item(0)->nodeValue) ? date("d/m/Y H:i", $this->__convertTime($doc->getElementsByTagName('dhRecbto')->item(0)->nodeValue)) : '';
+            $aRetorno['dhRecbto'] = !empty($doc->getElementsByTagName('dhRecbto')->item(0)->nodeValue) ?
+                    date(
+                        "d/m/Y H:i",
+                        $this->zConvertTime($doc->getElementsByTagName('dhRecbto')->item(0)->nodeValue)
+                    ) : '';
             // Numero do recibo do lote enviado (opcional)
-            $aRetorno['nRec'] = !empty($doc->getElementsByTagName('nRec')->item(0)->nodeValue) ? $doc->getElementsByTagName('nRec')->item(0)->nodeValue : '';
+            $aRetorno['nRec'] = !empty($doc->getElementsByTagName('nRec')->item(0)->nodeValue) ?
+                    $doc->getElementsByTagName('nRec')->item(0)->nodeValue : '';
             // Grava o retorno na pasta temp
             $nome = $this->temDir . $id . '-rec.xml';
             $nome = $doc->save($nome);
@@ -1644,21 +1673,21 @@ class CTeNFePHP {
      * autorização da CTe$tpAmb = $this->tpAmb;
      * Caso $this->cStat == 105 Tentar novamente mais tarde
      *
-     * @name getProtocol
-     * @param    string   $recibo numero do recibo do envio do lote
-     * @param    string   $chave  numero da chave da CTe de 44 digitos
-     * @param   string   $tpAmb  numero do ambiente 1 - producao e 2 - homologação
-     * @param   integer   $modSOAP 1 usa __sendSOAP e 2 usa __sendSOAP2
-     * @return    mixed     false ou array
-    **/
-    public function getProtocol($recibo = '', $chave = '', $tpAmb = '', $modSOAP = '2') {
+     * @name   getProtocol
+     * @param  string   $recibo numero do recibo do envio do lote
+     * @param  string   $chave  numero da chave da CTe de 44 digitos
+     * @param  string   $tpAmb  numero do ambiente 1 - producao e 2 - homologação
+     * @return mixed    false ou array
+     */
+    public function getProtocol($recibo = '', $chave = '', $tpAmb = '')
+    {
         // Carrega defaults
         $i = 0;
         $aRetorno = array('bStat' => false,'cStat' => '','xMotivo' => '','aProt' => '','aCanc'=>'');
         $cUF = $this->cUF;
         $UF = $this->UF;
 
-        if ($tpAmb != '1' && $tpAmb != '2' ) {
+        if ($tpAmb != '1' && $tpAmb != '2') {
             $tpAmb = '2';
         }
 
@@ -1666,27 +1695,26 @@ class CTeNFePHP {
         $aURL = $this->aURL;
         // Verifica se a chave foi passada
         $scan = '';
-        if($chave != '') {
+        if ($chave != '') {
             // Se sim extrair o cUF da chave
             $cUF = substr($chave, 0, 2);
             // Testar para ver se é o mesmo do emitente
-            if($cUF != $this->cUF || $tpAmb != $this->tpAmb) {
+            if ($cUF != $this->cUF || $tpAmb != $this->tpAmb) {
                 // Se não for o mesmo carregar a sigla
                 $UF = $this->UFList[$cUF];
                 // Recarrega as url referentes aos dados passados como parametros para a função
-                $aURL = $this->loadSEFAZ($this->raizDir . '/config' . DIRECTORY_SEPARATOR . "cte_ws1.xml", $tpAmb, $UF);
+                $aURL = $this->loadSEFAZ($this->raizDir.'config'.DIRECTORY_SEPARATOR.$this->xmlURLfile, $tpAmb, $UF);
             }
-            $scan = substr($chave,34,1);
+            $scan = substr($chave, 34, 1);
         }
         //hambiente SCAN
-        if($scan == 7 || $scan == 3){
-            if($cUF == 35){
-                $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . $this->xmlURLfile,$tpAmb,'SVSP');
-            }else{
-                $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . $this->xmlURLfile,$tpAmb,'SVRS');
+        if ($scan == 7 || $scan == 3) {
+            if ($cUF == 35) {
+                $aURL = $this->loadSEFAZ($this->raizDir.'config'.DIRECTORY_SEPARATOR.$this->xmlURLfile, $tpAmb, 'SVSP');
+            } else {
+                $aURL = $this->loadSEFAZ($this->raizDir.'config'.DIRECTORY_SEPARATOR.$this->xmlURLfile, $tpAmb, 'SVRS');
             }
         }
-
         if ($recibo == '' && $chave == '') {
             $this->errStatus = true;
             $this->errMsg = 'ERRO. Favor indicar o numero do recibo ou a chave de acesso da CTe!!';
@@ -1694,7 +1722,8 @@ class CTeNFePHP {
         }
         if ($recibo != '' && $chave != '') {
             $this->errStatus = true;
-            $this->errMsg = 'ERRO. Favor indicar somente um dos dois dados ou o numero do recibo ou a chave de acesso da CTe!!';
+            $this->errMsg = 'ERRO. Favor indicar somente um dos dois dados ou o numero do '
+                    . 'recibo ou a chave de acesso da CTe!!';
             return false;
         }
         // Consulta pelo recibo
@@ -1711,9 +1740,12 @@ class CTeNFePHP {
             // Montagem do namespace do serviço
             $namespace = $this->URLPortal . '/wsdl/' . $servico;
             // Montagem do cabeçalho da comunicação SOAP
-            $cabec = '<cteCabecMsg xmlns="' . $namespace . '"><cUF>' . $cUF . '</cUF><versaoDados>' . $versao . '</versaoDados></cteCabecMsg>';
+            $cabec = '<cteCabecMsg xmlns="'.$namespace.'"><cUF>'.$cUF.'</cUF><versaoDados>'
+                    . $versao . '</versaoDados></cteCabecMsg>';
             // Montagem dos dados da mensagem SOAP
-            $dados = '<cteDadosMsg xmlns="' . $namespace . '"><consReciCTe xmlns="' . $this->URLPortal . '" versao="' . $versao . '"><tpAmb>' .  $tpAmb . '</tpAmb><nRec>' . $recibo . '</nRec></consReciCTe></cteDadosMsg>';
+            $dados = '<cteDadosMsg xmlns="'.$namespace.'"><consReciCTe xmlns="'.$this->URLPortal
+                    . '" versao="'.$versao.'"><tpAmb>'.$tpAmb.'</tpAmb><nRec>'.$recibo.'</nRec></consReciCTe>'
+                    . '</cteDadosMsg>';
             // Nome do arquivo
             $nomeArq = $recibo . '-protrec.xml';
         }
@@ -1721,31 +1753,26 @@ class CTeNFePHP {
         if ($recibo == '' &&  $chave != '') {
             // Buscar o protocolo pelo numero da chave de acesso
             // Identificação do serviço
-
             $servico = 'CteConsultaProtocolo';
             // Recuperação da versão
-
             $versao = $aURL[$servico]['version'];
             // Recuperação da url do serviço
             $urlservico = $aURL[$servico]['URL'];
             // Recuperação do método
             $metodo = $aURL[$servico]['method'];
-
             // Montagem do namespace do serviço
             $servico = 'CteConsulta';
             $namespace = $this->URLPortal . '/wsdl/' . $servico;
             // Montagem do cabeçalho da comunicação SOAP
-            $cabec = '<cteCabecMsg xmlns="' . $namespace . '"><cUF>' . $cUF . '</cUF><versaoDados>' . $versao . '</versaoDados></cteCabecMsg>';
+            $cabec = '<cteCabecMsg xmlns="'.$namespace.'"><cUF>'.$cUF.'</cUF><versaoDados>'
+                    . $versao . '</versaoDados></cteCabecMsg>';
             // Montagem dos dados da mensagem SOAP
-            $dados = '<cteDadosMsg xmlns="' . $namespace . '"><consSitCTe xmlns="' . $this->URLPortal . '" versao="' . $versao . '"><tpAmb>' . $tpAmb . '</tpAmb><xServ>CONSULTAR</xServ><chCTe>' . $chave . '</chCTe></consSitCTe></cteDadosMsg>';
+            $dados = '<cteDadosMsg xmlns="'.$namespace.'"><consSitCTe xmlns="'.$this->URLPortal
+                    . '" versao="' . $versao . '"><tpAmb>' . $tpAmb . '</tpAmb><xServ>CONSULTAR</xServ><chCTe>'
+                    . $chave . '</chCTe></consSitCTe></cteDadosMsg>';
         }
-
         // Envia a solicitação via SOAP
-        if ($modSOAP == 2){
-            $retorno = $this->__sendSOAP2($urlservico, $namespace, $cabec, $dados, $metodo, $tpAmb,$UF);
-        } else {
-            $retorno = $this->__sendSOAP($urlservico, $namespace, $cabec, $dados, $metodo, $tpAmb, $UF);
-        }
+        $retorno = $this->zSendSOAP($urlservico, $namespace, $cabec, $dados, $metodo, $tpAmb);
         // Verifica o retorno
         if ($retorno) {
             // Tratar dados de retorno
@@ -1753,7 +1780,8 @@ class CTeNFePHP {
             $doc->formatOutput = false;
             $doc->preserveWhiteSpace = false;
             $doc->loadXML($retorno, LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
-            $cStat = !empty($doc->getElementsByTagName('cStat')->item(0)->nodeValue) ? $doc->getElementsByTagName('cStat')->item(0)->nodeValue : '';
+            $cStat = !empty($doc->getElementsByTagName('cStat')->item(0)->nodeValue) ?
+                    $doc->getElementsByTagName('cStat')->item(0)->nodeValue : '';
             if ($cStat == '') {
                 return false;
             }
@@ -1764,30 +1792,36 @@ class CTeNFePHP {
             if ($chave != '') {
                 $aRetorno['bStat'] = true;
                 $aRetorno['cStat'] = $doc->getElementsByTagName('cStat')->item(0)->nodeValue;
-                $aRetorno['xMotivo'] = !empty($doc->getElementsByTagName('xMotivo')->item(0)->nodeValue) ? $doc->getElementsByTagName('xMotivo')->item(0)->nodeValue : '';
+                $aRetorno['xMotivo'] = !empty($doc->getElementsByTagName('xMotivo')->item(0)->nodeValue) ?
+                        $doc->getElementsByTagName('xMotivo')->item(0)->nodeValue : '';
                 $infProt = $doc->getElementsByTagName('infProt')->item($i);
                 $infCanc = $doc->getElementsByTagName('infCanc')->item(0);
                 $aProt = '';
-                if (isset($infProt)){
-                    foreach($infProt->childNodes as $t){
+                if (isset($infProt)) {
+                    foreach ($infProt->childNodes as $t) {
                         $aProt[$i][$t->nodeName] = $t->nodeValue;
                     }
-                    $aProt['dhRecbto'] = !empty($aProt['dhRecbto']) ? date("d/m/Y H:i:s",$this->__convertTime($aProt['dhRecbto'])) : '';
-                }else {
+                    $aProt['dhRecbto'] = !empty($aProt['dhRecbto']) ?
+                            date(
+                                "d/m/Y H:i:s",
+                                $this->zConvertTime($aProt['dhRecbto'])
+                            ) : '';
+                } else {
                     $aProt = '';
                 }
-                if(isset($infCanc)){
-                    foreach($infCanc->childNodes as $t) {
+                if (isset($infCanc)) {
+                    foreach ($infCanc->childNodes as $t) {
                         $aCanc[$t->nodeName] = $t->nodeValue;
                     }
-                    $aCanc['dhRecbto'] = !empty($aCanc['dhRecbto']) ? date("d/m/Y H:i:s",$this->__convertTime($aCanc['dhRecbto'])) : '';
+                    $aCanc['dhRecbto'] = !empty($aCanc['dhRecbto']) ?
+                            date("d/m/Y H:i:s", $this->zConvertTime($aCanc['dhRecbto'])) : '';
                 } else {
                     $aCanc = '';
                 }
                 $aRetorno['aProt'] = $aProt;
                 $aRetorno['aCanc'] = $aCanc;
                 // Gravar o retorno na pasta temp apenas se a nota foi aprovada, cancelada ou denegada
-                if ( $aRetorno['cStat'] == 100 || $aRetorno['cStat'] == 101 || $aRetorno['cStat'] == 110 ) {
+                if ($aRetorno['cStat'] == 100 || $aRetorno['cStat'] == 101 || $aRetorno['cStat'] == 110) {
                     // Nome do arquivo
                     $nomeArq = $chave . '-prot.xml';
                     $nome = $this->temDir . $nomeArq;
@@ -1802,22 +1836,24 @@ class CTeNFePHP {
                 // status do serviço
                 $aRetorno['cStat'] = $doc->getElementsByTagName('cStat')->item(0)->nodeValue;
                 // motivo da resposta (opcional)
-                $aRetorno['xMotivo'] = !empty($doc->getElementsByTagName('xMotivo')->item(0)->nodeValue) ? $doc->getElementsByTagName('xMotivo')->item(0)->nodeValue : '';
-                if ($cStat == '104'){
+                $aRetorno['xMotivo'] = !empty($doc->getElementsByTagName('xMotivo')->item(0)->nodeValue) ?
+                        $doc->getElementsByTagName('xMotivo')->item(0)->nodeValue : '';
+                if ($cStat == '104') {
                     $aProt = '';
                     //aqui podem ter varios retornos dependendo do numero de CTe enviados no Lote e já processadas
                     $protCTe = $doc->getElementsByTagName('protCTe');
-                    foreach ($protCTe as $d){
+                    foreach ($protCTe as $d) {
                         $infProt = $d->getElementsByTagName('infProt')->item($i);
                         $protcStat = $infProt->getElementsByTagName('cStat')->item(0)->nodeValue;
                         //pegar os dados do protolo para retornar
-                        foreach($infProt->childNodes as $t) {
+                        foreach ($infProt->childNodes as $t) {
                             $aProt[$i][$t->nodeName] = $t->nodeValue;
                         }
                         $i++; //incluido increment para controlador de indice do array
                         //salvar o protocolo somente se a nota estiver approvada ou denegada
-                        if ( $protcStat == 100 || $protcStat == 110 ){
-                            $nomeprot = $this->temDir.$infProt->getElementsByTagName('chCTe')->item(0)->nodeValue.'-prot.xml';//id da nfe
+                        if ($protcStat == 100 || $protcStat == 110) {
+                            $nomeprot = $this->temDir
+                                . $infProt->getElementsByTagName('chCTe')->item(0)->nodeValue.'-prot.xml';
                             //salvar o protocolo em arquivo
                             $novoprot = new DOMDocument('1.0', 'UTF-8');
                             $novoprot->formatOutput = true;
@@ -1830,20 +1866,24 @@ class CTeNFePHP {
                             $pCTe->appendChild($node);
                             $novoprot->appendChild($pCTe);
                             $xml = $novoprot->saveXML();
-                            $xml = str_replace('<?xml version="1.0" encoding="UTF-8  standalone="no"?>','<?xml version="1.0" encoding="UTF-8"?>',$xml);
-                            $xml = str_replace(array("default:",":default"),"",$xml);
-                            $xml = str_replace("\n","",$xml);
-                            $xml = str_replace("  "," ",$xml);
-                            $xml = str_replace("  "," ",$xml);
-                            $xml = str_replace("  "," ",$xml);
-                            $xml = str_replace("  "," ",$xml);
-                            $xml = str_replace("  "," ",$xml);
-                            $xml = str_replace("> <","><",$xml);
+                            $xml = str_replace(
+                                '<?xml version="1.0" encoding="UTF-8  standalone="no"?>',
+                                '<?xml version="1.0" encoding="UTF-8"?>',
+                                $xml
+                            );
+                            $xml = str_replace(array("default:",":default","\n"), "", $xml);
+                            $xml = str_replace("  ", " ", $xml);
+                            $xml = str_replace("  ", " ", $xml);
+                            $xml = str_replace("  ", " ", $xml);
+                            $xml = str_replace("  ", " ", $xml);
+                            $xml = str_replace("  ", " ", $xml);
+                            $xml = str_replace("> <", "><", $xml);
                             file_put_contents($nomeprot, $xml);
                         }
                     }
                 }
-                $aRetorno['aProt'] = $aProt; //passa o valor de $aProt para o array de retorno
+                //passa o valor de $aProt para o array de retorno
+                $aRetorno['aProt'] = $aProt;
                 $nomeArq = $recibo . '-recprot.xml';
                 $nome = $this->temDir . $nomeArq;
                 $nome = $doc->save($nome);
@@ -1854,7 +1894,7 @@ class CTeNFePHP {
             $aRetorno = false;
         }
         return $aRetorno;
-    } //fim getProtocol
+    }
 
     /**
      * Solicita inutilizaçao de uma serie de numeros de CT
@@ -1865,10 +1905,10 @@ class CTeNFePHP {
      * @param   integer $nIni       numero inicial 1 até 9 digitos zero a esq
      * @param   integer $nFin       numero Final 1 até 9 digitos zero a esq
      * @param   string  $xJust      justificativa 15 até 255 digitos
-     * @param   integer $modSOAP    1 usa __sendSOAP e 2 usa __sendSOAP2
      * @return    mixed false ou array ['bStat'=>boolean,'cStat'=>'','xMotivo'=>'','dhRecbto'=>'','nProt'=>'']
      */
-    public function inutCT($nAno = '', $nSerie = '1', $nIni = '', $nFin = '', $xJust = '', $modSOAP = '2') {
+    public function inutCT($nAno = '', $nSerie = '1', $nIni = '', $nFin = '', $xJust = '')
+    {
         // Variavel de retorno do metodo
         $aRetorno = array (
             'bStat' => false,
@@ -1877,19 +1917,24 @@ class CTeNFePHP {
             'dhRecbto' => '',
             'nProt' => '');
         // Valida dos dados de entrada
-        if($nAno == '' || $nIni == '' || $nFin == '' || $xJust == '') {
+        if ($nAno == '' || $nIni == '' || $nFin == '' || $xJust == '') {
             $this->errStatus = true;
-            $this->errMsg = "Não foi passado algum dos parametos necessários ANO=$nAno inicio=$nIni fim=$nFin justificativa=$xJust.";
+            $this->errMsg = "Não foi passado algum dos parametos necessários ANO=$nAno "
+                    . "inicio=$nIni fim=$nFin justificativa=$xJust.";
             return false;
         }
 
         // Verifica se o SCAN esta habilitado
-        $aURL = $this->loadSEFAZ($this->raizDir . 'config' . DIRECTORY_SEPARATOR . "cte_ws1.xml", $this->tpAmb, 'SCAN');
-        if (!$this->enableSCAN)
-            $aURL = $this->aURL;
-
+        $aURL = $this->aURL;
+        if ($this->enableSCAN) {
+            $aURL = $this->loadSEFAZ(
+                $this->raizDir.'config'.DIRECTORY_SEPARATOR.$this->xmlURLfile,
+                $this->tpAmb,
+                'SCAN'
+            );
+        }
         // Valida o campo ano
-        if(strlen($nAno) > 2) {
+        if (strlen($nAno) > 2) {
             $this->errStatus = true;
             $this->errMsg = 'O ano tem mais de 2 digitos. Corrija e refaça o processo!!';
             return false;
@@ -1901,7 +1946,7 @@ class CTeNFePHP {
             }
         }
         // Valida o campo serie
-        if( strlen($nSerie) == 0 || strlen($nSerie) > 3) {
+        if (strlen($nSerie) == 0 || strlen($nSerie) > 3) {
             $this->errStatus = true;
             $this->errMsg = "O campo serie está errado: $nSerie. Corrija e refaça o processo!!";
             return false;
@@ -1922,12 +1967,14 @@ class CTeNFePHP {
         $nL = strlen($xJust);
         if ($nL < 15) {
             $this->errStatus = true;
-            $this->errMsg = "A justificativa é menor que o permitido, apenas $nL letras. Corrija e refaça o processo!!";
+            $this->errMsg = "A justificativa é menor que o permitido, apenas $nL letras. "
+                    . "Corrija e refaça o processo!!";
             return false;
         } else {
             if ($nL > 255) {
                 $this->errStatus = true;
-                $this->errMsg = "A justificativa é maior que o permitido, $nL letras, no máximo podem ser 255. Corrija e refaça o processo!!";
+                $this->errMsg = "A justificativa é maior que o permitido, $nL letras, "
+                        . "no máximo podem ser 255. Corrija e refaça o processo!!";
                 return false;
             }
         }
@@ -1944,9 +1991,11 @@ class CTeNFePHP {
         // Identificador da TAG a ser assinada formada com Código da UF +
         // precedida do literal “ID”
         // 41 posições
-        $id = 'ID' . $this->cUF . $this->cnpj . '57' . str_pad($nSerie, 3, '0', STR_PAD_LEFT) . str_pad($nIni, 9, '0', STR_PAD_LEFT) . str_pad($nFin, 9, '0', STR_PAD_LEFT);
+        $id = 'ID'.$this->cUF.$this->cnpj.'57'.str_pad($nSerie, 3, '0', STR_PAD_LEFT)
+                . str_pad($nIni, 9, '0', STR_PAD_LEFT) . str_pad($nFin, 9, '0', STR_PAD_LEFT);
         // Montagem do cabeçalho da comunicação SOAP
-        $cabec = '<cteCabecMsg xmlns="' . $namespace . '"><cUF>' . $this->cUF . '</cUF><versaoDados>' . $versao . '</versaoDados></cteCabecMsg>';
+        $cabec = '<cteCabecMsg xmlns="'.$namespace.'"><cUF>' . $this->cUF
+                .'</cUF><versaoDados>' . $versao . '</versaoDados></cteCabecMsg>';
         // Montagem do corpo da mensagem
         $dXML = '<inutCTe xmlns="' . $this->URLcte . '" versao="' . $versao . '">';
         $dXML .= '<infInut Id="' . $id . '">';
@@ -1966,16 +2015,12 @@ class CTeNFePHP {
         $dXML = $this->signXML($dXML, 'infInut');
         $dados = '<cteDadosMsg xmlns="' . $namespace . '">' . $dXML . '</cteDadosMsg>';
         // Remove as tags xml que porventura tenham sido inclusas
-        $dados = str_replace('<?xml version="1.0"?>','', $dados);
-        $dados = str_replace('<?xml version="1.0" encoding="utf-8"?>','', $dados);
-        $dados = str_replace('<?xml version="1.0" encoding="UTF-8"?>','', $dados);
-        $dados = str_replace(array("\r","\n","\s"),"", $dados);
+        $dados = str_replace('<?xml version="1.0"?>', '', $dados);
+        $dados = str_replace('<?xml version="1.0" encoding="utf-8"?>', '', $dados);
+        $dados = str_replace('<?xml version="1.0" encoding="UTF-8"?>', '', $dados);
+        $dados = str_replace(array("\r","\n","\s"), "", $dados);
         // Envia a solicitação via SOAP
-        if ($modSOAP == '2') {
-            $retorno = $this->__sendSOAP2($urlservico, $namespace, $cabec, $dados, $metodo, $this->tpAmb);
-        } else {
-            $retorno = $this->__sendSOAP($urlservico, $namespace, $cabec, $dados, $metodo, $this->tpAmb, $this->UF);
-        }
+        $retorno = $this->zSendSOAP($urlservico, $namespace, $cabec, $dados, $metodo, $this->tpAmb);
         // Verifica o retorno
         if ($retorno) {
             //tratar dados de retorno
@@ -1983,14 +2028,14 @@ class CTeNFePHP {
             $doc->formatOutput = false;
             $doc->preserveWhiteSpace = false;
             $doc->loadXML($retorno, LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
-            $cStat = !empty($doc->getElementsByTagName('cStat')->item(0)->nodeValue) ? $doc->getElementsByTagName('cStat')->item(0)->nodeValue : '';
-
-            if ($cStat == ''){
+            $cStat = !empty($doc->getElementsByTagName('cStat')->item(0)->nodeValue) ?
+                    $doc->getElementsByTagName('cStat')->item(0)->nodeValue : '';
+            if ($cStat == '') {
                 //houve erro
                 return false;
             } else {
                 //verificar o status da solicitação
-                if ($cStat == '102'){
+                if ($cStat == '102') {
                     $aRetorno['bStat'] = true;
                 }
             }
@@ -1998,11 +2043,17 @@ class CTeNFePHP {
             // Status do serviço se 102 inutilização aceita
             $aRetorno['cStat'] = $doc->getElementsByTagName('cStat')->item(0)->nodeValue;
             // Motivo da resposta (opcional)
-            $aRetorno['xMotivo'] = !empty($doc->getElementsByTagName('xMotivo')->item(0)->nodeValue) ? $doc->getElementsByTagName('xMotivo')->item(0)->nodeValue : '';
+            $aRetorno['xMotivo'] = !empty($doc->getElementsByTagName('xMotivo')->item(0)->nodeValue) ?
+                    $doc->getElementsByTagName('xMotivo')->item(0)->nodeValue : '';
             // Data e hora da mensagem (opcional)
-            $aRetorno['dhRecbto'] = !empty($doc->getElementsByTagName('dhRecbto')->item(0)->nodeValue) ? date("d/m/Y H:i",$this->__convertTime($doc->getElementsByTagName('dhRecbto')->item(0)->nodeValue)) : '';
+            $aRetorno['dhRecbto'] = !empty($doc->getElementsByTagName('dhRecbto')->item(0)->nodeValue) ?
+                    date(
+                        "d/m/Y H:i",
+                        $this->zConvertTime($doc->getElementsByTagName('dhRecbto')->item(0)->nodeValue)
+                    ) : '';
             // Numero do protocolo de aceitação da inutilização (opcional)
-            $aRetorno['nProt'] = !empty($doc->getElementsByTagName('nProt')->item(0)->nodeValue) ? $doc->getElementsByTagName('nProt')->item(0)->nodeValue : '';
+            $aRetorno['nProt'] = !empty($doc->getElementsByTagName('nProt')->item(0)->nodeValue) ?
+                    $doc->getElementsByTagName('nProt')->item(0)->nodeValue : '';
             // Grava o retorno na pasta temp
             $nome = $this->temDir . $id . '-inut.xml';
             $nome = $doc->save($nome);
@@ -2014,152 +2065,434 @@ class CTeNFePHP {
         return $aRetorno;
     } //fim inutCTe
 
-
     /**
-     * Solicita o cancelamento do CT enviado
+     * cancelEvent
+     * Solicita o cancelamento de CTe autorizado
+     * - O xml do evento de cancelamento será salvo na pasta Canceladas
      *
-     * @name cancelCT
-     * @param    string  $id      ID da CTe com 44 digitos (sem o CTe na frente dos numeros)
-     * @param   string  $protId     Numero do protocolo de aceitaçao do lote de CTe enviado anteriormente pelo SEFAZ
-     * @param   boolean $modSOAP    1 usa __sendSOAP e 2 usa __sendSOAP2
-     * @return    mixed false se falha ou array [
-    **/
-    public function cancelCT($id, $protId, $xJust, $modSOAP = '2') {
+     * @name cancelEvent
+     * @param string $chCTe
+     * @param string $nProt
+     * @param string $xJust
+     * @param number $tpAmb
+     */
+    public function cancelEvent($chCTe = '', $nProt = '', $xJust = '', $tpAmb = '')
+    {
         // Variável de retorno
         $aRetorno = array(
             'bStat' => false,
             'cStat' => '',
             'xMotivo' => '',
-            'dhRecbto' => '',
+            'dhRegEvento' => '',
             'nProt' => '');
-        // Validação dos dados de entrada
-        if($id == '' || $protId == '' || $xJust == '') {
-            $this->errStatus = true;
-            $this->errMsg = "Não foi passado algum dos parâmetros necessários ID=$id ou protocolo=$protId ou justificativa=$xJust.";
-            return $aRetorno;
-        }
-        // Verifica se o SCAN esta habilitado
-        $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . "cte_ws1.xml", $this->tpAmb, 'SCAN');
-        if (!$this->enableSCAN){
+        try {
+            //validação dos dados de entrada
+            if ($chCTe == '' || $nProt == '' || $xJust == '') {
+                $msg = "Não foi passado algum dos parâmetros necessários "
+                        . "ID=$chCTe ou protocolo=$nProt ou justificativa=$xJust.";
+                throw new nfephpException($msg);
+            }
+            if ($tpAmb == '') {
+                $tpAmb = $this->tpAmb;
+            }
+            if (strlen($xJust) < 15) {
+                $msg = "A justificativa deve ter pelo menos 15 digitos!!";
+                throw new nfephpException($msg);
+            }
+            if (strlen($xJust) > 255) {
+                $msg = "A justificativa deve ter no máximo 255 digitos!!";
+                throw new nfephpException($msg);
+            }
+            if (strlen($chCTe) != 44) {
+                $msg = "Uma chave de CTe válida não foi passada como parâmetro $chCTe.";
+                throw new nfephpException($msg);
+            }
+            //estabelece o codigo do tipo de evento CANCELAMENTO
+            $tpEvento = '110111';
+            $descEvento = 'Cancelamento';
+            //para cancelamento o numero sequencia do evento sempre será 1
+            $nSeqEvento = '1';
+            // Verifica se o SCAN esta habilitado
             $aURL = $this->aURL;
-        }
-        // Identificação do serviço
-        $servico = 'CteCancelamento';
-        // Recuperação da versão
-        $versao = $aURL[$servico]['version'];
-        // Recuperação da url do serviço
-        $urlservico = $aURL[$servico]['URL'];
-        // Recuperação do método
-        $metodo = $aURL[$servico]['method'];
-        // Montagem do namespace do serviço
-        $namespace = $this->URLPortal . '/wsdl/' . $servico;
-        // Montagem do cabeçalho da comunicação SOAP
-        $cabec = '<cteCabecMsg xmlns="' . $namespace . '"><cUF>' . $this->cUF . '</cUF><versaoDados>' . $versao . '</versaoDados></cteCabecMsg>';
-        // Montagem dos dados da mensagem SOAP
-        $dXML = '<cancCTe xmlns="' . $this->URLcte . '" versao="' . $versao . '">';
-        $dXML .= '<infCanc Id="ID' . $id . '"><tpAmb>' . $this->tpAmb . '</tpAmb><xServ>CANCELAR</xServ><chCTe>' . $id . '</chCTe><nProt>' . $protId . '</nProt><xJust>' . $xJust . '</xJust></infCanc></cancCTe>';
-        // Assinar a mensagem
-        $dXML = $this->signXML($dXML, 'infCanc');
-        $dados = '<cteDadosMsg xmlns="' . $namespace . '">' . $dXML . '</cteDadosMsg>';
-        // Remove as tags xml que porventura tenham sido inclusas ou quebas de linhas
-        $dados = str_replace('<?xml version="1.0"?>','', $dados);
-        $dados = str_replace('<?xml version="1.0" encoding="utf-8"?>','', $dados);
-        $dados = str_replace('<?xml version="1.0" encoding="UTF-8"?>','', $dados);
-        $dados = str_replace(array("\r","\n","\s"),"", $dados);
-        // Envia a solicitação via SOAP
-        if ($modSOAP == 2) {
-            $retorno = $this->__sendSOAP2($urlservico, $namespace, $cabec, $dados, $metodo, $this->tpAmb);
-        } else {
-            $retorno = $this->__sendSOAP($urlservico, $namespace, $cabec, $dados, $metodo, $this->tpAmb, $this->UF);
-        }
-        // Verifica o retorno
-        if ($retorno) {
-            // Tratar dados de retorno
-            $doc = new DOMDocument();
-            $doc->formatOutput = false;
-            $doc->preserveWhiteSpace = false;
-            $doc->loadXML($retorno, LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
-            $cStat = !empty($doc->getElementsByTagName('cStat')->item(0)->nodeValue) ? $doc->getElementsByTagName('cStat')->item(0)->nodeValue : '';
+            if ($this->enableSCAN) {
+                $aURL = $this->loadSEFAZ(
+                    $this->raizDir.'config'.DIRECTORY_SEPARATOR.$this->xmlURLfile,
+                    $this->tpAmb,
+                    'SCAN'
+                );
+            }
+            //Data e hora do evento no formato AAAA-MM-DDTHH:MM:SSTZD (UTC)
+            $dhEvento = date('Y-m-d').'T'.date('H:i:s').$this->timeZone;
+            //montagem do namespace do serviço
+            $servico = 'CteRecepcaoEvento';
+            //recuperação da versão
+            $versao = $aURL[$servico]['version'];
+            //recuperação da url do serviço
+            $urlservico = $aURL[$servico]['URL'];
+            //recuperação do método
+            $metodo = $aURL[$servico]['method'];
+            //montagem do namespace do serviço
+            $namespace = $this->URLPortal.'/wsdl/'.$servico;
+            //de acordo com o manual versão 5 de março de 2012
+            // 2   +    6     +    44         +   2  = 54 digitos
+            //“ID” + tpEvento + chave da NF-e + nSeqEvento
+            //garantir que existam 2 digitos em nSeqEvento para montar o ID com 54 digitos
+            if (strlen(trim($nSeqEvento))==1) {
+                $zenSeqEvento = str_pad($nSeqEvento, 2, "0", STR_PAD_LEFT);
+            } else {
+                $zenSeqEvento = trim($nSeqEvento);
+            }
+            $eventId = "ID".$tpEvento.$chCTe.$zenSeqEvento;
+            //monta mensagem
+            $Ev = '';
+            $Ev .= "<infEvento Id=\"$eventId\">";
+            $Ev .= "<cOrgao>$cOrgao</cOrgao>";
+            $Ev .= "<tpAmb>$tpAmb</tpAmb>";
+            $Ev .= "<CNPJ>$this->cnpj</CNPJ>";
+            $Ev .= "<chCTe>$chCTe</chCTe>";
+            $Ev .= "<dhEvento>$dhEvento</dhEvento>";
+            $Ev .= "<tpEvento>$tpEvento</tpEvento>";
+            $Ev .= "<nSeqEvento>$nSeqEvento</nSeqEvento>";
+            $Ev .= "<detEvento versao=\"$versao\">";
+            $Ev .= "<evCancCTe>";
+            $Ev .= "<descEvento>$descEvento</descEvento>";
+            $Ev .= "<nProt>$nProt</nProt>";
+            $Ev .= "<xJust>$xJust</xJust>";
+            $Ev .= "</evCancCTe></detEvento></infEvento>";
+            //assinatura dos dados
+            $tagid = 'infEvento';
+            $Ev = $this->signXML($Ev, $tagid);
+            //carrega uma matriz temporária com os eventos assinados
+            //montagem dos dados
+            $dados = '';
+            $dados .= "<eventoCTe xmlns=\"$this->URLPortal\" versao=\"$versao\">";
+            $dados .= $Ev;
+            $dados .= "</eventoCTe>";
+            //montagem da mensagem
+            $cabec = "<cteCabecMsg xmlns=\"$namespace\"><cUF>$this->cUF</cUF>"
+                    . "<versaoDados>$versao</versaoDados></cteCabecMsg>";
+            $dados = "<cteDadosMsg xmlns=\"$namespace\">$dados</cteDadosMsg>";
+            //grava solicitação em temp
+            $arqName = $this->temDir."$chCTe-$nSeqEvento-eventCanc.xml";
+            if (!file_put_contents($arqName, $Ev)) {
+                $msg = "Falha na gravação do arquivo $arqName";
+                throw new nfephpException($msg);
+            }
+            // Envia a solicitação via SOAP
+            $retorno = $this->zSendSOAP($urlservico, $namespace, $cabec, $dados, $metodo, $this->tpAmb);
+            //verifica o retorno
+            if (!$retorno) {
+                //não houve retorno
+                $msg = "Nao houve retorno Soap verifique a mensagem de erro e o debug!!";
+                throw new nfephpException($msg);
+            }
+            //tratar dados de retorno
+            $xmlretEvent = new DOMDocument('1.0', 'utf-8'); //cria objeto DOM
+            $xmlretEvent->formatOutput = false;
+            $xmlretEvent->preserveWhiteSpace = false;
+            $xmlretEvent->loadXML($retorno, LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
+            $retEventoCTe = $xmlretEvent->getElementsByTagName("retEventoCTe")->item(0);
+            $cStat = !empty($retEventoCTe->getElementsByTagName('cStat')->item(0)->nodeValue) ?
+                    $retEventoCTe->getElementsByTagName('cStat')->item(0)->nodeValue : '';
+            $xMotivo = !empty($retEventoCTe->getElementsByTagName('xMotivo')->item(0)->nodeValue) ?
+                    $retEventoCTe->getElementsByTagName('xMotivo')->item(0)->nodeValue : '';
             if ($cStat == '') {
                 //houve erro
-                return false;
-            } else {
-                if ($cStat == '101'){
-                    $aRetorno['bStat'] = true;
-                }
+                $msg = "cStat está em branco, houve erro na comunicação Soap "
+                        . "verifique a mensagem de erro e o debug!!";
+                throw new nfephpException($msg);
             }
-
-            // Status do serviço se 101 cancelamento aceito
-            $aRetorno['cStat'] = $doc->getElementsByTagName('cStat')->item(0)->nodeValue;
+            //erro no processamento cStat <> 128
+            if ($cStat != '128') {
+                //se cStat <> 135 houve erro e o lote foi rejeitado
+                $msg = "Retorno de ERRO: $cStat - $xMotivo";
+                throw new nfephpException($msg);
+            }
+            if ($cStat != '135' && $cStat != '155') {
+                //se cStat <> 135 houve erro e o lote foi rejeitado
+                $msg = "Retorno de ERRO: $cStat - $xMotivo";
+                throw new nfephpException($msg);
+            }
+            if ($cStat == '135') {
+                $aRetorno['bStat'] = true;
+            }
+            // Status do serviço se 135 cancelamento aceito
+            $aRetorno['cStat'] = $cStat;
             // Motivo da resposta (opcional)
-            $aRetorno['xMotivo'] = !empty($doc->getElementsByTagName('xMotivo')->item(0)->nodeValue) ? $doc->getElementsByTagName('xMotivo')->item(0)->nodeValue : '';
+            $aRetorno['xMotivo'] = $xMotivo;
             // Data e hora da mensagem (opcional)
-            $aRetorno['dhRecbto'] = !empty($doc->getElementsByTagName('dhRecbto')->item(0)->nodeValue) ? date("d/m/Y H:i",$this->__convertTime($doc->getElementsByTagName('dhRecbto')->item(0)->nodeValue)) : '';
+            $aRetorno['dhRegEvento'] = !empty($retEventoCTe->getElementsByTagName('dhRegEvento')->item(0)->nodeValue) ?
+                    date(
+                        "d/m/Y H:i",
+                        $this->zConvertTime($retEventoCTe->getElementsByTagName('dhRegEvento')->item(0)->nodeValue)
+                    ) : '';
             // Numero do protocolo de cancelamento da CTe (opcional)
-            $aRetorno['nProt'] = !empty($doc->getElementsByTagName('nProt')->item(0)->nodeValue) ? $doc->getElementsByTagName('nProt')->item(0)->nodeValue : '';
-            // Gravar o retorno na pasta temp
-            $nome = $this->temDir . $id . '-canc.xml';
-            $nome = $doc->save($nome);
-        } else {
+            $aRetorno['nProt'] = !empty($retEventoCTe->getElementsByTagName('nProt')->item(0)->nodeValue) ?
+                    $retEventoCTe->getElementsByTagName('nProt')->item(0)->nodeValue : '';
+            //salva o arquivo xml
+            $arqName = $this->canDir."$chCTe-$nSeqEvento-procCanc.xml";
+            if (!file_put_contents($arqName, $procXML)) {
+                $msg = "Falha na gravação do arquivo $arqName";
+                throw new nfephpException($msg);
+            }
+        } catch (nfephpException $e) {
             $this->errStatus = true;
             $this->errMsg = 'Nao houve retorno Soap verifique a mensagem de erro e o debug!!';
             $aRetorno = false;
         }
         return $aRetorno;
-    } // Fim cancelNF
+    } //fim cancEvent
+
+    /**
+     * envCCe
+     * Envio de carta de correção
+     *
+     * @name envCCe
+     * @param string $chCTe
+     * @param string $tpAmb
+     * @param string $nSeqEvento
+     * @param array $eventos
+     */
+    public function envCCe(
+        $chCTe = '',
+        $tpAmb = '',
+        $nSeqEvento = '01',
+        $eventos = array(array('grupo' => '', 'campo' => '', 'valor' => ''))
+    ) {
+        // Variável de retorno
+        $aRetorno = array(
+            'bStat' => false,
+            'cStat' => '',
+            'xMotivo' => '',
+            'dhRegEvento' => '',
+            'nProt' => '');
+        try {
+            //validação dos dados de entrada
+            if ($chCTe == '') {
+                $msg = "A Chave´deve não deve ficar em branco";
+                throw new nfephpException($msg);
+            }
+            if (strlen($chCTe) != 44) {
+                $msg = "Uma chave de CTe válida não foi passada como parâmetro $chCTe.";
+                throw new nfephpException($msg);
+            }
+            if ($tpAmb == '') {
+                $tpAmb = $this->tpAmb;
+            }
+            //estabelece o codigo do tipo de evento Carta de Correcao
+            $tpEvento = '110110';
+            $descEvento = 'Carta de Correcao';
+            // Verifica se o SCAN esta habilitado
+            $aURL = $this->aURL;
+            if ($this->enableSCAN) {
+                $aURL = $this->loadSEFAZ(
+                    $this->raizDir.'config'.DIRECTORY_SEPARATOR.$this->xmlURLfile,
+                    $this->tpAmb,
+                    'SCAN'
+                );
+            }
+            //Data e hora do evento no formato AAAA-MM-DDTHH:MM:SSTZD (UTC)
+            $dhEvento = date('Y-m-d').'T'.date('H:i:s').$this->timeZone;
+            //montagem do namespace do serviço
+            $servico = 'CteRecepcaoEvento';
+            //recuperação da versão
+            $versao = $aURL[$servico]['version'];
+            //recuperação da url do serviço
+            $urlservico = $aURL[$servico]['URL'];
+            //recuperação do método
+            $metodo = $aURL[$servico]['method'];
+            //montagem do namespace do serviço
+            $namespace = $this->URLPortal.'/wsdl/'.$servico;
+            //de acordo com o manual versão 5 de março de 2012
+            // 2   +    6     +    44         +   2  = 54 digitos
+            //“ID” + tpEvento + chave da NF-e + nSeqEvento
+            //garantir que existam 2 digitos em nSeqEvento para montar o ID com 54 digitos
+            if (strlen(trim($nSeqEvento))==1) {
+                $zenSeqEvento = str_pad($nSeqEvento, 2, "0", STR_PAD_LEFT);
+            } else {
+                $zenSeqEvento = trim($nSeqEvento);
+            }
+            $eventId = "ID".$tpEvento.$chCTe.$zenSeqEvento;
+            //monta mensagem
+            $Ev = '';
+            $Ev .= "<infEvento Id=\"$eventId\">";
+            $Ev .= "<cOrgao>$cOrgao</cOrgao>";
+            $Ev .= "<tpAmb>$tpAmb</tpAmb>";
+            $Ev .= "<CNPJ>$this->cnpj</CNPJ>";
+            $Ev .= "<chCTe>$chCTe</chCTe>";
+            $Ev .= "<dhEvento>$dhEvento</dhEvento>";
+            $Ev .= "<tpEvento>$tpEvento</tpEvento>";
+            $Ev .= "<nSeqEvento>$nSeqEvento</nSeqEvento>";
+            $Ev .= "<detEvento versao=\"$versao\">";
+            $Ev .= "<evCCeCTe>";
+            $Ev .= "<descEvento>$descEvento</descEvento>";
+            $IEv = '';
+            foreach ($eventos as $key => $value) {
+                $IEv .= "<infCorrecao>";
+                $IEv .= sprintf("<grupoAlterado>%s</grupoAlterado>", $value['grupo']);
+                $IEv .= sprintf("<campoAlterado>%s</campoAlterado>", $value['campo']);
+                $IEv .= sprintf("<valorAlterado>%s</valorAlterado>", $value['valor']);
+                $IEv .= "</infCorrecao>";
+            }
+            if ($IEv != "") {
+                $IEv .= "<xCondUso>A Carta de Correcao e disciplinada pelo Art. 58-B do "
+                        . "CONVENIO/SINIEF 06/89: Fica permitida a utilizacao de carta de correcao, "
+                        . "para regularizacao de erro ocorrido na emissao de documentos fiscais relativos "
+                        . "a prestacao de servico de transporte, desde que o erro nao esteja relacionado "
+                        . "com: I - as variaveis que determinam o valor do imposto tais como: base de "
+                        . "calculo, aliquota, diferenca de preco, quantidade, valor da prestacao;II -"
+                        . " a correcao de dados cadastrais que implique mudanca do emitente, tomador, "
+                        . "remetente ou do destinatario;III - a data de emissao ou de saida.</xCondUso>";
+            }
+
+            $Ev .= $IEv;
+            $Ev .= "</evCCeCTe></detEvento></infEvento>";
+            //assinatura dos dados
+            $tagid = 'infEvento';
+            $Ev = $this->signXML($Ev, $tagid);
+            //carrega uma matriz temporária com os eventos assinados
+            //montagem dos dados
+            $dados = '';
+            $dados .= "<eventoCTe xmlns=\"$this->URLPortal\" versao=\"$versao\">";
+            $dados .= $Ev;
+            $dados .= "</eventoCTe>";
+            //montagem da mensagem
+            $cabec = "<cteCabecMsg xmlns=\"$namespace\"><cUF>$this->cUF</cUF>"
+                    . "<versaoDados>$versao</versaoDados></cteCabecMsg>";
+            $dados = "<cteDadosMsg xmlns=\"$namespace\">$dados</cteDadosMsg>";
+            //grava solicitação em temp
+            $arqName = $this->temDir."$chCTe-$nSeqEvento-envCCe.xml";
+            if (!file_put_contents($arqName, $Ev)) {
+                $msg = "Falha na gravação do arquivo $arqName";
+                throw new nfephpException($msg);
+            }
+            // Envia a solicitação via SOAP
+            $retorno = $this->zSendSOAP($urlservico, $namespace, $cabec, $dados, $metodo, $this->tpAmb);
+            //verifica o retorno
+            if (!$retorno) {
+                //não houve retorno
+                $msg = "Nao houve retorno Soap verifique a mensagem de erro e o debug!!";
+                throw new nfephpException($msg);
+            }
+            //tratar dados de retorno
+            $xmlretEvent = new DOMDocument('1.0', 'utf-8'); //cria objeto DOM
+            $xmlretEvent->formatOutput = false;
+            $xmlretEvent->preserveWhiteSpace = false;
+            $xmlretEvent->loadXML($retorno, LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
+            $retEventoCTe = $xmlretEvent->getElementsByTagName("retEventoCTe")->item(0);
+            $cStat = !empty($retEventoCTe->getElementsByTagName('cStat')->item(0)->nodeValue) ?
+                    $retEventoCTe->getElementsByTagName('cStat')->item(0)->nodeValue : '';
+            $xMotivo = !empty($retEventoCTe->getElementsByTagName('xMotivo')->item(0)->nodeValue) ?
+                    $retEventoCTe->getElementsByTagName('xMotivo')->item(0)->nodeValue : '';
+            if ($cStat == '') {
+                //houve erro
+                $msg = "cStat está em branco, houve erro na comunicação Soap "
+                        . "verifique a mensagem de erro e o debug!!";
+                throw new nfephpException($msg);
+            }
+            //erro no processamento cStat <> 128
+            if ($cStat != '128') {
+                //se cStat <> 135 houve erro e o lote foi rejeitado
+                $msg = "Retorno de ERRO: $cStat - $xMotivo";
+                throw new nfephpException($msg);
+            }
+            if ($cStat != '135' && $cStat != '155') {
+                //se cStat <> 135 houve erro e o lote foi rejeitado
+                $msg = "Retorno de ERRO: $cStat - $xMotivo";
+                throw new nfephpException($msg);
+            }
+            if ($cStat == '135') {
+                $aRetorno['bStat'] = true;
+            }
+            // Status do serviço se 135 cancelamento aceito
+            $aRetorno['cStat'] = $cStat;
+            // Motivo da resposta (opcional)
+            $aRetorno['xMotivo'] = $xMotivo;
+            // Data e hora da mensagem (opcional)
+            $aRetorno['dhRegEvento'] = !empty($retEventoCTe->getElementsByTagName('dhRegEvento')->item(0)->nodeValue) ?
+                    date(
+                        "d/m/Y H:i",
+                        $this->zConvertTime($retEventoCTe->getElementsByTagName('dhRegEvento')->item(0)->nodeValue)
+                    ) : '';
+            // Numero do protocolo de cancelamento da CTe (opcional)
+            $aRetorno['nProt'] = !empty($retEventoCTe->getElementsByTagName('nProt')->item(0)->nodeValue) ?
+                    $retEventoCTe->getElementsByTagName('nProt')->item(0)->nodeValue : '';
+            //salva o arquivo xml
+            $arqName = $this->cccDir."$chCTe-$nSeqEvento-procCCe.xml";
+            if (!file_put_contents($arqName, $retorno)) {
+                $msg = "Falha na gravação do arquivo $arqName";
+                throw new nfephpException($msg);
+            }
+        } catch (nfephpException $e) {
+            $this->errStatus = true;
+            $this->errMsg = 'Nao houve retorno Soap verifique a mensagem de erro e o debug!!';
+            $aRetorno = false;
+        }
+        return $aRetorno;
+    }
 
     /**
      * verifySignatureXML
      * Verifica correção da assinatura no xml
+     * 
      * @name verifySignatureXML
      * @param string $conteudoXML xml a ser verificado
      * @param string $tag tag que é assinada
      * @return boolean false se não confere e true se confere
      */
-    public function verifySignatureXML($conteudoXML, $tag) {
-    if(!function_exists('openssl_pkey_get_public'))
-        return false;
-        $dom = new DOMDocument();
-    $dom->preserveWhiteSpace = false;
-    $dom->formatOutput = false;
-    $dom->loadXML($conteudoXML);
-    $tagBase = $dom->getElementsByTagName($tag)->item(0);
-    // validar digest value
-    $tagInf = $tagBase->C14N(false, false, null, null);
-    $tagInf = str_replace(' xmlns:ds="http://www.w3.org/2000/09/xmldsig#"', '', $tagInf);
-        $digestCalculado = base64_encode(sha1($tagInf, true));
-    $digestInformado = $dom->getElementsByTagName('DigestValue')->item(0)->nodeValue;
-    if ($digestCalculado != $digestInformado){
-            $this->errStatus = true;
-            $this->errMsg = "O conteúdo do XML não confere com o Digest Value.\nDigest calculado [{$digestCalculado}], informado no XML [{$digestInformado}].\nO arquivo pode estar corrompido ou ter sido adulterado.";
+    public function verifySignatureXML($conteudoXML, $tag)
+    {
+        if (!function_exists('openssl_pkey_get_public')) {
             return false;
         }
-    // Remontando o certificado
-    $X509Certificate = $dom->getElementsByTagName('X509Certificate')->item(0)->nodeValue;
-    $X509Certificate =  "-----BEGIN CERTIFICATE-----\n".
-    $this->__splitLines($X509Certificate)."\n-----END CERTIFICATE-----\n";
-    $pubKey = openssl_pkey_get_public($X509Certificate);
-    if ($pubKey === false){
+        $dom = new DOMDocument();
+        $dom->preserveWhiteSpace = false;
+        $dom->formatOutput = false;
+        $dom->loadXML($conteudoXML);
+        $tagBase = $dom->getElementsByTagName($tag)->item(0);
+        // validar digest value
+        $tagInf = $tagBase->C14N(false, false, null, null);
+        $tagInf = str_replace(' xmlns:ds="http://www.w3.org/2000/09/xmldsig#"', '', $tagInf);
+        $digestCalculado = base64_encode(sha1($tagInf, true));
+        $digestInformado = $dom->getElementsByTagName('DigestValue')->item(0)->nodeValue;
+        if ($digestCalculado != $digestInformado) {
+            $this->errStatus = true;
+            $this->errMsg = "O conteúdo do XML não confere com o Digest Value."
+               . "\nDigest calculado [{$digestCalculado}], informado no XML [{$digestInformado}]."
+               . "\nO arquivo pode estar corrompido ou ter sido adulterado.";
+            return false;
+        }
+        // Remontando o certificado
+        $X509Certificate = $dom->getElementsByTagName('X509Certificate')->item(0)->nodeValue;
+        $X509Certificate =  "-----BEGIN CERTIFICATE-----\n".
+        $this->zSplitLines($X509Certificate)."\n-----END CERTIFICATE-----\n";
+        $pubKey = openssl_pkey_get_public($X509Certificate);
+        if ($pubKey === false) {
             $this->errStatus = true;
             $this->errMsg = 'Ocorreram problemas ao remontar a chave pública. Certificado incorreto ou corrompido!!';
             return false;
         }
-    // remontando conteudo que foi assinado
-    $conteudoAssinado = $dom->getElementsByTagName('SignedInfo')->item(0)->C14N(false, false, null, null);
-    $conteudoAssinado = str_replace(array('xmlns:ds="http://www.w3.org/2000/09/xmldsig#"',' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"'),'',$conteudoAssinado);
-    // validando assinatura do conteudo
-    $conteudoAssinadoNoXML = $dom->getElementsByTagName('SignatureValue')->item(0)->nodeValue;
-    $conteudoAssinadoNoXML = base64_decode(str_replace(array("\r", "\n"), '', $conteudoAssinadoNoXML));
-    $ok = openssl_verify($conteudoAssinado, $conteudoAssinadoNoXML, $pubKey);
-    if ($ok != 1){
+        // remontando conteudo que foi assinado
+        $conteudoAssinado = $dom->getElementsByTagName('SignedInfo')->item(0)->C14N(false, false, null, null);
+        $conteudoAssinado = str_replace(
+            array('xmlns:ds="http://www.w3.org/2000/09/xmldsig#"',
+                ' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"'),
+            '',
+            $conteudoAssinado
+        );
+        // validando assinatura do conteudo
+        $conteudoAssinadoNoXML = $dom->getElementsByTagName('SignatureValue')->item(0)->nodeValue;
+        $conteudoAssinadoNoXML = base64_decode(str_replace(array("\r", "\n"), '', $conteudoAssinadoNoXML));
+        $ok = openssl_verify($conteudoAssinado, $conteudoAssinadoNoXML, $pubKey);
+        if ($ok != 1) {
             $this->errStatus = true;
             $this->errMsg = "Problema ({$ok}) ao verificar a assinatura do digital!!";
             return false;
-    }
+        }
         $this->errStatus = false;
         $this->errMsg = "";
         return true;
-    } // fim verifySignatureXML
+    }
 
     /**
      * verifyCTe
@@ -2169,7 +2502,8 @@ class CTeNFePHP {
      * @param string $file Path completo para o arquivo xml a ser verificado
      * @return boolean false se nÃ£o confere e true se confere
      */
-    public function verifyCTe($file) {
+    public function verifyCTe($file)
+    {
         //verifica se o arquivo existe
         if (file_exists($file)) {
             //carrega a CTe
@@ -2213,7 +2547,8 @@ class CTeNFePHP {
                             if ($nProtSefaz != $nProt) {
                                 //ERRO !!!os numeros de protocolo não combinam
                                 $this->errStatus = true;
-                                $this->errMsg = "Os numeros dos protocolos não combinam!! nProtCT = " . $nProt . " <> nProtSefaz = " . $nProtSefaz;
+                                $this->errMsg = "Os numeros dos protocolos não combinam!! nProtCT = "
+                                        . $nProt . " <> nProtSefaz = " . $nProtSefaz;
                                 return false;
                             } //fim teste do protocolo
                         } else {
@@ -2224,7 +2559,8 @@ class CTeNFePHP {
                         if ($digestSefaz != $digest) {
                             //ERRO !!!os numeros digest não combinam
                             $this->errStatus = true;
-                            $this->errMsg = "Os numeros digest não combinam!! digValSEFAZ = " . $digestSefaz . " <> DigestValue = " . $digest;
+                            $this->errMsg = "Os numeros digest não combinam!! digValSEFAZ = "
+                                    . $digestSefaz . " <> DigestValue = " . $digest;
                             return false;
                         } //fim teste do digest value
                     } else {
@@ -2245,48 +2581,50 @@ class CTeNFePHP {
             return false;
         } //fim file_exists
         return true;
-    } //fim verifyCTe
+    }
 
     /**
-     * __splitLines
+     * zSplitLines
      * Divide a string do certificado publico em linhas com 76 caracteres (padrão original)
-     * @name __splitLines
+     * @name zSplitLines
      * @param string $cnt certificado
      * @return string certificado reformatado
      */
-    private function __splitLines($cnt){
+    private function zSplitLines($cnt)
+    {
         return rtrim(chunk_split(str_replace(array("\r", "\n"), '', $cnt), 76, "\n"));
-    } // Fim __splitLines
+    }
 
-   /**
-    * loadSEFAZ
-    * Função para extrair o URL, nome do serviço e versão dos webservices das SEFAZ de
-    * todos os Estados da Federação do arquivo urlWebServicesCTe.xml
-    *
-    * O arquivo xml é estruturado da seguinte forma :
-    * <ws>
-    *   <uf>
-    *      <sigla>AC</sigla>
-    *          <homologacao>
-    *              <Recepcao service='CTeRecepcao' versao='1.10'>http:// .....
-    *              ....
-    *          </homologacao>
-    *          <producao>
-    *              <Recepcao service='CTeRecepcao' versao='1.10'>http:// ....
-    *              ....
-    *          </producao>
-    *   </uf>
-    *   <uf>
-    *      ....
-    * </ws>
-    *
-    * @name loadSEFAZ
-    * @param  string $spathXML  Caminho completo para o arquivo xml
-    * @param  string $tpAmb  Pode ser "2-homologacao" ou "1-producao"
-    * @param  string $sUF       Sigla da Unidade da Federação (ex. SP, RS, etc..)
-    * @return mixed             false se houve erro ou array com os dado do URLs das SEFAZ
-    */
-    public function loadSEFAZ($spathXML, $tpAmb = '', $sUF) {
+    /**
+     * loadSEFAZ
+     * Função para extrair o URL, nome do serviço e versão dos webservices das SEFAZ de
+     * todos os Estados da Federação do arquivo urlWebServicesCTe.xml
+     *
+     * O arquivo xml é estruturado da seguinte forma :
+     * <ws>
+     *   <uf>
+     *      <sigla>AC</sigla>
+     *          <homologacao>
+     *              <Recepcao service='CTeRecepcao' versao='1.10'>http:// .....
+     *              ....
+     *          </homologacao>
+     *          <producao>
+     *              <Recepcao service='CTeRecepcao' versao='1.10'>http:// ....
+     *              ....
+     *          </producao>
+     *   </uf>
+     *   <uf>
+     *      ....
+     * </ws>
+     *
+     * @name loadSEFAZ
+     * @param  string $spathXML  Caminho completo para o arquivo xml
+     * @param  string $tpAmb  Pode ser "2-homologacao" ou "1-producao"
+     * @param  string $sUF       Sigla da Unidade da Federação (ex. SP, RS, etc..)
+     * @return mixed             false se houve erro ou array com os dado do URLs das SEFAZ
+     */
+    public function loadSEFAZ($spathXML, $tpAmb = '', $sUF = '')
+    {
         // Verifica se o arquivo xml pode ser encontrado no caminho indicado
         if (file_exists($spathXML)) {
             // Carrega o xml
@@ -2300,7 +2638,7 @@ class CTeNFePHP {
         if ($tpAmb == '') {
             $tpAmb = $this->tpAmb;
         }
-        if ($tpAmb == '1'){
+        if ($tpAmb == '1') {
             $sAmbiente = 'producao';
         } else {
             // Força homologação em qualquer outra situação
@@ -2313,7 +2651,7 @@ class CTeNFePHP {
         // Estabelece a expressão xpath de busca
         $xpathExpression = "/WS/UF[sigla='" . $alias . "']/$sAmbiente";
         // Para cada "nó" no xml que atenda aos critérios estabelecidos
-        foreach ($xml->xpath( $xpathExpression) as $gUF) {
+        foreach ($xml->xpath($xpathExpression) as $gUF) {
             // Para cada "nó filho" retonado
             foreach ($gUF->children() as $child) {
                 $u = (string) $child[0];
@@ -2326,10 +2664,10 @@ class CTeNFePHP {
             }
         }
         return $aUrl;
-    } // Fim loadSEFAZ
+    }
 
     /**
-     * __loadCerts
+     * zLoadCerts
      * Carrega o certificado pfx e gera as chaves privada e publica no
      * formato pem para a assinatura e para uso do SOAP e registra as
      * variaveis de ambiente.
@@ -2355,19 +2693,20 @@ class CTeNFePHP {
      *   $this->nameCert
      *   $this->passKey
      *
-     * @name __loadCerts
-     * @param   none
-     * @return    boolean true se o certificado foi carregado e false se nao
+     * @name   zLoadCerts
+     * @param  none
+     * @return boolean true se o certificado foi carregado e false se nao
      **/
-    protected function __loadCerts(){
-    if(!function_exists('openssl_pkcs12_read')){
+    protected function zLoadCerts()
+    {
+        if (!function_exists('openssl_pkcs12_read')) {
             $msg = "Função não existente: openssl_pkcs12_read!! ";
-            $this->__setError($msg);
+            $this->zSetError($msg);
             if ($this->exceptions) {
                 throw new nfephpException($msg);
             }
             return false;
-    }
+        }
         // Monta o path completo com o nome da chave privada
         $this->priKEY = $this->certsDir . $this->cnpj . '_priKEY.pem';
         // Monta o path completo com o nome da chave publica
@@ -2384,7 +2723,7 @@ class CTeNFePHP {
         // Monta o caminho completo até o certificado pfx
         $pCert = $this->certsDir . $this->certName;
         // Verifica se o arquivo existe
-        if(!file_exists($pCert)) {
+        if (!file_exists($pCert)) {
             $this->errMsg = 'Certificado não encontrado!!';
             $this->errStatus = true;
             return false;
@@ -2398,7 +2737,7 @@ class CTeNFePHP {
             return false;
         }
         // Verifica sua validade
-        $aResp = $this->__validCerts($x509certdata['cert']);
+        $aResp = $this->zValidCerts($x509certdata['cert']);
         if ($aResp['error'] != '') {
             $this->errMsg = 'Certificado invalido!! - ' . $aResp['error'];
             $this->errStatus = true;
@@ -2411,7 +2750,7 @@ class CTeNFePHP {
             // Comparar os primeiros 30 digitos
             if (!substr($conteudo, 0, 30) == substr($x509certdata['pkey'], 0, 30)) {
                  // Se diferentes gravar o novo
-                if (!file_put_contents($this->priKEY,$x509certdata['pkey'])) {
+                if (!file_put_contents($this->priKEY, $x509certdata['pkey'])) {
                     $this->errMsg = 'Impossivel gravar no diretório!!! Permissão negada!!';
                     $this->errStatus = true;
                     return false;
@@ -2443,25 +2782,26 @@ class CTeNFePHP {
             $n = file_put_contents($this->certKEY, $x509certdata['pkey'] . "\r\n" . $x509certdata['cert']);
         }
         return true;
-    } //Fim loadCerts
+    }
 
-
-   /**
-    * __validCerts
-    * Validaçao do cerificado digital, além de indicar
-    * a validade, este metodo carrega a propriedade
-    * mesesToexpire da classe que indica o numero de
-    * meses que faltam para expirar a validade do mesmo
-    * esta informacao pode ser utilizada para a gestao dos
-    * certificados de forma a garantir que sempre estejam validos
-    *
-    * @name __validCerts
-    * @param    string  $cert Certificado digital no formato pem
-    * @return    array ['status'=>true,'meses'=>8,'dias'=>245]
-    */
-    protected function __validCerts($cert){
-    if(!function_exists('openssl_x509_read'))
-        return false;
+    /**
+     * __validCerts
+     * Validaçao do cerificado digital, além de indicar
+     * a validade, este metodo carrega a propriedade
+     * mesesToexpire da classe que indica o numero de
+     * meses que faltam para expirar a validade do mesmo
+     * esta informacao pode ser utilizada para a gestao dos
+     * certificados de forma a garantir que sempre estejam validos
+     *
+     * @name __validCerts
+     * @param    string  $cert Certificado digital no formato pem
+     * @return    array ['status'=>true,'meses'=>8,'dias'=>245]
+     */
+    protected function zValidCerts($cert)
+    {
+        if (! function_exists('openssl_x509_read')) {
+            return false;
+        }
         $flagOK = true;
         $errorMsg = "";
         $data = openssl_x509_read($cert);
@@ -2471,7 +2811,7 @@ class CTeNFePHP {
         $mes = substr($cert_data['validTo'], 2, 2);
         $dia = substr($cert_data['validTo'], 4, 2);
         // Obtem o timeestamp da data de validade do certificado
-        $dValid = gmmktime(0,0,0,$mes,$dia,$ano);
+        $dValid = gmmktime(0, 0, 0, $mes, $dia, $ano);
         // Obtem o timestamp da data de hoje
         $dHoje = gmmktime(0, 0, 0, date("m"), date("d"), date("Y"));
         // Compara a data de validade com a data atual
@@ -2499,20 +2839,20 @@ class CTeNFePHP {
             'error' => $errorMsg,
             'meses' => $monthsToExpire,
             'dias' => $daysToExpire);
-    } //Fim validCerts
-
+    }
 
     /**
-     * __cleanCerts
+     * zCleanCerts
      * Retira as chaves de inicio e fim do certificado digital
      * para inclusão do mesmo na tag assinatura do xml
      *
-     * @name __cleanCerts
+     * @name zCleanCerts
      * @param    $certFile
      * @return   string contendo a chave digital limpa
      * @access   private
-     **/
-    protected function __cleanCerts($certFile){
+     */
+    protected function zCleanCerts($certFile)
+    {
         // Carregar a chave publica do arquivo pem
         $pubKey = file_get_contents($certFile);
         // Inicializa variavel
@@ -2521,7 +2861,8 @@ class CTeNFePHP {
         $arCert = explode("\n", $pubKey);
         foreach ($arCert as $curData) {
             // Remove a tag de inicio e fim do certificado
-            if (strncmp($curData, '-----BEGIN CERTIFICATE', 22) != 0 && strncmp($curData, '-----END CERTIFICATE', 20) != 0 ) {
+            if (strncmp($curData, '-----BEGIN CERTIFICATE', 22) != 0 &&
+                    strncmp($curData, '-----END CERTIFICATE', 20) != 0) {
                 // Carrega o resultado numa string
                 $data .= trim($curData);
             }
@@ -2529,18 +2870,18 @@ class CTeNFePHP {
         return $data;
     }
 
-
-
     /**
      * listDir
      * Método para obter todo o conteúdo de um diretorio, e
      * que atendam ao critério indicado.
+     * 
      * @param string $dir Diretorio a ser pesquisado
      * @param string $fileMatch Critério de seleção pode ser usados coringas como *-cte.xml
      * @param boolean $retpath se true retorna o path completo dos arquivos se false so retorna o nome dos arquivos
      * @return mixed Matriz com os nome dos arquivos que atendem ao critério estabelecido ou false
      */
-    public function listDir($dir, $fileMatch, $retpath = false) {
+    public function listDir($dir, $fileMatch, $retpath = false)
+    {
         if (trim($fileMatch) != '' && trim($dir) != '') {
             // Passar o padrão para minúsculas
             $fileMatch = strtolower($fileMatch);
@@ -2564,13 +2905,13 @@ class CTeNFePHP {
                 // Monta os vetores com os itens encontrados na pasta
                 while (false !== ($file = readdir($ponteiro))) {
                     // Procure se não for diretorio
-                    if ($file != "." && $file != ".." ) {
-                        if (!is_dir($file)){
+                    if ($file != "." && $file != "..") {
+                        if (!is_dir($file)) {
                             $tfile = strtolower($file);
                             // É um arquivo então
                             // verifica se combina com o $fileMatch
                             if (fnmatch($fileMatch, $tfile)) {
-                                if ($retpath){
+                                if ($retpath) {
                                     $aName[$x] = $dir . $file;
                                 } else {
                                     $aName[$x] = $file;
@@ -2586,126 +2927,26 @@ class CTeNFePHP {
             }//endif do teste se é um diretorio
         }//endif
         return $aName;
-    } //fim da função
+    }
 
     /**
-     * __sendSOAP
-     * Estabelece comunicaçao com servidor SOAP 1.1 ou 1.2 da SEFAZ,
+     * zSendSOAP
+     * Função para estabelecer comunicaçao com servidor SOAP 1.2 da SEFAZ,
      * usando as chaves publica e privada parametrizadas na contrução da classe.
-     * Conforme Manual de Integração Versão 4.0.1
+     * Depende de libcurl
      *
-     * @name __sendSOAP
-     * @param string $urlsefaz
-     * @param string $namespace
-     * @param string $cabecalho
-     * @param string $dados
-     * @param string $metodo
-     * @param numeric $ambiente  tipo de ambiente 1 - produção e 2 - homologação
-     * @param string $UF unidade da federação, necessário para diferenciar AM, MT e PR
-     * @return mixed false se houve falha ou o retorno em xml do SEFAZ
-     */
-    protected function __sendSOAP($urlsefaz,$namespace,$cabecalho,$dados,$metodo,$ambiente,$UF=''){
-        //ativa retorno de erros soap
-        use_soap_error_handler(true);
-        //versão do SOAP
-        $soapver = SOAP_1_2;
-        if($ambiente == 1){
-            $ambiente = 'producao';
-        } else {
-            $ambiente = 'homologacao';
-        }
-        //monta a terminação do URL
-        switch ($metodo){
-            case 'CTeRecepcao':
-                $usef = "CteRecepcao";
-                break;
-            case 'CTeRetRecepcao':
-                $usef = "CteRetRecepcao";
-                break;
-            case 'CTeCancelamento':
-                $usef = "CteCancelamento";
-                break;
-            case 'CTeInutilizacao':
-                $usef = "CteInutilizacao";
-                break;
-            case 'cteConsultaCT':
-                $usef = "CteConsulta";
-                break;
-            case 'cteStatusServicoCT':
-                $usef = "CteStatusServico";
-                break;
-        }
-
-        //para os estados de AM, MT e PR é necessário usar wsdl baixado para acesso ao webservice
-        if ($UF=='AM' || $UF=='MT' || $UF=='PR'){
-            $urlsefaz = "$this->URLbase/wsdl/2.00/$ambiente/$UF$usef";
-        }
-       if ($this->enableSVAN){
-            //se for SVAN montar o URL baseado no metodo e ambiente
-            $urlsefaz = "$this->URLbase/wsdl/2.00/$ambiente/SVAN$usef";
-        }
-        //verificar se SCAN ou SVAN
-        if ($this->enableSCAN){
-            //se for SCAN montar o URL baseado no metodo e ambiente
-            $urlsefaz = "$this->URLbase/wsdl/2.00/$ambiente/SCAN$usef";
-        }
-        //completa a url do serviço para baixar o arquivo WSDL
-        $URL = $urlsefaz.'?WSDL';
-        $this->soapDebug = $urlsefaz;
-        $options = array(
-            'encoding'      => 'UTF-8',
-            'verifypeer'    => false,
-            'verifyhost'    => false,
-            'soap_version'  => $soapver,
-            'style'         => SOAP_DOCUMENT,
-            'use'           => SOAP_LITERAL,
-            'local_cert'    => $this->certKEY,
-            'trace'         => true,
-            'compression'   => 0,
-            'exceptions'    => false,
-            'cache_wsdl'    => WSDL_CACHE_NONE
-        );
-        //instancia a classe soap
-
-        $oSoapClient = new CTeSOAP2Client($URL,$options);
-        //monta o cabeçalho da mensagem
-        $varCabec = new SoapVar($cabecalho,XSD_ANYXML);
-        $header = new SoapHeader($namespace,'cteCabecMsg',$varCabec);
-        //instancia o cabeçalho
-        $oSoapClient->__setSoapHeaders($header);
-        //monta o corpo da mensagem soap
-        $varBody = new SoapVar($dados,XSD_ANYXML);
-        $resp = $oSoapClient->__soapCall($metodo, array($varBody) );
-            if (is_soap_fault($resp)) {
-           $soapFault = "SOAP Fault: (faultcode: {$resp->faultcode}, faultstring: {$resp->faultstring})";
-        }
-        $resposta = $oSoapClient->__getLastResponse();
-        $this->soapDebug .= "\n" . $soapFault;
-        $this->soapDebug .= "\n" . $oSoapClient->__getLastRequestHeaders();
-        $this->soapDebug .= "\n" . $oSoapClient->__getLastRequest();
-        $this->soapDebug .= "\n" . $oSoapClient->__getLastResponseHeaders();
-        $this->soapDebug .= "\n" . $oSoapClient->__getLastResponse();
-        return $resposta;
-    } //fim __sendSOAP
-
-    /**
-     * __sendSOAP2
-     * Função alternativa para estabelecer comunicaçao com servidor SOAP 1.2 da SEFAZ,
-     * usando as chaves publica e privada parametrizadas na contrução da classe.
-     * Conforme Manual de Integração Versão 4.0.1 Utilizando cURL e não o SOAP nativo
-     *
-     * @name __sendSOAP2
+     * @name zSendSOAP
      * @param string $urlsefaz
      * @param string $namespace
      * @param string $cabecalho
      * @param string $dados
      * @param string $metodo
      * @param numeric $ambiente
-     * @param string $UF sem uso mantido apenas para compatibilidade com __sendSOAP
      * @return mixed false se houve falha ou o retorno em xml do SEFAZ
      */
-    protected function __sendSOAP2($urlsefaz,$namespace,$cabecalho,$dados,$metodo,$ambiente,$UF=''){
-        if ($urlsefaz == ''){
+    protected function zSendSOAP($urlsefaz, $namespace, $cabecalho, $dados, $metodo, $ambiente)
+    {
+        if ($urlsefaz == '') {
             //não houve retorno
             $this->errMsg = 'URL do webservice não disponível.';
             $this->errStatus = true;
@@ -2771,50 +3012,29 @@ class CTeNFePHP {
         $cCode['503']="Service Unavailable";
         $cCode['504']="Gateway Timeout";
         $cCode['505']="HTTP Version Not Supported";
-        //
+
         $tamanho = strlen($data);
-        if($this->enableSCAN){
-            //monta a terminação do URL
-            switch ($metodo){
-                case 'CTeRecepcao':
-                    $servico = "CteRecepcao";
-                    break;
-                case 'CTeRetRecepcao':
-                    $servico = "CteRetRecepcao";
-                    break;
-                case 'CTeCancelamento':
-                    $servico = "CteCancelamento";
-                    break;
-                case 'CTeInutilizacao':
-                    $servico = "CteInutilizacao";
-                    break;
-                case 'cteConsultaCT':
-                    $servico = "CteConsulta";
-                    break;
-                case 'cteStatusServicoCT':
-                    $servico = "CteStatusServico";
-                    break;
-            }
-            $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . "cte_ws1.xml",$ambiente,'SCAN');
-            $urlsefaz = $aURL[$servico]['URL'];
-        }
-        $parametros = Array('Content-Type: application/soap+xml;charset=utf-8;action="'.$namespace."/".$metodo.'"','SOAPAction: "'.$metodo.'"',"Content-length: $tamanho");
+        
+        $parametros = array(
+            'Content-Type: application/soap+xml;charset=utf-8;action="'.$namespace."/".$metodo.'"',
+            'SOAPAction: "'.$metodo.'"',
+            "Content-length: $tamanho");
         $_aspa = '"';
         $oCurl = curl_init();
-        if(is_array($this->aProxy)){
+        if (is_array($this->aProxy)) {
             curl_setopt($oCurl, CURLOPT_HTTPPROXYTUNNEL, 1);
             curl_setopt($oCurl, CURLOPT_PROXYTYPE, "CURLPROXY_HTTP");
             curl_setopt($oCurl, CURLOPT_PROXY, $this->aProxy['IP'].':'.$this->aProxy['PORT']);
-            if( $this->aProxy['PASS'] != '' ){
+            if ($this->aProxy['PASS'] != '') {
                 curl_setopt($oCurl, CURLOPT_PROXYUSERPWD, $this->aProxy['USER'].':'.$this->aProxy['PASS']);
                 curl_setopt($oCurl, CURLOPT_PROXYAUTH, "CURLAUTH_BASIC");
             } //fim if senha proxy
         }//fim if aProxy
 
         curl_setopt($oCurl, CURLOPT_URL, $urlsefaz.'');
-        curl_setopt($oCurl, CURLOPT_PORT , 443);
-        curl_setopt($oCurl, CURLOPT_VERBOSE, 1); //apresenta informações de conexão na tela
-        curl_setopt($oCurl, CURLOPT_HEADER, 1); //retorna o cabeçalho de resposta
+        curl_setopt($oCurl, CURLOPT_PORT, 443);
+        curl_setopt($oCurl, CURLOPT_VERBOSE, 1);
+        curl_setopt($oCurl, CURLOPT_HEADER, 1);
         curl_setopt($oCurl, CURLOPT_SSLVERSION, 3);
         curl_setopt($oCurl, CURLOPT_SSL_VERIFYHOST, 0);
         curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, 0);
@@ -2823,9 +3043,9 @@ class CTeNFePHP {
         curl_setopt($oCurl, CURLOPT_POST, 1);
         curl_setopt($oCurl, CURLOPT_POSTFIELDS, $data);
         curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($oCurl, CURLOPT_HTTPHEADER,$parametros);
+        curl_setopt($oCurl, CURLOPT_HTTPHEADER, $parametros);
         $__xml = curl_exec($oCurl);
-        $info = curl_getinfo($oCurl); //informações da conexão
+        $info = curl_getinfo($oCurl);
         $txtInfo ="";
         $txtInfo .= "URL=$info[url]\n";
         $txtInfo .= "Content type=$info[content_type]\n";
@@ -2847,12 +3067,11 @@ class CTeNFePHP {
         $txtInfo .= "Upload Content Length=$info[upload_content_length]\n";
         $txtInfo .= "Start Transfer Time=$info[starttransfer_time]\n";
         $txtInfo .= "Redirect Time=$info[redirect_time]\n";
-//        $txtInfo .= "Certinfo=$info[certinfo]\n";
         $n = strlen($__xml);
         $x = stripos($__xml, "<");
         $xml = substr($__xml, $x, $n-$x);
         $this->soapDebug = $data."\n\n".$txtInfo."\n".$__xml;
-        if ($__xml === false){
+        if ($__xml === false) {
             //não houve retorno
             $this->errMsg = curl_error($oCurl) . $info['http_code'] . $cCode[$info['http_code']];
             $this->errStatus = true;
@@ -2863,19 +3082,20 @@ class CTeNFePHP {
         }
         curl_close($oCurl);
         return $xml;
-    } //fim __sendSOAP2
+    }
 
-   /**
-    * __convertTime
-    * Converte o campo data time retornado pelo webservice
-    * em um timestamp unix
-    *
-    * @name __convertTime
-    * @param    string   $DH
-    * @return   timestamp
-    * @access   private
-    **/
-    protected function __convertTime($DH){
+    /**
+     * zConvertTime
+     * Converte o campo data time retornado pelo webservice
+     * em um timestamp unix
+     *
+     * @name zConvertTime
+     * @param    string   $DH
+     * @return   timestamp
+     * @access   private
+     */
+    protected function zConvertTime($DH)
+    {
         if ($DH) {
             $aDH = explode('T', $DH);
             $adDH = explode('-', $aDH[0]);
@@ -2883,99 +3103,62 @@ class CTeNFePHP {
             $timestampDH = mktime($atDH[0], $atDH[1], $atDH[2], $adDH[1], $adDH[2], $adDH[0]);
             return $timestampDH;
         }
-    } //fim __convertTime
+    }
 
     /**
-     * __getNumLot
+     * zGetNumLot
      * Obtêm o numero do último lote de envio
      *
-     * @name __getNumLot
+     * @name zGetNumLot
      * @param none
      * @return numeric Numero do Lote
      */
-    protected function __getNumLot(){
-         $lotfile = $this->raizDir . 'config\numloteCTE.xml';
-         $domLot = new DomDocument;
-         $domLot->load($lotfile);
-         $num = $domLot->getElementsByTagName('num')->item(0)->nodeValue;
-         if( is_numeric($num) ){
+    protected function zGetNumLot()
+    {
+        $lotfile = $this->raizDir . 'config\numloteCTE.xml';
+        $domLot = new DomDocument;
+        $domLot->load($lotfile);
+        $num = $domLot->getElementsByTagName('num')->item(0)->nodeValue;
+        if (is_numeric($num)) {
             return $num;
-         } else {
-             //arquivo não existe suponho que o numero então seja 1
-             return 1;
-         }
-    }//fim __getNumLot
+        } else {
+            //arquivo não existe suponho que o numero então seja 1
+            return 1;
+        }
+    }
 
     /**
-     * __putNumLot
+     * zPutNumLot
      * Grava o numero do lote de envio usado
      *
-     * @name __putNumLot
+     * @name zPutNumLot
      * @param numeric $num Inteiro com o numero do lote enviado
      * @return boolean true sucesso ou FALSO erro
      */
-    protected function __putNumLot($num){
-        if ( is_numeric($num) ){
+    protected function zPutNumLot($num)
+    {
+        if (is_numeric($num)) {
             $lotfile = $this->raizDir . 'config\numloteCTE.xml';
             $numLot = '<?xml version="1.0" encoding="UTF-8"?><root><num>' . $num . '</num></root>';
-            if (!file_put_contents($lotfile,$numLot) ) {
+            if (!file_put_contents($lotfile, $numLot)) {
                 return true;
             } else {
                 return false;
             }
         }
-    } //fim __putNumLot
+    }
+    
     /**
-     * __setError
+     * zSetError
      * Adiciona descrição do erro ao contenedor dos erros
      *
-     * @name __setError
+     * @name zSetError
      * @param   string $msg Descrição do erro
      * @return  none
      */
-    private function __setError($msg){
+    private function zSetError($msg)
+    {
         $this->errMsg .= "$msg\n";
         $this->errStatus = true;
     }
-} //fim classe CTeNFePHP
-/**
- * Classe complementar
- * necessária para a comunicação SOAP 1.2
- * Remove algumas tags para adequar a comunicação
- * ao padrão Ruindows utilizado
- *
- * @version 1.2
- * @package CTePHP
- * @author  Roberto L. Machado <linux.rlm at gmail dot com>
- *
- */
-if(class_exists("SoapClient")){
-    class CTeSOAP2Client extends SoapClient {
-        function __doRequest($request, $location, $action, $version) {
-        $request = str_replace(':ns1', '', $request);
-        $request = str_replace('ns1:', '', $request);
-        $request = str_replace("\n", '', $request);
-        $request = str_replace("\r", '', $request);
-        return parent::__doRequest($request, $location, $action, $version);
-        }
-    } // Fim CTeSOAP2Client
 }
-
-/**
- * Classe complementar
- * necessária para extender a classe base Exception
- * Usada no tratamento de erros da API
- * @version 1.0.0
- * @package NFePHP
- *
- */
-if(!class_exists('nfephpException')){
-    class nfephpException extends Exception {
-        public function errorMessage() {
-        $errorMsg = $this->getMessage()."\n";
-        return $errorMsg;
-        }
-    }
-}
-
-?>
