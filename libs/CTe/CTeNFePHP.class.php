@@ -37,14 +37,13 @@
  *        CONTRIBUIDORES (em ordem alfabetica):
  *          Bernardo Silva <bernardo at datamex dot com dot br>
  *          Chrystian Toigo <ctoigo at gmail dot com>
+ *          Cleiton Perin <cperin20 at gmail dot com>
  *          Fernando Mertins <fernando.mertins at gmail dot com>
  *          Herbert Silva <hebert2 at gmail dot com>
  *          Lucimar A. Magalhaes <lucimar.magalhaes at assistsolucoes dot com dot br>
  *          Matheus Marabesi <matheusmarabesi at gmail dot com>
  *          Roberto Spadim  <roberto at spadim dot com dot br>
  *          Rodrigo Rysdyk <rodrigo_rysdyk at hotmail dot com>
- *
- *
  *
  */
 
