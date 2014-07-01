@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Este arquivo é parte do projeto NFePHP - Nota Fiscal eletrônica em PHP.
  *
@@ -23,7 +24,7 @@
  * 
  * @package     NFePHP
  * @name        ConvertCTePHP
- * @version     1.0.1
+ * @version     1.0.2
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2011 &copy; NFePHP
@@ -41,18 +42,27 @@
  *	Alguns campos e grupos eu não implementei, pois não foi necessário o uso no meu cliente.
  *	Então, criei um TODO List desses campos e grupos não implementados.
  *
- *	TODO List: (número - nome do campo, de acordo com o manual 1.0.4 de 25/05/2012. O * depois do campo significa todo o grupo)
- *	63 - fluxo*
+ *	TODO List: (número - nome do campo, de acordo com o manual 1.0.4 de 25/05/2012.
+ *                  O * depois do campo significa todo o grupo)
+ *	63  - fluxo*
  *	290 - docAnt*
  *	323 - veicNovos*
  *	340 - infCteSub*
  *	396 - ICMSSN*
  *	399 - infCteAnu*
+ * 
+ *      TODO: Passar para a versão 2.00 do xml da CTe
  */
 
-require_once ('CommonNFePHP.class.php');
+// Define o caminho base da instalação do sistema
+if (!defined('PATH_ROOT')) {
+    define('PATH_ROOT', dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR);
+}
 
-class ConvertCTePHP extends CommonNFePHP {
+require_once(PATH_ROOT.'libs/Common/CommonNFePHP.class.php');
+
+class ConvertCTePHP extends CommonNFePHP
+{
 
     /**
      * xml
@@ -106,13 +116,11 @@ class ConvertCTePHP extends CommonNFePHP {
      * __contruct
      * Método contrutor da classe
      *
-     * @package NFePHP
-     * @name __contruct
-     * @version 3.0.0
      * @param boolean $limpar_string Ativa flag para limpar os caracteres especiais e acentos
      * @return none
      */
-    function __construct($limpar_string = true) {
+    function __construct($limpar_string = true)
+    {
         $this->limpar_string = $limpar_string;
     }
 
@@ -125,7 +133,8 @@ class ConvertCTePHP extends CommonNFePHP {
      * @param mixed $txt Path para o arquivo txt, array ou o conteudo do txt em uma string
      * @return string xml construido
      */
-    public function ctetxt2xml($txt) {
+    public function ctetxt2xml($txt)
+    {
         if (is_file($txt)) {
             $aDados = file($txt, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES | FILE_TEXT);
         } else {
@@ -137,22 +146,20 @@ class ConvertCTePHP extends CommonNFePHP {
                 }
             }
         }
-        return $this->__ctetxt2xml_array_com_linhas($aDados);
+        return $this->zCtetxt2xmlArrayLinhas($aDados);
     } //fim ctetxt2xml
 
     /**
-     * ctetxt2xml_arrayComLinhas
+     * zCtetxt2xmlArrayLinhas
      * Método de conversão das CTe de txt para xml, conforme
      * especificações do Manual de Importação/Exportação TXT
      * Notas Fiscais eletrônicas versão 1.0.4 (25/05/2012)
      *
-     * @package NFePHP
-     * @name ctetxt2xml
-     * @version 1.0.0
      * @param string $arrayComAsLinhasDoArquivo Array de Strings onde cada elemento é uma linha do arquivo
      * @return string xml construido
      */
-    protected function __ctetxt2xml_array_com_linhas($arrayComAsLinhasDoArquivo) {
+    protected function zCtetxt2xmlArrayLinhas($arrayComAsLinhasDoArquivo)
+    {
         $arquivo = $arrayComAsLinhasDoArquivo;
         $ctes = array();
         $cur_cte = -1;
@@ -161,15 +168,14 @@ class ConvertCTePHP extends CommonNFePHP {
         for ($l = 0; $l < count($arquivo); $l++) {
             //separa os elementos do arquivo txt usando o pipe "|"
             $dados = explode("|", $arquivo[$l]);
-
             //remove todos os espaços adicionais, tabs, linefeed, e CR
             //de todos os campos de dados retirados do TXT
             for ($x = 0; $x < count($dados); $x++) {
-                if (!empty($dados[$x]))
-                {
+                if (!empty($dados[$x])) {
                     $dados[$x] = trim(preg_replace('/\s\s+/', " ", $dados[$x]));
-                    if ($this->limpar_string)
-                        $dados[$x] = $this->__limpaString($dados[$x]);
+                    if ($this->limpar_string) {
+                        $dados[$x] = $this->zLimpaString($dados[$x]);
+                    }
                 } //end if
             } //end for
 
@@ -179,20 +185,43 @@ class ConvertCTePHP extends CommonNFePHP {
                     break;
                 case "CTE":
                     $cur_cte++;
-                    unset($dom, $CTe, $infCte, $versao, $id, $ide, $cUF, $cCT, $CFOP, $natOp, $forPag, $mod, $serie, $nCT, $dhEmi, $tpImp, $tpEmis, $cDV, $tpAmb, $tpCTe,
-                        $procEmi, $verProc, $refCTE, $cMunEnv, $xMunEnv, $UFEnv, $modal, $tpServ, $cMunIni, $xMunIni, $UFIni, $cMunFim, $xMunFim, $UFFim, $retira, $xDetRetira,
-                        $toma03, $toma, $toma4, $CNPJ, $CPF, $IE, $xNome, $xFant, $fone, $enderToma, $xLgr, $nro, $xCpl, $xBairro, $cMun, $xMun, $CEP, $UF, $cPais, $xPais, $email,
-                        $dhCont, $xJust, $compl, $xEmi, $xObs, $emit, $enderEmit, $rem, $enderReme, $infNFe, $chave, $PIN, $infOutros, $tpDoc, $descOutros, $nDoc, $dEmi, $vDocFisc,
-                        $dest, $ISUF, $enderDest, $vPrest, $vTPrest, $vRec, $Comp, $xNome, $vComp, $imp, $ICMS, $infAdFisco, $ICMS00, $CST, $vBC, $pICMS, $vICMS, $ICMS45, $CST,
-                        $infCTeNorm, $infCarga, $vCarga, $proPred, $xOutCat, $infQ, $cUnid, $tpMed, $qCarga, $contQt, $nCont, $lacContQt, $nLacre, $dPrev, $seg, $respSeg, $xSeg,
-                        $nApol, $nAver, $vCarga, $infModal, $versaoModal, $rodo, $RNTRC, $lota, $occ, $nOCC, $emiOcc, $cInt, $veic, $cInt, $RENAVAM, $placa, $tara, $capKG, $capM3,
-                        $tpProp, $tpVeic, $tpRod, $tpCar, $prop, $moto, $peri, $nONU, $xNomeAE, $xClaRisco, $grEmb, $qTotProd, $qVolTipo, $pontoFulgor, $cobr, $fat, $nFat, $vOrig,
-                        $vDesc, $vLiq, $dup, $nDup, $dVenc, $vDup, $infCteComp, $vPresComp, $compComp, $impComp, $ICMSComp);
+                    unset($dom, $CTe, $infCte, $versao, $id, $ide, $cUF, $cCT, $CFOP,
+                        $natOp, $forPag, $mod, $serie, $nCT, $dhEmi, $tpImp, $tpEmis,
+                        $cDV, $tpAmb, $tpCTe,
+                        $procEmi, $verProc, $refCTE, $cMunEnv, $xMunEnv, $UFEnv, $modal,
+                        $tpServ, $cMunIni, $xMunIni, $UFIni, $cMunFim, $xMunFim, $UFFim,
+                        $retira, $xDetRetira,
+                        $toma03, $toma, $toma4, $CNPJ, $CPF, $IE, $xNome, $xFant, $fone,
+                        $enderToma, $xLgr, $nro, $xCpl, $xBairro, $cMun, $xMun, $CEP,
+                        $UF, $cPais, $xPais, $email,
+                        $dhCont, $xJust, $compl, $xEmi, $xObs, $emit, $enderEmit, $rem,
+                        $enderReme, $infNFe, $chave, $PIN, $infOutros, $tpDoc, $descOutros,
+                        $nDoc, $dEmi, $vDocFisc,
+                        $dest, $ISUF, $enderDest, $vPrest, $vTPrest, $vRec, $Comp, $xNome,
+                        $vComp, $imp, $ICMS, $infAdFisco, $ICMS00, $CST, $vBC, $pICMS,
+                        $vICMS, $ICMS45, $CST,
+                        $infCTeNorm, $infCarga, $vCarga, $proPred, $xOutCat, $infQ, $cUnid,
+                        $tpMed, $qCarga, $contQt, $nCont, $lacContQt, $nLacre, $dPrev,
+                        $seg, $respSeg, $xSeg,
+                        $nApol, $nAver, $vCarga, $infModal, $versaoModal, $rodo, $RNTRC,
+                        $lota, $occ, $nOCC, $emiOcc, $cInt, $veic, $cInt, $RENAVAM, $placa,
+                        $tara, $capKG, $capM3,
+                        $tpProp, $tpVeic, $tpRod, $tpCar, $prop, $moto, $peri, $nONU,
+                        $xNomeAE, $xClaRisco, $grEmb, $qTotProd, $qVolTipo, $pontoFulgor,
+                        $cobr, $fat, $nFat, $vOrig,
+                        $vDesc, $vLiq, $dup, $nDup, $dVenc, $vDup, $infCteComp,
+                        $vPresComp, $compComp, $impComp, $ICMSComp);
 
                     $this->chave = '';
                     $this->tpAmb = '';
                     $this->xml = '';
-                    $ctes[$cur_cte] = array('dom' => false, 'CTe' => false, 'infCte' => false, 'refCTE' => false, 'chave' => '', 'tpAmb' => '');
+                    $ctes[$cur_cte] = array(
+                        'dom' => false,
+                        'CTe' => false,
+                        'infCte' => false,
+                        'refCTE' => false,
+                        'chave' => '',
+                        'tpAmb' => '');
                     $ctes[$cur_cte]['dom'] = new DOMDocument('1.0', 'UTF-8');
                     $dom = &$ctes[$cur_cte]['dom'];
                     $dom->formatOutput = true;
@@ -244,7 +273,7 @@ class ConvertCTePHP extends CommonNFePHP {
                     $ide->appendChild($procEmi);
                     $verProc = $dom->createElement("verProc", $dados[16]);
                     $ide->appendChild($verProc);
-                    if (empty($dados[17])){
+                    if (empty($dados[17])) {
                         $dados[17] = "NfePHP";
                     }
                     $cMunEnv = $dom->createElement("cMunEnv", $dados[18]);
@@ -271,23 +300,23 @@ class ConvertCTePHP extends CommonNFePHP {
                     $ide->appendChild($UFFim);
                     $retira = $dom->createElement("retira", $dados[29]);
                     $ide->appendChild($retira);
-                    if (!empty($dados[30])){
+                    if (!empty($dados[30])) {
                         $xDetRetira = $dom->createElement("xDetRetira", $dados[30]);
                         $ide->appendChild($xDetRetira);
                     }
                     $infCte->appendChild($ide);
                     break;
-                case "TOMA03";
+                case "TOMA03":
                     $toma03 = $dom->createElement("toma03");
                     $toma = $dom->createElement("toma", $dados[1]);
                     $toma03->appendChild($toma);
                     $ide->appendChild($toma03);
                     break;
-                case "TOMA4";
+                case "TOMA4":
                     $toma4 = $dom->createElement("toma4");
                     $toma = $dom->createElement("toma", $dados[1]);
                     $toma4->appendChild($toma);
-                    if (!empty($dados[2])){
+                    if (!empty($dados[2])) {
                         $CNPJ = $dom->createElement("CNPJ", $dados[2]);
                         $toma4->appendChild($CNPJ);
                     } else {
@@ -478,7 +507,7 @@ class ConvertCTePHP extends CommonNFePHP {
                     $emit->appendChild($enderEmit);
                     $infCte->appendChild($emit);
                     break;
-                case "REM";
+                case "REM":
                     $rem = $dom->createElement("rem");
                     if (!empty($dados[1])) {
                         $CNPJ = $dom->createElement("CNPJ", $dados[1]);
@@ -1264,10 +1293,14 @@ class ConvertCTePHP extends CommonNFePHP {
             if (!empty($infCte)) {
                 $CTe->appendChild($infCte);
                 $dom->appendChild($CTe);
-                $this->__montaChaveXML($dom);
+                $this->zMontaChaveXML($dom);
                 $xml = $dom->saveXML();
                 $this->xml = $dom->saveXML();
-                $xml = str_replace('<?xml version="1.0" encoding="UTF-8  standalone="no"?>', '<?xml version="1.0" encoding="UTF-8"?>', $xml);
+                $xml = str_replace(
+                    '<?xml version="1.0" encoding="UTF-8  standalone="no"?>',
+                    '<?xml version="1.0" encoding="UTF-8"?>',
+                    $xml
+                );
                 //remove linefeed, carriage return, tabs e multiplos espaços
                 $xml = preg_replace('/\s\s+/', ' ', $xml);
                 $xml = str_replace("> <", "><", $xml);
@@ -1280,55 +1313,58 @@ class ConvertCTePHP extends CommonNFePHP {
 
 
     /**
-     * __limpaString
+     * zLimpaString
      * Remove todos dos caracteres especiais do texto e os acentos
      * preservando apenas letras de A-Z numeros de 0-9 e os caracteres @ , - ; : / _
      * @param   string $texto string a ser limpa 
      * @return  string Texto sem caractere especiais
      */
-    private function __limpaString($texto){
-        $aFind = array('&', 'á', 'à', 'ã', 'â', 'é', 'ê', 'í', 'ó', 'ô', 'õ', 'ú', 'ü', 'ç', 'Á', 'À', 'Ã', 'Â', 'É', 'Ê', 'Í', 'Ó', 'Ô', 'Õ', 'Ú', 'Ü', 'Ç');
-        $aSubs = array('e', 'a', 'a', 'a', 'a', 'e', 'e', 'i', 'o', 'o', 'o', 'u', 'u', 'c', 'A', 'A', 'A', 'A', 'E', 'E', 'I', 'O', 'O', 'O', 'U', 'U', 'C');
+    private function zLimpaString($texto)
+    {
+        $aFind = array('&', 'á', 'à', 'ã', 'â', 'é', 'ê', 'í', 'ó', 'ô', 'õ',
+            'ú', 'ü', 'ç', 'Á', 'À', 'Ã', 'Â', 'É', 'Ê', 'Í', 'Ó', 'Ô', 'Õ',
+            'Ú', 'Ü', 'Ç');
+        $aSubs = array('e', 'a', 'a', 'a', 'a', 'e', 'e', 'i', 'o', 'o', 'o',
+            'u', 'u', 'c', 'A', 'A', 'A', 'A', 'E', 'E', 'I', 'O', 'O', 'O',
+            'U', 'U', 'C');
         $novoTexto = str_replace($aFind, $aSubs, $texto);
         $novoTexto = preg_replace("/[^a-zA-Z0-9 @,-.;:\/_]/", "", $novoTexto);
         return $novoTexto;
-    } //fim __limpaString
+    } //fim zLimpaString
 
     /**
-     *__calculaDV
+     * zCalculaDV
      * Função para o calculo o digito verificador da chave da CTe
      * @param string $chave43
      * @return string 
      */
-    private function __calculaDV($chave43){
+    private function zCalculaDV($chave43)
+    {
         $multiplicadores = array(2, 3, 4, 5, 6, 7, 8, 9);
         $i = 42;
         $soma_ponderada = 0;
-        while ($i >= 0)
-        {
-            for ($m = 0; $m < count($multiplicadores) && $i >= 0; $m++)
-            {
+        while ($i >= 0) {
+            for ($m = 0; $m < count($multiplicadores) && $i >= 0; $m++) {
                 $soma_ponderada += $chave43[$i] * $multiplicadores[$m];
                 $i--;
             }
         }
         $resto = $soma_ponderada % 11;
-        if ($resto == '0' || $resto == '1')
-        {
+        if ($resto == '0' || $resto == '1') {
             $cDV = 0;
-        } else
-        {
+        } else {
             $cDV = 11 - $resto;
         }
         return $cDV;
-    } //fim __calculaDV
+    } //fim zCalculaDV
 
     /**
-     * __montaChaveXML
+     * zMontaChaveXML
      * 
      * @param object $dom 
      */
-    private function __montaChaveXML($dom) {
+    private function zMontaChaveXML($dom)
+    {
         $ide = $dom->getElementsByTagName("ide")->item(0);
         $emit = $dom->getElementsByTagName("emit")->item(0);
         $cUF = $ide->getElementsByTagName('cUF')->item(0)->nodeValue;
@@ -1345,11 +1381,9 @@ class ConvertCTePHP extends CommonNFePHP {
         $tempData = $dt = explode("-", $dhEmi);
         $forma = "%02d%02d%02d%s%02d%03d%09d%01d%08d"; //%01d";
         $tempChave = sprintf($forma, $cUF, $tempData[0] - 2000, $tempData[1], $CNPJ, $mod, $serie, $nCT, $tpEmis, $cCT);
-        $cDV = $ide->getElementsByTagName('cDV')->item(0)->nodeValue = $this->__calculaDV($tempChave);
+        $cDV = $ide->getElementsByTagName('cDV')->item(0)->nodeValue = $this->zCalculaDV($tempChave);
         $chave = $tempChave .= $cDV;
         $infCte = $dom->getElementsByTagName("infCte")->item(0);
         $infCte->setAttribute("Id", "CTe" . $chave);
     } //fim __calculaChave
-
-} //fim da classe
-?>
+}
