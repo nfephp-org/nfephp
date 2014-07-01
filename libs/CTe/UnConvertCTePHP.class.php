@@ -39,10 +39,19 @@
  *              Daniel Batista Lemes <dlemes at gmail dot com>
  *              Lucimar A. Magalhaes <lucimar.magalhaes at assistsolucoes dot com dot br>
  *              Roberto Spadim <rspadim at gmail dot com>
+ * 
+ * TODO : terminar e ajustar para versão 2.00
+ * 
  */
-require_once ('../Common/CommonNFePHP.class.php');
 
-class UnConvertCTePHP {
+//define o caminho base da instalação do sistema
+if (!defined('PATH_ROOT')) {
+    define('PATH_ROOT', dirname(dirname(dirname(__file__))).DIRECTORY_SEPARATOR);
+}
+require_once (PATH_ROOT.'libs/Common/CommonNFePHP.class.php');
+
+class UnConvertCTePHP
+{
 
     /**
      * errMsg
@@ -69,7 +78,8 @@ class UnConvertCTePHP {
      * @param string $arq Path do arquivo xml
      * @return string txt
      */
-    public function ctexml2txt($arq) {
+    public function ctexml2txt($arq)
+    {
         //variavel que irá conter o resultado
         $txt = "";
         //verificar se a string passada como parametro é um arquivo
@@ -221,22 +231,22 @@ class UnConvertCTePHP {
                     $hProg = $this->__simpleGetValue($Entrega, "hProg");
                     $dIni = $this->__simpleGetValue($Entrega, "hIni");
                     $hFim = $this->__simpleGetValue($Entrega, "hFim");
-                    if (!empty($comData)){
+                    if (!empty($comData)) {
                         $txt .= "COMDATA|$tpPer|$dProg\r\n";
                     }    
-                    if (!empty($semData)){
+                    if (!empty($semData)) {
                         $txt .= "SEMDATA|$tpPer\r\n";
                     }    
-                    if (!empty($noPeriodo)){
+                    if (!empty($noPeriodo)) {
                         $txt .= "NOPERIODO|$tpPer|$dIni|$dFim\r\n";
                     }    
-                    if (!empty($semHora)){
+                    if (!empty($semHora)) {
                         $txt .= "SEMHORA|$tpHor\r\n";
                     }    
-                    if (!empty($comHora)){
+                    if (!empty($comHora)) {
                         $txt .= "COMHORA|$tpHor|$hProg\r\n";
                     }    
-                    if (!empty($noInter)){
+                    if (!empty($noInter)) {
                         $txt .= "NOINTER|$tpHor|$hIni|$hFim\r\n";
                     }    
                 }
@@ -265,7 +275,7 @@ class UnConvertCTePHP {
             $fone = $this->__simpleGetValue($emit, "fone");
             $txt .= "EMIT|$CNPJ|$IE|$xNome|$xFant|$xLgr|$nro|$xCpl|$xBairro|$cMun|$xMun|$CEP|$UF|$fone\r\n";
 
-            if (!empty($rem)){
+            if (!empty($rem)) {
                 $CNPJ = $this->__simpleGetValue($rem, "CNPJ");
                 $CPF = $this->__simpleGetValue($rem, "CPF");
                 $IE = $this->__simpleGetValue($rem, "IE");
@@ -287,8 +297,8 @@ class UnConvertCTePHP {
             }
 
             //NFs
-            if (!empty($infNF)){
-                foreach ($infNF as $k => $d){
+            if (!empty($infNF)) {
+                foreach ($infNF as $k => $d) {
                     $nRoma = $this->__simpleGetValue($infNF->item($k), 'nRoma');
                     $nPed = $this->__simpleGetValue($infNF->item($k), 'nPed');
                     $mod = $this->__simpleGetValue($infNF->item($k), 'mod');
@@ -311,7 +321,7 @@ class UnConvertCTePHP {
 
             //NFEs
             if (!empty($infNFe)) {
-                foreach ($infNFe as $k => $d){
+                foreach ($infNFe as $k => $d) {
                     $chaveNFe = $this->__simpleGetValue($infNFe->item($k), 'chave');
                     $PIN = $this->__simpleGetValue($infNFe->item($k), 'PIN');
                     $txt .= "INFNFE|$chaveNFe|$PIN\r\n";
@@ -320,7 +330,7 @@ class UnConvertCTePHP {
 
             //infOutros
             if (!empty($infOutros)) {
-                foreach ($infOutros as $k => $d){
+                foreach ($infOutros as $k => $d) {
                     $tpDoc = $this->__simpleGetValue($infOutros->item($k), "tpDoc");
                     $descOutros = $this->__simpleGetValue($infOutros->item($k), "descOutros");
                     $nDoc = $this->__simpleGetValue($infOutros->item($k), "nDoc");
@@ -352,7 +362,7 @@ class UnConvertCTePHP {
             }
 
             //RECEBEDOR
-            if (!empty($receb)){
+            if (!empty($receb)) {
                 $CNPJ = $this->__simpleGetValue($receb, "CNPJ");
                 $CPF = $this->__simpleGetValue($receb, "CPF");
                 $IE = $this->__simpleGetValue($receb, "IE");
@@ -374,7 +384,7 @@ class UnConvertCTePHP {
 
 
             //DESTINATARIO
-            if (!empty($dest)){
+            if (!empty($dest)) {
                 $CNPJ = $this->__simpleGetValue($dest, "CNPJ");
                 $CPF = $this->__simpleGetValue($dest, "CPF");
                 $IE = $this->__simpleGetValue($dest, "IE");
@@ -396,7 +406,7 @@ class UnConvertCTePHP {
             }
 
             //Local de Entrega constante na Nota Fiscal
-            if (!empty($locEnt)){
+            if (!empty($locEnt)) {
                 $CNPJ = $this->__simpleGetValue($locEnt, "CNPJ");
                 $CPF = $this->__simpleGetValue($locEnt, "CPF");
                 $xNome = $this->__simpleGetValue($locEnt, "xNome");
@@ -416,7 +426,7 @@ class UnConvertCTePHP {
             $txt .= "VPREST|$vTPrest|$vRec\r\n";
 
             //Componentes do Valor da Prestação
-            foreach ($Comp as $k => $d){
+            foreach ($Comp as $k => $d) {
                 $xNome = $this->__simpleGetValue($Comp->item($k), "xNome");
                 $vComp = $this->__simpleGetValue($Comp->item($k), "vComp");
                 $txt .= "COMP|$xNome|$vComp\r\n";
@@ -430,7 +440,7 @@ class UnConvertCTePHP {
             $vICMS = $this->__simpleGetValue($ICMS, "vICMS");
             //To-do...
 
-            switch ($CST){
+            switch ($CST) {
                 case '00':
                     $txt .= "ICMS00|$CST|$vBC|$pICMS|$vICMS\r\n";
                     break;
@@ -451,12 +461,12 @@ class UnConvertCTePHP {
             }
 
             //ICMS devido à UF de origem da prestação, quando diferente da UF do emitente
-            if ($this->__simpleGetValue($ide, "UFIni") != $this->__simpleGetValue($emit, "UF")){
+            if ($this->__simpleGetValue($ide, "UFIni") != $this->__simpleGetValue($emit, "UF")) {
                 $txt .= "ICMSOutraUF|$CST|$pRedBCOutraUF|$vBCOutraUF|$pICMSOutraUF|$vICMSOutraUF\r\n";
             }
 
 
-            if (!empty($ICMSSN)){
+            if (!empty($ICMSSN)) {
                 $indSN = $this->__simpleGetValue($ICMSSN, "indSN");
                 $txt .= "ICMSSN|$indSN\r\n";
             }
@@ -488,7 +498,7 @@ class UnConvertCTePHP {
             }
 
             //Informações de Seguro da Carga
-            if (!empty($seg)){
+            if (!empty($seg)) {
                 $respSeg = $this->__simpleGetValue($seg, "respSeg");
                 $xSeg = $this->__simpleGetValue($seg, "xSeg");
                 $nApol = $this->__simpleGetValue($seg, "nApol");
@@ -499,13 +509,13 @@ class UnConvertCTePHP {
             //INFMODAL|1.04|
             $txt .= "INFMODAL|1.04|\r\n";
             //Leiaute – Rodoviário
-            if (!empty($rodo)){
+            if (!empty($rodo)) {
                 $RNTRC = $this->__simpleGetValue($rodo, "RNTRC");
                 $dPrev = $this->__simpleGetValue($rodo, "dPrev");
                 $lota = $this->__simpleGetValue($rodo, "lota");
                 $CIOT = $this->__simpleGetValue($rodo, "CIOT");
                 $txt .= "RODO|$RNTRC|$dPrev|$lota|$CIOT\r\n";
-                if (!empty($occ)){
+                if (!empty($occ)) {
                     foreach ($occ as $k => $d) {
                         $serie = $this->__simpleGetValue($occ->item($k), "serie");
                         $nOcc = $this->__simpleGetValue($occ->item($k), "nOcc");
@@ -527,7 +537,7 @@ class UnConvertCTePHP {
                         $txt .= "VALEPED|$CNPJForm|$nCompra|$CNPJPg\r\n";
                     }
                 }
-                foreach ($veic as $k => $d){
+                foreach ($veic as $k => $d) {
                     $cInt = $this->__simpleGetValue($veic->item($k), "cInt");
                     $RENAVAM = $this->__simpleGetValue($veic->item($k), "RENAVAM");
                     $placa = $this->__simpleGetValue($veic->item($k), "placa");
@@ -541,7 +551,7 @@ class UnConvertCTePHP {
                     $UF = $this->__simpleGetValue($veic->item($k), "UF");
                     $txt .= "VEIC|$cInt|$RENAVAM|$placa|$tara|$capKG|$capM3|$tpProp|$tpVeic|$tpRod|$tpCar|$UF\r\n";
                 }
-                if (!empty($prop)){
+                if (!empty($prop)) {
                     $CPF = $this->__simpleGetValue($prop, "CPF");
                     $CNPJ = $this->__simpleGetValue($prop, "CNPJ");
                     $RNTRC = $this->__simpleGetValue($prop, "RNTRC");
@@ -551,14 +561,14 @@ class UnConvertCTePHP {
                     $tpProp = $this->__simpleGetValue($prop, "tpProp");
                     $txt .= "PROP|$CPF|$CNPJ|$RNTRC|$xNome|$IE|$UF|$tpProp\r\n";
                 }
-                if (!empty($lacRodo)){
-                    foreach ($lacRodo as $k => $d){
+                if (!empty($lacRodo)) {
+                    foreach ($lacRodo as $k => $d) {
                         $nLacre = $this->__simpleGetValue($lacRodo->item($k), "nLacre");
                         $txt .= "NLACRE|$nLacre\r\n";
                     }
                 }
-                if (!empty($moto)){
-                    foreach ($moto as $k => $d){
+                if (!empty($moto)) {
+                    foreach ($moto as $k => $d) {
                         $xNome = $this->__simpleGetValue($moto->item($k), "xNome");
                         $CPF = $this->__simpleGetValue($moto->item($k), "CPF");
                         $txt .= "MOTO|$xNome|$CPF\r\n";
@@ -585,8 +595,8 @@ class UnConvertCTePHP {
                 }
             }
             //Preenchido quando for transporte de produtos classificados pela ONU como perigosos.
-            if (!empty($peri)){
-                foreach ($peri as $k => $d){
+            if (!empty($peri)) {
+                foreach ($peri as $k => $d) {
                     $nONU = $this->__simpleGetValue($peri->item($k), "nONU");
                     $xNomeAE = $this->__simpleGetValue($peri->item($k), "xNomeAE");
                     $xClaRisco = $this->__simpleGetValue($peri->item($k), "xClaRisco");
@@ -597,26 +607,26 @@ class UnConvertCTePHP {
                     $txt .= "PERI|$nONU|$xNomeAE|$xClaRisco|$grEmb|$qTotProd|$qVolTipo|$pontoFulgor\r\n";
                 }
             }
-            if (!empty($cobr)){
+            if (!empty($cobr)) {
                 $txt .= "COBR|\r\n";
                 $nFat = $this->__simpleGetValue($cobr, "nFat");
                 $vOrig = $this->__simpleGetValue($cobr, "vOrig");
                 $vDesc = $this->__simpleGetValue($cobr, "vDesc");
                 $vLiq = $this->__simpleGetValue($cobr, "vLiq");
                 $txt .= "FAT|$nFat|$vOrig|$vDesc|$vLiq\r\n";
-                foreach ($dup as $k => $d){
+                foreach ($dup as $k => $d) {
                     $nDup = $this->__simpleGetValue($dup->item($k), "nDup");
                     $dVenc = $this->__simpleGetValue($dup->item($k), "dVenc");
                     $vDup = $this->__simpleGetValue($dup->item($k), "vDup");
                     $txt .= "DUP|$nDup|$dVenc|$vDup\r\n";
                 }
             }
-            if (!empty($infCteComp)){
+            if (!empty($infCteComp)) {
                 $chave = $this->__simpleGetValue($infCteComp, "chave");
                 $txt .= "INFCTECOMP|$chave\r\n";
                 $vTPrest = $this->__simpleGetValue($infCteComp, "vTPrest");
                 $txt .= "VPRESCOMP|$vTPrest\r\n";
-                if (!empty($compComp)){
+                if (!empty($compComp)) {
                     foreach ($compComp as $k => $d) {
                         $xNome = $this->__simpleGetValue($compComp->item($k), "xNome");
                         $vComp = $this->__simpleGetValue($compComp->item($k), "vComp");
@@ -655,4 +665,3 @@ class UnConvertCTePHP {
         return $txt;
     } // fim da função ctexml2txt
 }//fim da classe
-?>
