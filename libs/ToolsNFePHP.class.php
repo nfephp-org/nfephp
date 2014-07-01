@@ -2346,6 +2346,12 @@ class ToolsNFePHP
                     $tpNF = $resNFe->getElementsByTagName('tpNF')->item(0)->nodeValue;
                     $cSitNFe = $resNFe->getElementsByTagName('cSitNFe')->item(0)->nodeValue;
                     $cSitConf = $resNFe->getElementsByTagName('cSitConf')->item(0)->nodeValue;
+                    $vNF = $resNFe->getElementsByTagName('vNF')->item(0)->nodeValue;
+                    $IE = null;
+                    if ($resNFe->getElementsByTagName('IE') !== null) {
+                        $IE = $resNFe->getElementsByTagName('IE')->item(0)->nodeValue;
+                    }
+                    
                     $aNFe[] = array(
                         'chNFe'=>$chNFe,
                         'NSU'=>$nsu,
@@ -2355,7 +2361,9 @@ class ToolsNFePHP
                         'dhRecbto'=>$dhRecbto,
                         'tpNF'=>$tpNF,
                         'cSitNFe'=>$cSitNFe,
-                        'cSitconf'=>$cSitConf
+                        'cSitconf'=>$cSitConf,
+                        'vNF'=>$vNF,
+                        'IE'=>$IE
                     );
                 }//fim resNFe
                 if (isset($resCanc)) {
@@ -2369,6 +2377,11 @@ class ToolsNFePHP
                     $tpNF = $resCanc->getElementsByTagName('tpNF')->item(0)->nodeValue;
                     $cSitNFe = $resCanc->getElementsByTagName('cSitNFe')->item(0)->nodeValue;
                     $cSitConf = $resCanc->getElementsByTagName('cSitConf')->item(0)->nodeValue;
+                    $vNF = $resCanc->getElementsByTagName('vNF')->item(0)->nodeValue;
+                    $IE = null;
+                    if ($resCanc->getElementsByTagName('IE') !== null) {
+                        $IE = $resCanc->getElementsByTagName('IE')->item(0)->nodeValue;
+                    }
                     $aCanc[] = array(
                         'chNFe'=>$chNFe,
                         'NSU'=>$nsu,
@@ -2378,7 +2391,9 @@ class ToolsNFePHP
                         'dhRecbto'=>$dhRecbto,
                         'tpNF'=>$tpNF,
                         'cSitNFe'=>$cSitNFe,
-                        'cSitconf'=>$cSitConf
+                        'cSitconf'=>$cSitConf,
+                        'vNF'=>$vNF,
+                        'IE'=>$IE
                     );
                 }//fim resCanc
                 if (isset($resCCe)) {
