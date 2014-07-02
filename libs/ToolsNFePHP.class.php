@@ -2201,7 +2201,7 @@ class ToolsNFePHP
             }
             return false;
         }//fim catch
-        return $aRetorno; //mudar para $retorno
+        return $retorno;
     } //fim getProtocol
 
     /**
