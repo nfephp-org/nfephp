@@ -3539,7 +3539,7 @@ class ToolsNFePHP
             $procXML = str_replace("\r",'',$procXML);
             $procXML = str_replace("\s",'',$procXML);
             $filename = $this->evtDir."$chNFe-$tpEvento-$nSeqEvento-procMDe.xml";
-            $resp = array('bStat'=>true,'cStat'=>$cStat,'xMotivo'=>$xMotivo,'arquivo'=>$filename);
+            $resp = array('bStat'=>true,'cStat'=>$cStat,'dhEvento'=>$dhEvento,'nSeqEvento'=>$nSeqEvento,'xMotivo'=>$xMotivo,'arquivo'=>$filename);
             //salva o arquivo xml
             if (!file_put_contents($filename, $procXML)){
                 $msg = "Falha na gravação do arquivo procMDe!!";
@@ -3550,7 +3550,7 @@ class ToolsNFePHP
             if ($this->exceptions) {
                 throw $e;
             }
-            $resp = array('bStat'=>false,'cStat'=>$cStat,'xMotivo'=>$xMotivo,'arquivo'=>'');
+            $resp = array('bStat'=>true,'cStat'=>$cStat,'dhEvento'=>$dhEvento,'nSeqEvento'=>$nSeqEvento,'xMotivo'=>$xMotivo,'arquivo'=>'');
             return false;
         }
         return $retorno;
