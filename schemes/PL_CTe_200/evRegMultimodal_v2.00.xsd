@@ -28,7 +28,7 @@
 							<xs:minLength value="15"/>
 							<xs:maxLength value="1000"/>
 							<xs:whiteSpace value="preserve"/>
-							<xs:pattern value="[!-ÿ]{1}[ -ÿ]{0,}[!-ÿ]{1}|[!-ÿ]{1}"/>
+							<xs:pattern value="[!-ÿ]{1}[ -ÿ]*[!-ÿ]{1}|[!-ÿ]{1}"/>
 						</xs:restriction>
 					</xs:simpleType>
 				</xs:element>
