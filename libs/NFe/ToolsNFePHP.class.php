@@ -714,7 +714,7 @@ class ToolsNFePHP
             $this->arqDir = $aConfig['arquivosDir'];
             $this->xmlURLfile = $aConfig['arquivoURLxml'];
             //atribui o modelo automaticamente a partir do nome do arquivo XML
-            $this->modelo = substr($this->xmlURLfile, -1, 2);
+            $this->modelo = substr($this->xmlURLfile, -6, 2);
             $this->URLbase = $aConfig['baseurl'];
             $this->danfelogopath = $aConfig['danfeLogo'];
             $this->danfelogopos = $aConfig['danfeLogoPos'];
@@ -766,7 +766,7 @@ class ToolsNFePHP
                 $this->arqDir = $arquivosDir;
                 $this->xmlURLfile = $arquivoURLxml;
                 //atribui o modelo automaticamente a partir do nome do arquivo XML
-                $this->modelo = substr($this->xmlURLfile, -1, 2);
+                $this->modelo = substr($this->xmlURLfile, -6, 2);
                 $this->URLbase = $baseurl;
                 $this->danfelogopath = $danfeLogo;
                 $this->danfelogopos = $danfeLogoPos;

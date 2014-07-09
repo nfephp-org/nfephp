@@ -65,7 +65,6 @@ para ser desativada em 01/12/2014.
   <UF>
     <sigla>CE</sigla>
     <homologacao>
-      <NfeRecepcao method="nfeRecepcaoLote2" version="2.00">https://nfeh.sefaz.ce.gov.br/nfe2/services/NfeRecepcao2</NfeRecepcao>
       <NfeRetRecepcao method="nfeRetRecepcao2" version="2.00">https://nfeh.sefaz.ce.gov.br/nfe2/services/NfeRetRecepcao2</NfeRetRecepcao>
       <NfeConsultaCadastro method="consultaCadastro2" version="2.00">https://nfeh.sefaz.ce.gov.br/nfe2/services/CadConsultaCadastro2</NfeConsultaCadastro>
       <NfeConsultaProtocolo method="nfeConsultaNF2" version="2.00">https://nfeh.sefaz.ce.gov.br/nfe2/services/NfeConsulta2</NfeConsultaProtocolo>
@@ -74,7 +73,6 @@ para ser desativada em 01/12/2014.
       <RecepcaoEvento method="nfeRecepcaoEvento" version="1.00">https://nfeh.sefaz.ce.gov.br/nfe2/services/RecepcaoEvento</RecepcaoEvento>
     </homologacao>
     <producao>
-      <NfeRecepcao method="nfeRecepcaoLote2" version="2.00">https://nfe.sefaz.ce.gov.br/nfe2/services/NfeRecepcao2</NfeRecepcao>
       <NfeRetRecepcao method="nfeRetRecepcao2" version="2.00">https://nfe.sefaz.ce.gov.br/nfe2/services/NfeRetRecepcao2</NfeRetRecepcao>
       <NfeConsultaCadastro method="consultaCadastro2" version="2.00">https://nfe.sefaz.ce.gov.br/nfe2/services/CadConsultaCadastro2</NfeConsultaCadastro>
       <NfeConsultaProtocolo method="nfeConsultaNF2" version="2.00">https://nfe.sefaz.ce.gov.br/nfe2/services/NfeConsulta2</NfeConsultaProtocolo>
