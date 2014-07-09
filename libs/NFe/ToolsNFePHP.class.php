@@ -222,7 +222,7 @@ class ToolsNFePHP
      * @see /config/nfe_ws3_modXX.xml (arquivo novo, layout 3.10 da NF-e, onde
      * "XX" é o modelo da NF-e, "55" ou "65")
      */
-    public $xmlURLfile = 'nfe_ws3.xml';
+    public $xmlURLfile = 'nfe_ws3_mod55.xml';
     /**
      * enableSVAN
      * Indica o acesso ao serviço SVAN: Sefaz Virtual Ambiente Nacional
@@ -254,7 +254,8 @@ class ToolsNFePHP
      */
     public $soapTimeout = 10;
     /**
-     * Modelo da NFe 55 ou NFCe 65
+     * Modelo da NF-e: 55 (NF-e) ou 65 (NFC-e), default 55 pois é a mais comum
+     * atualmente
      * @var integer 
      */
     public $modelo = 55;
@@ -712,6 +713,8 @@ class ToolsNFePHP
             $this->passPhrase=$aConfig['passPhrase'];
             $this->arqDir = $aConfig['arquivosDir'];
             $this->xmlURLfile = $aConfig['arquivoURLxml'];
+            //atribui o modelo automaticamente a partir do nome do arquivo XML
+            $this->modelo = substr($this->xmlURLfile, -1, 2);
             $this->URLbase = $aConfig['baseurl'];
             $this->danfelogopath = $aConfig['danfeLogo'];
             $this->danfelogopos = $aConfig['danfeLogoPos'];
@@ -762,6 +765,8 @@ class ToolsNFePHP
                 $this->passPhrase = $passPhrase;
                 $this->arqDir = $arquivosDir;
                 $this->xmlURLfile = $arquivoURLxml;
+                //atribui o modelo automaticamente a partir do nome do arquivo XML
+                $this->modelo = substr($this->xmlURLfile, -1, 2);
                 $this->URLbase = $baseurl;
                 $this->danfelogopath = $danfeLogo;
                 $this->danfelogopos = $danfeLogoPos;
@@ -897,8 +902,7 @@ class ToolsNFePHP
             mkdir($this->pdfDir, 0777);
         }
         //carrega um array com os dados para acesso aos WebServices SEFAZ
-        $xmlURLfile = $this->raizDir.'config'.DIRECTORY_SEPARATOR.$this->xmlURLfile;
-        if (!$this->aURL = $this->pLoadSEFAZ($xmlURLfile, $this->tpAmb, $this->siglaUF)) {
+        if (!$this->aURL = $this->pLoadSEFAZ($this->tpAmb, $this->siglaUF)) {
             $msg = "Erro no carregamento das informacoes da SEFAZ: $this->errMsg";
             $this->pSetError($msg);
             if ($this->exceptions) {
@@ -1621,28 +1625,14 @@ class ToolsNFePHP
             }
             //busca o cUF
             $cUF = $this->cUFlist[$siglaUF];
-            //verifica se a contingencia está habilitada
-            if (! $this->enableSVCAN && ! $this->enableSVCRS) {
-                $aURL = $this->pLoadSEFAZ(
-                    $this->raizDir.'config'.DIRECTORY_SEPARATOR.$this->xmlURLfile,
-                    $tpAmb,
-                    $siglaUF
-                );
-            } else {
-                if ($this->enableSVCAN) {
-                    $aURL = $this->pLoadSEFAZ(
-                        $this->raizDir.'config'.DIRECTORY_SEPARATOR.$this->xmlURLfile,
-                        $tpAmb,
-                        'SVCAN'
-                    );
-                } else {
-                    $aURL = $this->pLoadSEFAZ(
-                        $this->raizDir.'config'.DIRECTORY_SEPARATOR.$this->xmlURLfile,
-                        $tpAmb,
-                        'SVCRS'
-                    );
-                }
+            //verifica se contingencias SVCAN ou SVCRS estão habilitadas, se não estiverem
+            //usará a própria UF, logo abaixo ao carregar os webservices
+            if ($this->enableSVCAN) {
+                $siglaUF = 'SVCAN';
+            } elseif ($this->enableSVCRS) {
+                $siglaUF = 'SVCRS';
             }
+            $aURL = $this->pLoadSEFAZ($tpAmb, $siglaUF);
             //identificação do serviço
             $servico = 'NfeStatusServico';
             //recuperação da versão
@@ -1782,11 +1772,7 @@ class ToolsNFePHP
         // caso a sigla do estado seja diferente do emitente ou o ambiente seja diferente
         if ($siglaUF != $this->siglaUF || $tpAmb != $this->tpAmb) {
             //recarrega as url referentes aos dados passados como parametros para a função
-            $aURL = $this->pLoadSEFAZ(
-                $this->raizDir.'config'.DIRECTORY_SEPARATOR.$this->xmlURLfile,
-                $tpAmb,
-                $siglaUF
-            );
+            $aURL = $this->pLoadSEFAZ($tpAmb, $siglaUF);
         }
         //busca o cUF
         $cUF = $this->cUFlist[$siglaUF];
@@ -1952,14 +1938,10 @@ class ToolsNFePHP
             'cUF'=>'',
             'protNFe');
         //verifica se o SCAN esta habilitado
-        if (!$this->enableSCAN) {
+        if (!$this->enableSCAN) {   // TODO 08/Julho fmertins: esta prop não existe mais, verificar como será refatorado (commit https://github.com/nfephp-org/nfephp/commit/bfbb78393e582b8a4291c441a31ef17c58b024fa)
             $aURL = $this->aURL;
         } else {
-            $aURL = $this->pLoadSEFAZ(
-                $this->raizDir.'config'.DIRECTORY_SEPARATOR.$this->xmlURLfile,
-                $this->tpAmb,
-                'SCAN'
-            );
+            $aURL = $this->pLoadSEFAZ($this->tpAmb, 'SCAN');
         }
         //identificação do serviço: autorização de NF-e
         $servico = 'NfeAutorizacao';
@@ -2100,20 +2082,12 @@ class ToolsNFePHP
                     //se não for o mesmo carregar a sigla
                     $siglaUF = $this->siglaUFList[$cUF];
                     //recarrega as url referentes aos dados passados como parametros para a função
-                    $aURL = $this->pLoadSEFAZ(
-                        $this->raizDir.'config'.DIRECTORY_SEPARATOR.$this->xmlURLfile,
-                        $tpAmb,
-                        $siglaUF
-                    );
+                    $aURL = $this->pLoadSEFAZ($tpAmb, $siglaUF);
                 }
             }
             //verifica se o SCAN esta habilitado
             if ($this->enableSCAN || $ctpEmissao == '3') {
-                $aURL = $this->pLoadSEFAZ(
-                    $this->raizDir.'config'.DIRECTORY_SEPARATOR.$this->xmlURLfile,
-                    $tpAmb,
-                    'SCAN'
-                );
+                $aURL = $this->pLoadSEFAZ($tpAmb, 'SCAN');
             }
             if ($recibo == '' && $chave == '') {
                 $msg = "ERRO. Favor indicar o numero do recibo ou "
@@ -2432,20 +2406,11 @@ class ToolsNFePHP
                 $tpAmb = $this->tpAmb;
             }
             if (!$ambNac) {
-                $aURL = $this->pLoadSEFAZ(
-                    $this->raizDir.'config'.DIRECTORY_SEPARATOR.$this->xmlURLfile,
-                    $tpAmb,
-                    $this->siglaUF
-                );
                 $sigla = $this->siglaUF;
             } else {
-                $aURL = $this->pLoadSEFAZ(
-                    $this->raizDir.'config'.DIRECTORY_SEPARATOR.$this->xmlURLfile,
-                    $tpAmb,
-                    'AN'
-                );
                 $sigla = 'AN';
             }
+            $aURL = $this->pLoadSEFAZ($tpAmb, $sigla);
             if ($ultNSU == '') {
                 //buscar o último NSU no xml
                 $ultNSU = $this->pGetUltNSU($sigla, $tpAmb);
@@ -2654,22 +2619,14 @@ class ToolsNFePHP
                 $tpAmb = $this->tpAmb;
             }
             if ($AN) {
-                $aURL = $this->pLoadSEFAZ(
-                    $this->raizDir.'config'.DIRECTORY_SEPARATOR.$this->xmlURLfile,
-                    $tpAmb,
-                    'AN'
-                );
+                $aURL = $this->pLoadSEFAZ($tpAmb, 'AN');
             } else {
                 //deve se verificado se NFe emitidas em SCAN, com séries começando com 9
                 //podem ser obtidas no sefaz do emitente DUVIDA!!!
                 //obtem a SEFAZ do emissor
                 $cUF = substr($chNFe, 0, 2);
                 $siglaUF = $this->siglaUFList[$cUF];
-                $aURL = $this->pLoadSEFAZ(
-                    $this->raizDir.'config'.DIRECTORY_SEPARATOR.$this->xmlURLfile,
-                    $tpAmb,
-                    $siglaUF
-                );
+                $aURL = $this->pLoadSEFAZ($tpAmb, $siglaUF);
             }
             //identificação do serviço
             $servico = 'NfeDownloadNF';
@@ -2763,7 +2720,7 @@ class ToolsNFePHP
             $retNFe_procNFeGrupoZip = $retNFe->getElementsByTagName('procNFeGrupoZip')->item(0);
             if (isset($retNFe_procNFeZip)) {
                 $xml = ''; //implementar...
-            } else if (isset($retNFe_procNFe)) {
+            } elseif (isset($retNFe_procNFe)) {
                 //elemento "JR14_procNFe" contendo a estrutura “nfeProc”, já descompactada.
                 $nfeProc = $xmlDNFe->getElementsByTagName("nfeProc")->item(0);
                 //cria novo documento DOM para importar e adicionar o elemento
@@ -2899,18 +2856,10 @@ class ToolsNFePHP
             if ($tpAmb == $this->tpAmb) {
                 $aURL = $this->aURL;
             } else {
-                $aURL = $this->pLoadSEFAZ(
-                    $this->raizDir.'config'.DIRECTORY_SEPARATOR.$this->xmlURLfile,
-                    $tpAmb,
-                    $this->siglaUF
-                );
+                $aURL = $this->pLoadSEFAZ($tpAmb, $this->siglaUF);
             }
         } else {
-            $aURL = $this->pLoadSEFAZ(
-                $this->raizDir.'config'.DIRECTORY_SEPARATOR.$this->xmlURLfile,
-                $this->tpAmb,
-                'SCAN'
-            );
+            $aURL = $this->pLoadSEFAZ($this->tpAmb, 'SCAN');
         }
         //identificação do serviço
         $servico = 'NfeInutilizacao';
@@ -3098,11 +3047,7 @@ class ToolsNFePHP
             if (! $this->enableSCAN) {
                 $aURL = $this->aURL;
             } else {
-                $aURL = $this->pLoadSEFAZ(
-                    $this->raizDir.'config'.DIRECTORY_SEPARATOR.$this->xmlURLfile,
-                    $tpAmb,
-                    'SCAN'
-                );
+                $aURL = $this->pLoadSEFAZ($tpAmb, 'SCAN');
             }
             $numLote = $this->pGeraNumLote();
             //Data e hora do evento no formato AAAA-MM-DDTHH:MM:SSTZD (UTC)
@@ -3343,11 +3288,7 @@ class ToolsNFePHP
             if (!$this->enableSCAN) {
                 $aURL = $this->aURL;
             } else {
-                $aURL = $this->pLoadSEFAZ(
-                    $this->raizDir.'config'.DIRECTORY_SEPARATOR.$this->xmlURLfile,
-                    $tpAmb,
-                    'SCAN'
-                );
+                $aURL = $this->pLoadSEFAZ($tpAmb, 'SCAN');
             }
             $numLote = $this->pGeraNumLote();
             //Data e hora do evento no formato AAAA-MM-DDTHH:MM:SSTZD (UTC)
@@ -3641,11 +3582,7 @@ class ToolsNFePHP
             }
             //utilizar AN para enviar o manifesto
             $sigla = 'AN';
-            $aURL = $this->pLoadSEFAZ(
-                $this->raizDir.'config'.DIRECTORY_SEPARATOR.$this->xmlURLfile,
-                $tpAmb,
-                $sigla
-            );
+            $aURL = $this->pLoadSEFAZ($tpAmb, $sigla);
             $cOrgao='91';
             $numLote = $this->pGeraNumLote();
             //Data e hora do evento no formato AAAA-MM-DDTHH:MM:SSTZD (UTC)
@@ -3939,14 +3876,15 @@ class ToolsNFePHP
      * os endereços dos webservices podem ser diferentes.
      *
      * @name loadSEFAZ
-     * @param  string $spathXML  Caminho completo para o arquivo xml
      * @param  string $tpAmb     Pode ser "2-homologacao" ou "1-producao"
      * @param  string $sUF       Sigla da Unidade da Federação (ex. SP, RS, etc..)
      * @return mixed             false se houve erro ou array com os dados dos URLs da SEFAZ
+     * @see /config/nfe_ws3_modXX.xml
      */
-    protected function pLoadSEFAZ($spathXML, $tpAmb = '', $sUF = '')
+    protected function pLoadSEFAZ($tpAmb = '', $sUF = '')
     {
         try {
+            $spathXML = $this->raizDir.'config'.DIRECTORY_SEPARATOR.$this->xmlURLfile;
             //verifica se o arquivo xml pode ser encontrado no caminho indicado
             if (!file_exists($spathXML)) {
                 throw new nfephpException("O arquivo XML \"$spathXML\" nao foi encontrado");
@@ -3979,7 +3917,7 @@ class ToolsNFePHP
                 $this->enableSVRS = true;
             }
             //estabelece a expressão xpath de busca
-            $xpathExpression = "/WS/UF[sigla='" . $alias . "']/$sAmbiente";
+            $xpathExpression = "/WS/UF[sigla='$alias']/$sAmbiente";
             //para cada "nó" no xml que atenda aos critérios estabelecidos
             foreach ($xmlWS->xpath($xpathExpression) as $gUF) {
                 //para cada "nó filho" retonado
@@ -3995,7 +3933,6 @@ class ToolsNFePHP
             }
             //verifica se existem outros serviços exclusivos para esse estado
             if ($alias == 'SVAN' || $alias == 'SVRS') {
-                $xpathExpression = "/WS/UF[sigla='" . $alias . "']/$sAmbiente";
                 //para cada "nó" no xml que atenda aos critérios estabelecidos
                 foreach ($xmlWS->xpath($xpathExpression) as $gUF) {
                     //para cada "nó filho" retonado
