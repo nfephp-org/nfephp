@@ -84,7 +84,10 @@ $cnpj='1234567890001';
 //##############################
 //#### CERTIFICADO DIGITAL #####
 //##############################
-//Nome do certificado que deve ser colocado na pasta certs da API
+//Pasta dos certificados, deixar vazio para usar automático em "/certs", ou seja,
+//informe apenas se precisar do certificado em outro local da sua preferência
+$certsDir='';
+//Nome do arquivo do certificado digital
 $certName='certificado_teste.pfx';
 //Senha da chave privada
 $keyPass='associacao';
