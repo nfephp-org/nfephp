@@ -1452,15 +1452,22 @@ class ToolsNFePHP
                 $msg = "Um xml deve ser passado para que seja assinado!!";
                     throw new nfephpException($msg);
             }
+            if (! is_file($this->priKEY)) {
+                $msg = "Arquivo \"$this->priKEY\" da chave privada parece invalido, verifique!!";
+                throw new nfephpException($msg);
+            }
             if (is_file($docxml)) {
                 $xml = file_get_contents($docxml);
             } else {
                 $xml = $docxml;
             }
-            //obter o chave privada para a assinatura
+            //obter a chave privada para a assinatura
             //modificado para permitir a leitura de arquivos maiores
             //que o normal que é cerca de 2kBytes.
-            $filep = fopen($this->priKEY, "r");
+            if (! $filep = fopen($this->priKEY, "r")) {
+               $msg = "Erro ao ler arquivo da chave privada!!";
+               throw new nfephpException($msg);
+            }
             $priv_key = '';
             while (! feof($filep)) {
                 $priv_key .= fread($filep, 8192);
@@ -4208,8 +4215,7 @@ class ToolsNFePHP
 
     /**
      * listDir
-     * Método para obter todo o conteúdo de um diretorio, e
-     * que atendam ao critério indicado.
+     * Obtem todo o conteúdo de um diretorio, e que atendam ao critério indicado.
      * @param string $dir Diretorio a ser pesquisado
      * @param string $fileMatch Critério de seleção pode ser usados coringas como *-nfe.xml
      * @param boolean $retpath se true retorna o path completo dos arquivos se false so retorna o nome dos arquivos
