@@ -76,7 +76,8 @@ if (!defined('PATH_ROOT')) {
     define('PATH_ROOT', dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR);
 }
 
-require_once(PATH_ROOT.'libs/Common/ExceptionNFePHP.class.php');
+require_once PATH_ROOT.'libs/Common/DomDocumentNFePHP.class.php';
+require_once PATH_ROOT.'libs/Common/ExceptionNFePHP.class.php';
 
 class ToolsNFePHP
 {
@@ -1450,7 +1451,7 @@ class ToolsNFePHP
             }
             if ($docxml == '') {
                 $msg = "Um xml deve ser passado para que seja assinado!!";
-                    throw new nfephpException($msg);
+                throw new nfephpException($msg);
             }
             if (! is_file($this->priKEY)) {
                 $msg = "Arquivo \"$this->priKEY\" da chave privada parece invalido, verifique!!";
@@ -1600,10 +1601,9 @@ class ToolsNFePHP
      * se SCAN estiver ativado usar, caso contrario aguardar pacientemente.
      * @name statusServico
      * @param  string $siglaUF sigla da unidade da Federação
-     * @param   integer $tpAmb tipo de ambiente 1-produção e 2-homologação
-     * @param  array $aRetorno parametro passado por referencia irá conter a resposta da consulta em um array
-     * @return mixed false ou array ['bStat'=>boolean,'cStat'=>107,'tMed'=>1,'
-     * dhRecbto'=>'12/12/2009','xMotivo'=>'Serviço em operação','xObs'=>'']
+     * @param  integer $tpAmb tipo de ambiente 1-produção e 2-homologação
+     * @param  array $aRetorno parametro passado por referencia contendo a resposta da consulta em um array
+     * @return mixed string XML do retorno do webservice, ou false se ocorreu algum erro
      */
     public function statusServico($siglaUF = '', $tpAmb = '', &$aRetorno = array())
     {
@@ -1657,56 +1657,48 @@ class ToolsNFePHP
             $dados = '<nfeDadosMsg xmlns="'. $namespace.'"><consStatServ xmlns="'
                    .$this->URLPortal.'" versao="'.$versao.'"><tpAmb>'.$tpAmb.'</tpAmb><cUF>'
                    .$cUF.'</cUF><xServ>STATUS</xServ></consStatServ></nfeDadosMsg>';
-            $retorno = $this->pSendSOAP($urlservico, $namespace, $cabec, $dados, $metodo, $tpAmb);
-            //verifica o retorno do SOAP
-            if ($retorno) {
-                //tratar dados de retorno
-                $doc = new DOMDocument('1.0', 'utf-8'); //cria objeto DOM
-                $doc->formatOutput = false;
-                $doc->preserveWhiteSpace = false;
-                @$doc->loadXML($retorno, LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
-                $cStat = !empty($doc->getElementsByTagName('cStat')->item(0)->nodeValue) ?
-                        $doc->getElementsByTagName('cStat')->item(0)->nodeValue : '';
-                if ($cStat == '') {
-                    $msg = "Não houve retorno Soap verifique a mensagem de erro e o debug!!";
-                    throw new nfephpException($msg);
-                } else {
-                    if ($cStat == '107') {
-                        $aRetorno['bStat'] = true;
-                    }
-                }
-                // tipo de ambiente
-                $aRetorno['tpAmb'] = $doc->getElementsByTagName('tpAmb')->item(0)->nodeValue;
-                // versão do aplicativo
-                $aRetorno['verAplic'] = $doc->getElementsByTagName('verAplic')->item(0)->nodeValue;
-                // Código da UF que atendeu a solicitação
-                $aRetorno['cUF'] = $doc->getElementsByTagName('cUF')->item(0)->nodeValue;
-                // status do serviço
-                $aRetorno['cStat'] = $doc->getElementsByTagName('cStat')->item(0)->nodeValue;
-                // tempo medio de resposta
-                $aRetorno['tMed'] = $doc->getElementsByTagName('tMed')->item(0)->nodeValue;
-                 // data e hora do retorno a operação (opcional)
-                $aRetorno['dhRetorno'] = !empty($doc->getElementsByTagName('dhRetorno')->item(0)->nodeValue) ?
-                        date(
-                            "d/m/Y H:i:s",
-                            $this->pConvertTime($doc->getElementsByTagName('dhRetorno')->item(0)->nodeValue)
-                        ) : '';
-                // data e hora da mensagem (opcional)
-                $aRetorno['dhRecbto'] = !empty($doc->getElementsByTagName('dhRecbto')->item(0)->nodeValue) ?
-                        date(
-                            "d/m/Y H:i:s",
-                            $this->pConvertTime($doc->getElementsByTagName('dhRecbto')->item(0)->nodeValue)
-                        ) : '';
-                // motivo da resposta (opcional)
-                $aRetorno['xMotivo'] = !empty($doc->getElementsByTagName('xMotivo')->item(0)->nodeValue) ?
-                        $doc->getElementsByTagName('xMotivo')->item(0)->nodeValue : '';
-                // obervaçoes (opcional)
-                $aRetorno['xObs'] = !empty($doc->getElementsByTagName('xObs')->item(0)->nodeValue) ?
-                        $doc->getElementsByTagName('xObs')->item(0)->nodeValue : '';
-            } else {
-                $msg = "Nao houve retorno Soap verifique a mensagem de erro e o debug!!";
-                throw new nfephpException($msg);
+            //consome o webservice e verifica o retorno do SOAP
+            if (! $retorno = $this->pSendSOAP($urlservico, $namespace, $cabec, $dados, $metodo, $tpAmb)) {
+                throw new nfephpException("Nao houve retorno Soap verifique a mensagem de erro e o debug!!");
             }
+            //tratar dados de retorno
+            $doc = new DomDocumentNFePHP();
+            @$doc->loadXML($retorno, LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
+            $cStat = !empty($doc->getElementsByTagName('cStat')->item(0)->nodeValue) ?
+                    $doc->getElementsByTagName('cStat')->item(0)->nodeValue : '';
+            if ($cStat == '') {
+                throw new nfephpException("Não houve retorno Soap verifique a mensagem de erro e o debug!!");
+            } elseif ($cStat == '107') { //107-serviço em operação
+                $aRetorno['bStat'] = true;
+            }
+            // tipo de ambiente
+            $aRetorno['tpAmb'] = $doc->getElementsByTagName('tpAmb')->item(0)->nodeValue;
+            // versão do aplicativo
+            $aRetorno['verAplic'] = $doc->getElementsByTagName('verAplic')->item(0)->nodeValue;
+            // Código da UF que atendeu a solicitação
+            $aRetorno['cUF'] = $doc->getElementsByTagName('cUF')->item(0)->nodeValue;
+            // status do serviço
+            $aRetorno['cStat'] = $doc->getElementsByTagName('cStat')->item(0)->nodeValue;
+            // tempo medio de resposta
+            $aRetorno['tMed'] = $doc->getElementsByTagName('tMed')->item(0)->nodeValue;
+             // data e hora do retorno a operação (opcional)
+            $aRetorno['dhRetorno'] = !empty($doc->getElementsByTagName('dhRetorno')->item(0)->nodeValue) ?
+                    date(
+                        "d/m/Y H:i:s",
+                        $this->pConvertTime($doc->getElementsByTagName('dhRetorno')->item(0)->nodeValue)
+                    ) : '';
+            // data e hora da mensagem (opcional)
+            $aRetorno['dhRecbto'] = !empty($doc->getElementsByTagName('dhRecbto')->item(0)->nodeValue) ?
+                    date(
+                        "d/m/Y H:i:s",
+                        $this->pConvertTime($doc->getElementsByTagName('dhRecbto')->item(0)->nodeValue)
+                    ) : '';
+            // motivo da resposta (opcional)
+            $aRetorno['xMotivo'] = !empty($doc->getElementsByTagName('xMotivo')->item(0)->nodeValue) ?
+                    $doc->getElementsByTagName('xMotivo')->item(0)->nodeValue : '';
+            // obervaçoes (opcional)
+            $aRetorno['xObs'] = !empty($doc->getElementsByTagName('xObs')->item(0)->nodeValue) ?
+                    $doc->getElementsByTagName('xObs')->item(0)->nodeValue : '';
         } catch (nfephpException $e) {
             $this->pSetError($e->getMessage());
             if ($this->exceptions) {
@@ -1924,124 +1916,146 @@ class ToolsNFePHP
      * @name autoriza
      * @package NFePHP
      * @author Roberto L. Machado <linux.rlm at gmail dot com>
-     * @param  string  $sxml   string com uma nota fiscal em xml
-     * @param  integer $idLote id do lote e um numero (numeração sequencial)
-     * @return mixed false ou array 
-     * ['bStat'=>false,'cStat'=>'','xMotivo'=>'','dhRecbto'=>'','nRec'=>''
-     * ,'tMed'=>'','tpAmb'=>'','verAplic'=>'','cUF'=>'']
+     * @param string  $sxml   string com uma nota fiscal em xml
+     * @param integer $idLote id do lote e um numero (numeração sequencial)
+     * @param array   $aRetorno parametro passado por referencia contendo a resposta da consulta em um array
+     * @param integer $indSinc Indicação webservice assíncrono (0) ou síncrono (1)
+     * @return mixed string XML do retorno do webservice, ou false se ocorreu algum erro 
      */
-    public function autoriza($sxml, $idLote)
+    public function autoriza($sxml, $idLote, &$aRetorno = array(), $indSinc = 1)
     {
-        //variavel de retorno do metodo
-        $aRetorno = array(
-            'bStat'=>false,
-            'cStat'=>'',
-            'xMotivo'=>'',
-            'dhRecbto'=>'',
-            'nRec'=>'',
-            'tMed'=>'',
-            'tpAmb'=>'',
-            'verAplic'=>'',
-            'cUF'=>'',
-            'protNFe');
-        //verifica se o SCAN esta habilitado
-        if (!$this->enableSCAN) {   // TODO 08/Julho fmertins: esta prop não existe mais, verificar como será refatorado (commit https://github.com/nfephp-org/nfephp/commit/bfbb78393e582b8a4291c441a31ef17c58b024fa)
-            $aURL = $this->aURL;
-        } else {
-            $aURL = $this->pLoadSEFAZ($this->tpAmb, 'SCAN');
-        }
-        //identificação do serviço: autorização de NF-e
-        $servico = 'NfeAutorizacao';
-        //recuperação da versão
-        $versao = $aURL[$servico]['version'];
-        //recuperação da url do serviço
-        $urlservico = $aURL[$servico]['URL'];
-        //recuperação do método
-        $metodo = $aURL[$servico]['method'];
-        //montagem do namespace do serviço
-        $namespace = $this->URLPortal.'/wsdl/'.$servico;
-        //valida o parâmetro da string do XML da NF-e
-        if (empty($sxml) || ! simplexml_load_string($sxml)) {
-            $msg = "XML de NF-e para autorizacao recebido no parametro parece invalido, verifique";
-            $this->pSetError($msg);
-            if ($this->exceptions) {
-                throw new nfephpException($msg);
+        try {
+            //retorno do método em array (esta estrutura espelha a estrutura do XML retornado pelo webservice
+            //IMPORTANTE: esta estrutura varia parcialmente conforme o $indSinc
+            $aRetorno = array(
+                'bStat'=>false,
+                'tpAmb'=>'',
+                'verAplic'=>'',
+                'cStat'=>'',
+                'xMotivo'=>'',
+                'cUF'=>'',
+                'dhRecbto'=>'');
+            if ($indSinc === 0) {
+                //dados do recibo do lote (gerao apenas se o lote for aceito)
+                $aRetorno['infRec'] = array('nRec'=>'','tMed'=>'');
+            } elseif ($indSinc === 1) {
+                //dados do protocolo de recebimento da NF-e
+                $aRetorno['protNFe'] = array(
+                    'versao'=>'',
+                    'infProt'=>array( //informações do protocolo de autorização da NF-e
+                        'tpAmb'=>'',
+                        'verAplic'=>'',
+                        'chNFe'=>'',
+                        'dhRecbto'=>'',
+                        'digVal'=>'',
+                        'cStat'=>'',
+                        'xMotivo'=>''));
+            } else {
+                throw new nfephpException("Parametro indSinc deve ser inteiro 0 ou 1, verifique!!");
             }
-            return false;
-        }
-        // limpa a variavel
-        $sNFe = $sxml;
-        //remove <?xml version="1.0" encoding=... e demais caracteres indesejados
-        $sNFe = preg_replace("/<\?xml.*\?>/", "", $sNFe);
-        $sNFe = str_replace(array("\r","\n","\s"), "", $sNFe);
-        //montagem do cabeçalho da comunicação SOAP
-        $cabec = '<nfeCabecMsg xmlns="'.$namespace.'"><cUF>'.$this->cUF
-                .'</cUF><versaoDados>'.$versao.'</versaoDados></nfeCabecMsg>';
-        //montagem dos dados da mensagem SOAP
-        $dados = '<nfeDadosMsg xmlns="'.$namespace.'"><enviNFe xmlns="'
-                .$this->URLPortal.'" versao="'.$versao.'"><idLote>'
-                .$idLote.'</idLote><indSinc>1</indSinc>'
-                .$sNFe.'</enviNFe></nfeDadosMsg>';
-        //envia dados via SOAP
-        $retorno = $this->pSendSOAP($urlservico, $namespace, $cabec, $dados, $metodo, $this->tpAmb);
-        var_dump($retorno);   // TODO 28/05/14 fmertins: remover mais adiante, por enquanto apenas para fins de debug
-        //verifica o retorno
-        if ($retorno) {
+            //verifica se o SCAN esta habilitado
+            if (!@$this->enableSCAN) {   // TODO 08/Julho fmertins: esta prop não existe mais, verificar como será refatorado (commit https://github.com/nfephp-org/nfephp/commit/bfbb78393e582b8a4291c441a31ef17c58b024fa)
+                $aURL = $this->aURL;
+            } else {
+                $aURL = $this->pLoadSEFAZ($this->tpAmb, 'SCAN');
+            }
+            //identificação do serviço: autorização de NF-e
+            $servico = 'NfeAutorizacao';
+            //recuperação da versão
+            $versao = $aURL[$servico]['version'];
+            //recuperação da url do serviço
+            $urlservico = $aURL[$servico]['URL'];
+            //recuperação do método
+            $metodo = $aURL[$servico]['method'];
+            //montagem do namespace do serviço
+            $namespace = $this->URLPortal.'/wsdl/'.$servico;
+            //valida o parâmetro da string do XML da NF-e
+            if (empty($sxml) || ! simplexml_load_string($sxml)) {
+                throw new nfephpException("XML de NF-e para autorizacao recebido no parametro parece invalido, verifique");
+            }
+            // limpa a variavel
+            $sNFe = $sxml;
+            //remove <?xml version="1.0" encoding=... e demais caracteres indesejados
+            $sNFe = preg_replace("/<\?xml.*\?>/", "", $sNFe);
+            $sNFe = str_replace(array("\r","\n","\s"), "", $sNFe);
+            //montagem do cabeçalho da comunicação SOAP
+            $cabec = '<nfeCabecMsg xmlns="'.$namespace.'"><cUF>'.$this->cUF
+                    .'</cUF><versaoDados>'.$versao.'</versaoDados></nfeCabecMsg>';
+            //montagem dos dados da mensagem SOAP
+            $dados = '<nfeDadosMsg xmlns="'.$namespace.'"><enviNFe xmlns="'
+                    .$this->URLPortal.'" versao="'.$versao.'"><idLote>'
+                    .$idLote.'</idLote><indSinc>'.$indSinc.'</indSinc>'
+                    .$sNFe.'</enviNFe></nfeDadosMsg>';
+            //envia dados via SOAP
+            $retorno = $this->pSendSOAP($urlservico, $namespace, $cabec, $dados, $metodo, $this->tpAmb);
+            var_dump($retorno);   // TODO 28/05/14 fmertins: remover mais adiante, por enquanto apenas para fins de debug
+            //verifica o retorno
+            if (! $retorno) {
+                throw new nfephpException("Nao houve retorno Soap verifique a mensagem de erro e o debug!!");
+            }
             //tratar dados de retorno
-            $doc = new DOMDocument('1.0', 'utf-8');
-            $doc->formatOutput = false;
-            $doc->preserveWhiteSpace = false;
+            $doc = new DomDocumentNFePHP();
             $doc->loadXML($retorno, LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
             $cStat = !empty($doc->getElementsByTagName('cStat')->item(0)->nodeValue) ?
                     $doc->getElementsByTagName('cStat')->item(0)->nodeValue : '';
+            //verifica o codigo do status da resposta, se vazio houve erro
             if ($cStat == '') {
-                //houve erro
-                $msg = "O retorno não contêm cStat verifique o debug do soap !!";
-                $this->pSetError($msg);
-                if ($this->exceptions) {
-                    throw new nfephpException($msg);
-                }
-                return false;
+                throw new nfephpException("O retorno nao contem cStat verifique o debug do soap !!");
+            } elseif ($indSinc === 0 && $cStat == '103') { //103-Lote recebido com sucesso
+                $aRetorno['bStat'] = true;
+            } elseif ($indSinc === 1 && $cStat == '104') { //104-Lote processado, podendo ter ou não o protNFe (#AR11 no layout)
+                $aRetorno['bStat'] = true;
             } else {
-                if ($cStat == '103') {
-                    $aRetorno['bStat'] = true;
-                }
+                throw new nfephpException('Codigo do status (cStat) "'.$cStat.'" desconhecido, verifique!!');
             }
-            // status do serviço
-            $aRetorno['cStat'] = $doc->getElementsByTagName('cStat')->item(0)->nodeValue;
+            // status da resposta do webservice
+            $aRetorno['cStat'] = $cStat;
             // motivo da resposta (opcional)
-            $aRetorno['xMotivo'] = !empty($doc->getElementsByTagName('xMotivo')->item(0)->nodeValue) ?
-                    $doc->getElementsByTagName('xMotivo')->item(0)->nodeValue : '';
+            $aRetorno['xMotivo'] = $doc->getElementsByTagNameOpcional('xMotivo');
             // data e hora da mensagem (opcional)
-            $aRetorno['dhRecbto'] = !empty($doc->getElementsByTagName('dhRecbto')->item(0)->nodeValue) ?
-                    date(
-                        "d/m/Y H:i:s",
-                        $this->pConvertTime($doc->getElementsByTagName('dhRecbto')->item(0)->nodeValue)
-                    ) : '';
-            // numero do recibo do lote enviado (opcional)
-            $aRetorno['nRec'] = !empty($doc->getElementsByTagName('nRec')->item(0)->nodeValue) ?
-                    $doc->getElementsByTagName('nRec')->item(0)->nodeValue : '';
-            //outras informações
-            $aRetorno['tMed'] = !empty($doc->getElementsByTagName('tMed')->item(0)->nodeValue) ?
-                    $doc->getElementsByTagName('tMed')->item(0)->nodeValue : '';
-            $aRetorno['tpAmb'] = !empty($doc->getElementsByTagName('tpAmb')->item(0)->nodeValue) ?
-                    $doc->getElementsByTagName('tpAmb')->item(0)->nodeValue : '';
-            $aRetorno['verAplic'] = !empty($doc->getElementsByTagName('verAplic')->item(0)->nodeValue) ?
-                    $doc->getElementsByTagName('verAplic')->item(0)->nodeValue : '';
-            $aRetorno['cUF'] = !empty($doc->getElementsByTagName('cUF')->item(0)->nodeValue) ?
-                    $doc->getElementsByTagName('cUF')->item(0)->nodeValue : '';
-            //gravar o retorno na pasta temp
-            $nome = $this->temDir.$idLote.'-rec.xml';
-            $nome = $doc->save($nome);
-        } else {
-            $msg = "Nao houve retorno Soap verifique a mensagem de erro e o debug!!";
-            $this->pSetError($msg);
-            if ($this->exceptions) {
-                throw new nfephpException($msg);
+            if ($dhRecbto = $doc->getElementsByTagNameOpcional('dhRecbto')) {
+               $aRetorno['dhRecbto'] = date("d/m/Y H:i:s", $dhRecbto);
             }
-            $aRetorno = false;
+            //tipo do ambiente, versão do aplicativo e código da UF
+            $aRetorno['tpAmb'] = $doc->getElementsByTagNameOpcional('tpAmb');
+            $aRetorno['verAplic'] = $doc->getElementsByTagNameOpcional('verAplic');
+            $aRetorno['cUF'] = $doc->getElementsByTagNameOpcional('cUF');
+            if ($indSinc == 1) {
+               //retorno síncrono do webservice: dados do protocolo da NF-e
+               $nodeProtNFe = $doc->getElementsByTagName('protNFe')->item(0);
+               $nodeInfProt = $doc->getElementsByTagName('infProt')->item(0);
+               $aRetorno['protNFe']['versao'] = $nodeProtNFe->getAttribute('versao');
+               $infProt = array();
+               $infProt['tpAmb'] = $nodeInfProt->getElementsByTagName('tpAmb')->item(0)->nodeValue;
+               $infProt['verAplic'] = $nodeInfProt->getElementsByTagName('verAplic')->item(0)->nodeValue;
+               $infProt['chNFe'] = $nodeInfProt->getElementsByTagName('chNFe')->item(0)->nodeValue;
+               $dhRecbto = $nodeInfProt->getElementsByTagName('dhRecbto')->item(0)->nodeValue;
+               $infProt['dhRecbto'] = date("d/m/Y H:i:s", $this->pConvertTime($dhRecbto));
+               $infProt['nProt'] = $nodeInfProt->getElementsByTagName('nProt')->item(0)->nodeValue;
+               $infProt['digVal'] = $nodeInfProt->getElementsByTagName('digVal')->item(0)->nodeValue;
+               $infProt['cStat'] = $nodeInfProt->getElementsByTagName('cStat')->item(0)->nodeValue;
+               $infProt['xMotivo'] = $nodeInfProt->getElementsByTagName('xMotivo')->item(0)->nodeValue;
+               $aRetorno['protNFe']['infProt'] = $infProt;
+               //nome do arquivo de retorno com sufixo "-rec"
+               $nome = $this->temDir.$idLote.'-rec.xml';
+            } else {
+               //retorno assíncrono do webservice: dados do recibo do lote
+               $aRetorno['infRec'] = array();
+               $aRetorno['infRec']['nRec'] = $doc->getElementsByTagName('nRec')->item(0)->nodeValue;
+               $aRetorno['infRec']['tMed'] = $doc->getElementsByTagName('tMed')->item(0)->nodeValue;
+               //nome do arquivo de retorno com sufixo "-prot"
+               $nome = $this->temDir.$idLote.'-prot.xml';
+            }
+            //grava o retorno na pasta de temporários
+            $nome = $doc->save($nome);
+        } catch (nfephpException $e) {
+            $this->pSetError($e->getMessage());
+            if ($this->exceptions) {
+                throw $e;
+            }
+            return false;
         }
-        return $aRetorno;
+        return $retorno;
     }// fim autoriza
 
     /**
@@ -4923,7 +4937,7 @@ class ToolsNFePHP
     {
         return substr(str_replace(',', '', number_format(microtime(true)*1000000, 0)), 0, 15);
     }
-    
+
     /**
      * pClearXml
      * Remove \r \n \s \t 
