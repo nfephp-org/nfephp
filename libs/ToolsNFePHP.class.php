@@ -2201,7 +2201,7 @@ class ToolsNFePHP
             }
             return false;
         }//fim catch
-        return $aRetorno; //mudar para $retorno
+        return $retorno;
     } //fim getProtocol
 
     /**
@@ -2340,6 +2340,7 @@ class ToolsNFePHP
                     $nsu = $resNFe->getAttribute('NSU');
                     $chNFe = $resNFe->getElementsByTagName('chNFe')->item(0)->nodeValue;
                     $CNPJ = $resNFe->getElementsByTagName('CNPJ')->item(0)->nodeValue;
+                    $CPF = $resNFe->getElementsByTagName('CPF')->item(0)->nodeValue;
                     $xNome = $resNFe->getElementsByTagName('xNome')->item(0)->nodeValue;
                     $dEmi = $resNFe->getElementsByTagName('dEmi')->item(0)->nodeValue;
                     $dhRecbto= $resNFe->getElementsByTagName('dhRecbto')->item(0)->nodeValue;
@@ -2356,6 +2357,7 @@ class ToolsNFePHP
                         'chNFe'=>$chNFe,
                         'NSU'=>$nsu,
                         'CNPJ'=>$CNPJ,
+                        'CPF'=>$CPF,
                         'xNome'=>$xNome,
                         'dEmi'=>$dEmi,
                         'dhRecbto'=>$dhRecbto,
@@ -2371,6 +2373,7 @@ class ToolsNFePHP
                     $nsu = $resCanc->getAttribute('NSU');
                     $chNFe = $resCanc->getElementsByTagName('chNFe')->item(0)->nodeValue;
                     $CNPJ = $resCanc->getElementsByTagName('CNPJ')->item(0)->nodeValue;
+                    $CPF = $resCanc->getElementsByTagName('CPF')->item(0)->nodeValue;
                     $xNome = $resCanc->getElementsByTagName('xNome')->item(0)->nodeValue;
                     $dEmi = $resCanc->getElementsByTagName('dEmi')->item(0)->nodeValue;
                     $dhRecbto= $resCanc->getElementsByTagName('dhRecbto')->item(0)->nodeValue;
@@ -2386,6 +2389,7 @@ class ToolsNFePHP
                         'chNFe'=>$chNFe,
                         'NSU'=>$nsu,
                         'CNPJ'=>$CNPJ,
+                        'CPF'=>$CPF,
                         'xNome'=>$xNome,
                         'dEmi'=>$dEmi,
                         'dhRecbto'=>$dhRecbto,
@@ -2455,12 +2459,13 @@ class ToolsNFePHP
      * @param string $chNFe chave da NFe
      * @param string $tpAmb tipo de ambiente
      * @param string $modSOAP modo do SOAP
+     * @param string $xml variável passada como referência e irá conter o conteúdo XML que é salvo em arquivo
      * @return mixed FALSE ou xml de retorno
      *
      * TODO: quando o serviço estiver funcional extrair o xml da NFe e colocar
      * no diretorio correto
      */
-    public function getNFe($AN=true,$chNFe='',$tpAmb='',$modSOAP='2'){
+    public function getNFe($AN=true,$chNFe='',$tpAmb='',$modSOAP='2', &$xml=null){
         try{
             if($chNFe == ''){
                 $msg = 'Uma chave de NFe deve ser passada como parâmetro da função.';
@@ -3539,7 +3544,7 @@ class ToolsNFePHP
             $procXML = str_replace("\r",'',$procXML);
             $procXML = str_replace("\s",'',$procXML);
             $filename = $this->evtDir."$chNFe-$tpEvento-$nSeqEvento-procMDe.xml";
-            $resp = array('bStat'=>true,'cStat'=>$cStat,'xMotivo'=>$xMotivo,'arquivo'=>$filename);
+            $resp = array('bStat'=>true,'cStat'=>$cStat,'dhEvento'=>$dhEvento,'nSeqEvento'=>$nSeqEvento,'xMotivo'=>$xMotivo,'arquivo'=>$filename);
             //salva o arquivo xml
             if (!file_put_contents($filename, $procXML)){
                 $msg = "Falha na gravação do arquivo procMDe!!";
@@ -3550,7 +3555,7 @@ class ToolsNFePHP
             if ($this->exceptions) {
                 throw $e;
             }
-            $resp = array('bStat'=>false,'cStat'=>$cStat,'xMotivo'=>$xMotivo,'arquivo'=>'');
+            $resp = array('bStat'=>true,'cStat'=>$cStat,'dhEvento'=>$dhEvento,'nSeqEvento'=>$nSeqEvento,'xMotivo'=>$xMotivo,'arquivo'=>'');
             return false;
         }
         return $retorno;
