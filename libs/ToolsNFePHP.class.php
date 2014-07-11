@@ -3762,9 +3762,10 @@ class ToolsNFePHP
      * Verifica a validade da NFe recebida de terceiros
      *
      * @param string $file Path completo para o arquivo xml a ser verificado
+     * @param integer $modSOAP 1 usa __sendSOAP e 2 usa __sendSOAP2
      * @return boolean false se não confere e true se confere
      */
-    public function verifyNFe($file){
+    public function verifyNFe($file, $modSOAP=2){
         try{
             //verifica se o arquivo existe
             if (!file_exists($file)){
@@ -3800,7 +3801,9 @@ class ToolsNFePHP
                 $nProt = '';
             }
             //busca o status da NFe na SEFAZ do estado do emitente
-            $resp = $this->getProtocol('',$chave,$tpAmb);
+            $resp = array();
+            $this->getProtocol('', $chave, $tpAmb, $modSOAP, $resp);
+            
             if ($resp['cStat']!='100'){
                 $msg = "NF não aprovada no SEFAZ!! cStat =" . $resp['cStat'] .' - '.$resp['xMotivo'] ."";
                 throw new nfephpException($msg, self::STOP_CRITICAL);
