@@ -4,39 +4,36 @@
 ATENÇÃO! Este é o XML dos endereços dos webservices da NFC-e (NF-e modelo 65)
 layout "3.10", portanto é incompatível com a versão "2.00" do layout da NF-e,
 prevista para ser desativada em 01/12/2014.
+
+ATENÇÃO!!! Em Julho/2014, vários endereços destes webservices ainda não foram
+totalmente revisados e/ou estão incompletos, testar com cuidado conforme cada
+UF/ambiente.
 -->
 
 <WS xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <UF>
-    <sigla>AC</sigla>
-    <homologacao>
-      <NfeConsultaQR method='QR-CODE' version='3.10'>http://hml.sefaznet.ac.gov.br</NfeConsultaQR>
-    </homologacao>
-    <producao>
-      <NfeConsultaQR method='QR-CODE' version='3.10'>http://www.sefaznet.ac.gov.br/nfe/NFe.jsp</NfeConsultaQR>    
-    </producao>
-  </UF>
-  <UF>
     <sigla>AM</sigla>
     <homologacao>
-      <NfeInutilizacao method='nfeInutilizacaoNF2' version='3.10'>https://homnfce.sefaz.am.gov.br/nfce-services/services/NfeInutilizacao2</NfeInutilizacao>
-      <NfeConsulta method='nfeConsultaNF2' version='3.10'>https://homnfce.sefaz.am.gov.br/nfce-services/services/NfeConsulta2</NfeConsulta>
-      <NfeStatusServico method='nfeStatusServicoNF2' version='3.10'>https://homnfce.sefaz.am.gov.br/nfce-services/services/NfeStatusServico2</NfeStatusServico>
-      <CadConsultaCadastro method='consultaCadastro2' version='3.10'>https://homnfce.sefaz.am.gov.br/nfce-services/services/cadconsultacadastro2</CadConsultaCadastro>
-      <RecepcaoEvento method='nfeRecepcaoEvento' version='3.10'>https://homnfce.sefaz.am.gov.br/nfce-services/services/RecepcaoEvento</RecepcaoEvento>
-      <NfeConsultaQR method='QR-CODE' version='1.00'>http://homnfce.sefaz.am.gov.br/nfceweb/consultarNFCe.jsp</NfeConsultaQR>
+      <NfeAutorizacao method="nfeAutorizacaoLote" version="3.10">https://homnfce.sefaz.am.gov.br/nfce-services/services/NfeAutorizacao</NfeAutorizacao>
+      <NfeConsultaCadastro method='consultaCadastro2' version='3.10'>https://homnfce.sefaz.am.gov.br/nfce-services/services/cadconsultacadastro2</NfeConsultaCadastro>
       <NfeConsultaDest method='nfeConsultaNFDest' version='1.00'></NfeConsultaDest>
+      <NfeConsultaProtocolo method='nfeConsultaNF2' version='3.10'>https://homnfce.sefaz.am.gov.br/nfce-services/services/NfeConsulta2</NfeConsultaProtocolo>
+      <NfeConsultaQR method='QR-CODE' version='1.00'>http://homnfce.sefaz.am.gov.br/nfceweb/consultarNFCe.jsp</NfeConsultaQR>
       <NfeDownloadNF method='nfeDownloadNF' version='1.00'></NfeDownloadNF>
+      <NfeInutilizacao method='nfeInutilizacaoNF2' version='3.10'>https://homnfce.sefaz.am.gov.br/nfce-services/services/NfeInutilizacao2</NfeInutilizacao>
+      <NfeStatusServico method='nfeStatusServicoNF2' version='3.10'>https://homnfce.sefaz.am.gov.br/nfce-services/services/NfeStatusServico2</NfeStatusServico>
+      <RecepcaoEvento method='nfeRecepcaoEvento' version='3.10'>https://homnfce.sefaz.am.gov.br/nfce-services/services/RecepcaoEvento</RecepcaoEvento>
     </homologacao>
     <producao>
-      <NfeInutilizacao method='nfeInutilizacaoNF2' version='2.00'>https://nfce.sefaz.am.gov.br/nfce-services/services/NfeInutilizacao2</NfeInutilizacao>
-      <NfeConsulta method='nfeConsultaNF2' version='2.01'>https://nfce.sefaz.am.gov.br/nfce-services/services/NfeConsulta2</NfeConsulta>
-      <NfeStatusServico method='nfeStatusServicoNF2' version='2.00'>https://nfce.sefaz.am.gov.br/nfce-services/services/NfeStatusServico2</NfeStatusServico>
-      <CadConsultaCadastro method='consultaCadastro2' version='2.00'></CadConsultaCadastro>
-      <RecepcaoEvento method='nfeRecepcaoEvento' version='1.00'>https://nfce.sefaz.am.gov.br/nfce-services/services/RecepcaoEvento</RecepcaoEvento>
-      <NfeConsultaQR method='QR-CODE' version='1.00'>http://sistemas.sefaz.am.gov.br/nfceweb/consultarNFCe.jsp</NfeConsultaQR>      
+      <NfeAutorizacao method="nfeAutorizacaoLote" version="3.10">https://nfce.sefaz.am.gov.br/nfce-services/services/NfeAutorizacao</NfeAutorizacao>
+      <NfeConsultaCadastro method='consultaCadastro2' version='2.00'></NfeConsultaCadastro>
       <NfeConsultaDest method='nfeConsultaNFDest' version='1.00'></NfeConsultaDest>
+      <NfeConsultaProtocolo method='nfeConsultaNF2' version='2.01'>https://nfce.sefaz.am.gov.br/nfce-services/services/NfeConsulta2</NfeConsultaProtocolo>
+      <NfeConsultaQR method='QR-CODE' version='1.00'>http://sistemas.sefaz.am.gov.br/nfceweb/consultarNFCe.jsp</NfeConsultaQR>      
       <NfeDownloadNF method='nfeDownloadNF' version='1.00'></NfeDownloadNF>
+      <NfeInutilizacao method='nfeInutilizacaoNF2' version='2.00'>https://nfce.sefaz.am.gov.br/nfce-services/services/NfeInutilizacao2</NfeInutilizacao>
+      <NfeStatusServico method='nfeStatusServicoNF2' version='2.00'>https://nfce.sefaz.am.gov.br/nfce-services/services/NfeStatusServico2</NfeStatusServico>
+      <RecepcaoEvento method='nfeRecepcaoEvento' version='1.00'>https://nfce.sefaz.am.gov.br/nfce-services/services/RecepcaoEvento</RecepcaoEvento>
     </producao>
   </UF>
   <UF>
@@ -56,9 +53,9 @@ prevista para ser desativada em 01/12/2014.
     <sigla>BA</sigla>
     <homologacao>
       <NfeInutilizacao method='nfeInutilizacaoNF2' version='3.10'></NfeInutilizacao>
-      <NfeConsulta method='nfeConsultaNF2' version='3.10'></NfeConsulta>
+      <NfeConsultaProtocolo method='nfeConsultaNF2' version='3.10'></NfeConsultaProtocolo>
       <NfeStatusServico method='nfeStatusServicoNF2' version='3.10'></NfeStatusServico>
-      <CadConsultaCadastro method='consultaCadastro2' version='3.10'></CadConsultaCadastro>
+      <NfeConsultaCadastro method='consultaCadastro2' version='3.10'></NfeConsultaCadastro>
       <RecepcaoEvento method='nfeRecepcaoEvento' version='3.10'></RecepcaoEvento>
       <NfeConsultaQR method='QR-CODE' version='3.10'></NfeConsultaQR>
       <NfeConsultaDest method='nfeConsultaNFDest' version='3.10'></NfeConsultaDest>
@@ -66,9 +63,9 @@ prevista para ser desativada em 01/12/2014.
     </homologacao>
     <producao>
       <NfeInutilizacao method='nfeInutilizacaoNF2' version='3.10'></NfeInutilizacao>
-      <NfeConsulta method='nfeConsultaNF2' version='3.10'></NfeConsulta>
+      <NfeConsultaProtocolo method='nfeConsultaNF2' version='3.10'></NfeConsultaProtocolo>
       <NfeStatusServico method='nfeStatusServicoNF2' version='3.10'></NfeStatusServico>
-      <CadConsultaCadastro method='consultaCadastro2' version='3.10'></CadConsultaCadastro>
+      <NfeConsultaCadastro method='consultaCadastro2' version='3.10'></NfeConsultaCadastro>
       <RecepcaoEvento method='nfeRecepcaoEvento' version='3.10'></RecepcaoEvento>
       <NfeConsultaQR method='QR-CODE' version='3.10'></NfeConsultaQR>
       <NfeConsultaDest method='nfeConsultaNFDest' version='3.10'></NfeConsultaDest>
@@ -79,9 +76,9 @@ prevista para ser desativada em 01/12/2014.
     <sigla>CE</sigla>
     <homologacao>
       <NfeInutilizacao method='nfeInutilizacaoNF2' version='3.10'></NfeInutilizacao>
-      <NfeConsulta method='nfeConsultaNF2' version='3.10'></NfeConsulta>
+      <NfeConsultaProtocolo method='nfeConsultaNF2' version='3.10'></NfeConsultaProtocolo>
       <NfeStatusServico method='nfeStatusServicoNF2' version='3.10'></NfeStatusServico>
-      <CadConsultaCadastro method='consultaCadastro2' version='3.10'></CadConsultaCadastro>
+      <NfeConsultaCadastro method='consultaCadastro2' version='3.10'></NfeConsultaCadastro>
       <RecepcaoEvento method='nfeRecepcaoEvento' version='3.10'></RecepcaoEvento>
       <NfeConsultaQR method='QR-CODE' version='3.10'></NfeConsultaQR>
       <NfeConsultaDest method='nfeConsultaNFDest' version='3.10'></NfeConsultaDest>
@@ -89,9 +86,9 @@ prevista para ser desativada em 01/12/2014.
     </homologacao>
     <producao>
       <NfeInutilizacao method='nfeInutilizacaoNF2' version='3.10'></NfeInutilizacao>
-      <NfeConsulta method='nfeConsultaNF2' version='3.10'></NfeConsulta>
+      <NfeConsultaProtocolo method='nfeConsultaNF2' version='3.10'></NfeConsultaProtocolo>
       <NfeStatusServico method='nfeStatusServicoNF2' version='3.10'></NfeStatusServico>
-      <CadConsultaCadastro method='consultaCadastro2' version='3.10'></CadConsultaCadastro>
+      <NfeConsultaCadastro method='consultaCadastro2' version='3.10'></NfeConsultaCadastro>
       <RecepcaoEvento method='nfeRecepcaoEvento' version='3.10'></RecepcaoEvento>
       <NfeConsultaQR method='QR-CODE' version='3.10'></NfeConsultaQR>
       <NfeConsultaDest method='nfeConsultaNFDest' version='3.10'></NfeConsultaDest>
@@ -102,9 +99,9 @@ prevista para ser desativada em 01/12/2014.
     <sigla>GO</sigla>
     <homologacao>
       <NfeInutilizacao method='nfeInutilizacaoNF2' version='3.10'></NfeInutilizacao>
-      <NfeConsulta method='nfeConsultaNF2' version='3.10'></NfeConsulta>
+      <NfeConsultaProtocolo method='nfeConsultaNF2' version='3.10'></NfeConsultaProtocolo>
       <NfeStatusServico method='nfeStatusServicoNF2' version='3.10'></NfeStatusServico>
-      <CadConsultaCadastro method='consultaCadastro2' version='3.10'></CadConsultaCadastro>
+      <NfeConsultaCadastro method='consultaCadastro2' version='3.10'></NfeConsultaCadastro>
       <RecepcaoEvento method='nfeRecepcaoEvento' version='3.10'></RecepcaoEvento>
       <NfeConsultaQR method='QR-CODE' version='3.10'></NfeConsultaQR>
       <NfeConsultaDest method='nfeConsultaNFDest' version='3.10'></NfeConsultaDest>
@@ -112,9 +109,9 @@ prevista para ser desativada em 01/12/2014.
     </homologacao>
     <producao>
       <NfeInutilizacao method='nfeInutilizacaoNF2' version='3.10'></NfeInutilizacao>
-      <NfeConsulta method='nfeConsultaNF2' version='3.10'></NfeConsulta>
+      <NfeConsultaProtocolo method='nfeConsultaNF2' version='3.10'></NfeConsultaProtocolo>
       <NfeStatusServico method='nfeStatusServicoNF2' version='3.10'></NfeStatusServico>
-      <CadConsultaCadastro method='consultaCadastro2' version='3.10'></CadConsultaCadastro>
+      <NfeConsultaCadastro method='consultaCadastro2' version='3.10'></NfeConsultaCadastro>
       <RecepcaoEvento method='nfeRecepcaoEvento' version='3.10'></RecepcaoEvento>
       <NfeConsultaQR method='QR-CODE' version='3.10'></NfeConsultaQR>
       <NfeConsultaDest method='nfeConsultaNFDest' version='3.10'></NfeConsultaDest>
@@ -133,33 +130,33 @@ prevista para ser desativada em 01/12/2014.
   <UF>
     <sigla>MG</sigla>
     <homologacao>
-      <NfeInutilizacao method='nfeInutilizacaoNF2' version='3.10'></NfeInutilizacao>
-      <NfeConsulta method='nfeConsultaNF2' version='3.10'></NfeConsulta>
-      <NfeStatusServico method='nfeStatusServicoNF2' version='3.10'></NfeStatusServico>
-      <CadConsultaCadastro method='consultaCadastro2' version='3.10'></CadConsultaCadastro>
-      <RecepcaoEvento method='nfeRecepcaoEvento' version='3.10'></RecepcaoEvento>
-      <NfeConsultaQR method='QR-CODE' version='3.10'></NfeConsultaQR>
+      <NfeConsultaCadastro method='consultaCadastro2' version='3.10'></NfeConsultaCadastro>
       <NfeConsultaDest method='nfeConsultaNFDest' version='3.10'></NfeConsultaDest>
+      <NfeConsultaProtocolo method='nfeConsultaNF2' version='3.10'></NfeConsultaProtocolo>
+      <NfeConsultaQR method='QR-CODE' version='3.10'></NfeConsultaQR>
       <NfeDownloadNF method='nfeDownloadNF' version='3.10'></NfeDownloadNF>
+      <NfeInutilizacao method='nfeInutilizacaoNF2' version='3.10'></NfeInutilizacao>
+      <NfeStatusServico method='nfeStatusServicoNF2' version='3.10'></NfeStatusServico>
+      <RecepcaoEvento method='nfeRecepcaoEvento' version='3.10'></RecepcaoEvento>
     </homologacao>
     <producao>
-      <NfeInutilizacao method='nfeInutilizacaoNF2' version='3.10'></NfeInutilizacao>
-      <NfeConsulta method='nfeConsultaNF2' version='3.10'></NfeConsulta>
-      <NfeStatusServico method='nfeStatusServicoNF2' version='3.10'></NfeStatusServico>
-      <CadConsultaCadastro method='consultaCadastro2' version='3.10'></CadConsultaCadastro>
-      <RecepcaoEvento method='nfeRecepcaoEvento' version='3.10'></RecepcaoEvento>
-      <NfeConsultaQR method='QR-CODE' version='3.10'></NfeConsultaQR>
+      <NfeConsultaCadastro method='consultaCadastro2' version='3.10'></NfeConsultaCadastro>
       <NfeConsultaDest method='nfeConsultaNFDest' version='3.10'></NfeConsultaDest>
+      <NfeConsultaProtocolo method='nfeConsultaNF2' version='3.10'></NfeConsultaProtocolo>
+      <NfeConsultaQR method='QR-CODE' version='3.10'></NfeConsultaQR>
       <NfeDownloadNF method='nfeDownloadNF' version='3.10'></NfeDownloadNF>
+      <NfeInutilizacao method='nfeInutilizacaoNF2' version='3.10'></NfeInutilizacao>
+      <NfeStatusServico method='nfeStatusServicoNF2' version='3.10'></NfeStatusServico>
+      <RecepcaoEvento method='nfeRecepcaoEvento' version='3.10'></RecepcaoEvento>
     </producao>
   </UF>
   <UF>
     <sigla>MS</sigla>
     <homologacao>
       <NfeInutilizacao method='nfeInutilizacaoNF2' version='3.10'></NfeInutilizacao>
-      <NfeConsulta method='nfeConsultaNF2' version='3.10'></NfeConsulta>
+      <NfeConsultaProtocolo method='nfeConsultaNF2' version='3.10'></NfeConsultaProtocolo>
       <NfeStatusServico method='nfeStatusServicoNF2' version='3.10'></NfeStatusServico>
-      <CadConsultaCadastro method='consultaCadastro2' version='3.10'></CadConsultaCadastro>
+      <NfeConsultaCadastro method='consultaCadastro2' version='3.10'></NfeConsultaCadastro>
       <RecepcaoEvento method='nfeRecepcaoEvento' version='3.10'></RecepcaoEvento>
       <NfeConsultaQR method='QR-CODE' version='3.10'></NfeConsultaQR>
       <NfeConsultaDest method='nfeConsultaNFDest' version='3.10'></NfeConsultaDest>
@@ -167,9 +164,9 @@ prevista para ser desativada em 01/12/2014.
     </homologacao>
     <producao>
       <NfeInutilizacao method='nfeInutilizacaoNF2' version='3.10'></NfeInutilizacao>
-      <NfeConsulta method='nfeConsultaNF2' version='3.10'></NfeConsulta>
+      <NfeConsultaProtocolo method='nfeConsultaNF2' version='3.10'></NfeConsultaProtocolo>
       <NfeStatusServico method='nfeStatusServicoNF2' version='3.10'></NfeStatusServico>
-      <CadConsultaCadastro method='consultaCadastro2' version='3.10'></CadConsultaCadastro>
+      <NfeConsultaCadastro method='consultaCadastro2' version='3.10'></NfeConsultaCadastro>
       <RecepcaoEvento method='nfeRecepcaoEvento' version='3.10'></RecepcaoEvento>
       <NfeConsultaQR method='QR-CODE' version='3.10'></NfeConsultaQR>
       <NfeConsultaDest method='nfeConsultaNFDest' version='3.10'></NfeConsultaDest>
@@ -180,9 +177,9 @@ prevista para ser desativada em 01/12/2014.
     <sigla>MT</sigla>
     <homologacao>
       <NfeInutilizacao method='nfeInutilizacaoNF2' version='3.00'>https://homologacao.sefaz.mt.gov.br/nfcews/services/NfeInutilizacao2</NfeInutilizacao>
-      <NfeConsulta method='nfeConsultaNF2' version='3.10'>https://homologacao.sefaz.mt.gov.br/nfcews/services/NfeConsulta2</NfeConsulta>
+      <NfeConsultaProtocolo method='nfeConsultaNF2' version='3.10'>https://homologacao.sefaz.mt.gov.br/nfcews/services/NfeConsulta2</NfeConsultaProtocolo>
       <NfeStatusServico method='nfeStatusServicoNF2' version='3.00'>https://homologacao.sefaz.mt.gov.br/nfcews/services/NfeStatusServico2</NfeStatusServico>
-      <CadConsultaCadastro method='consultaCadastro2' version='3.00'></CadConsultaCadastro>
+      <NfeConsultaCadastro method='consultaCadastro2' version='3.00'></NfeConsultaCadastro>
       <RecepcaoEvento method='nfeRecepcaoEvento' version='3.00'>https://homologacao.sefaz.mt.gov.br/nfcews/services/RecepcaoEvento</RecepcaoEvento>
       <NfeConsultaQR method='QR-CODE' version='100'>http://www.hom.nfe.sefaz.mt.gov.br/portal/consultarNFCe.jsp</NfeConsultaQR>      
       <NfeConsultaDest method='nfeConsultaNFDest' version='3.00'></NfeConsultaDest>
@@ -190,9 +187,9 @@ prevista para ser desativada em 01/12/2014.
     </homologacao>
     <producao>
       <NfeInutilizacao method='nfeInutilizacaoNF2' version='3.00'>https://nfce.sefaz.mt.gov.br/nfcews/services/NfeInutilizacao2</NfeInutilizacao>
-      <NfeConsulta method='nfeConsultaNF2' version='3.00'>https://nfce.sefaz.mt.gov.br/nfcews/services/NfeConsulta2</NfeConsulta>
+      <NfeConsultaProtocolo method='nfeConsultaNF2' version='3.00'>https://nfce.sefaz.mt.gov.br/nfcews/services/NfeConsulta2</NfeConsultaProtocolo>
       <NfeStatusServico method='nfeStatusServicoNF2' version='3.00'>https://nfce.sefaz.mt.gov.br/nfcews/services/NfeStatusServico2</NfeStatusServico>
-      <CadConsultaCadastro method='consultaCadastro2' version='3.00'></CadConsultaCadastro>
+      <NfeConsultaCadastro method='consultaCadastro2' version='3.00'></NfeConsultaCadastro>
       <RecepcaoEvento method='nfeRecepcaoEvento' version='3.00'>https://nfce.sefaz.mt.gov.br/nfcews/services/RecepcaoEvento</RecepcaoEvento>
       <NfeConsultaQR method='QR-CODE' version='100'>http://www.sefaz.mt.gov.br/nfe/portal/consultanfce</NfeConsultaQR>            
       <NfeConsultaDest method='nfeConsultaNFDest' version='3.00'></NfeConsultaDest>
@@ -203,9 +200,9 @@ prevista para ser desativada em 01/12/2014.
     <sigla>PE</sigla>
     <homologacao>
       <NfeInutilizacao method='nfeInutilizacaoNF2' version='3.10'></NfeInutilizacao>
-      <NfeConsulta method='nfeConsultaNF2' version='3.10'></NfeConsulta>
+      <NfeConsultaProtocolo method='nfeConsultaNF2' version='3.10'></NfeConsultaProtocolo>
       <NfeStatusServico method='nfeStatusServicoNF2' version='3.10'></NfeStatusServico>
-      <CadConsultaCadastro method='consultaCadastro2' version='3.10'></CadConsultaCadastro>
+      <NfeConsultaCadastro method='consultaCadastro2' version='3.10'></NfeConsultaCadastro>
       <RecepcaoEvento method='nfeRecepcaoEvento' version='3.10'></RecepcaoEvento>
       <NfeConsultaQR method='QR-CODE' version='3.10'></NfeConsultaQR>
       <NfeConsultaDest method='nfeConsultaNFDest' version='3.10'></NfeConsultaDest>
@@ -213,9 +210,9 @@ prevista para ser desativada em 01/12/2014.
     </homologacao>
     <producao>
       <NfeInutilizacao method='nfeInutilizacaoNF2' version='3.10'></NfeInutilizacao>
-      <NfeConsulta method='nfeConsultaNF2' version='3.10'></NfeConsulta>
+      <NfeConsultaProtocolo method='nfeConsultaNF2' version='3.10'></NfeConsultaProtocolo>
       <NfeStatusServico method='nfeStatusServicoNF2' version='3.10'></NfeStatusServico>
-      <CadConsultaCadastro method='consultaCadastro2' version='3.10'></CadConsultaCadastro>
+      <NfeConsultaCadastro method='consultaCadastro2' version='3.10'></NfeConsultaCadastro>
       <RecepcaoEvento method='nfeRecepcaoEvento' version='3.10'></RecepcaoEvento>
       <NfeConsultaQR method='QR-CODE' version='3.10'></NfeConsultaQR>
       <NfeConsultaDest method='nfeConsultaNFDest' version='3.10'></NfeConsultaDest>
@@ -226,9 +223,9 @@ prevista para ser desativada em 01/12/2014.
     <sigla>PR</sigla>
     <homologacao>
       <NfeInutilizacao method='nfeInutilizacaoNF2' version='3.10'></NfeInutilizacao>
-      <NfeConsulta method='nfeConsultaNF2' version='3.10'></NfeConsulta>
+      <NfeConsultaProtocolo method='nfeConsultaNF2' version='3.10'></NfeConsultaProtocolo>
       <NfeStatusServico method='nfeStatusServicoNF2' version='3.10'></NfeStatusServico>
-      <CadConsultaCadastro method='consultaCadastro2' version='3.10'></CadConsultaCadastro>
+      <NfeConsultaCadastro method='consultaCadastro2' version='3.10'></NfeConsultaCadastro>
       <RecepcaoEvento method='nfeRecepcaoEvento' version='3.10'></RecepcaoEvento>
       <NfeConsultaQR method='QR-CODE' version='3.10'></NfeConsultaQR>
       <NfeConsultaDest method='nfeConsultaNFDest' version='3.10'></NfeConsultaDest>
@@ -236,9 +233,9 @@ prevista para ser desativada em 01/12/2014.
     </homologacao>
     <producao>
       <NfeInutilizacao method='nfeInutilizacaoNF2' version='3.10'></NfeInutilizacao>
-      <NfeConsulta method='nfeConsultaNF2' version='3.10'></NfeConsulta>
+      <NfeConsultaProtocolo method='nfeConsultaNF2' version='3.10'></NfeConsultaProtocolo>
       <NfeStatusServico method='nfeStatusServicoNF2' version='3.10'></NfeStatusServico>
-      <CadConsultaCadastro method='consultaCadastro2' version='3.10'></CadConsultaCadastro>
+      <NfeConsultaCadastro method='consultaCadastro2' version='3.10'></NfeConsultaCadastro>
       <RecepcaoEvento method='nfeRecepcaoEvento' version='3.10'></RecepcaoEvento>
       <NfeConsultaQR method='QR-CODE' version='3.10'></NfeConsultaQR>
       <NfeConsultaDest method='nfeConsultaNFDest' version='3.10'></NfeConsultaDest>
@@ -257,26 +254,26 @@ prevista para ser desativada em 01/12/2014.
   <UF>
     <sigla>RS</sigla>
     <homologacao>
-      <NfeInutilizacao method='nfeInutilizacaoNF2' version='3.10'>https://homologacao.nfe.sefaz.rs.gov.br/ws/nfeinutilizacao/nfeinutilizacao2.asmx</NfeInutilizacao>
-      <NfeConsulta method='nfeConsultaNF2' version='3.10'>https://homologacao.nfe.sefaz.rs.gov.br/ws/NfeConsulta/NfeConsulta2.asmx</NfeConsulta>
-      <NfeStatusServico method='nfeStatusServicoNF2' version='3.10'>https://homologacao.nfe.sefaz.rs.gov.br/ws/NfeStatusServico/NfeStatusServico2.asmx</NfeStatusServico>
-      <CadConsultaCadastro method='consultaCadastro2' version='3.10'></CadConsultaCadastro>
-      <RecepcaoEvento method='nfeRecepcaoEvento' version='3.10'>https://homologacao.nfe.sefaz.rs.gov.br/ws/recepcaoevento/recepcaoevento.asmx</RecepcaoEvento>
-      <NfeConsultaQR method='QR-CODE' version='3.10'>https://www.sefaz.rs.gov.br/NFCE/NFCE-COM.aspx</NfeConsultaQR>      
-      <NfeConsultaDest method='nfeConsultaNFDest' version='3.10'>https://homologacao.nfe.sefaz.rs.gov.br/ws/nfeConsultaDest/nfeConsultaDest.asmx</NfeConsultaDest>
-      <NfeDownloadNF method='nfeDownloadNF' version='3.10'>https://homologacao.nfe.sefaz.rs.gov.br/ws/nfeDownloadNF/nfeDownloadNF.asmx</NfeDownloadNF>
       <NfeAutorizacao method='nfeAutorizacaoLote' version='3.10'>https://homologacao.nfe.sefaz.rs.gov.br/ws/NfeAutorizacao/NFeAutorizacao.asmx</NfeAutorizacao>
+      <NfeConsultaCadastro method='consultaCadastro2' version='3.10'></NfeConsultaCadastro>
+      <NfeConsultaDest method='nfeConsultaNFDest' version='3.10'>https://homologacao.nfe.sefaz.rs.gov.br/ws/nfeConsultaDest/nfeConsultaDest.asmx</NfeConsultaDest>
+      <NfeConsultaProtocolo method='nfeConsultaNF2' version='3.10'>https://homologacao.nfe.sefaz.rs.gov.br/ws/NfeConsulta/NfeConsulta2.asmx</NfeConsultaProtocolo>
+      <NfeConsultaQR method='QR-CODE' version='3.10'>https://www.sefaz.rs.gov.br/NFCE/NFCE-COM.aspx</NfeConsultaQR>      
+      <NfeDownloadNF method='nfeDownloadNF' version='3.10'>https://homologacao.nfe.sefaz.rs.gov.br/ws/nfeDownloadNF/nfeDownloadNF.asmx</NfeDownloadNF>
+      <NfeInutilizacao method='nfeInutilizacaoNF2' version='3.10'>https://homologacao.nfe.sefaz.rs.gov.br/ws/nfeinutilizacao/nfeinutilizacao2.asmx</NfeInutilizacao>
       <NfeRetAutorizacao method='nfeRetAutorizacaoLote' version='3.10'>https://homologacao.nfe.sefaz.rs.gov.br/ws/NfeRetAutorizacao/NFeRetAutorizacao.asmx</NfeRetAutorizacao>
+      <NfeStatusServico method='nfeStatusServicoNF2' version='3.10'>https://homologacao.nfe.sefaz.rs.gov.br/ws/NfeStatusServico/NfeStatusServico2.asmx</NfeStatusServico>
+      <RecepcaoEvento method='nfeRecepcaoEvento' version='3.10'>https://homologacao.nfe.sefaz.rs.gov.br/ws/recepcaoevento/recepcaoevento.asmx</RecepcaoEvento>
     </homologacao>
     <producao>
-      <NfeInutilizacao method='nfeInutilizacaoNF2' version='3.10'>https://nfe.sefaz.rs.gov.br/ws/nfeinutilizacao/nfeinutilizacao2.asmx</NfeInutilizacao>
-      <NfeConsulta method='nfeConsultaNF2' version='3.10'>https://nfe.sefaz.rs.gov.br/ws/NfeConsulta/NfeConsulta2.asmx</NfeConsulta>
-      <NfeStatusServico method='nfeStatusServicoNF2' version='3.10'>https://nfe.sefaz.rs.gov.br/ws/NfeStatusServico/NfeStatusServico2.asmx</NfeStatusServico>
-      <CadConsultaCadastro method='consultaCadastro2' version='3.10'>https://sef.sefaz.rs.gov.br/ws/cadconsultacadastro/cadconsultacadastro2.asmx</CadConsultaCadastro>
-      <RecepcaoEvento method='nfeRecepcaoEvento' version='3.10'>https://nfe.sefaz.rs.gov.br/ws/recepcaoevento/recepcaoevento.asmx</RecepcaoEvento>
-      <NfeConsultaQR method='QR-CODE' version='3.10'>https://www.sefaz.rs.gov.br/NFCE/NFCE-COM.aspx</NfeConsultaQR>      
+      <NfeConsultaCadastro method='consultaCadastro2' version='3.10'>https://sef.sefaz.rs.gov.br/ws/cadconsultacadastro/cadconsultacadastro2.asmx</NfeConsultaCadastro>
       <NfeConsultaDest method='nfeConsultaNFDest' version='3.10'>https://nfe.sefaz.rs.gov.br/ws/nfeConsultaDest/nfeConsultaDest.asmx</NfeConsultaDest>
+      <NfeConsultaProtocolo method='nfeConsultaNF2' version='3.10'>https://nfe.sefaz.rs.gov.br/ws/NfeConsulta/NfeConsulta2.asmx</NfeConsultaProtocolo>
+      <NfeConsultaQR method='QR-CODE' version='3.10'>https://www.sefaz.rs.gov.br/NFCE/NFCE-COM.aspx</NfeConsultaQR>      
       <NfeDownloadNF method='nfeDownloadNF' version='3.10'>https://nfe.sefaz.rs.gov.br/ws/nfeDownloadNF/nfeDownloadNF.asmx</NfeDownloadNF>
+      <NfeInutilizacao method='nfeInutilizacaoNF2' version='3.10'>https://nfe.sefaz.rs.gov.br/ws/nfeinutilizacao/nfeinutilizacao2.asmx</NfeInutilizacao>
+      <NfeStatusServico method='nfeStatusServicoNF2' version='3.10'>https://nfe.sefaz.rs.gov.br/ws/NfeStatusServico/NfeStatusServico2.asmx</NfeStatusServico>
+      <RecepcaoEvento method='nfeRecepcaoEvento' version='3.10'>https://nfe.sefaz.rs.gov.br/ws/recepcaoevento/recepcaoevento.asmx</RecepcaoEvento>
     </producao>
   </UF>
   <UF>
@@ -292,9 +289,9 @@ prevista para ser desativada em 01/12/2014.
     <sigla>SP</sigla>
     <homologacao>
       <NfeInutilizacao method='nfeInutilizacaoNF2' version='3.10'></NfeInutilizacao>
-      <NfeConsulta method='nfeConsultaNF2' version='3.10'></NfeConsulta>
+      <NfeConsultaProtocolo method='nfeConsultaNF2' version='3.10'></NfeConsultaProtocolo>
       <NfeStatusServico method='nfeStatusServicoNF2' version='3.10'></NfeStatusServico>
-      <CadConsultaCadastro method='consultaCadastro2' version='3.10'></CadConsultaCadastro>
+      <NfeConsultaCadastro method='consultaCadastro2' version='3.10'></NfeConsultaCadastro>
       <RecepcaoEvento method='nfeRecepcaoEvento' version='3.10'></RecepcaoEvento>
       <NfeConsultaQR method='QR-CODE' version='3.10'></NfeConsultaQR>      
       <NfeConsultaDest method='nfeConsultaNFDest' version='3.10'></NfeConsultaDest>
@@ -302,9 +299,9 @@ prevista para ser desativada em 01/12/2014.
     </homologacao>
     <producao>
       <NfeInutilizacao method='nfeInutilizacaoNF2' version='3.10'></NfeInutilizacao>
-      <NfeConsulta method='nfeConsultaNF2' version='3.10'></NfeConsulta>
+      <NfeConsultaProtocolo method='nfeConsultaNF2' version='3.10'></NfeConsultaProtocolo>
       <NfeStatusServico method='nfeStatusServicoNF2' version='3.10'></NfeStatusServico>
-      <CadConsultaCadastro method='consultaCadastro2' version='3.10'></CadConsultaCadastro>
+      <NfeConsultaCadastro method='consultaCadastro2' version='3.10'></NfeConsultaCadastro>
       <RecepcaoEvento method='nfeRecepcaoEvento' version='3.10'></RecepcaoEvento>
       <NfeConsultaQR method='QR-CODE' version='3.10'></NfeConsultaQR>
       <NfeConsultaDest method='nfeConsultaNFDest' version='3.10'></NfeConsultaDest>
@@ -315,9 +312,9 @@ prevista para ser desativada em 01/12/2014.
     <sigla>SVAN</sigla>
     <homologacao>
       <NfeInutilizacao method='nfeInutilizacaoNF2' version='3.10'>https://hom.sefazvirtual.fazenda.gov.br/NfeInutilizacao2/NfeInutilizacao2.asmx</NfeInutilizacao>
-      <NfeConsulta method='nfeConsultaNF2' version='3.10'>https://hom.sefazvirtual.fazenda.gov.br/NfeConsulta2/NfeConsulta2.asmx</NfeConsulta>
+      <NfeConsultaProtocolo method='nfeConsultaNF2' version='3.10'>https://hom.sefazvirtual.fazenda.gov.br/NfeConsulta2/NfeConsulta2.asmx</NfeConsultaProtocolo>
       <NfeStatusServico method='nfeStatusServicoNF2' version='3.10'>https://hom.sefazvirtual.fazenda.gov.br/NfeStatusServico2/NfeStatusServico2.asmx</NfeStatusServico>
-      <CadConsultaCadastro method='consultaCadastro2' version='3.10'></CadConsultaCadastro>
+      <NfeConsultaCadastro method='consultaCadastro2' version='3.10'></NfeConsultaCadastro>
       <RecepcaoEvento method='nfeRecepcaoEvento' version='3.10'>https://hom.sefazvirtual.fazenda.gov.br/RecepcaoEvento/RecepcaoEvento.asmx</RecepcaoEvento>
       <NfeConsultaQR method='QR-CODE' version='3.10'></NfeConsultaQR>
       <NfeConsultaDest method='nfeConsultaNFDest' version='3.10'></NfeConsultaDest>
@@ -325,9 +322,9 @@ prevista para ser desativada em 01/12/2014.
     </homologacao>
     <producao>
       <NfeInutilizacao method='nfeInutilizacaoNF2' version='3.10'>https://www.sefazvirtual.fazenda.gov.br/NFeInutilizacao2/NFeInutilizacao2.asmx</NfeInutilizacao>
-      <NfeConsulta method='nfeConsultaNF2' version='3.10'>https://www.sefazvirtual.fazenda.gov.br/nfeconsulta2/nfeconsulta2.asmx</NfeConsulta>
+      <NfeConsultaProtocolo method='nfeConsultaNF2' version='3.10'>https://www.sefazvirtual.fazenda.gov.br/nfeconsulta2/nfeconsulta2.asmx</NfeConsultaProtocolo>
       <NfeStatusServico method='nfeStatusServicoNF2' version='3.10'>https://www.sefazvirtual.fazenda.gov.br/NFeStatusServico2/NFeStatusServico2.asmx</NfeStatusServico>
-      <CadConsultaCadastro method='consultaCadastro2' version='3.10'></CadConsultaCadastro>
+      <NfeConsultaCadastro method='consultaCadastro2' version='3.10'></NfeConsultaCadastro>
       <RecepcaoEvento method='nfeRecepcaoEvento' version='3.10'>https://www.sefazvirtual.fazenda.gov.br/RecepcaoEvento/RecepcaoEvento.asmx</RecepcaoEvento>
       <NfeConsultaQR method='QR-CODE' version='3.10'></NfeConsultaQR>
       <NfeConsultaDest method='nfeConsultaNFDest' version='3.10'></NfeConsultaDest>
@@ -338,9 +335,9 @@ prevista para ser desativada em 01/12/2014.
     <sigla>SVRS</sigla>
     <homologacao>
       <NfeInutilizacao method='nfeInutilizacaoNF2' version='3.10'>https://homologacao.nfe.sefazvirtual.rs.gov.br/ws/NfeInutilizacao/NfeInutilizacao2.asmx</NfeInutilizacao>
-      <NfeConsulta method='nfeConsultaNF2' version='3.10'>https://homologacao.nfe.sefazvirtual.rs.gov.br/ws/nfeconsulta/NfeConsulta2.asmx</NfeConsulta>
+      <NfeConsultaProtocolo method='nfeConsultaNF2' version='3.10'>https://homologacao.nfe.sefazvirtual.rs.gov.br/ws/nfeconsulta/NfeConsulta2.asmx</NfeConsultaProtocolo>
       <NfeStatusServico method='nfeStatusServicoNF2' version='3.10'>https://homologacao.nfe.sefazvirtual.rs.gov.br/ws/NfeStatusServico/NfeStatusServico2.asmx</NfeStatusServico>
-      <CadConsultaCadastro method='consultaCadastro2' version='3.10'></CadConsultaCadastro>
+      <NfeConsultaCadastro method='consultaCadastro2' version='3.10'></NfeConsultaCadastro>
       <RecepcaoEvento method='nfeRecepcaoEvento' version='3.10'>https://homologacao.nfe.sefazvirtual.rs.gov.br/ws/recepcaoevento/recepcaoevento.asmx</RecepcaoEvento>
       <NfeConsultaQR method='QR-CODE' version='3.10'></NfeConsultaQR>
       <NfeConsultaDest method='nfeConsultaNFDest' version='3.10'></NfeConsultaDest>
@@ -348,9 +345,9 @@ prevista para ser desativada em 01/12/2014.
     </homologacao>
     <producao>
       <NfeInutilizacao method='nfeInutilizacaoNF2' version='3.10'>https://nfe.sefazvirtual.rs.gov.br/ws/nfeinutilizacao/nfeinutilizacao2.asmx</NfeInutilizacao>
-      <NfeConsulta method='nfeConsultaNF2' version='3.10'>https://nfe.sefazvirtual.rs.gov.br/ws/NfeConsulta/NfeConsulta2.asmx</NfeConsulta>
+      <NfeConsultaProtocolo method='nfeConsultaNF2' version='3.10'>https://nfe.sefazvirtual.rs.gov.br/ws/NfeConsulta/NfeConsulta2.asmx</NfeConsultaProtocolo>
       <NfeStatusServico method='nfeStatusServicoNF2' version='3.10'>https://nfe.sefazvirtual.rs.gov.br/ws/NfeStatusServico/NfeStatusServico2.asmx</NfeStatusServico>
-      <CadConsultaCadastro method='consultaCadastro2' version='3.10'></CadConsultaCadastro>
+      <NfeConsultaCadastro method='consultaCadastro2' version='3.10'></NfeConsultaCadastro>
       <RecepcaoEvento method='nfeRecepcaoEvento' version='3.10'>https://nfe.sefazvirtual.rs.gov.br/ws/recepcaoevento/recepcaoevento.asmx</RecepcaoEvento>
       <NfeConsultaQR method='QR-CODE' version='3.10'></NfeConsultaQR>
       <NfeConsultaDest method='nfeConsultaNFDest' version='3.10'></NfeConsultaDest>
@@ -361,18 +358,18 @@ prevista para ser desativada em 01/12/2014.
     <sigla>SVCAN</sigla>
     <homologacao>
       <NfeInutilizacao method='nfeInutilizacaoNF2' version='2.00'></NfeInutilizacao>
-      <NfeConsulta method='nfeConsultaNF2' version='2.01'></NfeConsulta>
+      <NfeConsultaProtocolo method='nfeConsultaNF2' version='2.01'></NfeConsultaProtocolo>
       <NfeStatusServico method='nfeStatusServicoNF2' version='2.00'></NfeStatusServico>
-      <CadConsultaCadastro method='consultaCadastro2' version='2.00'></CadConsultaCadastro>
+      <NfeConsultaCadastro method='consultaCadastro2' version='2.00'></NfeConsultaCadastro>
       <RecepcaoEvento method='nfeRecepcaoEvento' version='1.00'></RecepcaoEvento>
       <NfeConsultaDest method='nfeConsultaNFDest' version='1.00'></NfeConsultaDest>
       <NfeDownloadNF method='nfeDownloadNF' version='1.00'></NfeDownloadNF>
     </homologacao>
     <producao>
       <NfeInutilizacao method='nfeInutilizacaoNF2' version='2.00'></NfeInutilizacao>
-      <NfeConsulta method='nfeConsultaNF2' version='2.01'></NfeConsulta>
+      <NfeConsultaProtocolo method='nfeConsultaNF2' version='2.01'></NfeConsultaProtocolo>
       <NfeStatusServico method='nfeStatusServicoNF2' version='2.00'></NfeStatusServico>
-      <CadConsultaCadastro method='consultaCadastro2' version='2.00'></CadConsultaCadastro>
+      <NfeConsultaCadastro method='consultaCadastro2' version='2.00'></NfeConsultaCadastro>
       <RecepcaoEvento method='nfeRecepcaoEvento' version='1.00'></RecepcaoEvento>
       <NfeConsultaDest method='nfeConsultaNFDest' version='1.00'></NfeConsultaDest>
       <NfeDownloadNF method='nfeDownloadNF' version='1.00'></NfeDownloadNF>
@@ -382,18 +379,18 @@ prevista para ser desativada em 01/12/2014.
     <sigla>SVCRS</sigla>
     <homologacao>
       <NfeInutilizacao method='nfeInutilizacaoNF2' version='2.00'></NfeInutilizacao>
-      <NfeConsulta method='nfeConsultaNF2' version='2.01'></NfeConsulta>
+      <NfeConsultaProtocolo method='nfeConsultaNF2' version='2.01'></NfeConsultaProtocolo>
       <NfeStatusServico method='nfeStatusServicoNF2' version='2.00'></NfeStatusServico>
-      <CadConsultaCadastro method='consultaCadastro2' version='2.00'></CadConsultaCadastro>
+      <NfeConsultaCadastro method='consultaCadastro2' version='2.00'></NfeConsultaCadastro>
       <RecepcaoEvento method='nfeRecepcaoEvento' version='1.00'></RecepcaoEvento>
       <NfeConsultaDest method='nfeConsultaNFDest' version='1.00'></NfeConsultaDest>
       <NfeDownloadNF method='nfeDownloadNF' version='1.00'></NfeDownloadNF>
     </homologacao>
     <producao>
       <NfeInutilizacao method='nfeInutilizacaoNF2' version='2.00'></NfeInutilizacao>
-      <NfeConsulta method='nfeConsultaNF2' version='2.01'></NfeConsulta>
+      <NfeConsultaProtocolo method='nfeConsultaNF2' version='2.01'></NfeConsultaProtocolo>
       <NfeStatusServico method='nfeStatusServicoNF2' version='2.00'></NfeStatusServico>
-      <CadConsultaCadastro method='consultaCadastro2' version='2.00'></CadConsultaCadastro>
+      <NfeConsultaCadastro method='consultaCadastro2' version='2.00'></NfeConsultaCadastro>
       <RecepcaoEvento method='nfeRecepcaoEvento' version='1.00'></RecepcaoEvento>
       <NfeConsultaDest method='nfeConsultaNFDest' version='1.00'></NfeConsultaDest>
       <NfeDownloadNF method='nfeDownloadNF' version='1.00'></NfeDownloadNF>

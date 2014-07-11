@@ -35,7 +35,7 @@
  * auxiliares
  * 
  */
-require_once('../External/FPDF/fpdf.php');
+require_once PATH_ROOT.'libs/External/FPDF/fpdf.php';
 
 class PdfNFePHP extends FPDF {
     
