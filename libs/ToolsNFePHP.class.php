@@ -2340,6 +2340,7 @@ class ToolsNFePHP
                     $nsu = $resNFe->getAttribute('NSU');
                     $chNFe = $resNFe->getElementsByTagName('chNFe')->item(0)->nodeValue;
                     $CNPJ = $resNFe->getElementsByTagName('CNPJ')->item(0)->nodeValue;
+                    $CPF = $resNFe->getElementsByTagName('CPF')->item(0)->nodeValue;
                     $xNome = $resNFe->getElementsByTagName('xNome')->item(0)->nodeValue;
                     $dEmi = $resNFe->getElementsByTagName('dEmi')->item(0)->nodeValue;
                     $dhRecbto= $resNFe->getElementsByTagName('dhRecbto')->item(0)->nodeValue;
@@ -2356,6 +2357,7 @@ class ToolsNFePHP
                         'chNFe'=>$chNFe,
                         'NSU'=>$nsu,
                         'CNPJ'=>$CNPJ,
+                        'CPF'=>$CPF,
                         'xNome'=>$xNome,
                         'dEmi'=>$dEmi,
                         'dhRecbto'=>$dhRecbto,
@@ -2371,6 +2373,7 @@ class ToolsNFePHP
                     $nsu = $resCanc->getAttribute('NSU');
                     $chNFe = $resCanc->getElementsByTagName('chNFe')->item(0)->nodeValue;
                     $CNPJ = $resCanc->getElementsByTagName('CNPJ')->item(0)->nodeValue;
+                    $CPF = $resCanc->getElementsByTagName('CPF')->item(0)->nodeValue;
                     $xNome = $resCanc->getElementsByTagName('xNome')->item(0)->nodeValue;
                     $dEmi = $resCanc->getElementsByTagName('dEmi')->item(0)->nodeValue;
                     $dhRecbto= $resCanc->getElementsByTagName('dhRecbto')->item(0)->nodeValue;
@@ -2386,6 +2389,7 @@ class ToolsNFePHP
                         'chNFe'=>$chNFe,
                         'NSU'=>$nsu,
                         'CNPJ'=>$CNPJ,
+                        'CPF'=>$CPF,
                         'xNome'=>$xNome,
                         'dEmi'=>$dEmi,
                         'dhRecbto'=>$dhRecbto,
