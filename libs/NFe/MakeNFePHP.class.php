@@ -403,26 +403,32 @@ class MakeNFe
         return $this->dom->saveXML();
     }
     
-    //tag NFe DOMNode
+    
+    /**
+     * zTagNFe
+     * Tag raiz da NFe
+     * tag NFe DOMNode
+     * @return DOMElement
+     */
     protected function zTagNFe()
     {
         if (!isset($this->NFe)) {
             $this->NFe = $this->dom->createElement("NFe");
             $this->NFe->setAttribute("xmlns", "http://www.portalfiscal.inf.br/nfe");
         }
+        return $this->NFe;
     }
     
-    //tag NFe/infNFe DOMNode
+    /**
+     * taginfNFe
+     * Informações da NF-e A01 pai NFe
+     * tag NFe/infNFe
+     * @param string $chave
+     * @param string $versao
+     * @return DOMElement
+     */
     public function taginfNFe($chave = '', $versao = '')
     {
-        if (!ereg('[0-9]{44}', $chave)) {
-            $this->errmsg = 'Passe a chave de 44 digitos para esse método. '.$chave;
-            return false;
-        }
-        if (!ereg('^[0-9]{1}[.][0-9]{2}$', $versao)) {
-            $this->errmsg = 'Versão incorreta de NFe. '.$chave;
-            return false;
-        }
         $this->infNFe = $this->dom->createElement("infNFe");
         $this->infNFe->setAttribute("Id", 'NFe'.$chave);
         $this->infNFe->setAttribute("versao", $versao);
@@ -539,12 +545,12 @@ class MakeNFe
                 "Indicador de presença do comprador no estabelecimento comercial no momento da operação"
             );
         }
-        $this->zAddChild($ide, "procEmi", $procEmi, true, "Processo de emiss�o da NF-e");
-        $this->zAddChild($ide, "verProc", $verProc, true, "Vers�o do Processo de emiss�o da NF-e");
+        $this->zAddChild($ide, "procEmi", $procEmi, true, "Processo de emissão da NF-e");
+        $this->zAddChild($ide, "verProc", $verProc, true, "Versão do Processo de emissão da NF-e");
         if ($this->versao > 2.00) {
             if ($dhCont != '' && $xJust != '') {
-                $this->zAddChild($ide, "dhCont", $dhCont, true, "Data e Hora da entrada em conting�ncia");
-                $this->zAddChild($ide, "xJust", $xJust, true, "Justificativa da entrada em conting�ncia");
+                $this->zAddChild($ide, "dhCont", $dhCont, true, "Data e Hora da entrada em contingência");
+                $this->zAddChild($ide, "xJust", $xJust, true, "Justificativa da entrada em contingência");
             }
         }
         $this->mod = $mod;
@@ -659,11 +665,11 @@ class MakeNFe
     }
     
     /**
-     * 
+     * tagCTeref
      * Chave de acesso do CT-e referenciada BA19 pai BA01
      * tag NFe/infNFe/ide/NFref/refCTe
-     * @param type $refCTe
-     * @return type
+     * @param string $refCTe
+     * @return DOMElement
      */
     public function tagCTeref($refCTe = '')
     {
@@ -746,7 +752,23 @@ class MakeNFe
         return $this->emit;
     }
     
-    //tag NFe/infNFe/emit/endEmit DOMNode
+    /**
+     * tagenderEmit
+     * Endereço do emitente C05 pai C01
+     * tag NFe/infNFe/emit/endEmit
+     * @param string $xLgr
+     * @param string $nro
+     * @param string $xCpl
+     * @param string $xBairro
+     * @param string $cMun
+     * @param string $xMun
+     * @param string $siglaUF
+     * @param string $cep
+     * @param string $cPais
+     * @param string $xPais
+     * @param string $fone
+     * @return DOMElement
+     */
     public function tagenderEmit(
         $xLgr = '',
         $nro = '',
@@ -774,7 +796,6 @@ class MakeNFe
         $this->zAddChild($this->enderEmit, "fone", $fone, false, "Telefone do Endereço do emitente");
         return $this->enderEmit;
     }
-    
     
     /**
      * tagdest
@@ -1017,8 +1038,12 @@ class MakeNFe
         }
     }
     
-    //tag NFe/infNFe/det array de DOMNodes
-    public function tagdet()
+    
+    /**
+     * Insere dentro da tag det os produtos
+     * tag NFe/infNFe/det
+     */
+    private function zTagdet()
     {
         if (isset($this->aProd)) {
             foreach ($this->aProd as $key => $prod) {
@@ -1031,13 +1056,12 @@ class MakeNFe
             }
         }
     }
-
-    //tag NFe/infNFe/det/imposto
+    
     /**
-     *  Insere dentro dentro das tags det os seus respectivos impostos
-     * 
+     * Insere dentro dentro das tags det os seus respectivos impostos
+     * tag NFe/infNFe/det[]/imposto
      */
-    public function tagImp()
+    private function zTagImp()
     {
         foreach ($this->aImposto as $key => $imp) {
             $nItem = $key;
@@ -1056,7 +1080,37 @@ class MakeNFe
         }
     }
 
-    //tag NFe/infNFe/det[]/prod
+    /**
+     * tagprod
+     * Detalhamento de Produtos e Serviços I01 pai H01
+     * tag NFe/infNFe/det[]/prod
+     * @param string $nItem
+     * @param string $cProd
+     * @param string $cEAN
+     * @param string $xProd
+     * @param string $NCM
+     * @param string $NVE
+     * @param string $EXTIPI
+     * @param string $CFOP
+     * @param string $uCom
+     * @param string $qCom
+     * @param string $vUnCom
+     * @param string $vProd
+     * @param string $cEANTrib
+     * @param string $uTrib
+     * @param string $qTrib
+     * @param string $vUnTrib
+     * @param string $vFrete
+     * @param string $vSeg
+     * @param string $vDesc
+     * @param string $vOutro
+     * @param string $indTot
+     * @param string $xPed
+     * @param string $nItemPed
+     * @param string $nFCI
+     * @param string $nRECOPI
+     * @return DOMElement
+     */
     public function tagprod(
         $nItem = '',
         $cProd = '',
@@ -1085,55 +1139,83 @@ class MakeNFe
         $nRECOPI = ''
     ) {
         $prod = $this->dom->createElement("prod");
-        $this->zAddChild($prod, "cProd", $cProd, true, "C�digo do produto ou servi�o");
-        $this->zAddChild($prod, "cEAN", $cEAN, true, "GTIN (Global Trade Item Number) do produto, antigo c�digo EAN ou c�digo de barras");
-        $this->zAddChild($prod, "xProd", $xProd, true, "Descri��o do produto ou servi�o");
-        $this->zAddChild($prod, "NCM", $NCM, true, "C�digo NCM com 8 d�gitos ou 2 d�gitos (g�nero)");
-        if ($NVE != '') {
-            $this->zAddChild($prod, "NVE", $NVE, false, "Codifica��o NVE - Nomenclatura de Valor Aduaneiro e Estat�stica");
-        }
-        if ($EXTIPI != '') {
-            $this->zAddChild($prod, "EXTIPI", $EXTIPI, false, "Preencher de acordo com o c�digo EX da TIPI");
-        }
-        $this->zAddChild($prod, "CFOP", $CFOP, true, "C�digo Fiscal de Opera��es e Presta��es");
+        $this->zAddChild($prod, "cProd", $cProd, true, "Código do produto ou serviço");
+        $this->zAddChild(
+            $prod,
+            "cEAN",
+            $cEAN,
+            true,
+            "GTIN (Global Trade Item Number) do produto, antigo "
+                . "código EAN ou código de barras"
+        );
+        $this->zAddChild($prod, "xProd", $xProd, true, "Descrição do produto ou serviço");
+        $this->zAddChild($prod, "NCM", $NCM, true, "Código NCM com 8 dígitos ou 2 dígitos (gênero)");
+        $this->zAddChild(
+            $prod,
+            "NVE",
+            $NVE,
+            false, "Codificação NVE - Nomenclatura de Valor Aduaneiro e Estatística"
+        );
+        $this->zAddChild($prod, "EXTIPI", $EXTIPI, false, "Preencher de acordo com o código EX da TIPI");
+        $this->zAddChild($prod, "CFOP", $CFOP, true, "Código Fiscal de Operações e Prestações");
         $this->zAddChild($prod, "uCom", $uCom, true, "Unidade Comercial do produto");
         $this->zAddChild($prod, "qCom", $qCom, true, "Quantidade Comercial do produto");
-        $this->zAddChild($prod, "vUnCom", $vUnCom, true, "Valor Unit�rio de Comercializa��o do produto");
-        $this->zAddChild($prod, "vProd", $vProd, true, "Valor Total Bruto dos Produtos ou Servi�os");
-        $this->zAddChild($prod, "cEANTrib", $cEANTrib, true, "GTIN (Global Trade Item Number) da unidade tribut�vel, antigo c�digo EAN ou c�digo de barras");
-        $this->zAddChild($prod, "uTrib", $uTrib, true, "Unidade Tribut�vel do produto");
-        $this->zAddChild($prod, "qTrib", $qTrib, true, "Quantidade Tribut�vel do produto");
-        $this->zAddChild($prod, "vUnTrib", $vUnTrib, true, "Valor Unit�rio de tributa��o do produto");
-        if ($vFrete != '') {
-            $this->zAddChild($prod, "vFrete", $vFrete, false, "Valor Total do Frete");
-        }
-        if ($vSeg != '') {
-            $this->zAddChild($prod, "vSeg", $vSeg, false, "Valor Total do Seguro");
-        }
-        if ($vDesc != '') {
-            $this->zAddChild($prod, "vDesc", $vDesc, false, "Valor do Desconto");
-        }
-        if ($vOutro != '') {
-            $this->zAddChild($prod, "vOutro", $vOutro, false, "Outras despesas acess�rias");
-        }
-        $this->zAddChild($prod, "indTot", $indTot, true, "Indica se valor do Item (vProd) entra no valor total da NF-e (vProd)");
-        if ($xPed != '') {
-            $this->zAddChild($prod, "xPed", $xPed, false, "N�mero do Pedido de Compra");
-        }
-        if ($nItemPed != '') {
-            $this->zAddChild($prod, "nItemPed", $nItemPed, false, "Item do Pedido de Compra");
-        }
-        if ($nFCI != '') {
-            $this->zAddChild($prod, "nFCI", $nFCI, false, "N�mero de controle da FCI - Ficha de Conte�do de Importa��o");
-        }
-        if ($nRECOPI != '') {
-            $this->zAddChild($prod, "nRECOPI", $nRECOPI);
-        }
+        $this->zAddChild($prod, "vUnCom", $vUnCom, true, "Valor Unitário de Comercialização do produto");
+        $this->zAddChild($prod, "vProd", $vProd, true, "Valor Total Bruto dos Produtos ou Serviços");
+        $this->zAddChild(
+            $prod,
+            "cEANTrib",
+            $cEANTrib,
+            true,
+            "GTIN (Global Trade Item Number) da unidade tributável, antigo "
+                . "código EAN ou código de barras"
+        );
+        $this->zAddChild($prod, "uTrib", $uTrib, true, "Unidade Tributável do produto");
+        $this->zAddChild($prod, "qTrib", $qTrib, true, "Quantidade Tributável do produto");
+        $this->zAddChild($prod, "vUnTrib", $vUnTrib, true, "Valor Unitário de tributação do produto");
+        $this->zAddChild($prod, "vFrete", $vFrete, false, "Valor Total do Frete");
+        $this->zAddChild($prod, "vSeg", $vSeg, false, "Valor Total do Seguro");
+        $this->zAddChild($prod, "vDesc", $vDesc, false, "Valor do Desconto");
+        $this->zAddChild($prod, "vOutro", $vOutro, false, "Outras despesas acessórias");
+        $this->zAddChild(
+            $prod,
+            "indTot",
+            $indTot,
+            true,
+            "Indica se valor do Item (vProd) entra no valor total da NF-e (vProd)"
+        );
+        $this->zAddChild($prod, "xPed", $xPed, false, "Número do Pedido de Compra");
+        $this->zAddChild($prod, "nItemPed", $nItemPed, false, "Item do Pedido de Compra");
+        $this->zAddChild(
+            $prod,
+            "nFCI",
+            $nFCI,
+            false,
+            "Número de controle da FCI - Ficha de Conteúdo de Importação"
+        );
+        $this->zAddChild($prod, "nRECOPI", $nRECOPI, false, "Número do RECOPI");
         $this->aProd[$nItem] = $prod;
         return $prod;
     }
     
-    //tag NFe/infNFe/det[]/prod/DI
+    /**
+     * tagDI
+     * Declaração de Importação I8 pai I01
+     * tag NFe/infNFe/det[]/prod/DI
+     * @param string $nItem
+     * @param string $nDI
+     * @param string $dDI
+     * @param string $xLocDesemb
+     * @param string $UFDesemb
+     * @param string $dDesemb
+     * @param string $tpViaTransp
+     * @param string $vAFRMM
+     * @param string $tpIntermedio
+     * @param string $CNPJ
+     * @param string $UFTerceiro
+     * @param string $cExportador
+     * @return DOMELEment
+     */
     public function tagDI(
         $nItem = '',
         $nDI = '',
@@ -1148,40 +1230,70 @@ class MakeNFe
         $UFTerceiro = '',
         $cExportador = ''
     ) {
-        $DI = $this->dom->createElement("DI");
-        $this->zAddChild($DI, "nDI", $nDI, true, "N�mero do Documento de Importa��o (DI, DSI, DIRE, ...)");
-        $this->zAddChild($DI, "dDI", $dDI, true, "Data de Registro do documento");
-        $this->zAddChild($DI, "xLocDesemb", $xLocDesemb, true, "Local de desembara�o");
-        $this->zAddChild($DI, "UFDesemb", $UFDesemb, true, "Sigla da UF onde ocorreu o Desembara�o Aduaneiro");
-        $this->zAddChild($DI, "dDesemb", $dDesemb, true, "Data do Desembara�o Aduaneiro");
-        $this->zAddChild($DI, "tpViaTransp", $tpViaTransp, true, "Via de transporte internacional informada na Declara��o de Importa��o (DI)");
-        if ($vAFRMM != '') {
-            $this->zAddChild($DI, "vAFRMM", $vAFRMM, false, "Valor da AFRMM - Adicional ao Frete para Renova��o da Marinha Mercante");
-        }
-        $this->zAddChild($DI, "tpIntermedio", $tpIntermedio, true, "Forma de importa��o quanto a intermedia��o");
-        if ($CNPJ != '') {
-            $this->zAddChild($DI, "CNPJ", $CNPJ, false, "CNPJ do adquirente ou do encomendante");
-        }
-        if ($UFTerceiro != '') {
-            $this->zAddChild($DI, "UFTerceiro", $UFTerceiro, false, "Sigla da UF do adquirente ou do encomendante");
-        }
-        $this->zAddChild($DI, "cExportador", $cExportador, true, "C�digo do Exportador");
+        $tDI = $this->dom->createElement("DI");
+        $this->zAddChild($tDI, "nDI", $nDI, true, "Número do Documento de Importação (DI, DSI, DIRE, ...)");
+        $this->zAddChild($tDI, "dDI", $dDI, true, "Data de Registro do documento");
+        $this->zAddChild($tDI, "xLocDesemb", $xLocDesemb, true, "Local de desembaraço");
+        $this->zAddChild($tDI, "UFDesemb", $UFDesemb, true, "Sigla da UF onde ocorreu o Desembaraço Aduaneiro");
+        $this->zAddChild($tDI, "dDesemb", $dDesemb, true, "Data do Desembaraço Aduaneiro");
+        $this->zAddChild(
+            $tDI,
+            "tpViaTransp",
+            $tpViaTransp,
+            true,
+            "Via de transporte internacional informada na Declaração de Importação (DI)"
+        );
+        $this->zAddChild(
+            $tDI,
+            "vAFRMM",
+            $vAFRMM,
+            false,
+            "Valor da AFRMM - Adicional ao Frete para Renovação da Marinha Mercante"
+        );
+        $this->zAddChild(
+            $tDI,
+            "tpIntermedio",
+            $tpIntermedio,
+            true,
+            "Forma de importação quanto a intermediação"
+        );
+        $this->zAddChild($tDI, "CNPJ", $CNPJ, false, "CNPJ do adquirente ou do encomendante");
+        $this->zAddChild(
+            $tDI,
+            "UFTerceiro",
+            $UFTerceiro,
+            false,
+            "Sigla da UF do adquirente ou do encomendante"
+        );
+        $this->zAddChild($tDI, "cExportador", $cExportador, true, "Código do Exportador");
         if (isset($this->aAdi)) {
             foreach ($this->aAdi as $key => $nadi) {
                 if ($key == $nItem) {
                     foreach ($nadi as $n => $jadi) {
                         if ($n == $nDI) {
-                            $DI->appendChild($jadi[0]);
+                            $tDI->appendChild($jadi[0]);
                         }
                     }
                 }
             }
         }
-        $this->aDI[$nItem][$nDI] = $DI;
-        return $DI;
+        $this->aDI[$nItem][$nDI] = $tDI;
+        return $tDI;
     }
     
-    //tag NFe/infNFe/det[]/prod/DI/adi
+    /**
+     * tagadi
+     * Adições I25 pai I18
+     * tag NFe/infNFe/det[]/prod/DI/adi
+     * @param string $nItem
+     * @param string $nDI
+     * @param string $nAdicao
+     * @param string $nSeqAdicC
+     * @param string $cFabricante
+     * @param string $vDescDI
+     * @param string $nDraw
+     * @return DOMElement
+     */
     public function tagadi(
         $nItem = '',
         $nDI = '',
@@ -1192,20 +1304,27 @@ class MakeNFe
         $nDraw = ''
     ) {
         $adi = $this->dom->createElement("adi");
-        $this->zAddChild($adi, "nAdicao", $nAdicao, true, "Numero da Adi��o");
-        $this->zAddChild($adi, "nSeqAdicC", $nSeqAdicC, true, "Numero sequencial do item dentro da Adi��o");
-        $this->zAddChild($adi, "cFabricante", $cFabricante, true, "C�digo do fabricante estrangeiro");
-        if ($vDescDI != '') {
-            $this->zAddChild($adi, "vDescDI", $vDescDI, false, "Valor do desconto do item da DI � Adi��o");
-        }
-        if ($nDraw != '') {
-            $this->zAddChild($adi, "nDraw", $nDraw, false, "N�mero do ato concess�rio de Drawback");
-        }
+        $this->zAddChild($adi, "nAdicao", $nAdicao, true, "Número da Adição");
+        $this->zAddChild($adi, "nSeqAdicC", $nSeqAdicC, true, "Número sequencial do item dentro da Adição");
+        $this->zAddChild($adi, "cFabricante", $cFabricante, true, "Código do fabricante estrangeiro");
+        $this->zAddChild($adi, "vDescDI", $vDescDI, false, "Valor do desconto do item da DI Adição");
+        $this->zAddChild($adi, "nDraw", $nDraw, false, "Número do ato concessório de Drawback");
         $this->aAdi[$nItem][$nDI][] = $adi;
         return $adi;
     }
     
-    //tag NFe/infNFe/det[]/prod/detExport
+    /**
+     * tagdetExport
+     * Grupo de informações de exportação para o item I50 pai I01
+     * tag NFe/infNFe/det[]/prod/detExport
+     * @param string $nItem
+     * @param string $nDraw
+     * @param string $exportInd
+     * @param string $nRE
+     * @param string $chNFe
+     * @param string $qExport
+     * @return DOMElement
+     */
     public function tagdetExport(
         $nItem = '',
         $nDraw = '',
@@ -1214,22 +1333,49 @@ class MakeNFe
         $chNFe = '',
         $qExport = ''
     ) {
+        $detExport = $this->dom->createElement("detExport");
         if ($this->versao > 2.00) {
-            $detExport = $this->dom->createElement("detExport");
-            if ($nDraw != '') {
-                $this->zAddChild($detExport, "nDraw", $nDraw, false, "N�mero do ato concess�rio de Drawback");
-            }
-            if ($exportInd != '') {
-                $this->zAddChild($detExport, "exportInd", $exportInd, false, "Grupo sobre exporta��o indireta");
-            }
-            $this->zAddChild($detExport, "nRE", $nRE, true, "N�mero do Registro de Exporta��o");
-            $this->zAddChild($detExport, "chNFe", $chNFe, true, "Chave de Acesso da NF-e recebida para exporta��o");
+            $this->zAddChild($detExport, "nDraw", $nDraw, false, "Número do ato concessório de Drawback");
+            $this->zAddChild($detExport, "exportInd", $exportInd, false, "Grupo sobre exportação indireta");
+            $this->zAddChild($detExport, "nRE", $nRE, true, "Número do Registro de Exportação");
+            $this->zAddChild($detExport, "chNFe", $chNFe, true, "Chave de Acesso da NF-e recebida para exportação");
             $this->zAddChild($detExport, "qExport", $qExport, true, "Quantidade do item realmente exportado");
             $this->aDetExport[$nItem] = $detExport;
         }
+        return $detExport;
     }
     
-    //tag NFe/infNFe/det[]/prod/veicProd (opcional)
+    /**
+     * tagveicProd
+     * Detalhamento de Veículos novos J01 pai I90
+     * tag NFe/infNFe/det[]/prod/veicProd (opcional)
+     * @param string $nItem
+     * @param string $tpOp
+     * @param string $chassi
+     * @param string $cCor
+     * @param string $xCor
+     * @param string $pot
+     * @param string $cilin
+     * @param string $pesoL
+     * @param string $pesoB
+     * @param string $nSerie
+     * @param string $tpComb
+     * @param string $nMotor
+     * @param string $CMT
+     * @param string $dist
+     * @param string $anoMod
+     * @param string $anoFab
+     * @param string $tpPint
+     * @param string $tpVeic
+     * @param string $espVeic
+     * @param string $VIN
+     * @param string $condVeic
+     * @param string $cMod
+     * @param string $cCorDENATRAN
+     * @param string $lota
+     * @param string $tpRest
+     * @return DOMElement
+     */
     public function tagveicProd(
         $nItem = '',
         $tpOp = '',
@@ -1258,30 +1404,30 @@ class MakeNFe
         $tpRest = ''
     ) {
         $veicProd = $this->dom->createElement("veicProd");
-        $this->zAddChild($veicProd, "tpOp", $tpOp, true, "Tipo da opera��o do ve�culo");
-        $this->zAddChild($veicProd, "chassi", $chassi, true, "Chassi do ve�culo");
-        $this->zAddChild($veicProd, "cCor", $cCor, true, "Cor do ve�culo");
-        $this->zAddChild($veicProd, "xCor", $xCor, true, "Descri��o da Cor do ve�culo");
-        $this->zAddChild($veicProd, "pot", $pot, true, "Pot�ncia Motor (CV) do ve�culo");
-        $this->zAddChild($veicProd, "cilin", $cilin, true, "Cilindradas do ve�culo");
-        $this->zAddChild($veicProd, "pesoL", $pesoL, true, "Peso L�quido do ve�culo");
-        $this->zAddChild($veicProd, "pesoB", $pesoB, true, "Peso Bruto do ve�culo");
-        $this->zAddChild($veicProd, "nSerie", $nSerie, true, "Serial (s�rie) do ve�culo");
-        $this->zAddChild($veicProd, "tpCpmb", $tpComb, true, "Tipo de combust�vel do ve�culo");
-        $this->zAddChild($veicProd, "nMotor", $nMotor, true, "N�mero de Motor do ve�culo");
-        $this->zAddChild($veicProd, "CMT", $CMT, true, "Capacidade M�xima de Tra��o do ve�culo");
-        $this->zAddChild($veicProd, "dist", $dist, true, "Dist�ncia entre eixos do ve�culo");
-        $this->zAddChild($veicProd, "anoMd", $anoMod, true, "Ano Modelo de Fabrica��o do ve�culo");
-        $this->zAddChild($veicProd, "anoFab", $anoFab, true, "Ano de Fabrica��o do ve�culo");
-        $this->zAddChild($veicProd, "tpPint", $tpPint, true, "Tipo de Pintura do ve�culo");
-        $this->zAddChild($veicProd, "tpVeic", $tpVeic, true, "Tipo de Ve�culo");
-        $this->zAddChild($veicProd, "espVeic", $espVeic, true, "Esp�cie de Ve�culo");
-        $this->zAddChild($veicProd, "VIN", $VIN, true, "Condi��o do VIN do ve�culo");
-        $this->zAddChild($veicProd, "condVeic", $condVeic, true, "Condi��o do Ve�culo");
-        $this->zAddChild($veicProd, "cMod", $cMod, true, "C�digo Marca Modelo do ve�culo");
-        $this->zAddChild($veicProd, "cCorDENATRAN", $cCorDENATRAN, true, "C�digo da Cor do ve�culo");
-        $this->zAddChild($veicProd, "lota", $lota, true, "Capacidade m�xima de lota��o do ve�culo");
-        $this->zAddChild($veicProd, "tpResp", $tpRest, true, "Restri��o do ve�culo");
+        $this->zAddChild($veicProd, "tpOp", $tpOp, true, "Tipo da operação do veículo");
+        $this->zAddChild($veicProd, "chassi", $chassi, true, "Chassi do veículo");
+        $this->zAddChild($veicProd, "cCor", $cCor, true, "Cor do veículo");
+        $this->zAddChild($veicProd, "xCor", $xCor, true, "Descrição da Cor do veículo");
+        $this->zAddChild($veicProd, "pot", $pot, true, "Potência Motor (CV) do veículo");
+        $this->zAddChild($veicProd, "cilin", $cilin, true, "Cilindradas do veículo");
+        $this->zAddChild($veicProd, "pesoL", $pesoL, true, "Peso Líquido do veículo");
+        $this->zAddChild($veicProd, "pesoB", $pesoB, true, "Peso Bruto do veículo");
+        $this->zAddChild($veicProd, "nSerie", $nSerie, true, "Serial (série) do veículo");
+        $this->zAddChild($veicProd, "tpCpmb", $tpComb, true, "Tipo de combustível do veículo");
+        $this->zAddChild($veicProd, "nMotor", $nMotor, true, "Número de Motor do veículo");
+        $this->zAddChild($veicProd, "CMT", $CMT, true, "Capacidade Máxima de Tração do veículo");
+        $this->zAddChild($veicProd, "dist", $dist, true, "Distância entre eixos do veículo");
+        $this->zAddChild($veicProd, "anoMd", $anoMod, true, "Ano Modelo de Fabricação do veículo");
+        $this->zAddChild($veicProd, "anoFab", $anoFab, true, "Ano de Fabricação do veículo");
+        $this->zAddChild($veicProd, "tpPint", $tpPint, true, "Tipo de Pintura do veículo");
+        $this->zAddChild($veicProd, "tpVeic", $tpVeic, true, "Tipo de Veículo");
+        $this->zAddChild($veicProd, "espVeic", $espVeic, true, "Espécie de Veículo");
+        $this->zAddChild($veicProd, "VIN", $VIN, true, "Condição do VIN do veículo");
+        $this->zAddChild($veicProd, "condVeic", $condVeic, true, "Condição do Veículo");
+        $this->zAddChild($veicProd, "cMod", $cMod, true, "Código Marca Modelo do veículo");
+        $this->zAddChild($veicProd, "cCorDENATRAN", $cCorDENATRAN, true, "Código da Cor do veículo");
+        $this->zAddChild($veicProd, "lota", $lota, true, "Capacidade máxima de lotação do veículo");
+        $this->zAddChild($veicProd, "tpResp", $tpRest, true, "Restrição do veículo");
         $this->aVeicProd[$nItem] = $veicProd;
         return $veicProd;
     }
@@ -1296,11 +1442,23 @@ class MakeNFe
         $vPMC = ''
     ) {
         $med = $this->dom->createElement("med");
-        $this->zAddChild($med, "nLote", $nLote, true, "N�mero do Lote de medicamentos ou de mat�rias-primas farmac�uticas");
-        $this->zAddChild($med, "qLote", $qLote, true, "Quantidade de produto no Lote de medicamentos ou de mat�rias-primas farmac�uticas");
-        $this->zAddChild($med, "dFab", $dFab, true, "Data de fabrica��o");
+        $this->zAddChild(
+            $med,
+            "nLote",
+            $nLote,
+            true,
+            "Número do Lote de medicamentos ou de matérias-primas farmacêuticas"
+        );
+        $this->zAddChild(
+            $med,
+            "qLote",
+            $qLote,
+            true,
+            "Quantidade de produto no Lote de medicamentos ou de matérias-primas farmacêuticas"
+        );
+        $this->zAddChild($med, "dFab", $dFab, true, "Data de fabricação");
         $this->zAddChild($med, "dVal", $dVal, true, "Data de validade");
-        $this->zAddChild($med, "vPMC", $vPMC, true, "Pre�o m�ximo consumidor");
+        $this->zAddChild($med, "vPMC", $vPMC, true, "Preço máximo consumidor");
         $this->aMed[$nItem] = $med;
         return $med;
     }
@@ -1315,9 +1473,17 @@ class MakeNFe
     ) {
         $arma = $this->dom->createElement("arma");
         $this->zAddChild($arma, "tpArma", $tpArma, true, "Indicador do tipo de arma de fogo");
-        $this->zAddChild($arma, "nSerie", $nSerie, true, "N�mero de s�rie da arma");
-        $this->zAddChild($arma, "nCano", $nCano, true, "N�mero de s�rie do cano");
-        $this->zAddChild($arma, "descr", $descr, true, "Descri��o completa da arma, compreendendo: calibre, marca, capacidade, tipo de funcionamento, comprimento e demais elementos que permitam a sua perfeita identifica��o.");
+        $this->zAddChild($arma, "nSerie", $nSerie, true, "Número de série da arma");
+        $this->zAddChild($arma, "nCano", $nCano, true, "Número de série do cano");
+        $this->zAddChild(
+            $arma,
+            "descr",
+            $descr,
+            true,
+            "Descrição completa da arma, compreendendo: calibre, marca, capacidade, "
+                . "tipo de funcionamento, comprimento e demais elementos que "
+                . "permitam a sua perfeita identificação."
+        );
         $this->aArma[$nItem] = $arma;
         return $arma;
     }
@@ -1414,7 +1580,7 @@ class MakeNFe
     public function tagICMS(
         $nItem = '',
         $orig = '',
-        $CST = '',
+        $cst = '',
         $modBC = '',
         $vBC = '',
         $pICMS = '',
@@ -1437,7 +1603,7 @@ class MakeNFe
             case '00':
                 $ICMS = $this->dom->createElement("ICMS00");
                 $this->zAddChild($ICMS, 'orig', $orig, true, "Origem da mercadoria");
-                $this->zAddChild($ICMS, 'CST', $CST, true, "Tributação do ICMS = 00");
+                $this->zAddChild($ICMS, 'CST', $cst, true, "Tributação do ICMS = 00");
                 $this->zAddChild($ICMS, 'modBC', $modBC, true, "Modalidade de determinação da BC do ICMS");
                 $this->zAddChild($ICMS, 'vBC', $vBC, true, "Valor da BC do ICMS");
                 $this->zAddChild($ICMS, 'pICMS', $pICMS, true, "Alíquota do imposto");
@@ -1446,7 +1612,7 @@ class MakeNFe
             case '10':
                 $ICMS = $this->dom->createElement("ICMS10");
                 $this->zAddChild($ICMS, 'orig', $orig, true, "Origem da mercadoria");
-                $this->zAddChild($ICMS, 'CST', $CST, true, "Tributação do ICMS = 10");
+                $this->zAddChild($ICMS, 'CST', $cst, true, "Tributação do ICMS = 10");
                 $this->zAddChild($ICMS, 'modBC', $modBC, true, "Modalidade de determinação da BC do ICMS");
                 $this->zAddChild($ICMS, 'vBC', $vBC, true, "Valor da BC do ICMS");
                 $this->zAddChild($ICMS, 'pICMS', $pICMS, true, "Alíquota do imposto");
@@ -1467,7 +1633,7 @@ class MakeNFe
             case '20':
                 $ICMS = $this->dom->createElement("ICMS20");
                 $this->zAddChild($ICMS, 'orig', $orig, true, "Origem da mercadoria");
-                $this->zAddChild($ICMS, 'CST', $CST, true, "Tributação do ICMS = 20");
+                $this->zAddChild($ICMS, 'CST', $cst, true, "Tributação do ICMS = 20");
                 $this->zAddChild($ICMS, 'modBC', $modBC, true, "Modalidade de determinação da BC do ICMS");
                 $this->zAddChild($ICMS, 'pRedBC', $pRedBCST, true, "Percentual da Redução de BC");
                 $this->zAddChild($ICMS, 'vBC', $vBC, true, "Valor da BC do ICMS");
@@ -1477,7 +1643,7 @@ class MakeNFe
             case '30':
                 $ICMS = $this->dom->createElement("ICMS30");
                 $this->zAddChild($ICMS, 'orig', $orig, true, "Origem da mercadoria");
-                $this->zAddChild($ICMS, 'CST', $CST, true, "Tributação do ICMS = 30");
+                $this->zAddChild($ICMS, 'CST', $cst, true, "Tributação do ICMS = 30");
                 $this->zAddChild($ICMS, 'modBCST', $modBC, true, "Modalidade de determinação da BC do ICMS ST");
                 $this->zAddChild(
                     $ICMS,
@@ -1494,20 +1660,22 @@ class MakeNFe
             case '40':
                 $ICMS = $this->dom->createElement("ICMS40");
                 $this->zAddChild($ICMS, 'orig', $orig, true, "Origem da mercadoria");
-                $this->zAddChild($ICMS, 'CST', $CST, true, "Tributação do ICMS = 40");
+                $this->zAddChild($ICMS, 'CST', $cst, true, "Tributação do ICMS = 40");
+                break;
             case '41':
-                   $ICMS = $this->dom->createElement("ICMS41");
-                   $this->zAddChild($ICMS, 'orig', $orig, true, "Origem da mercadoria");
-                   $this->zAddChild($ICMS, 'CST', $CST, true, "Tributação do ICMS = 41");
+                $ICMS = $this->dom->createElement("ICMS41");
+                $this->zAddChild($ICMS, 'orig', $orig, true, "Origem da mercadoria");
+                $this->zAddChild($ICMS, 'CST', $cst, true, "Tributação do ICMS = 41");
+                break;
             case '50':
                 $ICMS = $this->dom->createElement("ICMS50");
                 $this->zAddChild($ICMS, 'orig', $orig, true, "Origem da mercadoria");
-                $this->zAddChild($ICMS, 'CST', $CST, true, "Tributação do ICMS = 50");
+                $this->zAddChild($ICMS, 'CST', $cst, true, "Tributação do ICMS = 50");
                 break;
             case '51':
                 $ICMS = $this->dom->createElement("ICMS51");
                 $this->zAddChild($ICMS, 'orig', $orig, true, "Origem da mercadoria");
-                $this->zAddChild($ICMS, 'CST', $CST, true, "Tributação do ICMS = 51");
+                $this->zAddChild($ICMS, 'CST', $cst, true, "Tributação do ICMS = 51");
                 $this->zAddChild($ICMS, 'modBC', $modBC, false, "Modalidade de determinação da BC do ICMS");
                 $this->zAddChild($ICMS, 'pRedBC', $pRedBCST, false, "Percentual da Redução de BC");
                 $this->zAddChild($ICMS, 'vBC', $vBC, false, "Valor da BC do ICMS");
@@ -1520,12 +1688,12 @@ class MakeNFe
             case '60':
                 $ICMS = $this->dom->createElement("ICMS60");
                 $this->zAddChild($ICMS, 'orig', $orig, true, "Origem da mercadoria");
-                $this->zAddChild($ICMS, 'CST', $CST, true, "Tributação do ICMS = 60");
+                $this->zAddChild($ICMS, 'CST', $cst, true, "Tributação do ICMS = 60");
                 break;
             case '70':
                 $ICMS = $this->dom->createElement("ICMS70");
                 $this->zAddChild($ICMS, 'orig', $orig, true, "Origem da mercadoria");
-                $this->zAddChild($ICMS, 'CST', $CST, true, "Tributação do ICMS = 70");
+                $this->zAddChild($ICMS, 'CST', $cst, true, "Tributação do ICMS = 70");
                 $this->zAddChild($ICMS, 'modBC', $modBC, true, "Modalidade de determinação da BC do ICMS");
                 $this->zAddChild($ICMS, 'pRedBC', $pRedBCST, true, "Percentual da Redução de BC");
                 $this->zAddChild($ICMS, 'vBC', $vBC, true, "Valor da BC do ICMS");
@@ -1547,7 +1715,7 @@ class MakeNFe
             case '90':
                 $ICMS = $this->dom->createElement("ICMS90");
                 $this->zAddChild($ICMS, 'orig', $orig, true, "Origem da mercadoria");
-                $this->zAddChild($ICMS, 'CST', $CST, true, "Tributação do ICMS = 90");
+                $this->zAddChild($ICMS, 'CST', $cst, true, "Tributação do ICMS = 90");
                 $this->zAddChild($ICMS, 'modBC', $modBC, true, "Modalidade de determinação da BC do ICMS");
                 $this->zAddChild($ICMS, 'vBC', $vBC, true, "Valor da BC do ICMS");
                 $this->zAddChild($ICMS, 'pRedBC', $pRedBCST, false, "Percentual da Redução de BC");
@@ -1636,7 +1804,7 @@ class MakeNFe
             case '202':
                 $ICMS = $this->dom->createElement("ICMSSN202");
                 $this->zAddChild($ICMS, 'orig', $orig, true, "Origem da mercadoria");
-                $this->zAddChild($ICMS, 'CSOSN', $CST, true, "Código de Situação da Operação Simples Nacional");
+                $this->zAddChild($ICMS, 'CSOSN', $cst, true, "Código de Situação da Operação Simples Nacional");
                 $this->zAddChild(
                     $ICMS,
                     'modBCST',
@@ -1670,7 +1838,7 @@ class MakeNFe
             case '900':
                 $ICMS = $this->dom->createElement("ICMSSN900");
                 $this->zAddChild($ICMS, 'orig', $orig, true, "Origem da mercadoria");
-                $this->zAddChild($ICMS, 'CSOSN', $CST, true, "Código de Situação da Operação Simples Nacional");
+                $this->zAddChild($ICMS, 'CSOSN', $cst, true, "Código de Situação da Operação Simples Nacional");
                 break;
         }
         $tagIcms = $this->dom->createElement('ICMS');
@@ -1679,6 +1847,9 @@ class MakeNFe
         return $tagIcms;
     }
 
+    //todo :  separar ICMSST, ICMSPart, ICMSSN
+    
+    
     /**
      * tagIPI
      * Grupo IPI O01 pai M01
@@ -1881,7 +2052,6 @@ class MakeNFe
         $this->aPISST[$nItem] = $pisst;
         return $pisst;
     }
-    
 
     /**
      * tagCOFINS
@@ -2007,7 +2177,7 @@ class MakeNFe
     private function ztagCOFINSoutr($cst = '', $vBC = '', $pCOFINS = '', $qBCProd = '', $vAliqProd = '', $vCOFINS = '')
     {
         $confinsoutr = $this->dom->createElement('COFINSOutr');
-        $this->zAddChild($confinsoutr, "CST", $CST, true, "Código de Situação Tributária da COFINS");
+        $this->zAddChild($confinsoutr, "CST", $cst, true, "Código de Situação Tributária da COFINS");
         $this->zAddChild($confinsoutr, "vBC", $vBC, true, "Valor da Base de Cálculo da COFINS");
         $this->zAddChild($confinsoutr, "pCOFINS", $pCOFINS, true, "Alíquota da COFINS (em percentual)");
         $this->zAddChild($confinsoutr, "qBCProd", $qBCProd, true, "Quantidade Vendida");
@@ -2994,7 +3164,7 @@ class MakeNFe
         return $deduc;
     }
     
-    public function validChave($chave)
+    private function zValidaChave($chave)
     {
         
     }
