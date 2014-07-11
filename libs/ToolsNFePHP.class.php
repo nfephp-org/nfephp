@@ -2455,12 +2455,13 @@ class ToolsNFePHP
      * @param string $chNFe chave da NFe
      * @param string $tpAmb tipo de ambiente
      * @param string $modSOAP modo do SOAP
+     * @param string $xml variável passada como referência e irá conter o conteúdo XML que é salvo em arquivo
      * @return mixed FALSE ou xml de retorno
      *
      * TODO: quando o serviço estiver funcional extrair o xml da NFe e colocar
      * no diretorio correto
      */
-    public function getNFe($AN=true,$chNFe='',$tpAmb='',$modSOAP='2'){
+    public function getNFe($AN=true,$chNFe='',$tpAmb='',$modSOAP='2', &$xml=null){
         try{
             if($chNFe == ''){
                 $msg = 'Uma chave de NFe deve ser passada como parâmetro da função.';
