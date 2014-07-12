@@ -1,6 +1,6 @@
 <?php
 
-require_once('MakeNFePHP.class.php');
+require_once('/var/www/nfephp3/libs/NFe/MakeNFePHP.class.php');
 
 $nfe = new MakeNFe();
 
@@ -59,7 +59,7 @@ $resp = $nfe->tagide($cUF, $cNF, $natOp, $indPag, $mod, $serie, $nNF, $dhEmi, $d
 
 //refNFe NFe referenciada  
 $refNFe = '12345678901234567890123456789012345678901234';
-$resp = $nfe->tagrefNFe($refNFe);
+//$resp = $nfe->tagrefNFe($refNFe);
 
 //refNF Nota Fiscal 1A referenciada
 $cUF = '35';
@@ -68,7 +68,7 @@ $CNPJ = '12345678901234';
 $mod = '1A';
 $serie = '0';
 $nNF = '1234';
-$resp = $nfe->tagrefNF($cUF, $AAMM, $CNPJ, $mod, $serie, $nNF);
+//$resp = $nfe->tagrefNF($cUF, $AAMM, $CNPJ, $mod, $serie, $nNF);
 
 //NFPref Nota Fiscal Produtor Rural referenciada
 $cUF = '35';
@@ -79,17 +79,17 @@ $IE = '123456';
 $mod = '1';
 $serie = '0';
 $nNF = '1234';
-$resp = $nfe->tagNFPref($cUF, $AAMM, $CNPJ, $CPF, $IE, $mod, $serie, $nNF);
+//$resp = $nfe->tagrefNFP($cUF, $AAMM, $CNPJ, $CPF, $IE, $mod, $serie, $nNF);
 
 //CTeref CTe referenciada
 $refCTe = '12345678901234567890123456789012345678901234';
-$resp = $nfe->tagCTeref($refCTe);
+//$resp = $nfe->tagrefCTe($refCTe);
 
 //ECFref ECF referenciada
 $mod = '90';
 $nECF = '12243';
 $nCOO = '111';
-$resp = $nfe->tagECFref($mod, $nECF, $nCOO);
+//$resp = $nfe->tagrefECF($mod, $nECF, $nCOO);
 
 //Dados do emitente
 $CNPJ = '58716523000119';
@@ -171,9 +171,9 @@ $resp = $nfe->tagentrega($CNPJ, $CPF, $xLgr, $nro, $xCpl, $xBairro, $cMun, $xMun
 $aAut = array('11111111111111','2222222','33333333333333');
 foreach ($aAut as $aut) {
     if (strlen($aut) == 14) {
-        $resp = $nfe->tagautoXML($aut);
+        $resp = $nfe->tagautXML($aut);
     } else {
-        $resp = $nfe->tagautoXML('', $aut);
+        $resp = $nfe->tagautXML('', $aut);
     }
 }
 

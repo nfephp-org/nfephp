@@ -26,7 +26,7 @@
  * 
  * @package     NFePHP
  * @name        MakeNFePHP
- * @version     1.3.1
+ * @version     1.3.2
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright   2009-2014 &copy; NFePHP
  * @link        http://www.nfephp.org/
@@ -48,78 +48,84 @@
 class MakeNFe
 {
 
-    private $erros = array();
-    public $errmsg='';
-    public $versao;
-    public $mod;
+    public $erros = array();
+    public $errmsg = '';
+    public $versao = 3.10;
+    public $mod = 55;
     public $dom; //DOMDocument
-    public $NFe; //DOMNode
-    public $infNFe; //DOMNode
-    public $ide; //DOMNode
-    public $NFref; //DOMNode
-    public $refNFe; //DOMNode
-    public $refNF; //DOMNode
-    public $refNFP; //DOMNode
-    public $refCTe; //DOMNode
-    public $refECF; //DOMNode
-    public $impostoDevol; //DOMNode
-    public $emit; //DOMNode
-    public $enderEmit; //DOMNode
-    public $dest; //DOMNode
-    public $enderDest; //DOMNode
-    public $retirada; //DOMNode
-    public $aAutXML = array(); //array de DOMNodes
-    public $aDet; //array de DOMNodes
-    public $aProd; //array de DOMNodes
-    public $aDetExport; //array de DOMNodes
-    public $aDI; //array de DOMNodes
-    public $aAdi; //array de DOMNodes
-    public $detExport; //array de DOMNodes
-    public $aVeicProd; //array de DOMNodes
-    public $aMed; //array de DOMNodes
-    public $aArma; //array de DOMNodes
-    public $aComb; //array de DOMNodes
-    public $aImposto; //array de DOMNodes
-    public $aICMS; //array de DOMNodes
-    public $aIPI; //array de DOMNodes
-    public $aII; //array de DOMNodes
-    public $aISSQN; //array de DOMNodes
-    public $aPIS; //array de DOMNodes
-    public $aPISST; //array de DOMNodes
-    public $aCOFINS; //array de DOMNodes
-    public $aCOFINSST; //array de DOMNodes
-    public $total; //DOMNode
-    public $ICMSTot; //DOMNode
-    public $ISSQNTot; //DOMNode
-    public $retTrib; //DOMNode
-    public $pag; //DOMNode
-    public $card; //DOMNOde
-    public $cobr; //DOMNode
-    public $fat; //DOMNode
-    public $aDup = array(); //array de DOMNodes
-    public $transp; //DOMNode
-    public $transporta; //DOMNode
-    public $veicTransp; //DOMNode
-    public $aReboque = array(); //array de DOMNodes
-    public $aVol = array(); //array de DOMNodes
-    public $infAdic; //DOMNode
-    public $aObsCont = array(); //array de DOMNodes
-    public $aObsFisco = array(); //array de DOMNodes
-    public $aProcRef = array(); //array de DOMNodes
-    public $exporta; //DOMNode
-    public $compra; //DOMNode
-    public $cana; //DOMNode
-    public $aForDia = array(); //array de DOMNodes
-    public $aDeduc = array(); //array de DOMNodes
+    private $NFe = ''; //DOMNode
+    private $infNFe = ''; //DOMNode
+    private $ide = ''; //DOMNode
+    private $impostoDevol = ''; //DOMNode
+    private $emit = ''; //DOMNode
+    private $enderEmit = ''; //DOMNode
+    private $dest = ''; //DOMNode
+    private $enderDest = ''; //DOMNode
+    private $retirada = ''; //DOMNode
+    private $total = ''; //DOMNode
+    private $ICMSTot = ''; //DOMNode
+    private $ISSQNTot = ''; //DOMNode
+    private $retTrib = ''; //DOMNode
+    private $pag = ''; //DOMNode
+    private $card = ''; //DOMNOde
+    private $cobr = ''; //DOMNode
+    private $fat = ''; //DOMNode
+    private $transp = ''; //DOMNode
+    private $transporta = ''; //DOMNode
+    private $veicTransp = ''; //DOMNode
+    private $infAdic = ''; //DOMNode
+    private $exporta = ''; //DOMNode
+    private $compra = ''; //DOMNode
+    private $cana = ''; //DOMNode
+    // Arrays
+    private $aNFref = array(); //array de DOMNode
+    private $aDup = array(); //array de DOMNodes
+    private $aReboque = array(); //array de DOMNodes
+    private $aVol = array(); //array de DOMNodes
+    private $aAutXML = array(); //array de DOMNodes
+    private $aDet = array(); //array de DOMNodes
+    private $aProd = array(); //array de DOMNodes
+    private $aDetExport = array(); //array de DOMNodes
+    private $aDI = array(); //array de DOMNodes
+    private $aAdi = array(); //array de DOMNodes
+    private $aVeicProd = array(); //array de DOMNodes
+    private $aMed = array(); //array de DOMNodes
+    private $aArma = array(); //array de DOMNodes
+    private $aComb = array(); //array de DOMNodes
+    private $aImposto = array(); //array de DOMNodes
+    private $aICMS = array(); //array de DOMNodes
+    private $aIPI = array(); //array de DOMNodes
+    private $aII = array(); //array de DOMNodes
+    private $aISSQN = array(); //array de DOMNodes
+    private $aPIS = array(); //array de DOMNodes
+    private $aPISST = array(); //array de DOMNodes
+    private $aCOFINS = array(); //array de DOMNodes
+    private $aCOFINSST = array(); //array de DOMNodes
+    private $aObsCont = array(); //array de DOMNodes
+    private $aObsFisco = array(); //array de DOMNodes
+    private $aProcRef = array(); //array de DOMNodes
+    private $aForDia = array(); //array de DOMNodes
+    private $aDeduc = array(); //array de DOMNodes
     
     //cria DOM document
+    /**
+     * __contruct
+     * Função construtora cria um objeto DOMDocument
+     * que será carregado com a NFe
+     * 
+     * @return none
+     */
     public function __construct()
     {
         $this->dom = new DOMDocument('1.0', 'UTF-8');
         $this->dom->formatOutput = true;
         $this->dom->preserveWhiteSpace = false;
     }
-
+    
+    /**
+     * 
+     * @return boolean
+     */
     public function montaNFe()
     {
         //as tags devem ser montadas e inseridas umas nas outras de dentro para fora
@@ -177,88 +183,37 @@ class MakeNFe
         // 51 - tag forDia        Opcional (se houver)      Não aplicavel
         // 52 - tag deduc         Opcional (se houver)      Não aplicavel
 
-        //tag NFe
         $this->zTagNFe();
-
-        //tag NFe/infNFe
-        if (!isset($this->infNFe)) {
-            return false;
-        }
-
-        //tag NFe/infNFe/ide
-        if (isset($this->refNFe)) {
-            $this->tagNFref();
-            $this->NFref->appendChild($this->refNFe);
-        }
-        if (isset($this->refNF)) {
-            $this->tagNFref();
-            $this->NFref->appendChild($this->refNF);
-        }
-        if (isset($this->refNFP)) {
-            $this->tagNFref();
-            $this->NFref->appendChild($this->refNFP);
-        }
-        if (isset($this->refCTe)) {
-            $this->tagNFref();
-            $this->NFref->appendChild($this->refCTe);
-        }
-        if (isset($this->refECF)) {
-            $this->tagNFref();
-            $this->NFref->appendChild($this->refECF);
-        }
-        if (isset($this->ide)) {
-            if (isset($this->NFref)) {
-                $this->ide->appendChild($this->NFref);
+        if (!empty($this->ide)) {
+            foreach ($this->aNFref as $nfeRef) {
+                $this->zAppChild($this->ide, $nfeRef);
             }
         }
-        $this->infNFe->appendChild($this->ide);
-
-        //tag NFe/infNFe/emit
-        if (isset($this->emit) && isset($this->enderEmit)) {
+        $this->zAppChild($this->infNFe, $this->ide);
+        if (!empty($this->emit) && !empty($this->enderEmit)) {
             $node = $this->emit->getElementsByTagName("IE")->item(0);
             $this->emit->insertBefore($this->enderEmit, $node);
         }
-        $this->infNFe->appendChild($this->emit);
-
-        //tag NFe/infNFe/dest
-        if (isset($this->dest) && isset($this->enderDest)) {
-            $node = $this->dest->getElementsByTagName("indIEDest")->item(0);
-            if (!isset($node)) {
-                $node = $this->dest->getElementsByTagName("IE")->item(0);
-            }
-            $this->dest->insertBefore($this->enderDest, $node);
-        }
-        if (isset($this->dest)) {
-            $this->infNFe->appendChild($this->dest);
-        }
-        
-        //tag NFe/infNFe/retirada
-        if (isset($this->retirada)) {
-            $this->infNFe->appendChild($this->retirada);
-        }
-        
-        //tag NFe/infNFe/entrega
-        if (isset($this->entrega)) {
-            $this->infNFe->appendChild($this->entrega);
-        }
-
-        //tag NFe/infNFe/autXML
-        if (isset($this->aAutXML)  && $this->versao > 2.00) {
+        $this->zAppChild($this->infNFe, $this->emit);
+        $this->zAppChild($this->infNFe, $this->dest);
+        $this->zAppChild($this->infNFe, $this->retirada);
+        $this->zAppChild($this->infNFe, $this->entrega);
+        if (! empty($this->aAutXML)  && $this->versao > 2.00) {
             foreach ($this->aAutXML as $aut) {
-                $this->infNFe->appendChild($aut);
+                $this->zAppChild($this->infNFe, $aut);
             }
         }
-
-        //tag NFe/infNFe/det/DI/adi
+/*
+        //tag NFe/infNFe/det[]/DI/adi
         if (isset($this->aAdi)) {
             
         }
-        //tag NFe/infNFe/det/DI
+        //tag NFe/infNFe/det[]/DI
         if (isset($this->aDI)) {
             
         }
         
-        //tag NFe/infNFe/det
+        //tag NFe/infNFe/det[]
         if (isset($this->aProd)) {
             $this->tagdet();
         }
@@ -289,130 +244,36 @@ class MakeNFe
         if (isset($this->total)) {
             $this->infNFe->appendChild($this->total);
         }
-
-        //tag NFe/infNFe/transp
-        if (isset($this->transp) && isset($this->transporta)) {
-            $this->transp->appendChild($this->transporta);
+*/        
+        $this->zAppChild($this->infNFe, $this->transp, '');
+        $this->zAppChild($this->cobr, $this->fat, 'A tag cobr não foi criada executar [tagfat] antes.');
+        $this->zAppChild($this->infNFe, $this->cobr, '');
+        //apenas para modelo 65
+        if ($this->mod == '65') {
+            $this->zAppChild($this->infNFe, $this->pag, '');
         }
-        if (isset($this->transp) && isset($this->retTransp)) {
-            $this->transp->appendChild($this->retTransp);
-        }
-        if (isset($this->transp) && isset($this->veicTransp)) {
-            $this->transp->appendChild($this->veicTransp);
-        }
-        if (isset($this->transp) && isset($this->aReboque)) {
-            foreach ($this->aReboque as $reboque) {
-                $this->transp->appendChild($reboque);
-            }
-        }
-        if (isset($this->aVol) && isset($this->transp)) {
-            foreach ($this->aVol as $vol) {
-                $this->transp->appendChild($vol);
-            }
-        }
-        if (isset($this->transp)) {
-            $this->infNFe->appendChild($this->transp);
-        }
-        
-        //tag NFe/infNFe/cobr
-        if (isset($this->fat)) {
-            $this->tagcobr();
-            $this->cobr->appendChild($this->fat);
-        }
-        if (isset($this->aDup)) {
-            $this->tagcobr();
-            foreach ($this->aDup as $dup) {
-                $this->cobr->appendChild($dup);
-            }
-        }
-        if (isset($this->cobr)) {
-            $this->infNFe->appendChild($this->cobr);
-        }
-        
-        //tag NFe/infNFe/pag
-        if (isset($this->card)) {
-            if (isset($this->pag)) {
-                $this->pag->appendChild($this->card);
-            }
-        }
-        if (isset($this->pag)) {
-            $this->infNFe->appendChild($this->pag);
-        }
-
-        //tag NFe/infNFe/infAdic
-        if (isset($this->aObsCont)) {
-            foreach ($this->aObsCont as $obsCont) {
-                if (!isset($this->infAdic)) {
-                    $this->taginfAdic();
-                }
-                $this->infAdic->appendChild($obsCont);
-            }
-        }
-        if (isset($this->aObsFisco)) {
-            foreach ($this->aObsFisco as $obsFisco) {
-                if (!isset($this->infAdic)) {
-                    $this->taginfAdic();
-                }
-                $this->infAdic->appendChild($obsFisco);
-            }
-        }
-        if (isset($this->aProcRef)) {
-            foreach ($this->aProcRef as $procRef) {
-                if (!isset($this->infAdic)) {
-                    $this->taginfAdic();
-                }
-                $this->infAdic->appendChild($procRef);
-            }
-        }
-        if (isset($this->infAdic)) {
-            $this->infNFe->appendChild($this->infAdic);
-        }
-
-        //tag NFe/infNFe/exporta
-        if (isset($this->exporta)) {
-            $this->infNFe->appendChild($this->exporta);
-        }
-
-        //tag NFe/infNFe/compra
-        if (isset($this->compra)) {
-            $this->infNFe->appendChild($this->compra);
-        }
-
-        //tag NFe/infNFe/cana
-        if (isset($this->cana) && isset($this->aForDia)) {
-            foreach ($this->aForDia as $forDia) {
-                $this->cana->appendChild($forDia);
-            }
-        }
-        if (isset($this->cana) && isset($this->aDeduc)) {
-            foreach ($this->aDeduc as $deduc) {
-                $this->cana->appendChild($deduc);
-            }
-        }
-        if (isset($this->cana)) {
-            $this->infNFe->appendChild($this->cana);
-        }
-        
-        //tag NFe/infNFe
-        $this->NFe->appendChild($this->infNFe);
-        //tag NFe
-        $this->dom->appendChild($this->NFe);
+        $this->zAppChild($this->infNFe, $this->infAdic, '');
+        $this->zAppChild($this->infNFe, $this->exporta, '');
+        $this->zAppChild($this->infNFe, $this->compra, '');
+        $this->zAppChild($this->infNFe, $this->cana, '');
+        $this->zAppChild($this->NFe, $this->infNFe, '');
+        $this->zAppChild($this->dom, $this->NFe, '');
         if (count($this->erros) > 0) {
             return json_encode($this->erros);
         }
         return $this->dom->saveXML();
     }
     
-    
     /**
      * zTagNFe
      * Tag raiz da NFe
      * tag NFe DOMNode
+     * Função chamada pelo método [ monta ]
      * @return DOMElement
      */
-    protected function zTagNFe()
+    private function zTagNFe()
     {
-        if (!isset($this->NFe)) {
+        if (empty($this->NFe)) {
             $this->NFe = $this->dom->createElement("NFe");
             $this->NFe->setAttribute("xmlns", "http://www.portalfiscal.inf.br/nfe");
         }
@@ -535,8 +396,6 @@ class MakeNFe
         $this->zAddChild($ide, "finNFe", $finNFe, true, "Finalidade de emissão da NF-e");
         if ($this->versao > 2.00) {
             $this->zAddChild($ide, "indFinal", $indFinal, true, "Indica operação com Consumidor final");
-        }
-        if ($this->versao > 2.00) {
             $this->zAddChild(
                 $ide,
                 "indPres",
@@ -547,11 +406,9 @@ class MakeNFe
         }
         $this->zAddChild($ide, "procEmi", $procEmi, true, "Processo de emissão da NF-e");
         $this->zAddChild($ide, "verProc", $verProc, true, "Versão do Processo de emissão da NF-e");
-        if ($this->versao > 2.00) {
-            if ($dhCont != '' && $xJust != '') {
-                $this->zAddChild($ide, "dhCont", $dhCont, true, "Data e Hora da entrada em contingência");
-                $this->zAddChild($ide, "xJust", $xJust, true, "Justificativa da entrada em contingência");
-            }
+        if ($this->versao > 2.00 && $dhCont != '' && $xJust != '') {
+            $this->zAddChild($ide, "dhCont", $dhCont, true, "Data e Hora da entrada em contingência");
+            $this->zAddChild($ide, "xJust", $xJust, true, "Justificativa da entrada em contingência");
         }
         $this->mod = $mod;
         $this->ide = $ide;
@@ -559,15 +416,17 @@ class MakeNFe
     }
     
     /**
-     * tagNFref
+     * zTagNFref
      * Informação de Documentos Fiscais referenciados BA01 pai B01
      * tag NFe/infNFe/ide/NFref
+     * Podem ser criados até 500 desses Nodes por NFe
+     * Função chamada pelos métodos 
+     * [tagrefNFe] [tagrefNF] [tagrefNFP]  [tagCTeref] [tagrefECF]
      */
-    public function tagNFref()
+    private function zTagNFref()
     {
-        if (!isset($this->NFref)) {
-            $this->NFref = $this->dom->createElement("NFref");
-        }
+        $this->aNFref[] = $this->dom->createElement("NFref");
+        return count($this->aNFref);
     }
     
     /**
@@ -579,11 +438,10 @@ class MakeNFe
      */
     public function tagrefNFe($refNFe = '')
     {
-        if (! isset($this->NFref)) {
-            $this->tagNFref();
-        }
-        $this->refNFe = $this->dom->createElement("refNFe", $refNFe);
-        return $this->refNFe;
+        $num = $this->zTagNFref();
+        $refNFe = $this->dom->createElement("refNFe", $refNFe);
+        $this->zAppChild($this->aNFref[$num-1], $refNFe);
+        return $refNFe;
     }
     
     /**
@@ -606,17 +464,16 @@ class MakeNFe
         $serie = '',
         $nNF = ''
     ) {
-        if (! isset($this->NFref)) {
-            $this->tagNFref();
-        }
-        $this->refNF = $this->dom->createElement("refNF");
-        $this->zAddChild($this->refNF, "cUF", $cUF, true, "Código da UF do emitente");
-        $this->zAddChild($this->refNF, "AAMM", $aamm, true, "Ano e Mês de emissão da NF-e");
-        $this->zAddChild($this->refNF, "CNPJ", $cnpj, true, "CNPJ do emitente");
-        $this->zAddChild($this->refNF, "mod", $mod, true, "Modelo do Documento Fiscal");
-        $this->zAddChild($this->refNF, "serie", $serie, true, "Série do Documento Fiscal");
-        $this->zAddChild($this->refNF, "nNF", $nNF, true, "Número do Documento Fiscal");
-        return $this->refNF;
+        $num = $this->zTagNFref();
+        $refNF = $this->dom->createElement("refNF");
+        $this->zAddChild($refNF, "cUF", $cUF, true, "Código da UF do emitente");
+        $this->zAddChild($refNF, "AAMM", $aamm, true, "Ano e Mês de emissão da NF-e");
+        $this->zAddChild($refNF, "CNPJ", $cnpj, true, "CNPJ do emitente");
+        $this->zAddChild($refNF, "mod", $mod, true, "Modelo do Documento Fiscal");
+        $this->zAddChild($refNF, "serie", $serie, true, "Série do Documento Fiscal");
+        $this->zAddChild($refNF, "nNF", $nNF, true, "Número do Documento Fiscal");
+        $this->zAppChild($this->aNFref[$num-1], $refNF);
+        return $refNF;
     }
     
     /**
@@ -643,45 +500,43 @@ class MakeNFe
         $serie = '',
         $nNF = ''
     ) {
-        if (! isset($this->NFref)) {
-            $this->tagNFref();
-        }
-        $this->refNFP = $this->dom->createElement("refNFP");
-        $this->zAddChild($this->refNFP, "cUF", $cUF, true, "Código da UF do emitente");
-        $this->zAddChild($this->refNFP, "AAMM", $aamm, true, "AAMM da emissão da NF de produtor");
-        $this->zAddChild($this->refNFP, "CNPJ", $cnpj, true, "Informar o CNPJ do emitente da NF de produtor");
-        $this->zAddChild($this->refNFP, "CPF", $cpf, true, "Informar o CPF do emitente da NF de produtor");
+        $num = $this->zTagNFref();
+        $refNFP = $this->dom->createElement("refNFP");
+        $this->zAddChild($refNFP, "cUF", $cUF, true, "Código da UF do emitente");
+        $this->zAddChild($refNFP, "AAMM", $aamm, true, "AAMM da emissão da NF de produtor");
+        $this->zAddChild($refNFP, "CNPJ", $cnpj, true, "Informar o CNPJ do emitente da NF de produtor");
+        $this->zAddChild($refNFP, "CPF", $cpf, true, "Informar o CPF do emitente da NF de produtor");
         $this->zAddChild(
-            $this->refNFP,
+            $refNFP,
             "IE",
             $numIE,
             true,
             "Informar a IE do emitente da NF de Produtor ou o literal 'ISENTO'"
         );
-        $this->zAddChild($this->refNFP, "mod", $mod, true, "Modelo do Documento Fiscal");
-        $this->zAddChild($this->refNFP, "serie", $serie, true, "Série do Documento Fiscal");
-        $this->zAddChild($this->refNFP, "nNF", $nNF, true, "Número do Documento Fiscal");
-        return $this->refNFP;
+        $this->zAddChild($refNFP, "mod", $mod, true, "Modelo do Documento Fiscal");
+        $this->zAddChild($refNFP, "serie", $serie, true, "Série do Documento Fiscal");
+        $this->zAddChild($refNFP, "nNF", $nNF, true, "Número do Documento Fiscal");
+        $this->zAppChild($this->aNFref[$num-1], $refNFP);
+        return $refNFP;
     }
     
     /**
-     * tagCTeref
+     * tagrefCTe
      * Chave de acesso do CT-e referenciada BA19 pai BA01
      * tag NFe/infNFe/ide/NFref/refCTe
      * @param string $refCTe
      * @return DOMElement
      */
-    public function tagCTeref($refCTe = '')
+    public function tagrefCTe($refCTe = '')
     {
-        if (! isset($this->NFref)) {
-            $this->tagNFref();
-        }
-        $this->refCTe = $this->dom->createElement("refCTe", $refCTe);
-        return $this->refCTe;
+        $num = $this->zTagNFref();
+        $refCTe = $this->dom->createElement("refCTe", $refCTe);
+        $this->zAppChild($this->aNFref[$num-1], $refCTe);
+        return $refCTe;
     }
     
     /**
-     * tagECFref
+     * tagrefECF
      * Informações do Cupom Fiscal referenciado BA20 pai BA01
      * tag NFe/infNFe/ide/NFref/refECF
      * @param string $mod
@@ -694,14 +549,13 @@ class MakeNFe
         $nECF = '',
         $nCOO = ''
     ) {
-        if (! isset($this->NFref)) {
-            $this->tagNFref();
-        }
-        $this->refECF = $this->dom->createElement("refECF");
-        $this->zAddChild($this->refECF, "mod", $mod, true, "Modelo do Documento Fiscal");
-        $this->zAddChild($this->refECF, "nECF", $nECF, true, "Número de ordem sequencial do ECF");
-        $this->zAddChild($this->refECF, "nCOO", $nCOO, true, "Número do Contador de Ordem de Operação - COO");
-        return $this->refECF;
+        $num = $this->zTagNFref();
+        $refECF = $this->dom->createElement("refECF");
+        $this->zAddChild($refECF, "mod", $mod, true, "Modelo do Documento Fiscal");
+        $this->zAddChild($refECF, "nECF", $nECF, true, "Número de ordem sequencial do ECF");
+        $this->zAddChild($refECF, "nCOO", $nCOO, true, "Número do Contador de Ordem de Operação - COO");
+        $this->zAppChild($this->aNFref[$num-1], $refECF);
+        return $refECF;
     }
     
     /**
@@ -845,8 +699,6 @@ class MakeNFe
             } else {
                 $this->zAddChild($this->dest, "indIEDest", $indIEDest, true, "Indicador da IE do Destinatário");
             }
-        }
-        if ($this->versao > 2.00) {
             if ($indIEDest != '9' && $indIEDest != '2') {
                 $this->zAddChild($this->dest, "IE", $numIE, true, "Inscrição Estadual do Destinatário");
             }
@@ -869,6 +721,7 @@ class MakeNFe
      * tagenderDest
      * Endereço do Destinatário da NF-e E05 pai E01 
      * tag NFe/infNFe/dest/enderDest  (opcional para modelo 65)
+     * Os dados do destinatário devem ser inseridos antes deste método
      * @param string $xLgr
      * @param string $nro
      * @param string $xCpl
@@ -895,6 +748,9 @@ class MakeNFe
         $xPais = '',
         $fone = ''
     ) {
+        if (empty($this->dest)) {
+            throw new Exception('A TAG dest deve ser criada antes do endereço do mesmo.');
+        }
         $this->enderDest = $this->dom->createElement("enderDest");
         $this->zAddChild($this->enderDest, "xLgr", $xLgr, true, "Logradouro do Endereço do Destinatário");
         $this->zAddChild($this->enderDest, "nro", $nro, true, "Número do Endereço do Destinatário");
@@ -907,9 +763,14 @@ class MakeNFe
         $this->zAddChild($this->enderDest, "cPais", $cPais, false, "Código do País do Endereço do Destinatário");
         $this->zAddChild($this->enderDest, "xPais", $xPais, false, "Nome do País do Endereço do Destinatário");
         $this->zAddChild($this->enderDest, "fone", $fone, false, "Telefone do Endereço do Destinatário");
+        //insere o endereço na tag "dest"
+        $node = $this->dest->getElementsByTagName("indIEDest")->item(0);
+        if (! isset($node)) {
+            $node = $this->dest->getElementsByTagName("IE")->item(0);
+        }
+        $this->dest->insertBefore($this->enderDest, $node);
         return $this->enderDest;
     }
-    
     
     /**
      * tagretirada
@@ -1045,7 +906,7 @@ class MakeNFe
      */
     private function zTagdet()
     {
-        if (isset($this->aProd)) {
+        if (!empty($this->aProd)) {
             foreach ($this->aProd as $key => $prod) {
                 $det = $this->dom->createElement("det");
                 $nItem = $key;
@@ -2078,7 +1939,7 @@ class MakeNFe
         switch ($cst) {
             case '01':
             case '02':
-                $confinsItem = $this->ztagCOFINSAliq($cst, $vBC, $pCOFINS, $vCOFINS);
+                $confinsItem = $this->zTagCOFINSAliq($cst, $vBC, $pCOFINS, $vCOFINS);
                 break;
             case '03':
                 $confinsItem = $this->dom->createElement('COFINSQtde');
@@ -2093,7 +1954,7 @@ class MakeNFe
             case '07':
             case '08':
             case '09':
-                $confinsItem = $this->ztagCOFINSNT($cst);
+                $confinsItem = $this->zTagCOFINSNT($cst);
                 break;
             case '49':
             case '50':
@@ -2119,7 +1980,7 @@ class MakeNFe
             case '75':
             case '98':
             case '99':
-                $confinsItem = $this->ztagCOFINSoutr($cst, $vBC, $pCOFINS, $qBCProd, $vAliqProd, $vCOFINS);
+                $confinsItem = $this->zTagCOFINSoutr($cst, $vBC, $pCOFINS, $qBCProd, $vAliqProd, $vCOFINS);
                 break;
         }
         $confins = $this->dom->createElement('COFINS');
@@ -2132,13 +1993,14 @@ class MakeNFe
      * ztagCOFINSAliq
      * Grupo COFINS tributado pela alíquota S02 pai S01
      * tag det/imposto/COFINS/COFINSAliq (opcional)
+     * Função chamada pelo método [ tagCOFINS ]
      * @param string $cst
      * @param string $vBC
      * @param string $pCOFINS
      * @param string $vCOFINS
      * @return DOMElement
      */
-    private function ztagCOFINSAliq($cst = '', $vBC = '', $pCOFINS = '', $vCOFINS = '')
+    private function zTagCOFINSAliq($cst = '', $vBC = '', $pCOFINS = '', $vCOFINS = '')
     {
         $confinsAliq = $this->dom->createElement('COFINSAliq');
         $this->zAddChild($confinsAliq, 'CST', $cst, true, "Código de Situação Tributária da COFINS");
@@ -2149,13 +2011,14 @@ class MakeNFe
     }
     
     /**
-     * ztagCOFINSNT
+     * zTagCOFINSNT
      * Grupo COFINS não tributado S04 pai S01
      * tag NFe/infNFe/det[]/imposto/COFINS/COFINSNT (opcional)
+     * Função chamada pelo método [ tagCOFINS ]
      * @param string $cst
      * @return DOMElement
      */
-    private function ztagCOFINSNT($cst = '')
+    private function zTagCOFINSNT($cst = '')
     {
         $confinsnt = $this->dom->createElement('COFINSNT');
         $this->zAddChild($confinsnt, "CST", $cst, true, "Código de Situação Tributária da COFINS");
@@ -2163,9 +2026,10 @@ class MakeNFe
     }
     
     /**
-     * ztagCOFINSoutr
+     * zTagCOFINSoutr
      * Grupo COFINS Outras Operações S05 pai S01
      * tag NFe/infNFe/det[]/imposto/COFINS/COFINSoutr (opcional)
+     * Função chamada pelo método [ tagCOFINS ]
      * @param string $cst
      * @param string $vBC
      * @param string $pCOFINS
@@ -2174,7 +2038,7 @@ class MakeNFe
      * @param string $vCOFINS
      * @return DOMElement
      */
-    private function ztagCOFINSoutr($cst = '', $vBC = '', $pCOFINS = '', $qBCProd = '', $vAliqProd = '', $vCOFINS = '')
+    private function zTagCOFINSoutr($cst = '', $vBC = '', $pCOFINS = '', $qBCProd = '', $vAliqProd = '', $vCOFINS = '')
     {
         $confinsoutr = $this->dom->createElement('COFINSOutr');
         $this->zAddChild($confinsoutr, "CST", $cst, true, "Código de Situação Tributária da COFINS");
@@ -2332,13 +2196,13 @@ class MakeNFe
     }
     
     /**
-     * ztagttotal
+     * zTagttotal
      * Grupo Totais da NF-e W01 pai A01
      * tag NFe/infNFe/total
      */
-    private function ztagtotal()
+    private function zTagtotal()
     {
-        if (! isset($this->total)) {
+        if (empty($this->total)) {
             $this->total = $this->dom->createElement("total");
         }
     }
@@ -2656,15 +2520,16 @@ class MakeNFe
         $xMun = '',
         $siglaUF = ''
     ) {
-        $this->transporta = $this->dom->createElement("transporta");
-        $this->zAddChild($this->transporta, "CNPJ", $numCNPJ, false, "CNPJ do Transportador");
-        $this->zAddChild($this->transporta, "CPF", $numCPF, false, "CPF do Transportador");
-        $this->zAddChild($this->transporta, "xNome", $xNome, false, "Razão Social ou nome do Transportador");
-        $this->zAddChild($this->transporta, "IE", $numIE, false, "Inscrição Estadual do Transportador");
-        $this->zAddChild($this->transporta, "xEnder", $xEnder, false, "Endereço Completo do Transportador");
-        $this->zAddChild($this->transporta, "xMun", $xMun, false, "Nome do município do Transportador");
-        $this->zAddChild($this->transporta, "UF", $siglaUF, false, "Sigla da UF do Transportador");
-        return $this->transporta;
+        $transporta = $this->dom->createElement("transporta");
+        $this->zAddChild($transporta, "CNPJ", $numCNPJ, false, "CNPJ do Transportador");
+        $this->zAddChild($transporta, "CPF", $numCPF, false, "CPF do Transportador");
+        $this->zAddChild($transporta, "xNome", $xNome, false, "Razão Social ou nome do Transportador");
+        $this->zAddChild($transporta, "IE", $numIE, false, "Inscrição Estadual do Transportador");
+        $this->zAddChild($transporta, "xEnder", $xEnder, false, "Endereço Completo do Transportador");
+        $this->zAddChild($transporta, "xMun", $xMun, false, "Nome do município do Transportador");
+        $this->zAddChild($transporta, "UF", $siglaUF, false, "Sigla da UF do Transportador");
+        $this->zAppChild($this->transp, $transporta, 'A tag transp deveria ter sido carregada primeiro.');
+        return $transporta;
     }
     
     /**
@@ -2681,17 +2546,18 @@ class MakeNFe
         $siglaUF = '',
         $rntc = ''
     ) {
-        $this->veicTransp = $this->dom->createElement("veicTransp");
-        $this->zAddChild($this->veicTransp, "placa", $placa, true, "Placa do Veículo");
-        $this->zAddChild($this->veicTransp, "UF", $siglaUF, true, "Sigla da UF do Veículo");
+        $veicTransp = $this->dom->createElement("veicTransp");
+        $this->zAddChild($veicTransp, "placa", $placa, true, "Placa do Veículo");
+        $this->zAddChild($veicTransp, "UF", $siglaUF, true, "Sigla da UF do Veículo");
         $this->zAddChild(
-            $this->veicTransp,
+            $veicTransp,
             "RNTC",
             $rntc,
             false,
             "Registro Nacional de Transportador de Carga (ANTT) do Veículo"
         );
-        return $this->veicTransp;
+        $this->zAppChild($this->transp, $veicTransp, 'A tag transp deveria ter sido carregada primeiro.');
+        return $veicTransp;
     }
     
     /**
@@ -2725,6 +2591,7 @@ class MakeNFe
         $this->zAddChild($reboque, "vagao", $vagao, false, "Identificação do vagão do Veículo Reboque");
         $this->zAddChild($reboque, "balsa", $balsa, false, "Identificação da balsa do Veículo Reboque");
         $this->aReboque[] = $reboque;
+        $this->zAppChild($this->transp, $reboque, 'A tag transp deveria ter sido carregada primeiro.');
         return $reboque;
     }
         
@@ -2748,20 +2615,21 @@ class MakeNFe
         $cfop = '',
         $cMunFG = ''
     ) {
-        $this->retTransp = $this->dom->createElement("retTransp");
-        $this->zAddChild($this->retTransp, "vServ", $vServ, true, "Valor do Serviço");
-        $this->zAddChild($this->retTransp, "vBCRet", $vBCRet, true, "BC da Retenção do ICMS");
-        $this->zAddChild($this->retTransp, "pICMSRet", $pICMSRet, true, "Alíquota da Retenção");
-        $this->zAddChild($this->retTransp, "vICMSRet", $vICMSRet, true, "Valor do ICMS Retido");
-        $this->zAddChild($this->retTransp, "CFOP", $cfop, true, "CFOP");
+        $retTransp = $this->dom->createElement("retTransp");
+        $this->zAddChild($retTransp, "vServ", $vServ, true, "Valor do Serviço");
+        $this->zAddChild($retTransp, "vBCRet", $vBCRet, true, "BC da Retenção do ICMS");
+        $this->zAddChild($retTransp, "pICMSRet", $pICMSRet, true, "Alíquota da Retenção");
+        $this->zAddChild($retTransp, "vICMSRet", $vICMSRet, true, "Valor do ICMS Retido");
+        $this->zAddChild($retTransp, "CFOP", $cfop, true, "CFOP");
         $this->zAddChild(
-            $this->retTransp,
+            $retTransp,
             "cMunFG",
             $cMunFG,
             true,
             "Código do município de ocorrência do fato gerador do ICMS do transporte"
         );
-        return $this->retTransp;
+        $this->zAppChild($this->transp, $retTransp, 'A tag transp deveria ter sido carregada primeiro.');
+        return $retTransp;
     }
     
     /**
@@ -2802,6 +2670,7 @@ class MakeNFe
             }
         }
         $this->aVol[] = $vol;
+        $this->zAppChild($this->transp, $vol, 'A tag transp deveria ter sido carregada primeiro.');
         return $vol;
     }
     
@@ -2825,9 +2694,9 @@ class MakeNFe
      * tag NFe/infNFe/cobr (opcional)
      * Depende de fat
      */
-    private function ztagcobr()
+    private function zTagcobr()
     {
-        if (! isset($this->cobr)) {
+        if (empty($this->cobr)) {
             $this->cobr = $this->dom->createElement("cobr");
         }
     }
@@ -2861,6 +2730,7 @@ class MakeNFe
      * tagdup
      * Grupo Duplicata Y07 pai Y02
      * tag NFe/infNFe/cobr/fat/dup (opcional)
+     * É necessário criar a tag fat antes de criar as duplicatas
      * @param string $nDup
      * @param string $dVenc
      * @param string $vDup
@@ -2871,14 +2741,12 @@ class MakeNFe
         $dVenc = '',
         $vDup = ''
     ) {
-        if (! isset($this->fat)) {
-            $this->tagfat();
-        }
         $dup = $this->dom->createElement("dup");
         $this->zAddChild($dup, "nDup", $nDup, false, "Número da Duplicata");
         $this->zAddChild($dup, "dVenc", $dVenc, false, "Data de vencimento");
         $this->zAddChild($dup, "vDup", $vDup, true, "Valor da duplicata");
         $this->aDup[] = $dup;
+        $this->zAppChild($this->fat, $dup, "Duplicatas - a tag fat não foi criada [tagdup]");
         return $dup;
     }
     
@@ -2886,6 +2754,7 @@ class MakeNFe
      * tagpag
      * Grupo de Formas de Pagamento YA01 pai A01
      * tag NFe/infNFe/pag (opcional)
+     * Apenas par amodelo 65 NFCe
      * @param string $tPag
      * @param string $vPag
      * @return DOMElement
@@ -2894,14 +2763,10 @@ class MakeNFe
         $tPag = '',
         $vPag = ''
     ) {
-        //apenas para modelo 65
-        if ($this->mod == '65') {
-            $this->pag = $this->dom->createElement("pag");
-            $this->zAddChild($this->pag, "tPag", $tPag, true, "Forma de pagamento");
-            $this->zAddChild($this->pag, "vPag", $vPag, true, "Valor do Pagamento");
-            return $this->pag;
-        }
-        return '';
+        $this->pag = $this->dom->createElement("pag");
+        $this->zAddChild($this->pag, "tPag", $tPag, true, "Forma de pagamento");
+        $this->zAddChild($this->pag, "vPag", $vPag, true, "Valor do Pagamento");
+        return $this->pag;
     }
     
     /**
@@ -2942,9 +2807,26 @@ class MakeNFe
                 true,
                 "Número de autorização da operação cartão de crédito e/ou débito"
             );
+            $this->zAppChild($this->pag, $card, '');
             return $this->card;
         }
-        return '';
+    }
+    
+    /**
+     * zTaginfAdic
+     * Grupo de Informações Adicionais Z01 pai A01
+     * tag NFe/infNFe/infAdic (opcional)
+     * Função chamada pelos metodos 
+     * [taginfAdic] [tagobsCont] [tagobsFisco] [tagprocRef]
+     * 
+     * @return DOMElement
+     */
+    private function zTaginfAdic()
+    {
+        if (empty($this->infAdic)) {
+            $this->infAdic = $this->dom->createElement("infAdic");
+        }
+        return $this->infAdic;
     }
     
     /**
@@ -2959,9 +2841,7 @@ class MakeNFe
         $infAdFisco = '',
         $infCpl = ''
     ) {
-        if (!isset($this->infAdic)) {
-            $this->infAdic = $this->dom->createElement("infAdic");
-        }
+        $this->zTaginfAdic();
         $this->zAddChild(
             $this->infAdic,
             "infAdFisco",
@@ -2983,6 +2863,7 @@ class MakeNFe
      * tagobsCont
      * Grupo Campo de uso livre do contribuinte Z04 pai Z01
      * tag NFe/infNFe/infAdic/obsCont (opcional)
+     * O método taginfAdic deve ter sido carregado antes
      * @param string $xCampo
      * @param string $xTexto
      * @return DOMElement
@@ -2991,10 +2872,12 @@ class MakeNFe
         $xCampo = '',
         $xTexto = ''
     ) {
+        $this->zTaginfAdic();
         $obsCont = $this->dom->createElement("obsCont");
         $obsCont->setAttribute("xCampo", $xCampo);
         $this->zAddChild($obsCont, "xTexto", $xTexto, true, "Conteúdo do campo");
-        $this->aObsCont[]=$obsCont;
+        $this->aObsCont[] = $obsCont;
+        $this->zAppChild($this->infAdic, $obsCont, '');
         return $obsCont;
     }
     
@@ -3002,6 +2885,7 @@ class MakeNFe
      * tagobsFisco
      * Grupo Campo de uso livre do Fisco Z07 pai Z01
      * tag NFe/infNFe/infAdic/obsFisco (opcional)
+     * O método taginfAdic deve ter sido carregado antes
      * @param string $xCampo
      * @param string $xTexto
      * @return DOMElement
@@ -3010,10 +2894,12 @@ class MakeNFe
         $xCampo = '',
         $xTexto = ''
     ) {
+        $this->zTaginfAdic();
         $obsFisco = $this->dom->createElement("obsFisco");
         $obsFisco->setAttribute("xCampo", $xCampo);
         $this->zAddChild($obsFisco, "xTexto", $xTexto, true, "Conteúdo do campo");
-        $this->aObsFisco[]=$obsFisco;
+        $this->aObsFisco[] = $obsFisco;
+        $this->zAppChild($this->infAdic, $obsFisco, '');
         return $obsFisco;
     }
     
@@ -3021,6 +2907,7 @@ class MakeNFe
      * tagprocRef
      * Grupo Processo referenciado Z10 pai Z01 (NT2012.003)
      * tag NFe/infNFe/procRef (opcional)
+     * O método taginfAdic deve ter sido carregado antes
      * @param string $nProc
      * @param string $indProc
      * @return DOMElement
@@ -3029,10 +2916,12 @@ class MakeNFe
         $nProc = '',
         $indProc = ''
     ) {
+        $this->zTaginfAdic();
         $procRef = $this->dom->createElement("procRef");
         $this->zAddChild($procRef, "nProc", $nProc, true, "Identificador do processo ou ato concessório");
         $this->zAddChild($procRef, "indProc", $indProc, true, "Indicador da origem do processo");
-        $this->aProcRef[]=$procRef;
+        $this->aProcRef[] = $procRef;
+        $this->zAppChild($this->infAdic, $procRef, '');
         return $procRef;
     }
     
@@ -3133,6 +3022,7 @@ class MakeNFe
         $this->zAddChild($forDia, "qTotAnt", $qTotAnt, true, "Quantidade Total Anterior");
         $this->zAddChild($forDia, "qTotGer", $qTotGer, true, "Quantidade Total Geral");
         $this->aForDia[] = $forDia;
+        $this->zAppChild($this->cana, $forDia, 'O metodo tacana deveria ter sido chamado antes. [tagforDia]');
         return $forDia;
     }
     
@@ -3161,12 +3051,8 @@ class MakeNFe
         $this->zAddChild($deduc, "vTotDed", $vTotDed, true, "Valor Total da Dedução");
         $this->zAddChild($deduc, "vLiqFor", $vLiqFor, true, "Valor Líquido dos Fornecimentos");
         $this->aDeduc[] = $deduc;
+        $this->zAppChild($this->cana, $deduc, 'O metodo tagcana deveria ter sido chamado antes. [tagdeduc]');
         return $deduc;
-    }
-    
-    private function zValidaChave($chave)
-    {
-        
     }
     
     /**
@@ -3191,6 +3077,26 @@ class MakeNFe
         if (! empty($content)) {
             $temp = $this->dom->createElement($name, $content);
             $parent->appendChild($temp);
+        }
+    }
+    
+    /**
+     * zAppChild
+     * Acrescenta DOMElement a pai DOMElement
+     * Caso o pai esteja vazio retorna uma exception com a mensagem
+     * O parametro "child" pode ser vazio
+     * @param DOMElement $parent
+     * @param DOMElement $child
+     * @param string $mensagem
+     * @throws Exception
+     */
+    private function zAppChild(&$parent, $child, $mensagem = '')
+    {
+        if (empty($parent)) {
+            throw new \Exception($mensagem);
+        }
+        if (! empty($child)) {
+            $parent->appendChild($child);
         }
     }
 }
