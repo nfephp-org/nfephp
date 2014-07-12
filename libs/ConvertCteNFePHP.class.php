@@ -588,7 +588,7 @@ class ConvertCteNFePHP{ //implements ConvertCTePHP{
 							$last_len=strlen($v2[$nome_campo]);
 							$v2[$nome_campo]=trim($v2[$nome_campo]);
 							if($last_len!=strlen($v2[$nome_campo])){
-								$RETURN['avisos'][$cte][]="$MSG_PADRAO Alterado o tamanho do campo $nome_campo após TRIM de $last_len para ".strlen($v2[$nome_campo]);
+								$RETURN['avisos'][$kcte][]="$MSG_PADRAO Alterado o tamanho do campo $nome_campo após TRIM de $last_len para ".strlen($v2[$nome_campo]);
 							}
 						}
 					}
