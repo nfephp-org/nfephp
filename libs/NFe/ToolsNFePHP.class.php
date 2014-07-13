@@ -2014,7 +2014,7 @@ class ToolsNFePHP
             $aRetorno['xMotivo'] = $doc->getElementsByTagNameOpcional('xMotivo');
             // data e hora da mensagem (opcional)
             if ($dhRecbto = $doc->getElementsByTagNameOpcional('dhRecbto')) {
-               $aRetorno['dhRecbto'] = date("d/m/Y H:i:s", $dhRecbto);
+               $aRetorno['dhRecbto'] = date("d/m/Y H:i:s", $this->pConvertTime($dhRecbto));
             }
             //tipo do ambiente, versão do aplicativo e código da UF
             $aRetorno['tpAmb'] = $doc->getElementsByTagNameOpcional('tpAmb');
@@ -2031,10 +2031,13 @@ class ToolsNFePHP
                $infProt['chNFe'] = $nodeInfProt->getElementsByTagName('chNFe')->item(0)->nodeValue;
                $dhRecbto = $nodeInfProt->getElementsByTagName('dhRecbto')->item(0)->nodeValue;
                $infProt['dhRecbto'] = date("d/m/Y H:i:s", $this->pConvertTime($dhRecbto));
-               $infProt['nProt'] = $nodeInfProt->getElementsByTagName('nProt')->item(0)->nodeValue;
-               $infProt['digVal'] = $nodeInfProt->getElementsByTagName('digVal')->item(0)->nodeValue;
+                              $infProt['digVal'] = $nodeInfProt->getElementsByTagName('digVal')->item(0)->nodeValue;
                $infProt['cStat'] = $nodeInfProt->getElementsByTagName('cStat')->item(0)->nodeValue;
                $infProt['xMotivo'] = $nodeInfProt->getElementsByTagName('xMotivo')->item(0)->nodeValue;
+               //número do protocolo de autorização (opcional)
+               if ($nProt = $nodeInfProt->getElementsByTagName('nProt')->item(0)) {
+                   $infProt['nProt'] = $nodeInfProt->getElementsByTagName('nProt')->item(0)->nodeValue;
+               }
                $aRetorno['protNFe']['infProt'] = $infProt;
                //nome do arquivo de retorno com sufixo "-rec"
                $nome = $this->temDir.$idLote.'-rec.xml';
@@ -2107,6 +2110,7 @@ class ToolsNFePHP
                 }
             }
             //verifica se o SCAN esta habilitado
+            // TODO 13/Julho fmertins: atributo "enableSCAN" precisa ser refatorado, esta gerando notice...
             if ($this->enableSCAN || $ctpEmissao == '3') {
                 $aURL = $this->pLoadSEFAZ($tpAmb, 'SCAN');
             }
