@@ -335,7 +335,7 @@ class ConvertCteNFePHP{ //implements ConvertCTePHP{
 #print_r($v);				
 				// TAGS QUE SÓ APARECEM 1 VEZ:
 				if(in_array($TAG,array(
-					'IDE','TOMA03','TOMA04',
+					'IDE','TOMA03','TOMA4',
 					'COMPL','FLUXO',
 					'ENTREGA',	'SEMDATA','COMDATA','NOPERIODO',
 							'SEMHORA','COMHORA','NOINTER',
@@ -632,8 +632,8 @@ class ConvertCteNFePHP{ //implements ConvertCTePHP{
 						}else{
 							$ide->appendChild($tmp_grupo);
 						}
-					}elseif($v2['TAG']=='TOMA04'){
-						$tmp_grupo	=$dom->createElement("toma04");
+					}elseif($v2['TAG']=='TOMA44'){
+						$tmp_grupo	=$dom->createElement("toma4");
 						$tmp_grupo2	=$dom->createElement("enderToma");
 						$cur_grupo	=& $tmp_grupo;
 						// campo 'email' não existe no TXT
@@ -658,7 +658,7 @@ class ConvertCteNFePHP{ //implements ConvertCTePHP{
 								// adiciona o fone primeiro....
 								if($nome_campo=='fone' && !empty($v2[$nome_campo]))
 									$tmp_grupo->appendChild( $dom->createElement($nome_campo,$v2[$nome_campo]) );
-								unset($tmp_grupo);
+								unset($cur_grupo);
 								// volta a preencher o 'toma04'
 								$tmp_grupo->appendChild( $tmp_grupo2 );
 								$cur_grupo = &$tmp_grupo;
