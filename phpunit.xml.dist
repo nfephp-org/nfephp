@@ -9,7 +9,7 @@
          stopOnFailure="false"
          syntaxCheck="false"
          verbose="false"
-         bootstrap="./tests/bootstrap.php">
+         bootstrap="./bootstrap.php">
     <testsuites>
         <testsuite name="NFePHP Test Suite">
             <directory suffix="Test.php">./tests</directory>

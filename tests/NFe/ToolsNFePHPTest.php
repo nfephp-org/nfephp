@@ -50,7 +50,7 @@ class ToolsNFePHPTest extends PHPUnit_Framework_TestCase
 
     public function testPassandoConfiguracao()
     {
-        $tool = new ToolsNFePHP($config);
+        $tool = new ToolsNFePHP($this->configTest);
         $this->assertInstanceOf('ToolsNFePHP', $tool);
     }
 
