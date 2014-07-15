@@ -1,0 +1,16 @@
+filter:
+    excluded_paths: [vendor/*, tests/*, libs/External/*]
+    paths: [libs/*]
+
+before_commands:
+    - "composer install --no-interaction --prefer-source --no-dev"
+
+tools:
+    php_analyzer: true
+    php_changetracking: true
+    php_code_sniffer:
+        config:
+            standard: PSR2
+    php_mess_detector: true
+    php_pdepend: true
+    php_sim: true

@@ -2,7 +2,7 @@
     "name": "nfephp",
     "type": "library",
     "description": "NFePHP é uma API para gerenciamento das comunicações entre o emitente de NFe e os serviços dos SEFAZ estaduais. Inteiramente construído em PHP para rodar sob qualquer sistema operacional.",
-	"keywords": [
+    "keywords": [
         "nfe",
         "nfephp",
         "spedphp",
@@ -38,14 +38,54 @@
         "ext-iconv": "*",
         "ext-mbstring": "*"
     },
+    "require-dev": {
+        "phpunit/phpunit": "~4.0"
+    },
     "autoload": {
         "psr-0": {
             "NFePHP": "src"
         },
         "classmap": [
-            "./libs/ConvertNFePHP.class.php",
-            "./libs/DanfeNFePHP.class.php",
-            "./libs/ToolsNFePHP.class.php"
+            "./libs/CTe/CTeNFePHP.class.php",
+            "./libs/CTe/ConvertCTePHP.class.php",
+            "./libs/CTe/ConvertCteNFePHP.class.php",
+            "./libs/CTe/DaCanccteNFePHP.class.php",
+            "./libs/CTe/DaEventoCTeNFePHP.class.php",
+            "./libs/CTe/DacteNFePHP.class.php",
+            "./libs/CTe/UnConvertCTePHP.class.php",
+            "./libs/Common/CommonNFePHP.class.php",
+            "./libs/Common/DocumentoNFePHP.interface.php",
+            "./libs/Common/DomDocumentNFePHP.class.php",
+            "./libs/Common/ExceptionNFePHP.class.php",
+            "./libs/Common/IdentifyNFePHP.class.php",
+            "./libs/Common/ImapNFePHP.class.php",
+            "./libs/Common/MailNFePHP.class.php",
+            "./libs/Common/PdfNFePHP.class.php",
+            "./libs/External/FPDF/fpdf.php",
+            "./libs/External/PHPMailer/class.phpmailer.php",
+            "./libs/External/PHPMailer/class.pop3.php",
+            "./libs/External/PHPMailer/class.smtp.php",
+            "./libs/External/mpdf/mpdf.php",
+            "./libs/MDFe/ConvertMDFePHP.class.php",
+            "./libs/MDFe/DamdfeNFePHP.class.php",
+            "./libs/MDFe/MDFeNFePHP.class.php",
+            "./libs/NFSe/NFSePHP.class.php",
+            "./libs/NFSe/NFSePHPGinfes.class.php",
+            "./libs/NFSe/NFSePHPGinfesData.class.php",
+            "./libs/NFSe/NFSePHPGinfesPDF.class.php",
+            "./libs/NFSe/NFSeSP.class.php",
+            "./libs/NFSe/NFeRPS.class.php",
+            "./libs/NFe/ConvertNFePHP.class.php",
+            "./libs/NFe/ConvertNFePHPOpc.class.php",
+            "./libs/NFe/DaCancnfeNFePHP.class.php",
+            "./libs/NFe/DaEventoNFeNFePHP.class.php",
+            "./libs/NFe/DacceNFePHP.class.php",
+            "./libs/NFe/DanfeNFCeNFePHP.class.php",
+            "./libs/NFe/DanfeNFePHP.class.php",
+            "./libs/NFe/MakeNFePHP.class.php",
+            "./libs/NFe/ToolsNFePHP.class.php",
+            "./libs/NFe/UnConvertNFePHP.class.php"
         ]
-    }
+    },
+    "minimum-stability": "stable"
 }

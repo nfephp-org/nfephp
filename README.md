@@ -1,6 +1,8 @@
 NFePHP
 =================
 
+[![Build Status](https://travis-ci.org/nfephp-org/nfephp.svg?branch=develop)](https://travis-ci.org/nfephp-org/nfephp)
+
 > **OBS**: Talvez, antes de chegar aqui, você tenha encontrado o site <http://www.assembla.com/spaces/nfephp/> e talvez você esteja se perguntando qual a diferença entre o NFePHP hospedado lá e o NFePHP hospedado aqui. Veja [nossa FAQ](https://github.com/nfephp-org/nfephp/wiki/FAQ) para sanar esta dúvida.
 
 NFePHP é uma API para gerenciamento das comunicações entre o emitente de NFe e os serviços dos SEFAZ estaduais. Inteiramente construído em PHP para rodar sob qualquer sistema operacional.
