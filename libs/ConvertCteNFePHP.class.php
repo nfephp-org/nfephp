@@ -811,7 +811,9 @@ class ConvertCteNFePHP{ //implements ConvertCTePHP{
 						$cur_grupo	=& $REM;
 						// campo 'email' não existe no TXT
 						foreach($campos as $nome_campo){
-							if(	$nome_campo=='xFant' || $nome_campo=='CEP' || $nome_campo=='xCpl'){
+							if(	$nome_campo=='CNPJ' || $nome_campo=='CPF' || 
+								$nome_campo=='xFant' || $nome_campo=='CEP' || 
+								$nome_campo=='xCpl'){
 								if(empty($v2[$nome_campo]))	
 									continue;
 							}
