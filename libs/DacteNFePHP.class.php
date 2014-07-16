@@ -37,6 +37,7 @@
  *        CONTRIBUIDORES (por ordem alfabetica):
  *          Fernando Mertins <fernando dot mertins at gmail dot com>
  *          Joao Eduardo Silva Correa <jcorrea at sucden dot com dot br>
+ *          Lucas Dias                <diasnlucas at gmail dot com>
  *          Marcos Diez               <marcos at unitron dot com dot br>
  *          Rodrigo Rysdyk            <rodrigo_rysdyk at hotmail dot com>
  *          Roberto Spadim            <roberto at spadim dot com dot br>
@@ -133,6 +134,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
     protected $ferrov;
     protected $Comp;
     protected $infNF;
+    protected $infOutros;
     protected $infNFe;
     protected $compl;
     protected $ICMS;
@@ -233,6 +235,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
             $this->vPrest = $this->dom->getElementsByTagName("vPrest")->item(0);
             $this->Comp = $this->dom->getElementsByTagName("Comp");
             $this->infNF = $this->dom->getElementsByTagName("infNF");
+            $this->infOutros = $this->dom->getElementsByTagName("infOutros");
             $this->infNFe = $this->dom->getElementsByTagName("infNFe");
             $this->compl = $this->dom->getElementsByTagName("compl");
             $this->ICMS = $this->dom->getElementsByTagName("ICMS")->item(0);
@@ -2280,6 +2283,40 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
             $cnpj = $this->formatCNPJCPF($this->rem);
             $doc = $this->infNF->item($k)->getElementsByTagName('serie')->item(0)->nodeValue;
             $doc .= '/' . $this->infNF->item($k)->getElementsByTagName('nDoc')->item(0)->nodeValue;
+            if ($auxX > $w * 0.90)
+            {
+                $yIniDados = $yIniDados + 4;
+                $auxX = $oldX;
+            }
+            $texto = $tp;
+            $aFont = array(
+                'font' => $this->fontePadrao,
+                'size' => 8,
+                'style' => '');
+            $this->__textBox($auxX, $yIniDados, $w * 0.10, $h, $texto, $aFont, 'T', 'L', 0, '');
+            $auxX += $w * 0.09;
+            $texto = $cnpj;
+            $aFont = array(
+                'font' => $this->fontePadrao,
+                'size' => 8,
+                'style' => '');
+            $this->__textBox($auxX, $yIniDados, $w * 0.23, $h, $texto, $aFont, 'T', 'L', 0, '');
+            $auxX += $w * 0.28;
+            $texto = $doc;
+            $aFont = array(
+                'font' => $this->fontePadrao,
+                'size' => 8,
+                'style' => '');
+            $this->__textBox($auxX, $yIniDados, $w * 0.13, $h, $texto, $aFont, 'T', 'L', 0, '');
+            $auxX += $w * 0.14;
+        }
+        // Usa o mesmo cabeçalho de infNF e infNFe:
+		// TIPO DOC-> 00, 10 ou 99; CNPJ/CHAVE-> Remetente; SÉRIE/NRO. DOCUMENTO-> nDoc somente.
+		foreach ($this->infOutros as $k => $d)
+        {
+            $tp = $this->infOutros->item($k)->getElementsByTagName('tpDoc')->item(0)->nodeValue;
+            $cnpj = $this->formatCNPJCPF($this->rem);
+            $doc = $this->infOutros->item($k)->getElementsByTagName('nDoc')->item(0)->nodeValue;
             if ($auxX > $w * 0.90)
             {
                 $yIniDados = $yIniDados + 4;
