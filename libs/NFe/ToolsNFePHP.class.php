@@ -83,6 +83,31 @@ class ToolsNFePHP
 {
 
     /**
+     * Sefaz Virtual Ambiente Nacional (SVAN)
+     */
+    const CONTINGENCIA_SVAN = 'SVAN';
+
+    /**
+     * Sefaz Virtual de Contingência Rio Grande do Sul (SVC-RS)
+     */
+    const CONTINGENCIA_SVCRS = 'SVCRS';
+
+    /**
+     * Sefaz Virtual Rio Grande do Sul (SVRS)
+     */
+    const CONTINGENCIA_SVRS = 'SVRS';
+
+    /**
+     * Sefaz Virtual de Contingência Ambiente Nacional (SVC-AN)
+     */
+    const CONTINGENCIA_SVCAN = 'SVCAN';
+
+    /**
+     * Sistema de Contingência do Ambiente Nacional  (SC-AN)
+     */
+    const CONTINGENCIA_SCAN = 'SCAN';
+
+    /**
      * raizDir
      * Diretorio raiz da API
      * @var string
@@ -1635,9 +1660,9 @@ class ToolsNFePHP
             //verifica se contingencias SVCAN ou SVCRS estão habilitadas, se não estiverem
             //usará a própria UF, logo abaixo ao carregar os webservices
             if ($this->enableSVCAN) {
-                $siglaUF = 'SVCAN';
+                $siglaUF = self::CONTINGENCIA_SVCAN;
             } elseif ($this->enableSVCRS) {
-                $siglaUF = 'SVCRS';
+                $siglaUF = self::CONTINGENCIA_SVCRS;
             }
             $aURL = $this->pLoadSEFAZ($tpAmb, $siglaUF);
             //identificação do serviço
@@ -1957,7 +1982,7 @@ class ToolsNFePHP
             if (!@$this->enableSCAN) {   // TODO 08/Julho fmertins: esta prop não existe mais, verificar como será refatorado (commit https://github.com/nfephp-org/nfephp/commit/bfbb78393e582b8a4291c441a31ef17c58b024fa)
                 $aURL = $this->aURL;
             } else {
-                $aURL = $this->pLoadSEFAZ($this->tpAmb, 'SCAN');
+                $aURL = $this->pLoadSEFAZ($this->tpAmb, self::CONTINGENCIA_SCAN);
             }
             //identificação do serviço: autorização de NF-e
             $servico = 'NfeAutorizacao';
@@ -2112,7 +2137,7 @@ class ToolsNFePHP
             //verifica se o SCAN esta habilitado
             // TODO 13/Julho fmertins: atributo "enableSCAN" precisa ser refatorado, esta gerando notice...
             if ($this->enableSCAN || $ctpEmissao == '3') {
-                $aURL = $this->pLoadSEFAZ($tpAmb, 'SCAN');
+                $aURL = $this->pLoadSEFAZ($tpAmb, self::CONTINGENCIA_SCAN);
             }
             if ($recibo == '' && $chave == '') {
                 $msg = "ERRO. Favor indicar o numero do recibo ou "
@@ -2884,7 +2909,7 @@ class ToolsNFePHP
                 $aURL = $this->pLoadSEFAZ($tpAmb, $this->siglaUF);
             }
         } else {
-            $aURL = $this->pLoadSEFAZ($this->tpAmb, 'SCAN');
+            $aURL = $this->pLoadSEFAZ($this->tpAmb, self::CONTINGENCIA_SCAN);
         }
         //identificação do serviço
         $servico = 'NfeInutilizacao';
@@ -3072,7 +3097,7 @@ class ToolsNFePHP
             if (! $this->enableSCAN) {
                 $aURL = $this->aURL;
             } else {
-                $aURL = $this->pLoadSEFAZ($tpAmb, 'SCAN');
+                $aURL = $this->pLoadSEFAZ($tpAmb, self::CONTINGENCIA_SCAN);
             }
             $numLote = $this->pGeraNumLote();
             //Data e hora do evento no formato AAAA-MM-DDTHH:MM:SSTZD (UTC)
@@ -3313,7 +3338,7 @@ class ToolsNFePHP
             if (!$this->enableSCAN) {
                 $aURL = $this->aURL;
             } else {
-                $aURL = $this->pLoadSEFAZ($tpAmb, 'SCAN');
+                $aURL = $this->pLoadSEFAZ($tpAmb, self::CONTINGENCIA_SCAN);
             }
             $numLote = $this->pGeraNumLote();
             //Data e hora do evento no formato AAAA-MM-DDTHH:MM:SSTZD (UTC)
@@ -4617,7 +4642,7 @@ class ToolsNFePHP
                 $sAmbiente = 'homologacao';
             }
             if ($this->enableSCAN) {
-                $siglaUF = 'SCAN';
+                $siglaUF = self::CONTINGENCIA_SCAN;
             }
             //habilita verificação de erros
             libxml_use_internal_errors(true);
@@ -4922,9 +4947,9 @@ class ToolsNFePHP
      * ativaContingencia
      * @param string $tipo SVCAN ou SVCRS
      */
-    public function ativaContingencia($tipo = 'SVCAN')
+    public function ativaContingencia($tipo = self::CONTINGENCIA_SVCAN)
     {
-        if ($tipo == 'SVCAN') {
+        if ($tipo == self::CONTINGENCIA_SVCAN) {
             $this->enableSVCAN = true;
             $this->enableSVCRS = false;
         } else {
