@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.0.78
+ * @version   3.0.79
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -43,6 +43,7 @@
  *              Bruno Bastos <brunomauro at gmail dot com>
  *              Bruno Lima <brunofileh at gmail.com>
  *              Bruno Tadeu Porto <brunotporto at gmail dot com>
+ *              Cleiton Perin <cperin20 at gmail dot com>
  *              Daniel Viana <daniellista at gmail dot com>
  *              Diego Mosela <diego dot caicai at gmail dot com>
  *              Edilson Carlos Belluomini <edilson at maxihelp dot com dot br>
@@ -2614,17 +2615,33 @@ class ToolsNFePHP
      *
      * @name inutNF
      * @param  string  $nAno       ano com 2 digitos
-     * @param   string  $nSerie     serie da NF 1 até 3 digitos
-     * @param   integer $nIni       numero inicial 1 até 9 digitos zero a esq
-     * @param   integer $nFin       numero Final 1 até 9 digitos zero a esq
-     * @param   string  $xJust      justificativa 15 até 255 digitos
-     * @param   string  $tpAmb      Tipo de ambiente 1-produção ou 2 homologação
-     * @param   integer $modSOAP    1 usa __sendSOAP e 2 usa __sendSOAP2
+     * @param  string  $nSerie     serie da NF 1 até 3 digitos
+     * @param  integer $nIni       numero inicial 1 até 9 digitos zero a esq
+     * @param  integer $nFin       numero Final 1 até 9 digitos zero a esq
+     * @param  string  $xJust      justificativa 15 até 255 digitos
+     * @param  string  $tpAmb      Tipo de ambiente 1-produção ou 2 homologação
+     * @param  integer $modSOAP    1 usa __sendSOAP e 2 usa __sendSOAP2
+     * @param  array $aRetorno     Array passada como referencia, irá conter o retorna da SEFAZ
      * @return mixed false ou string com o xml do processo de inutilização
      */
-    public function inutNF($nAno='',$nSerie='1',$nIni='',$nFin='',$xJust='',$tpAmb='',$modSOAP='2'){
+    public function inutNF($nAno = '', $nSerie = '1', $nIni = '', $nFin = '', $xJust = '', $tpAmb = '', $modSOAP = '2', &$aRetorno = array()) {
+        $aRetorno = array(
+            'bStat'=>false,
+            'tpAmb'=>'',
+            'verAplic'=>'',
+            'cStat'=>'',
+            'xMotivo'=>'',
+            'cUF'=>'',
+            'ano'=>'',
+            'CNPJ'=>'',
+            'mod'=>'',
+            'serie'=>'',
+            'nNFIni'=>'',
+            'nNFFin'=>'',
+            'dhRecbto'=>'',
+            'nProt'=>'');
         //valida dos dados de entrada
-        if($nAno == '' || $nIni == '' || $nFin == '' || $xJust == '' ){
+        if ($nAno == '' || $nIni == '' || $nFin == '' || $xJust == '') {
             $msg = "Não foi passado algum dos parametos necessários ANO=$nAno inicio=$nIni fim=$nFin justificativa=$xJust.\n";
             $this->__setError($msg);
             if ($this->exceptions) {
@@ -2633,7 +2650,7 @@ class ToolsNFePHP
             return false;
         }
         //valida justificativa
-        if (strlen($xJust) < 15){
+        if (strlen($xJust) < 15) {
             $msg = "A justificativa deve ter pelo menos 15 digitos!!";
             $this->__setError($msg);
             if ($this->exceptions) {
@@ -2641,7 +2658,7 @@ class ToolsNFePHP
             }
             return false;
         }
-        if (strlen($xJust) > 255){
+        if (strlen($xJust) > 255) {
             $msg = "A justificativa deve ter no máximo 255 digitos!!";
             $this->__setError($msg);
             if ($this->exceptions) {
@@ -2652,7 +2669,7 @@ class ToolsNFePHP
         //remove acentos e outros caracteres da justificativa
         $xJust = $this->__cleanString($xJust);
         // valida o campo ano
-        if( strlen($nAno) > 2 ){
+        if (strlen($nAno) > 2) {
             $msg = "O ano tem mais de 2 digitos. Corrija e refaça o processo!!";
             $this->__setError($msg);
             if ($this->exceptions) {
@@ -2660,7 +2677,7 @@ class ToolsNFePHP
             }
             return false;
         } else {
-            if (strlen($nAno) < 2 ){
+            if (strlen($nAno) < 2) {
                 $msg = "O ano tem menos de 2 digitos. Corrija e refaça o processo!!";
                 $this->__setError($msg);
                 if ($this->exceptions) {
@@ -2670,7 +2687,7 @@ class ToolsNFePHP
             }
         }
         //valida o campo serie
-        if( strlen($nSerie) == 0 || strlen($nSerie) > 3){
+        if (strlen($nSerie) == 0 || strlen($nSerie) > 3) {
             $msg = "O campo serie está errado: $nSerie. Corrija e refaça o processo!!";
             $this->__setError($msg);
             if ($this->exceptions) {
@@ -2679,7 +2696,7 @@ class ToolsNFePHP
             return false;
         }
         //valida o campo numero inicial
-        if (strlen($nIni) < 1 || strlen($nIni) > 9){
+        if (strlen($nIni) < 1 || strlen($nIni) > 9) {
             $msg = "O campo numero inicial está errado: $nIni. Corrija e refaça o processo!!";
             $this->__setError($msg);
             if ($this->exceptions) {
@@ -2688,7 +2705,7 @@ class ToolsNFePHP
             return false;
         }
         //valida o campo numero final
-        if (strlen($nFin) < 1 || strlen($nFin) > 9){
+        if (strlen($nFin) < 1 || strlen($nFin) > 9) {
             $msg = "O campo numero final está errado: $nFin. Corrija e refaça o processo!!";
             $this->__setError($msg);
             if ($this->exceptions) {
@@ -2697,14 +2714,14 @@ class ToolsNFePHP
             return false;
         }
         //valida tipo de ambiente
-        if($tpAmb == ''){
+        if ($tpAmb == '') {
             $tpAmb = $this->tpAmb;
         }
         //verifica se o SCAN esta habilitado
-        if (!$this->enableSCAN){
-            if($tpAmb == $this->tpAmb){
+        if (!$this->enableSCAN) {
+            if ($tpAmb == $this->tpAmb) {
                 $aURL = $this->aURL;
-            }else{
+            } else {
                 $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . $this->xmlURLfile,$tpAmb,$this->UF);
             }
         } else {
@@ -2745,15 +2762,15 @@ class ToolsNFePHP
         $dXML .= '</infInut>';
         $dXML .= '</inutNFe>';
         //assina a lsolicitação de inutilização
-        $dXML = $this->signXML($dXML,'infInut');
+        $dXML = $this->signXML($dXML, 'infInut');
         $dados = '<nfeDadosMsg xmlns="'.$namespace.'">'.$dXML.'</nfeDadosMsg>';
         //remove as tags xml que porventura tenham sido inclusas
-        $dados = str_replace('<?xml version="1.0"?>','', $dados);
-        $dados = str_replace('<?xml version="1.0" encoding="utf-8"?>','', $dados);
-        $dados = str_replace('<?xml version="1.0" encoding="UTF-8"?>','', $dados);
-        $dados = str_replace(array("\r","\n","\s"),"", $dados);
+        $dados = str_replace('<?xml version="1.0"?>', '', $dados);
+        $dados = str_replace('<?xml version="1.0" encoding="utf-8"?>', '', $dados);
+        $dados = str_replace('<?xml version="1.0" encoding="UTF-8"?>', '', $dados);
+        $dados = str_replace(array("\r","\n","\s"), "", $dados);
         //grava a solicitação de inutilização
-        if(!file_put_contents($this->temDir.$id.'-pedInut.xml', $dXML)){
+        if (!file_put_contents($this->temDir.$id.'-pedInut.xml', $dXML)) {
             $msg = "Falha na gravação do pedido de inutilização!!";
             $this->__setError($msg);
             if ($this->exceptions) {
@@ -2761,13 +2778,13 @@ class ToolsNFePHP
             }
         }
         //envia a solicitação via SOAP
-        if ($modSOAP == '2'){
+        if ($modSOAP == '2') {
             $retorno = $this->__sendSOAP2($urlservico, $namespace, $cabec, $dados, $metodo, $this->tpAmb);
         } else {
-            $retorno = $this->__sendSOAP($urlservico, $namespace, $cabec, $dados, $metodo, $this->tpAmb,$this->UF);
+            $retorno = $this->__sendSOAP($urlservico, $namespace, $cabec, $dados, $metodo, $this->tpAmb, $this->UF);
         }
         //verifica o retorno
-        if (!$retorno){
+        if (!$retorno) {
             $msg = "Nao houve retorno Soap verifique o debug!!";
             $this->__setError($msg);
             if ($this->exceptions) {
@@ -2779,10 +2796,10 @@ class ToolsNFePHP
         $doc = new DOMDocument('1.0', 'utf-8'); //cria objeto DOM
         $doc->formatOutput = false;
         $doc->preserveWhiteSpace = false;
-        $doc->loadXML($retorno,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
+        $doc->loadXML($retorno, LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
         $cStat = !empty($doc->getElementsByTagName('cStat')->item(0)->nodeValue) ? $doc->getElementsByTagName('cStat')->item(0)->nodeValue : '';
         $xMotivo = !empty($doc->getElementsByTagName('xMotivo')->item(0)->nodeValue) ? $doc->getElementsByTagName('xMotivo')->item(0)->nodeValue : '';
-        if ($cStat == ''){
+        if ($cStat == '') {
             //houve erro
             $msg = "Nao houve retorno Soap verifique o debug!!";
             $this->__setError($msg);
@@ -2792,7 +2809,7 @@ class ToolsNFePHP
             return false;
         }
         //verificar o status da solicitação
-        if ($cStat != '102'){
+        if ($cStat != '102') {
             //houve erro
             $msg = "Rejeição : $cStat - $xMotivo";
             $this->__setError($msg);
@@ -2801,53 +2818,81 @@ class ToolsNFePHP
             }
             return false;
         }
-       //gravar o retorno na pasta temp
-       $nome = $this->temDir.$id.'-retInut.xml';
-       $nome = $doc->save($nome);
-       $retInutNFe = $doc->getElementsByTagName("retInutNFe")->item(0);
-       //preparar o processo de inutilização
-       $inut = new DOMDocument('1.0', 'utf-8'); //cria objeto DOM
-       $inut->formatOutput = false;
-       $inut->preserveWhiteSpace = false;
-       $inut->loadXML($dXML,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
-       $inutNFe = $inut->getElementsByTagName("inutNFe")->item(0);
-       //Processo completo solicitação + protocolo
-       $procInut = new DOMDocument('1.0', 'utf-8');; //cria objeto DOM
-       $procInut->formatOutput = false;
-       $procInut->preserveWhiteSpace = false;
-       //cria a tag procInutNFe
-       $procInutNFe = $procInut->createElement('procInutNFe');
-       $procInut->appendChild($procInutNFe);
-       //estabele o atributo de versão
-       $inutProc_att1 = $procInutNFe->appendChild($procInut->createAttribute('versao'));
-       $inutProc_att1->appendChild($procInut->createTextNode($versao));
-       //estabelece o atributo xmlns
-       $inutProc_att2 = $procInutNFe->appendChild($procInut->createAttribute('xmlns'));
-       $inutProc_att2->appendChild($procInut->createTextNode($this->URLPortal));
-       //carrega o node cancNFe
-       $node1 = $procInut->importNode($inutNFe, true);
-       $procInutNFe->appendChild($node1);
-       //carrega o node retEvento
-       $node2 = $procInut->importNode($retInutNFe, true);
-       $procInutNFe->appendChild($node2);
-       //salva o xml como string em uma variável
-       $procXML = $procInut->saveXML();
-       //remove as informações indesejadas
-       $procXML = str_replace("xmlns:default=\"http://www.w3.org/2000/09/xmldsig#\"",'',$procXML);
-       $procXML = str_replace('default:','',$procXML);
-       $procXML = str_replace(':default','',$procXML);
-       $procXML = str_replace("\n",'',$procXML);
-       $procXML = str_replace("\r",'',$procXML);
-       $procXML = str_replace("\s",'',$procXML);
-       //salva o arquivo xml
-       if (!file_put_contents($this->inuDir."$id-procInut.xml", $procXML)){
-           $msg = "Falha na gravação da procInut!!\n";
-           $this->__setError($msg);
-           if ($this->exceptions) {
-               throw new nfephpException($msg);
-           }
-       }
-       return $procXML;
+        //gravar o retorno na pasta temp
+        $nome = $this->temDir.$id.'-retInut.xml';
+        $nome = $doc->save($nome);
+        $aRetorno['bStat'] = true;
+        // tipo de ambiente
+        $aRetorno['tpAmb'] = $doc->getElementsByTagName('tpAmb')->item(0)->nodeValue;
+        // versÃ£o do aplicativo
+        $aRetorno['verAplic'] = $doc->getElementsByTagName('verAplic')->item(0)->nodeValue;
+        // status do serviço
+        $aRetorno['cStat'] = $cStat;
+        // motivo da resposta (opcional)
+        $aRetorno['xMotivo'] = $xMotivo;
+        // Código da UF que atendeu a solicitação
+        $aRetorno['cUF'] = $doc->getElementsByTagName('cUF')->item(0)->nodeValue;
+        // Ano de inutilização da numeração
+        $aRetorno['ano'] = $doc->getElementsByTagName('ano')->item(0)->nodeValue;
+        // CNPJ do emitente
+        $aRetorno['CNPJ'] = $doc->getElementsByTagName('CNPJ')->item(0)->nodeValue;
+        // Modelo da NF-e
+        $aRetorno['mod'] = $doc->getElementsByTagName('mod')->item(0)->nodeValue;
+        // Série da NF-e
+        $aRetorno['serie'] = $doc->getElementsByTagName('serie')->item(0)->nodeValue;
+        // Número da NF-e inicial a ser inutilizada
+        $aRetorno['nNFIni'] = $doc->getElementsByTagName('nNFIni')->item(0)->nodeValue;
+        // Número da NF-e final a ser inutilizada
+        $aRetorno['nNFFin'] = $doc->getElementsByTagName('nNFFin')->item(0)->nodeValue;
+        // data e hora do retorno a operaÃ§Ã£o (opcional)
+        $aRetorno['dhRecbto'] = !empty($doc->getElementsByTagName('dhRecbto')->item(0)->nodeValue) ?
+        date("d/m/Y H:i:s", $this->pConvertTime($doc->getElementsByTagName('dhRecbto')->item(0)->nodeValue)) : '';
+        // Número do Protocolo de Inutilização
+        $aRetorno['nProt'] = $doc->getElementsByTagName('nProt')->item(0)->nodeValue;
+        $retInutNFe = $doc->getElementsByTagName("retInutNFe")->item(0);
+        //preparar o processo de inutilização
+        $inut = new DOMDocument('1.0', 'utf-8'); //cria objeto DOM
+        $inut->formatOutput = false;
+        $inut->preserveWhiteSpace = false;
+        $inut->loadXML($dXML, LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
+        $inutNFe = $inut->getElementsByTagName("inutNFe")->item(0);
+        //Processo completo solicitação + protocolo
+        $procInut = new DOMDocument('1.0', 'utf-8'); //cria objeto DOM
+        $procInut->formatOutput = false;
+        $procInut->preserveWhiteSpace = false;
+        //cria a tag procInutNFe
+        $procInutNFe = $procInut->createElement('procInutNFe');
+        $procInut->appendChild($procInutNFe);
+        //estabele o atributo de versão
+        $inutProc_att1 = $procInutNFe->appendChild($procInut->createAttribute('versao'));
+        $inutProc_att1->appendChild($procInut->createTextNode($versao));
+        //estabelece o atributo xmlns
+        $inutProc_att2 = $procInutNFe->appendChild($procInut->createAttribute('xmlns'));
+        $inutProc_att2->appendChild($procInut->createTextNode($this->URLPortal));
+        //carrega o node cancNFe
+        $node1 = $procInut->importNode($inutNFe, true);
+        $procInutNFe->appendChild($node1);
+        //carrega o node retEvento
+        $node2 = $procInut->importNode($retInutNFe, true);
+        $procInutNFe->appendChild($node2);
+        //salva o xml como string em uma variável
+        $procXML = $procInut->saveXML();
+        //remove as informações indesejadas
+        $procXML = str_replace("xmlns:default=\"http://www.w3.org/2000/09/xmldsig#\"", '', $procXML);
+        $procXML = str_replace('default:', '', $procXML);
+        $procXML = str_replace(':default', '', $procXML);
+        $procXML = str_replace("\n", '', $procXML);
+        $procXML = str_replace("\r", '', $procXML);
+        $procXML = str_replace("\s", '', $procXML);
+        //salva o arquivo xml
+        if (!file_put_contents($this->inuDir."$id-procInut.xml", $procXML)) {
+            $msg = "Falha na gravação da procInut!!\n";
+            $this->__setError($msg);
+            if ($this->exceptions) {
+                throw new nfephpException($msg);
+            }
+        }
+        return $procXML;
     } //fim inutNFe
 
     /**
@@ -2861,26 +2906,36 @@ class ToolsNFePHP
      * @param string $xJust
      * @param number $tpAmb
      * @param number $modSOAP
+     * @param array $aRetorno
      */
-    public function cancelEvent($chNFe='',$nProt='',$xJust='',$tpAmb='',$modSOAP='2'){
-        try{
+    public function cancelEvent($chNFe = '', $nProt = '', $xJust = '', $tpAmb = '', $modSOAP = '2', &$aRetorno = array()){
+        try {
+            $aRetorno = array(
+                'bStat'=>false,
+                'tpAmb'=>'',
+                'verAplic'=>'',
+                'cStat'=>'',
+                'xMotivo'=>'',
+                'nProt'=>'',
+                'chNFe'=>'',
+                'dhRecbto'=>'');
             //validação dos dados de entrada
-            if($chNFe == '' || $nProt == '' || $xJust == ''){
+            if ($chNFe == '' || $nProt == '' || $xJust == '') {
                 $msg = "Não foi passado algum dos parâmetros necessários ID=$chNFe ou protocolo=$nProt ou justificativa=$xJust.";
                 throw new nfephpException($msg);
             }
-            if($tpAmb == ''){
+            if ($tpAmb == '') {
                 $tpAmb = $this->tpAmb;
             }
-            if (strlen($xJust) < 15){
+            if (strlen($xJust) < 15) {
                 $msg = "A justificativa deve ter pelo menos 15 digitos!!";
                 throw new nfephpException($msg);
             }
-            if (strlen($xJust) > 255){
+            if (strlen($xJust) > 255) {
                 $msg = "A justificativa deve ter no máximo 255 digitos!!";
                 throw new nfephpException($msg);
             }
-            if (strlen($chNFe) != 44){
+            if (strlen($chNFe) != 44) {
                 $msg = "Uma chave de NFe válida não foi passada como parâmetro $chNFe.";
                 throw new nfephpException($msg);
             }
@@ -2892,18 +2947,18 @@ class ToolsNFePHP
             //remove qualquer caracter especial
             $xJust = $this->__cleanString($xJust);
             //decompor a chNFe e pegar o tipo de emissão
-            $tpEmiss = substr($chNFe, 34, 1);
+            //$tpEmiss = substr($chNFe, 34, 1);
             //verifica se o SCAN esta habilitado
-            if (!$this->enableSCAN){
+            if (!$this->enableSCAN) {
                 $aURL = $this->aURL;
             } else {
                 $aURL = $this->loadSEFAZ( $this->raizDir . 'config' . DIRECTORY_SEPARATOR . $this->xmlURLfile,$tpAmb,'SCAN');
             }
-            $numLote = substr(str_replace(',','',number_format(microtime(true)*1000000,0)),0,15);
+            $numLote = substr(str_replace(',', '', number_format(microtime(true)*1000000, 0)), 0, 15);
             //Data e hora do evento no formato AAAA-MM-DDTHH:MM:SSTZD (UTC)
             $dhEvento = date('Y-m-d').'T'.date('H:i:s').$this->timeZone;
             //se o envio for para svan mudar o numero no orgão para 91
-            if ($this->enableSVAN){
+            if ($this->enableSVAN) {
                 $cOrgao='90';
             } else {
                 $cOrgao=$this->cUF;
@@ -2922,7 +2977,7 @@ class ToolsNFePHP
             // 2   +    6     +    44         +   2  = 54 digitos
             //“ID” + tpEvento + chave da NF-e + nSeqEvento
             //garantir que existam 2 digitos em nSeqEvento para montar o ID com 54 digitos
-            if (strlen(trim($nSeqEvento))==1){
+            if (strlen(trim($nSeqEvento))==1) {
                 $zenSeqEvento = str_pad($nSeqEvento, 2, "0", STR_PAD_LEFT);
             } else {
                 $zenSeqEvento = trim($nSeqEvento);
@@ -2964,18 +3019,18 @@ class ToolsNFePHP
             $dados = "<nfeDadosMsg xmlns=\"$namespace\">$dados</nfeDadosMsg>";
             //grava solicitação em temp
             $arqName = $this->temDir."$chNFe-$nSeqEvento-eventCanc.xml";
-            if (!file_put_contents($arqName,$Ev)){
+            if (!file_put_contents($arqName, $Ev)) {
                 $msg = "Falha na gravação do arquivo $arqName";
                 $this->__setError($msg);
             }
             //envia dados via SOAP
-            if ($modSOAP == '2'){
+            if ($modSOAP == '2') {
                 $retorno = $this->__sendSOAP2($urlservico, $namespace, $cabec, $dados, $metodo, $tpAmb);
             } else {
-                $retorno = $this->__sendSOAP($urlservico, $namespace, $cabec, $dados, $metodo, $tpAmb,$this->UF);
+                $retorno = $this->__sendSOAP($urlservico, $namespace, $cabec, $dados, $metodo, $tpAmb, $this->UF);
             }
             //verifica o retorno
-            if (!$retorno){
+            if (!$retorno) {
                 //não houve retorno
                 $msg = "Nao houve retorno Soap verifique a mensagem de erro e o debug!!";
                 throw new nfephpException($msg);
@@ -2984,23 +3039,23 @@ class ToolsNFePHP
             $xmlretEvent = new DOMDocument('1.0', 'utf-8'); //cria objeto DOM
             $xmlretEvent->formatOutput = false;
             $xmlretEvent->preserveWhiteSpace = false;
-            $xmlretEvent->loadXML($retorno,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
+            $xmlretEvent->loadXML($retorno, LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
             $retEnvEvento = $xmlretEvent->getElementsByTagName("retEnvEvento")->item(0);
             $cStat = !empty($retEnvEvento->getElementsByTagName('cStat')->item(0)->nodeValue) ? $retEnvEvento->getElementsByTagName('cStat')->item(0)->nodeValue : '';
             $xMotivo = !empty($retEnvEvento->getElementsByTagName('xMotivo')->item(0)->nodeValue) ? $retEnvEvento->getElementsByTagName('xMotivo')->item(0)->nodeValue : '';
-            if ($cStat == ''){
+            if ($cStat == '') {
                 //houve erro
                 $msg = "cStat está em branco, houve erro na comunicação Soap verifique a mensagem de erro e o debug!!";
                 throw new nfephpException($msg);
             }
             //tratar erro de versão do XML
-            if ($cStat == '238' || $cStat == '239'){
+            if ($cStat == '238' || $cStat == '239') {
                 $this->__trata239($retorno, $this->UF, $tpAmb, $servico, $versao);
                 $msg = "Versão do arquivo XML não suportada no webservice!!";
                 throw new nfephpException($msg);
             }
             //erro no processamento cStat <> 128
-            if ($cStat != 128){
+            if ($cStat != 128) {
                 //se cStat <> 135 houve erro e o lote foi rejeitado
                 $msg = "Retorno de ERRO: $cStat - $xMotivo";
                 throw new nfephpException($msg);
@@ -3009,20 +3064,36 @@ class ToolsNFePHP
             $retEvento = $xmlretEvent->getElementsByTagName("retEvento")->item(0);
             $cStat = !empty($retEvento->getElementsByTagName('cStat')->item(0)->nodeValue) ? $retEvento->getElementsByTagName('cStat')->item(0)->nodeValue : '';
             $xMotivo = !empty($retEvento->getElementsByTagName('xMotivo')->item(0)->nodeValue) ? $retEvento->getElementsByTagName('xMotivo')->item(0)->nodeValue : '';
-            if ($cStat != 135 && $cStat != 155){
+            if ($cStat != 135 && $cStat != 155) {
                 //se cStat <> 135 houve erro e o lote foi rejeitado
                 $msg = "Retorno de ERRO: $cStat - $xMotivo";
                 throw new nfephpException($msg);
             }
+            $aRetorno['bStat'] = true;
+            // tipo de ambiente
+            $aRetorno['tpAmb'] = $retEvento->getElementsByTagName('tpAmb')->item(0)->nodeValue;
+            // versÃ£o do aplicativo
+            $aRetorno['verAplic'] = $retEvento->getElementsByTagName('verAplic')->item(0)->nodeValue;
+            // status do serviÃ§o
+            $aRetorno['cStat'] = $retEvento->getElementsByTagName('cStat')->item(0)->nodeValue;
+            // motivo da resposta (opcional)
+            $aRetorno['xMotivo'] = $retEvento->getElementsByTagName('xMotivo')->item(0)->nodeValue;
+            // Numero de Protocolo
+            $aRetorno['nProt'] = $retEvento->getElementsByTagName('nProt')->item(0)->nodeValue;
+            // Chave
+            $aRetorno['chNFe'] = $retEvento->getElementsByTagName('chNFe')->item(0)->nodeValue;
+            // data e hora da mensagem (opcional)
+            $aRetorno['dhRecbto'] = !empty($retEvento->getElementsByTagName('dhRegEvento')->item(0)->nodeValue) ?
+            date("d/m/Y H:i:s", $this->pConvertTime($retEvento->getElementsByTagName('dhRegEvento')->item(0)->nodeValue)) : '';
             //o evento foi aceito cStat == 135 ou cStat == 155
             //carregar o evento
             $xmlenvEvento = new DOMDocument('1.0', 'utf-8'); //cria objeto DOM
             $xmlenvEvento->formatOutput = false;
             $xmlenvEvento->preserveWhiteSpace = false;
-            $xmlenvEvento->loadXML($Ev,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
+            $xmlenvEvento->loadXML($Ev, LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
             $evento = $xmlenvEvento->getElementsByTagName("evento")->item(0);
             //Processo completo solicitação + protocolo
-            $xmlprocEvento = new DOMDocument('1.0', 'utf-8');; //cria objeto DOM
+            $xmlprocEvento = new DOMDocument('1.0', 'utf-8'); //cria objeto DOM
             $xmlprocEvento->formatOutput = false;
             $xmlprocEvento->preserveWhiteSpace = false;
             //cria a tag procEventoNFe
@@ -3043,15 +3114,15 @@ class ToolsNFePHP
             //salva o xml como string em uma variável
             $procXML = $xmlprocEvento->saveXML();
             //remove as informações indesejadas
-            $procXML = str_replace("xmlns:default=\"http://www.w3.org/2000/09/xmldsig#\"",'',$procXML);
-            $procXML = str_replace('default:','',$procXML);
-            $procXML = str_replace(':default','',$procXML);
-            $procXML = str_replace("\n",'',$procXML);
-            $procXML = str_replace("\r",'',$procXML);
-            $procXML = str_replace("\s",'',$procXML);
+            $procXML = str_replace("xmlns:default=\"http://www.w3.org/2000/09/xmldsig#\"", '', $procXML);
+            $procXML = str_replace('default:', '', $procXML);
+            $procXML = str_replace(':default', '', $procXML);
+            $procXML = str_replace("\n", '', $procXML);
+            $procXML = str_replace("\r", '', $procXML);
+            $procXML = str_replace("\s", '', $procXML);
             //salva o arquivo xml
             $arqName = $this->canDir."$chNFe-$nSeqEvento-procCanc.xml";
-            if (!file_put_contents($arqName, $procXML)){
+            if (!file_put_contents($arqName, $procXML)) {
                 $msg = "Falha na gravação do arquivo $arqName";
                 $this->__setError($msg);
             }
