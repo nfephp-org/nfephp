@@ -45,7 +45,7 @@ class CommonNFePHP
      * @param none
      * @return none
      */
-    protected function __adicionaLogoPeloCnpj()
+    protected function pAdicionaLogoPeloCnpj()
     {
         if (!isset($this->logomarca)) {
             return;
@@ -84,17 +84,17 @@ class CommonNFePHP
 
     
     /**
-     * __simpleGetValue
+     * pSimpleGetValue
      * Extrai o valor do node DOM
      * @author Marcos Diez
      * @param DOM $theObj
      * @param string $keyName identificador da TAG do xml
      * @param string $extraTextBefore prefixo do retorno
-     * @param string extraTextAfter sulfixo do retorno
+     * @param string extraTextAfter sufixo do retorno
      * @param number itemNum numero do item a ser retornado
      * @return string
      */
-    protected function __simpleGetValue($theObj, $keyName , $extraTextBefore = '', $extraTextAfter = '', $itemNum = 0)
+    protected function pSimpleGetValue($theObj, $keyName , $extraTextBefore = '', $extraTextAfter = '', $itemNum = 0)
     {
         if (!isset($theObj) || !is_object($theObj)) {
             return '';
@@ -104,7 +104,7 @@ class CommonNFePHP
             return $extraTextBefore . trim($vct->nodeValue) . $extraTextAfter;
         }
         return '';
-    } //fim __simpleGetValue
+    } //fim pSimpleGetValue
 
     /**
      * __simpleGetDate
@@ -115,7 +115,7 @@ class CommonNFePHP
      * @param string $extraText prefixo do retorno
      * @return string
      */
-    protected function __simpleGetDate($theObj, $keyName, $extraText = '')
+    protected function pSimpleGetDate($theObj, $keyName, $extraText = '')
     {
         if (!isset($theObj) || !is_object($theObj)) {
             return '';
@@ -134,7 +134,7 @@ class CommonNFePHP
      * @param string $numero
      * @return integer modulo11 do numero passado
      */
-    protected function __modulo11($numero = '')
+    protected function pModulo11($numero = '')
     {
         if ($numero == '') {
             return '';
@@ -163,7 +163,7 @@ class CommonNFePHP
      * @param string $data Parâmetro extraido da NFe
      * @return string Formatada para apresentação da data no padrão brasileiro
      */
-    protected function __ymd2dmy($data = '')
+    protected function pYmd2dmy($data = '')
     {
         if (!empty($data)) {
             $needle = "/";
@@ -182,7 +182,7 @@ class CommonNFePHP
      * @param string $DH Informação de data e tempo extraida da NFe
      * @return timestamp UNIX Para uso com a funçao date do php
      */
-    protected function __convertTime($DH)
+    protected function pConvertTime($DH)
     {
         if ($DH) {
             $aDH = explode('T', $DH);
@@ -202,7 +202,7 @@ class CommonNFePHP
      * @param string $mascara Regra de formatção da string (ex. ##.###.###/####-##)
      * @return string Retorna o campo formatado
      */
-    protected function __format($campo = '', $mascara = '')
+    protected function pFormat($campo = '', $mascara = '')
     {
         //remove qualquer formatação que ainda exista
         $sLimpo = preg_replace("(/[' '-./ t]/)", '', $campo);
@@ -289,7 +289,7 @@ class CommonNFePHP
      * @param array $aFont
      * @return number numero de linhas
      */
-    protected function __getNumLines($text, $width, $aFont = array('font'=>'Times','size'=>8,'style'=>''))
+    protected function pGetNumLines($text, $width, $aFont = array('font'=>'Times','size'=>8,'style'=>''))
     {
         $text = trim($text);
         $this->pdf->SetFont($aFont['font'], $aFont['style'], $aFont['size']);
@@ -321,7 +321,7 @@ class CommonNFePHP
      * @param number $vOffSet incremento forçado na na posição Y
      * @return number $height Qual a altura necessária para desenhar esta textBox
      */
-    protected function __textBox(
+    protected function pTextBox(
         $x,
         $y,
         $w,
@@ -431,7 +431,7 @@ class CommonNFePHP
 
     /**
      *__textBox90
-     * Cria uma caixa de texto com ou sem bordas. Esta função perimite o alinhamento horizontal
+     * Cria uma caixa de texto com ou sem bordas. Esta função permite o alinhamento horizontal
      * ou vertical do texto dentro da caixa, rotacionando-o em 90 graus, essa função precisa que
      * a classe PDF contenha a função Rotate($angle,$x,$y);
      * Atenção : Esta função é dependente de outras classes de FPDF
@@ -455,7 +455,7 @@ class CommonNFePHP
      * @param number $vOffSet incremento forçado na na posição Y
      * @return number $height Qual a altura necessária para desenhar esta textBox
      */
-    protected function __textBox90(
+    protected function pTextBox90(
         $x,
         $y,
         $w,
