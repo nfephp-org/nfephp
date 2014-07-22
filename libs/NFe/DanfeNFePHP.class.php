@@ -59,7 +59,7 @@
 
 //define o caminho base da instalação do sistema
 if (!defined('PATH_ROOT')) {
-    define('PATH_ROOT', dirname(dirname(FILE)) . DIRECTORY_SEPARATOR);
+    define('PATH_ROOT', dirname(dirname(dirname(FILE))).DIRECTORY_SEPARATOR);
 }
 //ajuste do tempo limite de resposta do processo
 set_time_limit(1800);
@@ -335,9 +335,9 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
     protected $debugMode=2;
 
     /**
-     *construct
-     * @name construct
-     * @param string $docXML Arquivo XML da NFe (com ou sem a tag nfeProc)
+     * __construct
+     * @name __construct
+     * @param string $docXML Conteúdo XML da NF-e (com ou sem a tag nfeProc)
      * @param string $sOrientacao (Opcional) Orientação da impressão P-retrato L-Paisagem
      * @param string $sPapel Tamanho do papel (Ex. A4)
      * @param string $sPathLogo Caminho para o arquivo do logo
@@ -412,8 +412,12 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
             $this->tpEmis     = $this->ide->getElementsByTagName("tpEmis")->item(0)->nodeValue;
             $this->tpImp      = $this->ide->getElementsByTagName("tpImp")->item(0)->nodeValue;
             $this->infProt    = $this->dom->getElementsByTagName("infProt")->item(0);
+            //valida se o XML é uma NF-e modelo 55, pois não pode ser 65 (NFC-e)
+            if ($this->pSimpleGetValue($this->ide, "mod") != '55') {
+                throw new nfephpException("O xml do DANFE deve ser uma NF-e modelo 55");
+            }
         }
-    } //fim construct
+    } //fim __construct
 
     /**
      * simpleConsistencyCheck

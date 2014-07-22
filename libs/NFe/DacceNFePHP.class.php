@@ -36,7 +36,7 @@
  */
 //define o caminho base da instalação do sistema
 if (!defined('PATH_ROOT')) {
-   define('PATH_ROOT', dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR);
+   define('PATH_ROOT', dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR);
 }
 //ajuste do tempo limite de resposta do processo
 set_time_limit(1800);
@@ -92,15 +92,15 @@ class DacceNFePHP extends CommonNFePHP {
     private $evento;
     private $infEvento;
     private $retEvento;
-    private $rinfEvento;
+    private $retInfEvento;
 
 
    /**
-    *__construct
+    * __construct
     * @package NFePHP
     * @name __construct
     * @version 1.0.1
-    * @param string $docXML Arquivo XML da NFe (com ou sem a tag nfeProc)
+    * @param string $docXML String XML do processamento de evento de CC-e
     * @param string $sOrientacao (Opcional) Orientação da impressão P-retrato L-Paisagem
     * @param string $sPapel Tamanho do papel (Ex. A4)
     * @param string $sPathLogo Caminho para o arquivo do logo
@@ -110,7 +110,7 @@ class DacceNFePHP extends CommonNFePHP {
     * @param string $fonteDANFE Nome da fonte alternativa do DAnfe
     * @param number $mododebug 0-Não 1-Sim e 2-nada (2 default)
     */
-    function __construct($xmlfile='', $sOrientacao='',$sPapel='',$sPathLogo='', $sDestino='I', $aEnd='',$sDirPDF='',$fontePDF='',$mododebug=2) {
+    function __construct($docXML='', $sOrientacao='',$sPapel='',$sPathLogo='', $sDestino='I', $aEnd='',$sDirPDF='',$fontePDF='',$mododebug=2) {
         if(is_numeric($mododebug)){
             $this->debugMode = $mododebug;
         }
@@ -127,7 +127,7 @@ class DacceNFePHP extends CommonNFePHP {
         $this->orientacao   = $sOrientacao;
         $this->papel        = $sPapel;
         $this->pdf          = '';
-        //$this->xml          = $xmlfile;
+        $this->xml          = $docXML;
         $this->logomarca    = $sPathLogo;
         $this->destino      = $sDestino;
         $this->pdfDir       = $sDirPDF;
@@ -138,49 +138,41 @@ class DacceNFePHP extends CommonNFePHP {
             $this->fontePadrao = $fontePDF;
         }
         //se for passado o xml
-        if (empty($xmlfile)){
-            $this->errMsg = 'Um caminho para o arquivo xml da CCe deve ser passado!';
-            $this->errStatus = true;
-            exit();
+        if (! empty($this->xml)) {
+            $this->dom = new DomDocumentNFePHP();
+            $this->dom->loadXML($this->xml);
+            $this->procEventoNFe = $this->dom->getElementsByTagName("procEventoNFe")->item(0);
+            $this->evento        = $this->procEventoNFe->getElementsByTagName("evento")->item(0);
+            $this->retEvento     = $this->procEventoNFe->getElementsByTagName("retEvento")->item(0);
+            $this->infEvento     = $this->evento->getElementsByTagName("infEvento")->item(0);
+            $this->retInfEvento  = $this->retEvento->getElementsByTagName("infEvento")->item(0);
+            $tpEvento = $this->infEvento->getElementsByTagName("tpEvento")->item(0)->nodeValue;
+            if($tpEvento != '110110'){
+                $this->errMsg = 'Um evento de CC-e deve ser passado!';
+                $this->errStatus = true;
+                throw new nfephpException($this->errMsg);
+            }
+            $this->id = str_replace('ID', '', $this->infEvento->getAttribute("Id"));
+            $this->chNFe = $this->infEvento->getElementsByTagName("chNFe")->item(0)->nodeValue;
+            $this->tpAmb = $this->infEvento->getElementsByTagName("tpAmb")->item(0)->nodeValue;
+            $this->cOrgao = $this->infEvento->getElementsByTagName("cOrgao")->item(0)->nodeValue;
+            $this->xCorrecao = $this->infEvento->getElementsByTagName("xCorrecao")->item(0)->nodeValue;
+            $this->xCondUso = $this->infEvento->getElementsByTagName("xCondUso")->item(0)->nodeValue;
+            $this->dhEvento = $this->infEvento->getElementsByTagName("dhEvento")->item(0)->nodeValue;
+            $this->cStat = $this->retInfEvento->getElementsByTagName("cStat")->item(0)->nodeValue;
+            $this->xMotivo = $this->retInfEvento->getElementsByTagName("xMotivo")->item(0)->nodeValue;
+            $this->CNPJDest = !empty($this->retInfEvento->getElementsByTagName("CNPJDest")->item(0)->nodeValue)? $this->retInfEvento->getElementsByTagName("CNPJDest")->item(0)->nodeValue:'';
+            $this->CPFDest =  !empty($this->retInfEvento->getElementsByTagName("CPFDest")->item(0)->nodeValue)? $this->retInfEvento->getElementsByTagName("CPFDest")->item(0)->nodeValue:'';
+            $this->dhRegEvento = $this->retInfEvento->getElementsByTagName("dhRegEvento")->item(0)->nodeValue;
+            $this->nProt = $this->retInfEvento->getElementsByTagName("nProt")->item(0)->nodeValue;
         }
-        if ( !is_file($xmlfile) ){
-            $this->errMsg = 'Um caminho para o arquivo xml da CCe deve ser passado!';
-            $this->errStatus = true;
-            exit();
-        }
-        $docxml = file_get_contents($xmlfile);
-        $this->dom = new DomDocument;
-        $this->dom->loadXML($docxml);
-        $this->procEventoNFe    = $this->dom->getElementsByTagName("procEventoNFe")->item(0);
-        $this->evento           = $this->dom->getElementsByTagName("evento")->item(0);
-        $this->infEvento        = $this->evento->getElementsByTagName("infEvento")->item(0);
-        $this->retEvento        = $this->dom->getElementsByTagName("retEvento")->item(0);
-        $this->rinfEvento       = $this->retEvento->getElementsByTagName("infEvento")->item(0);
-        $tpEvento = $this->infEvento->getElementsByTagName("tpEvento")->item(0)->nodeValue;
-        if($tpEvento != '110110'){
-            $this->errMsg = 'Uma CCe deve ser passada !!';
-            $this->errStatus = true;
-            exit();
-        }
-        $this->id = str_replace('ID', '', $this->infEvento->getAttribute("Id"));
-        $this->chNFe = $this->infEvento->getElementsByTagName("chNFe")->item(0)->nodeValue;
-        $this->tpAmb = $this->infEvento->getElementsByTagName("tpAmb")->item(0)->nodeValue;
-        $this->cOrgao = $this->infEvento->getElementsByTagName("cOrgao")->item(0)->nodeValue;
-        $this->xCorrecao = $this->infEvento->getElementsByTagName("xCorrecao")->item(0)->nodeValue;
-        $this->xCondUso = $this->infEvento->getElementsByTagName("xCondUso")->item(0)->nodeValue;
-        $this->dhEvento = $this->infEvento->getElementsByTagName("dhEvento")->item(0)->nodeValue;
-        $this->cStat = $this->rinfEvento->getElementsByTagName("cStat")->item(0)->nodeValue;
-        $this->xMotivo = $this->rinfEvento->getElementsByTagName("xMotivo")->item(0)->nodeValue;
-        $this->CNPJDest = !empty($this->rinfEvento->getElementsByTagName("CNPJDest")->item(0)->nodeValue)? $this->rinfEvento->getElementsByTagName("CNPJDest")->item(0)->nodeValue:'';
-        $this->CPFDest =  !empty($this->rinfEvento->getElementsByTagName("CPFDest")->item(0)->nodeValue)? $this->rinfEvento->getElementsByTagName("CPFDest")->item(0)->nodeValue:'';
-        $this->dhRegEvento = $this->rinfEvento->getElementsByTagName("dhRegEvento")->item(0)->nodeValue;
-        $this->nProt = $this->rinfEvento->getElementsByTagName("nProt")->item(0)->nodeValue;
     }//fim __construct
 
     /**
-     *
+     * pBuildDACCE
      */
-    private function __buildCCe(){
+    private function pBuildDACCE()
+    {
         $this->pdf = new PdfNFePHP($this->orientacao, 'mm', $this->papel);
         if( $this->orientacao == 'P' ){
             // margens do PDF
@@ -229,23 +221,24 @@ class DacceNFePHP extends CommonNFePHP {
         $x = $xInic;
         $y = $yInic;
         //coloca o cabeçalho
-        $y = $this->__headerCCe($x,$y,$pag);
+        $y = $this->pHeader($x,$y,$pag);
         //coloca os dados da CCe
-        $y = $this->__bodyCCe($x,$y+15);
+        $y = $this->pBody($x,$y+15);
         //coloca os dados da CCe
-        $y = $this->__footerCCe($x,$y+$this->hPrint-20);
+        $y = $this->pFooter($x,$y+$this->hPrint-20);
 
 
-    } //fim __buildCCe
+    } //fim pBuildDACCE
 
     /**
-     *
+     * pHeader
      * @param type $x
      * @param type $y
      * @param type $pag
      * @return type
      */
-    private function __headerCCe($x,$y,$pag){
+    private function pHeader($x,$y,$pag)
+    {
         $oldX = $x;
         $oldY = $y;
         $maxW = $this->wPrint;
@@ -261,9 +254,9 @@ class DacceNFePHP extends CommonNFePHP {
         $w1 = $w;
         $h=32;
         $oldY += $h;
-        $this->__textBox($x,$y,$w,$h);
+        $this->pTextBox($x,$y,$w,$h);
         $texto = 'IDENTIFICAÇÃO DO EMITENTE';
-        $this->__textBox($x,$y,$w,5,$texto,$aFont,'T','C',0,'');
+        $this->pTextBox($x,$y,$w,5,$texto,$aFont,'T','C',0,'');
         if (is_file($this->logomarca)){
             $logoInfo = getimagesize($this->logomarca);
             //largura da imagem em mm
@@ -308,7 +301,7 @@ class DacceNFePHP extends CommonNFePHP {
         //Nome emitente
         $aFont = array('font'=>$this->fontePadrao,'size'=>12,'style'=>'B');
         $texto = $this->aEnd['razao'];
-        $this->__textBox($x1,$y1,$tw,8,$texto,$aFont,'T','C',0,'');
+        $this->pTextBox($x1,$y1,$tw,8,$texto,$aFont,'T','C',0,'');
 
         //endereço
         $y1 = $y1+6;
@@ -318,7 +311,7 @@ class DacceNFePHP extends CommonNFePHP {
         $cpl = $this->aEnd['complemento'];
         $bairro = $this->aEnd['bairro'];
         $CEP = $this->aEnd['CEP'];
-        $CEP = $this->__format($CEP,"#####-###");
+        $CEP = $this->pFormat($CEP,"#####-###");
         $mun = $this->aEnd['municipio'];
         $UF = $this->aEnd['UF'];
         $fone = $this->aEnd['telefone'];
@@ -335,61 +328,61 @@ class DacceNFePHP extends CommonNFePHP {
             $email = 'Email: '.$email;
         }
         $texto = $lgr . ", " . $nro . $cpl . "\n" . $bairro . " - " . $CEP . "\n" . $mun . " - " . $UF . " " . $fone . "\n" . $email;
-        $this->__textBox($x1,$y1-2,$tw,8,$texto,$aFont,'T','C',0,'');
+        $this->pTextBox($x1,$y1-2,$tw,8,$texto,$aFont,'T','C',0,'');
 
         //##################################################
 
         $w2 = round($maxW - $w,0);
         $x += $w;
-        $this->__textBox($x,$y,$w2,$h);
+        $this->pTextBox($x,$y,$w2,$h);
 
         $y1 = $y + $h;
         $aFont = array('font'=>$this->fontePadrao,'size'=>16,'style'=>'B');
-        $this->__textBox($x,$y+2,$w2,8,'Representação Gráfica de CCe',$aFont,'T','C',0,'');
+        $this->pTextBox($x,$y+2,$w2,8,'Representação Gráfica de CC-e',$aFont,'T','C',0,'');
 
         $aFont = array('font'=>$this->fontePadrao,'size'=>12,'style'=>'I');
-        $this->__textBox($x,$y+7,$w2,8,'(Carta de Correção Eletrônica)',$aFont,'T','C',0,'');
+        $this->pTextBox($x,$y+7,$w2,8,'(Carta de Correção Eletrônica)',$aFont,'T','C',0,'');
 
         $texto = 'ID do Evento: '.$this->id;
         $aFont = array('font'=>$this->fontePadrao,'size'=>10,'style'=>'');
-        $this->__textBox($x,$y+15,$w2,8,$texto,$aFont,'T','L',0,'');
+        $this->pTextBox($x,$y+15,$w2,8,$texto,$aFont,'T','L',0,'');
 
-        $tsHora = $this->__convertTime($this->dhEvento);
+        $tsHora = $this->pConvertTime($this->dhEvento);
         $texto = 'Criado em : '. date('d/m/Y   H:i:s',$tsHora);
-        $this->__textBox($x,$y+20,$w2,8,$texto,$aFont,'T','L',0,'');
+        $this->pTextBox($x,$y+20,$w2,8,$texto,$aFont,'T','L',0,'');
 
-        $tsHora = $this->__convertTime($this->dhRegEvento);
+        $tsHora = $this->pConvertTime($this->dhRegEvento);
         $texto = 'Prococolo: '.$this->nProt.'  -  Registrado na SEFAZ em: '.date('d/m/Y   H:i:s',$tsHora);
-        $this->__textBox($x,$y+25,$w2,8,$texto,$aFont,'T','L',0,'');
+        $this->pTextBox($x,$y+25,$w2,8,$texto,$aFont,'T','L',0,'');
 
         //$cStat;
         //$tpAmb;
         //####################################################
 
         $x = $oldX;
-        $this->__textBox($x,$y1,$maxW,40);
+        $this->pTextBox($x,$y1,$maxW,40);
         $sY = $y1+40;
         $texto = 'De acordo com as determinações legais vigentes, vimos por meio desta comunicar-lhe que a Nota Fiscal, abaixo referenciada, contêm irregularidades que estão destacadas e suas respectivas correções, solicitamos que sejam aplicadas essas correções ao executar seus lançamentos fiscais.';
         $aFont = array('font'=>$this->fontePadrao,'size'=>10,'style'=>'');
-        $this->__textBox($x+5,$y1,$maxW-5,20,$texto,$aFont,'T','L',0,'',false);
+        $this->pTextBox($x+5,$y1,$maxW-5,20,$texto,$aFont,'T','L',0,'',false);
 
         //############################################
         $x = $oldX;
         $y = $y1;
         if ($this->CNPJDest != ''){
-            $texto = 'CNPJ do Destinatário: '.$this->__format($this->CNPJDest,"##.###.###/####-##");
+            $texto = 'CNPJ do Destinatário: '.$this->pFormat($this->CNPJDest,"##.###.###/####-##");
         }
         if ($this->CPFDest != ''){
-            $texto = 'CPF do Destinatário: '.$this->__format($this->CPFDest,"###.###.###-##");
+            $texto = 'CPF do Destinatário: '.$this->pFormat($this->CPFDest,"###.###.###-##");
         }
         $aFont = array('font'=>$this->fontePadrao,'size'=>12,'style'=>'B');
-        $this->__textBox($x+2,$y+13,$w2,8,$texto,$aFont,'T','L',0,'');
+        $this->pTextBox($x+2,$y+13,$w2,8,$texto,$aFont,'T','L',0,'');
 
         $numNF = substr($this->chNFe,25,9);
         $serie = substr($this->chNFe,22,3);
-        $numNF = $this->__format($numNF,"###.###.###");
+        $numNF = $this->pFormat($numNF,"###.###.###");
         $texto = "Nota Fiscal: " . $numNF .'  -   Série: '.$serie;
-        $this->__textBox($x+2,$y+19,$w2,8,$texto,$aFont,'T','L',0,'');
+        $this->pTextBox($x+2,$y+19,$w2,8,$texto,$aFont,'T','L',0,'');
 
         $bW = 87;
         $bH = 15;
@@ -401,96 +394,74 @@ class DacceNFePHP extends CommonNFePHP {
         $this->pdf->SetFillColor(255,255,255);
         $y1 = $y+2+$bH;
         $aFont = array('font'=>$this->fontePadrao,'size'=>10,'style'=>'');
-        $texto = $this->__format( $this->chNFe, $this->formatoChave );
-        $this->__textBox($x,$y1,$w-2,$h,$texto,$aFont,'T','C',0,'');
+        $texto = $this->pFormat($this->chNFe, $this->formatoChave);
+        $this->pTextBox($x,$y1,$w-2,$h,$texto,$aFont,'T','C',0,'');
 
         //$sY += 1;
         $x = $oldX;
-        $this->__textBox($x,$sY,$maxW,15);
+        $this->pTextBox($x,$sY,$maxW,15);
         $texto = $this->xCondUso;
         $aFont = array('font'=>$this->fontePadrao,'size'=>8,'style'=>'I');
-        $this->__textBox($x+2,$sY+2,$maxW-2,15,$texto,$aFont,'T','L',0,'',false);
+        $this->pTextBox($x+2,$sY+2,$maxW-2,15,$texto,$aFont,'T','L',0,'',false);
 
         return $sY+2;
-
-    }// fim __headerCCe
+    }// fim pHeader
 
     /**
-     *
+     * pBody
      * @param type $x
      * @param int $y
      */
-    private function __bodyCCe($x,$y){
+    private function pBody($x,$y)
+    {
         $maxW = $this->wPrint;
         $texto = 'CORREÇÕES A SEREM CONSIDERADAS';
         $aFont = array('font'=>$this->fontePadrao,'size'=>10,'style'=>'B');
-        $this->__textBox($x,$y,$maxW,5,$texto,$aFont,'T','L',0,'',false);
+        $this->pTextBox($x,$y,$maxW,5,$texto,$aFont,'T','L',0,'',false);
 
         $y += 5;
-        $this->__textBox($x,$y,$maxW,190);
+        $this->pTextBox($x,$y,$maxW,190);
         $texto = str_replace( ";" , PHP_EOL , $this->xCorrecao);
         $aFont = array('font'=>$this->fontePadrao,'size'=>12,'style'=>'B');
-        $this->__textBox($x+2,$y+2,$maxW-2,150,$texto,$aFont,'T','L',0,'',false);
-
-
-    }//fim __bodyCCe
-
+        $this->pTextBox($x+2,$y+2,$maxW-2,150,$texto,$aFont,'T','L',0,'',false);
+    }//fim pBody
 
     /**
-     *
+     * pFooter
      * @param type $x
      * @param type $y
      */
-    private function __footerCCe($x,$y){
+    private function pFooter($x,$y)
+    {
         $w = $this->wPrint;
         $texto = "Este documento é uma representação gráfica da CCe e foi impresso apenas para sua informação e não possue validade fiscal.\n A CCe deve ser recebida e mantida em arquivo eletrônico XML e pode ser consultada através dos Portais das SEFAZ.";
         $aFont = array('font'=>$this->fontePadrao,'size'=>10,'style'=>'I');
-        $this->__textBox($x,$y,$w,20,$texto,$aFont,'T','C',0,'',false);
+        $this->pTextBox($x,$y,$w,20,$texto,$aFont,'T','C',0,'',false);
 
         $y = $this->hPrint -4;
         $texto = "Impresso em  ". date('d/m/Y   H:i:s');
         $w = $this->wPrint-4;
         $aFont = array('font'=>$this->fontePadrao,'size'=>6,'style'=>'I');
-        $this->__textBox($x,$y,$w,4,$texto,$aFont,'T','L',0,'');
+        $this->pTextBox($x,$y,$w,4,$texto,$aFont,'T','L',0,'');
 
         $texto = "DacceNFePHP ver. " . $this->version .  "  Powered by NFePHP (GNU/GPLv3 GNU/LGPLv3) © www.nfephp.org";
         $aFont = array('font'=>$this->fontePadrao,'size'=>6,'style'=>'I');
-        $this->__textBox($x,$y,$w,4,$texto,$aFont,'T','R',0,'http://www.nfephp.org');
-    }//fim __footerCCe
+        $this->pTextBox($x,$y,$w,4,$texto,$aFont,'T','R',0,'http://www.nfephp.org');
+    }//fim pFooter
 
     /**
-     *
+     * printDACCE
      * @param type $nome
      * @param string $destino
      * @param type $printer
      * @return type
      */
-    public function printCCe($nome='',$destino='I',$printer=''){
-        //monta
-        $command = '';
-        if ($nome == ''){
-            $file = $this->pdfDir.'cce.pdf';
-        } else {
-            $file = $this->pdfDir.$nome;
-        }
-        if (($destino != 'I' || $destino != 'S') && $destino != 'F'){
-            $destino = 'I';
-        }
-        if ($printer != ''){
-            $command = "-P $printer";
-        }
-        $this->__buildCCe();
-        $arq = $this->pdf->Output($file,$destino);
-
+    public function printDACCE($nome='',$destino='I',$printer=''){
+        $this->pBuildDACCE();
+        $arq = $this->pdf->Output($nome,$destino);
         if ( $destino == 'S' ){
             //aqui pode entrar a rotina de impressão direta
-            $command = "lpr $command $file";
-            system($comando,$retorno);
         }
         return $arq;
-
-    }//fim printCCe
-
-} //fim CCeNFePHP
-
-?>
+    }//fim printDACCE
+}
