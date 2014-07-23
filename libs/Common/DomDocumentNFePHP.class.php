@@ -50,30 +50,4 @@ class DomDocumentNFePHP extends DOMDocument
         $this->formatOutput = false;
         $this->preserveWhiteSpace = false;
     }
-
-    /**
-     * getElementsByTagNameOpcional
-     * Apenas uma simplificação de "getElementsByTagName($nome)->item(0)->nodeValue"
-     * com a verificação se está vazio, para evitar repetições densas de operadores
-     * ternários ao longo do código
-     * @param string $nome
-     * @param mixed $valorSeVazio
-     * @throws nfephpException
-     * @return mixed
-     */
-    public function getElementsByTagNameOpcional($nome, $valorSeVazio = '')
-    {
-        $element = $this->getElementsByTagName($nome)->item(0);
-        //validação de segurança, se lista vazia será NULL e logo abaixo falharia
-        //acessar "NULL->nodeValue", por isso gera exceção
-        if ($element === NULL) {
-            throw new nfephpException("Erro ao recuperar elemento DOM \"$nome\" pois item(0) retornou NULL, verifique!!");
-        }
-        //se elemento não estiver vazio retorna o seu conteúdo/valor
-        if (! empty($element->nodeValue)) {
-            return $node->nodeValue;
-        }
-        //elemento está vazio, retorna o parâmetro recebido para usar neste caso
-        return $valorSeVazio;
-    }
 }

@@ -31,6 +31,7 @@
  * @author      Marcos Diez <marcos at unitron dot com dot br>
  *
  *        CONTRIBUIDORES (por ordem alfabetica):
+ *          Fernando Mertins <fernando dot mertins at gmail dot com>
  *          Roberto L. Machado <linux dot rlm at gmail dot com> 
  *
  * Esta classe depende de PdfNFePHP.class.php e deve ser utilizada pelas classes DanfeNFePHP e DacteNFePHP
@@ -87,17 +88,17 @@ class CommonNFePHP
      * pSimpleGetValue
      * Extrai o valor do node DOM
      * @author Marcos Diez
-     * @param DOM $theObj
+     * @param object $theObj Instancia de DOMDocument ou DOMElement
      * @param string $keyName identificador da TAG do xml
      * @param string $extraTextBefore prefixo do retorno
      * @param string extraTextAfter sufixo do retorno
      * @param number itemNum numero do item a ser retornado
      * @return string
      */
-    protected function pSimpleGetValue($theObj, $keyName , $extraTextBefore = '', $extraTextAfter = '', $itemNum = 0)
+    protected function pSimpleGetValue($theObj, $keyName, $extraTextBefore = '', $extraTextAfter = '', $itemNum = 0)
     {
-        if (!isset($theObj) || !is_object($theObj)) {
-            return '';
+        if (!($theObj instanceof DOMDocument) && !($theObj instanceof DOMElement)) {
+            throw new nfephpException("Metodo CommonNFePHP::pSimpleGetValue() com parametro do objeto invalido, verifique!");
         }
         $vct = $theObj->getElementsByTagName($keyName)->item($itemNum);
         if (isset($vct)) {
@@ -107,7 +108,7 @@ class CommonNFePHP
     } //fim pSimpleGetValue
 
     /**
-     * __simpleGetDate
+     * pSimpleGetDate
      * Recupera e reformata a data do padrão da NFe para dd/mm/aaaa
      * @author Marcos Diez
      * @param DOM $theObj
@@ -126,7 +127,7 @@ class CommonNFePHP
             return $extraText . $theDate[2] . "/" . $theDate[1] . "/" . $theDate[0];
         }
         return '';
-    } //fim __simpleGetDate
+    } //fim pSimpleGetDate
 
     /**
      * __modulo11
