@@ -275,6 +275,12 @@ class ToolsNFePHP extends CommonNFePHP
      */
     public $enableSVCAN = false;
     /**
+     * enableSCAN
+     * Habilita contingência ao serviço SC-AN: Sistema de Contingência do Ambiente Nacional
+     * @var boolean
+     */
+    public $enableSCAN = false;
+    /**
      * soapTimeout
      * Limite de tempo que o SOAP aguarda por uma conexão
      * @var integer 0-indefinidamente ou numero de segundos
@@ -2173,7 +2179,7 @@ class ToolsNFePHP extends CommonNFePHP
             if ($recibo == '' &&  $chave != '') {
                 //buscar o protocolo pelo numero da chave de acesso
                 //identificação do serviço
-                $servico = 'NfeConsulta';
+                $servico = 'NfeConsultaProtocolo';
                 //recuperação da versão
                 $versao = $aURL[$servico]['version'];
                 //recuperação da url do serviço
@@ -2181,7 +2187,7 @@ class ToolsNFePHP extends CommonNFePHP
                 //recuperação do método
                 $metodo = $aURL[$servico]['method'];
                 //montagem do namespace do serviço
-                $namespace = $this->URLPortal.'/wsdl/'.$servico.'2';
+                $namespace = $this->URLPortal.'/wsdl/NfeConsulta2';
                 //montagem do cabeçalho da comunicação SOAP
                 $cabec = '<nfeCabecMsg xmlns="'. $namespace.'"><cUF>'
                        .$cUF.'</cUF><versaoDados>'.$versao.'</versaoDados></nfeCabecMsg>';

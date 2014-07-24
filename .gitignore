@@ -8,3 +8,4 @@ vendor
 /.settings/
 /build
 /phpunit.xml
+/tests/folder

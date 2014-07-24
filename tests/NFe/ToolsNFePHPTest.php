@@ -112,4 +112,117 @@ class ToolsNFePHPTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($tool->enableSVCAN);
         $this->assertFalse($tool->enableSVCRS);
     }
+
+    /**
+     * @expectedException nfephpException
+     * @expectedExceptionMessage Arquivo não localizado!!
+     */
+    public function testVerifyNfeArquivoNaoEncontrado()
+    {
+        $tool = new ToolsNFePHP($this->configTest, 2, true);
+        $xmlNFe = PATH_ROOT . '/35101158716523000119550010000000011003000000-nfe.xml';
+        $tool->verifyNFe($xmlNFe);
+    }
+
+    /**
+     * @expectedException nfephpException
+     * @expectedExceptionMessage Assinatura não confere!! O conteúdo do XML não confere com o Digest Value.
+     */
+    public function testVerifyNfeProblemaComAssinatura()
+    {
+        $tool = new ToolsNFePHP($this->configTest, 2, true);
+        $xmlNFe = PATH_ROOT . 'exemplos/xml/35101158716523000119550010000000011003000000-nfe.xml';
+        $tool->verifyNFe($xmlNFe);
+    }
+
+    /**
+     * @expectedException nfephpException
+     * @expectedExceptionMessage Erro cStat está vazio.
+     */
+    public function testVerifyNfeExceptionCstatVazio()
+    {
+        $tool = new ToolsNFePHP($this->configTest, 2, true);
+        $xmlNFe = PATH_ROOT . 'exemplos/xml/11101284613439000180550010000004881093997017-nfe.xml';
+        $tool->verifyNFe($xmlNFe);
+    }
+
+    public function testVerifyNfeAutorizadoOUso()
+    {
+        $mockBuilder = $this->getMockBuilder('ToolsNFePHP');
+        $mockBuilder->setConstructorArgs(array($this->configTest, 1, true));
+        $mockBuilder->setMethods(array('pSendSOAP'));
+        /** @var ToolsNFePHP $tool */
+        $tool = $mockBuilder->getMock();
+        $xmlProtocolo = '<?xml version="1.0" encoding="utf-8"?>'
+            . '<response xmlns:xs="http://www.w3.org/2003/05/soap-envelope">'
+            . '<xs:Body>'
+            . '<infProt>'
+            . '<dhRecbto>' . date('Y-m-d\TH:i:s') . '</dhRecbto>'
+            . '<cStat>100</cStat>'
+            . '<xMotivo>Autorizado o Uso</xMotivo>'
+            . '<nProt>311100000046263</nProt>'
+            . '<digVal>DGTa0m6/dOui5S46nfHyqifBZ1U=</digVal>'
+            . '</infProt>'
+            . '</xs:Body>'
+            . '</response>';
+        $tool->expects($this->any())->method('pSendSOAP')->will($this->returnValue($xmlProtocolo));
+
+        $xmlNFe = PATH_ROOT . 'exemplos/xml/11101284613439000180550010000004881093997017-nfe.xml';
+        $retorno = $tool->verifyNFe($xmlNFe);
+        $this->assertTrue($retorno);
+    }
+
+    /**
+     * @expectedException nfephpException
+     * @expectedExceptionMessage NF não aprovada no SEFAZ!! cStat =110 - Uso Denegado
+     */
+    public function testVerifyNfeUsoDenegado()
+    {
+        $mockBuilder = $this->getMockBuilder('ToolsNFePHP');
+        $mockBuilder->setConstructorArgs(array($this->configTest, 1, true));
+        $mockBuilder->setMethods(array('pSendSOAP'));
+        /** @var ToolsNFePHP $tool */
+        $tool = $mockBuilder->getMock();
+        $xmlProtocolo = '<?xml version="1.0" encoding="utf-8"?>'
+            . '<response xmlns:xs="http://www.w3.org/2003/05/soap-envelope">'
+            . '<xs:Body>'
+            . '<infProt>'
+            . '<cStat>110</cStat>'
+            . '<xMotivo>Uso Denegado</xMotivo>'
+            . '</infProt>'
+            . '</xs:Body>'
+            . '</response>';
+        $tool->expects($this->any())->method('pSendSOAP')->will($this->returnValue($xmlProtocolo));
+
+        $xmlNFe = PATH_ROOT . 'exemplos/xml/11101284613439000180550010000004881093997017-nfe.xml';
+        $retorno = $tool->verifyNFe($xmlNFe);
+        $this->assertFalse($retorno);
+    }
+
+    /**
+     * @expectedException nfephpException
+     * @expectedExceptionMessage NF não aprovada no SEFAZ!! cStat =101 - Cancelamento de NF-e Homologado
+     */
+    public function testVerifyNfeCancelamentoDeNfeHomologado()
+    {
+        $mockBuilder = $this->getMockBuilder('ToolsNFePHP');
+        $mockBuilder->setConstructorArgs(array($this->configTest, 1, true));
+        $mockBuilder->setMethods(array('pSendSOAP'));
+        /** @var ToolsNFePHP $tool */
+        $tool = $mockBuilder->getMock();
+        $xmlProtocolo = '<?xml version="1.0" encoding="utf-8"?>'
+            . '<response xmlns:xs="http://www.w3.org/2003/05/soap-envelope">'
+            . '<xs:Body>'
+            . '<infProt>'
+            . '<cStat>101</cStat>'
+            . '<xMotivo>Cancelamento de NF-e Homologado</xMotivo>'
+            . '</infProt>'
+            . '</xs:Body>'
+            . '</response>';
+        $tool->expects($this->any())->method('pSendSOAP')->will($this->returnValue($xmlProtocolo));
+
+        $xmlNFe = PATH_ROOT . 'exemplos/xml/11101284613439000180550010000004881093997017-nfe.xml';
+        $retorno = $tool->verifyNFe($xmlNFe);
+        $this->assertFalse($retorno);
+    }
 }
