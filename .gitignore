@@ -3,6 +3,8 @@ nbproject
 *.pfx
 *.pem
 vendor
+/.DS_Store
+/.idea
 /.project
 /.buildpath
 /.settings/

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<retConsReciNFe>
+    <protNFe versao="2.00">
+        <infProt Id="ID311100000046263">
+            <tpAmb>2</tpAmb>
+            <verAplic>SVRS20101126153318</verAplic>
+            <chNFe>11101284613439000180550010000004881093997017</chNFe>
+            <dhRecbto>2010-12-02T16:59:41</dhRecbto>
+            <nProt>311100000046263</nProt>
+            <digVal>DGTa0m6/dOui5S46nfHyqifBZ1U=</digVal>
+            <cStat>100</cStat>
+            <xMotivo>Autorizado o uso da NF-e</xMotivo>
+        </infProt>
+    </protNFe>
+</retConsReciNFe>
