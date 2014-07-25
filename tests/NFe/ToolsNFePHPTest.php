@@ -257,4 +257,20 @@ class ToolsNFePHPTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals($expectedDOM, $actualDOM);
     }
+
+    public function testAdicionaProtocoloCancelamento()
+    {
+        $tool = new ToolsNFePHP($this->configTest, 1, true);
+        $xmlNFe = __DIR__ . '/../fixtures/xml/11101284613439000180550010000004881093997017-nfe.xml';
+        $xmlProtNFe = __DIR__ . '/../fixtures/xml/11101284613439000180550010000004881093997017-retCancNFe.xml';
+        $nfeProtocolada = $tool->addProt($xmlNFe, $xmlProtNFe);
+
+        $expectedDOM = new DOMDocument('1.0', 'UTF-8');
+        $expectedDOM->load(__DIR__ . '/../fixtures/xml/11101284613439000180550010000004881093997017-nfeCancNFe.xml');
+
+        $actualDOM = new DOMDocument('1.0', 'UTF-8');
+        $actualDOM->loadXML($nfeProtocolada);
+
+        $this->assertEquals($expectedDOM, $actualDOM);
+    }
 }
