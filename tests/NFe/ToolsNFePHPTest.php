@@ -234,7 +234,7 @@ class ToolsNFePHPTest extends PHPUnit_Framework_TestCase
         $nfeProtocolada = $tool->addProt($xmlNFe, $xmlProtNFe);
 
         $expectedDOM = new DOMDocument('1.0', 'UTF-8');
-        $expectedDOM->load(PATH_ROOT . 'exemplos/xml/11101284613439000180550010000004881093997017-nfe.xml');
+        $expectedDOM->load(__DIR__ . '/../fixtures/xml/11101284613439000180550010000004881093997017-nfeProt.xml');
 
         $actualDOM = new DOMDocument('1.0', 'UTF-8');
         $actualDOM->loadXML($nfeProtocolada);
@@ -250,7 +250,7 @@ class ToolsNFePHPTest extends PHPUnit_Framework_TestCase
         $nfeProtocolada = $tool->addProt($xmlNFe, $xmlProtNFe);
 
         $expectedDOM = new DOMDocument('1.0', 'UTF-8');
-        $expectedDOM->load(PATH_ROOT . 'exemplos/xml/11101284613439000180550010000004881093997017-nfe.xml');
+        $expectedDOM->load(__DIR__ . '/../fixtures/xml/11101284613439000180550010000004881093997017-nfeRetEvento.xml');
 
         $actualDOM = new DOMDocument('1.0', 'UTF-8');
         $actualDOM->loadXML($nfeProtocolada);

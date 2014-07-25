@@ -10,14 +10,17 @@
         <infEvento>
             <tpAmb>2</tpAmb>
             <verAplic>SVRS20101126153318</verAplic>
-            <cOrgao>43</cOrgao>
-            <cStat>100</cStat>
-            <xMotivo>Autorizado o uso da NF-e</xMotivo>
+            <cOrgao>35</cOrgao>
+            <cStat>135</cStat>
+            <xMotivo>Evento registrado e vinculado a NF-e</xMotivo>
             <chNFe>11101284613439000180550010000004881093997017</chNFe>
             <tpEvento>110111</tpEvento>
+            <digVal>DGTa0m6/dOui5S46nfHyqifBZ1U=</digVal>
+            <xEvento>Cancelamento registrado</xEvento>
+            <CNPJDest>00000000000191</CNPJDest>
             <nSeqEvento>1</nSeqEvento>
             <dhRegEvento>2010-12-02T16:59:41</dhRegEvento>
-            <nProt>311100000046263</nProt>
+            <nProt>135120005426267</nProt>
         </infEvento>
     </retEvento>
 </retEnvEvento>
