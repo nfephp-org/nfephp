@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<retConsSitNFe versao="2.00">
+    <tpAmb>2</tpAmb>
+    <verAplic>0674</verAplic>
+    <cStat>100</cStat>
+    <xMotivo>Autorizado o uso da NF-e</xMotivo>
+    <cUF>31</cUF>
+    <chNFe>11101284613439000180550010000004881093997017</chNFe>
+    <retCancNFe versao="2.00">
+        <infCanc>
+            <tpAmb>2</tpAmb>
+            <verAplic>SVRS20101126153318</verAplic>
+            <chNFe>11101284613439000180550010000004881093997017</chNFe>
+            <dhRecbto>2010-12-02T16:59:41</dhRecbto>
+            <nProt>311100000046263</nProt>
+            <cStat>101</cStat>
+            <xMotivo>Cancelamento de NF-e homologado</xMotivo>
+        </infCanc>
+    </retCancNFe>
+</retConsSitNFe>

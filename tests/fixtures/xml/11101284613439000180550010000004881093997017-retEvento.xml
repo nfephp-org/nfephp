@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<retEnvEvento>
+    <idLote>000000013199240</idLote>
+    <tpAmb>2</tpAmb>
+    <verAplic>SVRS20101126153318</verAplic>
+    <cOrgao>43</cOrgao>
+    <cStat>128</cStat>
+    <xMotivo>Lote de Evento Processado</xMotivo>
+    <retEvento versao="2.00">
+        <infEvento>
+            <tpAmb>2</tpAmb>
+            <verAplic>SVRS20101126153318</verAplic>
+            <cOrgao>35</cOrgao>
+            <cStat>135</cStat>
+            <xMotivo>Evento registrado e vinculado a NF-e</xMotivo>
+            <chNFe>11101284613439000180550010000004881093997017</chNFe>
+            <tpEvento>110111</tpEvento>
+            <digVal>DGTa0m6/dOui5S46nfHyqifBZ1U=</digVal>
+            <xEvento>Cancelamento registrado</xEvento>
+            <CNPJDest>00000000000191</CNPJDest>
+            <nSeqEvento>1</nSeqEvento>
+            <dhRegEvento>2010-12-02T16:59:41</dhRegEvento>
+            <nProt>135120005426267</nProt>
+        </infEvento>
+    </retEvento>
+</retEnvEvento>
