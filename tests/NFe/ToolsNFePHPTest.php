@@ -25,7 +25,7 @@ class ToolsNFePHPTest extends PHPUnit_Framework_TestCase
         'danfeCanhoto' => '',
         'danfeFonte' => '',
         'danfePrinter' => '',
-        'schemes' => '',
+        'schemes' => 'PL_008d',
         'certsDir' => '',
         'proxyIP' => '',
         'proxyPORT' => '',
@@ -90,7 +90,7 @@ class ToolsNFePHPTest extends PHPUnit_Framework_TestCase
      * @expectedException nfephpException
      * @expectedExceptionMessage Falha! sem permissão de leitura no diretorio escolhido.
      */
-    public function testListandoODiretorioEGerandoExeption()
+    public function testExceptionAoListarArquivos()
     {
         $tool = new ToolsNFePHP($this->configTest, 2, true);
 
@@ -117,10 +117,10 @@ class ToolsNFePHPTest extends PHPUnit_Framework_TestCase
      * @expectedException nfephpException
      * @expectedExceptionMessage Arquivo não localizado!!
      */
-    public function testVerifyNfeArquivoNaoEncontrado()
+    public function testExceptionArquivoNaoLocalizadoNoMetodoVerifyNfe()
     {
         $tool = new ToolsNFePHP($this->configTest, 2, true);
-        $xmlNFe = PATH_ROOT . '/35101158716523000119550010000000011003000000-nfe.xml';
+        $xmlNFe = './35101158716523000119550010000000011003000000-nfe.xml';
         $tool->verifyNFe($xmlNFe);
     }
 
@@ -128,7 +128,7 @@ class ToolsNFePHPTest extends PHPUnit_Framework_TestCase
      * @expectedException nfephpException
      * @expectedExceptionMessage Assinatura não confere!! O conteúdo do XML não confere com o Digest Value.
      */
-    public function testVerifyNfeProblemaComAssinatura()
+    public function testExceptionAssinaturaNaoConfereComDigestValueNoMetodoVerifyNfe()
     {
         $tool = new ToolsNFePHP($this->configTest, 2, true);
         $xmlNFe = PATH_ROOT . 'exemplos/xml/35101158716523000119550010000000011003000000-nfe.xml';
@@ -139,14 +139,14 @@ class ToolsNFePHPTest extends PHPUnit_Framework_TestCase
      * @expectedException nfephpException
      * @expectedExceptionMessage Erro cStat está vazio.
      */
-    public function testVerifyNfeExceptionCstatVazio()
+    public function testExceptionCampoCstatVazioNoMetodoVerifyNfe()
     {
         $tool = new ToolsNFePHP($this->configTest, 2, true);
         $xmlNFe = PATH_ROOT . 'exemplos/xml/11101284613439000180550010000004881093997017-nfe.xml';
         $tool->verifyNFe($xmlNFe);
     }
 
-    public function testVerifyNfeAutorizadoOUso()
+    public function testMensagemDeAutorizadoOUsoNoMetodoVerifyNfe()
     {
         $mockBuilder = $this->getMockBuilder('ToolsNFePHP');
         $mockBuilder->setConstructorArgs(array($this->configTest, 1, true));
@@ -176,7 +176,7 @@ class ToolsNFePHPTest extends PHPUnit_Framework_TestCase
      * @expectedException nfephpException
      * @expectedExceptionMessage NF não aprovada no SEFAZ!! cStat =110 - Uso Denegado
      */
-    public function testVerifyNfeUsoDenegado()
+    public function testMensagemDeUsoDenegadoNoMetodoVerify()
     {
         $mockBuilder = $this->getMockBuilder('ToolsNFePHP');
         $mockBuilder->setConstructorArgs(array($this->configTest, 1, true));
@@ -203,7 +203,7 @@ class ToolsNFePHPTest extends PHPUnit_Framework_TestCase
      * @expectedException nfephpException
      * @expectedExceptionMessage NF não aprovada no SEFAZ!! cStat =101 - Cancelamento de NF-e Homologado
      */
-    public function testVerifyNfeCancelamentoDeNfeHomologado()
+    public function testMensagemDeCancelamentoDeNfeHomologadoNoMetodoVerify()
     {
         $mockBuilder = $this->getMockBuilder('ToolsNFePHP');
         $mockBuilder->setConstructorArgs(array($this->configTest, 1, true));
@@ -226,7 +226,7 @@ class ToolsNFePHPTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($retorno);
     }
 
-    public function testAdicionaProtocolo()
+    public function testAdicionaProtocoloAutorizadoOUsoDaNfe()
     {
         $tool = new ToolsNFePHP($this->configTest, 1, true);
         $xmlNFe = __DIR__ . '/../fixtures/xml/11101284613439000180550010000004881093997017-nfe.xml';
@@ -242,7 +242,7 @@ class ToolsNFePHPTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expectedDOM, $actualDOM);
     }
 
-    public function testAdicionaProtocoloEventoCancelamento()
+    public function testAdicionaProtocoloEventoCancelamentoRegistrado()
     {
         $tool = new ToolsNFePHP($this->configTest, 1, true);
         $xmlNFe = __DIR__ . '/../fixtures/xml/11101284613439000180550010000004881093997017-nfe.xml';
@@ -258,7 +258,7 @@ class ToolsNFePHPTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expectedDOM, $actualDOM);
     }
 
-    public function testAdicionaProtocoloCancelamento()
+    public function testAdicionaProtocoloCancelamentoDeNfeHomologado()
     {
         $tool = new ToolsNFePHP($this->configTest, 1, true);
         $xmlNFe = __DIR__ . '/../fixtures/xml/11101284613439000180550010000004881093997017-nfe.xml';
@@ -274,12 +274,47 @@ class ToolsNFePHPTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expectedDOM, $actualDOM);
     }
 
-    public function testValidXml()
+    public function testValidarArquivoXmlDeNfeSemProtocoloComSchemaPl008d310()
     {
         $tool = new ToolsNFePHP($this->configTest, 1, true);
 
         $xmlNFe = __DIR__ . '/../fixtures/xml/11101284613439000180550010000004881093997017-nfe.xml';
         $xsdFile = __DIR__. '/../../schemes/PL_008d/nfe_v3.10.xsd';
         $this->assertTrue($tool->validXML($xmlNFe, $xsdFile));
+    }
+
+    public function testValidarArquivoXmlDeNfeSemProtocoloSemInformarSchema()
+    {
+        $tool = new ToolsNFePHP($this->configTest, 1, true);
+
+        $xmlNFe = __DIR__ . '/../fixtures/xml/11101284613439000180550010000004881093997017-nfe.xml';
+        $this->assertTrue($tool->validXML($xmlNFe, ''));
+    }
+
+    public function testValidarConteudoXmlDeNfeSemProtocoloSemInformarSchema()
+    {
+        $tool = new ToolsNFePHP($this->configTest, 1, true);
+
+        $xmlNFe = file_get_contents(__DIR__ . '/../fixtures/xml/11101284613439000180550010000004881093997017-nfe.xml');
+        $this->assertTrue($tool->validXML($xmlNFe, ''));
+    }
+
+    public function testValidarArquivoXmlDeNfeComProtocoloSemInformarSchema()
+    {
+        $tool = new ToolsNFePHP($this->configTest, 1, true);
+
+        $xmlNFe = file_get_contents(__DIR__ . './../fixtures/xml/11101284613439000180550010000004881093997017-nfeProt.xml');
+        $this->assertTrue($tool->validXML($xmlNFe, ''));
+    }
+
+    /**
+     * @expectedException nfephpException
+     * @expectedExceptionMessage Você deve passar o conteudo do xml assinado como parâmetro ou o caminho completo até o arquivo.
+     */
+    public function testExceptionAoValidarArquivoNaoExiste()
+    {
+        $tool = new ToolsNFePHP($this->configTest, 1, true);
+
+        $this->assertTrue($tool->validXML('', ''));
     }
 }

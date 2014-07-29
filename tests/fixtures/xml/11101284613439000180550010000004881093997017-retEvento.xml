@@ -19,7 +19,7 @@
             <xEvento>Cancelamento registrado</xEvento>
             <CNPJDest>00000000000191</CNPJDest>
             <nSeqEvento>1</nSeqEvento>
-            <dhRegEvento>2010-12-02T16:59:41</dhRegEvento>
+            <dhRegEvento>2010-12-02T16:59:41-03:00</dhRegEvento>
             <nProt>135120005426267</nProt>
         </infEvento>
     </retEvento>
