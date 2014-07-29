@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<retConsSitNFe versao="2.00">
+<retConsSitNFe versao="3.10">
     <tpAmb>2</tpAmb>
     <verAplic>0674</verAplic>
     <cStat>100</cStat>
     <xMotivo>Autorizado o uso da NF-e</xMotivo>
     <cUF>31</cUF>
     <chNFe>11101284613439000180550010000004881093997017</chNFe>
-    <retCancNFe versao="2.00">
+    <retCancNFe versao="3.10">
         <infCanc>
             <tpAmb>2</tpAmb>
             <verAplic>SVRS20101126153318</verAplic>
