@@ -318,7 +318,6 @@ class ToolsNFePHPTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($tool->validXML('', ''));
     }
 
-
     /**
      * @expectedException nfephpException
      * @expectedExceptionMessage Elemento 'dhEmi': [Erro 'Layout'] O valor '2014-02-02T08:00:00'
@@ -330,4 +329,25 @@ class ToolsNFePHPTest extends PHPUnit_Framework_TestCase
         $xmlNFe = __DIR__ . '/../fixtures/xml/11101284613439000180550010000004881093997017-nfeError.xml';
         $this->assertTrue($tool->validXML($xmlNFe, ''));
     }
+
+    public function testArquivoComFormatoInvalido()
+    {
+        $tool = new ToolsNFePHP($this->configTest);
+
+        $xmlNFe = __DIR__ . '/../fixtures/xml/11101284613439000180550010000004881093997017-nfeError.xml';
+        $this->assertFalse($tool->validXML($xmlNFe, ''));
+    }
+
+    /**
+     * @expectedException nfephpException
+     * @expectedExceptionMessage Erro na localização do schema xsd.
+     */
+    public function testExceptionAoValidarArquivoSchemaNaoLocalizado()
+    {
+        $tool = new ToolsNFePHP($this->configTest, 1, true);
+
+        $xmlNFe = __DIR__ . '/../fixtures/xml/11101284613439000180550010000004881093997017-retEvento.xml';
+        $this->assertTrue($tool->validXML($xmlNFe, ''));
+    }
+
 }

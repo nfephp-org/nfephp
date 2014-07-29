@@ -1099,7 +1099,7 @@ class ToolsNFePHP extends CommonNFePHP
                         break;
                 }
                 $aFile = $this->listDir($this->xsdDir.$this->schemeVer.DIRECTORY_SEPARATOR, $xsdFile, true);
-                if (isset($aFile[0]) && !$aFile[0]) {
+                if (empty($aFile) || empty($aFile[0])) {
                     $msg = "Erro na localização do schema xsd.\n";
                     $aError[] = $msg;
                     throw new nfephpException($msg);
