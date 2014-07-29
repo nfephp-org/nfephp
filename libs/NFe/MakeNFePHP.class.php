@@ -153,7 +153,7 @@ class MakeNFe
         // 20 - tag arma          Opcional (se houver)      Opcional (se houver)
         // 21 - tag comb          Opcional (se houver)      Opcional (se houver)
         // 22 - tag ICMS          Obrigatório               Obrigatório
-        // 23 - tag IPI           Obrigatório               Obrigatório
+        // 23 - tag IPI           Opcional (se houver)      Obrigatório
         // 24 - tag II            Opcional (se houver)      Opcional (se houver)
         // 25 - tag PIS           Opcional (se houver)      Opcional (se houver)
         // 26 - tag COFINS        Opcional (se houver)      Opcional (se houver)
@@ -1609,6 +1609,9 @@ class MakeNFe
                 );
                 break;
             case '102':
+            case '103':
+            case '300':
+            case '400':
                 $ICMS = $this->dom->createElement("ICMSSN102");
                 $this->zAddChild($ICMS, 'orig', $orig, true, "Origem da mercadoria");
                 $this->zAddChild(
@@ -3093,7 +3096,7 @@ class MakeNFe
     private function zAppChild(&$parent, $child, $mensagem = '')
     {
         if (empty($parent)) {
-            throw new \Exception($mensagem);
+            throw new Exception($mensagem);
         }
         if (! empty($child)) {
             $parent->appendChild($child);
