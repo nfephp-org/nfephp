@@ -317,4 +317,17 @@ class ToolsNFePHPTest extends PHPUnit_Framework_TestCase
 
         $this->assertTrue($tool->validXML('', ''));
     }
+
+
+    /**
+     * @expectedException nfephpException
+     * @expectedExceptionMessage Elemento 'dhEmi': [Erro 'Layout'] O valor '2014-02-02T08:00:00'
+     */
+    public function testExceptionAoValidarArquivoComFormatoInvalido()
+    {
+        $tool = new ToolsNFePHP($this->configTest, 1, true);
+
+        $xmlNFe = __DIR__ . '/../fixtures/xml/11101284613439000180550010000004881093997017-nfeError.xml';
+        $this->assertTrue($tool->validXML($xmlNFe, ''));
+    }
 }
