@@ -273,4 +273,13 @@ class ToolsNFePHPTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals($expectedDOM, $actualDOM);
     }
+
+    public function testValidXml()
+    {
+        $tool = new ToolsNFePHP($this->configTest, 1, true);
+
+        $xmlNFe = __DIR__ . '/../fixtures/xml/11101284613439000180550010000004881093997017-nfe.xml';
+        $xsdFile = __DIR__. '/../../schemes/PL_008d/nfe_v3.10.xsd';
+        $this->assertTrue($tool->validXML($xmlNFe, $xsdFile));
+    }
 }

@@ -6,7 +6,7 @@
     <cOrgao>43</cOrgao>
     <cStat>128</cStat>
     <xMotivo>Lote de Evento Processado</xMotivo>
-    <retEvento versao="2.00">
+    <retEvento versao="3.10">
         <infEvento>
             <tpAmb>2</tpAmb>
             <verAplic>SVRS20101126153318</verAplic>
