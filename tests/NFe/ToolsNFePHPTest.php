@@ -25,7 +25,7 @@ class ToolsNFePHPTest extends PHPUnit_Framework_TestCase
         'danfeCanhoto' => '',
         'danfeFonte' => '',
         'danfePrinter' => '',
-        'schemes' => '',
+        'schemes' => 'PL_008d',
         'certsDir' => '',
         'proxyIP' => '',
         'proxyPORT' => '',
@@ -90,7 +90,7 @@ class ToolsNFePHPTest extends PHPUnit_Framework_TestCase
      * @expectedException nfephpException
      * @expectedExceptionMessage Falha! sem permissão de leitura no diretorio escolhido.
      */
-    public function testListandoODiretorioEGerandoExeption()
+    public function testExceptionAoListarArquivos()
     {
         $tool = new ToolsNFePHP($this->configTest, 2, true);
 
@@ -117,10 +117,10 @@ class ToolsNFePHPTest extends PHPUnit_Framework_TestCase
      * @expectedException nfephpException
      * @expectedExceptionMessage Arquivo não localizado!!
      */
-    public function testVerifyNfeArquivoNaoEncontrado()
+    public function testExceptionArquivoNaoLocalizadoNoMetodoVerifyNfe()
     {
         $tool = new ToolsNFePHP($this->configTest, 2, true);
-        $xmlNFe = PATH_ROOT . '/35101158716523000119550010000000011003000000-nfe.xml';
+        $xmlNFe = './35101158716523000119550010000000011003000000-nfe.xml';
         $tool->verifyNFe($xmlNFe);
     }
 
@@ -128,7 +128,7 @@ class ToolsNFePHPTest extends PHPUnit_Framework_TestCase
      * @expectedException nfephpException
      * @expectedExceptionMessage Assinatura não confere!! O conteúdo do XML não confere com o Digest Value.
      */
-    public function testVerifyNfeProblemaComAssinatura()
+    public function testExceptionAssinaturaNaoConfereComDigestValueNoMetodoVerifyNfe()
     {
         $tool = new ToolsNFePHP($this->configTest, 2, true);
         $xmlNFe = PATH_ROOT . 'exemplos/xml/35101158716523000119550010000000011003000000-nfe.xml';
@@ -139,14 +139,32 @@ class ToolsNFePHPTest extends PHPUnit_Framework_TestCase
      * @expectedException nfephpException
      * @expectedExceptionMessage Erro cStat está vazio.
      */
-    public function testVerifyNfeExceptionCstatVazio()
+    public function testExceptionCampoCstatVazioNoMetodoVerifyNfe()
     {
-        $tool = new ToolsNFePHP($this->configTest, 2, true);
+        $mockBuilder = $this->getMockBuilder('ToolsNFePHP');
+        $mockBuilder->setConstructorArgs(array($this->configTest, 1, true));
+        $mockBuilder->setMethods(array('pSendSOAP'));
+        /** @var ToolsNFePHP $tool */
+        $tool = $mockBuilder->getMock();
+        $xmlProtocolo = '<?xml version="1.0" encoding="utf-8"?>'
+            . '<response xmlns:xs="http://www.w3.org/2003/05/soap-envelope">'
+            . '<xs:Body>'
+            . '<infProt>'
+            . '<dhRecbto>' . date('Y-m-d\TH:i:s') . '</dhRecbto>'
+            . '<cStat></cStat>'
+            . '<xMotivo>Autorizado o Uso</xMotivo>'
+            . '<nProt>311100000046263</nProt>'
+            . '<digVal>DGTa0m6/dOui5S46nfHyqifBZ1U=</digVal>'
+            . '</infProt>'
+            . '</xs:Body>'
+            . '</response>';
+        $tool->expects($this->any())->method('pSendSOAP')->will($this->returnValue($xmlProtocolo));
+
         $xmlNFe = PATH_ROOT . 'exemplos/xml/11101284613439000180550010000004881093997017-nfe.xml';
         $tool->verifyNFe($xmlNFe);
     }
 
-    public function testVerifyNfeAutorizadoOUso()
+    public function testMensagemDeAutorizadoOUsoNoMetodoVerifyNfe()
     {
         $mockBuilder = $this->getMockBuilder('ToolsNFePHP');
         $mockBuilder->setConstructorArgs(array($this->configTest, 1, true));
@@ -176,7 +194,7 @@ class ToolsNFePHPTest extends PHPUnit_Framework_TestCase
      * @expectedException nfephpException
      * @expectedExceptionMessage NF não aprovada no SEFAZ!! cStat =110 - Uso Denegado
      */
-    public function testVerifyNfeUsoDenegado()
+    public function testMensagemDeUsoDenegadoNoMetodoVerify()
     {
         $mockBuilder = $this->getMockBuilder('ToolsNFePHP');
         $mockBuilder->setConstructorArgs(array($this->configTest, 1, true));
@@ -203,7 +221,7 @@ class ToolsNFePHPTest extends PHPUnit_Framework_TestCase
      * @expectedException nfephpException
      * @expectedExceptionMessage NF não aprovada no SEFAZ!! cStat =101 - Cancelamento de NF-e Homologado
      */
-    public function testVerifyNfeCancelamentoDeNfeHomologado()
+    public function testMensagemDeCancelamentoDeNfeHomologadoNoMetodoVerify()
     {
         $mockBuilder = $this->getMockBuilder('ToolsNFePHP');
         $mockBuilder->setConstructorArgs(array($this->configTest, 1, true));
@@ -226,7 +244,7 @@ class ToolsNFePHPTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($retorno);
     }
 
-    public function testAdicionaProtocolo()
+    public function testAdicionaProtocoloAutorizadoOUsoDaNfe()
     {
         $tool = new ToolsNFePHP($this->configTest, 1, true);
         $xmlNFe = __DIR__ . '/../fixtures/xml/11101284613439000180550010000004881093997017-nfe.xml';
@@ -242,7 +260,7 @@ class ToolsNFePHPTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expectedDOM, $actualDOM);
     }
 
-    public function testAdicionaProtocoloEventoCancelamento()
+    public function testAdicionaProtocoloEventoCancelamentoRegistrado()
     {
         $tool = new ToolsNFePHP($this->configTest, 1, true);
         $xmlNFe = __DIR__ . '/../fixtures/xml/11101284613439000180550010000004881093997017-nfe.xml';
@@ -258,7 +276,7 @@ class ToolsNFePHPTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expectedDOM, $actualDOM);
     }
 
-    public function testAdicionaProtocoloCancelamento()
+    public function testAdicionaProtocoloCancelamentoDeNfeHomologado()
     {
         $tool = new ToolsNFePHP($this->configTest, 1, true);
         $xmlNFe = __DIR__ . '/../fixtures/xml/11101284613439000180550010000004881093997017-nfe.xml';
@@ -274,12 +292,313 @@ class ToolsNFePHPTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expectedDOM, $actualDOM);
     }
 
-    public function testValidXml()
+    public function testValidarArquivoXmlDeNfeSemProtocoloComSchemaPl008d310()
     {
         $tool = new ToolsNFePHP($this->configTest, 1, true);
 
         $xmlNFe = __DIR__ . '/../fixtures/xml/11101284613439000180550010000004881093997017-nfe.xml';
-        $xsdFile = __DIR__. '/../../schemes/PL_008d/nfe_v3.10.xsd';
+        $xsdFile = __DIR__ . '/../../schemes/PL_008d/nfe_v3.10.xsd';
         $this->assertTrue($tool->validXML($xmlNFe, $xsdFile));
+    }
+
+    public function testValidarArquivoXmlDeNfeSemProtocoloSemInformarSchema()
+    {
+        $tool = new ToolsNFePHP($this->configTest, 1, true);
+
+        $xmlNFe = __DIR__ . '/../fixtures/xml/11101284613439000180550010000004881093997017-nfe.xml';
+        $this->assertTrue($tool->validXML($xmlNFe, ''));
+    }
+
+    public function testValidarConteudoXmlDeNfeSemProtocoloSemInformarSchema()
+    {
+        $tool = new ToolsNFePHP($this->configTest, 1, true);
+
+        $xmlNFe = file_get_contents(__DIR__ . '/../fixtures/xml/11101284613439000180550010000004881093997017-nfe.xml');
+        $this->assertTrue($tool->validXML($xmlNFe, ''));
+    }
+
+    public function testValidarArquivoXmlDeNfeComProtocoloSemInformarSchema()
+    {
+        $tool = new ToolsNFePHP($this->configTest, 1, true);
+
+        $xmlNFe = file_get_contents(__DIR__ . './../fixtures/xml/11101284613439000180550010000004881093997017-nfeProt.xml');
+        $this->assertTrue($tool->validXML($xmlNFe, ''));
+    }
+
+    /**
+     * @expectedException nfephpException
+     * @expectedExceptionMessage Você deve passar o conteudo do xml assinado como parâmetro ou o caminho completo até o arquivo.
+     */
+    public function testExceptionAoValidarArquivoNaoExiste()
+    {
+        $tool = new ToolsNFePHP($this->configTest, 1, true);
+
+        $this->assertTrue($tool->validXML('', ''));
+    }
+
+    /**
+     * @expectedException nfephpException
+     * @expectedExceptionMessage Elemento 'dhEmi': [Erro 'Layout'] O valor '2014-02-02T08:00:00'
+     */
+    public function testExceptionAoValidarArquivoComFormatoInvalido()
+    {
+        $tool = new ToolsNFePHP($this->configTest, 1, true);
+
+        $xmlNFe = __DIR__ . '/../fixtures/xml/11101284613439000180550010000004881093997017-nfeError.xml';
+        $this->assertTrue($tool->validXML($xmlNFe, ''));
+    }
+
+    public function testArquivoComFormatoInvalido()
+    {
+        $tool = new ToolsNFePHP($this->configTest);
+
+        $xmlNFe = __DIR__ . '/../fixtures/xml/11101284613439000180550010000004881093997017-nfeError.xml';
+        $this->assertFalse($tool->validXML($xmlNFe, ''));
+    }
+
+    /**
+     * @expectedException nfephpException
+     * @expectedExceptionMessage Erro na localização do schema xsd.
+     */
+    public function testExceptionAoValidarArquivoSchemaNaoLocalizado()
+    {
+        $tool = new ToolsNFePHP($this->configTest, 1, true);
+
+        $xmlNFe = __DIR__ . '/../fixtures/xml/11101284613439000180550010000004881093997017-retEvento.xml';
+        $this->assertTrue($tool->validXML($xmlNFe, ''));
+    }
+
+    public function testAssinarArquivoXml()
+    {
+        $tool = new ToolsNFePHP($this->configTest, 1, true);
+
+        $xmlNFe = __DIR__ . '/../fixtures/xml/35101158716523000119550010000000011003000000-nfe.xml';
+        $xmlNFe = $tool->signXML($xmlNFe, 'infNFe');
+
+        $expectedDOM = new DOMDocument('1.0', 'UTF-8');
+        $expectedDOM->load(__DIR__ . '/../fixtures/xml/35101158716523000119550010000000011003000000-nfeSigned.xml');
+
+        $actualDOM = new DOMDocument('1.0', 'UTF-8');
+        $actualDOM->loadXML($xmlNFe);
+
+        $this->assertEquals($expectedDOM, $actualDOM);
+    }
+
+    public function testAssinarConteudoXml()
+    {
+        $tool = new ToolsNFePHP($this->configTest, 1, true);
+
+        $xmlNFe = file_get_contents(__DIR__ . '/../fixtures/xml/35101158716523000119550010000000011003000000-nfe.xml');
+        $xmlNFe = $tool->signXML($xmlNFe, 'infNFe');
+
+        $expectedDOM = new DOMDocument('1.0', 'UTF-8');
+        $expectedDOM->load(__DIR__ . '/../fixtures/xml/35101158716523000119550010000000011003000000-nfeSigned.xml');
+
+        $actualDOM = new DOMDocument('1.0', 'UTF-8');
+        $actualDOM->loadXML($xmlNFe);
+
+        $this->assertEquals($expectedDOM, $actualDOM);
+    }
+
+    /**
+     * @expectedException nfephpException
+     * @expectedExceptionMessage A tag < infoNFe > não existe no XML!!
+     */
+    public function testExceptionAoAssinarArquivoXmlTagNaoEncontrada()
+    {
+        $tool = new ToolsNFePHP($this->configTest, 1, true);
+
+        $xmlNFe = __DIR__ . '/../fixtures/xml/35101158716523000119550010000000011003000000-nfe.xml';
+        $tool->signXML($xmlNFe, 'infoNFe');
+    }
+
+    /**
+     * @expectedException nfephpException
+     * @expectedExceptionMessage Uma tag deve ser indicada para que seja assinada!!
+     */
+    public function testExceptionAoAssinarArquivoXmlTagNaoInformada()
+    {
+        $tool = new ToolsNFePHP($this->configTest, 1, true);
+
+        $xmlNFe = __DIR__ . '/../fixtures/xml/35101158716523000119550010000000011003000000-nfe.xml';
+        $tool->signXML($xmlNFe, '');
+    }
+
+    /**
+     * @expectedException nfephpException
+     * @expectedExceptionMessage Um xml deve ser passado para que seja assinado!!
+     */
+    public function testExceptionAoAssinarArquivoXmlArquivoOuConteudoNaoInformado()
+    {
+        $tool = new ToolsNFePHP($this->configTest, 1, true);
+
+        $tool->signXML('', 'infNFe');
+    }
+
+    public function testStatusServicoEmOperacao()
+    {
+        $mockBuilder = $this->getMockBuilder('ToolsNFePHP');
+        $mockBuilder->setConstructorArgs(array($this->configTest, 1, true));
+        $mockBuilder->setMethods(array('pSendSOAP'));
+        /** @var ToolsNFePHP $tool */
+        $tool = $mockBuilder->getMock();
+        $xmlProtocolo = '<?xml version="1.0" encoding="utf-8"?>'
+            . '<response xmlns:xs="http://www.w3.org/2003/05/soap-envelope">'
+            . '<xs:Body>'
+            . '<infProt>'
+            . '<tpAmb>2</tpAmb>'
+            . '<verAplic>2</verAplic>'
+            . '<cUF>2</cUF>'
+            . '<cStat>107</cStat>'
+            . '<tMed>teste</tMed>'
+            . '<dhRecbto>2014-07-29T21:52:10-03:00</dhRecbto>'
+            . '<dhRetorno>2014-07-29T21:52:12-03:00</dhRetorno>'
+            . '<xMotivo>Em operação</xMotivo>'
+            . '<xObs></xObs>'
+            . '</infProt>'
+            . '</xs:Body>'
+            . '</response>';
+        $tool->expects($this->any())->method('pSendSOAP')->will($this->returnValue($xmlProtocolo));
+
+        $xmlStatus = $tool->statusServico('SP', 2);
+
+        $dom = new DOMDocument('1.0', 'UTF-8');
+        $dom->loadXML($xmlStatus);
+
+        $this->assertEquals('107', $dom->getElementsByTagName('cStat')->item(0)->nodeValue);
+    }
+
+    public function testStatusServicoParalisdoSemPrvisao()
+    {
+        $mockBuilder = $this->getMockBuilder('ToolsNFePHP');
+        $mockBuilder->setConstructorArgs(array($this->configTest, 1, true));
+        $mockBuilder->setMethods(array('pSendSOAP'));
+        /** @var ToolsNFePHP $tool */
+        $tool = $mockBuilder->getMock();
+        $xmlProtocolo = '<?xml version="1.0" encoding="utf-8"?>'
+            . '<response xmlns:xs="http://www.w3.org/2003/05/soap-envelope">'
+            . '<xs:Body>'
+            . '<infProt>'
+            . '<tpAmb>2</tpAmb>'
+            . '<verAplic>2</verAplic>'
+            . '<cUF>2</cUF>'
+            . '<cStat>109</cStat>'
+            . '<tMed>teste</tMed>'
+            . '<dhRecbto>2014-07-29T21:52:10-03:00</dhRecbto>'
+            . '<dhRetorno>2014-07-29T21:52:12-03:00</dhRetorno>'
+            . '<xMotivo>Em operação</xMotivo>'
+            . '<xObs></xObs>'
+            . '</infProt>'
+            . '</xs:Body>'
+            . '</response>';
+        $tool->expects($this->any())->method('pSendSOAP')->will($this->returnValue($xmlProtocolo));
+
+        $xmlStatus = $tool->statusServico('SP', 2);
+
+        $dom = new DOMDocument('1.0', 'UTF-8');
+        $dom->loadXML($xmlStatus);
+
+        $this->assertEquals('109', $dom->getElementsByTagName('cStat')->item(0)->nodeValue);
+    }
+
+    /**
+     * @expectedException nfephpException
+     * @expectedExceptionMessage Não houve retorno Soap verifique a mensagem de erro e o debug!!
+     */
+    public function testExceptionStatusServicoErroNoRetorno()
+    {
+        $mockBuilder = $this->getMockBuilder('ToolsNFePHP');
+        $mockBuilder->setConstructorArgs(array($this->configTest, 1, true));
+        $mockBuilder->setMethods(array('pSendSOAP'));
+        /** @var ToolsNFePHP $tool */
+        $tool = $mockBuilder->getMock();
+        $xmlProtocolo = '<?xml version="1.0" encoding="utf-8"?>'
+            . '<response xmlns:xs="http://www.w3.org/2003/05/soap-envelope">'
+            . '<xs:Body></xs:Body>'
+            . '</response>';
+        $tool->expects($this->any())->method('pSendSOAP')->will($this->returnValue($xmlProtocolo));
+
+        $tool->statusServico('SP', 2);
+    }
+
+    public function testConsultarCadastroComUmaOcorrencia()
+    {
+        $mockBuilder = $this->getMockBuilder('ToolsNFePHP');
+        $mockBuilder->setConstructorArgs(array($this->configTest, 1, true));
+        $mockBuilder->setMethods(array('pSendSOAP'));
+        /** @var ToolsNFePHP $tool */
+        $tool = $mockBuilder->getMock();
+        $xmlProtocolo = '<?xml version="1.0" encoding="utf-8"?>'
+            . '<response xmlns:xs="http://www.w3.org/2003/05/soap-envelope">'
+            . '<xs:Body>'
+            . '<infCons>'
+            . '<cStat>111</cStat>'
+            . '<xMotivo>Consulta cadastro com uma ocorrência</xMotivo>'
+            . '<infCad>'
+            . '<CNPJ>1234567890001</CNPJ>'
+            . '<CPF>12312312312</CPF>'
+            . '<IE>123123</IE>'
+            . '<UF>SP</UF>'
+            . '<cSit></cSit>'
+            . '<indCredNFe></indCredNFe>'
+            . '<indCredCTe></indCredCTe>'
+            . '<xNome></xNome>'
+            . '<xRegApur></xRegApur>'
+            . '<CNAE></CNAE>'
+            . '<dIniAtiv></dIniAtiv>'
+            . '<dUltSit></dUltSit>'
+            . '<ender>'
+            . '<xLgr></xLgr>'
+            . '<nro></nro>'
+            . '<xCpl></xCpl>'
+            . '<xBairro></xBairro>'
+            . '<cMun></cMun>'
+            . '<xMun></xMun>'
+            . '<CEP></CEP>'
+            . '</ender>'
+            . '</infCad>'
+            . '</infCons>'
+            . '</xs:Body>'
+            . '</response>';
+        $tool->expects($this->any())->method('pSendSOAP')->will($this->returnValue($xmlProtocolo));
+
+        $resultado = $tool->consultaCadastro('SP', '1234567890001', '123123', '123123123');
+
+        $this->assertTrue(is_array($resultado));
+        $this->assertArrayHasKey('cStat', $resultado);
+        $this->assertEquals('111', $resultado['cStat']);
+        $this->assertArrayHasKey('xMotivo', $resultado);
+        $this->assertEquals('Consulta cadastro com uma ocorrência', $resultado['xMotivo']);
+    }
+
+    /**
+     * @expectedException nfephpException
+     * @expectedExceptionMessage Rejeição: CNPJ do emitente inválido
+     */
+    public function testConsultarCadastroRejeicaoCnpjDoEmitenteInvalido()
+    {
+        $mockBuilder = $this->getMockBuilder('ToolsNFePHP');
+        $mockBuilder->setConstructorArgs(array($this->configTest, 1, true));
+        $mockBuilder->setMethods(array('pSendSOAP'));
+        /** @var ToolsNFePHP $tool */
+        $tool = $mockBuilder->getMock();
+        $xmlProtocolo = '<?xml version="1.0" encoding="utf-8"?>'
+            . '<response xmlns:xs="http://www.w3.org/2003/05/soap-envelope">'
+            . '<xs:Body>'
+            . '<infCons>'
+            . '<cStat>207</cStat>'
+            . '<xMotivo>Rejeição: CNPJ do emitente inválido</xMotivo>'
+            . '</infCons>'
+            . '</xs:Body>'
+            . '</response>';
+        $tool->expects($this->any())->method('pSendSOAP')->will($this->returnValue($xmlProtocolo));
+
+        $resultado = $tool->consultaCadastro('SP', '1234567890001', '123123', '123123123');
+
+        $this->assertTrue(is_array($resultado));
+        $this->assertArrayHasKey('cStat', $resultado);
+        $this->assertEquals('111', $resultado['cStat']);
+        $this->assertArrayHasKey('xMotivo', $resultado);
+        $this->assertEquals('Consulta cadastro com uma ocorrência', $resultado['xMotivo']);
     }
 }

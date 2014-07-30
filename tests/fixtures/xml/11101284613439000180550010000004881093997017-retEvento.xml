@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<retEnvEvento>
+<retEnvEvento versao="3.10">
     <idLote>000000013199240</idLote>
     <tpAmb>2</tpAmb>
     <verAplic>SVRS20101126153318</verAplic>
@@ -19,7 +19,7 @@
             <xEvento>Cancelamento registrado</xEvento>
             <CNPJDest>00000000000191</CNPJDest>
             <nSeqEvento>1</nSeqEvento>
-            <dhRegEvento>2010-12-02T16:59:41</dhRegEvento>
+            <dhRegEvento>2010-12-02T16:59:41-03:00</dhRegEvento>
             <nProt>135120005426267</nProt>
         </infEvento>
     </retEvento>

@@ -1099,7 +1099,7 @@ class ToolsNFePHP extends CommonNFePHP
                         break;
                 }
                 $aFile = $this->listDir($this->xsdDir.$this->schemeVer.DIRECTORY_SEPARATOR, $xsdFile, true);
-                if (isset($aFile[0]) && !$aFile[0]) {
+                if (empty($aFile) || empty($aFile[0])) {
                     $msg = "Erro na localização do schema xsd.\n";
                     $aError[] = $msg;
                     throw new nfephpException($msg);
@@ -1806,7 +1806,7 @@ class ToolsNFePHP extends CommonNFePHP
         //busca o cUF
         $cUF = $this->cUFlist[$siglaUF];
         //identificação do serviço
-        $servico = 'CadConsultaCadastro';
+        $servico = 'NfeConsultaCadastro';
         //recuperação da versão
         $versao = $aURL[$servico]['version'];
         //recuperação da url do serviço
@@ -1814,7 +1814,7 @@ class ToolsNFePHP extends CommonNFePHP
         //recuperação do método
         $metodo = $aURL[$servico]['method'];
         //montagem do namespace do serviço
-        $namespace = $this->URLPortal.'/wsdl/'.$servico.'2';
+        $namespace = $this->URLPortal.'/wsdl/'.$servico;
         if ($urlservico=='') {
             $msg = "Este serviço não está disponível para a SEFAZ $siglaUF!!!";
             $this->pSetError($msg);
@@ -1872,7 +1872,7 @@ class ToolsNFePHP extends CommonNFePHP
             }
             return false;
         }
-        if ($cStat <> '111') {
+        if ($cStat != '111') {
             $msg = "Retorno de ERRO: $cStat - $xMotivo";
             $this->pSetError($msg);
             if ($this->exceptions) {
@@ -1881,6 +1881,7 @@ class ToolsNFePHP extends CommonNFePHP
             return false;
         }
 
+        $aCad = array();
         if (isset($infCad)) {
             $aRetorno['bStat'] = true;
             //existem dados do cadastro e podem ser multiplos
@@ -1905,7 +1906,7 @@ class ToolsNFePHP extends CommonNFePHP
                         $dCad->getElementsByTagName('xNome')->item(0)->nodeValue : '';
                 $aCad[$countI]['xRegApur'] = !empty($dCad->getElementsByTagName('xRegApur')->item(0)->nodeValue) ?
                         $dCad->getElementsByTagName('xRegApur')->item(0)->nodeValue : '';
-                $aCad[$countI]['CNAE'] = !empty($dCad->getElementsByTagName('CNAE')->item($i)->nodeValue) ?
+                $aCad[$countI]['CNAE'] = !empty($dCad->getElementsByTagName('CNAE')->item(0)->nodeValue) ?
                         $dCad->getElementsByTagName('CNAE')->item($i)->nodeValue : '';
                 $aCad[$countI]['dIniAtiv'] = !empty($dCad->getElementsByTagName('dIniAtiv')->item(0)->nodeValue) ?
                         $dCad->getElementsByTagName('dIniAtiv')->item(0)->nodeValue : '';
