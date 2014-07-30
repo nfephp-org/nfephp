@@ -128,9 +128,9 @@ class MakeNFe
      */
     public function montaNFe()
     {
-        //as tags devem ser montadas e inseridas umas nas outras de dentro para fora
-        //tags em ordem de montagem por método:
-        //                            Modelo 55                 Modelo 65
+        //  as tags devem ser montadas e inseridas umas nas outras de dentro para fora
+        //  tags em ordem de montagem por método:
+        //                        Modelo 55                 Modelo 65
         //  1 - tag infNFe        Obrigatório               Obrigatório
         //  2 - tag ide           Obrigatório               Obrigatório
         //  3 - tag refNFe        Opcional (se houver)      Opcional (se houver)
@@ -203,7 +203,7 @@ class MakeNFe
                 $this->zAppChild($this->infNFe, $aut);
             }
         }
-/*
+
         //tag NFe/infNFe/det[]/DI/adi
         if (isset($this->aAdi)) {
             
@@ -215,7 +215,7 @@ class MakeNFe
         
         //tag NFe/infNFe/det[]
         if (isset($this->aProd)) {
-            $this->tagdet();
+            $this->zTagdet();
         }
 
         if (isset($this->aDet)) {
@@ -225,29 +225,34 @@ class MakeNFe
         }
         
         if (isset($this->aImposto) && isset($this->aDet)) {
-            $this->tagImp();
+            $this->zTagImp();
         }
         
         //tag NFe/infNFe/total
-        if (isset($this->ICMSTot)) {
-            $this->tagtotal();
+        if (!empty($this->ICMSTot)) {
+            $this->zTagtotal();
             $this->total->appendChild($this->ICMSTot);
         }
-        if (isset($this->ISSQNTot)) {
-            $this->tagtotal();
+        if (!empty($this->ISSQNTot)) {
+            $this->zTagtotal();
             $this->total->appendChild($this->ISSQNTot);
         }
-        if (isset($this->retTrib)) {
-            $this->tagtotal();
+        if (!empty($this->retTrib)) {
+            $this->zTagtotal();
             $this->total->appendChild($this->retTrib);
         }
-        if (isset($this->total)) {
+        if (!empty($this->total)) {
             $this->infNFe->appendChild($this->total);
         }
-*/        
+        
         $this->zAppChild($this->infNFe, $this->transp, '');
-        $this->zAppChild($this->cobr, $this->fat, 'A tag cobr não foi criada executar [tagfat] antes.');
-        $this->zAppChild($this->infNFe, $this->cobr, '');
+        if (!empty($this->cobr)) {
+            $this->zAppChild($this->cobr, $this->fat, '');
+            foreach ($this->aDup as $dup) {
+                $this->zAppChild($this->cobr, $dup, '');
+            }
+            $this->zAppChild($this->infNFe, $this->cobr, '');
+        }
         //apenas para modelo 65
         if ($this->mod == '65') {
             $this->zAppChild($this->infNFe, $this->pag, '');
@@ -259,6 +264,7 @@ class MakeNFe
         $this->zAppChild($this->NFe, $this->infNFe, '');
         $this->zAppChild($this->dom, $this->NFe, '');
         if (count($this->erros) > 0) {
+            header("Content-Type: text/json");
             return json_encode($this->erros);
         }
         return $this->dom->saveXML();
@@ -926,14 +932,30 @@ class MakeNFe
     {
         foreach ($this->aImposto as $key => $imp) {
             $nItem = $key;
-            $imp->appendChild($this->aICMS[$nItem]);
-            $imp->appendChild($this->aIPI[$nItem]);
-            $imp->appendChild($this->aII[$nItem]);
-            $imp->appendChild($this->aPIS[$nItem]);
-            $imp->appendChild($this->aPISST[$nItem]);
-            $imp->appendChild($this->aCOFINS[$nItem]);
-            $imp->appendChild($this->aCOFINSST[$nItem]);
-            $imp->appendChild($this->aISSQN[$nItem]);
+            if (!empty($this->aICMS[$nItem])) {
+                $imp->appendChild($this->aICMS[$nItem]);
+            }
+            if (!empty($this->aIPI[$nItem])) {
+                $imp->appendChild($this->aIPI[$nItem]);
+            }
+            if (!empty($this->aII[$nItem])) {
+                $imp->appendChild($this->aII[$nItem]);
+            }
+            if (!empty($this->aPIS[$nItem])) {
+                $imp->appendChild($this->aPIS[$nItem]);
+            }
+            if (!empty($this->aPISST[$nItem])) {
+                $imp->appendChild($this->aPISST[$nItem]);
+            }
+            if (!empty($this->aCOFINS[$nItem])) {
+                $imp->appendChild($this->aCOFINS[$nItem]);
+            }
+            if (!empty($this->aCOFINSST[$nItem])) {
+                $imp->appendChild($this->aCOFINSST[$nItem]);
+            }
+            if (!empty($this->aISSQN[$nItem])) {
+                $imp->appendChild($this->aISSQN[$nItem]);
+            }
         }
         //coloca a TAG imposto dentro do DET
         foreach ($this->aDet as $det) {
@@ -1460,7 +1482,7 @@ class MakeNFe
         $pCredSN = '',
         $vCredICMSSN = ''
     ) {
-        switch ($CST) {
+        switch ($cst) {
             case '00':
                 $ICMS = $this->dom->createElement("ICMS00");
                 $this->zAddChild($ICMS, 'orig', $orig, true, "Origem da mercadoria");
@@ -1589,7 +1611,7 @@ class MakeNFe
                 $this->zAddChild(
                     $ICMS,
                     'CSOSN',
-                    $CST,
+                    $cst,
                     true,
                     "Código de Situação da Operação Simples Nacional"
                 );
@@ -1617,7 +1639,7 @@ class MakeNFe
                 $this->zAddChild(
                     $ICMS,
                     'CSOSN',
-                    $CST,
+                    $cst,
                     true,
                     "Código de Situação da Operação Simples Nacional"
                 );
@@ -1628,7 +1650,7 @@ class MakeNFe
                 $this->zAddChild(
                     $ICMS,
                     'CSOSN',
-                    $CST,
+                    $cst,
                     true,
                     "Código de Situação da Operação Simples Nacional"
                 );
@@ -1694,7 +1716,7 @@ class MakeNFe
                 $this->zAddChild(
                     $ICMS,
                     'CSOSN',
-                    $CST,
+                    $cst,
                     true,
                     "Código de Situação da Operação Simples Nacional"
                 );
@@ -1705,6 +1727,7 @@ class MakeNFe
                 $this->zAddChild($ICMS, 'CSOSN', $cst, true, "Código de Situação da Operação Simples Nacional");
                 break;
         }
+        $this->tagimposto($nItem);
         $tagIcms = $this->dom->createElement('ICMS');
         $tagIcms->appendChild($ICMS);
         $this->aICMS[$nItem] = $tagIcms;
@@ -2250,7 +2273,7 @@ class MakeNFe
         $vNF = '',
         $vTotTrib = ''
     ) {
-        $this->ztagtotal();
+        $this->zTagtotal();
         $this->ICMSTot = $this->dom->createElement("ICMSTot");
         $this->zAddChild($this->ICMSTot, "vBC", $vBC, true, "Base de Cálculo do ICMS");
         $this->zAddChild($this->ICMSTot, "vICMS", $vICMS, true, "Valor Total do ICMS");
@@ -2720,7 +2743,7 @@ class MakeNFe
         $vDesc = '',
         $vLiq = ''
     ) {
-        $this->ztagcobr();
+        $this->zTagcobr();
         $this->fat = $this->dom->createElement("fat");
         $this->zAddChild($this->fat, "nFat", $nFat, false, "Número da Fatura");
         $this->zAddChild($this->fat, "vOrig", $vOrig, false, "Valor Original da Fatura");
@@ -2744,13 +2767,13 @@ class MakeNFe
         $dVenc = '',
         $vDup = ''
     ) {
+        $this->zTagcobr();
         $dup = $this->dom->createElement("dup");
         $this->zAddChild($dup, "nDup", $nDup, false, "Número da Duplicata");
         $this->zAddChild($dup, "dVenc", $dVenc, false, "Data de vencimento");
         $this->zAddChild($dup, "vDup", $vDup, true, "Valor da duplicata");
         $this->aDup[] = $dup;
-        $this->zAppChild($this->fat, $dup, "Duplicatas - a tag fat não foi criada [tagdup]");
-        return $dup;
+        return $this->aDup;
     }
     
     /**

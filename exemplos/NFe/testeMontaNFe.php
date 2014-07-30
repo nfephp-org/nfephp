@@ -1,6 +1,6 @@
 <?php
 
-require_once('/var/www/nfephp3/libs/NFe/MakeNFePHP.class.php');
+require_once('../../libs/NFe/MakeNFePHP.class.php');
 
 $nfe = new MakeNFe();
 
@@ -22,7 +22,7 @@ $nNF = '28005'; // numero da NFe
 $dhEmi = '2014-02-03';  //para versão 3.00 '2014-02-03T13:22:42-3.00' não informar para NFCe
 $dhSaiEnt = '2014-02-03'; //versão 2.00, 3.00 e 3.10
 $tpNF = '1';
-$idDest = ''; //1=Operação interna; 2=Operação interestadual; 3=Operação com exterior.
+$idDest = '1'; //1=Operação interna; 2=Operação interestadual; 3=Operação com exterior.
 $cMunFG = '3550308';
 $tpImp = '1'; //0=Sem geração de DANFE; 1=DANFE normal, Retrato; 2=DANFE normal, Paisagem;
               //3=DANFE Simplificado; 4=DANFE NFC-e; 5=DANFE NFC-e em mensagem eletrônica
@@ -40,8 +40,8 @@ $tpEmis = '1'; //1=Emissão normal (não em contingência);
 $cDV = '4'; //digito verificador
 $tpAmb = '1'; //1=Produção; 2=Homologação
 $finNFe = '1'; //1=NF-e normal; 2=NF-e complementar; 3=NF-e de ajuste; 4=Devolução/Retorno.
-$indFinal = ''; //0=Não; 1=Consumidor final;
-$indPres = ''; //0=Não se aplica (por exemplo, Nota Fiscal complementar ou de ajuste);
+$indFinal = '1'; //0=Não; 1=Consumidor final;
+$indPres = '0'; //0=Não se aplica (por exemplo, Nota Fiscal complementar ou de ajuste);
                //1=Operação presencial;
                //2=Operação não presencial, pela Internet;
                //3=Operação não presencial, Teleatendimento;
@@ -191,10 +191,10 @@ $aP[] = array(
         'qCom' => '1',
         'vUnCom' => '10.00',
         'vProd' => '10.00',
-        'cEANTrib' => '',
+        'cEANTrib' => '478901542312456',
         'uTrib' => 'U',
-        'qTrib' => '',
-        'vUnTrib' => '',
+        'qTrib' => '1',
+        'vUnTrib' => '10.00',
         'vFrete' => '',
         'vSeg' => '',
         'vDesc' => '',
@@ -216,10 +216,10 @@ $aP[] = array(
         'qCom' => '1',
         'vUnCom' => '20.00',
         'vProd' => '20.00',
-        'cEANTrib' => '',
+        'cEANTrib' => '4789015423121222',
         'uTrib' => 'UN',
         'qTrib' => '1',
-        'vUnTrib' => '',
+        'vUnTrib' => '20.00',
         'vFrete' => '10.00',
         'vSeg' => '1.00',
         'vDesc' => '1.00',
@@ -255,7 +255,11 @@ foreach ($aP as $prod) {
     $nItemPed = $prod['nItemPed'];
     $nFCI = $prod['nFCI'];
     $resp = $nfe->tagprod($nItem, $cProd, $cEAN, $xProd, $NCM, $NVE, $EXTIPI, $CFOP, $uCom, $qCom, $vUnCom, $vProd, $cEANTrib, $uTrib, $qTrib, $vUnTrib, $vFrete, $vSeg, $vDesc, $vOutro, $indTot, $xPed, $nItemPed, $nFCI);
+    
+    $resp = $nfe->tagICMS($nItem, "1", "101", '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', "4.00", $vProd);
 }
+
+$resp = $nfe->tagICMSTot("0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00");
 
 //adi
 $nItem = '1';
@@ -277,7 +281,7 @@ $dDesemb = '22/12/2013';
 $tpViaTransp = '1';
 $vAFRMM = '1.00';
 $tpIntermedio = '0';
-$resp = $nfe->tagDI($nItem, $nDI, $dDI, $xLocDesemb, $UFDesemb, $dDesemb, $tpViaTransp, $vAFRMM, $tpIntermedio);
+$resp = $nfe->tagDI($nItem, $nDI, $dDI, $xLocDesemb, $UFDesemb, $dDesemb, $tpViaTransp, $vAFRMM, $tpIntermedio, '', '', '1');
 
 //detExport
 $nItem = '2';
