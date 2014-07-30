@@ -520,4 +520,85 @@ class ToolsNFePHPTest extends PHPUnit_Framework_TestCase
 
         $tool->statusServico('SP', 2);
     }
+
+    public function testConsultarCadastroComUmaOcorrencia()
+    {
+        $mockBuilder = $this->getMockBuilder('ToolsNFePHP');
+        $mockBuilder->setConstructorArgs(array($this->configTest, 1, true));
+        $mockBuilder->setMethods(array('pSendSOAP'));
+        /** @var ToolsNFePHP $tool */
+        $tool = $mockBuilder->getMock();
+        $xmlProtocolo = '<?xml version="1.0" encoding="utf-8"?>'
+            . '<response xmlns:xs="http://www.w3.org/2003/05/soap-envelope">'
+            . '<xs:Body>'
+            . '<infCons>'
+            . '<cStat>111</cStat>'
+            . '<xMotivo>Consulta cadastro com uma ocorrência</xMotivo>'
+            . '<infCad>'
+            . '<CNPJ>1234567890001</CNPJ>'
+            . '<CPF>12312312312</CPF>'
+            . '<IE>123123</IE>'
+            . '<UF>SP</UF>'
+            . '<cSit></cSit>'
+            . '<indCredNFe></indCredNFe>'
+            . '<indCredCTe></indCredCTe>'
+            . '<xNome></xNome>'
+            . '<xRegApur></xRegApur>'
+            . '<CNAE></CNAE>'
+            . '<dIniAtiv></dIniAtiv>'
+            . '<dUltSit></dUltSit>'
+            . '<ender>'
+            . '<xLgr></xLgr>'
+            . '<nro></nro>'
+            . '<xCpl></xCpl>'
+            . '<xBairro></xBairro>'
+            . '<cMun></cMun>'
+            . '<xMun></xMun>'
+            . '<CEP></CEP>'
+            . '</ender>'
+            . '</infCad>'
+            . '</infCons>'
+            . '</xs:Body>'
+            . '</response>';
+        $tool->expects($this->any())->method('pSendSOAP')->will($this->returnValue($xmlProtocolo));
+
+        $resultado = $tool->consultaCadastro('SP', '1234567890001', '123123', '123123123');
+
+        $this->assertTrue(is_array($resultado));
+        $this->assertArrayHasKey('cStat', $resultado);
+        $this->assertEquals('111', $resultado['cStat']);
+        $this->assertArrayHasKey('xMotivo', $resultado);
+        $this->assertEquals('Consulta cadastro com uma ocorrência', $resultado['xMotivo']);
+    }
+
+    /**
+     * @expectedException nfephpException
+     * @expectedExceptionMessage Rejeição: CNPJ do emitente inválido
+     */
+    public function testConsultarCadastroRejeicaoCnpjDoEmitenteInvalido()
+    {
+        $mockBuilder = $this->getMockBuilder('ToolsNFePHP');
+        $mockBuilder->setConstructorArgs(array($this->configTest, 1, true));
+        $mockBuilder->setMethods(array('pSendSOAP'));
+        /** @var ToolsNFePHP $tool */
+        $tool = $mockBuilder->getMock();
+        $xmlProtocolo = '<?xml version="1.0" encoding="utf-8"?>'
+            . '<response xmlns:xs="http://www.w3.org/2003/05/soap-envelope">'
+            . '<xs:Body>'
+            . '<infCons>'
+            . '<cStat>207</cStat>'
+            . '<xMotivo>Rejeição: CNPJ do emitente inválido</xMotivo>'
+            . '</infCons>'
+            . '</xs:Body>'
+            . '</response>';
+        $tool->expects($this->any())->method('pSendSOAP')->will($this->returnValue($xmlProtocolo));
+
+        $resultado = $tool->consultaCadastro('SP', '1234567890001', '123123', '123123123');
+
+        $this->assertTrue(is_array($resultado));
+        $this->assertArrayHasKey('cStat', $resultado);
+        $this->assertEquals('111', $resultado['cStat']);
+        $this->assertArrayHasKey('xMotivo', $resultado);
+        $this->assertEquals('Consulta cadastro com uma ocorrência', $resultado['xMotivo']);
+    }
 }
