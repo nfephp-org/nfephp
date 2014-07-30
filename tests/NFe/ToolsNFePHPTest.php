@@ -141,7 +141,25 @@ class ToolsNFePHPTest extends PHPUnit_Framework_TestCase
      */
     public function testExceptionCampoCstatVazioNoMetodoVerifyNfe()
     {
-        $tool = new ToolsNFePHP($this->configTest, 2, true);
+        $mockBuilder = $this->getMockBuilder('ToolsNFePHP');
+        $mockBuilder->setConstructorArgs(array($this->configTest, 1, true));
+        $mockBuilder->setMethods(array('pSendSOAP'));
+        /** @var ToolsNFePHP $tool */
+        $tool = $mockBuilder->getMock();
+        $xmlProtocolo = '<?xml version="1.0" encoding="utf-8"?>'
+            . '<response xmlns:xs="http://www.w3.org/2003/05/soap-envelope">'
+            . '<xs:Body>'
+            . '<infProt>'
+            . '<dhRecbto>' . date('Y-m-d\TH:i:s') . '</dhRecbto>'
+            . '<cStat></cStat>'
+            . '<xMotivo>Autorizado o Uso</xMotivo>'
+            . '<nProt>311100000046263</nProt>'
+            . '<digVal>DGTa0m6/dOui5S46nfHyqifBZ1U=</digVal>'
+            . '</infProt>'
+            . '</xs:Body>'
+            . '</response>';
+        $tool->expects($this->any())->method('pSendSOAP')->will($this->returnValue($xmlProtocolo));
+
         $xmlNFe = PATH_ROOT . 'exemplos/xml/11101284613439000180550010000004881093997017-nfe.xml';
         $tool->verifyNFe($xmlNFe);
     }
