@@ -279,7 +279,7 @@ class ToolsNFePHPTest extends PHPUnit_Framework_TestCase
         $tool = new ToolsNFePHP($this->configTest, 1, true);
 
         $xmlNFe = __DIR__ . '/../fixtures/xml/11101284613439000180550010000004881093997017-nfe.xml';
-        $xsdFile = __DIR__. '/../../schemes/PL_008d/nfe_v3.10.xsd';
+        $xsdFile = __DIR__ . '/../../schemes/PL_008d/nfe_v3.10.xsd';
         $this->assertTrue($tool->validXML($xmlNFe, $xsdFile));
     }
 
@@ -350,4 +350,70 @@ class ToolsNFePHPTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($tool->validXML($xmlNFe, ''));
     }
 
+    public function testAssinarArquivoXml()
+    {
+        $tool = new ToolsNFePHP($this->configTest, 1, true);
+
+        $xmlNFe = __DIR__ . '/../fixtures/xml/35101158716523000119550010000000011003000000-nfe.xml';
+        $xmlNFe = $tool->signXML($xmlNFe, 'infNFe');
+
+        $expectedDOM = new DOMDocument('1.0', 'UTF-8');
+        $expectedDOM->load(__DIR__ . '/../fixtures/xml/35101158716523000119550010000000011003000000-nfeSigned.xml');
+
+        $actualDOM = new DOMDocument('1.0', 'UTF-8');
+        $actualDOM->loadXML($xmlNFe);
+
+        $this->assertEquals($expectedDOM, $actualDOM);
+    }
+
+    public function testAssinarConteudoXml()
+    {
+        $tool = new ToolsNFePHP($this->configTest, 1, true);
+
+        $xmlNFe = file_get_contents(__DIR__ . '/../fixtures/xml/35101158716523000119550010000000011003000000-nfe.xml');
+        $xmlNFe = $tool->signXML($xmlNFe, 'infNFe');
+
+        $expectedDOM = new DOMDocument('1.0', 'UTF-8');
+        $expectedDOM->load(__DIR__ . '/../fixtures/xml/35101158716523000119550010000000011003000000-nfeSigned.xml');
+
+        $actualDOM = new DOMDocument('1.0', 'UTF-8');
+        $actualDOM->loadXML($xmlNFe);
+
+        $this->assertEquals($expectedDOM, $actualDOM);
+    }
+
+    /**
+     * @expectedException nfephpException
+     * @expectedExceptionMessage A tag < infoNFe > não existe no XML!!
+     */
+    public function testExceptionAoAssinarArquivoXmlTagNaoEncontrada()
+    {
+        $tool = new ToolsNFePHP($this->configTest, 1, true);
+
+        $xmlNFe = __DIR__ . '/../fixtures/xml/35101158716523000119550010000000011003000000-nfe.xml';
+        $tool->signXML($xmlNFe, 'infoNFe');
+    }
+
+    /**
+     * @expectedException nfephpException
+     * @expectedExceptionMessage Uma tag deve ser indicada para que seja assinada!!
+     */
+    public function testExceptionAoAssinarArquivoXmlTagNaoInformada()
+    {
+        $tool = new ToolsNFePHP($this->configTest, 1, true);
+
+        $xmlNFe = __DIR__ . '/../fixtures/xml/35101158716523000119550010000000011003000000-nfe.xml';
+        $tool->signXML($xmlNFe, '');
+    }
+
+    /**
+     * @expectedException nfephpException
+     * @expectedExceptionMessage Um xml deve ser passado para que seja assinado!!
+     */
+    public function testExceptionAoAssinarArquivoXmlArquivoOuConteudoNaoInformado()
+    {
+        $tool = new ToolsNFePHP($this->configTest, 1, true);
+
+        $tool->signXML('', 'infNFe');
+    }
 }
