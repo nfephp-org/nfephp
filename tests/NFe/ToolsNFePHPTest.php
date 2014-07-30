@@ -434,4 +434,90 @@ class ToolsNFePHPTest extends PHPUnit_Framework_TestCase
 
         $tool->signXML('', 'infNFe');
     }
+
+    public function testStatusServicoEmOperacao()
+    {
+        $mockBuilder = $this->getMockBuilder('ToolsNFePHP');
+        $mockBuilder->setConstructorArgs(array($this->configTest, 1, true));
+        $mockBuilder->setMethods(array('pSendSOAP'));
+        /** @var ToolsNFePHP $tool */
+        $tool = $mockBuilder->getMock();
+        $xmlProtocolo = '<?xml version="1.0" encoding="utf-8"?>'
+            . '<response xmlns:xs="http://www.w3.org/2003/05/soap-envelope">'
+            . '<xs:Body>'
+            . '<infProt>'
+            . '<tpAmb>2</tpAmb>'
+            . '<verAplic>2</verAplic>'
+            . '<cUF>2</cUF>'
+            . '<cStat>107</cStat>'
+            . '<tMed>teste</tMed>'
+            . '<dhRecbto>2014-07-29T21:52:10-03:00</dhRecbto>'
+            . '<dhRetorno>2014-07-29T21:52:12-03:00</dhRetorno>'
+            . '<xMotivo>Em operação</xMotivo>'
+            . '<xObs></xObs>'
+            . '</infProt>'
+            . '</xs:Body>'
+            . '</response>';
+        $tool->expects($this->any())->method('pSendSOAP')->will($this->returnValue($xmlProtocolo));
+
+        $xmlStatus = $tool->statusServico('SP', 2);
+
+        $dom = new DOMDocument('1.0', 'UTF-8');
+        $dom->loadXML($xmlStatus);
+
+        $this->assertEquals('107', $dom->getElementsByTagName('cStat')->item(0)->nodeValue);
+    }
+
+    public function testStatusServicoParalisdoSemPrvisao()
+    {
+        $mockBuilder = $this->getMockBuilder('ToolsNFePHP');
+        $mockBuilder->setConstructorArgs(array($this->configTest, 1, true));
+        $mockBuilder->setMethods(array('pSendSOAP'));
+        /** @var ToolsNFePHP $tool */
+        $tool = $mockBuilder->getMock();
+        $xmlProtocolo = '<?xml version="1.0" encoding="utf-8"?>'
+            . '<response xmlns:xs="http://www.w3.org/2003/05/soap-envelope">'
+            . '<xs:Body>'
+            . '<infProt>'
+            . '<tpAmb>2</tpAmb>'
+            . '<verAplic>2</verAplic>'
+            . '<cUF>2</cUF>'
+            . '<cStat>109</cStat>'
+            . '<tMed>teste</tMed>'
+            . '<dhRecbto>2014-07-29T21:52:10-03:00</dhRecbto>'
+            . '<dhRetorno>2014-07-29T21:52:12-03:00</dhRetorno>'
+            . '<xMotivo>Em operação</xMotivo>'
+            . '<xObs></xObs>'
+            . '</infProt>'
+            . '</xs:Body>'
+            . '</response>';
+        $tool->expects($this->any())->method('pSendSOAP')->will($this->returnValue($xmlProtocolo));
+
+        $xmlStatus = $tool->statusServico('SP', 2);
+
+        $dom = new DOMDocument('1.0', 'UTF-8');
+        $dom->loadXML($xmlStatus);
+
+        $this->assertEquals('109', $dom->getElementsByTagName('cStat')->item(0)->nodeValue);
+    }
+
+    /**
+     * @expectedException nfephpException
+     * @expectedExceptionMessage Não houve retorno Soap verifique a mensagem de erro e o debug!!
+     */
+    public function testExceptionStatusServicoErroNoRetorno()
+    {
+        $mockBuilder = $this->getMockBuilder('ToolsNFePHP');
+        $mockBuilder->setConstructorArgs(array($this->configTest, 1, true));
+        $mockBuilder->setMethods(array('pSendSOAP'));
+        /** @var ToolsNFePHP $tool */
+        $tool = $mockBuilder->getMock();
+        $xmlProtocolo = '<?xml version="1.0" encoding="utf-8"?>'
+            . '<response xmlns:xs="http://www.w3.org/2003/05/soap-envelope">'
+            . '<xs:Body></xs:Body>'
+            . '</response>';
+        $tool->expects($this->any())->method('pSendSOAP')->will($this->returnValue($xmlProtocolo));
+
+        $tool->statusServico('SP', 2);
+    }
 }
