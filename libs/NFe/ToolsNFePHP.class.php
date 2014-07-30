@@ -2823,10 +2823,27 @@ class ToolsNFePHP extends CommonNFePHP
      * @param   integer $nFin       numero Final 1 até 9 digitos zero a esq
      * @param   string  $xJust      justificativa 15 até 255 digitos
      * @param   string  $tpAmb      Tipo de ambiente 1-produção ou 2 homologação
+     * @param   array   $aRetorno   Array com os dados de Retorno
      * @return mixed false ou string com o xml do processo de inutilização
      */
-    public function inutNF($nAno = '', $nSerie = '1', $nIni = '', $nFin = '', $xJust = '', $tpAmb = '')
+    public function inutNF($nAno = '', $nSerie = '1', $nIni = '', $nFin = '', $xJust = '', $tpAmb = '', &$aRetorno = array())
     {
+        //retorno da função
+        $aRetorno = array(
+            'bStat'=>false,
+            'tpAmb'=>'',
+            'verAplic'=>'',
+            'cStat'=>'',
+            'xMotivo'=>'',
+            'cUF'=>'',
+            'ano'=>'',
+            'CNPJ'=>'',
+            'mod'=>'',
+            'serie'=>'',
+            'nNFIni'=>'',
+            'nNFFin'=>'',
+            'dhRecbto'=>'',
+            'nProt'=>'');
         //valida dos dados de entrada
         if ($nAno == '' || $nIni == '' || $nFin == '' || $xJust == '') {
             $msg = "Não foi passado algum dos parametos necessários ANO=$nAno inicio=$nIni "
@@ -2990,6 +3007,33 @@ class ToolsNFePHP extends CommonNFePHP
                 $doc->getElementsByTagName('cStat')->item(0)->nodeValue : '';
         $xMotivo = !empty($doc->getElementsByTagName('xMotivo')->item(0)->nodeValue) ?
                 $doc->getElementsByTagName('xMotivo')->item(0)->nodeValue : '';
+        // tipo de ambiente
+        $aRetorno['tpAmb'] = $doc->getElementsByTagName('tpAmb')->item(0)->nodeValue;
+        // verssão do aplicativo
+        $aRetorno['verAplic'] = $doc->getElementsByTagName('verAplic')->item(0)->nodeValue;
+        // status do serviço
+        $aRetorno['cStat'] = $cStat;
+        // motivo da resposta (opcional)
+        $aRetorno['xMotivo'] = $xMotivo;
+        // Código da UF que atendeu a solicitação
+        $aRetorno['cUF'] = $doc->getElementsByTagName('cUF')->item(0)->nodeValue;
+        // Ano de inutilização da numeração
+        $aRetorno['ano'] = $doc->getElementsByTagName('ano')->item(0)->nodeValue;
+        // CNPJ do emitente
+        $aRetorno['CNPJ'] = $doc->getElementsByTagName('CNPJ')->item(0)->nodeValue;
+        // Modelo da NF-e
+        $aRetorno['mod'] = $doc->getElementsByTagName('mod')->item(0)->nodeValue;
+        // Série da NF-e
+        $aRetorno['serie'] = $doc->getElementsByTagName('serie')->item(0)->nodeValue;
+        // Número da NF-e inicial a ser inutilizada
+        $aRetorno['nNFIni'] = $doc->getElementsByTagName('nNFIni')->item(0)->nodeValue;
+        // Número da NF-e final a ser inutilizada
+        $aRetorno['nNFFin'] = $doc->getElementsByTagName('nNFFin')->item(0)->nodeValue;
+        // data e hora do retorno a operação (opcional)
+        $aRetorno['dhRecbto'] = !empty($doc->getElementsByTagName('dhRecbto')->item(0)->nodeValue) ?
+                                 date("d/m/Y H:i:s", $this->pConvertTime($doc->getElementsByTagName('dhRecbto')->item(0)->nodeValue)) : '';
+        // Número do Protocolo de Inutilização
+        $aRetorno['nProt'] = $doc->getElementsByTagName('nProt')->item(0)->nodeValue;
         if ($cStat == '') {
             //houve erro
             $msg = "Nao houve retorno Soap verifique o debug!!";
@@ -3063,10 +3107,21 @@ class ToolsNFePHP extends CommonNFePHP
      * @param string $nProt
      * @param string $xJust
      * @param number $tpAmb
+     * @param array  $aRetorno
      */
-    public function cancelEvent($chNFe = '', $nProt = '', $xJust = '', $tpAmb = '')
+    public function cancelEvent($chNFe = '', $nProt = '', $xJust = '', $tpAmb = '', &$aRetorno = array())
     {
         try {
+            //retorno da função
+            $aRetorno = array(
+                'bStat'=>false,
+                'tpAmb'=>'',
+                'verAplic'=>'',
+                'cStat'=>'',
+                'xMotivo'=>'',
+                'nProt'=>'',
+                'chNFe'=>'',
+                'dhRecbto'=>'');
             //validação dos dados de entrada
             if ($chNFe == '' || $nProt == '' || $xJust == '') {
                 $msg = "Não foi passado algum dos parâmetros necessários "
@@ -3105,7 +3160,7 @@ class ToolsNFePHP extends CommonNFePHP
             }
             $numLote = $this->pGeraNumLote();
             //Data e hora do evento no formato AAAA-MM-DDTHH:MM:SSTZD (UTC)
-            $dhEvento = date('Y-m-d').'T'.date('H:i:s').$this->timeZone;
+            $dhEvento = date('Y-m-d\TH:i:s').$this->timeZone;
             //se o envio for para svan mudar o numero no orgão para 91
             if ($this->enableSVAN) {
                 $cOrgao='90';
@@ -3217,6 +3272,22 @@ class ToolsNFePHP extends CommonNFePHP
                 $msg = "Retorno de ERRO: $cStat - $xMotivo";
                 throw new nfephpException($msg);
             }
+            $aRetorno['bStat'] = true;
+            // tipo de ambiente
+            $aRetorno['tpAmb'] = $retEvento->getElementsByTagName('tpAmb')->item(0)->nodeValue;
+            // verssão do aplicativo
+            $aRetorno['verAplic'] = $retEvento->getElementsByTagName('verAplic')->item(0)->nodeValue;
+            // status do serviço
+            $aRetorno['cStat'] = $retEvento->getElementsByTagName('cStat')->item(0)->nodeValue;
+            // motivo da resposta (opcional)
+            $aRetorno['xMotivo'] = $retEvento->getElementsByTagName('xMotivo')->item(0)->nodeValue;
+            // Numero de Protocolo
+            $aRetorno['nProt'] = $retEvento->getElementsByTagName('nProt')->item(0)->nodeValue;
+            // Chave
+            $aRetorno['chNFe'] = $retEvento->getElementsByTagName('chNFe')->item(0)->nodeValue;
+            // data e hora da mensagem (opcional)
+            $aRetorno['dhRecbto'] = !empty($retEvento->getElementsByTagName('dhRegEvento')->item(0)->nodeValue) ?
+                                    date("d/m/Y H:i:s", $this->pConvertTime($retEvento->getElementsByTagName('dhRegEvento')->item(0)->nodeValue)) : '';
             //o evento foi aceito cStat == 135 ou cStat == 155
             //carregar o evento
             $xmlenvEvento = new DOMDocument('1.0', 'utf-8'); //cria objeto DOM

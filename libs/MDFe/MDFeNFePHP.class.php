@@ -1976,11 +1976,12 @@ class MDFeNFePHP {
      * @param   integer $tpAmb Tipo de ambiente
      * @param   integer $modSOAP 1 usa __sendSOP e 2 usa __sendSOAP2
      * @param   mixed  $resp variável passada como referencia e irá conter o retorno da função em um array
+     * @param   string $xJust Justificativa do Cancelamento
      * @return mixed false
      *
      * TODO : terminar o código não funcional e não testado
      */
-    public function manifDest($chMDFe='',$tpEvento='',$tpAmb='',$cMun='', $modSOAP='2',&$resp=''){
+    public function manifDest($chMDFe='',$tpEvento='',$tpAmb='',$cMun='', $modSOAP='2',&$resp='',$xJust=''){
         try {
             if ($chMDFe == ''){
                 $msg = "A chave do MDFe recebida é obrigatória.";
@@ -1993,26 +1994,42 @@ class MDFeNFePHP {
             if (strlen($tpEvento) == 2){
                 $tpEvento = "1101$tpEvento";
             }
+            if ($tpEvento == '110111'){
+                if ($xJust == ''){
+                    $msg = "A Justificativa não pode ser vazia.";
+                    throw new nfephpException($msg);
+                } else if (strlen($xJust) < 15){
+                    $msg = "A Justificativa deve conter no mínimo 15 caracteres.";
+                    throw new nfephpException($msg);
+                }
+            }
             if (strlen($tpEvento) != 6){
                 $msg = "O comprimento do código do tipo de evento está errado.";
                 throw new nfephpException($msg);
             }
             $xml_ev = '';
+            //Busca o Número do Procotolo de Autorização da MDFe
+            if($aRet = $this->getProtocol('', $chMDFe, $tpAmb, 2)){
+                for($xe = 0; $xe < count($aRet["aProt"]); $xe++){
+                    if($aRet["aProt"][$xe]["xMotivo"] == "Autorizado o uso do MDF-e"){
+                        $nProt = $aRet["aProt"][$xe]["nProt"];
+                    }
+                }
+            }
             $cOrgao='43';
             switch ($tpEvento){
                 case '110111':
                     $descEvento = 'Cancelamento';
+                    
+                    $xml_ev = '<evCancMDFe>';
+                    $xml_ev .= '<descEvento>'.$descEvento.'</descEvento>';
+                    $xml_ev .= '<nProt>'.$nProt.'</nProt>';
+                    $xml_ev .= '<xJust>'.$xJust.'</xJust>';
+                    $xml_ev .= '</evCancMDFe>';
                     break;
                 case '110112':
                     $descEvento = 'Encerramento';
                     
-                    if($aRet = $this->getProtocol('', $chMDFe, $tpAmb, 2)){
-                      for($xe = 0; $xe < count($aRet["aProt"]); $xe++){
-                         if($aRet["aProt"][$xe]["xMotivo"] == "Autorizado o uso do MDF-e"){
-                            $nProt = $aRet["aProt"][$xe]["nProt"];
-                         }
-                      }
-                    }
                     $xml_ev = '<evEncMDFe>';
                     $xml_ev .= '<descEvento>'.$descEvento.'</descEvento>';
                     $xml_ev .= '<nProt>'.$nProt.'</nProt>';
@@ -2041,7 +2058,7 @@ class MDFeNFePHP {
             
             $numLote = substr(str_replace(',','',number_format(microtime(true)*1000000,0)),0,15);
             //Data e hora do evento no formato AAAA-MM-DDTHH:MM:SS (UTC)
-            $dhEvento = date('Y-m-d').'T'.date('H:i:s');
+            $dhEvento = date('Y-m-d\TH:i:s');
             //montagem do namespace do serviço
             $servico = 'MDFeRecepcaoEvento';
             //recuperação da versão
