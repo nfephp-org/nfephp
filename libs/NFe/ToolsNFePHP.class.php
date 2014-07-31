@@ -1046,7 +1046,7 @@ class ToolsNFePHP extends CommonNFePHP
                 switch ($nome) {
                     case 'evento':
                         //obtem o node com a versão
-                        $node = $dom->$dom->documentElement;
+                        $node = $dom->documentElement;
                         //obtem a versão do layout
                         $ver = trim($node->getAttribute("versao"));
                         $tpEvento = $node->getElementsByTagName('tpEvento')->item(0)->nodeValue;
