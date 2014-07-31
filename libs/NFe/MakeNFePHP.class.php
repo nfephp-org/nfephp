@@ -33,9 +33,9 @@
  * @author      Roberto L. Machado <linux.rlm at gmail dot com>
  * 
  *        CONTRIBUIDORES (em ordem alfabetica):
- * 
- *              Elias Müller <elias at oxigennio dot com dot br>
+ *
  *              Cleiton Perin <cperin20 at gmail dot com>
+ *              Elias Müller <elias at oxigennio dot com dot br>
  *              Marcos Balbi
  * 
  */
@@ -115,11 +115,11 @@ class MakeNFe
      * 
      * @return none
      */
-    public function __construct()
+    public function __construct($formatOutput = true, $preserveWhiteSpace = false)
     {
         $this->dom = new DOMDocument('1.0', 'UTF-8');
-        $this->dom->formatOutput = true;
-        $this->dom->preserveWhiteSpace = false;
+        $this->dom->formatOutput = $formatOutput;
+        $this->dom->preserveWhiteSpace = $preserveWhiteSpace;
     }
     
     /**
@@ -3100,7 +3100,7 @@ class MakeNFe
                 "erro" => "Preenchimento Obrigatório!"
             );
         }
-        if (! empty($content)) {
+        if ($content != "") {
             $temp = $this->dom->createElement($name, $content);
             $parent->appendChild($temp);
         }
