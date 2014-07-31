@@ -2066,7 +2066,6 @@ class ToolsNFePHP extends CommonNFePHP
                //nome do arquivo de retorno: ID do lote com sufixo "-prot"
                $nome = $this->temDir.$idLote.'-rec.xml';
             }
-            var_dump($aRetorno);
             //grava o retorno na pasta de temporários
             $nome = $doc->save($nome);
         } catch (nfephpException $e) {

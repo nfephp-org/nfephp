@@ -601,4 +601,86 @@ class ToolsNFePHPTest extends PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('xMotivo', $resultado);
         $this->assertEquals('Consulta cadastro com uma ocorrência', $resultado['xMotivo']);
     }
+
+    public function testAutorizaNfeLoteRecebidoComSucesso()
+    {
+        $mockBuilder = $this->getMockBuilder('ToolsNFePHP');
+        $mockBuilder->setConstructorArgs(array($this->configTest, 1, true));
+        $mockBuilder->setMethods(array('pSendSOAP'));
+        /** @var ToolsNFePHP $tool */
+        $tool = $mockBuilder->getMock();
+        $xmlProtocolo = '<?xml version="1.0" encoding="utf-8"?>'
+            . '<response xmlns:xs="http://www.w3.org/2003/05/soap-envelope">'
+            . '<xs:Body>'
+            . '<infCons>'
+            . '<cStat>103</cStat>'
+            . '<xMotivo>Lote recebido com sucesso</xMotivo>'
+            . '<tpAmb>2</tpAmb>'
+            . '<verAplic>123</verAplic>'
+            . '<cUF>SP</cUF>'
+            . '</infCons>'
+            . '</xs:Body>'
+            . '</response>';
+        $tool->expects($this->any())->method('pSendSOAP')->will($this->returnValue($xmlProtocolo));
+
+        $xmlNFe = file_get_contents(__DIR__ . '/../fixtures/xml/11101284613439000180550010000004881093997017-nfe.xml');
+        $retorno = array();
+
+        $tool->autoriza($xmlNFe, '123', $retorno, 0);
+
+        $this->assertTrue(is_array($retorno));
+        $this->assertArrayHasKey('bStat', $retorno);
+        $this->assertTrue($retorno['bStat']);
+        $this->assertArrayHasKey('cStat', $retorno);
+        $this->assertEquals('103', $retorno['cStat']);
+        $this->assertArrayHasKey('xMotivo', $retorno);
+        $this->assertEquals('Lote recebido com sucesso', $retorno['xMotivo']);
+    }
+
+    public function testAutorizaNfeLoteProcessadoPodendoTerOuNaoProtnfe()
+    {
+        $mockBuilder = $this->getMockBuilder('ToolsNFePHP');
+        $mockBuilder->setConstructorArgs(array($this->configTest, 1, true));
+        $mockBuilder->setMethods(array('pSendSOAP'));
+        /** @var ToolsNFePHP $tool */
+        $tool = $mockBuilder->getMock();
+        $xmlProtocolo = '<?xml version="1.0" encoding="utf-8"?>'
+            . '<response xmlns:xs="http://www.w3.org/2003/05/soap-envelope">'
+            . '<xs:Body>'
+            . '<infProt>'
+            . '<cStat>104</cStat>'
+            . '<xMotivo>Lote processado, podendo ter ou não o protNFe</xMotivo>'
+            . '<tpAmb>2</tpAmb>'
+            . '<verAplic>123</verAplic>'
+            . '<cUF>SP</cUF>'
+            . '<protNFe versao="3.10">'
+            . '<chNFe>11101284613439000180550010000004881093997017</chNFe>'
+            . '<nProt>311100000046263</nProt>'
+            . '</protNFe>'
+            . '</infProt>'
+            . '</xs:Body>'
+            . '</response>';
+        $tool->expects($this->any())->method('pSendSOAP')->will($this->returnValue($xmlProtocolo));
+
+        $xmlNFe = file_get_contents(__DIR__ . '/../fixtures/xml/11101284613439000180550010000004881093997017-nfe.xml');
+        $retorno = array();
+
+        $tool->autoriza($xmlNFe, '123', $retorno);
+
+        $this->assertTrue(is_array($retorno));
+
+        $this->assertArrayHasKey('bStat', $retorno);
+        $this->assertTrue($retorno['bStat']);
+
+        $this->assertArrayHasKey('cStat', $retorno);
+        $this->assertEquals('104', $retorno['cStat']);
+
+        $this->assertArrayHasKey('xMotivo', $retorno);
+        $this->assertEquals('Lote processado, podendo ter ou não o protNFe', $retorno['xMotivo']);
+
+        $this->assertArrayHasKey('protNFe', $retorno);
+        $this->assertArrayHasKey('infProt', $retorno['protNFe']);
+        $this->assertArrayHasKey('nProt', $retorno['protNFe']['infProt']);
+        $this->assertEquals('311100000046263', $retorno['protNFe']['infProt']['nProt']);
+    }
 }
