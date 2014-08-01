@@ -104,11 +104,6 @@ class ToolsNFePHP extends CommonNFePHP
     const CONTINGENCIA_SVCAN = 'SVCAN';
 
     /**
-     * Sistema de Contingência do Ambiente Nacional  (SC-AN)
-     */
-    const CONTINGENCIA_SCAN = 'SCAN';
-
-    /**
      * raizDir
      * Diretorio raiz da API
      * @var string
@@ -274,12 +269,6 @@ class ToolsNFePHP extends CommonNFePHP
      * @var boolean
      */
     public $enableSVCAN = false;
-    /**
-     * enableSCAN
-     * Habilita contingência ao serviço SC-AN: Sistema de Contingência do Ambiente Nacional
-     * @var boolean
-     */
-    public $enableSCAN = false;
     /**
      * soapTimeout
      * Limite de tempo que o SOAP aguarda por uma conexão
@@ -1951,7 +1940,7 @@ class ToolsNFePHP extends CommonNFePHP
      * @param integer $idLote id do lote e um numero (numeração sequencial)
      * @param array   $aRetorno parametro passado por referencia contendo a resposta da consulta em um array
      * @param integer $indSinc Indicação webservice assíncrono (0) ou síncrono (1)
-     * @return mixed string XML do retorno do webservice, ou false se ocorreu algum erro 
+     * @return mixed string XML do retorno do webservice, ou false se ocorreu algum erro
      */
     public function autoriza($sxml, $idLote, &$aRetorno = array(), $indSinc = 1)
     {
@@ -1986,10 +1975,10 @@ class ToolsNFePHP extends CommonNFePHP
                 throw new nfephpException("Parametro indSinc deve ser inteiro 0 ou 1, verifique!!");
             }
             //verifica se o SCAN esta habilitado
-            if (!@$this->enableSCAN) {   // TODO 08/Julho fmertins: esta prop não existe mais, verificar como será refatorado (commit https://github.com/nfephp-org/nfephp/commit/bfbb78393e582b8a4291c441a31ef17c58b024fa)
+            if (!$this->enableSVCAN) {
                 $aURL = $this->aURL;
             } else {
-                $aURL = $this->pLoadSEFAZ($this->tpAmb, self::CONTINGENCIA_SCAN);
+                $aURL = $this->pLoadSEFAZ($this->tpAmb, self::CONTINGENCIA_SVCAN);
             }
             //identificação do serviço: autorização de NF-e
             $servico = 'NfeAutorizacao';
@@ -2077,7 +2066,6 @@ class ToolsNFePHP extends CommonNFePHP
                //nome do arquivo de retorno: ID do lote com sufixo "-prot"
                $nome = $this->temDir.$idLote.'-rec.xml';
             }
-            var_dump($aRetorno);
             //grava o retorno na pasta de temporários
             $nome = $doc->save($nome);
         } catch (nfephpException $e) {
@@ -2139,9 +2127,8 @@ class ToolsNFePHP extends CommonNFePHP
                 }
             }
             //verifica se o SCAN esta habilitado
-            // TODO 13/Julho fmertins: atributo "enableSCAN" precisa ser refatorado, esta gerando notice...
-            if ($this->enableSCAN || $ctpEmissao == '3') {
-                $aURL = $this->pLoadSEFAZ($tpAmb, self::CONTINGENCIA_SCAN);
+            if ($this->enableSVCAN || $ctpEmissao == '3') {
+                $aURL = $this->pLoadSEFAZ($tpAmb, self::CONTINGENCIA_SVCAN);
             }
             if ($recibo == '' && $chave == '') {
                 $msg = "ERRO. Favor indicar o numero do recibo ou "
@@ -2923,14 +2910,14 @@ class ToolsNFePHP extends CommonNFePHP
             $tpAmb = $this->tpAmb;
         }
         //verifica se o SCAN esta habilitado
-        if (!$this->enableSCAN) {
+        if (!$this->enableSVCAN) {
             if ($tpAmb == $this->tpAmb) {
                 $aURL = $this->aURL;
             } else {
                 $aURL = $this->pLoadSEFAZ($tpAmb, $this->siglaUF);
             }
         } else {
-            $aURL = $this->pLoadSEFAZ($this->tpAmb, self::CONTINGENCIA_SCAN);
+            $aURL = $this->pLoadSEFAZ($this->tpAmb, self::CONTINGENCIA_SVCAN);
         }
         //identificação do serviço
         $servico = 'NfeInutilizacao';
@@ -3153,10 +3140,10 @@ class ToolsNFePHP extends CommonNFePHP
             //decompor a chNFe e pegar o tipo de emissão
             //$tpEmiss = substr($chNFe, 34, 1);
             //verifica se o SCAN esta habilitado
-            if (! $this->enableSCAN) {
+            if (! $this->enableSVCAN) {
                 $aURL = $this->aURL;
             } else {
-                $aURL = $this->pLoadSEFAZ($tpAmb, self::CONTINGENCIA_SCAN);
+                $aURL = $this->pLoadSEFAZ($tpAmb, self::CONTINGENCIA_SVCAN);
             }
             $numLote = $this->pGeraNumLote();
             //Data e hora do evento no formato AAAA-MM-DDTHH:MM:SSTZD (UTC)
@@ -3410,10 +3397,10 @@ class ToolsNFePHP extends CommonNFePHP
             //decompor a chNFe e pegar o tipo de emissão
             //$tpEmiss = substr($chNFe, 34, 1);
             //verifica se o SCAN esta habilitado
-            if (!$this->enableSCAN) {
+            if (!$this->enableSVCAN) {
                 $aURL = $this->aURL;
             } else {
-                $aURL = $this->pLoadSEFAZ($tpAmb, self::CONTINGENCIA_SCAN);
+                $aURL = $this->pLoadSEFAZ($tpAmb, self::CONTINGENCIA_SVCAN);
             }
             $numLote = $this->pGeraNumLote();
             //Data e hora do evento no formato AAAA-MM-DDTHH:MM:SSTZD (UTC)
@@ -4036,9 +4023,9 @@ class ToolsNFePHP extends CommonNFePHP
             }
             $alias = $this->aliaslist[$sUF];
             //verifica se deve habilitar SVAN ou SVRS (ambos por padrão iniciam desabilitados)
-            if ($alias == 'SVAN') {
+            if ($alias == self::CONTINGENCIA_SVAN) {
                 $this->enableSVAN = true;
-            } elseif ($alias == 'SVRS') {
+            } elseif ($alias == self::CONTINGENCIA_SVRS) {
                 $this->enableSVRS = true;
             }
             //estabelece a expressão xpath de busca
@@ -4057,7 +4044,7 @@ class ToolsNFePHP extends CommonNFePHP
                 }
             }
             //verifica se existem outros serviços exclusivos para esse estado
-            if ($alias == 'SVAN' || $alias == 'SVRS') {
+            if ($alias == self::CONTINGENCIA_SVAN || $alias == self::CONTINGENCIA_SVRS) {
                 //para cada "nó" no xml que atenda aos critérios estabelecidos
                 foreach ($xmlWS->xpath($xpathExpression) as $gUF) {
                     //para cada "nó filho" retonado
@@ -4719,8 +4706,8 @@ class ToolsNFePHP extends CommonNFePHP
                 //força homologação em qualquer outra situação
                 $sAmbiente = 'homologacao';
             }
-            if ($this->enableSCAN) {
-                $siglaUF = self::CONTINGENCIA_SCAN;
+            if ($this->enableSVCAN) {
+                $siglaUF = self::CONTINGENCIA_SVCAN;
             }
             //habilita verificação de erros
             libxml_use_internal_errors(true);
