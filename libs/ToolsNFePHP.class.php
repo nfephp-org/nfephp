@@ -2340,8 +2340,12 @@ class ToolsNFePHP
                     //existem notas emitidas para esse cnpj
                     $nsu = $resNFe->getAttribute('NSU');
                     $chNFe = $resNFe->getElementsByTagName('chNFe')->item(0)->nodeValue;
-                    $CNPJ = $resNFe->getElementsByTagName('CNPJ')->item(0)->nodeValue;
-                    $CPF = $resNFe->getElementsByTagName('CPF')->item(0)->nodeValue;
+                    $CNPJ = null;
+                    if ($resNFe->getElementsByTagName('CNPJ') !== null && $resNFe->getElementsByTagName('CNPJ')->item(0) !== null)
+                        $CNPJ = $resNFe->getElementsByTagName('CNPJ')->item(0)->nodeValue;
+                    $CPF = null;
+                    if ($resNFe->getElementsByTagName('CPF') !== null && $resNFe->getElementsByTagName('CPF')->item(0) !== null)
+                        $CPF = $resNFe->getElementsByTagName('CPF')->item(0)->nodeValue;
                     $xNome = $resNFe->getElementsByTagName('xNome')->item(0)->nodeValue;
                     $dEmi = $resNFe->getElementsByTagName('dEmi')->item(0)->nodeValue;
                     $dhRecbto= $resNFe->getElementsByTagName('dhRecbto')->item(0)->nodeValue;
@@ -2373,8 +2377,12 @@ class ToolsNFePHP
                     //existem notas canceladas para esse cnpj
                     $nsu = $resCanc->getAttribute('NSU');
                     $chNFe = $resCanc->getElementsByTagName('chNFe')->item(0)->nodeValue;
-                    $CNPJ = $resCanc->getElementsByTagName('CNPJ')->item(0)->nodeValue;
-                    $CPF = $resCanc->getElementsByTagName('CPF')->item(0)->nodeValue;
+                    $CNPJ = null;
+                    if ($resNFe->getElementsByTagName('CNPJ') !== null && $resNFe->getElementsByTagName('CNPJ')->item(0) !== null)
+                        $CNPJ = $resCanc->getElementsByTagName('CNPJ')->item(0)->nodeValue;
+                    $CPF = null;
+                    if ($resNFe->getElementsByTagName('CPF') !== null && $resNFe->getElementsByTagName('CPF')->item(0) !== null)
+                        $CPF = $resNFe->getElementsByTagName('CPF')->item(0)->nodeValue;
                     $xNome = $resCanc->getElementsByTagName('xNome')->item(0)->nodeValue;
                     $dEmi = $resCanc->getElementsByTagName('dEmi')->item(0)->nodeValue;
                     $dhRecbto= $resCanc->getElementsByTagName('dhRecbto')->item(0)->nodeValue;
