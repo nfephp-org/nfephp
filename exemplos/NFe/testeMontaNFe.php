@@ -2,7 +2,7 @@
 
 require_once('../../libs/NFe/MakeNFePHP.class.php');
 
-$nfe = new MakeNFe();
+$nfe = new MakeNFe(false);
 
 //criar as tags em sequencia 
 
@@ -16,10 +16,10 @@ $cUF = '35'; //codigo numerico do estado
 $cNF = '76037739'; //numero aleatório da NF
 $natOp = 'VENDA DE PRODUTO'; //natureza da operação
 $indPag = '0'; //0=Pagamento à vista; 1=Pagamento a prazo; 2=Outros
-$mod = '65'; //modelo da NFe 55 ou 65 essa última NFCe
+$mod = '55'; //modelo da NFe 55 ou 65 essa última NFCe
 $serie = '0'; //serie da NFe
 $nNF = '28005'; // numero da NFe
-$dhEmi = '2014-02-03';  //para versão 3.00 '2014-02-03T13:22:42-3.00' não informar para NFCe
+$dhEmi = '2014-02-03T13:22:42-3.00';  //para versão 3.00 '2014-02-03T13:22:42-3.00' não informar para NFCe
 $dhSaiEnt = '2014-02-03'; //versão 2.00, 3.00 e 3.10
 $tpNF = '1';
 $idDest = '1'; //1=Operação interna; 2=Operação interestadual; 3=Operação com exterior.
@@ -122,7 +122,7 @@ $CNPJ = '10702368000155';
 $CPF = '';
 $idEstrangeiro = '';
 $xNome = 'M R SANTOS DE PAULA TECIDOS ME';
-$indIEDest = '';
+$indIEDest = '1';
 $IE = '244827055110';
 $ISUF = '';
 $IM = '';
