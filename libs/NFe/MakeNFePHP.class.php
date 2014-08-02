@@ -1902,6 +1902,11 @@ class MakeNFe
             case '99':
                 $pisItem = $this->dom->createElement('PISOutr');
                 $this->zAddChild($pisItem, 'CST', $cst, true, "Código de Situação Tributária do PIS");
+                $this->zAddChild($pisItem, 'vBC', $vBC, false, "Valor da Base de Cálculo do PIS");
+                $this->zAddChild($pisItem, 'pPIS', $pPIS, false, "Alíquota do PIS (em percentual)");
+                $this->zAddChild($pisItem, 'qBCProd', $qBCProd, false, "Quantidade Vendida");
+                $this->zAddChild($pisItem, 'vAliqProd', $vAliqProd, false, "Alíquota do PIS (em reais)");
+                $this->zAddChild($pisItem, 'vPIS', $vPIS, true, "Valor do PIS");
                 break;
         }
         $pis = $this->dom->createElement('PIS');
@@ -2068,10 +2073,10 @@ class MakeNFe
     {
         $confinsoutr = $this->dom->createElement('COFINSOutr');
         $this->zAddChild($confinsoutr, "CST", $cst, true, "Código de Situação Tributária da COFINS");
-        $this->zAddChild($confinsoutr, "vBC", $vBC, true, "Valor da Base de Cálculo da COFINS");
-        $this->zAddChild($confinsoutr, "pCOFINS", $pCOFINS, true, "Alíquota da COFINS (em percentual)");
-        $this->zAddChild($confinsoutr, "qBCProd", $qBCProd, true, "Quantidade Vendida");
-        $this->zAddChild($confinsoutr, "vAliqProd", $vAliqProd, true, "Alíquota da COFINS (em reais)");
+        $this->zAddChild($confinsoutr, "vBC", $vBC, false, "Valor da Base de Cálculo da COFINS");
+        $this->zAddChild($confinsoutr, "pCOFINS", $pCOFINS, false, "Alíquota da COFINS (em percentual)");
+        $this->zAddChild($confinsoutr, "qBCProd", $qBCProd, false, "Quantidade Vendida");
+        $this->zAddChild($confinsoutr, "vAliqProd", $vAliqProd, false, "Alíquota da COFINS (em reais)");
         $this->zAddChild($confinsoutr, "vCOFINS", $vCOFINS, true, "Valor da COFINS");
         return $confinsoutr;
     }
