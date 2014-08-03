@@ -26,7 +26,7 @@
  * 
  * @package     NFePHP
  * @name        MakeNFePHP
- * @version     1.3.2
+ * @version     1.3.3
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright   2009-2014 &copy; NFePHP
  * @link        http://www.nfephp.org/
@@ -63,16 +63,16 @@ class MakeNFe
     private $enderDest = ''; //DOMNode
     private $retirada = ''; //DOMNode
     private $total = ''; //DOMNode
-    private $ICMSTot = ''; //DOMNode
-    private $ISSQNTot = ''; //DOMNode
-    private $retTrib = ''; //DOMNode
+    //private $ICMSTot = ''; //DOMNode
+    //private $ISSQNTot = ''; //DOMNode
+    //private $retTrib = ''; //DOMNode
     private $pag = ''; //DOMNode
     private $card = ''; //DOMNOde
     private $cobr = ''; //DOMNode
     private $fat = ''; //DOMNode
     private $transp = ''; //DOMNode
-    private $transporta = ''; //DOMNode
-    private $veicTransp = ''; //DOMNode
+    //private $transporta = ''; //DOMNode
+    //private $veicTransp = ''; //DOMNode
     private $infAdic = ''; //DOMNode
     private $exporta = ''; //DOMNode
     private $compra = ''; //DOMNode
@@ -133,77 +133,72 @@ class MakeNFe
         //                        Modelo 55                 Modelo 65
         //  1 - tag infNFe        Obrigatório               Obrigatório
         //  2 - tag ide           Obrigatório               Obrigatório
-        //  3 - tag refNFe        Opcional (se houver)      Opcional (se houver)
-        //  4 - tag refNF         Opcional (se houver)      Opcional (se houver)
-        //  5 - tag refNFP        Opcional (se houver)      Opcional (se houver)
-        //  6 - tag refCTe        Opcional (se houver)      Opcional (se houver)
-        //  7 - tag ECFref        Opcional (se houver)      Opcional (se houver)
+        //     3 - tag refNFe        Opcional (se houver)      Opcional (se houver)
+        //     4 - tag refNF         Opcional (se houver)      Opcional (se houver)
+        //     5 - tag refNFP        Opcional (se houver)      Opcional (se houver)
+        //     6 - tag refCTe        Opcional (se houver)      Opcional (se houver)
+        //     7 - tag ECFref        Opcional (se houver)      Opcional (se houver)
         //  8 - tag emit          Obrigatório               Obrigatório
-        //  9 - tag enderEmit     Obrigatório               Obrigatório
+        //     9 - tag enderEmit     Obrigatório               Obrigatório
         // 10 - tag dest          Obrigatório               Opcional (se houver)
-        // 11 - tag enderDest     Obrigatório               Opcional (se houver)
+        //     11 - tag enderDest     Obrigatório               Opcional (se houver)
         // 12 - tag retirada      Opcional (se houver)      Opcional (se houver)
         // 13 - tag entrega       Opcional (se houver)      Opcional (se houver)
         // 14 - tag autXML        Opcional (se houver)      Opcional (se houver)
-        // 15 - tag prod          Obrigatório               Obrigatório
-        // 16 - tag DI            Opcional (se houver)      Opcional (se houver)
-        // 17 - tag adi           Opcional (se houver)      Opcional (se houver)
-        // 18 - tag veicProd      Opcional (se houver)      Opcional (se houver)
-        // 19 - tag med           Opcional (se houver)      Opcional (se houver)
-        // 20 - tag arma          Opcional (se houver)      Opcional (se houver)
-        // 21 - tag comb          Opcional (se houver)      Opcional (se houver)
-        // 22 - tag ICMS          Obrigatório               Obrigatório
-        // 23 - tag IPI           Opcional (se houver)      Obrigatório
-        // 24 - tag II            Opcional (se houver)      Opcional (se houver)
-        // 25 - tag PIS           Opcional (se houver)      Opcional (se houver)
-        // 26 - tag COFINS        Opcional (se houver)      Opcional (se houver)
-        // 27 - tag ISSQN         Opcional (se houver)      Opcional (se houver)
-        // 28 - tag impostoDevol  Opcional (se houver)      Opcional (se houver)
-        // 29 - tag ICMSTot       Obrigatório               Obrigatório
-        // 30 - tag ISSQNTot      Opcional (se houver)      Opcional (se houver)
-        // 31 - tag retTrib       Opcional (se houver)      Opcional (se houver)
+        // 14a - tag det
+        //   15 - tag prod          Obrigatório               Obrigatório
+        //   16 - tag DI            Opcional (se houver)      Opcional (se houver)
+        //   17 - tag adi           Opcional (se houver)      Opcional (se houver)
+        //   18 - tag veicProd      Opcional (se houver)      Opcional (se houver)
+        //   19 - tag med           Opcional (se houver)      Opcional (se houver)
+        //   20 - tag arma          Opcional (se houver)      Opcional (se houver)
+        //   21 - tag comb          Opcional (se houver)      Opcional (se houver)
+        //   22 - tag ICMS          Obrigatório               Obrigatório
+        //   23 - tag IPI           Opcional (se houver)      Obrigatório
+        //   24 - tag II            Opcional (se houver)      Opcional (se houver)
+        //   25 - tag PIS           Opcional (se houver)      Opcional (se houver)
+        //   26 - tag COFINS        Opcional (se houver)      Opcional (se houver)
+        //   27 - tag ISSQN         Opcional (se houver)      Opcional (se houver)
+        //   28 - tag impostoDevol  Opcional (se houver)      Opcional (se houver)
+        //28a - tag total
+        //   29 - tag ICMSTot       Obrigatório               Obrigatório
+        //   30 - tag ISSQNTot      Opcional (se houver)      Opcional (se houver)
+        //   31 - tag retTrib       Opcional (se houver)      Opcional (se houver)
         // 32 - tag transp        Obrigatório               Obrigatório
-        // 33 - tag transporta    Opcional (se houver)      Opcional (se houver)
-        // 34 - tag retTransp     Opcional (se houver)      Opcional (se houver)
-        // 35 - tag veicTransp    Opcional (se houver)      Opcional (se houver)
-        // 37 - tag reboque       Opcional (se houver)      Opcional (se houver)
-        // 38 - tag lacres        Opcional (se houver)      Opcional (se houver)
-        // 39 - tag vol           Opcional (se houver)      Opcional (se houver)
-        // 40 - tag fat           Opcional (se houver)      Opcional (se houver)
-        // 41 - tag dup           Opcional (se houver)      Opcional (se houver)
-        // 42 - tag pag           Opcional (se houver)      Obrigatorio
-        // 43 - tag card          Não aplicável             Opcional (se houver)
+        //   33 - tag transporta    Opcional (se houver)      Opcional (se houver)
+        //   34 - tag retTransp     Opcional (se houver)      Opcional (se houver)
+        //   35 - tag veicTransp    Opcional (se houver)      Opcional (se houver)
+        //   37 - tag reboque       Opcional (se houver)      Opcional (se houver)
+        //   38 - tag lacres        Opcional (se houver)      Opcional (se houver)
+        //   39 - tag vol           Opcional (se houver)      Opcional (se houver)
+        // 39a - tag cobr
+        //   40 - tag fat           Opcional (se houver)      Opcional (se houver)
+        //   41 - tag dup           Opcional (se houver)      Opcional (se houver)
+        //   42 - tag pag           Opcional (se houver)      Obrigatorio
+        //   43 - tag card          Não aplicável             Opcional (se houver)
         // 44 - tag infAdic       Opcional (se houver)      Opcional (se houver)
-        // 45 - tag obsCont       Opcional (se houver)      Opcional (se houver)
-        // 46 - tag obsFisco      Opcional (se houver)      Opcional (se houver)
+        //   45 - tag obsCont       Opcional (se houver)      Opcional (se houver)
+        //   46 - tag obsFisco      Opcional (se houver)      Opcional (se houver)
         // 47 - tag procRef       Opcional (se houver)      Opcional (se houver)
         // 48 - tag exporta       Opcional (se houver)      Opcional (se houver)
         // 49 - tag compra        Opcional (se houver)      Opcional (se houver)
         // 50 - tag cana          Opcional (se houver)      Não aplicavel
-        // 51 - tag forDia        Opcional (se houver)      Não aplicavel
-        // 52 - tag deduc         Opcional (se houver)      Não aplicavel
+        //   51 - tag forDia        Opcional (se houver)      Não aplicavel
+        //   52 - tag deduc         Opcional (se houver)      Não aplicavel
 
         $this->zTagNFe();
-        if (!empty($this->ide)) {
-            foreach ($this->aNFref as $nfeRef) {
-                $this->zAppChild($this->ide, $nfeRef);
-            }
+        
+        //******************************************************
+        // Preparação nesta fase devem ser processadas
+        // todas as sub tags que serão posteriormente montadas
+        // no xml
+        //******************************************************
+        //processa nfeRef e coloca as tags na tag ide
+        foreach ($this->aNFref as $nfeRef) {
+            $this->zAppChild($this->ide, $nfeRef, 'Falta tag "ide"');
         }
-        $this->zAppChild($this->infNFe, $this->ide);
-        if (!empty($this->emit) && !empty($this->enderEmit)) {
-            $node = $this->emit->getElementsByTagName("IE")->item(0);
-            $this->emit->insertBefore($this->enderEmit, $node);
-        }
-        $this->zAppChild($this->infNFe, $this->emit);
-        $this->zAppChild($this->infNFe, $this->dest);
-        $this->zAppChild($this->infNFe, $this->retirada);
-        $this->zAppChild($this->infNFe, $this->entrega);
-        if (! empty($this->aAutXML)  && $this->versao > 2.00) {
-            foreach ($this->aAutXML as $aut) {
-                $this->zAppChild($this->infNFe, $aut);
-            }
-        }
-
+                
+        /*
         //tag NFe/infNFe/det[]/DI/adi
         if (isset($this->aAdi)) {
             
@@ -225,48 +220,59 @@ class MakeNFe
         }
         
         if (isset($this->aImposto) && isset($this->aDet)) {
-            $this->zTagImp();
+            //$this->zTagImp();
         }
+        */
+
         
-        //tag NFe/infNFe/total
-        if (!empty($this->ICMSTot)) {
-            $this->zTagtotal();
-            $this->total->appendChild($this->ICMSTot);
-        }
-        if (!empty($this->ISSQNTot)) {
-            $this->zTagtotal();
-            $this->total->appendChild($this->ISSQNTot);
-        }
-        if (!empty($this->retTrib)) {
-            $this->zTagtotal();
-            $this->total->appendChild($this->retTrib);
-        }
-        if (!empty($this->total)) {
-            $this->infNFe->appendChild($this->total);
-        }
         
-        $this->zAppChild($this->infNFe, $this->transp, '');
-        if (!empty($this->cobr)) {
-            $this->zAppChild($this->cobr, $this->fat, '');
-            foreach ($this->aDup as $dup) {
-                $this->zAppChild($this->cobr, $dup, '');
-            }
-            $this->zAppChild($this->infNFe, $this->cobr, '');
+        //******************************************************
+        // Montagem final do XML
+        //******************************************************
+        //[2] tag ide (5 B01)
+        $this->zAppChild($this->infNFe, $this->ide, 'Falta tag "infNFe"');
+        //[8] tag emit (30 C01)
+        $this->zAppChild($this->infNFe, $this->emit, 'Falta tag "infNFe"');
+        //[10] tag dest (62 E01)
+        $this->zAppChild($this->infNFe, $this->dest, 'Falta tag "infNFe"');
+        //[12] tag retirada (80 F01)
+        $this->zAppChild($this->infNFe, $this->retirada, 'Falta tag "infNFe"');
+        //[13] tag entrega (89 G01)
+        $this->zAppChild($this->infNFe, $this->entrega, 'Falta tag "infNFe"');
+        //[14] tag autXML (97a.1 G50)
+        foreach ($this->aAutXML as $aut) {
+            $this->zAppChild($this->infNFe, $aut, 'Falta tag "infNFe"');
         }
-        //apenas para modelo 65
-        if ($this->mod == '65') {
-            $this->zAppChild($this->infNFe, $this->pag, '');
+        //[14a] tag det (98 H01)
+        foreach ($this->aDet as $det) {
+            $this->zAppChild($this->infNFe, $det, 'Falta tag "infNFe"');
         }
-        $this->zAppChild($this->infNFe, $this->infAdic, '');
-        $this->zAppChild($this->infNFe, $this->exporta, '');
-        $this->zAppChild($this->infNFe, $this->compra, '');
-        $this->zAppChild($this->infNFe, $this->cana, '');
-        $this->zAppChild($this->NFe, $this->infNFe, '');
-        $this->zAppChild($this->dom, $this->NFe, '');
-        if (count($this->erros) > 0) {
-            header("Content-Type: text/json");
-            return json_encode($this->erros);
-        }
+        //[28a] tag total (326 W01)
+        $this->zAppChild($this->infNFe, $this->total, 'Falta tag "infNFe"');
+        //[32] tag transp (356 X01)
+        $this->zAppChild($this->infNFe, $this->transp, 'Falta tag "infNFe"');
+        //[39a] tag cobr (389 Y01)
+        $this->zAppChild($this->infNFe, $this->cobr, 'Falta tag "infNFe"');
+        //[42] tag pag (398a YA01)
+        $this->zAppChild($this->infNFe, $this->pag, 'Falta tag "infNFe"');
+        //[44] tag infAdic (399 Z01)
+        $this->zAppChild($this->infNFe, $this->infAdic, 'Falta tag "infNFe"');
+        //[48] tag exporta (402 ZA01)
+        $this->zAppChild($this->infNFe, $this->exporta, 'Falta tag "infNFe"');
+        //[49] tag compra (405 ZB01)
+        $this->zAppChild($this->infNFe, $this->compra, 'Falta tag "infNFe"');
+        //[50] tag cana (409 ZC01)
+        $this->zAppChild($this->infNFe, $this->cana, 'Falta tag "infNFe"');
+        //[1] tag infNFe (1 A01)
+        $this->zAppChild($this->NFe, $this->infNFe, 'Falta tag "NFe"');
+        //[0] tag NFe
+        $this->zAppChild($this->dom, $this->NFe, 'Falta DOMDocument');
+        
+        //if (count($this->erros) > 0) {
+        //    header("Content-Type: text/json");
+        //    return json_encode($this->erros);
+        //}
+        
         return $this->dom->saveXML();
     }
     
@@ -654,6 +660,8 @@ class MakeNFe
         $this->zAddChild($this->enderEmit, "cPais", $cPais, false, "Código do País do Endereço do emitente");
         $this->zAddChild($this->enderEmit, "xPais", $xPais, false, "Nome do País do Endereço do emitente");
         $this->zAddChild($this->enderEmit, "fone", $fone, false, "Telefone do Endereço do emitente");
+        $node = $this->emit->getElementsByTagName("IE")->item(0);
+        $this->emit->insertBefore($this->enderEmit, $node);
         return $this->enderEmit;
     }
     
@@ -2279,32 +2287,33 @@ class MakeNFe
         $vTotTrib = ''
     ) {
         $this->zTagtotal();
-        $this->ICMSTot = $this->dom->createElement("ICMSTot");
-        $this->zAddChild($this->ICMSTot, "vBC", $vBC, true, "Base de Cálculo do ICMS");
-        $this->zAddChild($this->ICMSTot, "vICMS", $vICMS, true, "Valor Total do ICMS");
+        $ICMSTot = $this->dom->createElement("ICMSTot");
+        $this->zAddChild($ICMSTot, "vBC", $vBC, true, "Base de Cálculo do ICMS");
+        $this->zAddChild($ICMSTot, "vICMS", $vICMS, true, "Valor Total do ICMS");
         if ($this->versao > 2.00) {
-            $this->zAddChild($this->ICMSTot, "vICMSDeson", $vICMSDeson, true, "Valor Total do ICMS desonerado");
+            $this->zAddChild($ICMSTot, "vICMSDeson", $vICMSDeson, true, "Valor Total do ICMS desonerado");
         }
-        $this->zAddChild($this->ICMSTot, "vBCST", $vBCST, true, "Base de Cálculo do ICMS ST");
-        $this->zAddChild($this->ICMSTot, "vST", $vST, true, "Valor Total do ICMS ST");
-        $this->zAddChild($this->ICMSTot, "vProd", $vProd, true, "Valor Total dos produtos e servi�os");
-        $this->zAddChild($this->ICMSTot, "vFrete", $vFrete, true, "Valor Total do Frete");
-        $this->zAddChild($this->ICMSTot, "vSeg", $vSeg, true, "Valor Total do Seguro");
-        $this->zAddChild($this->ICMSTot, "vDesc", $vDesc, true, "Valor Total do Desconto");
-        $this->zAddChild($this->ICMSTot, "vII", $vII, true, "Valor Total do II");
-        $this->zAddChild($this->ICMSTot, "vIPI", $vIPI, true, "Valor Total do IPI");
-        $this->zAddChild($this->ICMSTot, "vPIS", $vPIS, true, "Valor do PIS");
-        $this->zAddChild($this->ICMSTot, "vCOFINS", $vCOFINS, true, "Valor da COFINS");
-        $this->zAddChild($this->ICMSTot, "vOutro", $vOutro, true, "Outras Despesas acessórias");
-        $this->zAddChild($this->ICMSTot, "vNF", $vNF, true, "Valor Total da NF-e");
+        $this->zAddChild($ICMSTot, "vBCST", $vBCST, true, "Base de Cálculo do ICMS ST");
+        $this->zAddChild($ICMSTot, "vST", $vST, true, "Valor Total do ICMS ST");
+        $this->zAddChild($ICMSTot, "vProd", $vProd, true, "Valor Total dos produtos e servi�os");
+        $this->zAddChild($ICMSTot, "vFrete", $vFrete, true, "Valor Total do Frete");
+        $this->zAddChild($ICMSTot, "vSeg", $vSeg, true, "Valor Total do Seguro");
+        $this->zAddChild($ICMSTot, "vDesc", $vDesc, true, "Valor Total do Desconto");
+        $this->zAddChild($ICMSTot, "vII", $vII, true, "Valor Total do II");
+        $this->zAddChild($ICMSTot, "vIPI", $vIPI, true, "Valor Total do IPI");
+        $this->zAddChild($ICMSTot, "vPIS", $vPIS, true, "Valor do PIS");
+        $this->zAddChild($ICMSTot, "vCOFINS", $vCOFINS, true, "Valor da COFINS");
+        $this->zAddChild($ICMSTot, "vOutro", $vOutro, true, "Outras Despesas acessórias");
+        $this->zAddChild($ICMSTot, "vNF", $vNF, true, "Valor Total da NF-e");
         $this->zAddChild(
-            $this->ICMSTot,
+            $ICMSTot,
             "vTotTrib",
             $vTotTrib,
             false,
             "Valor aproximado total de tributos federais, estaduais e municipais."
         );
-        return $this->ICMSTot;
+        $this->zAppChild($this->total, $ICMSTot, '');
+        return $ICMSTot;
     }
     
     /**
@@ -2350,30 +2359,30 @@ class MakeNFe
         $cRegTrib = ''
     ) {
         $this->ztagtotal();
-        $this->ISSQNTot = $this->dom->createElement("ISSQNtot");
+        $ISSQNTot = $this->dom->createElement("ISSQNtot");
         $this->zAddChild(
-            $this->ISSQNTot,
+            $ISSQNTot,
             "vServ",
             $vServ,
             false,
             "Valor total dos Serviços sob não incidência ou não tributados pelo ICMS"
         );
         $this->zAddChild(
-            $this->ISSQNTot,
+            $ISSQNTot,
             "vBC",
             $vBC,
             false,
             "Valor total Base de Cálculo do ISS"
         );
         $this->zAddChild(
-            $this->ISSQNTot,
+            $ISSQNTot,
             "vISS",
             $vISS,
             false,
             "Valor total do ISS"
         );
         $this->zAddChild(
-            $this->ISSQNTot,
+            $ISSQNTot,
             "vPIS",
             $vPIS,
             false,
@@ -2381,63 +2390,64 @@ class MakeNFe
         );
         if ($this->versao > 2.00) {
             $this->zAddChild(
-                $this->ISSQNTot,
+                $ISSQNTot,
                 "vCOFINS",
                 $vCOFINS,
                 false,
                 "Valor total da COFINS sobre serviços"
             );
             $this->zAddChild(
-                $this->ISSQNTot,
+                $ISSQNTot,
                 "dCompet",
                 $dCompet,
                 true,
                 "Data da prestação do serviço"
             );
             $this->zAddChild(
-                $this->ISSQNTot,
+                $ISSQNTot,
                 "vDeducao",
                 $vDeducao,
                 false,
                 "Valor total dedução para redução da Base de Cálculo"
             );
             $this->zAddChild(
-                $this->ISSQNTot,
+                $ISSQNTot,
                 "vOutro",
                 $vOutro,
                 false,
                 "Valor total outras retenções"
             );
             $this->zAddChild(
-                $this->ISSQNTot,
+                $ISSQNTot,
                 "vDescIncond",
                 $vDescIncond,
                 false,
                 "Valor total desconto incondicionado"
             );
             $this->zAddChild(
-                $this->ISSQNTot,
+                $ISSQNTot,
                 "vDescCond",
                 $vDescCond,
                 false,
                 "Valor total desconto condicionado"
             );
             $this->zAddChild(
-                $this->ISSQNTot,
+                $ISSQNTot,
                 "vISSRet",
                 $vISSRet,
                 false,
                 "Valor total retenção ISS"
             );
             $this->zAddChild(
-                $this->ISSQNTot,
+                $ISSQNTot,
                 "cRegTrib",
                 $cRegTrib,
                 false,
                 "Código do Regime Especial de Tributação"
             );
         }
-        return $this->ISSQNTot;
+        $this->zAppChild($this->total, $ISSQNTot, '');
+        return $ISSQNTot;
     }
         
     /**
@@ -2462,57 +2472,58 @@ class MakeNFe
         $vBCRetPrev = '',
         $vRetPrev = ''
     ) {
-        $this->retTrib = $this->dom->createElement("retTrib");
+        $retTrib = $this->dom->createElement("retTrib");
         $this->zAddChild(
-            $this->retTrib,
+            $retTrib,
             "vRetPIS",
             $vRetPIS,
             false,
             "Valor Retido de PIS"
         );
         $this->zAddChild(
-            $this->retTrib,
+            $retTrib,
             "vRetCOFINS",
             $vRetCOFINS,
             false,
             "Valor Retido de COFINS"
         );
         $this->zAddChild(
-            $this->retTrib,
+            $retTrib,
             "vRetCSLL",
             $vRetCSLL,
             false,
             "Valor Retido de CSLL"
         );
         $this->zAddChild(
-            $this->retTrib,
+            $retTrib,
             "vBCIRRF",
             $vBCIRRF,
             false,
             "Base de Cálculo do IRRF"
         );
         $this->zAddChild(
-            $this->retTrib,
+            $retTrib,
             "vIRRF",
             $vIRRF,
             false,
             "Valor Retido do IRRF"
         );
         $this->zAddChild(
-            $this->retTrib,
+            $retTrib,
             "vBCRetPrev",
             $vBCRetPrev,
             false,
             "Base de Cálculo da Retenção da Previdência Social"
         );
         $this->zAddChild(
-            $this->retTrib,
+            $retTrib,
             "vRetPrev",
             $vRetPrev,
             false,
             "Valor da Retenção da Previdência Social"
         );
-        return $this->retTrib;
+        $this->zAppChild($this->total, $retTrib, '');
+        return $retTrib;
     }
     
     /**
@@ -2777,6 +2788,7 @@ class MakeNFe
         $this->zAddChild($dup, "nDup", $nDup, false, "Número da Duplicata");
         $this->zAddChild($dup, "dVenc", $dVenc, false, "Data de vencimento");
         $this->zAddChild($dup, "vDup", $vDup, true, "Valor da duplicata");
+        $this->zAppChild($this->fat, $dup, 'Inclui duplicata na tag "fat" [function tagdup]');
         $this->aDup[] = $dup;
         return $this->aDup;
     }
