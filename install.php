@@ -948,7 +948,7 @@ class moduleCheck
             </tr>
             <tr>
               <td><div align="right">Proxy Port</div></td>
-              <td><input name="proxyport" type="text" id="proxyport" value="<?php echo $proxyPort;?>" size="5" maxlength="5"></td>
+              <td><input name="proxyport" type="text" id="proxyport" value="<?php echo $proxyPORT;?>" size="5" maxlength="5"></td>
               <td><i>Indique a porta do Proxy</i></td>
             </tr>
             <tr>
