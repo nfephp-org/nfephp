@@ -2341,11 +2341,13 @@ class ToolsNFePHP
                     $nsu = $resNFe->getAttribute('NSU');
                     $chNFe = $resNFe->getElementsByTagName('chNFe')->item(0)->nodeValue;
                     $CNPJ = null;
-                    if ($resNFe->getElementsByTagName('CNPJ') !== null && $resNFe->getElementsByTagName('CNPJ')->item(0) !== null)
+                    if ($resNFe->getElementsByTagName('CNPJ') !== null && $resNFe->getElementsByTagName('CNPJ')->item(0) !== null){
                         $CNPJ = $resNFe->getElementsByTagName('CNPJ')->item(0)->nodeValue;
+                    }
                     $CPF = null;
-                    if ($resNFe->getElementsByTagName('CPF') !== null && $resNFe->getElementsByTagName('CPF')->item(0) !== null)
+                    if ($resNFe->getElementsByTagName('CPF') !== null && $resNFe->getElementsByTagName('CPF')->item(0) !== null){
                         $CPF = $resNFe->getElementsByTagName('CPF')->item(0)->nodeValue;
+                    }
                     $xNome = $resNFe->getElementsByTagName('xNome')->item(0)->nodeValue;
                     $dEmi = $resNFe->getElementsByTagName('dEmi')->item(0)->nodeValue;
                     $dhRecbto= $resNFe->getElementsByTagName('dhRecbto')->item(0)->nodeValue;
