@@ -2378,11 +2378,13 @@ class ToolsNFePHP
                     $nsu = $resCanc->getAttribute('NSU');
                     $chNFe = $resCanc->getElementsByTagName('chNFe')->item(0)->nodeValue;
                     $CNPJ = null;
-                    if ($resNFe->getElementsByTagName('CNPJ') !== null && $resNFe->getElementsByTagName('CNPJ')->item(0) !== null)
+                    if ($resNFe->getElementsByTagName('CNPJ') !== null && $resNFe->getElementsByTagName('CNPJ')->item(0) !== null){
                         $CNPJ = $resCanc->getElementsByTagName('CNPJ')->item(0)->nodeValue;
+                    }
                     $CPF = null;
-                    if ($resNFe->getElementsByTagName('CPF') !== null && $resNFe->getElementsByTagName('CPF')->item(0) !== null)
+                    if ($resNFe->getElementsByTagName('CPF') !== null && $resNFe->getElementsByTagName('CPF')->item(0) !== null){
                         $CPF = $resNFe->getElementsByTagName('CPF')->item(0)->nodeValue;
+                    }
                     $xNome = $resCanc->getElementsByTagName('xNome')->item(0)->nodeValue;
                     $dEmi = $resCanc->getElementsByTagName('dEmi')->item(0)->nodeValue;
                     $dhRecbto= $resCanc->getElementsByTagName('dhRecbto')->item(0)->nodeValue;
