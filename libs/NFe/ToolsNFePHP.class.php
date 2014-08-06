@@ -2017,6 +2017,7 @@ class ToolsNFePHP extends CommonNFePHP
             $doc = new DomDocumentNFePHP();
             $doc->loadXML($retorno, LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
             $cStat = $this->pSimpleGetValue($doc, "cStat");
+            $xMotivo = $this->pSimpleGetValue($doc, "xMotivo");
             //verifica o codigo do status da resposta, se vazio houve erro
             if ($cStat == '') {
                 throw new nfephpException("O retorno nao contem cStat verifique o debug do soap !!");
@@ -2025,7 +2026,7 @@ class ToolsNFePHP extends CommonNFePHP
             } elseif ($indSinc === 1 && $cStat == '104') { //104-Lote processado, podendo ter ou não o protNFe (#AR11 no layout)
                 $aRetorno['bStat'] = true;
             } else {
-                throw new nfephpException('Codigo do status (cStat) "'.$cStat.'" desconhecido, verifique!!');
+                throw new nfephpException(sprintf("%s - %s", $cStat, $xMotivo));
             }
             // status da resposta do webservice
             $aRetorno['cStat'] = $cStat;
@@ -2371,7 +2372,7 @@ class ToolsNFePHP extends CommonNFePHP
             }
             return false;
         }//fim catch
-        return $aRetorno; //mudar para $retorno
+        return $retorno; //mudar para $retorno
     } //fim getProtocol
 
     
