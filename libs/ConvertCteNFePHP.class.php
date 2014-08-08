@@ -1059,7 +1059,7 @@ class ConvertCteNFePHP{ //implements ConvertCTePHP{
 						$DOCANT=$dom->createElement("docAnt");
 						$INFCTENORM->appendChild($DOCANT);
 					}elseif($v2['TAG']=='EMIDOCANT' && isset($DOCANT)){
-						$EMIDOCANT=$dom->createElement("emitDocAnt");
+						$EMIDOCANT=$dom->createElement("emiDocAnt");
 						foreach($campos as $nome_campo){
 							$EMIDOCANT->appendChild( $dom->createElement($nome_campo,$v2[$nome_campo]) );
 						}
