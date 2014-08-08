@@ -2226,6 +2226,7 @@ class ToolsNFePHP extends CommonNFePHP
                                     "d/m/Y H:i:s",
                                     $this->pConvertTime($aProt['dhRecbto'])
                                 ) : '';
+                        $aProt['xEvento'] = 'Autoriazação';
                     }
                     $aCanc = '';
                     if (isset($infCanc)) {
@@ -2237,21 +2238,21 @@ class ToolsNFePHP extends CommonNFePHP
                                     "d/m/Y H:i:s",
                                     $this->pConvertTime($aCanc['dhRecbto'])
                                 ) : '';
+                        $aCanc['xEvento'] = 'Cancelamento';
                     }
                     $aEventos = '';
                     if (! empty($procEventoNFe)) {
                         foreach ($procEventoNFe as $kEli => $evento) {
-                            $infEvento = $evento->getElementsByTagName('infEvento')->item(0);
-                            foreach ($infEvento->childNodes as $tnode) {
-                                if ('detEvento' == $tnode->nodeName) {
-                                    foreach ($tnode->childNodes as $t2node) {
-                                        $aEventos[$kEli][$tnode->nodeName][$t2node->nodeName] = $t2node->nodeValue;
-                                    }
+                            $infEvento = $evento->getElementsByTagName('infEvento');
+                            foreach ($infEvento as $iE) {
+                                if ($iE->getElementsByTagName('detEvento')->item(0) != "") {
                                     continue;
                                 }
-                                $aEventos[$kEli][$t->nodeName] = $tnode->nodeValue;
+                                foreach ($iE->childNodes as $tnodes) {
+                                    $aEventos[$kEli][$tnodes->nodeName] = $tnodes->nodeValue;
+                                }
+                                $aEventos[$kEli]['dhRegEvento'] = date("d/m/Y H:i:s", $this->pConvertTime($aEventos[$kEli]['dhRegEvento']));
                             }
-                            $aEventos[$kEli]['id'] = $infEvento->getAttribute('Id');
                         }
                     }
                     $aRetorno['aProt'] = $aProt;
