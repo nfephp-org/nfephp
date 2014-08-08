@@ -1,7 +1,8 @@
 <?php
 error_reporting(0);
 ini_set('display_errors', 'Off');
-require_once('../libs/DanfeNFCeNFePHP.class.php');
+require_once('../../libs/NFe/DanfeNFCeNFePHP.class.php');
+
 
 $saida = $_REQUEST['o'];
 

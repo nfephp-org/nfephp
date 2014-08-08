@@ -1,5 +1,5 @@
 <?php
-require_once('../libs/ToolsNFePHP.class.php');
+require_once('../../libs/NFe/ToolsNFePHP.class.php');
 $nfe = new ToolsNFePHP('',1,false);
 $modSOAP = '2'; //usando cURL
 $tpAmb = '1';//usando produção

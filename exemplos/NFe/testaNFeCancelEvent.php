@@ -6,7 +6,7 @@
  *
  * Corrija os dados para o cancelamento antes de testar
  */
-require_once('../libs/ToolsNFePHP.class.php');
+require_once('../../libs/NFe/ToolsNFePHP.class.php');
 
 $nfe = new ToolsNFePHP;
 $chNFe = "<ID da NFe>";

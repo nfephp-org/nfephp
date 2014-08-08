@@ -1,6 +1,6 @@
 <?php
 
-require_once('../libs/ImapNFePHP.class.php');
+require_once('../../libs/Common/ImapNFePHP.class.php');
 
 //use ImapNFePHP;
 $debug = false;

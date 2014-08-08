@@ -10,7 +10,7 @@
 //feita periódicamente (usando um agendador) por exemplo 3 ou 4 vezes ao dia no 
 //máximo.
 
-require_once('../libs/ToolsNFePHP.class.php');
+require_once('../../libs/NFe/ToolsNFePHP.class.php');
 $nfe = new ToolsNFePHP('',1,false);
 $modSOAP = '2'; //usando cURL
 $tpAmb = '1';//usando produção
