@@ -2,7 +2,7 @@
 /*
  * Exemplo de envio de Nfe já assinada e validada
  */
-require_once('../libs/ToolsNFePHP.class.php');
+require_once('../../libs/NFe/ToolsNFePHP.class.php');
 $nfe = new ToolsNFePHP;
 $modSOAP = '2'; //usando cURL
 
@@ -13,7 +13,7 @@ $lote = substr(str_replace(',','',number_format(microtime(true)*1000000,0)),0,15
 // montar o array com a NFe
 $aNFe = array(0=>file_get_contents($filename));
 //enviar o lote
-if ($aResp = $nfe->sendLot($aNFe, $lote, $modSOAP)){
+if ($aResp = $nfe->autoriza($aNFe, $lote)){
     if ($aResp['bStat']){
         echo "Numero do Recibo : " . $aResp['nRec'] .", use este numero para obter o protocolo ou informações de erro no xml com testaRecibo.php.";
     } else {

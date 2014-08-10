@@ -5,13 +5,13 @@
  */
 require_once('../../libs/NFe/ToolsNFePHP.class.php');
 $nfe = new ToolsNFePHP;
-$modSOAP = '2'; //usando cURL
-$recibo = ''; //este é o numero do seu recibo mude antes de executar este script
-$chave = '41140806161494000172550010000000221324615473';
+$chave = '';
+$xCorrecao = 'NFe emitida em Ambiente de Homologação';
+$nSeq = 1;
 $tpAmb = '2'; //homologação
 
 header('Content-type: text/xml; charset=UTF-8');
-if ($aResp = $nfe->getProtocol($recibo, $chave, $tpAmb, $retorno)){
+if ($aResp = $nfe->envCCe($chave, $xCorrecao, $nSeq, $tpAmb, $retorno)){
     //houve retorno mostrar dados
     print_r($aResp);
 } else {

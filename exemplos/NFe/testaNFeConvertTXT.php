@@ -1,6 +1,6 @@
 <?php
 
-require_once('../libs/ConvertNFePHP.class.php');
+require_once('../../libs/NFe/ConvertNFePHP.class.php');
 
 $arq = 'xml/0008.txt';
 

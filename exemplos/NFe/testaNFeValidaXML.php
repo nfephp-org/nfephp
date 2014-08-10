@@ -1,5 +1,5 @@
 <?php
-require_once('../libs/ToolsNFePHP.class.php');
+require_once('../../libs/NFe/ToolsNFePHP.class.php');
 $arq = 'xml/11101284613439000180550010000004881093997017-nfe.xml';
 //$arq = './35120358716523000119550000000162421280334154-nfe.xml';
 $nfe = new ToolsNFePHP;

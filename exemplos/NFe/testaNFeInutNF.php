@@ -4,7 +4,7 @@
  * Exemplo de solicitação de Inutilização de faixa de numeros 
  * da NFe (modelo 55)
  */
-require_once('../libs/ToolsNFePHP.class.php');
+require_once('../../libs/NFe/ToolsNFePHP.class.php');
 $nfe = new ToolsNFePHP('', 2, false);
 
 $nAno = '13';//ano atual com 2 digitos

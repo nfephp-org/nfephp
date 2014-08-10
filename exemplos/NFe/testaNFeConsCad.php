@@ -1,5 +1,5 @@
 <?php
-require_once('../libs/ToolsNFePHP.class.php');
+require_once('../../libs/NFe/ToolsNFePHP.class.php');
 $nfe = new ToolsNFePHP('',1);
 $UF = 'SP';
 $CNPJ = '43651066000154';
