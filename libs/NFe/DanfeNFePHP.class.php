@@ -495,7 +495,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
     ) {
         // Antes de fazer todo o processo de montar a NFe é necessário validar se 
         // no xml passado existe a Tag nfeProc que indica que ela esta autorizada
-        if (empty($this->nfeProc)) {
+        if ($this->tpEmis == 1 && !isset($this->nfeProc)) {
             throw new nfephpException("Tag nfeProc não encontrada, provavel que a NFe não esteja Autorizada na Receita.");
         }
         //se a orientação estiver em branco utilizar o padrão estabelecido na NF
@@ -1024,6 +1024,9 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
 
     protected function pNotaCancelada()
     {
+        if (!isset($this->nfeProc)) {
+            return false;
+        }
         //NÃO ERA NECESSÁRIO ESSA FUNÇÃO POIS SÓ SE USA 1
         //VEZ NO ARQUIVO INTEIRO
         $cStat = $this->pSimpleGetValue($this->nfeProc, "cStat");
@@ -1041,6 +1044,9 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
 
     protected function pNotaDenegada()
     {
+        if (!isset($this->nfeProc)) {
+            return false;
+        }
         //NÃO ERA NECESSÁRIO ESSA FUNÇÃO POIS SÓ SE USA
         //1 VEZ NO ARQUIVO INTEIRO
         $cStat = $this->pSimpleGetValue($this->nfeProc, "cStat");
