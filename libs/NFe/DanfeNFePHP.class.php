@@ -59,7 +59,7 @@
 
 //define o caminho base da instalação do sistema
 if (!defined('PATH_ROOT')) {
-    define('PATH_ROOT', dirname(dirname(dirname(FILE))).DIRECTORY_SEPARATOR);
+    define('PATH_ROOT', dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR);
 }
 //ajuste do tempo limite de resposta do processo
 set_time_limit(1800);
@@ -74,13 +74,16 @@ if (!defined('NFEPHP_SITUACAO_EXTERNA_CANCELADA')) {
     define('NFEPHP_SITUACAO_EXTERNA_DPEC', 3);
     define('NFEPHP_SITUACAO_EXTERNA_NONE', 0);
 }
+//classe das Excecoes
+require_once PATH_ROOT.'libs/Common/ExceptionNFePHP.class.php';
 //classe extendida da classe FPDF para montagem do arquivo pdf
 require_once PATH_ROOT.'libs/Common/PdfNFePHP.class.php';
 //classe com as funções communs entre DANFE e DACTE
 require_once PATH_ROOT.'libs/Common/CommonNFePHP.class.php';
 //interface
 require_once PATH_ROOT.'libs/Common/DocumentoNFePHP.interface.php';
-
+//classe com as funções DOM
+require_once PATH_ROOT.'libs/Common/DomDocumentNFePHP.class.php';
 //classe principal
 class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
 {
@@ -490,6 +493,11 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $classPdf = false,
         $depecNumReg = ''
     ) {
+        // Antes de fazer todo o processo de montar a NFe é necessário validar se 
+        // no xml passado existe a Tag nfeProc que indica que ela esta autorizada
+        if (empty($this->nfeProc)) {
+            throw new nfephpException("Tag nfeProc não encontrada, provavel que a NFe não esteja Autorizada na Receita.");
+        }
         //se a orientação estiver em branco utilizar o padrão estabelecido na NF
         if ($orientacao == '') {
             if ($this->tpImp == '1') {
@@ -1016,10 +1024,14 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
 
     protected function pNotaCancelada()
     {
-        ///NÃO ERA NECESSÁRIO ESSA FUNÇÃO POIS SÓ SE USA 1
+        //NÃO ERA NECESSÁRIO ESSA FUNÇÃO POIS SÓ SE USA 1
         //VEZ NO ARQUIVO INTEIRO
         $cStat = $this->pSimpleGetValue($this->nfeProc, "cStat");
-        return $cStat == '101' || $cStat == '135' || $this->situacao_externa==NFEPHP_SITUACAO_EXTERNA_CANCELADA;
+        return $cStat == '101' ||
+                $cStat == '151' ||
+                $cStat == '135' ||
+                $cStat == '155' ||
+                $this->situacao_externa == NFEPHP_SITUACAO_EXTERNA_CANCELADA;
     }
 
     protected function pNotaDPEC()
