@@ -3042,6 +3042,7 @@ class ToolsNFePHP extends CommonNFePHP
             }
             return false;
         }
+        $aRetorno['bStat'] = true;
         //gravar o retorno na pasta temp
         $nome = $this->temDir.$id.'-retInut.xml';
         $nome = $doc->save($nome);
@@ -3343,6 +3344,7 @@ class ToolsNFePHP extends CommonNFePHP
     public function envCCe($chNFe = '', $xCorrecao = '', $nSeqEvento = '1', $tpAmb = '', &$aResp = array())
     {
         $aResp = array(
+            'cStat' => false,
             'versao' => null,
             'idLote' => null,
             'tpAmb' => null,
@@ -3512,6 +3514,7 @@ class ToolsNFePHP extends CommonNFePHP
                 throw new nfephpException($msg);
             }
             //a correção foi aceita cStat == 135
+            $aResp['cStat'] = true;
             //carregar a CCe
             $xmlenvCCe = new DOMDocument('1.0', 'utf-8'); //cria objeto DOM
             $xmlenvCCe->formatOutput = false;
