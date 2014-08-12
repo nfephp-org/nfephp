@@ -2657,7 +2657,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $dEmi = !empty($this->ide->getElementsByTagName("dEmi")->item(0)->nodeValue) ?
             $this->ide->getElementsByTagName("dEmi")->item(0)->nodeValue :
             substr($this->ide->getElementsByTagName("dhEmi")->item(0)->nodeValue, 0, 10);
-        $texto = $this->__ymd2dmy($dEmi);
+        $texto .= $this->__ymd2dmy($dEmi);
         $texto .= "VALOR TOTAL: R$ ";
         $texto .= number_format($this->ICMSTot->getElementsByTagName("vNF")->item(0)->nodeValue, 2, ", ", ".") . " ";
         $texto .= "DESTINATÁRIO: ";
