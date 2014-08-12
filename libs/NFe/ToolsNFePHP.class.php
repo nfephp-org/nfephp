@@ -2226,7 +2226,7 @@ class ToolsNFePHP extends CommonNFePHP
                                     "d/m/Y H:i:s",
                                     $this->pConvertTime($aProt['dhRecbto'])
                                 ) : '';
-                        $aProt['xEvento'] = 'Autoriazação';
+                        $aProt['xEvento'] = 'Autorização';
                     }
                     $aCanc = '';
                     if (isset($infCanc)) {
