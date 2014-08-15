@@ -23,7 +23,7 @@
  *
  * @package     NFePHP
  * @name        CommonNFePHP.class.php
- * @version     1.0.0
+ * @version     1.0.1
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2014 &copy; NFePHP
@@ -42,12 +42,17 @@ class DomDocumentNFePHP extends DOMDocument
      * construtor
      * Executa o construtor-pai do DOMDocument e por padrão define o XML sem espaços
      * e sem identação
+     * @param string $sXml Conteúdo XML opcional a ser carregado no DOM Document.
      * @return void
      */
-    public function __construct()
+    public function __construct($sXml = NULL)
     {
         parent::__construct('1.0', 'utf-8');
         $this->formatOutput = false;
         $this->preserveWhiteSpace = false;
+        
+        if (is_string($sXml)) {
+            $this->loadXML($sXml, LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
+        }
     }
 }

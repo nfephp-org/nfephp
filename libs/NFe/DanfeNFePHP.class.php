@@ -493,11 +493,6 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $classPdf = false,
         $depecNumReg = ''
     ) {
-        // Antes de fazer todo o processo de montar a NFe é necessário validar se 
-        // no xml passado existe a Tag nfeProc que indica que ela esta autorizada
-        if ($this->tpEmis == 1 && !isset($this->nfeProc)) {
-            throw new nfephpException("Tag nfeProc não encontrada, provavel que a NFe não esteja Autorizada na Receita.");
-        }
         //se a orientação estiver em branco utilizar o padrão estabelecido na NF
         if ($orientacao == '') {
             if ($this->tpImp == '1') {
