@@ -26,7 +26,7 @@
  * 
  * @package     NFePHP
  * @name        MakeNFePHP
- * @version     1.3.3
+ * @version     0.1.4
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright   2009-2014 &copy; NFePHP
  * @link        http://www.nfephp.org/
@@ -93,6 +93,7 @@ class MakeNFe
     private $aArma = array(); //array de DOMNodes
     private $aComb = array(); //array de DOMNodes
     private $aImposto = array(); //array de DOMNodes
+    private $aInfAdProd = array(); //array de DOMNodes
     private $aICMS = array(); //array de DOMNodes
     private $aIPI = array(); //array de DOMNodes
     private $aII = array(); //array de DOMNodes
@@ -147,19 +148,21 @@ class MakeNFe
         // 14 - tag autXML        Opcional (se houver)      Opcional (se houver)
         // 14a - tag det
         //   15 - tag prod          Obrigatório               Obrigatório
-        //   16 - tag DI            Opcional (se houver)      Opcional (se houver)
-        //   17 - tag adi           Opcional (se houver)      Opcional (se houver)
-        //   18 - tag veicProd      Opcional (se houver)      Opcional (se houver)
-        //   19 - tag med           Opcional (se houver)      Opcional (se houver)
-        //   20 - tag arma          Opcional (se houver)      Opcional (se houver)
-        //   21 - tag comb          Opcional (se houver)      Opcional (se houver)
-        //   22 - tag ICMS          Obrigatório               Obrigatório
-        //   23 - tag IPI           Opcional (se houver)      Obrigatório
-        //   24 - tag II            Opcional (se houver)      Opcional (se houver)
-        //   25 - tag PIS           Opcional (se houver)      Opcional (se houver)
-        //   26 - tag COFINS        Opcional (se houver)      Opcional (se houver)
-        //   27 - tag ISSQN         Opcional (se houver)      Opcional (se houver)
-        //   28 - tag impostoDevol  Opcional (se houver)      Opcional (se houver)
+        //       16 - tag DI            Opcional (se houver)      Opcional (se houver)
+        //           17 - tag adi           Opcional (se houver)      Opcional (se houver)
+        //       18 - tag veicProd      Opcional (se houver)      Opcional (se houver)
+        //       19 - tag med           Opcional (se houver)      Opcional (se houver)
+        //       20 - tag arma          Opcional (se houver)      Opcional (se houver)
+        //       21 - tag comb          Opcional (se houver)      Opcional (se houver)
+        //       21a- tag export        Opcional (se houver)      Opcional (se houver)
+        //   tag imposto
+        //      22 - tag ICMS          Obrigatório               Obrigatório
+        //      23 - tag IPI           Opcional (se houver)      Obrigatório
+        //      24 - tag II            Opcional (se houver)      Opcional (se houver)
+        //      25 - tag PIS           Opcional (se houver)      Opcional (se houver)
+        //      26 - tag COFINS        Opcional (se houver)      Opcional (se houver)
+        //      27 - tag ISSQN         Opcional (se houver)      Opcional (se houver)
+        //      28 - tag impostoDevol  Opcional (se houver)      Opcional (se houver)
         //28a - tag total
         //   29 - tag ICMSTot       Obrigatório               Obrigatório
         //   30 - tag ISSQNTot      Opcional (se houver)      Opcional (se houver)
@@ -197,38 +200,8 @@ class MakeNFe
         foreach ($this->aNFref as $nfeRef) {
             $this->zAppChild($this->ide, $nfeRef, 'Falta tag "ide"');
         }
-                
-        /*
-        //tag NFe/infNFe/det[]/DI/adi
-        if (isset($this->aAdi)) {
-            
-        }
-        //tag NFe/infNFe/det[]/DI
-        if (isset($this->aDI)) {
-            
-        }
-        
-        //tag NFe/infNFe/det[]
-        if (isset($this->aProd)) {
-            $this->zTagdet();
-        }
-
-        if (isset($this->aDet)) {
-            foreach ($this->aDet as $det) {
-                $this->infNFe->appendChild($det);
-            }
-        }
-        
-        if (isset($this->aImposto) && isset($this->aDet)) {
-            //$this->zTagImp();
-        }
-        */
-
-        
-        
-        //******************************************************
-        // Montagem final do XML
-        //******************************************************
+        //monta as tags det com os detalhes dos produtos
+        $this->zTagdet();
         //[2] tag ide (5 B01)
         $this->zAppChild($this->infNFe, $this->ide, 'Falta tag "infNFe"');
         //[8] tag emit (30 C01)
@@ -888,7 +861,6 @@ class MakeNFe
         return $this->entrega;
     }
     
-    
     /**
      * tagautXML
      * Pessoas autorizadas para o download do XML da NF-e G50 pai A01
@@ -913,22 +885,83 @@ class MakeNFe
         }
     }
     
-    
     /**
      * Insere dentro da tag det os produtos
-     * tag NFe/infNFe/det
+     * tag NFe/infNFe/det[]
      */
     private function zTagdet()
     {
-        if (!empty($this->aProd)) {
-            foreach ($this->aProd as $key => $prod) {
-                $det = $this->dom->createElement("det");
-                $nItem = $key;
-                $det->setAttribute("nItem", $nItem);
-                $det->appendChild($prod);
-                $this->aDet[] = $det;
-                $det = null;
+        if (empty($this->aProd)) {
+            return '';
+        }
+        //insere DI
+        if (!empty($this->aDI)) {
+            foreach ($this->aDI as $nItem => $aDI) {
+                $prod = $this->aProd[$nItem];
+                foreach ($aDI as $child) {
+                    $this->zAppChild($prod, $child, "Inclusão do node DI");
+                }
+                $this->aProd[$nItem] = $prod;
             }
+        }
+        //insere detExport
+        if (!empty($this->aDetExport)) {
+            foreach ($this->aDetExport as $nItem => $child) {
+                $prod = $this->aProd[$nItem];
+                $this->zAppChild($prod, $child, "Inclusão do node detExport");
+                $this->aProd[$nItem] = $prod;
+            }
+        }
+        //insere veiculo
+        if (!empty($this->aVeicProd)) {
+            foreach ($this->aVeicProd as $nItem => $child) {
+                $prod = $this->aProd[$nItem];
+                $this->zAppChild($prod, $child, "Inclusão do node veiculo");
+                $this->aProd[$nItem] = $prod;
+            }
+        }
+        //insere medicamentos
+        if (!empty($this->aMed)) {
+            foreach ($this->aMed as $nItem => $child) {
+                $prod = $this->aProd[$nItem];
+                $this->zAppChild($prod, $child, "Inclusão do node medicamento");
+                $this->aProd[$nItem] = $prod;
+            }
+        }
+        //insere armas
+        if (!empty($this->aArma)) {
+            foreach ($this->aArma as $nItem => $child) {
+                $prod = $this->aProd[$nItem];
+                $this->zAppChild($prod, $child, "Inclusão do node arma");
+                $this->aProd[$nItem] = $prod;
+            }
+        }
+        //insere combustivel
+        if (!empty($this->aComb)) {
+            foreach ($this->aComb as $nItem => $child) {
+                $prod = $this->aProd[$nItem];
+                $this->zAppChild($prod, $child, "Inclusão do node combustivel");
+                $this->aProd[$nItem] = $prod;
+            }
+        }
+        //montagem da tag det[]
+        foreach ($this->aProd as $key => $prod) {
+            $det = $this->dom->createElement("det");
+            $nItem = $key;
+            $det->setAttribute("nItem", $nItem);
+            $det->appendChild($prod);
+            //insere imposto
+            if (!empty($this->aImposto[$nItem])) {
+                $child = $this->aImposto[$nItem];
+                $this->zAppChild($det, $child, "Inclusão do node imposto");
+            }
+            //insere infAdProd
+            if (!empty($this->aInfAdProd[$nItem])) {
+                $child = $this->aInfAdProd[$nItem];
+                $this->zAppChild($det, $child, "Inclusão do node infAdProd");
+            }
+            $this->aDet[] = $det;
+            $det = null;
         }
     }
     
@@ -966,9 +999,9 @@ class MakeNFe
             }
         }
         //coloca a TAG imposto dentro do DET
-        foreach ($this->aDet as $det) {
-            $det->appendChild($this->aImposto[$det->getAttribute('nItem')]);
-        }
+        //foreach ($this->aDet as $det) {
+        //    $det->appendChild($this->aImposto[$det->getAttribute('nItem')]);
+        //}
     }
 
     /**
@@ -1037,7 +1070,7 @@ class MakeNFe
             $cEAN,
             true,
             "GTIN (Global Trade Item Number) do produto, antigo "
-                . "código EAN ou código de barras"
+            . "código EAN ou código de barras"
         );
         $this->zAddChild($prod, "xProd", $xProd, true, "Descrição do produto ou serviço");
         $this->zAddChild($prod, "NCM", $NCM, true, "Código NCM com 8 dígitos ou 2 dígitos (gênero)");
@@ -1045,7 +1078,8 @@ class MakeNFe
             $prod,
             "NVE",
             $NVE,
-            false, "Codificação NVE - Nomenclatura de Valor Aduaneiro e Estatística"
+            false,
+            "Codificação NVE - Nomenclatura de Valor Aduaneiro e Estatística"
         );
         $this->zAddChild($prod, "EXTIPI", $EXTIPI, false, "Preencher de acordo com o código EX da TIPI");
         $this->zAddChild($prod, "CFOP", $CFOP, true, "Código Fiscal de Operações e Prestações");
@@ -1059,7 +1093,7 @@ class MakeNFe
             $cEANTrib,
             true,
             "GTIN (Global Trade Item Number) da unidade tributável, antigo "
-                . "código EAN ou código de barras"
+            . "código EAN ou código de barras"
         );
         $this->zAddChild($prod, "uTrib", $uTrib, true, "Unidade Tributável do produto");
         $this->zAddChild($prod, "qTrib", $qTrib, true, "Quantidade Tributável do produto");
@@ -1087,6 +1121,20 @@ class MakeNFe
         $this->zAddChild($prod, "nRECOPI", $nRECOPI, false, "Número do RECOPI");
         $this->aProd[$nItem] = $prod;
         return $prod;
+    }
+    
+    /**
+     * taginfAdProd
+     * Informações adicionais do produto 
+     * tag NFe/infNFe/det[]/infAdProd
+     * @param type $nItem
+     * @param type $texto
+     */
+    public function taginfAdProd($nItem = '', $texto = '')
+    {
+        $infAdProd = $this->dom->createElement("infAdProd", $texto);
+        $this->aInfAdProd[$nItem] = $infAdProd;
+        return $infAdProd;
     }
     
     /**
@@ -1157,17 +1205,6 @@ class MakeNFe
             "Sigla da UF do adquirente ou do encomendante"
         );
         $this->zAddChild($tDI, "cExportador", $cExportador, true, "Código do Exportador");
-        if (isset($this->aAdi)) {
-            foreach ($this->aAdi as $key => $nadi) {
-                if ($key == $nItem) {
-                    foreach ($nadi as $n => $jadi) {
-                        if ($n == $nDI) {
-                            $tDI->appendChild($jadi[0]);
-                        }
-                    }
-                }
-            }
-        }
         $this->aDI[$nItem][$nDI] = $tDI;
         return $tDI;
     }
@@ -1201,6 +1238,10 @@ class MakeNFe
         $this->zAddChild($adi, "vDescDI", $vDescDI, false, "Valor do desconto do item da DI Adição");
         $this->zAddChild($adi, "nDraw", $nDraw, false, "Número do ato concessório de Drawback");
         $this->aAdi[$nItem][$nDI][] = $adi;
+        //colocar a adi em seu DI respectivo
+        $nodeDI = $this->aDI[$nItem][$nDI];
+        $this->zAppChild($nodeDI, $adi);
+        $this->aDI[$nItem][$nDI] = $nodeDI;
         return $adi;
     }
     
@@ -1225,14 +1266,12 @@ class MakeNFe
         $qExport = ''
     ) {
         $detExport = $this->dom->createElement("detExport");
-        if ($this->versao > 2.00) {
-            $this->zAddChild($detExport, "nDraw", $nDraw, false, "Número do ato concessório de Drawback");
-            $this->zAddChild($detExport, "exportInd", $exportInd, false, "Grupo sobre exportação indireta");
-            $this->zAddChild($detExport, "nRE", $nRE, true, "Número do Registro de Exportação");
-            $this->zAddChild($detExport, "chNFe", $chNFe, true, "Chave de Acesso da NF-e recebida para exportação");
-            $this->zAddChild($detExport, "qExport", $qExport, true, "Quantidade do item realmente exportado");
-            $this->aDetExport[$nItem] = $detExport;
-        }
+        $this->zAddChild($detExport, "nDraw", $nDraw, false, "Número do ato concessório de Drawback");
+        $this->zAddChild($detExport, "exportInd", $exportInd, false, "Grupo sobre exportação indireta");
+        $this->zAddChild($detExport, "nRE", $nRE, true, "Número do Registro de Exportação");
+        $this->zAddChild($detExport, "chNFe", $chNFe, true, "Chave de Acesso da NF-e recebida para exportação");
+        $this->zAddChild($detExport, "qExport", $qExport, true, "Quantidade do item realmente exportado");
+        $this->aDetExport[$nItem] = $detExport;
         return $detExport;
     }
     
@@ -1280,7 +1319,7 @@ class MakeNFe
         $nSerie = '',
         $tpComb = '',
         $nMotor = '',
-        $CMT = '',
+        $cmt = '',
         $dist = '',
         $anoMod = '',
         $anoFab = '',
@@ -1306,7 +1345,7 @@ class MakeNFe
         $this->zAddChild($veicProd, "nSerie", $nSerie, true, "Serial (série) do veículo");
         $this->zAddChild($veicProd, "tpCpmb", $tpComb, true, "Tipo de combustível do veículo");
         $this->zAddChild($veicProd, "nMotor", $nMotor, true, "Número de Motor do veículo");
-        $this->zAddChild($veicProd, "CMT", $CMT, true, "Capacidade Máxima de Tração do veículo");
+        $this->zAddChild($veicProd, "CMT", $cmt, true, "Capacidade Máxima de Tração do veículo");
         $this->zAddChild($veicProd, "dist", $dist, true, "Distância entre eixos do veículo");
         $this->zAddChild($veicProd, "anoMd", $anoMod, true, "Ano Modelo de Fabricação do veículo");
         $this->zAddChild($veicProd, "anoFab", $anoFab, true, "Ano de Fabricação do veículo");
@@ -1372,8 +1411,8 @@ class MakeNFe
             $descr,
             true,
             "Descrição completa da arma, compreendendo: calibre, marca, capacidade, "
-                . "tipo de funcionamento, comprimento e demais elementos que "
-                . "permitam a sua perfeita identificação."
+            . "tipo de funcionamento, comprimento e demais elementos que "
+            . "permitam a sua perfeita identificação."
         );
         $this->aArma[$nItem] = $arma;
         return $arma;
@@ -1384,7 +1423,7 @@ class MakeNFe
         $nItem = '',
         $cProdANP = '',
         $pMixGN = '',
-        $CODIF = '',
+        $codif = '',
         $qTemp = '',
         $UFCons = '',
         $qBCProd = '',
@@ -1400,7 +1439,7 @@ class MakeNFe
             false,
             "Percentual de Gás Natural para o produto GLP (cProdANP=210203001)"
         );
-        $this->zAddChild($comb, "CODIF", $CODIF, false, "Código de autorização / registro do CODIF");
+        $this->zAddChild($comb, "CODIF", $codif, false, "Código de autorização / registro do CODIF");
         $this->zAddChild(
             $comb,
             "qTemp",
@@ -1743,7 +1782,6 @@ class MakeNFe
     }
 
     //todo :  separar ICMSST, ICMSPart, ICMSSN
-    
     
     /**
      * tagIPI
@@ -2290,9 +2328,7 @@ class MakeNFe
         $ICMSTot = $this->dom->createElement("ICMSTot");
         $this->zAddChild($ICMSTot, "vBC", $vBC, true, "Base de Cálculo do ICMS");
         $this->zAddChild($ICMSTot, "vICMS", $vICMS, true, "Valor Total do ICMS");
-        if ($this->versao > 2.00) {
-            $this->zAddChild($ICMSTot, "vICMSDeson", $vICMSDeson, true, "Valor Total do ICMS desonerado");
-        }
+        $this->zAddChild($ICMSTot, "vICMSDeson", $vICMSDeson, true, "Valor Total do ICMS desonerado");
         $this->zAddChild($ICMSTot, "vBCST", $vBCST, true, "Base de Cálculo do ICMS ST");
         $this->zAddChild($ICMSTot, "vST", $vST, true, "Valor Total do ICMS ST");
         $this->zAddChild($ICMSTot, "vProd", $vProd, true, "Valor Total dos produtos e servi�os");
@@ -2703,7 +2739,7 @@ class MakeNFe
         $this->zAddChild($vol, "nVol", $nVol, false, "Numeração dos volumes transportados");
         $this->zAddChild($vol, "pesoL", $pesoL, false, "Peso Líquido (em kg) dos volumes transportados");
         $this->zAddChild($vol, "pesoB", $pesoB, false, "Peso Bruto (em kg) dos volumes transportados");
-        if (! empty($aLacres)) {
+        if (!empty($aLacres)) {
             //tag transp/vol/lacres (opcional)
             foreach ($aLacres as $nLacre) {
                 $lacre = $this->zTaglacres($nLacre);
@@ -2828,30 +2864,30 @@ class MakeNFe
     ) {
         //apenas para modelo 65
         if ($this->mod == '65' && $tBand != '') {
-            $this->card = $this->dom->createElement("card");
+            $card = $this->dom->createElement("card");
             $this->zAddChild(
-                $this->card,
+                $card,
                 "CNPJ",
                 $cnpj,
                 true,
                 "CNPJ da Credenciadora de cartão de crédito e/ou débito"
             );
             $this->zAddChild(
-                $this->card,
+                $card,
                 "tBand",
                 $tBand,
                 true,
                 "Bandeira da operadora de cartão de crédito e/ou débito"
             );
             $this->zAddChild(
-                $this->card,
+                $card,
                 "cAut",
                 $cAut,
                 true,
                 "Número de autorização da operação cartão de crédito e/ou débito"
             );
             $this->zAppChild($this->pag, $card, '');
-            return $this->card;
+            return $card;
         }
     }
     

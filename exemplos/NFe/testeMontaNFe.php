@@ -1,8 +1,8 @@
 <?php
 
-require_once('../../libs/NFe/MakeNFePHP.class.php');
+require_once('/var/www/nfephp3/libs/NFe/MakeNFePHP.class.php');
 
-$nfe = new MakeNFe(false);
+$nfe = new MakeNFe();
 
 //criar as tags em sequencia 
 
@@ -16,13 +16,13 @@ $cUF = '35'; //codigo numerico do estado
 $cNF = '76037739'; //numero aleatório da NF
 $natOp = 'VENDA DE PRODUTO'; //natureza da operação
 $indPag = '0'; //0=Pagamento à vista; 1=Pagamento a prazo; 2=Outros
-$mod = '55'; //modelo da NFe 55 ou 65 essa última NFCe
+$mod = '65'; //modelo da NFe 55 ou 65 essa última NFCe
 $serie = '0'; //serie da NFe
 $nNF = '28005'; // numero da NFe
-$dhEmi = '2014-02-03T13:22:42-3.00';  //para versão 3.00 '2014-02-03T13:22:42-3.00' não informar para NFCe
+$dhEmi = '2014-02-03';  //para versão 3.00 '2014-02-03T13:22:42-3.00' não informar para NFCe
 $dhSaiEnt = '2014-02-03'; //versão 2.00, 3.00 e 3.10
 $tpNF = '1';
-$idDest = '1'; //1=Operação interna; 2=Operação interestadual; 3=Operação com exterior.
+$idDest = ''; //1=Operação interna; 2=Operação interestadual; 3=Operação com exterior.
 $cMunFG = '3550308';
 $tpImp = '1'; //0=Sem geração de DANFE; 1=DANFE normal, Retrato; 2=DANFE normal, Paisagem;
               //3=DANFE Simplificado; 4=DANFE NFC-e; 5=DANFE NFC-e em mensagem eletrônica
@@ -40,8 +40,8 @@ $tpEmis = '1'; //1=Emissão normal (não em contingência);
 $cDV = '4'; //digito verificador
 $tpAmb = '1'; //1=Produção; 2=Homologação
 $finNFe = '1'; //1=NF-e normal; 2=NF-e complementar; 3=NF-e de ajuste; 4=Devolução/Retorno.
-$indFinal = '1'; //0=Não; 1=Consumidor final;
-$indPres = '0'; //0=Não se aplica (por exemplo, Nota Fiscal complementar ou de ajuste);
+$indFinal = ''; //0=Não; 1=Consumidor final;
+$indPres = ''; //0=Não se aplica (por exemplo, Nota Fiscal complementar ou de ajuste);
                //1=Operação presencial;
                //2=Operação não presencial, pela Internet;
                //3=Operação não presencial, Teleatendimento;
@@ -59,7 +59,7 @@ $resp = $nfe->tagide($cUF, $cNF, $natOp, $indPag, $mod, $serie, $nNF, $dhEmi, $d
 
 //refNFe NFe referenciada  
 $refNFe = '12345678901234567890123456789012345678901234';
-//$resp = $nfe->tagrefNFe($refNFe);
+$resp = $nfe->tagrefNFe($refNFe);
 
 //refNF Nota Fiscal 1A referenciada
 $cUF = '35';
@@ -68,7 +68,7 @@ $CNPJ = '12345678901234';
 $mod = '1A';
 $serie = '0';
 $nNF = '1234';
-//$resp = $nfe->tagrefNF($cUF, $AAMM, $CNPJ, $mod, $serie, $nNF);
+$resp = $nfe->tagrefNF($cUF, $AAMM, $CNPJ, $mod, $serie, $nNF);
 
 //NFPref Nota Fiscal Produtor Rural referenciada
 $cUF = '35';
@@ -79,17 +79,17 @@ $IE = '123456';
 $mod = '1';
 $serie = '0';
 $nNF = '1234';
-//$resp = $nfe->tagrefNFP($cUF, $AAMM, $CNPJ, $CPF, $IE, $mod, $serie, $nNF);
+$resp = $nfe->tagrefNFP($cUF, $AAMM, $CNPJ, $CPF, $IE, $mod, $serie, $nNF);
 
 //CTeref CTe referenciada
 $refCTe = '12345678901234567890123456789012345678901234';
-//$resp = $nfe->tagrefCTe($refCTe);
+$resp = $nfe->tagrefCTe($refCTe);
 
 //ECFref ECF referenciada
 $mod = '90';
 $nECF = '12243';
 $nCOO = '111';
-//$resp = $nfe->tagrefECF($mod, $nECF, $nCOO);
+$resp = $nfe->tagrefECF($mod, $nECF, $nCOO);
 
 //Dados do emitente
 $CNPJ = '58716523000119';
@@ -122,7 +122,7 @@ $CNPJ = '10702368000155';
 $CPF = '';
 $idEstrangeiro = '';
 $xNome = 'M R SANTOS DE PAULA TECIDOS ME';
-$indIEDest = '1';
+$indIEDest = '';
 $IE = '244827055110';
 $ISUF = '';
 $IM = '';
@@ -191,10 +191,10 @@ $aP[] = array(
         'qCom' => '1',
         'vUnCom' => '10.00',
         'vProd' => '10.00',
-        'cEANTrib' => '478901542312456',
+        'cEANTrib' => '',
         'uTrib' => 'U',
-        'qTrib' => '1',
-        'vUnTrib' => '10.00',
+        'qTrib' => '',
+        'vUnTrib' => '',
         'vFrete' => '',
         'vSeg' => '',
         'vDesc' => '',
@@ -216,10 +216,10 @@ $aP[] = array(
         'qCom' => '1',
         'vUnCom' => '20.00',
         'vProd' => '20.00',
-        'cEANTrib' => '4789015423121222',
+        'cEANTrib' => '',
         'uTrib' => 'UN',
         'qTrib' => '1',
-        'vUnTrib' => '20.00',
+        'vUnTrib' => '',
         'vFrete' => '10.00',
         'vSeg' => '1.00',
         'vDesc' => '1.00',
@@ -255,11 +255,20 @@ foreach ($aP as $prod) {
     $nItemPed = $prod['nItemPed'];
     $nFCI = $prod['nFCI'];
     $resp = $nfe->tagprod($nItem, $cProd, $cEAN, $xProd, $NCM, $NVE, $EXTIPI, $CFOP, $uCom, $qCom, $vUnCom, $vProd, $cEANTrib, $uTrib, $qTrib, $vUnTrib, $vFrete, $vSeg, $vDesc, $vOutro, $indTot, $xPed, $nItemPed, $nFCI);
-    
-    $resp = $nfe->tagICMS($nItem, "1", "101", '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', "4.00", $vProd);
 }
 
-$resp = $nfe->tagICMSTot("0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00", "0.00");
+//DI
+$nItem = '1';
+$nDI = '234556786';
+$dDI = '22/12/2013';
+$xLocDesemb = 'SANTOS';
+$UFDesemb = 'SP';
+$dDesemb = '22/12/2013';
+$tpViaTransp = '1';
+$vAFRMM = '1.00';
+$tpIntermedio = '0';
+$resp = $nfe->tagDI($nItem, $nDI, $dDI, $xLocDesemb, $UFDesemb, $dDesemb, $tpViaTransp, $vAFRMM, $tpIntermedio);
+
 
 //adi
 $nItem = '1';
@@ -271,17 +280,6 @@ $vDescDI = '0.00';
 $nDraw = '9393939';
 $resp = $nfe->tagadi($nItem, $nDI, $nAdicao, $nSeqAdicC, $cFabricante, $vDescDI, $nDraw);
         
-//DI
-$nItem = '1';
-$nDI = '234556786';
-$dDI = '22/12/2013';
-$xLocDesemb = 'SANTOS';
-$UFDesemb = 'SP';
-$dDesemb = '22/12/2013';
-$tpViaTransp = '1';
-$vAFRMM = '1.00';
-$tpIntermedio = '0';
-$resp = $nfe->tagDI($nItem, $nDI, $dDI, $xLocDesemb, $UFDesemb, $dDesemb, $tpViaTransp, $vAFRMM, $tpIntermedio, '', '', '1');
 
 //detExport
 $nItem = '2';
@@ -291,6 +289,12 @@ $nRE = '2222';
 $chNFe = '1234567890123456789012345678901234';
 $qExport = '100';
 $resp = $nfe->tagdetExport($nItem, $nDraw, $exportInd, $nRE, $chNFe, $qExport);
+
+//impostos dos produtos
+
+
+//impostos totais
+
 
 //frete
 $modFrete = '0'; //0=Por conta do emitente; 1=Por conta do destinatário/remetente; 2=Por conta de terceiros;
@@ -306,7 +310,7 @@ $xMun = 'Campinas';
 $UF = 'SP';
 $resp = $nfe->tagtransporta($CNPJ, $CPF, $xNome, $IE, $xEnder, $xMun, $UF);
 
-//valores retirdos para transporte
+//valores retidos para transporte
 $vServ = '258,69'; //Valor do Serviço
 $vBCRet = '258,69'; //BC da Retenção do ICMS
 $pICMSRet = '10,00'; //Alíquota da Retenção
@@ -351,6 +355,13 @@ foreach ($aVol as $vol) {
     $resp = $nfe->tagvol($qVol, $esp, $marca, $nVol, $pesoL, $pesoB, $aLacres);
 }
 
+//dados da fatura
+$nFat = '1111';
+$vOrig = '6000,00';
+$vDesc = '';
+$vLiq = '';
+$resp = $nfe->tagfat($nFat, $vOrig, $vDesc, $vLiq);
+
 //dados das duplicadas
 $aDup = array(
     array('1111-1','2014-01-10','1000,00'),
@@ -367,12 +378,6 @@ foreach ($aDup as $dup) {
     $resp = $nfe->tagdup($nDup, $dVenc, $vDup);
 }
 
-//dados da fatura
-$nFat = '1111';
-$vOrig = '6000,00';
-$vDesc = '';
-$vLiq = '';
-$resp = $nfe->tagfat($nFat, $vOrig, $vDesc, $vLiq);
 
 //*************************************************************
 //Grupo obrigatório para a NFC-e. Não informar para a NF-e.
