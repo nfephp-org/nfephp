@@ -141,6 +141,13 @@ class CTeNFePHP {
      */
     public $canDir = '';
     /**
+     * cccDir
+     * Diretorio onde são armazenados os pedidos das cartas de correção
+     * @var string
+     */
+    public $cccDir = '';
+    /**
+    /**
      * inuDir
      * Diretorio onde são armazenados os pedidos de inutilização de numeros de notas
      * @var string
@@ -721,6 +728,7 @@ class CTeNFePHP {
         $this->repDir=$this->envDir . 'reprovadas' . DIRECTORY_SEPARATOR;
         $this->canDir=$this->arqDir . $sAmb . DIRECTORY_SEPARATOR . 'canceladas' . DIRECTORY_SEPARATOR;
         $this->inuDir=$this->arqDir . $sAmb . DIRECTORY_SEPARATOR . 'inutilizadas' . DIRECTORY_SEPARATOR;
+        $this->cccDir=$this->arqDir . $sAmb . DIRECTORY_SEPARATOR . 'cartacorrecao' . DIRECTORY_SEPARATOR;
         $this->temDir=$this->arqDir . $sAmb . DIRECTORY_SEPARATOR . 'temporarias' . DIRECTORY_SEPARATOR;
         $this->recDir=$this->arqDir . $sAmb . DIRECTORY_SEPARATOR . 'recebidas' . DIRECTORY_SEPARATOR;
         $this->conDir=$this->arqDir . $sAmb . DIRECTORY_SEPARATOR . 'consultadas' . DIRECTORY_SEPARATOR;
@@ -2260,7 +2268,7 @@ class CTeNFePHP {
      * @param string $nSeqEvento - Número sequencial do evento (max 20)
      * @param string $modSoap - SOAP (2)
      */
-    public function envCCe($chCTe = '', $detalhes, $modSOAP = '2', $nSeqEvento)
+    public function envCCe($chCTe = '', $detalhes, $nSeqEvento, $modSOAP = '2' )
     {
         try {
 
@@ -2359,7 +2367,6 @@ class CTeNFePHP {
             $Ev .= "</eventoCTe>";
 
             //Assinar a mensagem
-            //assinatura dos dados
             $tagid = 'infEvento';
             $Ev = $this->signXML($Ev, $tagid);
             $Ev = str_replace('<?xml version="1.0"?>', '', $Ev);
@@ -2381,7 +2388,7 @@ class CTeNFePHP {
             $dados = "<cteDadosMsg xmlns=\"$namespace\">$Ev</cteDadosMsg>";
 
             //grava solicitação em temp
-            $arqName = $this->rejDir . "$chCTe-$nSeqEvento-eventCorr.xml";
+            $arqName = $this->temDir . "$chCTe-$nSeqEvento-eventCorr.xml";
 
 
             if (!file_put_contents($arqName, $Ev)) {
