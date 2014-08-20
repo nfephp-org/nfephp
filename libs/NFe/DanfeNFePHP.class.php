@@ -1796,14 +1796,14 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
                     $dupcont = 0;
                     $linha += 1;
                 }
-                if ($linha == 4) {
-                    $linha = 3;
+                if ($linha == 5) {
+                    $linha = 4;
                     break;
                 }
             }
             if ($dupcont == 0) {
-                $y = $y - 9;
-                $linha = $linha -1;
+                $y -= 9;
+                $linha--;
             }
             return ($y+$h);
         } else {
