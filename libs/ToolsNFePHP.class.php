@@ -509,7 +509,7 @@ class ToolsNFePHP
                                'TO'=>'SVRS',
                                'SCAN'=>'SCAN',
                                'SVAN'=>'SVAN',
-                               'SVRS'=>'SVRS', 
+                               'SVRS'=>'SVRS',
                                'DPEC'=>'DPEC');
     /**
      * cUFlist
@@ -939,26 +939,13 @@ class ToolsNFePHP
     public function validXML($xml='', $xsdFile='', &$aError){
         try{
             $flagOK = true;
-            // Habilita a manipulaçao de erros da libxml
-            libxml_use_internal_errors(true);
-            //limpar erros anteriores que possam estar em memória
-            libxml_clear_errors();
-            //verifica se foi passado o xml
             if(strlen($xml)==0){
                 $msg = 'Você deve passar o conteudo do xml assinado como parâmetro ou o caminho completo até o arquivo.';
                 $aError[] = $msg;
                 throw new nfephpException($msg);
             }
-            // instancia novo objeto DOM
-            $dom = new DOMDocument('1.0', 'utf-8');
-            $dom->preserveWhiteSpace = false; //elimina espaços em branco
-            $dom->formatOutput = false;
-            // carrega o xml tanto pelo string contento o xml como por um path
-            if (is_file($xml)){
-                $dom->load($xml,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
-            } else {
-                $dom->loadXML($xml,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
-            }
+            $err = "";
+            $dom = $this->__getXmlDom($xml, $err);
             // pega a assinatura
             $Signature = $dom->getElementsByTagName('Signature')->item(0);
             //recupera os erros da libxml
@@ -2359,7 +2346,7 @@ class ToolsNFePHP
                     if ($resNFe->getElementsByTagName('IE') !== null) {
                         $IE = $resNFe->getElementsByTagName('IE')->item(0)->nodeValue;
                     }
-                    
+
                     $aNFe[] = array(
                         'chNFe'=>$chNFe,
                         'NSU'=>$nsu,
@@ -3783,6 +3770,55 @@ class ToolsNFePHP
         return $dados;
     }//fim envDPEC
 
+
+    /**
+     * __getXmlDom
+     * Gera um $dom a partir de um $conteudoXML
+     *
+     * @param mixed conteudo ou caminho do XML a ser validado
+     * @param string $err variavel passada como referencia onde são retornados os erros
+     * @return boolean false se não confere, $dom caso o XML seja válido
+     */
+    protected function __getXmlDom($xml, &$err){
+        // Habilita a manipulaçao de erros da libxml
+        libxml_use_internal_errors(true);
+        //limpar erros anteriores que possam estar em memória
+        libxml_clear_errors();
+        $dom = new DOMDocument('1.0', 'utf-8');
+        $dom->preserveWhiteSpace = false;
+        $dom->formatOutput = false;
+        // carrega o xml tanto pelo string contento o xml como por um path
+        if (is_file($xml)){
+            $dom->load($xml, LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
+        } else {
+            $dom->loadXML($xml, LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
+        }
+        $errors = libxml_get_errors();
+        if (!empty($errors)) {
+            $msg = "O arquivo informado não é um xml.";
+            $err = $msg;
+            return false;
+        }
+        return $dom;
+    }
+
+
+    /**
+     * __getX509Certificate
+     * Extrai o certificado X509 de um $dom
+     *
+     * @param type $dom que possui o certificado
+     * @return string o certificado
+     */
+    function __getX509Certificate($dom){
+        // Remontando o certificado
+        $X509Certificate = $dom->getElementsByTagName('X509Certificate')->item(0)->nodeValue;
+        $X509Certificate =  "-----BEGIN CERTIFICATE-----\n" .
+                            $this->__splitLines($X509Certificate) .
+                            "\n-----END CERTIFICATE-----\n";
+        return $X509Certificate;
+    }
+
     /**
      * __verifySignatureXML
      * Verifica correção da assinatura no xml
@@ -3790,19 +3826,30 @@ class ToolsNFePHP
      * @param string $conteudoXML xml a ser verificado
      * @param string $tag tag que é assinada
      * @param string $err variavel passada como referencia onde são retornados os erros
-     * @return boolean false se não confere e true se confere
+     * @return mixed false se não confere e true se confere
      */
     protected function __verifySignatureXML($conteudoXML, $tag, &$err){
-        // Habilita a manipulaçao de erros da libxml
-        libxml_use_internal_errors(true);
-        $dom = new DOMDocument('1.0', 'utf-8');
-        $dom->preserveWhiteSpace = false;
-        $dom->formatOutput = false;
-        $dom->loadXML($conteudoXML,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
-        $errors = libxml_get_errors();
-        if (!empty($errors)) {
-            $msg = "O arquivo informado não é um xml.";
-            $err = $msg;
+        $dom = $this->__getXmlDom($conteudoXML, $err);
+
+        if( $dom === false ){
+            return false;
+        }
+        return $this->__verifySignatureXMLDom($dom, $tag, $err);
+    } // fim __verifySignatureXML
+
+
+
+    /**
+     * __verifySignatureXMLDom
+     * Verifica correção da assinatura no xml
+     *
+     * @param type $dom xml a ser verificado
+     * @param string $tag tag que é assinada
+     * @param string $err variavel passada como referencia onde são retornados os erros
+     * @return boolean false se não confere e true se confere
+     */
+    protected function __verifySignatureXMLDom($dom, $tag, &$err){
+        if( $dom === false ){
             return false;
         }
         $tagBase = $dom->getElementsByTagName($tag)->item(0);
@@ -3816,10 +3863,9 @@ class ToolsNFePHP
             $err = $msg;
             return false;
         }
-        // Remontando o certificado
-        $X509Certificate = $dom->getElementsByTagName('X509Certificate')->item(0)->nodeValue;
-        $X509Certificate =  "-----BEGIN CERTIFICATE-----\n".
-        $this->__splitLines($X509Certificate)."\n-----END CERTIFICATE-----\n";
+
+        $X509Certificate = $this->__getX509Certificate($dom);
+
         $pubKey = openssl_pkey_get_public($X509Certificate);
         if ($pubKey === false){
             $msg = "Ocorreram problemas ao remontar a chave pública. Certificado incorreto ou corrompido!!";
@@ -3838,7 +3884,7 @@ class ToolsNFePHP
             return false;
         }
         return true;
-    } // fim __verifySignatureXML
+    } // fim __verifySignatureXMLDom
 
     /**
      * verifyNFe
@@ -3886,7 +3932,7 @@ class ToolsNFePHP
             //busca o status da NFe na SEFAZ do estado do emitente
             $resp = array();
             $this->getProtocol('', $chave, $tpAmb, $modSOAP, $resp);
-            
+
             if ($resp['cStat']!='100'){
                 $msg = "NF não aprovada no SEFAZ!! cStat =" . $resp['cStat'] .' - '.$resp['xMotivo'] ."";
                 throw new nfephpException($msg, self::STOP_CRITICAL);
