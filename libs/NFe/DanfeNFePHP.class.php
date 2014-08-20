@@ -566,19 +566,13 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
             $linhasDup = 2;
         } elseif (($this->dup->length > 14) && ($this->dup->length <= 21)) {
             $linhasDup = 3;
-        } elseif ($this->dup->length > 21) {
+        } elseif ($this->dup->length > 21) {   // TODO fmertins 20/08/14: mudar para "else" apenas? E acho que a variavel deveria receber outro valor, ja que esta igual a 3 que dá na mesma da condição anterior, parece ser bug? Talvez atribuir 4 ao inves de 3?
             $linhasDup = 3;
-        } else {
-            $linhasDup = 0;
         }
-        //verifica se será impresso a linha dos serviços ISSQN
-            $linhaISSQN = 0;
-        if (isset($this->ISSQNtot)) {
-            $itemTemp = ! empty($this->ISSQNtot->getElementsByTagName("vServ")->item(0)->nodeValue) ?
-                    $this->ISSQNtot->getElementsByTagName("vServ")->item(0)->nodeValue : 0;
-            if ($itemTemp > 0) {
-                $linhaISSQN = 1;
-            }
+        //verifica se será impressa a linha dos serviços ISSQN
+        $linhaISSQN = 0;
+        if ((isset($this->ISSQNtot)) && ($this->pSimpleGetValue($this->ISSQNtot, 'vServ') > 0)) {
+            $linhaISSQN = 1;
         }
         //calcular a altura necessária para os dados adicionais
         if ($this->orientacao == 'P') {
