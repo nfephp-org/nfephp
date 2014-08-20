@@ -3773,7 +3773,7 @@ class ToolsNFePHP
 
     /**
      * __getXmlDom
-     * Gera um $dom a partir de um $conteudoXML
+     * Gera um $dom a partir de um arquivo xml ou conteudo xml
      *
      * @param mixed conteudo ou caminho do XML a ser validado
      * @param string $err variavel passada como referencia onde são retornados os erros
@@ -3849,15 +3849,19 @@ class ToolsNFePHP
      * @return boolean false se não confere e true se confere
      */
     protected function __verifySignatureXMLDom($dom, $tag, &$err){
+
         if( $dom === false ){
             return false;
         }
+
         $tagBase = $dom->getElementsByTagName($tag)->item(0);
+
         // validar digest value
         $tagInf = $tagBase->C14N(false, false, NULL, NULL);
         $hashValue = hash('sha1',$tagInf,true);
         $digestCalculado = base64_encode($hashValue);
         $digestInformado = $dom->getElementsByTagName('DigestValue')->item(0)->nodeValue;
+
         if ($digestCalculado != $digestInformado){
             $msg = "O conteúdo do XML não confere com o Digest Value.\nDigest calculado [{$digestCalculado}], informado no XML [{$digestInformado}].\nO arquivo pode estar corrompido ou ter sido adulterado.";
             $err = $msg;
@@ -3886,6 +3890,32 @@ class ToolsNFePHP
         return true;
     } // fim __verifySignatureXMLDom
 
+
+    /**
+     * __parseOfflineXML
+     * Verifica se um XML existe se se sua assinatura está OK
+     *
+     * @param string $file Path completo para o arquivo xml a ser verificado
+     * @return xmlDom
+     */
+    public function __parseOfflineXML($file){
+        //verifica se o arquivo existe
+        if (!file_exists($file)){
+            $msg = "Arquivo não localizado!!";
+            throw new nfephpException($msg, self::STOP_CRITICAL);
+        }
+
+        $err = "";
+        $xmldoc = $this->__getXmlDom($file, $err);
+
+        //testa a assinatura
+        if (!$this->__verifySignatureXMLDom($xmldoc,'infNFe',$err)){
+            $msg = "Assinatura não confere!! ".$err;
+            throw new nfephpException($msg, self::STOP_CRITICAL);
+        }
+        return $xmldoc;
+    } // fim __parseOfflineXML
+
     /**
      * verifyNFe
      * Verifica a validade da NFe recebida de terceiros
@@ -3896,24 +3926,11 @@ class ToolsNFePHP
      */
     public function verifyNFe($file, $modSOAP=2){
         try{
-            //verifica se o arquivo existe
-            if (!file_exists($file)){
-                $msg = "Arquivo não localizado!!";
-                throw new nfephpException($msg, self::STOP_CRITICAL);
-            }
-            //carrega a NFe
-            $xml = file_get_contents($file);
-            //testa a assinatura
-            if (!$this->__verifySignatureXML($xml,'infNFe',$err)){
-                $msg = "Assinatura não confere!! ".$err;
-                throw new nfephpException($msg, self::STOP_CRITICAL);
-            }
+
+            $xmldoc = $this->__parseOfflineXML($file);
+
             //como a ssinatura confere, consultar o SEFAZ para verificar se a NF não foi cancelada ou é FALSA
             //carrega o documento no DOM
-            $xmldoc = new DOMDocument('1.0', 'utf-8');
-            $xmldoc->preservWhiteSpace = false; //elimina espaços em branco
-            $xmldoc->formatOutput = false;
-            $xmldoc->loadXML($xml,LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
             $root = $xmldoc->documentElement;
             $infNFe = $xmldoc->getElementsByTagName('infNFe')->item(0);
             //extrair a tag com os dados a serem assinados
