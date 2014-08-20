@@ -113,7 +113,37 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
      * @var integer 
      */
     public $qCanhoto=1;
-   
+    
+    // INÍCIO ATRIBUTOS DE PARÂMETROS DE EXIBIÇÃO
+    /**
+     * Parâmetro para exibir ou ocultar os valores do PIS/COFINS.
+     * @var boolean
+     */
+    public $exibirPIS=true;
+    /**
+     * Parâmetro para exibir ou ocultar o texto sobre valor aproximado dos tributos.
+     * @var boolean
+     */
+    public $exibirValorTributos=true;
+    /**
+     * Parâmetro para exibir ou ocultar o texto adicional sobre a forma de pagamento
+     * e as informações de fatura/duplicata.
+     * @var boolean
+     */
+    public $exibirTextoFatura=false;
+    /**
+     * Parâmetro do controle se deve concatenar automaticamente informações complementares
+     * na descrição do produto, como por exemplo, informações sobre impostos.
+     * @var boolean
+     */
+    public $descProdInfoComplemento=true;
+    /**
+     * Parâmetro do controle se deve gerar quebras de linha com "\n" a partir de ";" na descrição do produto.
+     * @var boolean
+     */
+    public $descProdQuebraLinha=true;
+    // FIM ATRIBUTOS DE PARÂMETROS DE EXIBIÇÃO
+    
     /**
      * objeto fpdf()
      * @var object 
@@ -205,11 +235,6 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
      * @var string
      */
     protected $formatoChave="#### #### #### #### #### #### #### #### #### #### ####";
-    /**
-     * 1- exibe os valores do pis e cofins 0-não exibe os valores
-     * @var boolean
-     */
-    protected $exibirPIS=1;
     /**
      * quantidade de itens já processados na montagem do DANFE
      * @var integer
@@ -347,7 +372,6 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
      * @param string $sDestino Estabelece a direção do envio do documento PDF I-browser D-browser com download S-
      * @param string $sDirPDF Caminho para o diretorio de armazenamento dos arquivos PDF
      * @param string $fonteDANFE Nome da fonte alternativa do DAnfe
-     * @param boolean $exibirPIS 1-SIM e 0-Não
      * @param integer $mododebug 0-Não 1-Sim e 2-nada (2 default)
      */
     public function __construct(
@@ -358,9 +382,14 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $sDestino = 'I',
         $sDirPDF = '',
         $fonteDANFE = '',
-        $exibirPIS = 1,
         $mododebug = 2
     ) {
+        //verificacao temporária de segurança apenas para alertar se tentar instanciar
+        //a classe com 9 parâmetros, pois o "$exibirPis" foi removido em 20/08/2014
+        // e parametrizado como atributo público para simplificar o construtor
+        if (func_num_args() == 9) {
+            throw new nfephpException("ATENCAO: o construtor da classe DanfeNFePHP nao possui mais 9 parametros");
+        }
         if (is_numeric($mododebug)) {
             $this->debugMode = $mododebug;
         }
@@ -387,7 +416,6 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         } else {
             $this->fontePadrao = $fonteDANFE;
         }
-        $this->exibirPIS = $exibirPIS;
         //se for passado o xml
         if (! empty($this->xml)) {
             $this->dom = new DomDocumentNFePHP();
@@ -671,15 +699,16 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         //INCLUSO pela NT 2013.003 Lei da Transparência
         //verificar se a informação sobre o valor aproximado dos tributos
         //já se encontra no campo de informações adicionais
-        $flagVTT = strpos(strtolower(trim($this->textoAdic)), 'valor');
-        $flagVTT = $flagVTT || strpos(strtolower(trim($this->textoAdic)), 'vl');
-        $flagVTT = $flagVTT && strpos(strtolower(trim($this->textoAdic)), 'aprox');
-        $flagVTT = $flagVTT && (strpos(strtolower(trim($this->textoAdic)), 'trib') ||
-                strpos(strtolower(trim($this->textoAdic)), 'imp'));
-        $vTotTrib = ! empty($this->ICMSTot->getElementsByTagName("vTotTrib")->item(0)->nodeValue) ?
-            $this->ICMSTot->getElementsByTagName("vTotTrib")->item(0)->nodeValue : '';
-        if ($vTotTrib != '' && !$flagVTT) {
-            $this->textoAdic .= "\n Valor Aproximado dos Tributos : R$ " . number_format($vTotTrib, 2, ",", ".");
+        if ($this->exibirValorTributos) {
+            $flagVTT = strpos(strtolower(trim($this->textoAdic)), 'valor');
+            $flagVTT = $flagVTT || strpos(strtolower(trim($this->textoAdic)), 'vl');
+            $flagVTT = $flagVTT && strpos(strtolower(trim($this->textoAdic)), 'aprox');
+            $flagVTT = $flagVTT && (strpos(strtolower(trim($this->textoAdic)), 'trib') ||
+                    strpos(strtolower(trim($this->textoAdic)), 'imp'));
+            $vTotTrib = $this->pSimpleGetValue($this->ICMSTot, 'vTotTrib');
+            if ($vTotTrib != '' && !$flagVTT) {
+                $this->textoAdic .= "\n Valor Aproximado dos Tributos : R$ " . number_format($vTotTrib, 2, ",", ".");
+            }
         }
         //fim da alteração NT 2013.003 Lei da Transparência
         $this->textoAdic = str_replace(";", "\n", $this->textoAdic);
@@ -1730,7 +1759,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
             $dups = "";
             $dupcont = 0;
             $nFat = $this->dup->length;
-            if ($this->dup->length == 0 && $textoFatura !== "") {
+            if ($textoFatura !== "" && $this->exibirTextoFatura) {
                 $myH=6;
                 $myW = $this->wPrint;
                 if ($this->orientacao == 'L') {
@@ -1846,7 +1875,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
             $wPis = 20;
             $w1 = 40;
         }
-        if ($this->exibirPIS!='1') {
+        if (! $this->exibirPIS) {
             $wPis = 0;
             if ($this->orientacao == 'P') {
                 $w1+= 2;
@@ -1889,7 +1918,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
                 number_format($this->ICMSTot->getElementsByTagName("vII")->item(0)->nodeValue, 2, ",", ".") : '0, 00';
         $this->pImpostoDanfeHelper($x, $y, $w, $h, $texto, $valorImposto);
         //VALOR DO PIS
-        if ($this->exibirPIS=='1') {
+        if ($this->exibirPIS) {
             $x += $w;
             $w=$wPis;
             $texto = 'VALOR DO PIS';
@@ -1950,7 +1979,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
                 number_format($this->ICMSTot->getElementsByTagName("vIPI")->item(0)->nodeValue, 2, ",", ".") : '0, 00';
         $this->pImpostoDanfeHelper($x, $y, $w, $h, $texto, $valorImposto);
         //VALOR DO COFINS
-        if ($this->exibirPIS=='1') {
+        if ($this->exibirPIS) {
             $x += $w;
             $w = $wPis;
             $texto = 'VALOR DA COFINS';
@@ -2338,10 +2367,11 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         //NT2013.006 FCI
         $nFCI = (! empty($itemProd->getElementsByTagName('nFCI')->item(0)->nodeValue)) ?
                 ' FCI:'.$itemProd->getElementsByTagName('nFCI')->item(0)->nodeValue : '';
-
-        $tmp_ad=$infAdProd . $medTxt . $impostos . $nFCI;
+        $tmp_ad=$infAdProd . ($this->descProdInfoComplemento ? $medTxt . $impostos . $nFCI : '');
         $texto = $prod->getElementsByTagName("xProd")->item(0)->nodeValue . (strlen($tmp_ad)!=0?"\n    ".$tmp_ad:'');
-        $texto = str_replace(";", "\n", $texto);
+        if ($this->descProdQuebraLinha) {
+            $texto = str_replace(";", "\n", $texto);
+        }
         return $texto;
     } //fim descricaoProduto
 
