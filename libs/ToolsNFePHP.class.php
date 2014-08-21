@@ -3856,11 +3856,21 @@ class ToolsNFePHP
 
         $tagBase = $dom->getElementsByTagName($tag)->item(0);
 
+        if( $tagBase == null ){
+            return false;
+        }
+
+        $digestInformadoItem = $dom->getElementsByTagName('DigestValue')->item(0);
+
+        if( $digestInformadoItem == null ){
+            return false;
+        }
+
         // validar digest value
         $tagInf = $tagBase->C14N(false, false, NULL, NULL);
         $hashValue = hash('sha1',$tagInf,true);
         $digestCalculado = base64_encode($hashValue);
-        $digestInformado = $dom->getElementsByTagName('DigestValue')->item(0)->nodeValue;
+        $digestInformado = $digestInformadoItem->nodeValue;
 
         if ($digestCalculado != $digestInformado){
             $msg = "O conteúdo do XML não confere com o Digest Value.\nDigest calculado [{$digestCalculado}], informado no XML [{$digestInformado}].\nO arquivo pode estar corrompido ou ter sido adulterado.";
