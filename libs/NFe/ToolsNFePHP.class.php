@@ -84,25 +84,21 @@ class ToolsNFePHP extends CommonNFePHP
 {
 
     /**
-     * Sefaz Virtual Ambiente Nacional (SVAN)
+     * Sefaz Virtual Ambiente Nacional (SVAN), alguns estados utilizam esta Sefaz Virtual.
      */
-    const CONTINGENCIA_SVAN = 'SVAN';
-
+    const SVAN = 'SVAN';
     /**
-     * Sefaz Virtual de Contingência Rio Grande do Sul (SVC-RS)
+     * Sefaz Virtual Rio Grande do Sul (SVRS), alguns estados utilizam esta Sefaz Virtual.
      */
-    const CONTINGENCIA_SVCRS = 'SVCRS';
-
-    /**
-     * Sefaz Virtual Rio Grande do Sul (SVRS)
-     */
-    const CONTINGENCIA_SVRS = 'SVRS';
-
+    const SVRS = 'SVRS';
     /**
      * Sefaz Virtual de Contingência Ambiente Nacional (SVC-AN)
      */
     const CONTINGENCIA_SVCAN = 'SVCAN';
-
+    /**
+     * Sefaz Virtual de Contingência Rio Grande do Sul (SVC-RS)
+     */
+    const CONTINGENCIA_SVCRS = 'SVCRS';
     /**
      * raizDir
      * Diretorio raiz da API
@@ -493,7 +489,7 @@ class ToolsNFePHP extends CommonNFePHP
     private $URLPortal = 'http://www.portalfiscal.inf.br/nfe';
     /**
      * aliaslist
-     * Lista dos aliases para os estados que usam SEFAZ própria ou virtual
+     * Lista dos aliases para os estados que usam Sefaz própria ou Sefaz Virtual
      * @var array
      */
     public $aliaslist = array( 'AC'=>'SVRS',
@@ -561,8 +557,7 @@ class ToolsNFePHP extends CommonNFePHP
                              'SE'=>'28',
                              'SP'=>'35',
                              'TO'=>'17',
-                             'SVAN'=>'91');
-
+                             'SVAN'=>'91'); // TODO fmertins 22/08: não existe código da SVRS?
     /**
      * cUFlist
      * Lista dos numeros identificadores dos estados
@@ -1974,7 +1969,7 @@ class ToolsNFePHP extends CommonNFePHP
             } else {
                 throw new nfephpException("Parametro indSinc deve ser inteiro 0 ou 1, verifique!!");
             }
-            //verifica se o SCAN esta habilitado
+            //verifica se a SVC-AN esta habilitada
             if (!$this->enableSVCAN) {
                 $aURL = $this->aURL;
             } else {
@@ -2129,7 +2124,7 @@ class ToolsNFePHP extends CommonNFePHP
                     $aURL = $this->pLoadSEFAZ($tpAmb, $siglaUF);
                 }
             }
-            //verifica se o SCAN esta habilitado
+            //verifica se a SVC-AN esta habilitada
             if ($this->enableSVCAN || $ctpEmissao == '3') {
                 $aURL = $this->pLoadSEFAZ($tpAmb, self::CONTINGENCIA_SVCAN);
             }
@@ -4004,9 +3999,9 @@ class ToolsNFePHP extends CommonNFePHP
             }
             $alias = $this->aliaslist[$sUF];
             //verifica se deve habilitar SVAN ou SVRS (ambos por padrão iniciam desabilitados)
-            if ($alias == self::CONTINGENCIA_SVAN) {
+            if ($alias == self::SVAN) {
                 $this->enableSVAN = true;
-            } elseif ($alias == self::CONTINGENCIA_SVRS) {
+            } elseif ($alias == self::SVRS) {
                 $this->enableSVRS = true;
             }
             //estabelece a expressão xpath de busca
@@ -4025,7 +4020,7 @@ class ToolsNFePHP extends CommonNFePHP
                 }
             }
             //verifica se existem outros serviços exclusivos para esse estado
-            if ($alias == self::CONTINGENCIA_SVAN || $alias == self::CONTINGENCIA_SVRS) {
+            if ($alias == self::SVAN || $alias == self::SVRS) {
                 //para cada "nó" no xml que atenda aos critérios estabelecidos
                 foreach ($xmlWS->xpath($xpathExpression) as $gUF) {
                     //para cada "nó filho" retonado
