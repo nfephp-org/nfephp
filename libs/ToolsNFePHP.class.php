@@ -2845,7 +2845,7 @@ class ToolsNFePHP
         $aRetorno['nNFFin'] = $doc->getElementsByTagName('nNFFin')->item(0)->nodeValue;
         // data e hora do retorno a operaÃ§Ã£o (opcional)
         $aRetorno['dhRecbto'] = !empty($doc->getElementsByTagName('dhRecbto')->item(0)->nodeValue) ?
-        date("d/m/Y H:i:s", $this->pConvertTime($doc->getElementsByTagName('dhRecbto')->item(0)->nodeValue)) : '';
+        date("d/m/Y H:i:s", $this->__convertTime($doc->getElementsByTagName('dhRecbto')->item(0)->nodeValue)) : '';
         // Número do Protocolo de Inutilização
         $aRetorno['nProt'] = $doc->getElementsByTagName('nProt')->item(0)->nodeValue;
         $retInutNFe = $doc->getElementsByTagName("retInutNFe")->item(0);
@@ -3083,7 +3083,7 @@ class ToolsNFePHP
             $aRetorno['chNFe'] = $retEvento->getElementsByTagName('chNFe')->item(0)->nodeValue;
             // data e hora da mensagem (opcional)
             $aRetorno['dhRecbto'] = !empty($retEvento->getElementsByTagName('dhRegEvento')->item(0)->nodeValue) ?
-            date("d/m/Y H:i:s", $this->pConvertTime($retEvento->getElementsByTagName('dhRegEvento')->item(0)->nodeValue)) : '';
+            date("d/m/Y H:i:s", $this->__convertTime($retEvento->getElementsByTagName('dhRegEvento')->item(0)->nodeValue)) : '';
             //o evento foi aceito cStat == 135 ou cStat == 155
             //carregar o evento
             $xmlenvEvento = new DOMDocument('1.0', 'utf-8'); //cria objeto DOM
