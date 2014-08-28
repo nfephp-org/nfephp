@@ -297,6 +297,89 @@ $chNFe = '1234567890123456789012345678901234';
 $qExport = '100';
 $resp = $nfe->tagdetExport($nItem, $nDraw, $exportInd, $nRE, $chNFe, $qExport);
 
+//imposto
+$nItem = '1';
+$vTotTrib = '34.56';
+$resp = $nfe->tagimposto($nItem, $vTotTrib);
+
+$nItem = '2';
+$vTotTrib = '34.66';
+$resp = $nfe->tagimposto($nItem, $vTotTrib);
+
+//ICMS
+$nItem = '1';
+$orig = '1';
+$cst = '10';
+$modBC = '1';
+$pRedBC = '';
+$vBC = '100.00';
+$pICMS = '18.00';
+$vICMS = '18.00';
+$vICMSDeson = '';
+$motDesICMS = '';
+$modBCST = '1';
+$pMVAST = '50.00';
+$pRedBCST = '';
+$vBCST = '150.00';
+$pICMSST = '7.00';
+$vICMSST = '15.00';
+$pDif = '';
+$vICMSDif = '';
+$vICMSOp = '';
+$vBCSTRet = '';
+$vICMSSTRet = '';
+$resp = $nfe->tagICMS($nItem, $orig, $cst, $modBC, $pRedBC, $vBC, $pICMS, $vICMS, $vICMSDeson, $motDesICMS, $modBCST, $pMVAST, $pRedBCST, $vBCST, $pICMSST, $vICMSST, $pDif, $vICMSDif, $vICMSOp, $vBCSTRet, $vICMSSTRet);
+
+$nItem = '2';
+$orig = '1';
+$cst = '00';
+$modBC = '1';
+$pRedBC = '';
+$vBC = '200.00';
+$pICMS = '18.00';
+$vICMS = '36.00';
+$vICMSDeson = '';
+$motDesICMS = '';
+$modBCST = '';
+$pMVAST = '';
+$pRedBCST = '';
+$vBCST = '';
+$pICMSST = '';
+$vICMSST = '';
+$pDif = '';
+$vICMSDif = '';
+$vICMSOp = '';
+$vBCSTRet = '';
+$vICMSSTRet = '';
+$resp = $nfe->tagICMS($nItem, $orig, $cst, $modBC, $pRedBC, $vBC, $pICMS, $vICMS, $vICMSDeson, $motDesICMS, $modBCST, $pMVAST, $pRedBCST, $vBCST, $pICMSST, $vICMSST, $pDif, $vICMSDif, $vICMSOp, $vBCSTRet, $vICMSSTRet);
+
+
+//ICMSPart
+//$resp = $nfe->tagICMSPart($nItem, $orig, $cst, $modBC, $vBC, $pRedBC, $pICMS, $vICMS, $modBCST, $pMVAST, $pRedBCST, $vBCST, $pICMSST, $vICMSST, $pBCOp, $ufST);
+//ICMSST
+//$resp = $nfe->tagICMSST($nItem, $orig, $cst, $vBCSTRet, $vICMSSTRet, $vBCSTDest, $vICMSSTDest);
+//ICMSSN
+//$resp = $nfe->tagICMSSN($nItem, $orig, $csosn, $modBC, $vBC, $pRedBC, $pICMS, $vICMS, $pCredSN, $vCredICMSSN, $modBCST, $pMVAST, $pRedBCST, $vBCST, $pICMSST, $vICMSST, $vBCSTRet, $vICMSSTRet);
+//IPI
+//$resp = $nfe->tagIPI($nItem, $cst, $clEnq, $cnpjProd, $cSelo, $qSelo, $cEnq, $vBC, $pIPI, $qUnid, $vUnid, $vIPI);
+//PIS
+//$resp = $nfe->tagPIS($nItem, $cst, $vBC, $pPIS, $vPIS, $qBCProd, $vAliqProd);
+//PISST
+//$resp = $nfe->tagPISST($nItem, $vBC, $pPIS, $qBCProd, $vAliqProd, $vPIS);
+//COFINS
+//$resp = $nfe->tagCOFINS($nItem, $cst, $vBC, $pCOFINS, $vCOFINS, $qBCProd, $vAliqProd);
+//COFINSST
+//$resp = $nfe->tagCOFINSST($nItem, $vBC, $pCOFINS, $qBCProd, $vAliqProd, $vCOFINS);
+//II
+//$resp = $nfe->tagII($nItem, $vBC, $vDespAdu, $vII, $vIOF);
+
+//ICMSTot
+//$resp = $nfe->tagICMSTot($vBC, $vICMS, $vICMSDeson, $vBCST, $vST, $vProd, $vFrete, $vSeg, $vDesc, $vII, $vIPI, $vPIS, $vCOFINS, $vOutro, $vNF, $vTotTrib);
+//ISSQNTot
+//$resp = $nfe->tagISSQNTot($vServ, $vBC, $vISS, $vPIS, $vCOFINS, $dCompet, $vDeducao, $vOutro, $vDescIncond, $vDescCond, $vISSRet, $cRegTrib);
+//retTrib
+//$resp = $nfe->tagretTrib($vRetPIS, $vRetCOFINS, $vRetCSLL, $vBCIRRF, $vIRRF, $vBCRetPrev, $vRetPrev);
+
 //frete
 $modFrete = '0'; //0=Por conta do emitente; 1=Por conta do destinatário/remetente; 2=Por conta de terceiros;
 $resp = $nfe->tagtransp($modFrete);

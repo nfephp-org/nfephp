@@ -26,7 +26,7 @@
  * 
  * @package     NFePHP
  * @name        MakeNFePHP
- * @version     0.1.6
+ * @version     0.1.7
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright   2009-2014 &copy; NFePHP
  * @link        http://www.nfephp.org/
@@ -454,7 +454,7 @@ class MakeNFe
         $serie = '',
         $nNF = ''
     ) {
-        $identificador = 'BA10 <refNFP> - '; 
+        $identificador = 'BA10 <refNFP> - ';
         $num = $this->zTagNFref();
         $refNFP = $this->dom->createElement("refNFP");
         $this->zAddChild($refNFP, "cUF", $cUF, true, $identificador . "Código da UF do emitente");
@@ -504,7 +504,7 @@ class MakeNFe
         $nECF = '',
         $nCOO = ''
     ) {
-        $identificador = 'BA20 <refECF> - '; 
+        $identificador = 'BA20 <refECF> - ';
         $num = $this->zTagNFref();
         $refECF = $this->dom->createElement("refECF");
         $this->zAddChild($refECF, "mod", $mod, true, $identificador . "Modelo do Documento Fiscal");
@@ -540,7 +540,7 @@ class MakeNFe
         $cnae = '',
         $crt = ''
     ) {
-        $identificador = 'C01 <emit> - '; 
+        $identificador = 'C01 <emit> - ';
         $this->emit = $this->dom->createElement("emit");
         if ($cnpj != '') {
             $this->zAddChild($this->emit, "CNPJ", $cnpj, true, $identificador . "CNPJ do emitente");
@@ -637,7 +637,7 @@ class MakeNFe
         $numIM = '',
         $email = ''
     ) {
-        $identificador = 'E01 <dest> - '; 
+        $identificador = 'E01 <dest> - ';
         $this->dest = $this->dom->createElement("dest");
         if ($cnpj != '') {
             $this->zAddChild($this->dest, "CNPJ", $cnpj, true, $identificador . "CNPJ do destinatário");
@@ -1037,7 +1037,7 @@ class MakeNFe
         $nFCI = '',
         $nRECOPI = ''
     ) {
-        $identificador = 'I01 <prod> - '; 
+        $identificador = 'I01 <prod> - ';
         $prod = $this->dom->createElement("prod");
         $this->zAddChild($prod, "cProd", $cProd, true, $identificador . "$nItem - Código do produto ou serviço");
         $this->zAddChild(
@@ -1433,7 +1433,6 @@ class MakeNFe
             $this->zAddChild($tagCIDE, "vAliqProd", $vAliqProd, true, "$nItem - Valor da alíquota da CIDE");
             $this->zAddChild($tagCIDE, "vCIDE", $vCIDE, true, "$nItem - Valor da CIDE");
             $this->zAppChild($comb, $tagCIDE);
-            //$comb->appendChild($tagCIDE);
         }
         $this->aComb[$nItem] = $comb;
         return $comb;
@@ -1521,7 +1520,7 @@ class MakeNFe
                 $this->zAddChild($icms, 'vICMS', $vICMS, true, "Valor do ICMS");
                 break;
             case '10':
-                $ICMS = $this->dom->createElement("ICMS10");
+                $icms = $this->dom->createElement("ICMS10");
                 $this->zAddChild($icms, 'orig', $orig, true, "Origem da mercadoria");
                 $this->zAddChild($icms, 'CST', $cst, true, "Tributação do ICMS = 10");
                 $this->zAddChild($icms, 'modBC', $modBC, true, "Modalidade de determinação da BC do ICMS");
@@ -1542,7 +1541,7 @@ class MakeNFe
                 $this->zAddChild($icms, 'vICMSST', $vICMSST, true, "Valor do ICMS ST");
                 break;
             case '20':
-                $ICMS = $this->dom->createElement("ICMS20");
+                $icms = $this->dom->createElement("ICMS20");
                 $this->zAddChild($icms, 'orig', $orig, true, "Origem da mercadoria");
                 $this->zAddChild($icms, 'CST', $cst, true, "Tributação do ICMS = 20");
                 $this->zAddChild($icms, 'modBC', $modBC, true, "Modalidade de determinação da BC do ICMS");
@@ -1554,7 +1553,7 @@ class MakeNFe
                 $this->zAddChild($icms, 'motDesICMS', $motDesICMS, false, "Motivo da desoneração do ICMS");
                 break;
             case '30':
-                $ICMS = $this->dom->createElement("ICMS30");
+                $icms = $this->dom->createElement("ICMS30");
                 $this->zAddChild($icms, 'orig', $orig, true, "Origem da mercadoria");
                 $this->zAddChild($icms, 'CST', $cst, true, "Tributação do ICMS = 30");
                 $this->zAddChild($icms, 'modBCST', $modBC, true, "Modalidade de determinação da BC do ICMS ST");
@@ -1575,14 +1574,14 @@ class MakeNFe
             case '40':
             case '41':
             case '50':
-                $ICMS = $this->dom->createElement("ICMS40");
+                $icms = $this->dom->createElement("ICMS40");
                 $this->zAddChild($icms, 'orig', $orig, true, "Origem da mercadoria");
                 $this->zAddChild($icms, 'CST', $cst, true, "Tributação do ICMS $cst");
                 $this->zAddChild($icms, 'vICMSDeson', $vICMSDeson, false, "Valor do ICMS desonerado");
                 $this->zAddChild($icms, 'motDesICMS', $motDesICMS, false, "Motivo da desoneração do ICMS");
                 break;
             case '51':
-                $ICMS = $this->dom->createElement("ICMS51");
+                $icms = $this->dom->createElement("ICMS51");
                 $this->zAddChild($icms, 'orig', $orig, true, "Origem da mercadoria");
                 $this->zAddChild($icms, 'CST', $cst, true, "Tributação do ICMS = 51");
                 $this->zAddChild($icms, 'modBC', $modBC, false, "Modalidade de determinação da BC do ICMS");
@@ -1594,14 +1593,14 @@ class MakeNFe
                 $this->zAddChild($icms, 'vICMSDif', $vICMSDif, false, "Valor do ICMS diferido");
                 break;
             case '60':
-                $ICMS = $this->dom->createElement("ICMS60");
+                $icms = $this->dom->createElement("ICMS60");
                 $this->zAddChild($icms, 'orig', $orig, true, "Origem da mercadoria");
                 $this->zAddChild($icms, 'CST', $cst, true, "Tributação do ICMS = 60");
                 $this->zAddChild($icms, 'vBCSTRet', $vBCSTRet, false, "Valor da BC do ICMS ST retido");
                 $this->zAddChild($icms, 'vICMSSTRet', $vICMSSTRet, false, "Valor do ICMS ST retido");
                 break;
             case '70':
-                $ICMS = $this->dom->createElement("ICMS70");
+                $icms = $this->dom->createElement("ICMS70");
                 $this->zAddChild($icms, 'orig', $orig, true, "Origem da mercadoria");
                 $this->zAddChild($icms, 'CST', $cst, true, "Tributação do ICMS = 70");
                 $this->zAddChild($icms, 'modBC', $modBC, true, "Modalidade de determinação da BC do ICMS");
@@ -1625,7 +1624,7 @@ class MakeNFe
                 $this->zAddChild($icms, 'motDesICMS', $motDesICMS, false, "Motivo da desoneração do ICMS");
                 break;
             case '90':
-                $ICMS = $this->dom->createElement("ICMS90");
+                $icms = $this->dom->createElement("ICMS90");
                 $this->zAddChild($icms, 'orig', $orig, true, "Origem da mercadoria");
                 $this->zAddChild($icms, 'CST', $cst, true, "Tributação do ICMS = 90");
                 $this->zAddChild($icms, 'modBC', $modBC, true, "Modalidade de determinação da BC do ICMS");
@@ -1656,7 +1655,7 @@ class MakeNFe
     }
     
     /**
-     * tagICMS
+     * tagICMSPart
      * Grupo de Partilha do ICMS entre a UF de origem e UF de destino ou 
      * a UF definida na legislação. N10a pai N01 
      * tag NFe/infNFe/det[]/imposto/ICMS/ICMSPart
@@ -2584,11 +2583,6 @@ class MakeNFe
         $vCOFINS = '',
         $dCompet = '',
         $vDeducao = '',
-        $vOutro = '',
-        $vDescIncond = '',
-        $vDescCond = '',
-        $vISSRet = '',
-        $cRegTrib = '',
         $vOutro = '',
         $vDescIncond = '',
         $vDescCond = '',
