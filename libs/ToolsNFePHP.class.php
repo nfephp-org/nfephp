@@ -231,6 +231,7 @@ class ToolsNFePHP
     /**
      * enableSCAN
      * Habilita contingência ao serviço SCAN ao invés do webservice estadual
+     * ATENÇÃO! O SCAN está sendo desativado, veja sobre novas contingênciad SVC-AN e SVC-RS.
      * @var boolean
      */
     public $enableSCAN=false;
