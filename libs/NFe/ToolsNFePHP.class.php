@@ -3918,7 +3918,8 @@ class ToolsNFePHP extends CommonNFePHP
                 $nProt = '';
             }
             //busca o status da NFe na SEFAZ do estado do emitente
-            $resp = $this->getProtocol('', $chave, $tpAmb);
+            $resp = array();
+            $this->getProtocol('', $chave, $tpAmb, $resp);
             if ($resp['cStat']!='100') {
                 $msg = "NF não aprovada no SEFAZ!! cStat =".$resp['cStat'] .' - '.$resp['xMotivo'] ."";
                 throw new nfephpException($msg);
