@@ -808,4 +808,95 @@ class ToolsNFePHPTest extends PHPUnit_Framework_TestCase
         $tool = new ToolsNFePHP($this->configTest, 2, true);
         $tool->inutNF(14, 1, 1, 1112223334, str_repeat('.', 20));
     }
+
+
+    public function testConsultaRelacaoDocumentosDestinadosAUmCnpj()
+    {
+        $mockBuilder = $this->getMockBuilder('ToolsNFePHP');
+        $mockBuilder->setConstructorArgs(array($this->configTest, 1, true));
+        $mockBuilder->setMethods(array('pSendSOAP'));
+        /** @var ToolsNFePHP $tool */
+        $tool = $mockBuilder->getMock();
+        $xmlRetornoInutilizacao = '<?xml version="1.0" encoding="utf-8"?>'
+            . '<retConsNFeDest versao="3.10">'
+            . '<tpAmb>2</tpAmb>'
+            . '<verAplic>2.0</verAplic>'
+            . '<cStat>138</cStat>'
+            . '<xMotivo>Documento localizado para o Destinatário</xMotivo>'
+            . '<ultNSU>123</ultNSU>'
+            . '<indCont>1</indCont>'
+            . '<ret>'
+            . '<resNFe>'
+            . '<NSU>123</NSU>'
+            . '<chNFe>123</chNFe>'
+            . '<CNPJ>123</CNPJ>'
+            . '<xNome>123</xNome>'
+            . '<dhEmi>2014-08-31T09:00:00</dhEmi>'
+            . '<tpNF>0</tpNF>'
+            . '<dhRecbto>2014-08-31T09:00:00</dhRecbto>'
+            . '<cSitNFe>1</cSitNFe>'
+            . '<cSitConf>1</cSitConf>'
+            . '</resNFe>'
+            . '<resCanc>'
+            . '<NSU>321</NSU>'
+            . '<chNFe>321</chNFe>'
+            . '<CNPJ>321</CNPJ>'
+            . '<xNome>123</xNome>'
+            . '<dhEmi>2014-08-31T09:00:00</dhEmi>'
+            . '<tpNF>0</tpNF>'
+            . '<vNF>100.00</vNF>'
+            . '<dhRecbto>2014-08-31T09:00:00</dhRecbto>'
+            . '<cSitNFe>0</cSitNFe>'
+            . '<cSitConf>0</cSitConf>'
+            . '</resCanc>'
+            . '<resCCe>'
+            . '<NSU>321</NSU>'
+            . '<chNFe>321</chNFe>'
+            . '<tpEvento>0</tpEvento>'
+            . '<nSeqEvento>0</nSeqEvento>'
+            . '<dhEvento>2014-08-31T09:00:00</dhEvento>'
+            . '<descEvento>teste</descEvento>'
+            . '<xCorrecao>0</xCorrecao>'
+            . '<dhRecbto>2014-08-31T09:00:00</dhRecbto>'
+            . '<tpNF>0</tpNF>'
+            . '</resCCe>'
+            . '</ret>'
+            . '</retConsNFeDest>';
+        $tool->expects($this->any())->method('pSendSOAP')->will($this->returnValue($xmlRetornoInutilizacao));
+
+        $retorno = array();
+
+        $tool->getListNFe(true, 0, 0, 0, '', $retorno);
+
+        $this->assertTrue(is_array($retorno));
+        $this->assertArrayHasKey('indCont', $retorno);
+        $this->assertArrayHasKey('ultNSU', $retorno);
+        $this->assertArrayHasKey('NFe', $retorno);
+
+        foreach (array('NFe', 'Canc') as $tipo) {
+            $this->assertCount(1, $retorno[$tipo]);
+            $nfe = reset($retorno[$tipo]);
+            $this->assertArrayHasKey('chNFe', $nfe);
+            $this->assertArrayHasKey('NSU', $nfe);
+            $this->assertArrayHasKey('CNPJ', $nfe);
+            $this->assertArrayHasKey('xNome', $nfe);
+            $this->assertArrayHasKey('dhEmi', $nfe);
+            $this->assertArrayHasKey('dhRecbto', $nfe);
+            $this->assertArrayHasKey('tpNF', $nfe);
+            $this->assertArrayHasKey('cSitNFe', $nfe);
+            $this->assertArrayHasKey('cSitconf', $nfe);
+        }
+
+        $this->assertCount(1, $retorno['CCe']);
+        $cce = reset($retorno['CCe']);
+        $this->assertArrayHasKey('chNFe', $cce);
+        $this->assertArrayHasKey('NSU', $cce);
+        $this->assertArrayHasKey('tpEvento', $cce);
+        $this->assertArrayHasKey('nSeqEvento', $cce);
+        $this->assertArrayHasKey('dhEvento', $cce);
+        $this->assertArrayHasKey('dhRecbto', $cce);
+        $this->assertArrayHasKey('descEvento', $cce);
+        $this->assertArrayHasKey('xCorrecao', $cce);
+        $this->assertArrayHasKey('tpNF', $cce);
+    }
 }
