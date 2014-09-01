@@ -2778,18 +2778,16 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $aFont = array('font'=>$this->fontePadrao, 'size'=>6, 'style'=>'B');
         $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 1, '');
         //inserir texto informando caso de contingência
-        //1 – Normal – emissão normal;
-        //2 – Contingência FS – emissão em contingência com impressão do DANFE em Formulário de Segurança;
-        //3 – Contingência SCAN – emissão em contingência no Sistema de Contingência do
-        //Ambiente Nacional – SCAN;
-        //4 – Contingência DPEC - emissão em contingência com envio da Declaração Prévia de
-        //Emissão em Contingência – DPEC;
-        //5 – Contingência FS-DA - emissão em contingência com impressão do DANFE em Formulário de
-        //Segurança para Impressão de Documento Auxiliar de Documento Fiscal Eletrônico (FS-DA).
-        $xJust = ! empty($this->ide->getElementsByTagName("xJust")->item(0)->nodeValue) ?
-                ' Justificativa: ' . $this->ide->getElementsByTagName("xJust")->item(0)->nodeValue : '';
-        $dhCont = ! empty($this->ide->getElementsByTagName("dhCont")->item(0)->nodeValue) ?
-                ' Entrada em contingência : ' . $this->ide->getElementsByTagName("dhCont")->item(0)->nodeValue : '';
+        // 1 - Normal - emissão normal;
+        // 2 - Contingência FS - emissão em contingência com impressão do DANFE em Formulário de Segurança;
+        // 3 - Contingência SCAN - emissão em contingência no Sistema de Contingência do Ambiente Nacional;
+        // 4 - Contingência DPEC - emissão em contingência com envio da Declaração Prévia de Emissão em Contingência;
+        // 5 - Contingência FS-DA - emissão em contingência com impressão do DANFE em Formulário de
+        //     Segurança para Impressão de Documento Auxiliar de Documento Fiscal Eletrônico (FS-DA);
+        // 6 - Contingência SVC-AN
+        // 7 - Contingência SVC-RS
+        $xJust = $this->pSimpleGetValue($this->ide, 'xJust', 'Justificativa: ');
+        $dhCont = $this->pSimpleGetValue($this->ide, 'dhCont', ' Entrada em contingência : ');
         $texto = '';
         switch($this->tpEmis) {
             case 2:
@@ -2803,6 +2801,12 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
                 break;
             case 5:
                 $texto = 'CONTINGÊNCIA FSDA' . $dhCont . $xJust;
+                break;
+            case 6:
+                $texto = 'CONTINGÊNCIA SVC-AN' . $dhCont . $xJust;
+                break;
+            case 7:
+                $texto = 'CONTINGÊNCIA SVC-RS' . $dhCont . $xJust;
                 break;
         }
         $y += 2;
