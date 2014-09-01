@@ -2835,7 +2835,7 @@ class ToolsNFePHP extends CommonNFePHP
             'dhRecbto'=>'',
             'nProt'=>'');
         //valida dos dados de entrada
-        if ($nAno == '' || $nIni == '' || $nFin == '' || $xJust == '') {
+        if (empty($nAno) || empty($nIni) || empty($nFin) || empty($xJust)) {
             $msg = "Não foi passado algum dos parametos necessários ANO=$nAno inicio=$nIni "
                    ."fim=$nFin justificativa=$xJust.\n";
             $this->pSetError($msg);
@@ -3066,10 +3066,10 @@ class ToolsNFePHP extends CommonNFePHP
         $procInut->appendChild($procInutNFe);
         //estabele o atributo de versão
         $inutProc_att1 = $procInutNFe->appendChild($procInut->createAttribute('versao'));
-        $inutProc_att1->appendChild($procInut->createTextNode($versao));
+        $inutProc_att1->value = $versao;
         //estabelece o atributo xmlns
         $inutProc_att2 = $procInutNFe->appendChild($procInut->createAttribute('xmlns'));
-        $inutProc_att2->appendChild($procInut->createTextNode($this->URLPortal));
+        $inutProc_att2->value = $this->URLPortal;
         //carrega o node cancNFe
         $node1 = $procInut->importNode($inutNFe, true);
         $procInutNFe->appendChild($node1);

@@ -683,4 +683,129 @@ class ToolsNFePHPTest extends PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('nProt', $retorno['protNFe']['infProt']);
         $this->assertEquals('311100000046263', $retorno['protNFe']['infProt']['nProt']);
     }
+
+    public function testInutilizacaoNfeComSucesso()
+    {
+        $mockBuilder = $this->getMockBuilder('ToolsNFePHP');
+        $mockBuilder->setConstructorArgs(array($this->configTest, 1, true));
+        $mockBuilder->setMethods(array('pSendSOAP'));
+        /** @var ToolsNFePHP $tool */
+        $tool = $mockBuilder->getMock();
+        $xmlRetornoInutilizacao = '<?xml version="1.0" encoding="utf-8"?>'
+            . '<retInutNFe versao="3.10">'
+            . '<infInut>'
+            . '<tpAmb>2</tpAmb>'
+            . '<verAplic>2.0</verAplic>'
+            . '<cStat>102</cStat>'
+            . '<xMotivo>Inutilizacao de numero homologado</xMotivo>'
+            . '<cUF>SP</cUF>'
+            . '<ano>14</ano>'
+            . '<CNPJ>11222333444455</CNPJ>'
+            . '<mod>65</mod>'
+            . '<serie>1</serie>'
+            . '<nNFIni>1</nNFIni>'
+            . '<nNFFin>10</nNFFin>'
+            . '<dhRecbto>' . date('Y-m-d\TH:i:s') . '</dhRecbto>'
+            . '<nProt>123</nProt>'
+            . '</infInut>'
+            . '</retInutNFe>';
+        $tool->expects($this->any())->method('pSendSOAP')->will($this->returnValue($xmlRetornoInutilizacao));
+
+        $retorno = array();
+
+        $tool->inutNF(14, 1, 1, 10, str_repeat('Testando ', 10), '', $retorno);
+
+        $this->assertTrue(is_array($retorno));
+
+        $this->assertArrayHasKey('bStat', $retorno);
+        $this->assertTrue($retorno['bStat']);
+
+        $this->assertArrayHasKey('cStat', $retorno);
+        $this->assertEquals('102', $retorno['cStat']);
+
+        $this->assertArrayHasKey('xMotivo', $retorno);
+        $this->assertEquals('Inutilizacao de numero homologado', $retorno['xMotivo']);
+
+        $this->assertArrayHasKey('nProt', $retorno);
+    }
+
+    /**
+     * @expectedException nfephpException
+     * @expectedExceptionMessage Não foi passado algum dos parametos necessários ANO= inicio= fim= justificativa=.
+     */
+    public function testExceptionAoInutilizarNfeNenhumParametroInformado()
+    {
+        $tool = new ToolsNFePHP($this->configTest, 2, true);
+        $tool->inutNF();
+    }
+
+    /**
+     * @expectedException nfephpException
+     * @expectedExceptionMessage A justificativa deve ter pelo menos 15 digitos!!
+     */
+    public function testExceptionAoInutilizarNfeJustificativaMuitoCurta()
+    {
+        $tool = new ToolsNFePHP($this->configTest, 2, true);
+        $tool->inutNF(14, 1, 1, 2, 'Teste');
+    }
+
+    /**
+     * @expectedException nfephpException
+     * @expectedExceptionMessage A justificativa deve ter no máximo 255 digitos!!
+     */
+    public function testExceptionAoInutilizarNfeJustificativaMuitoLonga()
+    {
+        $tool = new ToolsNFePHP($this->configTest, 2, true);
+        $tool->inutNF(14, 1, 1, 2, str_repeat('.', 256));
+    }
+
+    /**
+     * @expectedException nfephpException
+     * @expectedExceptionMessage O ano tem mais de 2 digitos. Corrija e refaça o processo!!
+     */
+    public function testExceptionAoInutilizarNfeAnoComMaisDe2Digitos()
+    {
+        $tool = new ToolsNFePHP($this->configTest, 2, true);
+        $tool->inutNF(2014, 1, 1, 2, str_repeat('.', 20));
+    }
+
+    /**
+     * @expectedException nfephpException
+     * @expectedExceptionMessage O ano tem menos de 2 digitos. Corrija e refaça o processo!!
+     */
+    public function testExceptionAoInutilizarNfeAnoComMenosDe2Digitos()
+    {
+        $tool = new ToolsNFePHP($this->configTest, 2, true);
+        $tool->inutNF(4, 1, 1, 2, str_repeat('.', 20));
+    }
+
+    /**
+     * @expectedException nfephpException
+     * @expectedExceptionMessage O campo serie está errado: 1111. Corrija e refaça o processo!!
+     */
+    public function testExceptionAoInutilizarNfeCampoDaSerieErrado()
+    {
+        $tool = new ToolsNFePHP($this->configTest, 2, true);
+        $tool->inutNF(14, 1111, 1, 2, str_repeat('.', 20));
+    }
+
+    /**
+     * @expectedException nfephpException
+     * @expectedExceptionMessage O campo numero inicial está errado: 1112223334. Corrija e refaça o processo!!
+     */
+    public function testExceptionAoInutilizarNfeNumeroInicialErrado()
+    {
+        $tool = new ToolsNFePHP($this->configTest, 2, true);
+        $tool->inutNF(14, 1, 1112223334, 2, str_repeat('.', 20));
+    }
+
+    /**
+     * @expectedException nfephpException
+     * @expectedExceptionMessage O campo numero final está errado: 1112223334. Corrija e refaça o processo!!
+     */
+    public function testExceptionAoInutilizarNfeNumeroFinalErrado()
+    {
+        $tool = new ToolsNFePHP($this->configTest, 2, true);
+        $tool->inutNF(14, 1, 1, 1112223334, str_repeat('.', 20));
+    }
 }
