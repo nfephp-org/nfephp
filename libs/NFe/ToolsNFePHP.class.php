@@ -82,7 +82,14 @@ require_once PATH_ROOT.'libs/Common/ExceptionNFePHP.class.php';
 
 class ToolsNFePHP extends CommonNFePHP
 {
-
+    /**
+     * Tipo de ambiente produção
+     */
+    const AMBIENTE_PRODUCAO = 1;
+    /**
+     * Tipo de ambiente homologação
+     */
+    const AMBIENTE_HOMOLOGACAO = 2;
     /**
      * Sefaz Virtual Ambiente Nacional (SVAN), alguns estados utilizam esta Sefaz Virtual.
      */
@@ -826,7 +833,7 @@ class ToolsNFePHP extends CommonNFePHP
             }
         }
         //estabelece o ambiente
-        $sAmb = ($this->tpAmb == 2) ? 'homologacao' : 'producao';
+        $sAmb = ($this->tpAmb == self::AMBIENTE_HOMOLOGACAO) ? 'homologacao' : 'producao';
         //carrega propriedade com ano e mes ex. 200911
         $this->anoMes = date('Ym');
         //carrega o caminho para os schemas
@@ -2106,8 +2113,8 @@ class ToolsNFePHP extends CommonNFePHP
             if ($tpAmb == '') {
                 $tpAmb = $this->tpAmb;
             }
-            if ($tpAmb != '1' && $tpAmb != '2') {
-                $tpAmb = '2';
+            if (!in_array($tpAmb, array(self::AMBIENTE_PRODUCAO, self::AMBIENTE_HOMOLOGACAO))) {
+                $tpAmb = self::AMBIENTE_HOMOLOGACAO;
             }
             $aURL = $this->aURL;
             $ctpEmissao = '';
@@ -3918,7 +3925,8 @@ class ToolsNFePHP extends CommonNFePHP
                 $nProt = '';
             }
             //busca o status da NFe na SEFAZ do estado do emitente
-            $resp = $this->getProtocol('', $chave, $tpAmb);
+            $resp = array();
+            $this->getProtocol('', $chave, $tpAmb, $resp);
             if ($resp['cStat']!='100') {
                 $msg = "NF não aprovada no SEFAZ!! cStat =".$resp['cStat'] .' - '.$resp['xMotivo'] ."";
                 throw new nfephpException($msg);
@@ -3986,11 +3994,11 @@ class ToolsNFePHP extends CommonNFePHP
             //testa parametro tpAmb
             if ($tpAmb == '') {
                 $tpAmb = $this->tpAmb;
-            } elseif ($tpAmb == '1') {
+            } elseif ($tpAmb == self::AMBIENTE_PRODUCAO) {
                 $sAmbiente = 'producao';
             } else {
                 //força homologação em qualquer outra situação
-                $tpAmb = '2';
+                $tpAmb = self::AMBIENTE_HOMOLOGACAO;
                 $sAmbiente = 'homologacao';
             }
             //extrai a variável cUF da lista
@@ -4622,7 +4630,7 @@ class ToolsNFePHP extends CommonNFePHP
      * @param type $ultNSU Valor retornado da consulta a SEFAZ
      * @return boolean true gravado ou false falha
      */
-    private function putUltNSU($sigla, $tpAmb = '2', $ultNSU = '')
+    private function putUltNSU($sigla, $tpAmb = self::AMBIENTE_HOMOLOGACAO, $ultNSU = '')
     {
         try {
             if ($sigla=='' || $tpAmb=='' || $ultNSU=='') {
@@ -4676,7 +4684,7 @@ class ToolsNFePHP extends CommonNFePHP
             if ($tpAmb == '') {
                 $tpAmb = $this->tpAmb;
             }
-            if ($tpAmb == '1') {
+            if ($tpAmb == self::AMBIENTE_PRODUCAO) {
                 $sAmbiente = 'producao';
             } else {
                 //força homologação em qualquer outra situação

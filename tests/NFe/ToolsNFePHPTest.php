@@ -137,7 +137,7 @@ class ToolsNFePHPTest extends PHPUnit_Framework_TestCase
 
     /**
      * @expectedException nfephpException
-     * @expectedExceptionMessage Erro cStat está vazio.
+     * @expectedExceptionMessage Erro inesperado, cStat esta vazio!
      */
     public function testExceptionCampoCstatVazioNoMetodoVerifyNfe()
     {
