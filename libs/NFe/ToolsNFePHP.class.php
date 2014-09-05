@@ -540,33 +540,67 @@ class ToolsNFePHP extends CommonNFePHP
      * @var array
      */
     private $cUFlist = array('AC'=>'12',
-                             'AL'=>'27',
-                             'AM'=>'13',
-                             'AP'=>'16',
-                             'BA'=>'29',
-                             'CE'=>'23',
-                             'DF'=>'53',
-                             'ES'=>'32',
-                             'GO'=>'52',
-                             'MA'=>'21',
-                             'MG'=>'31',
-                             'MS'=>'50',
-                             'MT'=>'51',
-                             'PA'=>'15',
-                             'PB'=>'25',
-                             'PE'=>'26',
-                             'PI'=>'22',
-                             'PR'=>'41',
-                             'RJ'=>'33',
-                             'RN'=>'24',
-                             'RO'=>'11',
-                             'RR'=>'14',
-                             'RS'=>'43',
-                             'SC'=>'42',
-                             'SE'=>'28',
-                             'SP'=>'35',
-                             'TO'=>'17',
-                             'SVAN'=>'91'); // TODO fmertins 22/08: não existe código da SVRS?
+        'AL'=>'27',
+        'AM'=>'13',
+        'AP'=>'16',
+        'BA'=>'29',
+        'CE'=>'23',
+        'DF'=>'53',
+        'ES'=>'32',
+        'GO'=>'52',
+        'MA'=>'21',
+        'MG'=>'31',
+        'MS'=>'50',
+        'MT'=>'51',
+        'PA'=>'15',
+        'PB'=>'25',
+        'PE'=>'26',
+        'PI'=>'22',
+        'PR'=>'41',
+        'RJ'=>'33',
+        'RN'=>'24',
+        'RO'=>'11',
+        'RR'=>'14',
+        'RS'=>'43',
+        'SC'=>'42',
+        'SE'=>'28',
+        'SP'=>'35',
+        'TO'=>'17',
+        'SVAN'=>'91'); // TODO fmertins 22/08: não existe código da SVRS?
+    
+    /**
+     * ctgList
+     * Lista de relacionamento dos estados com os sistemas de continvência 
+     * @var array 
+     */
+    private $ctgList = array('AC'=>'SVCAN',
+        'AL'=>'SVCAN',
+        'AM'=>'SVCAN',
+        'AP'=>'SVCRS',
+        'BA'=>'SVCRS',
+        'CE'=>'SVCRS',
+        'DF'=>'SVCAN',
+        'ES'=>'SVCRS',
+        'GO'=>'SVCRS',
+        'MA'=>'SVSRS',
+        'MG'=>'SVCAN',
+        'MS'=>'SVCRS',
+        'MT'=>'SVCRS',
+        'PA'=>'SVCRS',
+        'PB'=>'SVCAN',
+        'PE'=>'SVCRS',
+        'PI'=>'SVCRS',
+        'PR'=>'SVCRS',
+        'RJ'=>'SVCAN',
+        'RN'=>'SVCRS',
+        'RO'=>'SVCAN',
+        'RR'=>'SVCAN',
+        'RS'=>'SVCAN',
+        'SC'=>'SVCAN',
+        'SE'=>'SVCAN',
+        'SP'=>'SVCAN',
+        'TO'=>'SVCAN');
+    
     /**
      * siglaUFList
      * Lista dos numeros identificadores dos estados
@@ -1488,8 +1522,8 @@ class ToolsNFePHP extends CommonNFePHP
             //modificado para permitir a leitura de arquivos maiores
             //que o normal que é cerca de 2kBytes.
             if (! $filep = fopen($this->priKEY, "r")) {
-               $msg = "Erro ao ler arquivo da chave privada!!";
-               throw new nfephpException($msg);
+                $msg = "Erro ao ler arquivo da chave privada!!";
+                throw new nfephpException($msg);
             }
             $priv_key = '';
             while (! feof($filep)) {
@@ -2030,38 +2064,38 @@ class ToolsNFePHP extends CommonNFePHP
             $aRetorno['xMotivo'] = $this->pSimpleGetValue($doc, "xMotivo");
             // data e hora da mensagem (opcional)
             if ($dhRecbto = $this->pSimpleGetValue($doc, "dhRecbto")) {
-               $aRetorno['dhRecbto'] = date("d/m/Y H:i:s", $this->pConvertTime($dhRecbto));
+                $aRetorno['dhRecbto'] = date("d/m/Y H:i:s", $this->pConvertTime($dhRecbto));
             }
             //tipo do ambiente, versão do aplicativo e código da UF
             $aRetorno['tpAmb'] = $this->pSimpleGetValue($doc, "tpAmb");
             $aRetorno['verAplic'] = $this->pSimpleGetValue($doc, "verAplic");
             $aRetorno['cUF'] = $this->pSimpleGetValue($doc, "cUF");
             if ($indSinc == 1) {
-               //retorno síncrono do webservice: dados do protocolo da NF-e
-               $nodeProtNFe = $doc->getElementsByTagName('protNFe')->item(0);
-               $nodeInfProt = $doc->getElementsByTagName('infProt')->item(0);
-               $aRetorno['protNFe']['versao'] = $nodeProtNFe->getAttribute('versao');
-               $infProt = array();
-               $infProt['tpAmb'] = $this->pSimpleGetValue($nodeInfProt, "tpAmb");
-               $infProt['verAplic'] = $this->pSimpleGetValue($nodeInfProt, "verAplic");
-               $infProt['chNFe'] = $this->pSimpleGetValue($nodeInfProt, "chNFe");
-               $dhRecbto = $this->pSimpleGetValue($nodeInfProt, "dhRecbto");
-               $infProt['dhRecbto'] = date("d/m/Y H:i:s", $this->pConvertTime($dhRecbto));
-               $infProt['digVal'] = $this->pSimpleGetValue($nodeInfProt, "digVal");
-               $infProt['cStat'] = $this->pSimpleGetValue($nodeInfProt, "cStat");
-               $infProt['xMotivo'] = $this->pSimpleGetValue($nodeInfProt, "xMotivo");
-               //número do protocolo de autorização (opcional)
-               $infProt['nProt'] = $this->pSimpleGetValue($nodeInfProt, "nProt");
-               $aRetorno['protNFe']['infProt'] = $infProt;
-               //nome do arquivo de retorno: chave da NF-e com sufixo "-prot"
-               $nome = $this->temDir.$infProt['chNFe'].'-prot.xml';
+                //retorno síncrono do webservice: dados do protocolo da NF-e
+                $nodeProtNFe = $doc->getElementsByTagName('protNFe')->item(0);
+                $nodeInfProt = $doc->getElementsByTagName('infProt')->item(0);
+                $aRetorno['protNFe']['versao'] = $nodeProtNFe->getAttribute('versao');
+                $infProt = array();
+                $infProt['tpAmb'] = $this->pSimpleGetValue($nodeInfProt, "tpAmb");
+                $infProt['verAplic'] = $this->pSimpleGetValue($nodeInfProt, "verAplic");
+                $infProt['chNFe'] = $this->pSimpleGetValue($nodeInfProt, "chNFe");
+                $dhRecbto = $this->pSimpleGetValue($nodeInfProt, "dhRecbto");
+                $infProt['dhRecbto'] = date("d/m/Y H:i:s", $this->pConvertTime($dhRecbto));
+                $infProt['digVal'] = $this->pSimpleGetValue($nodeInfProt, "digVal");
+                $infProt['cStat'] = $this->pSimpleGetValue($nodeInfProt, "cStat");
+                $infProt['xMotivo'] = $this->pSimpleGetValue($nodeInfProt, "xMotivo");
+                //número do protocolo de autorização (opcional)
+                $infProt['nProt'] = $this->pSimpleGetValue($nodeInfProt, "nProt");
+                $aRetorno['protNFe']['infProt'] = $infProt;
+                //nome do arquivo de retorno: chave da NF-e com sufixo "-prot"
+                $nome = $this->temDir.$infProt['chNFe'].'-prot.xml';
             } else {
-               //retorno assíncrono do webservice: dados do recibo do lote
-               $aRetorno['infRec'] = array();
-               $aRetorno['infRec']['nRec'] = $this->pSimpleGetValue($doc, "nRec");
-               $aRetorno['infRec']['tMed'] = $this->pSimpleGetValue($doc, "tMed");
-               //nome do arquivo de retorno: ID do lote com sufixo "-prot"
-               $nome = $this->temDir.$idLote.'-rec.xml';
+                //retorno assíncrono do webservice: dados do recibo do lote
+                $aRetorno['infRec'] = array();
+                $aRetorno['infRec']['nRec'] = $this->pSimpleGetValue($doc, "nRec");
+                $aRetorno['infRec']['tMed'] = $this->pSimpleGetValue($doc, "tMed");
+                //nome do arquivo de retorno: ID do lote com sufixo "-prot"
+                $nome = $this->temDir.$idLote.'-rec.xml';
             }
             //grava o retorno na pasta de temporários
             $nome = $doc->save($nome);
@@ -2286,41 +2320,41 @@ class ToolsNFePHP extends CommonNFePHP
                     //aqui podem ter varios retornos dependendo do numero de NFe enviadas no Lote e já processadas
                     $protNfe = $doc->getElementsByTagName('protNFe');
                     foreach ($protNfe as $d) {
-                       $infProt = $d->getElementsByTagName('infProt')->item(0);
-                       $protcStat = $infProt->getElementsByTagName('cStat')->item(0)->nodeValue;
-                       //pegar os dados do protolo para retornar
-                       foreach ($infProt->childNodes as $tnode) {
-                          $aProt[$countI][$tnode->nodeName] = $tnode->nodeValue;
-                       }
-                       $countI++;
-                       //incluido increment para controlador de indice do array
-                       //salvar o protocolo somente se a nota estiver approvada ou denegada
-                       if (in_array($protcStat, array('100', '110', '301', '302'))) {
-                          $nomeprot = $this->temDir.$infProt->getElementsByTagName('chNFe')->item(0)->nodeValue.'-prot.xml';//id da nfe
-                          //salvar o protocolo em arquivo
-                          $novoprot = new DomDocumentNFePHP();
-                          $pNFe = $novoprot->createElement("protNFe");
-                          $pNFe->setAttribute("versao", "3.10");
-                          // Importa o node e todo o seu conteudo
-                          $node = $novoprot->importNode($infProt, true);
-                          // acrescenta ao node principal
-                          $pNFe->appendChild($node);
-                          $novoprot->appendChild($pNFe);
-                          $xml = $novoprot->saveXML();
-                          $xml = str_replace(
-                              '<?xml version="1.0" encoding="UTF-8  standalone="no"?>',
-                              '<?xml version="1.0" encoding="UTF-8"?>',
-                          $xml
-                          );
-                          $xml = str_replace(array("default:",":default","\r","\n","\s"), "", $xml);
-                          $xml = str_replace("  ", " ", $xml);
-                          $xml = str_replace("  ", " ", $xml);
-                          $xml = str_replace("  ", " ", $xml);
-                          $xml = str_replace("  ", " ", $xml);
-                          $xml = str_replace("  ", " ", $xml);
-                          $xml = str_replace("> <", "><", $xml);
-                          file_put_contents($nomeprot, $xml);
-                       } //fim protcSat
+                        $infProt = $d->getElementsByTagName('infProt')->item(0);
+                        $protcStat = $infProt->getElementsByTagName('cStat')->item(0)->nodeValue;
+                        //pegar os dados do protolo para retornar
+                        foreach ($infProt->childNodes as $tnode) {
+                           $aProt[$countI][$tnode->nodeName] = $tnode->nodeValue;
+                        }
+                        $countI++;
+                        //incluido increment para controlador de indice do array
+                        //salvar o protocolo somente se a nota estiver approvada ou denegada
+                        if (in_array($protcStat, array('100', '110', '301', '302'))) {
+                            $nomeprot = $this->temDir.$infProt->getElementsByTagName('chNFe')->item(0)->nodeValue.'-prot.xml';//id da nfe
+                            //salvar o protocolo em arquivo
+                            $novoprot = new DomDocumentNFePHP();
+                            $pNFe = $novoprot->createElement("protNFe");
+                            $pNFe->setAttribute("versao", "3.10");
+                            // Importa o node e todo o seu conteudo
+                            $node = $novoprot->importNode($infProt, true);
+                            // acrescenta ao node principal
+                            $pNFe->appendChild($node);
+                            $novoprot->appendChild($pNFe);
+                            $xml = $novoprot->saveXML();
+                            $xml = str_replace(
+                                '<?xml version="1.0" encoding="UTF-8  standalone="no"?>',
+                                '<?xml version="1.0" encoding="UTF-8"?>',
+                                $xml
+                            );
+                            $xml = str_replace(array("default:",":default","\r","\n","\s"), "", $xml);
+                            $xml = str_replace("  ", " ", $xml);
+                            $xml = str_replace("  ", " ", $xml);
+                            $xml = str_replace("  ", " ", $xml);
+                            $xml = str_replace("  ", " ", $xml);
+                            $xml = str_replace("  ", " ", $xml);
+                            $xml = str_replace("> <", "><", $xml);
+                            file_put_contents($nomeprot, $xml);
+                        } //fim protcSat
                     } //fim foreach
                 }//fim cStat
                 //converter o horário do recebimento retornado pela SEFAZ em formato padrão
@@ -4988,6 +5022,8 @@ class ToolsNFePHP extends CommonNFePHP
      * ativaContingencia
      * @param string $tipo SVCAN ou SVCRS
      * @return void
+     * TODO : podemos usar a variável $this->ctgList[$siglaUF] para estabelecer 
+     * qual deverá ser o provedor da contingência SVCAN ou SVCRS 
      */
     public function ativaContingencia($tipo = self::CONTINGENCIA_SVCAN)
     {
@@ -4998,7 +5034,7 @@ class ToolsNFePHP extends CommonNFePHP
             $this->enableSVCAN = false;
             $this->enableSVCRS = true;
         } else {
-           throw new Exception("Tipo de contingencia \"$tipo\" invalido, verifique!");
+            throw new Exception("Tipo de contingencia \"$tipo\" invalido, verifique!");
         }
     }
     
