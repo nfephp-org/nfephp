@@ -499,39 +499,41 @@ class ToolsNFePHP extends CommonNFePHP
      * Lista dos aliases para os estados que usam Sefaz própria ou Sefaz Virtual
      * @var array
      */
-    public $aliaslist = array( 'AC'=>'SVRS',
-                               'AL'=>'SVRS',
-                               'AM'=>'AM',
-                               'AN'=>'AN',
-                               'AP'=>'SVRS',
-                               'BA'=>'BA',
-                               'CE'=>'CE',
-                               'DF'=>'SVRS',
-                               'ES'=>'SVRS',
-                               'GO'=>'GO',
-                               'MA'=>'SVAN',
-                               'MG'=>'MG',
-                               'MS'=>'MS',
-                               'MT'=>'MT',
-                               'PA'=>'SVAN',
-                               'PB'=>'SVRS',
-                               'PE'=>'PE',
-                               'PI'=>'SVAN',
-                               'PR'=>'PR',
-                               'RJ'=>'SVRS',
-                               'RN'=>'SVRS',
-                               'RO'=>'SVRS',
-                               'RR'=>'SVRS',
-                               'RS'=>'RS',
-                               'SC'=>'SVRS',
-                               'SE'=>'SVRS',
-                               'SP'=>'SP',
-                               'TO'=>'SVRS',
-                               //demais autorizadores do projeto NF-e
-                               'SVAN'=>'SVAN',
-                               'SVRS'=>'SVRS',
-                               'SVCAN'=>'SVCAN',
-                               'SVCRS'=>'SVCRS');
+    private $aliaslist = array(
+        //unidades da Federação:
+        'AC'=>'SVRS',
+        'AL'=>'SVRS',
+        'AM'=>'AM',
+        'AN'=>'AN',
+        'AP'=>'SVRS',
+        'BA'=>'BA',
+        'CE'=>'CE',
+        'DF'=>'SVRS',
+        'ES'=>'SVRS',
+        'GO'=>'GO',
+        'MA'=>'SVAN',
+        'MG'=>'MG',
+        'MS'=>'MS',
+        'MT'=>'MT',
+        'PA'=>'SVAN',
+        'PB'=>'SVRS',
+        'PE'=>'PE',
+        'PI'=>'SVAN',
+        'PR'=>'PR',
+        'RJ'=>'SVRS',
+        'RN'=>'SVRS',
+        'RO'=>'SVRS',
+        'RR'=>'SVRS',
+        'RS'=>'RS',
+        'SC'=>'SVRS',
+        'SE'=>'SVRS',
+        'SP'=>'SP',
+        'TO'=>'SVRS',
+        //demais autorizadores do projeto NF-e:
+        'SVAN'=>'SVAN',
+        'SVRS'=>'SVRS',
+        'SVCAN'=>'SVCAN',
+        'SVCRS'=>'SVCRS');
     /**
      * cUFlist
      * Lista dos numeros identificadores dos estados
@@ -566,39 +568,38 @@ class ToolsNFePHP extends CommonNFePHP
                              'TO'=>'17',
                              'SVAN'=>'91'); // TODO fmertins 22/08: não existe código da SVRS?
     /**
-     * cUFlist
+     * siglaUFList
      * Lista dos numeros identificadores dos estados
      * @var array
      */
-    private $siglaUFList=array('11'=>'RO',
-                          '12'=>'AC',
-                          '13'=>'AM',
-                          '14'=>'RR',
-                          '15'=>'PA',
-                          '16'=>'AP',
-                          '17'=>'TO',
-                          '21'=>'MA',
-                          '22'=>'PI',
-                          '23'=>'CE',
-                          '24'=>'RN',
-                          '25'=>'PB',
-                          '26'=>'PE',
-                          '27'=>'AL',
-                          '28'=>'SE',
-                          '29'=>'BA',
-                          '31'=>'MG',
-                          '32'=>'ES',
-                          '33'=>'RJ',
-                          '35'=>'SP',
-                          '41'=>'PR',
-                          '42'=>'SC',
-                          '43'=>'RS',
-                          '50'=>'MS',
-                          '51'=>'MT',
-                          '52'=>'GO',
-                          '53'=>'DF',
-                          '91'=>'SVAN');
-
+    private $siglaUFList = array('11'=>'RO',
+                                 '12'=>'AC',
+                                 '13'=>'AM',
+                                 '14'=>'RR',
+                                 '15'=>'PA',
+                                 '16'=>'AP',
+                                 '17'=>'TO',
+                                 '21'=>'MA',
+                                 '22'=>'PI',
+                                 '23'=>'CE',
+                                 '24'=>'RN',
+                                 '25'=>'PB',
+                                 '26'=>'PE',
+                                 '27'=>'AL',
+                                 '28'=>'SE',
+                                 '29'=>'BA',
+                                 '31'=>'MG',
+                                 '32'=>'ES',
+                                 '33'=>'RJ',
+                                 '35'=>'SP',
+                                 '41'=>'PR',
+                                 '42'=>'SC',
+                                 '43'=>'RS',
+                                 '50'=>'MS',
+                                 '51'=>'MT',
+                                 '52'=>'GO',
+                                 '53'=>'DF',
+                                 '91'=>'SVAN');
     /**
      * tzUFlist
      * Lista das zonas de tempo para os estados brasileiros
@@ -631,7 +632,6 @@ class ToolsNFePHP extends CommonNFePHP
                               'SE'=>'America/Sao_Paulo',
                               'SP'=>'America/Sao_Paulo',
                               'TO'=>'America/Sao_Paulo');
-
     /**
      * aMail
      * Matriz com os dados para envio de emails
@@ -1612,14 +1612,15 @@ class ToolsNFePHP extends CommonNFePHP
 
     /**
      * statusServico
-     * Verifica o status do servico da SEFAZ
+     * Verifica o status do serviço da SEFAZ/SVC
      *
-     * $this->cStat = 107 OK
-     *        cStat = 108 sitema paralizado momentaneamente, aguardar retorno
-     *        cStat = 109 sistema parado sem previsao de retorno, verificar status SCAN
-     *        cStat = 113 SCAN operando mas irá parar, use o serviço Normal
-     *        cStat = 114 SCAN dasativado pela SEFAZ de origem, use o serviço Normal
-     * se SCAN estiver ativado usar, caso contrario aguardar pacientemente.
+     * $this->cStat = 107 - "Serviço em Operação"
+     *        cStat = 108 - "Serviço Paralisado Momentaneamente (curto prazo)"
+     *        cStat = 109 - "Serviço Paralisado sem Previsão"
+     *        cStat = 113 - "SVC em processo de desativação. SVC será desabilitada 
+     *                       para a SEFAZ-XX em dd/mm/aa às hh:mm horas"
+     *        cStat = 114 - "SVC desabilitada pela SEFAZ Origem"
+     *        
      * @name statusServico
      * @param  string $siglaUF sigla da unidade da Federação
      * @param  integer $tpAmb tipo de ambiente 1-produção e 2-homologação
@@ -1651,7 +1652,7 @@ class ToolsNFePHP extends CommonNFePHP
             if ($siglaUF == '') {
                 $siglaUF = $this->siglaUF;
             }
-            //busca o cUF
+            //busca o código da UF a partir da sigla
             $cUF = $this->cUFlist[$siglaUF];
             //verifica se contingencias SVCAN ou SVCRS estão habilitadas, se não estiverem
             //usará a própria UF, logo abaixo ao carregar os webservices
@@ -1682,12 +1683,9 @@ class ToolsNFePHP extends CommonNFePHP
             if (! $retorno = $this->pSendSOAP($urlservico, $namespace, $cabec, $dados, $metodo, $tpAmb)) {
                 throw new nfephpException("Nao houve retorno Soap verifique a mensagem de erro e o debug!!");
             }
-            //tratar dados de retorno
-            $doc = new DomDocumentNFePHP();
-            @$doc->loadXML($retorno, LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
-            $cStat = !empty($doc->getElementsByTagName('cStat')->item(0)->nodeValue) ?
-                    $doc->getElementsByTagName('cStat')->item(0)->nodeValue : '';
-            if ($cStat == '') {
+            //cria documento DOM a partir do retorno e trata dados de retorno
+            $doc = new DomDocumentNFePHP($retorno);
+            if (! $cStat = $this->pSimpleGetValue($doc, 'cStat')) {
                 throw new nfephpException("Não houve retorno Soap verifique a mensagem de erro e o debug!!");
             } elseif ($cStat == '107') { //107-serviço em operação
                 $aRetorno['bStat'] = true;
@@ -1701,25 +1699,19 @@ class ToolsNFePHP extends CommonNFePHP
             // status do serviço
             $aRetorno['cStat'] = $doc->getElementsByTagName('cStat')->item(0)->nodeValue;
             // tempo medio de resposta
-            $aRetorno['tMed'] = $doc->getElementsByTagName('tMed')->item(0)->nodeValue;
-             // data e hora do retorno a operação (opcional)
-            $aRetorno['dhRetorno'] = !empty($doc->getElementsByTagName('dhRetorno')->item(0)->nodeValue) ?
-                    date(
-                        "d/m/Y H:i:s",
-                        $this->pConvertTime($doc->getElementsByTagName('dhRetorno')->item(0)->nodeValue)
-                    ) : '';
+            $aRetorno['tMed'] = $this->pSimpleGetValue($doc, 'tMed');
+            // data e hora do retorno a operação (opcional)
+            if ($dhRetorno = $this->pSimpleGetValue($doc, 'dhRetorno')) {
+                $aRetorno['dhRetorno'] = date("d/m/Y H:i:s", $this->pConvertTime($dhRetorno));
+            }
             // data e hora da mensagem (opcional)
-            $aRetorno['dhRecbto'] = !empty($doc->getElementsByTagName('dhRecbto')->item(0)->nodeValue) ?
-                    date(
-                        "d/m/Y H:i:s",
-                        $this->pConvertTime($doc->getElementsByTagName('dhRecbto')->item(0)->nodeValue)
-                    ) : '';
+            if ($dhRecbto = $this->pSimpleGetValue($doc, 'dhRecbto')) {
+                $aRetorno['dhRecbto'] = date("d/m/Y H:i:s", $this->pConvertTime($dhRecbto));
+            }
             // motivo da resposta (opcional)
-            $aRetorno['xMotivo'] = !empty($doc->getElementsByTagName('xMotivo')->item(0)->nodeValue) ?
-                    $doc->getElementsByTagName('xMotivo')->item(0)->nodeValue : '';
+            $aRetorno['xMotivo'] = $this->pSimpleGetValue($doc, 'xMotivo');
             // obervaçoes (opcional)
-            $aRetorno['xObs'] = !empty($doc->getElementsByTagName('xObs')->item(0)->nodeValue) ?
-                    $doc->getElementsByTagName('xObs')->item(0)->nodeValue : '';
+            $aRetorno['xObs'] = $this->pSimpleGetValue($doc, 'xObs');
         } catch (nfephpException $e) {
             $this->pSetError($e->getMessage());
             if ($this->exceptions) {
@@ -1794,7 +1786,7 @@ class ToolsNFePHP extends CommonNFePHP
             //recarrega as url referentes aos dados passados como parametros para a função
             $aURL = $this->pLoadSEFAZ($tpAmb, $siglaUF);
         }
-        //busca o cUF
+        //busca o código da UF a partir da sigla
         $cUF = $this->cUFlist[$siglaUF];
         //identificação do serviço
         $servico = 'NfeConsultaCadastro';
@@ -1976,11 +1968,13 @@ class ToolsNFePHP extends CommonNFePHP
             } else {
                 throw new nfephpException("Parametro indSinc deve ser inteiro 0 ou 1, verifique!!");
             }
-            //verifica se a SVC-AN esta habilitada
-            if (!$this->enableSVCAN) {
-                $aURL = $this->aURL;
-            } else {
+            //verifica se alguma SVC esta habilitada, neste caso precisa recarregar os webservices
+            if ($this->enableSVCAN) {
                 $aURL = $this->pLoadSEFAZ($this->tpAmb, self::CONTINGENCIA_SVCAN);
+            } elseif ($this->enableSVCRS) {
+                $aURL = $this->pLoadSEFAZ($this->tpAmb, self::CONTINGENCIA_SVCRS);
+            } else {
+                $aURL = $this->aURL;
             }
             //identificação do serviço: autorização de NF-e
             $servico = 'NfeAutorizacao';
@@ -2131,9 +2125,11 @@ class ToolsNFePHP extends CommonNFePHP
                     $aURL = $this->pLoadSEFAZ($tpAmb, $siglaUF);
                 }
             }
-            //verifica se a SVC-AN esta habilitada
-            if ($this->enableSVCAN || $ctpEmissao == '3') {
+            //verifica se alguma SVC esta habilitada
+            if ($this->enableSVCAN) {
                 $aURL = $this->pLoadSEFAZ($tpAmb, self::CONTINGENCIA_SVCAN);
+            } elseif ($this->enableSVCRS) {
+                $aURL = $this->pLoadSEFAZ($tpAmb, self::CONTINGENCIA_SVCRS);
             }
             if ($recibo == '' && $chave == '') {
                 throw new nfephpException("ERRO. Favor indicar o numero do recibo ou a chave de acesso da NF-e!");
@@ -2399,7 +2395,7 @@ class ToolsNFePHP extends CommonNFePHP
      * Consulta da Relação de Documentos Destinados
      * para um determinado CNPJ de destinatário informado na NF-e.
      *
-     * Este serviço não suporta SCAN !!!
+     * Este serviço não suporta SVC !!!
      *
      * @name getListNFe
      * @param boolean $ambNac TRUE - usa ambiente Nacional para buscar a lista de NFe, FALSE usa sua própria SEFAZ
@@ -2618,7 +2614,7 @@ class ToolsNFePHP extends CommonNFePHP
      *
      * ESSE SEVIÇO NÃO ESTÁ TOTALMENTE OPERACIONAL EXISTE APENAS NO SEFAZ DO RS E SVAN
      *
-     * Este serviço não suporta SCAN !!
+     * Este serviço não suporta SVC !!
      *
      * @name getNFe
      * @param boolean $AN   true usa ambiente nacional, false usa o SEFAZ do emitente da NF
@@ -2660,8 +2656,7 @@ class ToolsNFePHP extends CommonNFePHP
             //montagem do namespace do serviço
             $namespace = $this->URLPortal.'/wsdl/'.$servico;
             if ($urlservico == '') {
-                $msg = 'Não existe esse serviço na SEFAZ consultada.';
-                throw new nfephpException($msg);
+                throw new nfephpException('Nao existe este servico na SEFAZ consultada.');
             }
             //montagem do cabeçalho da comunicação SOAP
             $cabec = '<nfeCabecMsg xmlns="'. $namespace.'"><cUF>'
@@ -2671,25 +2666,18 @@ class ToolsNFePHP extends CommonNFePHP
                    .$this->URLPortal.'" versao="'.$versao.'"><tpAmb>'
                    .$tpAmb.'</tpAmb><xServ>DOWNLOAD NFE</xServ><CNPJ>'
                    .$this->cnpj.'</CNPJ><chNFe>'.$chNFe.'</chNFe></downloadNFe></nfeDadosMsg>';
-            //envia dados via SOAP
-            $retorno = $this->pSendSOAP($urlservico, $namespace, $cabec, $dados, $metodo, $tpAmb);
-            //verifica o retorno
-            if (!$retorno) {
-                //não houve retorno
-                $msg = "Nao houve retorno Soap verifique a mensagem de erro e o debug!!";
-                throw new nfephpException($msg);
+            //envia dados via SOAP e verifica o retorno
+            if (!$retorno = $this->pSendSOAP($urlservico, $namespace, $cabec, $dados, $metodo, $tpAmb)) {
+                throw new nfephpException("Nao houve retorno Soap verifique a mensagem de erro e o debug!!");
             }
             //salva arquivo de retorno contendo todo o XML da SEFAZ
-            $fileName  = $this->temDir."$chNFe-resDWNFe.xml";
+            $fileName = $this->temDir."$chNFe-resDWNFe.xml";
             if (!file_put_contents($fileName, $retorno)) {
                 $msg = "Falha na gravacao do arquivo $fileName!!";
                 $this->pSetError($msg);
             }
             //tratar dados de retorno
-            $xmlDNFe = new DOMDocument('1.0', 'utf-8'); //cria objeto DOM
-            $xmlDNFe->formatOutput = false;
-            $xmlDNFe->preserveWhiteSpace = false;
-            $xmlDNFe->loadXML($retorno, LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
+            $xmlDNFe = new DomDocumentNFePHP($retorno);
             $retDownloadNFe = $xmlDNFe->getElementsByTagName("retDownloadNFe")->item(0);
             if (isset($retDownloadNFe)) {
                 $cStat = !empty($retDownloadNFe->getElementsByTagName('cStat')->item(0)->nodeValue) ?
@@ -2780,17 +2768,20 @@ class ToolsNFePHP extends CommonNFePHP
     }//fim getNFe
 
     /**
-     * Solicita inutilizaçao de uma serie de numeros de NF
-     * - o processo de inutilização será gravado na pasta Inutilizadas
+     * Solicita inutilizaçaao de uma série de números de NF. O processo de inutilização
+     * será gravado na "pasta Inutilizadas".
+     * 
+     * ATENÇÃO: este webservice *não* é oferecido pelas SVC (Sefaz Virtual de Contingência)
+     * conforme NT 2013.007 versão "1.02" de Dezembro/2013.
      *
      * @name inutNF
-     * @param  string  $nAno       ano com 2 digitos
-     * @param   string  $nSerie     serie da NF 1 até 3 digitos
-     * @param   integer $nIni       numero inicial 1 até 9 digitos zero a esq
-     * @param   integer $nFin       numero Final 1 até 9 digitos zero a esq
-     * @param   string  $xJust      justificativa 15 até 255 digitos
-     * @param   string  $tpAmb      Tipo de ambiente 1-produção ou 2 homologação
-     * @param   array   $aRetorno   Array com os dados de Retorno
+     * @param string  $nAno     ano com 2 digitos
+     * @param string  $nSerie   serie da NF 1 até 3 digitos
+     * @param integer $nIni     numero inicial 1 até 9 digitos zero a esq
+     * @param integer $nFin     numero Final 1 até 9 digitos zero a esq
+     * @param string  $xJust    justificativa 15 até 255 digitos
+     * @param string  $tpAmb    Tipo de ambiente 1-produção ou 2 homologação
+     * @param array   $aRetorno Array com os dados de Retorno
      * @return mixed false ou string com o xml do processo de inutilização
      */
     public function inutNF($nAno = '', $nSerie = '1', $nIni = '', $nFin = '', $xJust = '', $tpAmb = '', &$aRetorno = array())
@@ -2885,19 +2876,22 @@ class ToolsNFePHP extends CommonNFePHP
             }
             return false;
         }
+        //valida contingencias, nao podem estar habilitadas pois este serviço não se aplica para SVC
+        if ($this->enableSVCAN || $this->enableSVCRS) {
+            $msg = "Inutilizacao nao pode ser usada em contingencia SVC!!";
+            $this->pSetError($msg);
+            if ($this->exceptions) {
+                throw new nfephpException($msg);
+            }
+        }
         //valida tipo de ambiente
         if ($tpAmb == '') {
             $tpAmb = $this->tpAmb;
         }
-        //verifica se o SCAN esta habilitado
-        if (!$this->enableSVCAN) {
-            if ($tpAmb == $this->tpAmb) {
-                $aURL = $this->aURL;
-            } else {
-                $aURL = $this->pLoadSEFAZ($tpAmb, $this->siglaUF);
-            }
+        if ($tpAmb == $this->tpAmb) {
+            $aURL = $this->aURL;
         } else {
-            $aURL = $this->pLoadSEFAZ($this->tpAmb, self::CONTINGENCIA_SVCAN);
+            $aURL = $this->pLoadSEFAZ($tpAmb, $this->siglaUF);
         }
         //identificação do serviço
         $servico = 'NfeInutilizacao';
@@ -3118,13 +3112,13 @@ class ToolsNFePHP extends CommonNFePHP
             $nSeqEvento = '1';
             //remove qualquer caracter especial
             $xJust = $this->pCleanString($xJust);
-            //decompor a chNFe e pegar o tipo de emissão
-            //$tpEmiss = substr($chNFe, 34, 1);
-            //verifica se o SCAN esta habilitado
-            if (! $this->enableSVCAN) {
-                $aURL = $this->aURL;
-            } else {
+            //verifica se alguma das contingências está habilitada
+            if ($this->enableSVCAN) {
                 $aURL = $this->pLoadSEFAZ($tpAmb, self::CONTINGENCIA_SVCAN);
+            } elseif ($this->enableSVCRS) {
+                $aURL = $this->pLoadSEFAZ($tpAmb, self::CONTINGENCIA_SVCRS);
+            } else {
+                $aURL = $this->aURL;
             }
             $numLote = $this->pGeraNumLote();
             //Data e hora do evento no formato AAAA-MM-DDTHH:MM:SSTZD (UTC)
@@ -3305,6 +3299,8 @@ class ToolsNFePHP extends CommonNFePHP
     /**
      * envCCe
      * Envia carta de correção da Nota Fiscal para a SEFAZ.
+     * 
+     * ATENÇÃO! Serviço indisponível para SVC-XX.
      *
      * @name envCCe
      * @param   string $chNFe Chave da NFe
@@ -3376,14 +3372,7 @@ class ToolsNFePHP extends CommonNFePHP
             if ($tpAmb == '') {
                 $tpAmb = $this->tpAmb;
             }
-            //decompor a chNFe e pegar o tipo de emissão
-            //$tpEmiss = substr($chNFe, 34, 1);
-            //verifica se o SCAN esta habilitado
-            if (!$this->enableSVCAN) {
-                $aURL = $this->aURL;
-            } else {
-                $aURL = $this->pLoadSEFAZ($tpAmb, self::CONTINGENCIA_SVCAN);
-            }
+            $aURL = $this->aURL;
             $numLote = $this->pGeraNumLote();
             //Data e hora do evento no formato AAAA-MM-DDTHH:MM:SSTZD (UTC)
             $dhEvento = date('Y-m-d').'T'.date('H:i:s').$this->timeZone;
@@ -4001,7 +3990,7 @@ class ToolsNFePHP extends CommonNFePHP
                 $tpAmb = self::AMBIENTE_HOMOLOGACAO;
                 $sAmbiente = 'homologacao';
             }
-            //extrai a variável cUF da lista
+            //valida e extrai a variável cUF da lista
             if (!isset($this->aliaslist[$sUF])) {
                 throw new nfephpException("UF \"$sUF\" nao encontrada na lista de alias");
             }
@@ -4690,8 +4679,11 @@ class ToolsNFePHP extends CommonNFePHP
                 //força homologação em qualquer outra situação
                 $sAmbiente = 'homologacao';
             }
+            //verifica se alguma contingência está habilitada
             if ($this->enableSVCAN) {
                 $siglaUF = self::CONTINGENCIA_SVCAN;
+            } elseif ($this->enableSVCRS) {
+                $siglaUF = self::CONTINGENCIA_SVCRS;
             }
             //habilita verificação de erros
             libxml_use_internal_errors(true);
@@ -4995,15 +4987,18 @@ class ToolsNFePHP extends CommonNFePHP
     /**
      * ativaContingencia
      * @param string $tipo SVCAN ou SVCRS
+     * @return void
      */
     public function ativaContingencia($tipo = self::CONTINGENCIA_SVCAN)
     {
         if ($tipo == self::CONTINGENCIA_SVCAN) {
             $this->enableSVCAN = true;
             $this->enableSVCRS = false;
-        } else {
+        } elseif ($tipo == self::CONTINGENCIA_SVCRS) {
             $this->enableSVCAN = false;
             $this->enableSVCRS = true;
+        } else {
+           throw new Exception("Tipo de contingencia \"$tipo\" invalido, verifique!");
         }
     }
     
