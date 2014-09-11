@@ -192,10 +192,10 @@ class ConvertNFePHP
                     unset($dom, $NFe, $infNFe, $NFref, $refNFP);
                     /// limpar todas variaveis utilizadas por cada nota fiscal....
                     //(evitar que o produto entre 2 vezes ou q o endereço anterior seja usado, e coisas do tipo....)
-                    unset($dom, $NFe, $infNFe, $ide, $cUF, $cNF, $NatOp,
-                          $indPag, $mod, $serie, $nNF, $dEmi, $dSaiEnt,
-                          $hSaiEnt, $tpNF, $cMunFG, $tpImp, $tpEmis, $CDV,
-                          $tpAmb, $finNFe, $procEmi, $verProc, $dhCont,
+                    unset($dom, $NFe, $infNFe, $ide, $cUF, $cNF, $natOp,
+                          $indPag, $mod, $serie, $nNF, $dhEmi, $dhSaiEnt,
+                          $tpNF, $idDest, $cMunFG, $tpImp, $tpEmis, $cDV,
+                          $tpAmb, $finNFe, $indFinal, $indPres, $procEmi, $verProc, $dhCont,
                           $xJust, $NFref, $refNFe, $refNF, $AAMM, $CNPJ,
                           $refNFP, $IE, $CPF, $refCTe, $refECF, $nECF,
                           $nCOO, $emit, $xNome, $xFant, $IEST, $IM, $cnae,
@@ -277,8 +277,8 @@ class ConvertNFePHP
                     //$infNFe->appendChild($pk_nItem);
                     break;
                 case "B": //identificadores [infNFe]
-                    //B|cUF|cNF|NatOp|indPag|mod|serie|nNF|dEmi|dSaiEnt|hSaiEnt
-                    //|tpNF|cMunFG|TpImp|TpEmis|cDV|tpAmb|finNFe|procEmi|VerProc|dhCont|xJust
+                    //B|cUF|cNF|natOp|indPag|mod|serie|nNF|dhEmi|dhSaiEnt
+                    //|tpNF|idDest|cMunFG|tpImp|tpEmis|cDV|tpAmb|finNFe|indFinal|indPres|procEmi|VerProc|dhCont|xJust
                     $ide = $dom->createElement("ide");
                     $cUF = $dom->createElement("cUF", $dados[1]);
                     $ide->appendChild($cUF);
@@ -294,27 +294,23 @@ class ConvertNFePHP
                     $ide->appendChild($serie);
                     $nNF = $dom->createElement("nNF", $dados[7]);
                     $ide->appendChild($nNF);
-                    $dEmi = $dom->createElement("dEmi", $dados[8]);
+                    $dhEmi = $dom->createElement("dhEmi", $dados[8]);
                     $ide->appendChild($dEmi);
                     if (!empty($dados[9])) {
-                        $dSaiEnt = $dom->createElement("dSaiEnt", $dados[9]);
-                        $ide->appendChild($dSaiEnt);
-                        if (empty($dados[10])) {
-                            $dados[10] = '00:00:00';
-                        }
-                        $hSaiEnt = $dom->createElement("hSaiEnt", $dados[10]);
-                        $ide->appendChild($hSaiEnt);
+                        $dhSaiEnt = $dom->createElement("dhSaiEnt", $dados[9]);
                     }
-                    $tpNF = $dom->createElement("tpNF", $dados[11]);
+                    $tpNF = $dom->createElement("tpNF", $dados[10]);
                     $ide->appendChild($tpNF);
+                    $idDest = $dom->createElement("idDest", $dados[11]);
+                    $ide->appendChild($idDest);
                     $cMunFG = $dom->createElement("cMunFG", $dados[12]);
                     $ide->appendChild($cMunFG);
                     $tpImp = $dom->createElement("tpImp", $dados[13]);
                     $ide->appendChild($tpImp);
                     $tpEmis = $dom->createElement("tpEmis", $dados[14]);
                     $ide->appendChild($tpEmis);
-                    $CDV = $dom->createElement("cDV", $dados[15]);
-                    $ide->appendChild($CDV);
+                    $cDV = $dom->createElement("cDV", $dados[15]);
+                    $ide->appendChild($cDV);
                     $tpAmb = $dom->createElement("tpAmb", $dados[16]);
                     //guardar a variavel para uso posterior
                     $this->tpAmb = $dados[16];
@@ -322,17 +318,21 @@ class ConvertNFePHP
                     $ide->appendChild($tpAmb);
                     $finNFe = $dom->createElement("finNFe", $dados[17]);
                     $ide->appendChild($finNFe);
-                    $procEmi = $dom->createElement("procEmi", $dados[18]);
+                    $indFinal = $dom->createElement("indFinal", $dados[18]);
+                    $ide->appendChild($indFinal);
+                    $indPres = $dom->createElement("indPress", $dados[19]);
+                    $ide->appendChild($indPress);
+                    $procEmi = $dom->createElement("procEmi", $dados[20]);
                     $ide->appendChild($procEmi);
-                    if (empty($dados[19])) {
-                        $dados[19] = "NfePHP";
+                    if (empty($dados[21])) {
+                        $dados[21] = "NfePHP";
                     }
-                    $verProc = $dom->createElement("verProc", $dados[19]);
+                    $verProc = $dom->createElement("verProc", $dados[21]);
                     $ide->appendChild($verProc);
-                    if (!empty($dados[20]) || !empty($dados[21])) {
-                        $dhCont = $dom->createElement("dhCont", $dados[20]);
+                    if (!empty($dados[22]) || !empty($dados[23])) {
+                        $dhCont = $dom->createElement("dhCont", $dados[22]);
                         $ide->appendChild($dhCont);
-                        $xJust = $dom->createElement("xJust", $dados[21]);
+                        $xJust = $dom->createElement("xJust", $dados[23]);
                         $ide->appendChild($xJust);
                     }
                     $infNFe->appendChild($ide);
@@ -2191,7 +2191,7 @@ class ConvertNFePHP
                     $cana->appendChild($forDia);
                     break;
                 case "ZC10":
-                    //0 a 10 Grupo de Deduções  Taxas e Contribuições [cana]
+                    //0 a 10 Grupo de Deduções ? Taxas e Contribuições [cana]
                     //ZC10|xDed|vDed|
                     //todos os campos são obrigatorios
                     $deduc = $dom->createElement("deduc");
