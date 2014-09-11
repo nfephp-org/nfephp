@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Este arquivo é parte do projeto NFePHP - Nota Fiscal eletrônica em PHP.
  *
@@ -23,7 +23,7 @@
  *
  * @package   NFePHP
  * @name      install.php
- * @version   1.3.6
+ * @version   1.3.7
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2011 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -507,9 +507,6 @@ class moduleCheck
           da sua instala&ccedil;&atilde;o do PHP, se todas as necessidades para
           o funcionamento da API foram satisfeitas. Tamb&eacute;m fornece os meios
           para corrigir o arquivo de configura&ccedil;&atilde;o(config.php).</p>
-        <p> <em>ATENÇÃO: para utilizar a classe de envio de emails MailNFePHPpear.class.php, que não é a classe "default" 
-          da API &eacute; necess&aacute;rio usar o &quot;pear&quot; e instalar
-          a classe &quot;MAIL&quot;.</em></p>
         </td>
     </tr>
     <tr>
