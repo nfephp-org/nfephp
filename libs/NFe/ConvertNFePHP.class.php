@@ -295,9 +295,10 @@ class ConvertNFePHP
                     $nNF = $dom->createElement("nNF", $dados[7]);
                     $ide->appendChild($nNF);
                     $dhEmi = $dom->createElement("dhEmi", $dados[8]);
-                    $ide->appendChild($dEmi);
+                    $ide->appendChild($dhEmi);
                     if (!empty($dados[9])) {
                         $dhSaiEnt = $dom->createElement("dhSaiEnt", $dados[9]);
+                        $ide->appendChild($dhSaiEnt);
                     }
                     $tpNF = $dom->createElement("tpNF", $dados[10]);
                     $ide->appendChild($tpNF);
@@ -320,8 +321,8 @@ class ConvertNFePHP
                     $ide->appendChild($finNFe);
                     $indFinal = $dom->createElement("indFinal", $dados[18]);
                     $ide->appendChild($indFinal);
-                    $indPres = $dom->createElement("indPress", $dados[19]);
-                    $ide->appendChild($indPress);
+                    $indPres = $dom->createElement("indPres", $dados[19]);
+                    $ide->appendChild($indPres);
                     $procEmi = $dom->createElement("procEmi", $dados[20]);
                     $ide->appendChild($procEmi);
                     if (empty($dados[21])) {
@@ -515,27 +516,36 @@ class ConvertNFePHP
                     break;
                 case "E":
                     //Grupo de identificação do Destinatário da NF-e [infNFe]
-                    //E|xNome|IE|ISUF|email|
+                    //E|xNome|indIEDest|IE|ISUF|IM|email|
                     $dest = $dom->createElement("dest");
                     //se ambiente homologação preencher conforme NT2011.002
                     //válida a partir de 01/05/2011
                     if ($this->tpAmb == '2') {
                         $xNome = $dom->createElement("xNome", 'NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL');
                         $dest->appendChild($xNome);
+                        //Verificar a regra abaixo p/Homologação - 9=Nao contribuinte que pode ou não ter I.E.
+                        $indIEDest = $dom->createElement("indIEDest", "9");
+                        $dest->appendChild($indIEDest);
                         $IE = $dom->createElement("IE", '');
                         $dest->appendChild($IE);
                     } else {
                         $xNome = $dom->createElement("xNome", $dados[1]);
                         $dest->appendChild($xNome);
-                        $IE = $dom->createElement("IE", $dados[2]);
+                        $indIEDest = $dom->createElement("indIEDest", $dados[2]);
+                        $dest->appendChild($indIEDest);
+                        $IE = $dom->createElement("IE", $dados[3]);
                         $dest->appendChild($IE);
                     }
-                    if (!empty($dados[3])) {
-                        $ISUF = $dom->createElement("ISUF", $dados[3]);
+                    if (!empty($dados[4])) {
+                        $ISUF = $dom->createElement("ISUF", $dados[4]);
                         $dest->appendChild($ISUF);
                     }
-                    if (!empty($dados[4])) {
-                        $email = $dom->createElement("email", $dados[4]);
+                    if (!empty($dados[5])) {
+                        $IM = $dom->createElement("IM", $dados[5]);
+                        $dest->appendChild($IM);
+                    }
+                    if (!empty($dados[6])) {
+                        $email = $dom->createElement("email", $dados[6]);
                         $dest->appendChild($email);
                     }
                     $infNFe->appendChild($dest);
@@ -575,6 +585,13 @@ class ConvertNFePHP
                         $dest->insertBefore($dest->appendChild($CPF), $xNome);
                     } //fim teste ambiente
                     break;
+                case "E03a":
+                    //idEstrangeiro [dest]
+                    //Verificar se há NT que instrua preenchimento em ambiente homologação. Procurei e não encontrei restrição
+                    //idEstrangeiro é aceito como NULL (Branco), por isso não há regra de !empty abaixo
+                    $idEstrangeiro = $dom->createElement("idEstrangeiro", $dados[1]);
+                    $dest->insertBefore($dest->appendChild($idEstrangeiro), $xNome);
+                    break;
                 case "E05":
                     //Grupo de endereço do Destinatário da NF-e [dest]
                     //E05|xLgr|nro|xCpl|xBairro|cMun|xMun|UF|CEP|cPais|xPais|fone|
@@ -612,7 +629,7 @@ class ConvertNFePHP
                         $fone = $dom->createElement("fone", $dados[11]);
                         $enderDest->appendChild($fone);
                     }
-                    $dest->insertBefore($dest->appendChild($enderDest), $IE);
+                    $dest->insertBefore($dest->appendChild($enderDest), $indIEDest);
                     break;
                 case "F":
                     //Grupo de identificação do Local de retirada [infNFe]
@@ -2295,7 +2312,7 @@ class ConvertNFePHP
         $ide = $dom->getElementsByTagName("ide")->item(0);
         $emit = $dom->getElementsByTagName("emit")->item(0);
         $cUF = $ide->getElementsByTagName('cUF')->item(0)->nodeValue;
-        $dEmi = $ide->getElementsByTagName('dEmi')->item(0)->nodeValue;
+        $dhEmi = $ide->getElementsByTagName('dhEmi')->item(0)->nodeValue;
         $CNPJ = $emit->getElementsByTagName('CNPJ')->item(0)->nodeValue;
         $mod = $ide->getElementsByTagName('mod')->item(0)->nodeValue;
         $serie = $ide->getElementsByTagName('serie')->item(0)->nodeValue;
@@ -2305,7 +2322,7 @@ class ConvertNFePHP
         if (strlen($cNF) != 8) {
             $cNF = $ide->getElementsByTagName('cNF')->item(0)->nodeValue = rand(10000001, 99999999);
         }
-        $tempData = $dt = explode("-", $dEmi);
+        $tempData = $dt = explode("-", $dhEmi);
         $forma = "%02d%02d%02d%s%02d%03d%09d%01d%08d";
         $tempChave = sprintf($forma, $cUF, $tempData[0] - 2000, $tempData[1], $CNPJ, $mod, $serie, $nNF, $tpEmis, $cNF);
         $cDV = $ide->getElementsByTagName('cDV')->item(0)->nodeValue = $this->calculaDV($tempChave);
