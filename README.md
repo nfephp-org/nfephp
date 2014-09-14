@@ -2,6 +2,7 @@ NFePHP
 =================
 
 [![Build Status](https://travis-ci.org/nfephp-org/nfephp.svg?branch=develop)](https://travis-ci.org/nfephp-org/nfephp)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/nfephp-org/nfephp/badges/quality-score.png?b=develop)](https://scrutinizer-ci.com/g/nfephp-org/nfephp/?branch=develop)
 
 > **OBS**: Talvez, antes de chegar aqui, você tenha encontrado o site <http://www.assembla.com/spaces/nfephp/> e talvez você esteja se perguntando qual a diferença entre o NFePHP hospedado lá e o NFePHP hospedado aqui. Veja [nossa FAQ](https://github.com/nfephp-org/nfephp/wiki/FAQ) para sanar esta dúvida.
 
