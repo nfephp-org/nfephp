@@ -1,14 +1,14 @@
 {
     "name": "nfephp",
     "type": "library",
-    "description": "NFePHP é uma API para gerenciamento das comunicações entre o emitente de NFe e os serviços dos SEFAZ estaduais. Inteiramente construído em PHP para rodar sob qualquer sistema operacional.",
+    "description": "NFePHP é uma API para gerenciamento das comunicações entre o emitente de NFe e os serviços dos SEFAZ estaduais. Inteiramente construido em PHP para rodar sob qualquer sistema operacional.",
     "keywords": [
         "nfe",
         "nfephp",
         "spedphp",
         "sped",
-        "nota fiscal eletrônica",
-        "nota fiscal de serviços"
+        "nota fiscal eletronica",
+        "nota fiscal de servicos"
     ],
     "homepage": "https://github.com/nfephp-org/nfephp",
     "license": [
