@@ -754,6 +754,8 @@ class ConvertNFePHP
                     $NCM = $dom->createElement("NCM", $dados[4]);
                     $prod->appendChild($NCM);
                     if (!empty($dados[5])) {
+                        //Esperar estabilidade do Emissor de NF-e 3.10 para saber se poderemos manter compatibilidade com o modo de importação do mesmo.
+                        // São aceitos [0-8] NVE, mas o emissor EXPORTA apenas 1. Atualmente (15/09/14) ainda não é possível testar a importação do TXT no emissor.
                         $NVE = $dom->createElement("NVE", $dados[5]);
                         $prod->appendChild($NVE);
                     }
