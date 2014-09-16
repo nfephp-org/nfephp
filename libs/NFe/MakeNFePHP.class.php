@@ -26,7 +26,7 @@
  * 
  * @package     NFePHP
  * @name        MakeNFePHP
- * @version     0.1.7
+ * @version     0.1.8
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright   2009-2014 &copy; NFePHP
  * @link        http://www.nfephp.org/
@@ -36,7 +36,7 @@
  *
  *              Cleiton Perin <cperin20 at gmail dot com>
  *              Elias Müller <elias at oxigennio dot com dot br>
- *              Marcos Balbi
+ *              Marcos Vinicios Balbi <marcusbalbi at hotmail dot com>
  * 
  */
 
@@ -47,11 +47,33 @@
 
 class MakeNFe
 {
+    /**
+     * erros
+     * Matriz contendo os erros reportados pelas tags obrigatórias
+     * e sem conteúdo
+     * @var array
+     */
     public $erros = array();
-    public $errmsg = '';
+    /**
+     * versao
+     * numero da versão do xml da NFe
+     * @var double
+     */
     public $versao = 3.10;
+    /**
+     * mod
+     * modelo da nfe por ser 55-NFe ou 65-NFCe
+     * @var integer
+     */
     public $mod = 55;
+    /**
+     * dom
+     * Variável onde será montado o xml da NFe
+     * @var DOMDocument
+     */
     public $dom; //DOMDocument
+    
+    //propriedades privadas utilizadas internamente pela classe
     private $NFe = ''; //DOMNode
     private $infNFe = ''; //DOMNode
     private $ide = ''; //DOMNode
@@ -68,7 +90,6 @@ class MakeNFe
     private $exporta = ''; //DOMNode
     private $compra = ''; //DOMNode
     private $cana = ''; //DOMNode
-    
     // Arrays
     private $aNFref = array(); //array de DOMNode
     private $aDup = array(); //array de DOMNodes
@@ -84,7 +105,6 @@ class MakeNFe
     private $aMed = array(); //array de DOMNodes
     private $aArma = array(); //array de DOMNodes
     private $aComb = array(); //array de DOMNodes
-
     private $aImposto = array(); //array de DOMNodes
     private $aICMS = array(); //array de DOMNodes
     private $aICMSST = array(); //array de DOMNodes
@@ -97,7 +117,6 @@ class MakeNFe
     private $aCOFINS = array(); //array de DOMNodes
     private $aCOFINSST = array(); //array de DOMNodes
     private $aImpostoDevol = array(); //array de DOMNodes
-    
     private $aInfAdProd = array(); //array de DOMNodes
     private $aObsCont = array(); //array de DOMNodes
     private $aObsFisco = array(); //array de DOMNodes
@@ -105,7 +124,6 @@ class MakeNFe
     private $aForDia = array(); //array de DOMNodes
     private $aDeduc = array(); //array de DOMNodes
     
-    //cria DOM document
     /**
      * __contruct
      * Função construtora cria um objeto DOMDocument
@@ -121,71 +139,14 @@ class MakeNFe
     }
     
     /**
-     * 
+     * montaNFe
+     * Método de montagem do xml da NFe 
+     * essa função 
      * @return boolean
      */
     public function montaNFe()
     {
-        //  as tags devem ser montadas e inseridas umas nas outras de dentro para fora
-        //  tags em ordem de montagem por método:
-        //                        Modelo 55                 Modelo 65
-        //  1 - tag infNFe        Obrigatório               Obrigatório
-        //  2 - tag ide           Obrigatório               Obrigatório
-        //     3 - tag refNFe        Opcional (se houver)      Opcional (se houver)
-        //     4 - tag refNF         Opcional (se houver)      Opcional (se houver)
-        //     5 - tag refNFP        Opcional (se houver)      Opcional (se houver)
-        //     6 - tag refCTe        Opcional (se houver)      Opcional (se houver)
-        //     7 - tag ECFref        Opcional (se houver)      Opcional (se houver)
-        //  8 - tag emit          Obrigatório               Obrigatório
-        //     9 - tag enderEmit     Obrigatório               Obrigatório
-        // 10 - tag dest          Obrigatório               Opcional (se houver)
-        //     11 - tag enderDest     Obrigatório               Opcional (se houver)
-        // 12 - tag retirada      Opcional (se houver)      Opcional (se houver)
-        // 13 - tag entrega       Opcional (se houver)      Opcional (se houver)
-        // 14 - tag autXML        Opcional (se houver)      Opcional (se houver)
-        // 14a - tag det
-        //   15 - tag prod          Obrigatório               Obrigatório
-        //       16 - tag DI            Opcional (se houver)      Opcional (se houver)
-        //           17 - tag adi           Opcional (se houver)      Opcional (se houver)
-        //       18 - tag veicProd      Opcional (se houver)      Opcional (se houver)
-        //       19 - tag med           Opcional (se houver)      Opcional (se houver)
-        //       20 - tag arma          Opcional (se houver)      Opcional (se houver)
-        //       21 - tag comb          Opcional (se houver)      Opcional (se houver)
-        //       21a- tag export        Opcional (se houver)      Opcional (se houver)
-        //   tag imposto
-        //      22 - tag ICMS          Obrigatório               Obrigatório
-        //      23 - tag IPI           Opcional (se houver)      Obrigatório
-        //      24 - tag II            Opcional (se houver)      Opcional (se houver)
-        //      25 - tag PIS           Opcional (se houver)      Opcional (se houver)
-        //      26 - tag COFINS        Opcional (se houver)      Opcional (se houver)
-        //      27 - tag ISSQN         Opcional (se houver)      Opcional (se houver)
-        //      28 - tag impostoDevol  Opcional (se houver)      Opcional (se houver)
-        //28a - tag total
-        //   29 - tag ICMSTot       Obrigatório               Obrigatório
-        //   30 - tag ISSQNTot      Opcional (se houver)      Opcional (se houver)
-        //   31 - tag retTrib       Opcional (se houver)      Opcional (se houver)
-        // 32 - tag transp        Obrigatório               Obrigatório
-        //   33 - tag transporta    Opcional (se houver)      Opcional (se houver)
-        //   34 - tag retTransp     Opcional (se houver)      Opcional (se houver)
-        //   35 - tag veicTransp    Opcional (se houver)      Opcional (se houver)
-        //   37 - tag reboque       Opcional (se houver)      Opcional (se houver)
-        //   38 - tag lacres        Opcional (se houver)      Opcional (se houver)
-        //   39 - tag vol           Opcional (se houver)      Opcional (se houver)
-        // 39a - tag cobr
-        //   40 - tag fat           Opcional (se houver)      Opcional (se houver)
-        //   41 - tag dup           Opcional (se houver)      Opcional (se houver)
-        //   42 - tag pag           Opcional (se houver)      Obrigatorio
-        //   43 - tag card          Não aplicável             Opcional (se houver)
-        // 44 - tag infAdic       Opcional (se houver)      Opcional (se houver)
-        //   45 - tag obsCont       Opcional (se houver)      Opcional (se houver)
-        //   46 - tag obsFisco      Opcional (se houver)      Opcional (se houver)
-        // 47 - tag procRef       Opcional (se houver)      Opcional (se houver)
-        // 48 - tag exporta       Opcional (se houver)      Opcional (se houver)
-        // 49 - tag compra        Opcional (se houver)      Opcional (se houver)
-        // 50 - tag cana          Opcional (se houver)      Não aplicavel
-        //   51 - tag forDia        Opcional (se houver)      Não aplicavel
-        //   52 - tag deduc         Opcional (se houver)      Não aplicavel
-
+        //cria a tag raiz da Nfe
         $this->zTagNFe();
         //processa nfeRef e coloca as tags na tag ide
         foreach ($this->aNFref as $nfeRef) {
@@ -232,22 +193,6 @@ class MakeNFe
         //[0] tag NFe
         $this->zAppChild($this->dom, $this->NFe, 'Falta DOMDocument');
         return $this->dom->saveXML();
-    }
-    
-    /**
-     * zTagNFe
-     * Tag raiz da NFe
-     * tag NFe DOMNode
-     * Função chamada pelo método [ monta ]
-     * @return DOMElement
-     */
-    private function zTagNFe()
-    {
-        if (empty($this->NFe)) {
-            $this->NFe = $this->dom->createElement("NFe");
-            $this->NFe->setAttribute("xmlns", "http://www.portalfiscal.inf.br/nfe");
-        }
-        return $this->NFe;
     }
     
     /**
@@ -342,8 +287,20 @@ class MakeNFe
             );
         }
         $this->zAddChild($ide, "tpNF", $tpNF, true, $identificador . "Tipo de Operação");
-        $this->zAddChild($ide, "idDest", $idDest, true, $identificador . "Identificador de local de destino da operação");
-        $this->zAddChild($ide, "cMunFG", $cMunFG, true, $identificador . "Código do Município de Ocorrência do Fato Gerador");
+        $this->zAddChild(
+            $ide,
+            "idDest",
+            $idDest,
+            true,
+            $identificador . "Identificador de local de destino da operação"
+        );
+        $this->zAddChild(
+            $ide,
+            "cMunFG",
+            $cMunFG,
+            true,
+            $identificador . "Código do Município de Ocorrência do Fato Gerador"
+        );
         $this->zAddChild($ide, "tpImp", $tpImp, true, $identificador . "Formato de Impressão do DANFE");
         $this->zAddChild($ide, "tpEmis", $tpEmis, true, $identificador . "Tipo de Emissão da NF-e");
         $this->zAddChild($ide, "cDV", $cDV, true, $identificador . "Dígito Verificador da Chave de Acesso da NF-e");
@@ -367,20 +324,7 @@ class MakeNFe
         $this->ide = $ide;
         return $ide;
     }
-    
-    /**
-     * zTagNFref
-     * Informação de Documentos Fiscais referenciados BA01 pai B01
-     * tag NFe/infNFe/ide/NFref
-     * Podem ser criados até 500 desses Nodes por NFe
-     * Função chamada pelos métodos 
-     * [tagrefNFe] [tagrefNF] [tagrefNFP]  [tagCTeref] [tagrefECF]
-     */
-    private function zTagNFref()
-    {
-        $this->aNFref[] = $this->dom->createElement("NFref");
-        return count($this->aNFref);
-    }
+
     
     /**
      * tagrefNFe
@@ -459,7 +403,13 @@ class MakeNFe
         $refNFP = $this->dom->createElement("refNFP");
         $this->zAddChild($refNFP, "cUF", $cUF, true, $identificador . "Código da UF do emitente");
         $this->zAddChild($refNFP, "AAMM", $aamm, true, $identificador . "AAMM da emissão da NF de produtor");
-        $this->zAddChild($refNFP, "CNPJ", $cnpj, true, $identificador . "Informar o CNPJ do emitente da NF de produtor");
+        $this->zAddChild(
+            $refNFP,
+            "CNPJ",
+            $cnpj,
+            true,
+            $identificador . "Informar o CNPJ do emitente da NF de produtor"
+        );
         $this->zAddChild($refNFP, "CPF", $cpf, true, $identificador . "Informar o CPF do emitente da NF de produtor");
         $this->zAddChild(
             $refNFP,
@@ -509,7 +459,13 @@ class MakeNFe
         $refECF = $this->dom->createElement("refECF");
         $this->zAddChild($refECF, "mod", $mod, true, $identificador . "Modelo do Documento Fiscal");
         $this->zAddChild($refECF, "nECF", $nECF, true, $identificador . "Número de ordem sequencial do ECF");
-        $this->zAddChild($refECF, "nCOO", $nCOO, true, $identificador . "Número do Contador de Ordem de Operação - COO");
+        $this->zAddChild(
+            $refECF,
+            "nCOO",
+            $nCOO,
+            true,
+            $identificador . "Número do Contador de Ordem de Operação - COO"
+        );
         $this->zAppChild($this->aNFref[$num-1], $refECF);
         return $refECF;
     }
@@ -550,7 +506,13 @@ class MakeNFe
         $this->zAddChild($this->emit, "xNome", $xNome, true, $identificador . "Razão Social ou Nome do emitente");
         $this->zAddChild($this->emit, "xFant", $xFant, false, $identificador . "Nome fantasia do emitente");
         $this->zAddChild($this->emit, "IE", $numIE, true, $identificador . "Inscrição Estadual do emitente");
-        $this->zAddChild($this->emit, "IEST", $numIEST, false, $identificador . "IE do Substituto Tributário do emitente");
+        $this->zAddChild(
+            $this->emit,
+            "IEST",
+            $numIEST,
+            false,
+            $identificador . "IE do Substituto Tributário do emitente"
+        );
         $this->zAddChild(
             $this->emit,
             "IM",
@@ -943,41 +905,7 @@ class MakeNFe
             $det = null;
         }
     }
-    
-    /**
-     * Insere dentro dentro das tags imposto o ICMS IPI II PIS COFINS ISSQN
-     * tag NFe/infNFe/det[]/imposto
-     */
-    private function zTagImp()
-    {
-        foreach ($this->aImposto as $nItem => $imposto) {
-            if (!empty($this->aICMS[$nItem])) {
-                $this->zAppChild($imposto, $this->aICMS[$nItem], "Inclusão do node ICMS");
-            }
-            if (!empty($this->aIPI[$nItem])) {
-                $this->zAppChild($imposto, $this->aIPI[$nItem], "Inclusão do node IPI");
-            }
-            if (!empty($this->aII[$nItem])) {
-                $this->zAppChild($imposto, $this->aII[$nItem], "Inclusão do node II");
-            }
-            if (!empty($this->aPIS[$nItem])) {
-                $this->zAppChild($imposto, $this->aPIS[$nItem], "Inclusão do node PIS");
-            }
-            if (!empty($this->aPISST[$nItem])) {
-                $this->zAppChild($imposto, $this->aPISST[$nItem], "Inclusão do node PISST");
-            }
-            if (!empty($this->aCOFINS[$nItem])) {
-                $this->zAppChild($imposto, $this->aCOFINS[$nItem], "Inclusão do node COFINS");
-            }
-            if (!empty($this->aCOFINSST[$nItem])) {
-                $this->zAppChild($imposto, $this->aCOFINSST[$nItem], "Inclusão do node COFINSST");
-            }
-            if (!empty($this->aISSQN[$nItem])) {
-                $this->zAppChild($imposto, $this->aISSQN[$nItem], "Inclusão do node ISSQN");
-            }
-            $this->aImposto[$nItem] = $imposto;
-        }
-    }
+
 
     /**
      * tagprod
@@ -2308,68 +2236,7 @@ class MakeNFe
         $this->aCOFINS[$nItem] = $confins;
         return $confins;
     }
-    
-    /**
-     * ztagCOFINSAliq
-     * Grupo COFINS tributado pela alíquota S02 pai S01
-     * tag det/imposto/COFINS/COFINSAliq (opcional)
-     * Função chamada pelo método [ tagCOFINS ]
-     * @param string $cst
-     * @param string $vBC
-     * @param string $pCOFINS
-     * @param string $vCOFINS
-     * @return DOMElement
-     */
-    private function zTagCOFINSAliq($cst = '', $vBC = '', $pCOFINS = '', $vCOFINS = '')
-    {
-        $confinsAliq = $this->dom->createElement('COFINSAliq');
-        $this->zAddChild($confinsAliq, 'CST', $cst, true, "Código de Situação Tributária da COFINS");
-        $this->zAddChild($confinsAliq, 'vBC', $vBC, true, "Valor da Base de Cálculo da COFINS");
-        $this->zAddChild($confinsAliq, 'pCOFINS', $pCOFINS, true, "Alíquota da COFINS (em percentual)");
-        $this->zAddChild($confinsAliq, 'vCOFINS', $vCOFINS, true, "Valor da COFINS");
-        return $confinsAliq;
-    }
-    
-    /**
-     * zTagCOFINSNT
-     * Grupo COFINS não tributado S04 pai S01
-     * tag NFe/infNFe/det[]/imposto/COFINS/COFINSNT (opcional)
-     * Função chamada pelo método [ tagCOFINS ]
-     * @param string $cst
-     * @return DOMElement
-     */
-    private function zTagCOFINSNT($cst = '')
-    {
-        $confinsnt = $this->dom->createElement('COFINSNT');
-        $this->zAddChild($confinsnt, "CST", $cst, true, "Código de Situação Tributária da COFINS");
-        return $confinsnt;
-    }
-    
-    /**
-     * zTagCOFINSoutr
-     * Grupo COFINS Outras Operações S05 pai S01
-     * tag NFe/infNFe/det[]/imposto/COFINS/COFINSoutr (opcional)
-     * Função chamada pelo método [ tagCOFINS ]
-     * @param string $cst
-     * @param string $vBC
-     * @param string $pCOFINS
-     * @param string $qBCProd
-     * @param string $vAliqProd
-     * @param string $vCOFINS
-     * @return DOMElement
-     */
-    private function zTagCOFINSoutr($cst = '', $vBC = '', $pCOFINS = '', $qBCProd = '', $vAliqProd = '', $vCOFINS = '')
-    {
-        $confinsoutr = $this->dom->createElement('COFINSOutr');
-        $this->zAddChild($confinsoutr, "CST", $cst, true, "Código de Situação Tributária da COFINS");
-        $this->zAddChild($confinsoutr, "vBC", $vBC, false, "Valor da Base de Cálculo da COFINS");
-        $this->zAddChild($confinsoutr, "pCOFINS", $pCOFINS, false, "Alíquota da COFINS (em percentual)");
-        $this->zAddChild($confinsoutr, "qBCProd", $qBCProd, false, "Quantidade Vendida");
-        $this->zAddChild($confinsoutr, "vAliqProd", $vAliqProd, false, "Alíquota da COFINS (em reais)");
-        $this->zAddChild($confinsoutr, "vCOFINS", $vCOFINS, true, "Valor da COFINS");
-        return $confinsoutr;
-    }
-    
+   
     /**
      * tagCOFINSST
      * Grupo COFINS Substituição Tributária T01 pai M01
@@ -2511,19 +2378,7 @@ class MakeNFe
         $this->aImpostoDevol[$nItem] = $impostoDevol;
         return $impostoDevol;
     }
-    
-    /**
-     * zTagttotal
-     * Grupo Totais da NF-e W01 pai A01
-     * tag NFe/infNFe/total
-     */
-    private function zTagtotal()
-    {
-        if (empty($this->total)) {
-            $this->total = $this->dom->createElement("total");
-        }
-    }
-    
+  
     /**
      * tagICMSTot
      * Grupo Totais referentes ao ICMS W02 pai W01
@@ -2984,34 +2839,7 @@ class MakeNFe
         $this->zAppChild($this->transp, $vol, 'A tag transp deveria ter sido carregada primeiro.');
         return $vol;
     }
-    
-    /**
-     * zTaglacres
-     * Grupo Lacres X33 pai X26
-     * tag NFe/infNFe/transp/vol/lacres (opcional)
-     * @param string $nLacre
-     * @return DOMElement
-     */
-    protected function zTaglacres($nLacre = '')
-    {
-        $lacre = $this->dom->createElement("lacres");
-        $this->zAddChild($lacre, "nLacre", $nLacre, true, "Número dos Lacres");
-        return $lacre;
-    }
-    
-    /**
-     * tagcobr
-     * Grupo Cobrança Y01 pai A01
-     * tag NFe/infNFe/cobr (opcional)
-     * Depende de fat
-     */
-    private function zTagcobr()
-    {
-        if (empty($this->cobr)) {
-            $this->cobr = $this->dom->createElement("cobr");
-        }
-    }
-    
+
     /**
      * tagfat
      * Grupo Fatura Y02 pai Y01
@@ -3124,24 +2952,7 @@ class MakeNFe
             return $card;
         }
     }
-    
-    /**
-     * zTaginfAdic
-     * Grupo de Informações Adicionais Z01 pai A01
-     * tag NFe/infNFe/infAdic (opcional)
-     * Função chamada pelos metodos 
-     * [taginfAdic] [tagobsCont] [tagobsFisco] [tagprocRef]
-     * 
-     * @return DOMElement
-     */
-    private function zTaginfAdic()
-    {
-        if (empty($this->infAdic)) {
-            $this->infAdic = $this->dom->createElement("infAdic");
-        }
-        return $this->infAdic;
-    }
-    
+
     /**
      * taginfAdic
      * Grupo de Informações Adicionais Z01 pai A01
@@ -3367,17 +3178,201 @@ class MakeNFe
         $this->zAppChild($this->cana, $deduc, 'O metodo tagcana deveria ter sido chamado antes. [tagdeduc]');
         return $deduc;
     }
+
+    /**
+     * zTagNFe
+     * Tag raiz da NFe
+     * tag NFe DOMNode
+     * Função chamada pelo método [ monta ]
+     * @return DOMElement
+     */
+    private function zTagNFe()
+    {
+        if (empty($this->NFe)) {
+            $this->NFe = $this->dom->createElement("NFe");
+            $this->NFe->setAttribute("xmlns", "http://www.portalfiscal.inf.br/nfe");
+        }
+        return $this->NFe;
+    }
+    
+    /**
+     * zTagNFref
+     * Informação de Documentos Fiscais referenciados BA01 pai B01
+     * tag NFe/infNFe/ide/NFref
+     * Podem ser criados até 500 desses Nodes por NFe
+     * Função chamada pelos métodos 
+     * [tagrefNFe] [tagrefNF] [tagrefNFP]  [tagCTeref] [tagrefECF]
+     */
+    private function zTagNFref()
+    {
+        $this->aNFref[] = $this->dom->createElement("NFref");
+        return count($this->aNFref);
+    }
+    
+    /**
+     * zTagImp
+     * Insere dentro dentro das tags imposto o ICMS IPI II PIS COFINS ISSQN
+     * tag NFe/infNFe/det[]/imposto
+     * @return void
+     */
+    private function zTagImp()
+    {
+        foreach ($this->aImposto as $nItem => $imposto) {
+            if (!empty($this->aICMS[$nItem])) {
+                $this->zAppChild($imposto, $this->aICMS[$nItem], "Inclusão do node ICMS");
+            }
+            if (!empty($this->aIPI[$nItem])) {
+                $this->zAppChild($imposto, $this->aIPI[$nItem], "Inclusão do node IPI");
+            }
+            if (!empty($this->aII[$nItem])) {
+                $this->zAppChild($imposto, $this->aII[$nItem], "Inclusão do node II");
+            }
+            if (!empty($this->aPIS[$nItem])) {
+                $this->zAppChild($imposto, $this->aPIS[$nItem], "Inclusão do node PIS");
+            }
+            if (!empty($this->aPISST[$nItem])) {
+                $this->zAppChild($imposto, $this->aPISST[$nItem], "Inclusão do node PISST");
+            }
+            if (!empty($this->aCOFINS[$nItem])) {
+                $this->zAppChild($imposto, $this->aCOFINS[$nItem], "Inclusão do node COFINS");
+            }
+            if (!empty($this->aCOFINSST[$nItem])) {
+                $this->zAppChild($imposto, $this->aCOFINSST[$nItem], "Inclusão do node COFINSST");
+            }
+            if (!empty($this->aISSQN[$nItem])) {
+                $this->zAppChild($imposto, $this->aISSQN[$nItem], "Inclusão do node ISSQN");
+            }
+            $this->aImposto[$nItem] = $imposto;
+        }
+    }
+    
+    /**
+     * ztagCOFINSAliq
+     * Grupo COFINS tributado pela alíquota S02 pai S01
+     * tag det/imposto/COFINS/COFINSAliq (opcional)
+     * Função chamada pelo método [ tagCOFINS ]
+     * @param string $cst
+     * @param string $vBC
+     * @param string $pCOFINS
+     * @param string $vCOFINS
+     * @return DOMElement
+     */
+    private function zTagCOFINSAliq($cst = '', $vBC = '', $pCOFINS = '', $vCOFINS = '')
+    {
+        $confinsAliq = $this->dom->createElement('COFINSAliq');
+        $this->zAddChild($confinsAliq, 'CST', $cst, true, "Código de Situação Tributária da COFINS");
+        $this->zAddChild($confinsAliq, 'vBC', $vBC, true, "Valor da Base de Cálculo da COFINS");
+        $this->zAddChild($confinsAliq, 'pCOFINS', $pCOFINS, true, "Alíquota da COFINS (em percentual)");
+        $this->zAddChild($confinsAliq, 'vCOFINS', $vCOFINS, true, "Valor da COFINS");
+        return $confinsAliq;
+    }
+    
+    /**
+     * zTagCOFINSNT
+     * Grupo COFINS não tributado S04 pai S01
+     * tag NFe/infNFe/det[]/imposto/COFINS/COFINSNT (opcional)
+     * Função chamada pelo método [ tagCOFINS ]
+     * @param string $cst
+     * @return DOMElement
+     */
+    private function zTagCOFINSNT($cst = '')
+    {
+        $confinsnt = $this->dom->createElement('COFINSNT');
+        $this->zAddChild($confinsnt, "CST", $cst, true, "Código de Situação Tributária da COFINS");
+        return $confinsnt;
+    }
+    
+    /**
+     * zTagCOFINSoutr
+     * Grupo COFINS Outras Operações S05 pai S01
+     * tag NFe/infNFe/det[]/imposto/COFINS/COFINSoutr (opcional)
+     * Função chamada pelo método [ tagCOFINS ]
+     * @param string $cst
+     * @param string $vBC
+     * @param string $pCOFINS
+     * @param string $qBCProd
+     * @param string $vAliqProd
+     * @param string $vCOFINS
+     * @return DOMElement
+     */
+    private function zTagCOFINSoutr($cst = '', $vBC = '', $pCOFINS = '', $qBCProd = '', $vAliqProd = '', $vCOFINS = '')
+    {
+        $confinsoutr = $this->dom->createElement('COFINSOutr');
+        $this->zAddChild($confinsoutr, "CST", $cst, true, "Código de Situação Tributária da COFINS");
+        $this->zAddChild($confinsoutr, "vBC", $vBC, false, "Valor da Base de Cálculo da COFINS");
+        $this->zAddChild($confinsoutr, "pCOFINS", $pCOFINS, false, "Alíquota da COFINS (em percentual)");
+        $this->zAddChild($confinsoutr, "qBCProd", $qBCProd, false, "Quantidade Vendida");
+        $this->zAddChild($confinsoutr, "vAliqProd", $vAliqProd, false, "Alíquota da COFINS (em reais)");
+        $this->zAddChild($confinsoutr, "vCOFINS", $vCOFINS, true, "Valor da COFINS");
+        return $confinsoutr;
+    }
+
+    /**
+     * zTagttotal
+     * Grupo Totais da NF-e W01 pai A01
+     * tag NFe/infNFe/total
+     */
+    private function zTagtotal()
+    {
+        if (empty($this->total)) {
+            $this->total = $this->dom->createElement("total");
+        }
+    }
+    
+    /**
+     * zTaglacres
+     * Grupo Lacres X33 pai X26
+     * tag NFe/infNFe/transp/vol/lacres (opcional)
+     * @param string $nLacre
+     * @return DOMElement
+     */
+    protected function zTaglacres($nLacre = '')
+    {
+        $lacre = $this->dom->createElement("lacres");
+        $this->zAddChild($lacre, "nLacre", $nLacre, true, "Número dos Lacres");
+        return $lacre;
+    }
+    
+    /**
+     * tagcobr
+     * Grupo Cobrança Y01 pai A01
+     * tag NFe/infNFe/cobr (opcional)
+     * Depende de fat
+     */
+    private function zTagcobr()
+    {
+        if (empty($this->cobr)) {
+            $this->cobr = $this->dom->createElement("cobr");
+        }
+    }
+    
+    /**
+     * zTaginfAdic
+     * Grupo de Informações Adicionais Z01 pai A01
+     * tag NFe/infNFe/infAdic (opcional)
+     * Função chamada pelos metodos 
+     * [taginfAdic] [tagobsCont] [tagobsFisco] [tagprocRef]
+     * 
+     * @return DOMElement
+     */
+    private function zTaginfAdic()
+    {
+        if (empty($this->infAdic)) {
+            $this->infAdic = $this->dom->createElement("infAdic");
+        }
+        return $this->infAdic;
+    }
     
     /**
      * zAddChild
      * Adiciona um elemento ao node xml passado como referencia
-     * 
+     * Serão inclusos erros na array $erros[] sempre que a tag for obrigatória e
+     * nenhum parâmetro for passado na variável $content
      * @param DOMElement $parent
      * @param string $name
      * @param string $content
      * @param boolean $obrigatorio
      * @param string $descricao
-     * @throws Exception
      */
     private function zAddChild(&$parent, $name, $content = '', $obrigatorio = false, $descricao = "")
     {
@@ -3387,8 +3382,6 @@ class MakeNFe
                 "desc" => $descricao,
                 "erro" => "Preenchimento Obrigatório!"
             );
-            $erro = "tag $name ==> $descricao Preenchimento Obrigatório!";
-            throw new Exception($erro);
         }
         if ($obrigatorio || $content !== '') {
             $content = trim($content);
