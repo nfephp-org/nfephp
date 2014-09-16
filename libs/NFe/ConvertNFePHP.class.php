@@ -221,6 +221,7 @@ class ConvertNFePHP
                           $ICMS00, $orig, $CST, $modBC, $vBC, $pICMS, $vICMS,
                           $ICMS10, $modBCST, $pMVAST, $pRedBCST, $vBCST, $pICMSST,
                           $vICMSST, $ICMS20, $pRedBC, $ICMS30, $ICMS40, $motDesICMS,
+                          $vICMSOp, $pDif, $vICMSDif,
                           $ICMS51, $ICMS60, $ICMS70, $ICMS90, $ICMSPart,
                           $pBCOp, $UFST, $ICMSST, $vICMSSTRet, $vBCSTRet,
                           $vBCSTDest, $vICMSSTDest, $ICMSSN101, $CSOSN,
@@ -1168,6 +1169,7 @@ class ConvertNFePHP
                     break;
                 case "N03":
                     //CST 010 TRIBUTADO E COM COBRANCAO DE ICMS POR SUBSTUICAO TRIBUTARIA [ICMS]
+                    //N03|orig|CST|modBC|vBC|pICMS|vICMS|modBCST|pMVAST|pRedBCST|vBCST|pICMSST|vICMSST|
                     $ICMS10 = $dom->createElement("ICMS10");
                     $orig = $dom->createElement("orig", $dados[1]);
                     $ICMS10->appendChild($orig);
@@ -1201,6 +1203,7 @@ class ConvertNFePHP
                     break;
                 case "N04":
                     //CST 020 COM REDUCAO DE BASE DE CALCULO [ICMS]
+                    //N04|orig|CST|modBC|pRedBC|vBC|pICMS|vICMS|vICMSDeson|motDesICMS|
                     $ICMS20 = $dom->createElement("ICMS20");
                     $orig = $dom->createElement("orig", $dados[1]);
                     $ICMS20->appendChild($orig);
@@ -1216,10 +1219,17 @@ class ConvertNFePHP
                     $ICMS20->appendChild($pICMS);
                     $vICMS = $dom->createElement("vICMS", $dados[7]);
                     $ICMS20->appendChild($vICMS);
+                    if (!empty($dados[8]) || !empty($dados[9])) {
+                        $vICMSDeson = $dom->createElement("vICMSDeson",$dados[8]);
+                        $ICMS20->appendChild($vICMSDeson);
+                        $motDesICMS = $dom->createElement("motDesICMS",$dados[9]);
+                        $ICMS20->appendChild($motDesICMS);
+                    }
                     $ICMS->appendChild($ICMS20);
                     break;
                 case "N05":
                     //CST 030 ISENTA OU NAO TRIBUTADO E COM COBRANCA DO ICMS POR ST [ICMS]
+                    //N05|orig|CST|modBCST|pMVAST|pRedBCST|vBCST|pICMSST|vICMSST|vICMSDeson|motDesICMS|
                     $ICMS30 = $dom->createElement("ICMS30");
                     $orig = $dom->createElement("orig", $dados[1]);
                     $ICMS30->appendChild($orig);
@@ -1241,6 +1251,12 @@ class ConvertNFePHP
                     $ICMS30->appendChild($pICMSST);
                     $vICMSST = $dom->createElement("vICMSST", $dados[8]);
                     $ICMS30->appendChild($vICMSST);
+                    if (!empty($dados[9]) || !empty($dados[10])) {
+                        $vICMSDeson = $dom->createElement("vICMSDeson",$dados[9]);
+                        $ICMS30->appendChild($vICMSDeson);
+                        $motDesICMS = $dom->createElement("motDesICMS",$dados[10]);
+                        $ICMS30->appendChild($motDesICMS);
+                    }
                     $ICMS->appendChild($ICMS30);
                     break;
                 case "N06":
@@ -1263,7 +1279,8 @@ class ConvertNFePHP
                     break;
                 case "N07":
                     //Grupo de Tributação do ICMS = 51 [ICMS]
-                    //N07|Orig|CST|ModBC|PRedBC|VBC|PICMS|VICMS|
+                    //N07|Orig|CST|modBC|pRedBC|vBC|pICMS|vICMSOp|pDif|vICMSDif|*vICMS*|
+                    //Parece haver um erro no manual de integração do TXT, pois falta o vICMS, que há na NT 2013/005
                     $ICMS51 = $dom->createElement("ICMS51");
                     $orig = $dom->createElement("orig", $dados[1]);
                     $ICMS51->appendChild($orig);
@@ -1286,13 +1303,26 @@ class ConvertNFePHP
                         $ICMS51->appendChild($pICMS);
                     }
                     if (!empty($dados[7])) {
-                        $vICMS = $dom->createElement("vICMS", $dados[7]);
+                        $vICMSOp = $dom->createElement("vICMSOp", $dados[7]);
+                        $ICMS51->appendChild($vICMSOp);
+                    }
+                    if (!empty($dados[8])) {
+                        $pDif = $dom->createElement("pDif", $dados[8]);
+                        $ICMS51->appendChild($pDif);
+                    }
+                    if (!empty($dados[9])) {
+                        $vICMSDif = $dom->createElement("vICMSDif", $dados[9]);
+                        $ICMS51->appendChild($vICMSDif);
+                    }
+                    if (!empty($dados[10])) {
+                        $vICMS = $dom->createElement("vICMS", $dados[10]);
                         $ICMS51->appendChild($vICMS);
                     }
                     $ICMS->appendChild($ICMS51);
                     break;
                 case "N08":
                     //Grupo de Tributação do ICMS = 60 [ICMS]
+                    //N08|orig|CST|vBCSTRet|vICMSSTRet|
                     $ICMS60 = $dom->createElement("ICMS60");
                     $orig = $dom->createElement("orig", $dados[1]);
                     $ICMS60->appendChild($orig);
@@ -1306,6 +1336,7 @@ class ConvertNFePHP
                     break;
                 case "N09":
                     //Grupo de Tributação do ICMS 70 [ICMS]
+                    //N09|orig|CST|modBC|pRedBC|vBC|pICMS|vICMS|modBCST|pMVAST|pRedBCST|vBCST|pICMSST|vICMSST|vICMSDeson|motDesICMS|
                     $ICMS70 = $dom->createElement("ICMS70");
                     $orig = $dom->createElement("orig", $dados[1]);
                     $ICMS70->appendChild($orig);
@@ -1337,10 +1368,17 @@ class ConvertNFePHP
                     $ICMS70->appendChild($pICMSST);
                     $vICMSST = $dom->createElement("vICMSST", $dados[13]);
                     $ICMS70->appendChild($vICMSST);
+                    if (!empty($dados[14]) || !empty($dados[15])) {
+                        $vICMSDeson = $dom->createElement("vICMSDeson",$dados[14]);
+                        $ICMS70->appendChild($vICMSDeson);
+                        $motDesICMS = $dom->createElement("motDesICMS",$dados[15]);
+                        $ICMS70->appendChild($motDesICMS);
+                    }
                     $ICMS->appendChild($ICMS70);
                     break;
                 case "N10":
                     //Grupo de Tributação do ICMS 90 Outros [ICMS]
+                    //N10|orig|CST|modBC|vBC|pRedBC|pICMS|vICMS|modBCST|pMVAST|pRedBCST|vBCST|pICMSST|vICMSST|vICMSDeson|motDesICMS|
                     $ICMS90 = $dom->createElement("ICMS90");
                     $orig = $dom->createElement("orig", $dados[1]);
                     $ICMS90->appendChild($orig);
@@ -1348,12 +1386,12 @@ class ConvertNFePHP
                     $ICMS90->appendChild($CST);
                     $modBC = $dom->createElement("modBC", $dados[3]);
                     $ICMS90->appendChild($modBC);
-                    if (!empty($dados[4])) {
-                        $pRedBC = $dom->createElement("pRedBC", $dados[4]);
+                    $vBC = $dom->createElement("vBC", $dados[4]);
+                    $ICMS90->appendChild($vBC);
+                    if (!empty($dados[5])) {
+                        $pRedBC = $dom->createElement("pRedBC", $dados[5]);
                         $ICMS90->appendChild($pRedBC);
                     }
-                    $vBC = $dom->createElement("vBC", $dados[5]);
-                    $ICMS90->appendChild($vBC);
                     $pICMS = $dom->createElement("pICMS", $dados[6]);
                     $ICMS90->appendChild($pICMS);
                     $vICMS = $dom->createElement("vICMS", $dados[7]);
@@ -1374,12 +1412,18 @@ class ConvertNFePHP
                     $ICMS90->appendChild($pICMSST);
                     $vICMSST = $dom->createElement("vICMSST", $dados[13]);
                     $ICMS90->appendChild($vICMSST);
+                    if (!empty($dados[14]) || !empty($dados[15])) {
+                        $vICMSDeson = $dom->createElement("vICMSDeson",$dados[14]);
+                        $ICMS90->appendChild($vICMSDeson);
+                        $motDesICMS = $dom->createElement("motDesICMS",$dados[15]);
+                        $ICMS90->appendChild($motDesICMS);
+                    }
                     $ICMS->appendChild($ICMS90);
                     break;
                 case "N10a":
                     //Partilha do ICMS entre a UF de origem e UF de destino ou a UF definida na legislação [ICMS]
-                    //N10a|Orig|CST|ModBC|PRedBC|VBC|PICMS|VICMS|ModBCST|PMVAST|PRedBCST|VBCST|PICMSST
-                    //|VICMSST|pBCOp|UFST|
+                    //N10a|orig|CST|modBC|vBC|pRedBC|pICMS|vICMS|modBCST|pMVAST|pRedBCST|vBCST|pICMSST
+                    //|vICMSST|pBCOp|UFST|
                     $ICMSPart = $dom->createElement("ICMSPart");
                     $orig = $dom->createElement("orig", $dados[1]);
                     $ICMSPart->appendChild($orig);
@@ -1387,12 +1431,12 @@ class ConvertNFePHP
                     $ICMSPart->appendChild($CST);
                     $modBC = $dom->createElement("modBC", $dados[3]);
                     $ICMSPart->appendChild($modBC);
-                    if (!empty($dados[4])) {
-                        $pRedBC = $dom->createElement("pRedBC", $dados[4]);
+                    $vBC = $dom->createElement("vBC", $dados[4]);
+                    $ICMSPart->appendChild($vBC);
+                    if (!empty($dados[5])) {
+                        $pRedBC = $dom->createElement("pRedBC", $dados[5]);
                         $ICMSPart->appendChild($pRedBC);
                     }
-                    $vBC = $dom->createElement("vBC", $dados[5]);
-                    $ICMSPart->appendChild($vBC);
                     $pICMS = $dom->createElement("pICMS", $dados[6]);
                     $ICMSPart->appendChild($pICMS);
                     $vICMS = $dom->createElement("vICMS", $dados[7]);
@@ -1422,7 +1466,7 @@ class ConvertNFePHP
                 case "N10b":
                     //ICMS ST repasse de ICMS ST retido anteriormente em operações interestaduais com repasses
                     //através do Substituto Tributário [ICMS]
-                    //N10b|Orig|CST|vBCSTRet|vICMSSTRet|vBCSTDest|vICMSSTDest|
+                    //N10b|orig|CST|vBCSTRet|vICMSSTRet|vBCSTDest|vICMSSTDest|
                     $ICMSST = $dom->createElement("ICMSST");
                     $orig = $dom->createElement("orig", $dados[1]);
                     $ICMSST->appendChild($orig);
@@ -1440,7 +1484,7 @@ class ConvertNFePHP
                     break;
                 case "N10c":
                     //Grupo CRT=1 Simples Nacional e CSOSN=101 [ICMS]
-                    //N10c|Orig|CSOSN|pCredSN|vCredICMSSN|
+                    //N10c|orig|CSOSN|pCredSN|vCredICMSSN|
                     $ICMSSN101 = $dom->createElement("ICMSSN101");
                     $orig = $dom->createElement("orig", $dados[1]);
                     $ICMSSN101->appendChild($orig);
@@ -1454,7 +1498,7 @@ class ConvertNFePHP
                     break;
                 case "N10d":
                     //Grupo CRT=1 Simples Nacional e CSOSN=102, 103,300 ou 400 [ICMS]
-                    //N10d|Orig|CSOSN|
+                    //N10d|orig|CSOSN|
                     $ICMSSN102 = $dom->createElement("ICMSSN102");
                     $orig = $dom->createElement("orig", $dados[1]);
                     $ICMSSN102->appendChild($orig);
@@ -1464,7 +1508,7 @@ class ConvertNFePHP
                     break;
                 case "N10e":
                     //Grupo CRT=1 Simples Nacional e CSOSN=201 [ICMS]
-                    //N10e|Orig|CSOSN|modBCST|pMVAST|pRedBCST|vBCST|pICMSST|vICMSST|pCredSN|vCredICMSSN|
+                    //N10e|orig|CSOSN|modBCST|pMVAST|pRedBCST|vBCST|pICMSST|vICMSST|pCredSN|vCredICMSSN|
                     $ICMSSN201 = $dom->createElement("ICMSSN201");
                     $orig = $dom->createElement("orig", $dados[1]);
                     $ICMSSN201->appendChild($orig);
@@ -1494,7 +1538,7 @@ class ConvertNFePHP
                     break;
                 case "N10f":
                     //Grupo CRT=1 Simples Nacional e CSOSN=202 ou 203 [ICMS]
-                    //N10f|Orig|CSOSN|modBCST|pMVAST|pRedBCST|vBCST|pICMSST|vICMSST|
+                    //N10f|orig|CSOSN|modBCST|pMVAST|pRedBCST|vBCST|pICMSST|vICMSST|
                     $ICMSSN202 = $dom->createElement("ICMSSN202");
                     $orig = $dom->createElement("orig", $dados[1]);
                     $ICMSSN202->appendChild($orig);
@@ -1535,7 +1579,7 @@ class ConvertNFePHP
                     break;
                 case "N10h":
                     //TAG de Grupo CRT=1 Simples Nacional e CSOSN=900 [ICMS]
-                    //N10h|Orig|CSOSN|modBC|vBC|pRedBC|pICMS|vICMS|modBCST|pMVAST|pRedBCST|vBCST
+                    //N10h|orig|CSOSN|modBC|vBC|pRedBC|pICMS|vICMS|modBCST|pMVAST|pRedBCST|vBCST
                     //|pICMSST|vICMSST|pCredSN|vCredICMSSN|
                     $ICMSSN900 = $dom->createElement("ICMSSN900");
                     $orig = $dom->createElement("orig", $dados[1]);
