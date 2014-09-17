@@ -1682,14 +1682,12 @@ class ToolsNFePHP extends CommonNFePHP
             if ($tpAmb == '') {
                 $tpAmb = $this->tpAmb;
             }
-            // caso a sigla do estado esteja vazia
-            if ($siglaUF == '') {
-                $siglaUF = $this->siglaUF;
-            }
+            //define a sigla da UF, se vazia utiliza o atributo da classe Tools
+            $siglaUF = $siglaUF == '' ? $this->siglaUF : $siglaUF;
             //busca o código da UF a partir da sigla
             $cUF = $this->cUFlist[$siglaUF];
-            //verifica se contingencias SVCAN ou SVCRS estão habilitadas, se não estiverem
-            //usará a própria UF, logo abaixo ao carregar os webservices
+            //se contingencia SVCAN/SVCRS habilitada sobrescreve a sigla da UF, caso contrário
+            //usa a própria UF, logo abaixo ao carregar os webservices
             if ($this->enableSVCAN) {
                 $siglaUF = self::CONTINGENCIA_SVCAN;
             } elseif ($this->enableSVCRS) {
