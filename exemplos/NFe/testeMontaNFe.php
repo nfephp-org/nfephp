@@ -187,7 +187,7 @@ foreach ($aAut as $aut) {
 $aP[] = array(
         'nItem' => '1',
         'cProd' => '22314',
-        'cEAN' => '478901542312456',
+        'cEAN' => '',
         'xProd' => 'Teletransporte para longe',
         'NCM' => '1224.10.10',
         'NVE' => '',
@@ -197,7 +197,7 @@ $aP[] = array(
         'qCom' => '1',
         'vUnCom' => '10.00',
         'vProd' => '10.00',
-        'cEANTrib' => ' ',
+        'cEANTrib' => '',
         'uTrib' => 'UN',
         'qTrib' => '1',
         'vUnTrib' => '10.00',
@@ -320,7 +320,7 @@ $motDesICMS = '';
 $modBCST = '1';
 $pMVAST = '50.00';
 $pRedBCST = '';
-$vBCST = '150.00';
+$vBCST = '150.00'; //150.00
 $pICMSST = '7.00';
 $vICMSST = '15.00';
 $pDif = '';
@@ -337,7 +337,7 @@ $modBC = '1';
 $pRedBC = '';
 $vBC = '200.00';
 $pICMS = '18.00';
-$vICMS = '36.00';
+$vICMS = '36.00';//36.00
 $vICMSDeson = '';
 $motDesICMS = '';
 $modBCST = '';
@@ -401,13 +401,13 @@ $pICMSRet = '10,00'; //Alíquota da Retenção
 $vICMSRet = '25,87'; //Valor do ICMS Retido
 $CFOP = '5352';
 $cMunFG = '3509502'; //Código do município de ocorrência do fato gerador do ICMS do transporte
-$resp = $nfe->tagretTransp($vServ, $vBCRet, $pICMSRet, $vICMSRet, $CFOP, $cMunFG);
+//$resp = $nfe->tagretTransp($vServ, $vBCRet, $pICMSRet, $vICMSRet, $CFOP, $cMunFG);
 
 //dados dos veiculos de transporte
 $placa = 'AAA1212';
 $UF = 'SP';
 $RNTC = '12345678';
-$resp = $nfe->tagveicTransp($placa, $UF, $RNTC);
+//$resp = $nfe->tagveicTransp($placa, $UF, $RNTC);
 
 //dados dos reboques
 $aReboque = array(
@@ -420,7 +420,7 @@ foreach ($aReboque as $reb) {
     $RNTC = $reb[2];
     $vagao = $reb[3];
     $balsa = $reb[4];
-    $resp = $nfe->tagreboque($placa, $UF, $RNTC, $vagao, $balsa);
+    //$resp = $nfe->tagreboque($placa, $UF, $RNTC, $vagao, $balsa);
 }
 
 //dados dos volumes transportados
@@ -467,13 +467,13 @@ foreach ($aDup as $dup) {
 //Grupo obrigatório para a NFC-e. Não informar para a NF-e.
 $tPag = '03'; //01=Dinheiro 02=Cheque 03=Cartão de Crédito 04=Cartão de Débito 05=Crédito Loja 10=Vale Alimentação 11=Vale Refeição 12=Vale Presente 13=Vale Combustível 99=Outros
 $vPag = '1452,33';
-$resp = $nfe->tagpag($tPag, $vPag);
+//$resp = $nfe->tagpag($tPag, $vPag);
 
-//se a operção for com cartão de crédito essa informação é obrigatória
+//se a operação for com cartão de crédito essa informação é obrigatória
 $CNPJ = '31551765000143'; //CNPJ da operadora de cartão
 $tBand = '01'; //01=Visa 02=Mastercard 03=American Express 04=Sorocred 99=Outros
-$cAut = 'AB254FC79001'; //número da autorização da transação
-$resp = $nfe->tagcard($CNPJ, $tBand, $cAut);
+$cAut = 'AB254FC79001'; //número da autorização da tranzação
+//$resp = $nfe->tagcard($CNPJ, $tBand, $cAut);
 //**************************************************************
 
 //informações Adicionais
@@ -500,7 +500,7 @@ $aObsF = array(
 foreach ($aObsF as $obs) {
     $xCampo = $obs[0];
     $xTexto = $obs[1];
-    $resp = $nfe->tagobsFisco($xCampo, $xTexto);
+    //$resp = $nfe->tagobsFisco($xCampo, $xTexto);
 }
 
 //Dados do processo
@@ -515,25 +515,25 @@ $aProcRef = array(
 foreach ($aProcRef as $proc) {
     $nProc = $proc[0];
     $indProc = $proc[1];
-    $resp = $nfe->tagprocRef($nProc, $indProc);
+    //$resp = $nfe->tagprocRef($nProc, $indProc);
 }
 
 //dados exportação
 $UFSaidaPais = 'SP';
 $xLocExporta = 'Maritimo';
 $xLocDespacho = 'Porto Santos';
-$resp = $nfe->tagexporta($UFSaidaPais, $xLocExporta, $xLocDespacho);
+//$resp = $nfe->tagexporta($UFSaidaPais, $xLocExporta, $xLocDespacho);
 
 //dados de compras
 $xNEmp = '';
 $xPed = '12345';
 $xCont = 'A342212';
-$resp = $nfe->tagcompra($xNEmp, $xPed, $xCont);
+//$resp = $nfe->tagcompra($xNEmp, $xPed, $xCont);
 
 //dados da colheita de cana
 $safra = '2014';
 $ref = '01/2014';
-$resp = $nfe->tagcana($safra, $ref);
+//$resp = $nfe->tagcana($safra, $ref);
 
 $aForDia = array(
     array('1', '100', '1400', '1000', '1400'),
@@ -557,11 +557,17 @@ foreach ($aForDia as $forDia) {
     $qTotMes = $forDia[2];
     $qTotAnt = $forDia[3];
     $qTotGer = $forDia[4];
-    $resp = $nfe->tagforDia($dia, $qtde, $qTotMes, $qTotAnt, $qTotGer);
+    //$resp = $nfe->tagforDia($dia, $qtde, $qTotMes, $qTotAnt, $qTotGer);
 }
 
 //monta a NFe e retorna na tela
-$xml = $nfe->montaNFe();
-
-header('Content-type: text/xml; charset=UTF-8');
-echo $xml;
+$resp = $nfe->montaNFe();
+if ($resp) {
+    header('Content-type: text/xml; charset=UTF-8');
+    echo $nfe->getXML();
+} else {
+    header('Content-type: text/html; charset=UTF-8');
+    foreach ($nfe->erros as $err) {
+        echo 'tag: &lt;'.$err['tag'].'&gt; ---- '.$err['desc'].'<br>';
+    }
+}
