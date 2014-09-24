@@ -27,7 +27,7 @@
  *
  * @package     NFePHP
  * @name        ConvertNFePHP
- * @version     3.1.12
+ * @version     3.1.13
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2011 &copy; NFePHP
@@ -2478,7 +2478,8 @@ class ConvertNFePHP
     /**
      * limpaString
      * Remove todos dos caracteres especiais do texto e os acentos
-     * preservando apenas letras de A-Z numeros de 0-9 e os caracteres @ , - ; : / _
+     * preservando apenas letras de A-Z numeros de 0-9 e 
+     * os caracteres @ , - ; $ % : / _
      * 
      * @name limpaString
      * @param string $texto String a ser limpa
@@ -2493,7 +2494,7 @@ class ConvertNFePHP
             'i', 'o', 'o', 'o', 'u', 'u', 'c', 'A', 'A', 'A', 'A',
             'E', 'E', 'I', 'O', 'O', 'O', 'U', 'U', 'C');
         $novoTexto = str_replace($aFind, $aSubs, $texto);
-        $novoTexto = preg_replace("/[^a-zA-Z0-9 @,-.;:\/_]/", "", $novoTexto);
+        $novoTexto = preg_replace("/[^a-zA-Z0-9 @,-.;$%:\/_]/", "", $novoTexto);
         return $novoTexto;
     } //fim limpaString
 
