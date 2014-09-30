@@ -1,10 +1,11 @@
 NFePHP
 =================
 
-[![Build Status](https://travis-ci.org/nfephp-org/nfephp.svg?branch=develop)](https://travis-ci.org/nfephp-org/nfephp)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/nfephp-org/nfephp/badges/quality-score.png?b=develop)](https://scrutinizer-ci.com/g/nfephp-org/nfephp/?branch=develop)
-
-> **OBS**: Talvez, antes de chegar aqui, você tenha encontrado o site <http://www.assembla.com/spaces/nfephp/> e talvez você esteja se perguntando qual a diferença entre o NFePHP hospedado lá e o NFePHP hospedado aqui. Veja [nossa FAQ](https://github.com/nfephp-org/nfephp/wiki/FAQ) para sanar esta dúvida.
+[![Build Status](https://travis-ci.org/nfephp-org/nfephp.svg?branch=master)](https://travis-ci.org/nfephp-org/nfephp)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/nfephp-org/nfephp/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/nfephp-org/nfephp/?branch=master)
+[![Latest Stable Version](https://poser.pugx.org/nfephp-org/nfephp/v/stable.svg)](https://packagist.org/packages/nfephp-org/nfephp)
+[![Latest Unstable Version](https://poser.pugx.org/nfephp-org/nfephp/v/unstable.svg)](https://packagist.org/packages/nfephp-org/nfephp)
+[![License](https://poser.pugx.org/nfephp-org/nfephp/license.svg)](https://packagist.org/packages/nfephp-org/nfephp)
 
 NFePHP é uma API para gerenciamento das comunicações entre o emitente de NFe e os serviços dos SEFAZ estaduais. Inteiramente construído em PHP para rodar sob qualquer sistema operacional.
 Para começar veja [nossas páginas Wiki](https://github.com/nfephp-org/nfephp/wiki).
