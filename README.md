@@ -82,8 +82,10 @@ Mantenedores
 * NFCe - `Roberto L. Machado`
 * NFSe - `Hugo Cegana`
 * CTe  - `Luciano Antony` `Roberto Spadim` 
-* MDFe - `Leandro C. LOpes`
+* MDFe - `Leandro C. Lopes`
 * CLe  - `não definido`
+
+E toda a [comunidade NFePHP](https://github.com/nfephp-org/nfephp/graphs/contributors) 
 
 Pull Request
 --------
