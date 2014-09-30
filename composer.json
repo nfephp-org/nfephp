@@ -17,6 +17,10 @@
             "email": "linux.rlm@gmail.com.br",
             "homepage": "http://www.nfephp.org",
             "role": "Developer"
+        },
+        {
+            "name": "Comunidade NFePHP",
+            "homepage": "https://github.com/nfephp-org/nfephp/graphs/contributors"
         }
     ],
     "require": {
@@ -54,5 +58,10 @@
             "./libs/NFe/"
         ]
     },
-    "minimum-stability": "stable"
+    "minimum-stability": "dev",
+    "extra": {
+        "branch-alias": {
+            "dev-master": "3.10.x-dev"
+        }
+    }
 }
