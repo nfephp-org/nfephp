@@ -1,6 +1,6 @@
 <?php
-error_reporting(0);
-ini_set('display_errors', 'Off');
+error_reporting(E_ALL);
+ini_set('display_errors', 'On');
 require_once('../../libs/NFe/DanfeNFCeNFePHP.class.php');
 
 
@@ -10,11 +10,11 @@ if (!isset($_REQUEST['o'])) {
     $saida = 'pdf';
 }
 
-$arq = 'xml/exemploNFCe.xml';
+$arq = '../xml/exemploNFCe.xml';
 if (is_file($arq)) {
     $docxml = file_get_contents($arq);
     $danfe = new DanfeNFCeNFePHP($docxml, '', 0);
     $id = $danfe->montaDANFE(false);
     $teste = $danfe->printDANFE($saida, $id.'.pdf', 'I');
-    exit();
 }
+exit();

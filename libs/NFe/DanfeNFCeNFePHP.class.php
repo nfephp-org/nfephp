@@ -27,7 +27,7 @@
  * @copyright 2009-2013 &copy; NFePHP
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  *            http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
- * @version   GIT: 1.11
+ * @version   1.12
  * @link      http://www.nfephp.org/
  * @author    Roberto Spadim <roberto at spadim dot com dot br>
  * 
@@ -38,6 +38,8 @@
  * 
  */
 
+//namespace nfephp\NFe;
+
 //define o caminho base da instalação do sistema
 if (!defined('PATH_ROOT')) {
     define('PATH_ROOT', dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR);
@@ -47,10 +49,12 @@ if (!defined('PATH_ROOT')) {
 set_time_limit(1800);
 
 //classes utilizadas
-require_once '../External/mpdf/mpdf.php';
-require_once '../External/qrcode/qrcode.class.php';
-require_once '../Common/CommonNFePHP.class.php';
-require_once '../Common/DocumentoNFePHP.interface.php';
+require_once '../../libs/External/mpdf/mpdf.php';
+require_once '../../libs/External/qrcode/qrcode.class.php';
+require_once '../../libs/Common/CommonNFePHP.class.php';
+require_once '../../libs/Common/DocumentoNFePHP.interface.php';
+
+
 
 /**
  * Classe DanfceNFePHP
@@ -222,30 +226,30 @@ class DanfeNFCeNFePHP extends CommonNFePHP implements DocumentoNFePHP
     public function montaDANFE($detalhes = false)
     {
         //DADOS DA NF
-        $nProt = $this->__simpleGetValue($this->nfeProc, "nProt");
-        $dhRecbto  = $this->__simpleGetValue($this->nfeProc, "dhRecbto");
-        $digVal = $this->__simpleGetValue($this->nfe, "DigestValue");
+        $nProt = $this->pSimpleGetValue($this->nfeProc, "nProt");
+        $dhRecbto  = $this->pSimpleGetValue($this->nfeProc, "dhRecbto");
+        $digVal = $this->pSimpleGetValue($this->nfe, "DigestValue");
         $chNFe = str_replace('NFe', '', $this->infNFe->getAttribute("Id"));
-        $tpAmb = $this->__simpleGetValue($this->ide, 'tpAmb');
-        $cUF = $this->__simpleGetValue($this->ide, 'cUF');
-        $nNF = $this->__simpleGetValue($this->ide, 'nNF');
-        $serieNF = str_pad($this->__simpleGetValue($this->ide, "serie"), 3, "0", STR_PAD_LEFT);
-        $dhEmi = $this->__simpleGetValue($this->ide, "dhEmi");
-        $vTotTrib = $this->__simpleGetValue($this->imposto, "vTotTrib");
-        $vProd = $this->__simpleGetValue($this->ICMSTot, "vProd");
-        $vNF = $this->__simpleGetValue($this->ICMSTot, "vNF");
-        $vDesc  = $this->__simpleGetValue($this->ICMSTot, "vDesc");
-        $vICMS = $this->__simpleGetValue($this->ICMSTot, "vICMS");
+        $tpAmb = $this->pSimpleGetValue($this->ide, 'tpAmb');
+        $cUF = $this->pSimpleGetValue($this->ide, 'cUF');
+        $nNF = $this->pSimpleGetValue($this->ide, 'nNF');
+        $serieNF = str_pad($this->pSimpleGetValue($this->ide, "serie"), 3, "0", STR_PAD_LEFT);
+        $dhEmi = $this->pSimpleGetValue($this->ide, "dhEmi");
+        $vTotTrib = $this->pSimpleGetValue($this->imposto, "vTotTrib");
+        $vProd = $this->pSimpleGetValue($this->ICMSTot, "vProd");
+        $vNF = $this->pSimpleGetValue($this->ICMSTot, "vNF");
+        $vDesc  = $this->pSimpleGetValue($this->ICMSTot, "vDesc");
+        $vICMS = $this->pSimpleGetValue($this->ICMSTot, "vICMS");
         $qtdItens = $this->det->length;
         $urlChave = $this->urlConsulta[$tpAmb][$cUF]['chave'];
         $urlQR = $this->urlConsulta[$tpAmb][$cUF]['QR'];
         
         //DADOS DO EMITENTE
-        $emitRazao  = $this->__simpleGetValue($this->emit, "xNome");
-        $emitCnpj   = $this->__simpleGetValue($this->emit, "CNPJ");
-        $emitCnpj   = $this->__format($emitCnpj, "##.###.###/####-##");
-        $emitIE     = $this->__simpleGetValue($this->emit, "IE");
-        $emitFone = $this->__simpleGetValue($this->enderEmit, "fone");
+        $emitRazao  = $this->pSimpleGetValue($this->emit, "xNome");
+        $emitCnpj   = $this->pSimpleGetValue($this->emit, "CNPJ");
+        $emitCnpj   = $this->pFormat($emitCnpj, "##.###.###/####-##");
+        $emitIE     = $this->pSimpleGetValue($this->emit, "IE");
+        $emitFone = $this->pSimpleGetValue($this->enderEmit, "fone");
         $foneLen = strlen($emitFone);
         if ($foneLen>0) {
             $fone2 = substr($emitFone, 0, $foneLen-4);
@@ -254,13 +258,13 @@ class DanfeNFCeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         } else {
             $emitFone = '';
         }
-        $emitLgr = $this->__simpleGetValue($this->enderEmit, "xLgr");
-        $emitNro = $this->__simpleGetValue($this->enderEmit, "nro");
-        $emitCpl = $this->__simpleGetValue($this->enderEmit, "xCpl", " - ");
-        $emitBairro = $this->__simpleGetValue($this->enderEmit, "xBairro");
-        $emitCEP = $this->__format($this->__simpleGetValue($this->enderEmit, "CEP"), "#####-###");
-        $emitMun = $this->__simpleGetValue($this->enderEmit, "xMun");
-        $emitUF = $this->__simpleGetValue($this->enderEmit, "UF");
+        $emitLgr = $this->pSimpleGetValue($this->enderEmit, "xLgr");
+        $emitNro = $this->pSimpleGetValue($this->enderEmit, "nro");
+        $emitCpl = $this->pSimpleGetValue($this->enderEmit, "xCpl", " - ");
+        $emitBairro = $this->pSimpleGetValue($this->enderEmit, "xBairro");
+        $emitCEP = $this->pFormat($this->pSimpleGetValue($this->enderEmit, "CEP"), "#####-###");
+        $emitMun = $this->pSimpleGetValue($this->enderEmit, "xMun");
+        $emitUF = $this->pSimpleGetValue($this->enderEmit, "UF");
 
         //pag
         $tPagNome = '';
@@ -314,9 +318,9 @@ class DanfeNFCeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         );
 
         //FORMATAÇÃO DOS CAMPOS
-        $numNF = "NFCe nº ".$this->__format($nNF, "###.###.###");
-        $tsHora = $this->__convertTime($dhEmi);
-        $tsProt = $this->__convertTime($dhRecbto);
+        $numNF = "NFCe nº ".$this->pFormat($nNF, "###.###.###");
+        $tsHora = $this->pConvertTime($dhEmi);
+        $tsProt = $this->pConvertTime($dhRecbto);
         $valorProdutos = number_format($vProd, 2, ",", ".");
         $valorTotal = number_format($vNF, 2, ",", ".");
         
@@ -368,7 +372,7 @@ class DanfeNFCeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $this->html .= "<body>\n";
         $this->html .= "<table width=\"100%\">\n";
         $this->html .= "<tr>\n";
-        $this->html .= "<td><h2><i>NFC-e</i></h2><br><img src=\"../images/logo.jpg\" width=\"82\" ></td>\n";
+        $this->html .= "<td><h2><i>NFC-e</i></h2><br><img src=\"$this->logomarca\" width=\"82\" ></td>\n";
         $this->html .= "<td colspan=\"2\">".htmlspecialchars($emitRazao)."<br>CNPJ:$emitCnpj I.E.:$emitIE<br>".
                 htmlspecialchars($emitLgr . ", " . $emitNro). "<br>".
                 htmlspecialchars($emitCpl) . "<br>".
@@ -472,16 +476,16 @@ class DanfeNFCeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $pagHtml .= "<td align=\"left\">PAGAMENTOS</td>\n";
         $pagHtml .= "<td></td></tr>\n";
         foreach ($pag as $pagI) {
-            $tPag = $this->__simpleGetValue($pagI, "tPag");
+            $tPag = $this->pSimpleGetValue($pagI, "tPag");
             $tPagNome = $this->tipoPag($tPag);
             $tPnome = $tPagNome;
-            $vPag = number_format($this->__simpleGetValue($pagI, "vPag"), 2, ",", ".");
+            $vPag = number_format($this->pSimpleGetValue($pagI, "vPag"), 2, ",", ".");
             $card = $pagI->getElementsByTagName("card")->item(0);
             //cartão
             if (isset($card)) {
-                $cardCNPJ = $this->__simpleGetValue($card, "CNPJ");
-                $tBand    = $this->__simpleGetValue($card, "tBand");
-                //$cAut = $this->__simpleGetValue($card, "cAut");
+                $cardCNPJ = $this->pSimpleGetValue($card, "CNPJ");
+                $tBand    = $this->pSimpleGetValue($card, "tBand");
+                //$cAut = $this->pSimpleGetValue($card, "cAut");
                 $tBandNome = self::getCardName($tBand);
             }
             if ($tPag != $oldtPag) {
@@ -494,7 +498,7 @@ class DanfeNFCeNFePHP extends CommonNFePHP implements DocumentoNFePHP
             if ($cardCNPJ != '' && $oldtBand != $tBand) {
                 $pagHtml .= "<tr>\n";
                 $pagHtml .= "<td align=\"left\">".htmlspecialchars($tBandNome)."</td>\n";
-                $pagHtml .= "<td align=\"right\">".$this->__format($cardCNPJ, "##.###.###/####-##")."</td>\n";
+                $pagHtml .= "<td align=\"right\">".$this->pFormat($cardCNPJ, "##.###.###/####-##")."</td>\n";
                 $pagHtml .= "</tr>\n";
                 $oldtBand = $tBand;
             }
@@ -580,12 +584,12 @@ class DanfeNFCeNFePHP extends CommonNFePHP implements DocumentoNFePHP
             $thisItem   = $detI;
             $prod       = $thisItem->getElementsByTagName("prod")->item(0);
             $nitem      = $thisItem->getAttribute("nItem");
-            $cProd      = $this->__simpleGetValue($prod, "cProd");
-            $xProd      = $this->__simpleGetValue($prod, "xProd");
-            $qCom       = number_format($this->__simpleGetValue($prod, "qCom"), 2, ",", ".");
-            $uCom       = $this->__simpleGetValue($prod, "uCom");
-            $vUnCom     = number_format($this->__simpleGetValue($prod, "vUnCom"), 2, ",", ".");
-            $vProd      = number_format($this->__simpleGetValue($prod, "vProd"), 2, ",", ".");
+            $cProd      = $this->pSimpleGetValue($prod, "cProd");
+            $xProd      = $this->pSimpleGetValue($prod, "xProd");
+            $qCom       = number_format($this->pSimpleGetValue($prod, "qCom"), 2, ",", ".");
+            $uCom       = $this->pSimpleGetValue($prod, "uCom");
+            $vUnCom     = number_format($this->pSimpleGetValue($prod, "vUnCom"), 2, ",", ".");
+            $vProd      = number_format($this->pSimpleGetValue($prod, "vProd"), 2, ",", ".");
             $itensHtml .=  "<tr>\n";
             $itensHtml .=  "<td align=\"left\">".htmlspecialchars($nitem)."</td>\n";
             $itensHtml .=  "<td align=\"left\">".htmlspecialchars($cProd)."</td>\n";
@@ -607,8 +611,8 @@ class DanfeNFCeNFePHP extends CommonNFePHP implements DocumentoNFePHP
             return '';
         }
         $enderDest = $dest->getElementsByTagName("enderDest")->item(0);
-        $consNome = $this->__simpleGetValue($enderDest, "xNome");
-        $consFone = $this->__simpleGetValue($enderDest, "fone");
+        $consNome = $this->pSimpleGetValue($enderDest, "xNome");
+        $consFone = $this->pSimpleGetValue($enderDest, "fone");
         $foneLen = strlen($consFone);
         if ($foneLen > 0) {
             $fone2 = substr($consFone, 0, $foneLen-4);
@@ -617,16 +621,16 @@ class DanfeNFCeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         } else {
             $consFone = '';
         }
-        $consLgr = $this->__simpleGetValue($enderDest, "xLgr");
-        $consNro = $this->__simpleGetValue($enderDest, "nro");
-        $consCpl = $this->__simpleGetValue($enderDest, "xCpl", " - ");
-        $consBairro = $this->__simpleGetValue($enderDest, "xBairro");
-        $consCEP = $this->__format($this->__simpleGetValue($enderDest, "CEP"));
-        $consMun = $this->__simpleGetValue($enderDest, "xMun");
-        $consUF = $this->__simpleGetValue($enderDest, "UF");
-        $considEstrangeiro = $this->__simpleGetValue($dest, "idEstrangeiro");
-        $consCPF = $this->__simpleGetValue($dest, "CPF");
-        $consCNPJ = $this->__simpleGetValue($dest, "CNPJ");
+        $consLgr = $this->pSimpleGetValue($enderDest, "xLgr");
+        $consNro = $this->pSimpleGetValue($enderDest, "nro");
+        $consCpl = $this->pSimpleGetValue($enderDest, "xCpl", " - ");
+        $consBairro = $this->pSimpleGetValue($enderDest, "xBairro");
+        $consCEP = $this->pFormat($this->pSimpleGetValue($enderDest, "CEP"));
+        $consMun = $this->pSimpleGetValue($enderDest, "xMun");
+        $consUF = $this->pSimpleGetValue($enderDest, "UF");
+        $considEstrangeiro = $this->pSimpleGetValue($dest, "idEstrangeiro");
+        $consCPF = $this->pSimpleGetValue($dest, "CPF");
+        $consCNPJ = $this->pSimpleGetValue($dest, "CNPJ");
         $consDoc = $consCPF.$consCNPJ.$considEstrangeiro; //documentos do consumidor
         
         $consHtml = '';
