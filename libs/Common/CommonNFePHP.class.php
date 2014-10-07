@@ -23,7 +23,7 @@
  *
  * @package     NFePHP
  * @name        CommonNFePHP.class.php
- * @version     1.0.6
+ * @version     1.0.7
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2012 &copy; NFePHP
@@ -41,8 +41,7 @@ class CommonNFePHP
 {
     
     /**
-     * __adicionaLogoPeloCnpj
-     * @author Marcos Diez 
+     * pAdicionaLogoPeloCnpj
      * @param none
      * @return none
      */
@@ -81,13 +80,11 @@ class CommonNFePHP
             $this->logomarca = $imgPath;
             return;
         }
-    } //fim __adicionaLogoPeloCnpj
-
+    }
     
     /**
      * pSimpleGetValue
      * Extrai o valor do node DOM
-     * @author Marcos Diez
      * @param object $theObj Instancia de DOMDocument ou DOMElement
      * @param string $keyName identificador da TAG do xml
      * @param string $extraTextBefore prefixo do retorno
@@ -97,15 +94,21 @@ class CommonNFePHP
      */
     protected function pSimpleGetValue($theObj, $keyName, $extraTextBefore = '', $extraTextAfter = '', $itemNum = 0)
     {
+        if (empty($theObj)) {
+            return '';
+        }
         if (!($theObj instanceof DOMDocument) && !($theObj instanceof DOMElement)) {
-            throw new nfephpException("Metodo CommonNFePHP::pSimpleGetValue() com parametro do objeto invalido, verifique!");
+            throw new nfephpException(
+                "Metodo CommonNFePHP::pSimpleGetValue() "
+                . "com parametro do objeto invalido, verifique!"
+            );
         }
         $vct = $theObj->getElementsByTagName($keyName)->item($itemNum);
         if (isset($vct)) {
             return $extraTextBefore . trim($vct->nodeValue) . $extraTextAfter;
         }
         return '';
-    } //fim pSimpleGetValue
+    }
 
     /**
      * pSimpleGetDate
@@ -130,8 +133,7 @@ class CommonNFePHP
     } //fim pSimpleGetDate
 
     /**
-     * __modulo11
-     * @author Marcos Diez
+     * pModulo11
      * @param string $numero
      * @return integer modulo11 do numero passado
      */
@@ -155,56 +157,60 @@ class CommonNFePHP
         }
         $resto = ($soma * 10) % 11;
         return ($resto == 10 || $resto == 0) ? 1 : $resto;
-    } //fim __modulo11
+    }
 
     /**
-     *__ymd2dmy
+     * pYmd2dmy
      * Converte datas no formato YMD (ex. 2009-11-02) para o formato brasileiro 02/11/2009)
-     * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @param string $data Parâmetro extraido da NFe
      * @return string Formatada para apresentação da data no padrão brasileiro
      */
     protected function pYmd2dmy($data = '')
     {
-        if (!empty($data)) {
-            $needle = "/";
-            if (strstr($data, "-")) {
-                $needle = "-";
-            }
-            $dt = explode($needle, $data);
-            return "$dt[2]/$dt[1]/$dt[0]";
+        if ($data == '') {
+            return '';
         }
-    } // fim da função __ymd2dmy
+        $needle = "/";
+        if (strstr($data, "-")) {
+            $needle = "-";
+        }
+        $dt = explode($needle, $data);
+        return "$dt[2]/$dt[1]/$dt[0]";
+    }
 
     /**
-     * __convertTime
+     * pConvertTime
      * Converte a imformação de data e tempo contida na NFe
-     * @author Roberto L. Machado <linux.rlm at gmail dot com>
+     * 
      * @param string $DH Informação de data e tempo extraida da NFe
      * @return timestamp UNIX Para uso com a funçao date do php
      */
-    protected function pConvertTime($DH)
+    protected function pConvertTime($DH = '')
     {
-        if ($DH) {
-            $aDH = explode('T', $DH);
-            $adDH = explode('-', $aDH[0]);
-            $inter = explode('-', $aDH[1]);
-            $atDH = explode(':', $inter[0]);
-            $timestampDH = mktime($atDH[0], $atDH[1], $atDH[2], $adDH[1], $adDH[2], $adDH[0]);
-            return $timestampDH;
+        if ($DH == '') {
+            return '';
         }
-    } //fim da função __convertTime
+        $aDH = explode('T', $DH);
+        $adDH = explode('-', $aDH[0]);
+        $inter = explode('-', $aDH[1]);
+        $atDH = explode(':', $inter[0]);
+        $timestampDH = mktime($atDH[0], $atDH[1], $atDH[2], $adDH[1], $adDH[2], $adDH[0]);
+        return $timestampDH;
+    }
 
     /**
-     * __format
-     * Função de formatação de strings.
-     * @author Roberto L. Machado <linux.rlm at gmail dot com>
+     * pFormat
+     * Função de formatação de strings onde o cerquilha # é um coringa
+     * que será substituido por digitos contidos em campo.
      * @param string $campo String a ser formatada
      * @param string $mascara Regra de formatção da string (ex. ##.###.###/####-##)
      * @return string Retorna o campo formatado
      */
     protected function pFormat($campo = '', $mascara = '')
     {
+        if ($campo == '' || $mascara == '') {
+            return $campo;
+        }
         //remove qualquer formatação que ainda exista
         $sLimpo = preg_replace("(/[' '-./ t]/)", '', $campo);
         // pega o tamanho da string e da mascara
@@ -279,12 +285,12 @@ class CommonNFePHP
         } else {
             return '';
         }
-    } //fim __format
+    }
 
     /**
-     * __getNumLines
+     * pGetNumLines
      * Obtem o numero de linhas usadas pelo texto usando a fonte especifidada
-     * @author Roberto L. Machado <linux.rlm at gmail dot com>
+     * 
      * @param string $text
      * @param number $width
      * @param array $aFont
@@ -296,17 +302,17 @@ class CommonNFePHP
         $this->pdf->SetFont($aFont['font'], $aFont['style'], $aFont['size']);
         $n = $this->pdf->WordWrap($text, $width-0.2);
         return $n;
-    } // fim __getNumLines
+    }
 
 
     /**
-     *__textBox
+     * pTextBox
      * Cria uma caixa de texto com ou sem bordas. Esta função perimite o alinhamento horizontal
      * ou vertical do texto dentro da caixa.
      * Atenção : Esta função é dependente de outras classes de FPDF
-     * Ex. $this->__textBox(2,20,34,8,'Texto',array('fonte'=>$this->fontePadrao,'size'=>10,'style='B'),'C','L',FALSE,'http://www.nfephp.org')
+     * Ex. $this->pTextBox(2,20,34,8,'Texto',array('fonte'=>$this->fontePadrao,
+     * 'size'=>10,'style='B'),'C','L',FALSE,'http://www.nfephp.org')
      *
-     * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @param number $x Posição horizontal da caixa, canto esquerdo superior
      * @param number $y Posição vertical da caixa, canto esquerdo superior
      * @param number $w Largura da caixa
@@ -317,7 +323,9 @@ class CommonNFePHP
      * @param string $hAlign Alinhamento horizontal do texto, L-esquerda, C-centro, R-direita
      * @param boolean $border TRUE ou 1 desenha a borda, FALSE ou 0 Sem borda
      * @param string $link Insere um hiperlink
-     * @param boolean $force Se for true força a caixa com uma unica linha e para isso atera o tamanho do fonte até caber no espaço, se falso mantem o tamanho do fonte e usa quantas linhas forem necessárias
+     * @param boolean $force Se for true força a caixa com uma unica linha 
+     * e para isso atera o tamanho do fonte até caber no espaço, 
+     * se falso mantem o tamanho do fonte e usa quantas linhas forem necessárias
      * @param number $hmax
      * @param number $vOffSet incremento forçado na na posição Y
      * @return number $height Qual a altura necessária para desenhar esta textBox
@@ -431,16 +439,14 @@ class CommonNFePHP
     } // fim função __textBox
 
     /**
-     *__textBox90
+     * pTextBox90
      * Cria uma caixa de texto com ou sem bordas. Esta função permite o alinhamento horizontal
      * ou vertical do texto dentro da caixa, rotacionando-o em 90 graus, essa função precisa que
      * a classe PDF contenha a função Rotate($angle,$x,$y);
      * Atenção : Esta função é dependente de outras classes de FPDF
-     * Ex. $this->__textBox90(2,20,34,8,'Texto',array('fonte'=>$this->fontePadrao,'size'=>10,'style='B'),'C','L',FALSE,'http://www.nfephp.org')
+     * Ex. $this->__textBox90(2,20,34,8,'Texto',array('fonte'=>$this->fontePadrao,
+     * 'size'=>10,'style='B'),'C','L',FALSE,'http://www.nfephp.org')
      *
-     * @package NFePHP
-     * @author Roberto L. Machado <linux.rlm at gmail dot com>
-     * @author Guilherme Calabria Filho <guiga86 at gmail dot com>
      * @param number $x Posição horizontal da caixa, canto esquerdo superior
      * @param number $y Posição vertical da caixa, canto esquerdo superior
      * @param number $w Largura da caixa
@@ -451,7 +457,9 @@ class CommonNFePHP
      * @param string $hAlign Alinhamento horizontal do texto, L-esquerda, C-centro, R-direita
      * @param boolean $border TRUE ou 1 desenha a borda, FALSE ou 0 Sem borda
      * @param string $link Insere um hiperlink
-     * @param boolean $force Se for true força a caixa com uma unica linha e para isso atera o tamanho do fonte até caber no espaço, se falso mantem o tamanho do fonte e usa quantas linhas forem necessárias
+     * @param boolean $force Se for true força a caixa com uma unica linha 
+     * e para isso atera o tamanho do fonte até caber no espaço,
+     * se falso mantem o tamanho do fonte e usa quantas linhas forem necessárias
      * @param number $hmax
      * @param number $vOffSet incremento forçado na na posição Y
      * @return number $height Qual a altura necessária para desenhar esta textBox
@@ -566,6 +574,5 @@ class CommonNFePHP
         //Zerando rotação
         $this->pdf->Rotate(0, $x, $y);
         return ($y1-$y)-$incY;
-    } // fim função __textBox90
+    }
 }
-//fim da classe
