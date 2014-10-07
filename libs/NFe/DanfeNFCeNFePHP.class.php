@@ -54,8 +54,6 @@ require_once '../../libs/External/qrcode/qrcode.class.php';
 require_once '../../libs/Common/CommonNFePHP.class.php';
 require_once '../../libs/Common/DocumentoNFePHP.interface.php';
 
-
-
 /**
  * Classe DanfceNFePHP
  * Objetivo - impressão de NFC-e em uma unica pagina (bobina)
@@ -89,30 +87,54 @@ class DanfeNFCeNFePHP extends CommonNFePHP implements DocumentoNFePHP
     protected $imgQRCode;
     protected $urlConsulta = array(
         '1'=> array(
-            '12'=> array('chave'=>'','QR'=>'http://www.sefaznet.ac.gov.br/nfe/NFe.jsp?opc=3'),
+            '12'=> array(
+                'chave'=>'',
+                'QR'=>'http://www.sefaznet.ac.gov.br/nfe/NFe.jsp?opc=3'),
             '13'=> array(
                 'chave'=>'http://sistemas.sefaz.am.gov.br/nfceweb/formConsulta.do',
                 'QR'=>'http://sistemas.sefaz.am.gov.br/nfceweb/consultarNFCe.jsp'),
-            '21'=> array('chave'=>'','QR'=>'http://www.nfe.ma.gov.br/portal/consultarNFCe.jsp'),
-            '51'=> array('chave'=>'','QR'=>'http://www.nfe.sefaz.mt.gov.br/portal/consultarNFCe.jsp'),
-            '24'=> array('chave'=>'','QR'=>'http://www.nfe.rn.gov.br/portal/consultarNFCe.jsp'),
-            '43'=> array('chave'=>'','QR'=>'https://www.sefaz.rs.gov.br/NFCE/NFCE-COM.aspx'),
-            '28'=> array('chave'=>'','QR'=>'http://www.nfe.se.gov.br/portal/consultarNFCe.jsp')
+            '21'=> array(
+                'chave'=>'',
+                'QR'=>'http://www.nfe.ma.gov.br/portal/consultarNFCe.jsp'),
+            '51'=> array(
+                'chave'=>'',
+                'QR'=>'http://www.nfe.sefaz.mt.gov.br/portal/consultarNFCe.jsp'),
+            '24'=> array(
+                'chave'=>'',
+                'QR'=>'http://www.nfe.rn.gov.br/portal/consultarNFCe.jsp'),
+            '43'=> array(
+                'chave'=>'',
+                'QR'=>'https://www.sefaz.rs.gov.br/NFCE/NFCE-COM.aspx'),
+            '28'=> array(
+                'chave'=>'',
+                'QR'=>'http://www.nfe.se.gov.br/portal/consultarNFCe.jsp')
         ),
         '2' => array(
-            '12'=> array('chave'=>'','QR'=>'http://hml.sefaznet.ac.gov.br'),
+            '12'=> array(
+                'chave'=>'',
+                'QR'=>'http://hml.sefaznet.ac.gov.br'),
             '13'=> array(
                 'chave'=>'http://sistemas.sefaz.am.gov.br/nfceweb/formConsulta.do',
                 'QR'=>'http://homnfe.sefaz.am.gov.br/nfceweb/consultarNFCe.jsp'),
-            '21'=> array('chave'=>'','QR'=>'http://www.hom.nfe.ma.gov.br/portal/consultarNFCe.jsp'),
-            '51'=> array('chave'=>'','QR'=>'http://www.hom.nfe.sefaz.mt.gov.br/portal/consultarNFCe.jsp'),
-            '24'=> array('chave'=>'','QR'=>'http://www.hom.nfe.rn.gov.br/portal/consultarNFCe.jsp'),
-            '43'=> array('chave'=>'','QR'=>'https://www.sefaz.rs.gov.br/NFCE/NFCE-COM.aspx'),
-            '28'=> array('chave'=>'','QR'=>'http://www.hom.nfe.se.gov.br/portal/consultarNFCe.jsp')
+            '21'=> array(
+                'chave'=>'',
+                'QR'=>'http://www.hom.nfe.ma.gov.br/portal/consultarNFCe.jsp'),
+            '51'=> array(
+                'chave'=>'',
+                'QR'=>'http://www.hom.nfe.sefaz.mt.gov.br/portal/consultarNFCe.jsp'),
+            '24'=> array(
+                'chave'=>'',
+                'QR'=>'http://www.hom.nfe.rn.gov.br/portal/consultarNFCe.jsp'),
+            '43'=> array(
+                'chave'=>'',
+                'QR'=>'https://www.sefaz.rs.gov.br/NFCE/NFCE-COM.aspx'),
+            '28'=> array(
+                'chave'=>'',
+                'QR'=>'http://www.hom.nfe.se.gov.br/portal/consultarNFCe.jsp')
         ));
 
     /**
-     * 
+     * __contruct
      * @param type $docXML
      * @param type $sPathLogo
      * @param type $mododebug
@@ -195,7 +217,7 @@ class DanfeNFCeNFePHP extends CommonNFePHP implements DocumentoNFePHP
     } //fim simpleConsistencyCheck
     
     /**
-     * 
+     * monta
      * @param type $orientacao
      * @param type $papel
      * @param type $logoAlign
@@ -207,7 +229,7 @@ class DanfeNFCeNFePHP extends CommonNFePHP implements DocumentoNFePHP
     }//fim monta
     
     /**
-     * 
+     * printDocument
      * @param type $nome
      * @param type $destino
      * @param type $printer
@@ -226,8 +248,10 @@ class DanfeNFCeNFePHP extends CommonNFePHP implements DocumentoNFePHP
     public function montaDANFE($detalhes = false)
     {
         //DADOS DA NF
-        $nProt = $this->pSimpleGetValue($this->nfeProc, "nProt");
-        $dhRecbto  = $this->pSimpleGetValue($this->nfeProc, "dhRecbto");
+        if (isset($this->nfeProc)) {
+            $nProt = $this->pSimpleGetValue($this->nfeProc, "nProt");
+            $dhRecbto  = $this->pSimpleGetValue($this->nfeProc, "dhRecbto");
+        }
         $digVal = $this->pSimpleGetValue($this->nfe, "DigestValue");
         $chNFe = str_replace('NFe', '', $this->infNFe->getAttribute("Id"));
         $tpAmb = $this->pSimpleGetValue($this->ide, 'tpAmb');
@@ -243,7 +267,6 @@ class DanfeNFCeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $qtdItens = $this->det->length;
         $urlChave = $this->urlConsulta[$tpAmb][$cUF]['chave'];
         $urlQR = $this->urlConsulta[$tpAmb][$cUF]['QR'];
-        
         //DADOS DO EMITENTE
         $emitRazao  = $this->pSimpleGetValue($this->emit, "xNome");
         $emitCnpj   = $this->pSimpleGetValue($this->emit, "CNPJ");

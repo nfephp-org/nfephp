@@ -13,7 +13,7 @@ if (!isset($_REQUEST['o'])) {
 $arq = '../xml/exemploNFCe.xml';
 if (is_file($arq)) {
     $docxml = file_get_contents($arq);
-    $danfe = new DanfeNFCeNFePHP($docxml, '', 0);
+    $danfe = new DanfeNFCeNFePHP($docxml, '../../images/logo.jpg', 0);
     $id = $danfe->montaDANFE(false);
     $teste = $danfe->printDANFE($saida, $id.'.pdf', 'I');
 }

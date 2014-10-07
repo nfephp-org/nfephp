@@ -5,12 +5,11 @@
 require_once('../../libs/NFe/DanfeNFePHP.class.php');
 
 //$arq = $_GET['nfe'];
-$arq = 'xml/35101158716523000119550010000000011003000000-nfe.xml';
+$arq = '../xml/35101158716523000119550010000000011003000000-nfe.xml';
 
-if ( is_file($arq) ){
+if (is_file($arq)) {
     $docxml = file_get_contents($arq);
-    $danfe = new DanfeNFePHP($docxml, 'P', 'A4','../images/logo.jpg','I','');
+    $danfe = new DanfeNFePHP($docxml, 'P', 'A4', '../../images/logo.jpg', 'I', '');
     $id = $danfe->montaDANFE();
-    $teste = $danfe->printDANFE($id.'.pdf','I');
+    $teste = $danfe->printDANFE($id.'.pdf', 'I');
 }
-?>
