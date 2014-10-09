@@ -23,7 +23,7 @@
  *
  * @package     NFePHP
  * @name        DanfeNFePHP.class.php
- * @version     2.2.2
+ * @version     2.2.3
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2012 &copy; NFePHP
@@ -204,7 +204,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
      * versão
      * @var string 
      */
-    protected $version = '2.2.2';
+    protected $version = '2.2.3';
     /**
      * Texto
      * @var string 
@@ -1623,9 +1623,15 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $texto = 'DATA DA SAÍDA';
         $aFont = array('font'=>$this->fontePadrao, 'size'=>6, 'style'=>'');
         $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 1, '');
-        $texto = ! empty($this->ide->getElementsByTagName("dSaiEnt")->item(0)->nodeValue) ?
-                $this->ide->getElementsByTagName("dSaiEnt")->item(0)->nodeValue : "";
-        $texto = $this->pYmd2dmy($texto);
+        $dSaiEnt = ! empty($this->ide->getElementsByTagName("dSaiEnt")->item(0)->nodeValue) ?
+                $this->ide->getElementsByTagName("dSaiEnt")->item(0)->nodeValue : '';
+        if ($dSaiEnt == '') {
+            $dSaiEnt = ! empty($this->ide->getElementsByTagName("dhSaiEnt")->item(0)->nodeValue) ?
+                    $this->ide->getElementsByTagName("dhSaiEnt")->item(0)->nodeValue : '';
+            $aDsaient = explode('T', $dSaiEnt);
+            $dSaiEnt = $aDsaient[0];
+        }
+        $texto = $this->pYmd2dmy($dSaiEnt);
         $aFont = array('font'=>$this->fontePadrao, 'size'=>10, 'style'=>'B');
         $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'B', 'C', 0, '');
         //MUNICÍPIO
