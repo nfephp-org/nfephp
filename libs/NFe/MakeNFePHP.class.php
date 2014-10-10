@@ -26,7 +26,7 @@
  * 
  * @package     NFePHP
  * @name        MakeNFePHP
- * @version     0.1.9
+ * @version     0.1.10
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright   2009-2014 &copy; NFePHP
  * @link        http://www.nfephp.org/
@@ -1815,7 +1815,7 @@ class MakeNFe
         $vBCSTRet = '',
         $vICMSSTRet = ''
     ) {
-        switch ($cst) {
+        switch ($csosn) {
             case '101':
                 $icmsSN = $this->dom->createElement("ICMSSN101");
                 $this->zAddChild($icmsSN, 'orig', $orig, true, "[item $nItem] Origem da mercadoria");
@@ -1861,7 +1861,7 @@ class MakeNFe
                 $this->zAddChild(
                     $icmsSN,
                     'CSOSN',
-                    $cst,
+                    $csosn,
                     true,
                     "[item $nItem] Código de Situação da Operação Simples Nacional"
                 );
@@ -1902,7 +1902,7 @@ class MakeNFe
             case '203':
                 $icmsSN = $this->dom->createElement("ICMSSN202");
                 $this->zAddChild($icmsSN, 'orig', $orig, true, "[item $nItem] Origem da mercadoria");
-                $this->zAddChild($icmsSN, 'CSOSN', $cst, true, "[item $nItem] Código de Situação da Operação Simples Nacional");
+                $this->zAddChild($icmsSN, 'CSOSN', $csosn, true, "[item $nItem] Código de Situação da Operação Simples Nacional");
                 $this->zAddChild(
                     $icmsSN,
                     'modBCST',
@@ -1928,7 +1928,7 @@ class MakeNFe
                 $this->zAddChild(
                     $icmsSN,
                     'CSOSN',
-                    $cst,
+                    $csosn,
                     true,
                     "[item $nItem] Código de Situação da Operação Simples Nacional"
                 );
@@ -1938,7 +1938,7 @@ class MakeNFe
             case '900':
                 $icmsSN = $this->dom->createElement("ICMSSN900");
                 $this->zAddChild($icmsSN, 'orig', $orig, true, "[item $nItem] Origem da mercadoria");
-                $this->zAddChild($icmsSN, 'CSOSN', $cst, true, "[item $nItem] Código de Situação da Operação Simples Nacional");
+                $this->zAddChild($icmsSN, 'CSOSN', $csosn, true, "[item $nItem] Código de Situação da Operação Simples Nacional");
                 $this->zAddChild($icmsSN, 'modBC', $modBC, true, "[item $nItem] Modalidade de determinação da BC do ICMS");
                 $this->zAddChild($icmsSN, 'vBC', $vBC, true, "[item $nItem] Valor da BC do ICMS");
                 $this->zAddChild($icmsSN, 'pRedBC', $pRedBC, false, "[item $nItem] Percentual da Redução de BC");
