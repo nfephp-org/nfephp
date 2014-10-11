@@ -3,6 +3,7 @@ nbproject
 *.pfx
 *.pem
 vendor
+local
 /.DS_Store
 /.idea
 /.project
