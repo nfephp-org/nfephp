@@ -878,7 +878,7 @@ class ToolsNFePHPTest extends PHPUnit_Framework_TestCase
             . '<verAplic>2.0</verAplic>'
             . '<cStat>138</cStat>'
             . '<xMotivo>Documento localizado para o Destinatário</xMotivo>'
-            . '<ultNSU>123</ultNSU>'
+            . '<ultNSU>0</ultNSU>'
             . '<indCont>1</indCont>'
             . '<ret>'
             . '<resNFe>'
