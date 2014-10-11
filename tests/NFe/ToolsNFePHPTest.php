@@ -573,9 +573,64 @@ class ToolsNFePHPTest extends PHPUnit_Framework_TestCase
 
     /**
      * @expectedException nfephpException
+     * @expectedExceptionMessage Versão do arquivo XML não suportada
+     */
+    public function testExceptionAoConsultarCadastroErroVersaoDoArquivoNaoSuportada()
+    {
+        $mockBuilder = $this->getMockBuilder('ToolsNFePHP');
+        $mockBuilder->setConstructorArgs(array($this->configTest, 1, true));
+        $mockBuilder->setMethods(array('pSendSOAP'));
+        /** @var ToolsNFePHP $tool */
+        $tool = $mockBuilder->getMock();
+        $xmlProtocolo = '<?xml version="1.0" encoding="utf-8"?>'
+            . '<response xmlns:xs="http://www.w3.org/2003/05/soap-envelope">'
+            . '<xs:Body>'
+            . '<infCons>'
+            . '<cStat>239</cStat>'
+            . '<xMotivo>Versão do arquivo XML não suportada</xMotivo>'
+            . '<versaoDados>3.10</versaoDados>'
+            . '<infCad>'
+            . '<CNPJ>1234567890001</CNPJ>'
+            . '<CPF>12312312312</CPF>'
+            . '<IE>123123</IE>'
+            . '<UF>SP</UF>'
+            . '<cSit></cSit>'
+            . '<indCredNFe></indCredNFe>'
+            . '<indCredCTe></indCredCTe>'
+            . '<xNome></xNome>'
+            . '<xRegApur></xRegApur>'
+            . '<CNAE></CNAE>'
+            . '<dIniAtiv></dIniAtiv>'
+            . '<dUltSit></dUltSit>'
+            . '<ender>'
+            . '<xLgr></xLgr>'
+            . '<nro></nro>'
+            . '<xCpl></xCpl>'
+            . '<xBairro></xBairro>'
+            . '<cMun></cMun>'
+            . '<xMun></xMun>'
+            . '<CEP></CEP>'
+            . '</ender>'
+            . '</infCad>'
+            . '</infCons>'
+            . '</xs:Body>'
+            . '</response>';
+        $tool->expects($this->any())->method('pSendSOAP')->will($this->returnValue($xmlProtocolo));
+
+        $resultado = $tool->consultaCadastro('SP', '1234567890001', '123123', '123123123');
+
+        $this->assertTrue(is_array($resultado));
+        $this->assertArrayHasKey('cStat', $resultado);
+        $this->assertEquals('239', $resultado['cStat']);
+        $this->assertArrayHasKey('xMotivo', $resultado);
+        $this->assertEquals('Versão do arquivo XML não suportada', $resultado['xMotivo']);
+    }
+
+    /**
+     * @expectedException nfephpException
      * @expectedExceptionMessage Rejeição: CNPJ do emitente inválido
      */
-    public function testConsultarCadastroRejeicaoCnpjDoEmitenteInvalido()
+    public function testExceptionAoConsultarCadastroRejeicaoCnpjDoEmitenteInvalido()
     {
         $mockBuilder = $this->getMockBuilder('ToolsNFePHP');
         $mockBuilder->setConstructorArgs(array($this->configTest, 1, true));
@@ -682,5 +737,221 @@ class ToolsNFePHPTest extends PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('infProt', $retorno['protNFe']);
         $this->assertArrayHasKey('nProt', $retorno['protNFe']['infProt']);
         $this->assertEquals('311100000046263', $retorno['protNFe']['infProt']['nProt']);
+    }
+
+    public function testInutilizacaoNfeComSucesso()
+    {
+        $mockBuilder = $this->getMockBuilder('ToolsNFePHP');
+        $mockBuilder->setConstructorArgs(array($this->configTest, 1, true));
+        $mockBuilder->setMethods(array('pSendSOAP'));
+        /** @var ToolsNFePHP $tool */
+        $tool = $mockBuilder->getMock();
+        $xmlRetornoInutilizacao = '<?xml version="1.0" encoding="utf-8"?>'
+            . '<retInutNFe versao="3.10">'
+            . '<infInut>'
+            . '<tpAmb>2</tpAmb>'
+            . '<verAplic>2.0</verAplic>'
+            . '<cStat>102</cStat>'
+            . '<xMotivo>Inutilizacao de numero homologado</xMotivo>'
+            . '<cUF>SP</cUF>'
+            . '<ano>14</ano>'
+            . '<CNPJ>11222333444455</CNPJ>'
+            . '<mod>65</mod>'
+            . '<serie>1</serie>'
+            . '<nNFIni>1</nNFIni>'
+            . '<nNFFin>10</nNFFin>'
+            . '<dhRecbto>' . date('Y-m-d\TH:i:s') . '</dhRecbto>'
+            . '<nProt>123</nProt>'
+            . '</infInut>'
+            . '</retInutNFe>';
+        $tool->expects($this->any())->method('pSendSOAP')->will($this->returnValue($xmlRetornoInutilizacao));
+
+        $retorno = array();
+
+        $tool->inutNF(14, 1, 1, 10, str_repeat('Testando ', 10), '', $retorno);
+
+        $this->assertTrue(is_array($retorno));
+
+        $this->assertArrayHasKey('bStat', $retorno);
+        $this->assertTrue($retorno['bStat']);
+
+        $this->assertArrayHasKey('cStat', $retorno);
+        $this->assertEquals('102', $retorno['cStat']);
+
+        $this->assertArrayHasKey('xMotivo', $retorno);
+        $this->assertEquals('Inutilizacao de numero homologado', $retorno['xMotivo']);
+
+        $this->assertArrayHasKey('nProt', $retorno);
+    }
+
+    /**
+     * @expectedException nfephpException
+     * @expectedExceptionMessage Não foi passado algum dos parametos necessários ANO= inicio= fim= justificativa=.
+     */
+    public function testExceptionAoInutilizarNfeNenhumParametroInformado()
+    {
+        $tool = new ToolsNFePHP($this->configTest, 2, true);
+        $tool->inutNF();
+    }
+
+    /**
+     * @expectedException nfephpException
+     * @expectedExceptionMessage A justificativa deve ter pelo menos 15 digitos!!
+     */
+    public function testExceptionAoInutilizarNfeJustificativaMuitoCurta()
+    {
+        $tool = new ToolsNFePHP($this->configTest, 2, true);
+        $tool->inutNF(14, 1, 1, 2, 'Teste');
+    }
+
+    /**
+     * @expectedException nfephpException
+     * @expectedExceptionMessage A justificativa deve ter no máximo 255 digitos!!
+     */
+    public function testExceptionAoInutilizarNfeJustificativaMuitoLonga()
+    {
+        $tool = new ToolsNFePHP($this->configTest, 2, true);
+        $tool->inutNF(14, 1, 1, 2, str_repeat('.', 256));
+    }
+
+    /**
+     * @expectedException nfephpException
+     * @expectedExceptionMessage O ano tem mais de 2 digitos. Corrija e refaça o processo!!
+     */
+    public function testExceptionAoInutilizarNfeAnoComMaisDe2Digitos()
+    {
+        $tool = new ToolsNFePHP($this->configTest, 2, true);
+        $tool->inutNF(2014, 1, 1, 2, str_repeat('.', 20));
+    }
+
+    /**
+     * @expectedException nfephpException
+     * @expectedExceptionMessage O ano tem menos de 2 digitos. Corrija e refaça o processo!!
+     */
+    public function testExceptionAoInutilizarNfeAnoComMenosDe2Digitos()
+    {
+        $tool = new ToolsNFePHP($this->configTest, 2, true);
+        $tool->inutNF(4, 1, 1, 2, str_repeat('.', 20));
+    }
+
+    /**
+     * @expectedException nfephpException
+     * @expectedExceptionMessage O campo serie está errado: 1111. Corrija e refaça o processo!!
+     */
+    public function testExceptionAoInutilizarNfeCampoDaSerieErrado()
+    {
+        $tool = new ToolsNFePHP($this->configTest, 2, true);
+        $tool->inutNF(14, 1111, 1, 2, str_repeat('.', 20));
+    }
+
+    /**
+     * @expectedException nfephpException
+     * @expectedExceptionMessage O campo numero inicial está errado: 1112223334. Corrija e refaça o processo!!
+     */
+    public function testExceptionAoInutilizarNfeNumeroInicialErrado()
+    {
+        $tool = new ToolsNFePHP($this->configTest, 2, true);
+        $tool->inutNF(14, 1, 1112223334, 2, str_repeat('.', 20));
+    }
+
+    /**
+     * @expectedException nfephpException
+     * @expectedExceptionMessage O campo numero final está errado: 1112223334. Corrija e refaça o processo!!
+     */
+    public function testExceptionAoInutilizarNfeNumeroFinalErrado()
+    {
+        $tool = new ToolsNFePHP($this->configTest, 2, true);
+        $tool->inutNF(14, 1, 1, 1112223334, str_repeat('.', 20));
+    }
+
+
+    public function testConsultaRelacaoDocumentosDestinadosAUmCnpj()
+    {
+        $mockBuilder = $this->getMockBuilder('ToolsNFePHP');
+        $mockBuilder->setConstructorArgs(array($this->configTest, 1, true));
+        $mockBuilder->setMethods(array('pSendSOAP'));
+        /** @var ToolsNFePHP $tool */
+        $tool = $mockBuilder->getMock();
+        $xmlRetornoInutilizacao = '<?xml version="1.0" encoding="utf-8"?>'
+            . '<retConsNFeDest versao="3.10">'
+            . '<tpAmb>2</tpAmb>'
+            . '<verAplic>2.0</verAplic>'
+            . '<cStat>138</cStat>'
+            . '<xMotivo>Documento localizado para o Destinatário</xMotivo>'
+            . '<ultNSU>0</ultNSU>'
+            . '<indCont>1</indCont>'
+            . '<ret>'
+            . '<resNFe>'
+            . '<NSU>123</NSU>'
+            . '<chNFe>123</chNFe>'
+            . '<CNPJ>123</CNPJ>'
+            . '<xNome>123</xNome>'
+            . '<dhEmi>2014-08-31T09:00:00</dhEmi>'
+            . '<tpNF>0</tpNF>'
+            . '<dhRecbto>2014-08-31T09:00:00</dhRecbto>'
+            . '<cSitNFe>1</cSitNFe>'
+            . '<cSitConf>1</cSitConf>'
+            . '</resNFe>'
+            . '<resCanc>'
+            . '<NSU>321</NSU>'
+            . '<chNFe>321</chNFe>'
+            . '<CNPJ>321</CNPJ>'
+            . '<xNome>123</xNome>'
+            . '<dhEmi>2014-08-31T09:00:00</dhEmi>'
+            . '<tpNF>0</tpNF>'
+            . '<vNF>100.00</vNF>'
+            . '<dhRecbto>2014-08-31T09:00:00</dhRecbto>'
+            . '<cSitNFe>0</cSitNFe>'
+            . '<cSitConf>0</cSitConf>'
+            . '</resCanc>'
+            . '<resCCe>'
+            . '<NSU>321</NSU>'
+            . '<chNFe>321</chNFe>'
+            . '<tpEvento>0</tpEvento>'
+            . '<nSeqEvento>0</nSeqEvento>'
+            . '<dhEvento>2014-08-31T09:00:00</dhEvento>'
+            . '<descEvento>teste</descEvento>'
+            . '<xCorrecao>0</xCorrecao>'
+            . '<dhRecbto>2014-08-31T09:00:00</dhRecbto>'
+            . '<tpNF>0</tpNF>'
+            . '</resCCe>'
+            . '</ret>'
+            . '</retConsNFeDest>';
+        $tool->expects($this->any())->method('pSendSOAP')->will($this->returnValue($xmlRetornoInutilizacao));
+
+        $retorno = array();
+
+        $tool->getListNFe(true, 0, 0, 0, '', $retorno);
+
+        $this->assertTrue(is_array($retorno));
+        $this->assertArrayHasKey('indCont', $retorno);
+        $this->assertArrayHasKey('ultNSU', $retorno);
+        $this->assertArrayHasKey('NFe', $retorno);
+
+        foreach (array('NFe', 'Canc') as $tipo) {
+            $this->assertCount(1, $retorno[$tipo]);
+            $nfe = reset($retorno[$tipo]);
+            $this->assertArrayHasKey('chNFe', $nfe);
+            $this->assertArrayHasKey('NSU', $nfe);
+            $this->assertArrayHasKey('CNPJ', $nfe);
+            $this->assertArrayHasKey('xNome', $nfe);
+            $this->assertArrayHasKey('dhEmi', $nfe);
+            $this->assertArrayHasKey('dhRecbto', $nfe);
+            $this->assertArrayHasKey('tpNF', $nfe);
+            $this->assertArrayHasKey('cSitNFe', $nfe);
+            $this->assertArrayHasKey('cSitconf', $nfe);
+        }
+
+        $this->assertCount(1, $retorno['CCe']);
+        $cce = reset($retorno['CCe']);
+        $this->assertArrayHasKey('chNFe', $cce);
+        $this->assertArrayHasKey('NSU', $cce);
+        $this->assertArrayHasKey('tpEvento', $cce);
+        $this->assertArrayHasKey('nSeqEvento', $cce);
+        $this->assertArrayHasKey('dhEvento', $cce);
+        $this->assertArrayHasKey('dhRecbto', $cce);
+        $this->assertArrayHasKey('descEvento', $cce);
+        $this->assertArrayHasKey('xCorrecao', $cce);
+        $this->assertArrayHasKey('tpNF', $cce);
     }
 }
