@@ -573,9 +573,64 @@ class ToolsNFePHPTest extends PHPUnit_Framework_TestCase
 
     /**
      * @expectedException nfephpException
+     * @expectedExceptionMessage Versão do arquivo XML não suportada
+     */
+    public function testExceptionAoConsultarCadastroErroVersaoDoArquivoNaoSuportada()
+    {
+        $mockBuilder = $this->getMockBuilder('ToolsNFePHP');
+        $mockBuilder->setConstructorArgs(array($this->configTest, 1, true));
+        $mockBuilder->setMethods(array('pSendSOAP'));
+        /** @var ToolsNFePHP $tool */
+        $tool = $mockBuilder->getMock();
+        $xmlProtocolo = '<?xml version="1.0" encoding="utf-8"?>'
+            . '<response xmlns:xs="http://www.w3.org/2003/05/soap-envelope">'
+            . '<xs:Body>'
+            . '<infCons>'
+            . '<cStat>239</cStat>'
+            . '<xMotivo>Versão do arquivo XML não suportada</xMotivo>'
+            . '<versaoDados>3.10</versaoDados>'
+            . '<infCad>'
+            . '<CNPJ>1234567890001</CNPJ>'
+            . '<CPF>12312312312</CPF>'
+            . '<IE>123123</IE>'
+            . '<UF>SP</UF>'
+            . '<cSit></cSit>'
+            . '<indCredNFe></indCredNFe>'
+            . '<indCredCTe></indCredCTe>'
+            . '<xNome></xNome>'
+            . '<xRegApur></xRegApur>'
+            . '<CNAE></CNAE>'
+            . '<dIniAtiv></dIniAtiv>'
+            . '<dUltSit></dUltSit>'
+            . '<ender>'
+            . '<xLgr></xLgr>'
+            . '<nro></nro>'
+            . '<xCpl></xCpl>'
+            . '<xBairro></xBairro>'
+            . '<cMun></cMun>'
+            . '<xMun></xMun>'
+            . '<CEP></CEP>'
+            . '</ender>'
+            . '</infCad>'
+            . '</infCons>'
+            . '</xs:Body>'
+            . '</response>';
+        $tool->expects($this->any())->method('pSendSOAP')->will($this->returnValue($xmlProtocolo));
+
+        $resultado = $tool->consultaCadastro('SP', '1234567890001', '123123', '123123123');
+
+        $this->assertTrue(is_array($resultado));
+        $this->assertArrayHasKey('cStat', $resultado);
+        $this->assertEquals('239', $resultado['cStat']);
+        $this->assertArrayHasKey('xMotivo', $resultado);
+        $this->assertEquals('Versão do arquivo XML não suportada', $resultado['xMotivo']);
+    }
+
+    /**
+     * @expectedException nfephpException
      * @expectedExceptionMessage Rejeição: CNPJ do emitente inválido
      */
-    public function testConsultarCadastroRejeicaoCnpjDoEmitenteInvalido()
+    public function testExceptionAoConsultarCadastroRejeicaoCnpjDoEmitenteInvalido()
     {
         $mockBuilder = $this->getMockBuilder('ToolsNFePHP');
         $mockBuilder->setConstructorArgs(array($this->configTest, 1, true));
