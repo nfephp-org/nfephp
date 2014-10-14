@@ -1,6 +1,7 @@
 {
     "name": "projeto_tms/nfephp",
     "type": "library",
+    "version" : "v2.0",
     "description": "NFePHP é uma API para gerenciamento das comunicações entre o emitente de NFe e os serviços dos SEFAZ estaduais. Inteiramente construído em PHP para rodar sob qualquer sistema operacional.",
     "keywords": [
         "nfe",
