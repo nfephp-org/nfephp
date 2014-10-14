@@ -587,7 +587,8 @@ class MDFeNFePHP {
      * @param  array
      * @return boolean true sucesso false Erro
      */
-    function __construct($aConfig='',$mododebug=0,$exceptions=false) {
+    public function __construct($aConfig = '', $mododebug = 0, $exceptions = false)
+    {
         if (is_numeric($mododebug)) {
             $this->debugMode = $mododebug;
         }
@@ -605,9 +606,10 @@ class MDFeNFePHP {
             $this->exceptions = true;
         }
         // Obtem o path da biblioteca
-        $this->raizDir = dirname(dirname( __FILE__ )) . DIRECTORY_SEPARATOR;
+        $this->raizDir = dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR;
         // verifica se foi passado uma matriz de configuração na inicialização da classe
-        if(is_array($aConfig)) {
+        if (is_array($aConfig)) {
+            $this->raizDir = $aConfig['raizDir'];
             $this->tpAmb = $aConfig['ambiente'];
             $this->empName = $aConfig['empresa'];
             $this->UF = $aConfig['UF'];
@@ -626,7 +628,7 @@ class MDFeNFePHP {
             $this->damdfefont = $aConfig['damdfeFonte'];
             $this->damdfeprinter = $aConfig['damdfePrinter'];
             $this->mdfeSchemeVer = $aConfig['schemesMDFe'];
-            if(isset($aConfig['arquivoURLxmlMDFe'])){
+            if (isset($aConfig['arquivoURLxmlMDFe'])) {
                 $this->xmlURLfile = $aConfig['arquivoURLxmlMDFe'];
             }
             if ($aConfig['proxyIP'] != '') {
@@ -677,7 +679,7 @@ class MDFeNFePHP {
                 $this->damdfefont = $damdfeFonte;
                 $this->damdfeprinter = $damdfePrinter;
                 $this->mdfeSchemeVer = $schemesMDFe;
-                if(isset($arquivoURLxmlMDFe)){
+                if (isset($arquivoURLxmlMDFe)) {
                     $this->xmlURLfile = $arquivoURLxmlMDFe;
                 }
                 if ($proxyIP != '') {
@@ -741,52 +743,52 @@ class MDFeNFePHP {
         $this->pdfDir=$this->arqDir . $sAmb . DIRECTORY_SEPARATOR . 'pdf' . DIRECTORY_SEPARATOR;
         $this->evtDir=$this->arqDir . $sAmb . DIRECTORY_SEPARATOR . 'eventos' . DIRECTORY_SEPARATOR;
         // Monta a arvore de diretórios necessária e estabelece permissões de acesso
-        if (!is_dir($this->arqDir)){
+        if (!is_dir($this->arqDir)) {
             mkdir($this->arqDir, 0777);
         }
-        if (!is_dir($this->arqDir . DIRECTORY_SEPARATOR . $sAmb)){
+        if (!is_dir($this->arqDir . DIRECTORY_SEPARATOR . $sAmb)) {
             mkdir($this->arqDir . DIRECTORY_SEPARATOR . $sAmb, 0777);
         }
-        if (!is_dir($this->entDir)){
+        if (!is_dir($this->entDir)) {
             mkdir($this->entDir, 0777);
         }
-        if (!is_dir($this->assDir)){
+        if (!is_dir($this->assDir)) {
             mkdir($this->assDir, 0777);
         }
-        if (!is_dir($this->valDir)){
+        if (!is_dir($this->valDir)) {
             mkdir($this->valDir, 0777);
         }
-        if (!is_dir($this->rejDir)){
+        if (!is_dir($this->rejDir)) {
             mkdir($this->rejDir, 0777);
         }
-        if (!is_dir($this->envDir)){
+        if (!is_dir($this->envDir)) {
             mkdir($this->envDir, 0777);
         }
-        if (!is_dir($this->aprDir)){
+        if (!is_dir($this->aprDir)) {
             mkdir($this->aprDir, 0777);
         }
-        if (!is_dir($this->denDir)){
+        if (!is_dir($this->denDir)) {
             mkdir($this->denDir, 0777);
         }
-        if (!is_dir($this->repDir)){
+        if (!is_dir($this->repDir)) {
             mkdir($this->repDir, 0777);
         }
-        if (!is_dir($this->canDir)){
+        if (!is_dir($this->canDir)) {
             mkdir($this->canDir, 0777);
         }
-        if (!is_dir($this->inuDir)){
+        if (!is_dir($this->inuDir)) {
             mkdir($this->inuDir, 0777);
         }
-        if (!is_dir($this->temDir)){
+        if (!is_dir($this->temDir)) {
             mkdir($this->temDir, 0777);
         }
-        if (!is_dir($this->recDir)){
+        if (!is_dir($this->recDir)) {
             mkdir($this->recDir, 0777);
         }
-        if (!is_dir($this->conDir)){
+        if (!is_dir($this->conDir)) {
             mkdir($this->conDir, 0777);
         }
-        if (!is_dir($this->pdfDir)){
+        if (!is_dir($this->pdfDir)) {
             mkdir($this->pdfDir, 0777);
         }
         if (!is_dir($this->evtDir)) {
@@ -795,7 +797,7 @@ class MDFeNFePHP {
         // Carregar uma matriz com os dados para acesso aos WebServices SEFAZ
         $this->aURL = $this->loadSEFAZ($this->raizDir . 'config' . DIRECTORY_SEPARATOR . $this->xmlURLfile, $this->tpAmb, $this->UF);
         // Se houver erro no carregamento dos certificados passe para erro
-        if (!$retorno = $this->__loadCerts()){
+        if (!$retorno = $this->__loadCerts()) {
             $this->errStatus = true;
         }
         //estados que participam do horario de verão
@@ -819,11 +821,9 @@ class MDFeNFePHP {
             }
         }//fim check horario verao
         return true;
-        
-        
     }//fim __construct
-    
-        /**
+
+     /**
      * validXML
      * Verifica o xml com base no xsd
      * Esta função pode validar qualquer arquivo xml do sistema de MDFe
@@ -837,12 +837,13 @@ class MDFeNFePHP {
      * @param    string  $xsdfile Path completo para o arquivo xsd
      * @return   array   ['status','error']
      */
-    public function validXML($xml='', $xsdFile='', &$aError){
+    public function validXML($xml='', $xsdFile='', &$aError)
+    {
         $flagOK = true;
         // Habilita a manipulaçao de erros da libxml
         libxml_use_internal_errors(true);
         //echo "\n verifica se foi passado o xml em validXML \n";
-        if(strlen($xml)==0){
+        if (strlen($xml)==0) {
             $msg = 'Você deve passar o conteudo do xml assinado como parâmetro.';
             $this->__setError($msg);
             if ($this->exceptions) {
@@ -868,7 +869,7 @@ class MDFeNFePHP {
         if (!empty($errors)) {
             //o dado passado como $docXml não é um xml
             $msg = 'O dado informado não é um XML ou não foi encontrado. Você deve passar o conteudo de um arquivo xml assinado como parâmetro.';
-            foreach ($errors as $k=>$intError){
+            foreach ($errors as $k=>$intError) {
                 switch ($intError->level) {
                     case LIBXML_ERR_WARNING:
                         $aError[] = " Atençao $intError->code: " . $intError->message;
@@ -885,11 +886,11 @@ class MDFeNFePHP {
                         $aError[] = " Erro Fatal $intError->code: " . $intError->message;
                         break;
                 }
-                if($passa == 0){
+                if ($passa == 0) {
                   $msg .= $intError->message;
                 }
             }
-            if($passa == 0){
+            if ($passa == 0) {
               $this->__setError($msg);
               if ($this->exceptions) {
                 throw new nfephpException($msg, self::STOP_MESSAGE);
@@ -901,7 +902,7 @@ class MDFeNFePHP {
         //echo "\n verificar se a nota contem o protocolo !!! em validXML \n";
         $mdfeProc = $dom->getElementsByTagName('mdfeProc')->item(0);
         $Signature = $dom->getElementsByTagName('Signature')->item(0);
-        if (isset($mdfeProc)){
+        if (isset($mdfeProc)) {
             $msg = "Esse MDFe já contêm o protocolo. Não é possivel continuar, como alternativa use a verificação de MDFe completo.";
             $this->__setError($msg);
             if ($this->exceptions) {
@@ -910,14 +911,14 @@ class MDFeNFePHP {
             $aError[] = "";
             return true;
         }
-        if($xsdFile==''){
+        if ($xsdFile=='') {
             //echo "\n não foi passado o xsd então determinar qual o arquivo de schema válido \n";
             //buscar o nome do scheme
             //extrair a tag com o numero da versão da MDFe
             $node = $dom->getElementsByTagName('infMDFe')->item(0);
             //obtem a versão do layout da NFe
             $ver = trim($node->getAttribute("versao"));
-            $aFile = $this->listDir($this->xsdDir . $this->mdfeSchemeVer. DIRECTORY_SEPARATOR,'mdfe_v*.xsd',true);
+            $aFile = $this->listDir($this->xsdDir . $this->mdfeSchemeVer. DIRECTORY_SEPARATOR, 'mdfe_v*.xsd', true);
             if (!$aFile[0]) {
                 $msg = "Erro na localização do schema xsd. ";
                 $this->__setError($msg);
@@ -936,19 +937,19 @@ class MDFeNFePHP {
         $tmp1=dirname($xsdFile);
         $tmp2=basename($xsdFile);
         $tmp_nome_modal=$mdfeProc = $dom->getElementsByTagName('modal')->item(0);
-        if(!empty($tmp_nome_modal)){
+        if (!empty($tmp_nome_modal)) {
             $tmp_nome_modal=$tmp_nome_modal->nodeValue;
-            if($tmp_nome_modal=='01')    $tmp_nome_modal='Rodoviario';
-            elseif($tmp_nome_modal=='02')    $tmp_nome_modal='Aereo';
-            elseif($tmp_nome_modal=='03')    $tmp_nome_modal='Aquaviario';
-            elseif($tmp_nome_modal=='04')    $tmp_nome_modal='Ferroviario';
-            elseif($tmp_nome_modal=='05')    $tmp_nome_modal='Dutoviario';
+            if ($tmp_nome_modal=='01')    $tmp_nome_modal='Rodoviario';
+            elseif ($tmp_nome_modal=='02')    $tmp_nome_modal='Aereo';
+            elseif ($tmp_nome_modal=='03')    $tmp_nome_modal='Aquaviario';
+            elseif ($tmp_nome_modal=='04')    $tmp_nome_modal='Ferroviario';
+            elseif ($tmp_nome_modal=='05')    $tmp_nome_modal='Dutoviario';
             else    $tmp_nome_modal='';
-        }else{
+        } else {
             $tmp_nome_modal='';
         }
-        $xsdFile_modal=$tmp1. DIRECTORY_SEPARATOR . substr($tmp2,0,4)."Modal".$tmp_nome_modal.substr($tmp2,-10);
-        if(!is_file($xsdFile_modal)){
+        $xsdFile_modal=$tmp1. DIRECTORY_SEPARATOR . substr($tmp2,0,4)."Modal".$tmp_nome_modal.substr($tmp2, -10);
+        if (!is_file($xsdFile_modal)) {
             $msg = "Erro na localização do schema xsd para o modal $tmp_nome_modal.\n";
             //echo "\n $msg \n";
             $this->__setError($msg);
@@ -2270,7 +2271,7 @@ class MDFeNFePHP {
         // Estabelece a expressão xpath de busca
         $xpathExpression = "/WS/UF[sigla='" . $alias . "']/$sAmbiente";
         // Para cada "nó" no xml que atenda aos critérios estabelecidos
-        foreach ($xml->xpath( $xpathExpression) as $gUF) {
+        foreach ($xml->xpath($xpathExpression) as $gUF) {
             // Para cada "nó filho" retonado
             foreach ($gUF->children() as $child) {
                 $u = (string) $child[0];
@@ -2316,15 +2317,16 @@ class MDFeNFePHP {
      * @param   none
      * @return    boolean true se o certificado foi carregado e false se nao
      **/
-    protected function __loadCerts(){
-    if(!function_exists('openssl_pkcs12_read')){
+    protected function __loadCerts()
+    {
+        if(!function_exists('openssl_pkcs12_read')){
             $msg = "Função não existente: openssl_pkcs12_read!! ";
             $this->__setError($msg);
             if ($this->exceptions) {
                 throw new nfephpException($msg);
             }
             return false;
-    }
+        }
         // Monta o path completo com o nome da chave privada
         $this->priKEY = $this->certsDir . $this->cnpj . '_priKEY.pem';
         // Monta o path completo com o nome da chave publica
@@ -2341,7 +2343,7 @@ class MDFeNFePHP {
         // Monta o caminho completo até o certificado pfx
         $pCert = $this->certsDir . $this->certName;
         // Verifica se o arquivo existe
-        if(!file_exists($pCert)) {
+        if (!file_exists($pCert)) {
             $this->errMsg = 'Certificado não encontrado!!';
             $this->errStatus = true;
             return false;
@@ -2368,7 +2370,7 @@ class MDFeNFePHP {
             // Comparar os primeiros 30 digitos
             if (!substr($conteudo, 0, 30) == substr($x509certdata['pkey'], 0, 30)) {
                  // Se diferentes gravar o novo
-                if (!file_put_contents($this->priKEY,$x509certdata['pkey'])) {
+                if (!file_put_contents($this->priKEY, $x509certdata['pkey'])) {
                     $this->errMsg = 'Impossivel gravar no diretório!!! Permissão negada!!';
                     $this->errStatus = true;
                     return false;
@@ -2416,9 +2418,12 @@ class MDFeNFePHP {
     * @param    string  $cert Certificado digital no formato pem
     * @return    array ['status'=>true,'meses'=>8,'dias'=>245]
     */
-    protected function __validCerts($cert){
-    if(!function_exists('openssl_x509_read'))
-        return false;
+    protected function __validCerts($cert)
+    {
+        if (!function_exists('openssl_x509_read')) {
+            return false;
+        }
+
         $flagOK = true;
         $errorMsg = "";
         $data = openssl_x509_read($cert);
@@ -2428,7 +2433,7 @@ class MDFeNFePHP {
         $mes = substr($cert_data['validTo'], 2, 2);
         $dia = substr($cert_data['validTo'], 4, 2);
         // Obtem o timeestamp da data de validade do certificado
-        $dValid = gmmktime(0,0,0,$mes,$dia,$ano);
+        $dValid = gmmktime(0, 0, 0, $mes, $dia, $ano);
         // Obtem o timestamp da data de hoje
         $dHoje = gmmktime(0, 0, 0, date("m"), date("d"), date("Y"));
         // Compara a data de validade com a data atual
@@ -2455,7 +2460,8 @@ class MDFeNFePHP {
             'status' => $flagOK,
             'error' => $errorMsg,
             'meses' => $monthsToExpire,
-            'dias' => $daysToExpire);
+            'dias' => $daysToExpire
+        );
     } //Fim validCerts
 
 
@@ -2469,7 +2475,8 @@ class MDFeNFePHP {
      * @return   string contendo a chave digital limpa
      * @access   private
      **/
-    protected function __cleanCerts($certFile){
+    protected function __cleanCerts($certFile)
+    {
         // Carregar a chave publica do arquivo pem
         $pubKey = file_get_contents($certFile);
         // Inicializa variavel
@@ -2478,7 +2485,7 @@ class MDFeNFePHP {
         $arCert = explode("\n", $pubKey);
         foreach ($arCert as $curData) {
             // Remove a tag de inicio e fim do certificado
-            if (strncmp($curData, '-----BEGIN CERTIFICATE', 22) != 0 && strncmp($curData, '-----END CERTIFICATE', 20) != 0 ) {
+            if (strncmp($curData, '-----BEGIN CERTIFICATE', 22) != 0 && strncmp($curData, '-----END CERTIFICATE', 20) != 0) {
                 // Carrega o resultado numa string
                 $data .= trim($curData);
             }
@@ -2497,7 +2504,8 @@ class MDFeNFePHP {
      * @param boolean $retpath se true retorna o path completo dos arquivos se false so retorna o nome dos arquivos
      * @return mixed Matriz com os nome dos arquivos que atendem ao critério estabelecido ou false
      */
-    public function listDir($dir, $fileMatch, $retpath = false) {
+    public function listDir($dir, $fileMatch, $retpath = false)
+    {
         if (trim($fileMatch) != '' && trim($dir) != '') {
             // Passar o padrão para minúsculas
             $fileMatch = strtolower($fileMatch);
@@ -2511,7 +2519,8 @@ class MDFeNFePHP {
                 chdir($dir);
                 // Pegue o diretorio
                 $diretorio = getcwd() . DIRECTORY_SEPARATOR;
-                if (strtolower($dir) != strtolower($diretorio)) {
+                // if (strtolower($dir) != strtolower($diretorio)) {
+                if (!is_writable($diretorio)) {
                     $this->errMsg = 'Falha não há permissão de leitura no diretorio escolhido';
                     return false;
                 }
@@ -2522,12 +2531,12 @@ class MDFeNFePHP {
                 while (false !== ($file = readdir($ponteiro))) {
                     // Procure se não for diretorio
                     if ($file != "." && $file != ".." ) {
-                        if (!is_dir($file)){
+                        if (!is_dir($file)) {
                             $tfile = strtolower($file);
                             // É um arquivo então
                             // verifica se combina com o $fileMatch
                             if (fnmatch($fileMatch, $tfile)) {
-                                if ($retpath){
+                                if ($retpath) {
                                     $aName[$x] = $dir . $file;
                                 } else {
                                     $aName[$x] = $file;
@@ -2664,8 +2673,9 @@ class MDFeNFePHP {
      * @param string $UF sem uso mantido apenas para compatibilidade com __sendSOAP
      * @return mixed false se houve falha ou o retorno em xml do SEFAZ
      */
-    protected function __sendSOAP2($urlsefaz,$namespace,$cabecalho,$dados,$metodo,$ambiente,$UF=''){
-        if ($urlsefaz == ''){
+    protected function __sendSOAP2($urlsefaz, $namespace, $cabecalho, $dados, $metodo, $ambiente, $UF='')
+    {
+        if ($urlsefaz == '') {
             //não houve retorno
             $this->errMsg = 'URL do webservice não disponível.';
             $this->errStatus = true;
@@ -2733,7 +2743,7 @@ class MDFeNFePHP {
         $cCode['505']="HTTP Version Not Supported";
         //
         $tamanho = strlen($data);
-        if($this->enableSCAN){
+        if ($this->enableSCAN) {
             //monta a terminação do URL
             switch ($metodo){
               case 'mdfeRecepcaoLote':
@@ -2775,7 +2785,7 @@ class MDFeNFePHP {
         }//fim if aProxy
 
         curl_setopt($oCurl, CURLOPT_URL, $urlsefaz.'');
-        curl_setopt($oCurl, CURLOPT_PORT , 443);
+        curl_setopt($oCurl, CURLOPT_PORT, 443);
         curl_setopt($oCurl, CURLOPT_VERBOSE, 1); //apresenta informações de conexão na tela
         curl_setopt($oCurl, CURLOPT_HEADER, 1); //retorna o cabeçalho de resposta
         curl_setopt($oCurl, CURLOPT_SSLVERSION, 3);
@@ -2786,7 +2796,7 @@ class MDFeNFePHP {
         curl_setopt($oCurl, CURLOPT_POST, 1);
         curl_setopt($oCurl, CURLOPT_POSTFIELDS, $data);
         curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($oCurl, CURLOPT_HTTPHEADER,$parametros);
+        curl_setopt($oCurl, CURLOPT_HTTPHEADER, $parametros);
         $__xml = curl_exec($oCurl);
         $info = curl_getinfo($oCurl); //informações da conexão
         $txtInfo ="";
