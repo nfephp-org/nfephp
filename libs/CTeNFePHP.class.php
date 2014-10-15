@@ -646,6 +646,11 @@ class CTeNFePHP {
                         'mailREPLYTOmail' => $aConfig['mailREPLYTOmail'],
                         'mailREPLYTOname' => $aConfig['mailREPLYTOname']);
             }
+
+            if (isset($aConfig['certsDir'])) {
+                //carrega o caminho para os certificados
+                $this->certsDir =  $aConfig['certsDir'] . DIRECTORY_SEPARATOR;
+            }
         } else {
             // Testa a existencia do arquivo de configuração
             if (is_file($this->raizDir . 'config' . DIRECTORY_SEPARATOR . 'config.php')) {
@@ -698,6 +703,9 @@ class CTeNFePHP {
                             'mailREPLYTOname' => $mailREPLYTOname
                         );
                 }
+
+                //carrega o caminho para os certificados
+                $this->certsDir =  $certsDir . DIRECTORY_SEPARATOR;
             } else {
                 // Caso não exista arquivo de configuração retorna erro
                 $this->errMsg = "Não foi localizado o arquivo de configuração.";
@@ -711,8 +719,12 @@ class CTeNFePHP {
         $this->anoMes = date('Ym');
         //carrega o caminho para os schemas
         $this->xsdDir = $this->raizDir . 'schemes'. DIRECTORY_SEPARATOR;
+
         //carrega o caminho para os certificados
-        $this->certsDir =  $this->raizDir . 'certs'. DIRECTORY_SEPARATOR;
+        if (empty($this->certsDir)) {
+            $this->certsDir =  $this->raizDir . 'certs'. DIRECTORY_SEPARATOR;
+        }
+
         //carrega o caminho para as imagens
         $this->imgDir =  $this->raizDir . 'images'. DIRECTORY_SEPARATOR;
         // Verifica o ultimo caracter da variável $arqDir
