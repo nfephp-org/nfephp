@@ -23,7 +23,7 @@
  *
  * @package     NFePHP
  * @name        DanfeNFePHP.class.php
- * @version     2.1.40
+ * @version     2.1.41
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2012 &copy; NFePHP
@@ -98,7 +98,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
     // I-borwser, S-retorna o arquivo, D-força download, F-salva em arquivo local
     protected $pdfDir = ''; //diretorio para salvar o pdf com a opção de destino = F
     protected $fontePadrao = 'Times'; //Nome da Fonte para gerar o DANFE
-    protected $version = '2.1.40';
+    protected $version = '2.1.41';
     protected $textoAdic = '';
     protected $wAdic = 0;
     protected $wPrint; //largura imprimivel
@@ -2800,6 +2800,11 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         if (empty($nfRefs)) {
             return $saida;
         }
+        $flag = false;
+        if ($nfRefs->length > 10) {
+            $flag = true;
+            $saida = "Documentos Referenciados \n";
+        }
         foreach ($nfRefs as $nfRef) {
             if (empty($nfRef)) {
                 continue;
@@ -2812,7 +2817,11 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
                 $cnpj = $this->__format(substr($chave_acesso, 6, 14), "##.###.###/####-##");
                 $serie  = substr($chave_acesso, 22, 3);
                 $numero = substr($chave_acesso, 25, 9);
-                $saida .= sprintf($formaNfeRef, $serie, $numero, $cnpj, $data, $chave_acessoF);
+                if ($flag) {
+                    $saida .= $chave_acesso . ' / ';
+                } else {
+                    $saida .= sprintf($formaNfeRef, $serie, $numero, $cnpj, $data, $chave_acessoF);
+                }    
             }
             $refNF = $nfRef->getElementsByTagName('refNF');
             foreach ($refNF as $umaRefNFe) {
