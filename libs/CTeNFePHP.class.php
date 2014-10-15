@@ -1831,20 +1831,20 @@ class CTeNFePHP {
                 $aRetorno['cStat'] = $doc->getElementsByTagName('cStat')->item(0)->nodeValue;
                 // motivo da resposta (opcional)
                 $aRetorno['xMotivo'] = !empty($doc->getElementsByTagName('xMotivo')->item(0)->nodeValue) ? $doc->getElementsByTagName('xMotivo')->item(0)->nodeValue : '';
-                if ($cStat == '104'){
+                if ($cStat == '104') {
                     $aProt = '';
                     //aqui podem ter varios retornos dependendo do numero de CTe enviados no Lote e já processadas
                     $protCTe = $doc->getElementsByTagName('protCTe');
-                    foreach ($protCTe as $d){
-                        $infProt = $d->getElementsByTagName('infProt')->item($i);
+                    foreach ($protCTe as $d) {
+                        $infProt = $d->getElementsByTagName('infProt')->item(0);
                         $protcStat = $infProt->getElementsByTagName('cStat')->item(0)->nodeValue;
                         //pegar os dados do protolo para retornar
-                        foreach($infProt->childNodes as $t) {
+                        foreach ($infProt->childNodes as $t) {
                             $aProt[$i][$t->nodeName] = $t->nodeValue;
                         }
                         $i++; //incluido increment para controlador de indice do array
                         //salvar o protocolo somente se a nota estiver approvada ou denegada
-                        if ( $protcStat == 100 || $protcStat == 110 ){
+                        if ($protcStat == 100 || $protcStat == 110) {
                             $nomeprot = $this->temDir.$infProt->getElementsByTagName('chCTe')->item(0)->nodeValue.'-prot.xml';//id da nfe
                             //salvar o protocolo em arquivo
                             $novoprot = new DOMDocument('1.0', 'UTF-8');
@@ -1858,15 +1858,15 @@ class CTeNFePHP {
                             $pCTe->appendChild($node);
                             $novoprot->appendChild($pCTe);
                             $xml = $novoprot->saveXML();
-                            $xml = str_replace('<?xml version="1.0" encoding="UTF-8  standalone="no"?>','<?xml version="1.0" encoding="UTF-8"?>',$xml);
-                            $xml = str_replace(array("default:",":default"),"",$xml);
-                            $xml = str_replace("\n","",$xml);
-                            $xml = str_replace("  "," ",$xml);
-                            $xml = str_replace("  "," ",$xml);
-                            $xml = str_replace("  "," ",$xml);
-                            $xml = str_replace("  "," ",$xml);
-                            $xml = str_replace("  "," ",$xml);
-                            $xml = str_replace("> <","><",$xml);
+                            $xml = str_replace('<?xml version="1.0" encoding="UTF-8  standalone="no"?>', '<?xml version="1.0" encoding="UTF-8"?>', $xml);
+                            $xml = str_replace(array("default:", ":default"), "", $xml);
+                            $xml = str_replace("\n", "", $xml);
+                            $xml = str_replace("  ", " ", $xml);
+                            $xml = str_replace("  ", " ", $xml);
+                            $xml = str_replace("  ", " ", $xml);
+                            $xml = str_replace("  ", " ", $xml);
+                            $xml = str_replace("  ", " ", $xml);
+                            $xml = str_replace("> <", "><", $xml);
                             file_put_contents($nomeprot, $xml);
                         }
                     }
