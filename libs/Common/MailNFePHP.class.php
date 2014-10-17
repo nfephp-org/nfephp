@@ -23,7 +23,7 @@
  *
  * @package   NFePHP
  * @name      MailNFePHP
- * @version   2.2.14
+ * @version   2.2.15
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -44,7 +44,7 @@ if (!defined('PATH_ROOT')) {
     define('PATH_ROOT', dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR);
 }
 //carrega as classes do PHPMailer
-require_once('../External/PHPMailer/class.phpmailer.php');
+require_once(PATH_ROOT.'libs/External/PHPMailer/class.phpmailer.php');
 
 class MailNFePHP
 {
@@ -553,11 +553,11 @@ class MailNFePHP
                         $isValid = false;
                     }
                 }
-                if ($isValid && !(checkdnsrr($domain, "MX") || checkdnsrr($domain, "A"))) {
+                //if ($isValid && !(checkdnsrr($domain, "MX") || checkdnsrr($domain, "A"))) {
                     // dominio não encontrado no DNS
-                    $this->mailERROR .= "$email - O domínio não foi encontrado no DNS.\n";
-                    $isValid = false;
-                }
+                //    $this->mailERROR .= "$email - O domínio não foi encontrado no DNS.\n";
+                //    $isValid = false;
+                //}
             }
         }
         return $isValid;

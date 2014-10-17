@@ -247,6 +247,12 @@ class ToolsNFePHP extends CommonNFePHP
      * @see /config/nfe_ws3_modXX.xml (arquivo novo, layout 3.10 da NF-e, onde
      * "XX" é o modelo da NF-e, "55" ou "65")
      */
+    public $configFile='';
+    /**
+     * configFile
+     * Arquivo de configurações config.php
+     * @var string
+     */
     public $xmlURLfile = 'nfe_ws3_mod55.xml';
     /**
      * enableSVAN
@@ -805,10 +811,11 @@ class ToolsNFePHP extends CommonNFePHP
                     'mailREPLYTOname'=>$aConfig['mailREPLYTOname']);
             }
         } else {
+            $this->configFile = (is_file($aConfig)) ? $aConfig : $this->raizDir . 'config' . DIRECTORY_SEPARATOR . 'config.php';
             //testa a existencia do arquivo de configuração
-            if (is_file($this->raizDir.'config'.DIRECTORY_SEPARATOR.'config.php')) {
+            if (is_file($this->configFile)) {
                 //carrega o arquivo de configuração
-                include($this->raizDir.'config'.DIRECTORY_SEPARATOR.'config.php');
+                include($this->configFile);
                 // carrega propriedades da classe com os dados de configuração
                 // a sring $sAmb será utilizada para a construção dos diretorios
                 // dos arquivos de operação do sistema
@@ -2835,7 +2842,7 @@ class ToolsNFePHP extends CommonNFePHP
             'dhRecbto'=>'',
             'nProt'=>'');
         //valida dos dados de entrada
-        if ($nAno == '' || $nIni == '' || $nFin == '' || $xJust == '') {
+        if (empty($nAno) || empty($nIni) || empty($nFin) || empty($xJust)) {
             $msg = "Não foi passado algum dos parametos necessários ANO=$nAno inicio=$nIni "
                    ."fim=$nFin justificativa=$xJust.\n";
             $this->pSetError($msg);
@@ -3066,10 +3073,10 @@ class ToolsNFePHP extends CommonNFePHP
         $procInut->appendChild($procInutNFe);
         //estabele o atributo de versão
         $inutProc_att1 = $procInutNFe->appendChild($procInut->createAttribute('versao'));
-        $inutProc_att1->appendChild($procInut->createTextNode($versao));
+        $inutProc_att1->value = $versao;
         //estabelece o atributo xmlns
         $inutProc_att2 = $procInutNFe->appendChild($procInut->createAttribute('xmlns'));
-        $inutProc_att2->appendChild($procInut->createTextNode($this->URLPortal));
+        $inutProc_att2->value = $this->URLPortal;
         //carrega o node cancNFe
         $node1 = $procInut->importNode($inutNFe, true);
         $procInutNFe->appendChild($node1);
