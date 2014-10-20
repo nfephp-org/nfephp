@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.1.00-alpha
+ * @version   3.1.00-beta
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -3500,6 +3500,8 @@ class ToolsNFePHP extends CommonNFePHP
                     $retEvento->getElementsByTagName('cStat')->item(0)->nodeValue : '';
             $xMotivo = !empty($retEvento->getElementsByTagName('xMotivo')->item(0)->nodeValue) ?
                     $retEvento->getElementsByTagName('xMotivo')->item(0)->nodeValue : '';
+            $aResp['cStat'] = $cStat;
+            $aResp['xMotivo'] = $xMotivo;
             if ($cStat == '') {
                 //houve erro
                 $msg = "cStat está em branco, houve erro na comunicação Soap "
