@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.1.00-alpha
+ * @version   3.1.00-beta
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -3357,7 +3357,7 @@ class ToolsNFePHP extends CommonNFePHP
     public function envCCe($chNFe = '', $xCorrecao = '', $nSeqEvento = '1', $tpAmb = '', &$aResp = array())
     {
         $aResp = array(
-            'cStat' => false,
+            'bStat' => false,
             'versao' => null,
             'idLote' => null,
             'tpAmb' => null,
@@ -3507,6 +3507,8 @@ class ToolsNFePHP extends CommonNFePHP
                     $retEvento->getElementsByTagName('cStat')->item(0)->nodeValue : '';
             $xMotivo = !empty($retEvento->getElementsByTagName('xMotivo')->item(0)->nodeValue) ?
                     $retEvento->getElementsByTagName('xMotivo')->item(0)->nodeValue : '';
+            $aResp['cStat'] = $cStat;
+            $aResp['xMotivo'] = $xMotivo;
             if ($cStat == '') {
                 //houve erro
                 $msg = "cStat está em branco, houve erro na comunicação Soap "
@@ -3520,7 +3522,7 @@ class ToolsNFePHP extends CommonNFePHP
                 throw new nfephpException($msg);
             }
             //a correção foi aceita cStat == 135
-            $aResp['cStat'] = true;
+            $aResp['bStat'] = true;
             //carregar a CCe
             $xmlenvCCe = new DOMDocument('1.0', 'utf-8'); //cria objeto DOM
             $xmlenvCCe->formatOutput = false;
