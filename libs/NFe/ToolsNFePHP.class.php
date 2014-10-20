@@ -3350,7 +3350,7 @@ class ToolsNFePHP extends CommonNFePHP
     public function envCCe($chNFe = '', $xCorrecao = '', $nSeqEvento = '1', $tpAmb = '', &$aResp = array())
     {
         $aResp = array(
-            'cStat' => false,
+            'bStat' => false,
             'versao' => null,
             'idLote' => null,
             'tpAmb' => null,
@@ -3513,7 +3513,7 @@ class ToolsNFePHP extends CommonNFePHP
                 throw new nfephpException($msg);
             }
             //a correção foi aceita cStat == 135
-            $aResp['cStat'] = true;
+            $aResp['bStat'] = true;
             //carregar a CCe
             $xmlenvCCe = new DOMDocument('1.0', 'utf-8'); //cria objeto DOM
             $xmlenvCCe->formatOutput = false;
