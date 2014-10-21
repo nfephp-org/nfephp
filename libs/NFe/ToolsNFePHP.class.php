@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.1.00-beta
+ * @version   3.1.01-beta
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -579,7 +579,8 @@ class ToolsNFePHP extends CommonNFePHP
      * Lista de relacionamento dos estados com os sistemas de continvência 
      * @var array 
      */
-    private $ctgList = array('AC'=>'SVCAN',
+    private $ctgList = array(
+        'AC'=>'SVCAN',
         'AL'=>'SVCAN',
         'AM'=>'SVCAN',
         'AP'=>'SVCRS',
@@ -747,7 +748,7 @@ class ToolsNFePHP extends CommonNFePHP
      * @param boolean $exceptions Opcional Utilize true para gerar exceções
      * @return boolean true sucesso false Erro
      */
-    function __construct($aConfig = '', $mododebug = 2, $exceptions = false)
+    public function __construct($aConfig = '', $mododebug = 2, $exceptions = false)
     {
         if (is_numeric($mododebug)) {
             $this->debugMode = $mododebug;
@@ -1836,7 +1837,8 @@ class ToolsNFePHP extends CommonNFePHP
         //recuperação do método
         $metodo = $aURL[$servico]['method'];
         //montagem do namespace do serviço
-        $namespace = $this->URLPortal.'/wsdl/'.$servico;
+        $operation = $aURL[$servico]['operation'];
+        $namespace = $this->URLPortal.'/wsdl/'.$operation;
         if ($urlservico=='') {
             $msg = "Este serviço não está disponível para a SEFAZ $siglaUF!!!";
             $this->pSetError($msg);
@@ -2024,7 +2026,8 @@ class ToolsNFePHP extends CommonNFePHP
             //recuperação do método
             $metodo = $aURL[$servico]['method'];
             //montagem do namespace do serviço
-            $namespace = $this->URLPortal.'/wsdl/'.$servico;
+            $operation = $aURL[$servico]['operation'];
+            $namespace = $this->URLPortal.'/wsdl/'.$operation;
             //valida o parâmetro da string do XML da NF-e
             if (empty($sxml) || ! simplexml_load_string($sxml)) {
                 throw new nfephpException("XML de NF-e para autorizacao recebido no parametro parece invalido, verifique");
@@ -2188,7 +2191,8 @@ class ToolsNFePHP extends CommonNFePHP
                 //recuperação do método
                 $metodo = $aURL[$servico]['method'];
                 //montagem do namespace do serviço
-                $namespace = $this->URLPortal.'/wsdl/'.$servico;
+                $operation = $aURL[$servico]['operation'];
+                $namespace = $this->URLPortal.'/wsdl/'.$operation;
                 //montagem do cabeçalho da comunicação SOAP
                 $cabec = '<nfeCabecMsg xmlns="'.$namespace.'"><cUF>'
                        .$cUF.'</cUF><versaoDados>'.$versao.'</versaoDados></nfeCabecMsg>';
@@ -2211,7 +2215,8 @@ class ToolsNFePHP extends CommonNFePHP
                 //recuperação do método
                 $metodo = $aURL[$servico]['method'];
                 //montagem do namespace do serviço
-                $namespace = $this->URLPortal.'/wsdl/NfeConsulta2';
+                $operation = $aURL[$servico]['operation'];
+                $namespace = $this->URLPortal.'/wsdl/'.$operation;
                 //montagem do cabeçalho da comunicação SOAP
                 $cabec = '<nfeCabecMsg xmlns="'. $namespace.'"><cUF>'
                        .$cUF.'</cUF><versaoDados>'.$versao.'</versaoDados></nfeCabecMsg>';
@@ -2401,7 +2406,8 @@ class ToolsNFePHP extends CommonNFePHP
         //recuperação do método
         $metodo = $aURL[$servico]['method'];
         //montagem do namespace do serviço
-        $namespace = $this->URLPortal.'/wsdl/'.$servico;
+        $operation = $aURL[$servico]['operation'];
+        $namespace = $this->URLPortal.'/wsdl/'.$operation;
         //monta a consulta
         $cons = '';
         $cons .= '<distDFeInt xmlns="'.$this->URLPortal.'" versao="'.$versao.'">';
@@ -2486,7 +2492,8 @@ class ToolsNFePHP extends CommonNFePHP
             //recuperação do método
             $metodo = $aURL[$servico]['method'];
             //montagem do namespace do serviço
-            $namespace = $this->URLPortal.'/wsdl/'.$servico;
+            $operation = $aURL[$servico]['operation'];
+            $namespace = $this->URLPortal.'/wsdl/'.$operation;
             //monta a consulta
             $cons = '';
             $cons .= '<consNFeDest xmlns="'.$this->URLPortal.'" versao="'.$versao.'">';
@@ -2693,7 +2700,8 @@ class ToolsNFePHP extends CommonNFePHP
             //recuperação do método
             $metodo = $aURL[$servico]['method'];
             //montagem do namespace do serviço
-            $namespace = $this->URLPortal.'/wsdl/'.$servico;
+            $operation = $aURL[$servico]['operation'];
+            $namespace = $this->URLPortal.'/wsdl/'.$operation;
             if ($urlservico == '') {
                 throw new nfephpException('Nao existe este servico na SEFAZ consultada.');
             }
@@ -2941,7 +2949,8 @@ class ToolsNFePHP extends CommonNFePHP
         //recuperação do método
         $metodo = $aURL[$servico]['method'];
         //montagem do namespace do serviço
-        $namespace = $this->URLPortal.'/wsdl/'.$servico.'2';
+        $operation = $aURL[$servico]['operation'];
+        $namespace = $this->URLPortal.'/wsdl/'.$operation;
         //Identificador da TAG a ser assinada formada com Código da UF +
         //Ano (2 posições) + CNPJ + modelo + série + nro inicial e nro final
         //precedida do literal “ID”
@@ -3177,7 +3186,8 @@ class ToolsNFePHP extends CommonNFePHP
             //recuperação do método
             $metodo = $aURL[$servico]['method'];
             //montagem do namespace do serviço
-            $namespace = $this->URLPortal.'/wsdl/'.$servico;
+            $operation = $aURL[$servico]['operation'];
+            $namespace = $this->URLPortal.'/wsdl/'.$operation;
             //de acordo com o manual versão 5 de março de 2012
             // 2   +    6     +    44         +   2  = 54 digitos
             //“ID” + tpEvento + chave da NF-e + nSeqEvento
@@ -3430,7 +3440,8 @@ class ToolsNFePHP extends CommonNFePHP
             //recuperação do método
             $metodo = $aURL[$servico]['method'];
             //montagem do namespace do serviço
-            $namespace = $this->URLPortal.'/wsdl/'.$servico;
+            $operation = $aURL[$servico]['operation'];
+            $namespace = $this->URLPortal.'/wsdl/'.$operation;
             //estabelece o codigo do tipo de evento
             $tpEvento = '110110';
             //de acordo com o manual versão 5 de março de 2012
@@ -3721,7 +3732,8 @@ class ToolsNFePHP extends CommonNFePHP
             //recuperação do método
             $metodo = $aURL[$servico]['method'];
             //montagem do namespace do serviço
-            $namespace = $this->URLPortal.'/wsdl/'.$servico;
+            $operation = $aURL[$servico]['operation'];
+            $namespace = $this->URLPortal.'/wsdl/'.$operation;            
             // 2   +    6     +    44         +   2  = 54 digitos
             //“ID” + tpEvento + chave da NF-e + nSeqEvento
             $nSeqEvento = '1';
@@ -4504,7 +4516,7 @@ class ToolsNFePHP extends CommonNFePHP
             curl_setopt($oCurl, CURLOPT_SSLVERSION, 3);
             curl_setopt($oCurl, CURLOPT_SSL_VERIFYHOST, 2); // verifica o host evita MITM
             curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, 0);
-            curl_setopt($oCurl, CURLOPT_SSLCERT, $this->pubKEY);
+            curl_setopt($oCurl, CURLOPT_SSLCERT, $this->certKEY);
             curl_setopt($oCurl, CURLOPT_SSLKEY, $this->priKEY);
             curl_setopt($oCurl, CURLOPT_POST, 1);
             curl_setopt($oCurl, CURLOPT_POSTFIELDS, $data);
