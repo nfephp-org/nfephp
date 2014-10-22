@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.1.01-beta
+ * @version   3.10.02-beta
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -4224,8 +4224,16 @@ class ToolsNFePHP extends CommonNFePHP
                     $msg = "Impossivel gravar no diretório!!! Permissão negada!!";
                     throw new nfephpException($msg);
                 }
+                //acrescenta a cadeia completa dos certificados se estiverem
+                //inclusas no arquivo pfx, caso contrario deverão ser inclusas
+                //manualmente para acessar os serviços em GO
+                $aCer = $x509certdata['extracerts'];
+                $chain = '';
+                foreach ($aCer as $cert) {
+                    $chain .= "$cert";
+                }
                 file_put_contents($this->pubKEY, $x509certdata['cert']);
-                file_put_contents($this->certKEY, $x509certdata['pkey']."\r\n". $x509certdata['cert']);
+                file_put_contents($this->certKEY, $x509certdata['cert'] . $chain);
             }
         } catch (nfephpException $e) {
             $this->pSetError($e->getMessage());
