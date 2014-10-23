@@ -42,7 +42,7 @@ class Base
     * @param boolean $force força a criação do elemento mesmo sem dados e não considera como erro
     * @return void
     */
-    private function zAddChild(&$parent, $name, $content = '', $obrigatorio = false, $descricao = "", $force = false)
+    protected function zAddChild(&$parent, $name, $content = '', $obrigatorio = false, $descricao = "", $force = false)
     {
         if ($obrigatorio && $content === '' && !$force) {
             $this->erros[] = array(
@@ -69,7 +69,7 @@ class Base
      * @return void
      * @throws Exception
      */
-    private function zAppChild(&$parent, $child, $mensagem = '')
+    protected function zAppChild(&$parent, $child, $mensagem = '')
     {
         if (empty($parent)) {
             throw new Exception($mensagem);

@@ -3,11 +3,13 @@
 //namespace NFe\Xml;
 
 //use NFe\Xml\Base;
+//use NFe\Xml\iXml;
 //use \DOMDocument;
 
-require_once('./Base.php');
+require_once('Base.php');
+require_once('iXml.php');
 
-class Destinatario extends Base
+class Destinatario extends Base implements iXml
 {
     public $cnpj = '';
     public $cpf = '';
@@ -37,7 +39,7 @@ class Destinatario extends Base
      * __contruct
      * Função construtora cria um objeto DOMDocument
      * 
-     * @return none
+     * @return void
      */
     public function __construct($dom = '')
     {
@@ -311,7 +313,7 @@ class Destinatario extends Base
      * 
      * @return DOMElement
      */
-    public function getDestTag()
+    public function getTag()
     {
         $this->pTagDest();
         $this->pTagEnderDest();

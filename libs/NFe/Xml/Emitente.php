@@ -3,11 +3,13 @@
 //namespace NFe\Xml;
 
 //use NFe\Xml\Base;
+//use NFe\Xml\iXml;
 //use \DOMDocument;
 
-require_once('./Base.php');
+require_once('Base.php');
+require_once('iXml.php');
 
-class Emitente extends Base
+class Emitente extends Base implements iXml
 {
     public $cnpj = '';
     public $cpf = '';
@@ -37,7 +39,7 @@ class Emitente extends Base
      * __contruct
      * Função construtora cria um objeto DOMDocument
      * 
-     * @return none
+     * @return void
      */
     public function __construct($dom = '')
     {
@@ -49,6 +51,7 @@ class Emitente extends Base
      * Ajusta da propriedade com o número do CNPJ do emitente, se houver
      * 
      * @param string $cnpj
+     * @return void
      */
     public function setCNPJ($cnpj = '')
     {
@@ -62,6 +65,7 @@ class Emitente extends Base
      * Ajusta a propriedade com o número do CPF, se houver (somente produtores rurais)
      * 
      * @param string $cpf
+     * @return void
      */
     public function setCPF($cpf = '')
     {
@@ -75,6 +79,7 @@ class Emitente extends Base
      * Ajusta a propriedade xNome, com a Razão Social da Empresa emitente
      * 
      * @param string $xNome
+     * @return void
      */
     public function setNome($xNome = '')
     {
@@ -88,6 +93,7 @@ class Emitente extends Base
      * Ajusta a propriedade xFant, com o nome Fantasia (simplificação) do emitente
      * 
      * @param string $xFant
+     * @return void
      */
     public function setFantasia($xFant = '')
     {
@@ -101,6 +107,7 @@ class Emitente extends Base
      * Ajusta a propriedade numIE, com o número da Inscrição Estadual
      * 
      * @param string $numIE
+     * @return void
      */
     public function setIE($numIE = '')
     {
@@ -114,6 +121,7 @@ class Emitente extends Base
      * Ajusta a propriedade numIEST, com o numero da inscr. estadual do substituto tributário
      * 
      * @param string $numIEST
+     * @return void
      */
     public function setIEST($numIEST = '')
     {
@@ -127,6 +135,7 @@ class Emitente extends Base
      * Ajusta a propriedade numIM, com o numero da inscrição municipal, se houver
      * 
      * @param string $numIM
+     * @return void
      */
     public function setIM($numIM = '')
     {
@@ -140,6 +149,7 @@ class Emitente extends Base
      * Ajusta a propriedade CNAE, código nacional de atividade econômica
      * 
      * @param type $cnae
+     * @return void
      */
     public function setCNAE($cnae = '')
     {
@@ -153,6 +163,7 @@ class Emitente extends Base
      * Ajusta a propriedade CRT, Código do Regime Tributário
      * 
      * @param string $crt
+     * @return void
      */
     public function setCRT($crt = '')
     {
@@ -166,6 +177,7 @@ class Emitente extends Base
      * Ajusta a propriedade xLgr, com o nome da Rua do endereço do emitente
      * 
      * @param string $xLgr
+     * @return void
      */
     public function setLogradouro($xLgr = '')
     {
@@ -179,6 +191,7 @@ class Emitente extends Base
      * Ajusta a propriedade nro, com o numero do endereço
      * 
      * @param string $nro
+     * @return void
      */
     public function setNumero($nro = '')
     {
@@ -192,6 +205,7 @@ class Emitente extends Base
      * Ajusta a propriedade xCpl, com o complemento do endereço
      * 
      * @param string $xCpl
+     * @return void
      */
     public function setComplemento($xCpl = '')
     {
@@ -205,6 +219,7 @@ class Emitente extends Base
      * Ajusta a propriedade xBairro, com o nome do bairro do endereço
      * 
      * @param string $xBairro
+     * @return void
      */
     public function setBairro($xBairro = '')
     {
@@ -218,6 +233,7 @@ class Emitente extends Base
      * Ajusta a propriedade cMun, com o código do municipio do IBGE
      * 
      * @param string $cMun
+     * @return void
      */
     public function setCodMun($cMun = '')
     {
@@ -231,6 +247,7 @@ class Emitente extends Base
      * Ajusta a propriedade xMun, com o nome do município do endereço
      * 
      * @param string $xMun
+     * @return void
      */
     public function setMunicipio($xMun = '')
     {
@@ -244,6 +261,7 @@ class Emitente extends Base
      * Ajusta a propriedade siglaUF, com a sigla do estado do endereço
      * 
      * @param string $siglaUF
+     * @return void
      */
     public function setUF($siglaUF = '')
     {
@@ -257,6 +275,7 @@ class Emitente extends Base
      * Ajusta a propriedade CEP, com o numero do Codigo de endereçamento postal
      * 
      * @param string $cep
+     * @return void
      */
     public function setCEP($cep = '')
     {
@@ -270,6 +289,7 @@ class Emitente extends Base
      * Ajusta a propriedade cPais, com o código do pais do BACEN
      * 
      * @param string $cPais
+     * @return void
      */
     public function setCodPais($cPais = '')
     {
@@ -283,6 +303,7 @@ class Emitente extends Base
      * Ajusta a propriedade xPais, com o nome do Pais do endereço
      * 
      * @param string $xPais
+     * @return void
      */
     public function setNomePais($xPais = '')
     {
@@ -296,6 +317,7 @@ class Emitente extends Base
      * Ajusta a propriedade fone, com o numero do telefone do endereço
      * 
      * @param string $fone
+     * @return void
      */
     public function setFone($fone = '')
     {
@@ -305,13 +327,13 @@ class Emitente extends Base
     }
     
     /**
-     * getEmitTag
+     * getTag
      * Monta e retorna a tag emit da NFe, com os dados passados por parametros
      * para a classe
      * 
      * @return DOMElement
      */
-    public function getEmitTag()
+    public function getTag()
     {
         $this->pTagemit();
         $this->pTagenderEmit();
