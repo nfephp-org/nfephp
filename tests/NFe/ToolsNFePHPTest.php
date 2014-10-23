@@ -100,16 +100,19 @@ class ToolsNFePHPTest extends PHPUnit_Framework_TestCase
     public function testAtivandoContingenciaSvcanESvcrs()
     {
         $tool = new ToolsNFePHP($this->configTest, 2, true);
-        $tool->ativaContingencia();
-        $this->assertTrue($tool->enableSVCAN);
+        $this->assertFalse($tool->enableSVCAN);
         $this->assertFalse($tool->enableSVCRS);
 
-        $tool->ativaContingencia(ToolsNFePHP::CONTINGENCIA_SVCRS);
+        $tool->ativaContingencia('BA');
         $this->assertTrue($tool->enableSVCRS);
         $this->assertFalse($tool->enableSVCAN);
 
-        $tool->ativaContingencia(ToolsNFePHP::CONTINGENCIA_SVCAN);
+        $tool->ativaContingencia('SP');
         $this->assertTrue($tool->enableSVCAN);
+        $this->assertFalse($tool->enableSVCRS);
+        
+        $tool->desativaContingencia();
+        $this->assertFalse($tool->enableSVCAN);
         $this->assertFalse($tool->enableSVCRS);
     }
 
