@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.10.03-beta
+ * @version   3.10.04-beta
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -1655,6 +1655,8 @@ class ToolsNFePHP extends CommonNFePHP
     /**
      * statusServico
      * Verifica o status do serviço da SEFAZ/SVC
+     * NOTA : Este serviço será removido no futuro, segundo da Receita/SEFAZ devido
+     * ao excesso de mau uso !!!
      *
      * $this->cStat = 107 - "Serviço em Operação"
      *        cStat = 108 - "Serviço Paralisado Momentaneamente (curto prazo)"
@@ -1691,36 +1693,29 @@ class ToolsNFePHP extends CommonNFePHP
                 $tpAmb = $this->tpAmb;
             }
             //define a sigla da UF, se vazia utiliza o atributo da classe Tools
-            $siglaUF = $siglaUF == '' ? $this->siglaUF : $siglaUF;
-            //busca o código da UF a partir da sigla
-            $cUF = $this->cUFlist[$siglaUF];
-            //se contingencia SVCAN/SVCRS habilitada sobrescreve a sigla da UF, caso contrário
-            //usa a própria UF, logo abaixo ao carregar os webservices
-            if ($this->enableSVCAN) {
-                $siglaUF = self::CONTINGENCIA_SVCAN;
-            } elseif ($this->enableSVCRS) {
-                $siglaUF = self::CONTINGENCIA_SVCRS;
+            if ($siglaUF == '') {
+                $siglaUF = $this->siglaUF;
             }
-            $aURL = $this->pLoadSEFAZ($tpAmb, $siglaUF);
-            //identificação do serviço
-            $servico = 'NfeStatusServico';
-            //recuperação da versão
-            $versao = $aURL[$servico]['version'];
-            //recuperação da url do serviço
-            $urlservico = $aURL[$servico]['URL'];
-            //recuperação do método
-            $metodo = $aURL[$servico]['method'];
-            //montagem do namespace do serviço
-            $namespace = $this->URLPortal.'/wsdl/'.$servico.'2';
-            //montagem do cabeçalho da comunicação SOAP
-            $cabec = '<nfeCabecMsg xmlns="'. $namespace.'"><cUF>'.$cUF
-                   .'</cUF><versaoDados>'.$versao.'</versaoDados></nfeCabecMsg>';
+            //carrega serviço
+            $this->pLoadServico(
+                'NfeStatusServico',
+                $siglaUF,
+                $tpAmb,
+                $cUF,
+                $urlservico,
+                $namespace,
+                $cabec,
+                $metodo,
+                $versao
+            );
             //montagem dos dados da mensagem SOAP
-            $dados = '<nfeDadosMsg xmlns="'. $namespace.'"><consStatServ xmlns="'
-                   .$this->URLPortal.'" versao="'.$versao.'"><tpAmb>'.$tpAmb.'</tpAmb><cUF>'
-                   .$cUF.'</cUF><xServ>STATUS</xServ></consStatServ></nfeDadosMsg>';
+            $dados = "<nfeDadosMsg xmlns=\"$namespace\">"
+                    . "<consStatServ xmlns=\"$this->URLPortal\" versao=\"$versao\">"
+                    . "<tpAmb>$tpAmb</tpAmb><cUF>$cUF</cUF>"
+                    . "<xServ>STATUS</xServ></consStatServ></nfeDadosMsg>";
             //consome o webservice e verifica o retorno do SOAP
-            if (! $retorno = $this->pSendSOAP($urlservico, $namespace, $cabec, $dados, $metodo, $tpAmb)) {
+            $retorno = $this->pSendSOAP($urlservico, $namespace, $cabec, $dados, $metodo, $tpAmb);
+            if (! $retorno) {
                 throw new nfephpException("Nao houve retorno Soap verifique a mensagem de erro e o debug!!");
             }
             //cria documento DOM a partir do retorno e trata dados de retorno
@@ -1904,7 +1899,6 @@ class ToolsNFePHP extends CommonNFePHP
             }
             return false;
         }
-
         $aCad = array();
         if (isset($infCad)) {
             $aRetorno['bStat'] = true;
@@ -1980,6 +1974,15 @@ class ToolsNFePHP extends CommonNFePHP
     public function autoriza($sxml, $idLote, &$aRetorno = array(), $indSinc = 1)
     {
         try {
+            if (is_array($sxml)) {
+                throw new nfephpException("Deve ser informado apenas o XML de uma NFe não uma lista com varias.");
+            }
+            if (empty($sxml) || ! simplexml_load_string($sxml)) {
+                throw new nfephpException("XML de NF-e para autorizacao recebido no parametro parece invalido, verifique");
+            }
+            if ($indSinc === 0 && $indSinc === 1) {
+                throw new nfephpException("Parametro indSinc deve ser inteiro 0 ou 1, verifique!!");
+            }
             //retorno do método em array (esta estrutura espelha a estrutura do XML retornado pelo webservice
             //IMPORTANTE: esta estrutura varia parcialmente conforme o $indSinc
             $aRetorno = array(
@@ -2006,8 +2009,6 @@ class ToolsNFePHP extends CommonNFePHP
                         'digVal'=>'',
                         'cStat'=>'',
                         'xMotivo'=>''));
-            } else {
-                throw new nfephpException("Parametro indSinc deve ser inteiro 0 ou 1, verifique!!");
             }
             //verifica se alguma SVC esta habilitada, neste caso precisa recarregar os webservices
             if ($this->enableSVCAN) {
@@ -2028,10 +2029,6 @@ class ToolsNFePHP extends CommonNFePHP
             //montagem do namespace do serviço
             $operation = $aURL[$servico]['operation'];
             $namespace = $this->URLPortal.'/wsdl/'.$operation;
-            //valida o parâmetro da string do XML da NF-e
-            if (empty($sxml) || ! simplexml_load_string($sxml)) {
-                throw new nfephpException("XML de NF-e para autorizacao recebido no parametro parece invalido, verifique");
-            }
             // limpa a variavel
             $sNFe = $sxml;
             //remove <?xml version="1.0" encoding=... e demais caracteres indesejados
@@ -2334,7 +2331,7 @@ class ToolsNFePHP extends CommonNFePHP
                         $protcStat = $infProt->getElementsByTagName('cStat')->item(0)->nodeValue;
                         //pegar os dados do protolo para retornar
                         foreach ($infProt->childNodes as $tnode) {
-                           $aProt[$countI][$tnode->nodeName] = $tnode->nodeValue;
+                            $aProt[$countI][$tnode->nodeName] = $tnode->nodeValue;
                         }
                         $countI++;
                         //incluido increment para controlador de indice do array
@@ -3040,7 +3037,7 @@ class ToolsNFePHP extends CommonNFePHP
         $aRetorno['nNFFin'] = $doc->getElementsByTagName('nNFFin')->item(0)->nodeValue;
         // data e hora do retorno a operação (opcional)
         $aRetorno['dhRecbto'] = !empty($doc->getElementsByTagName('dhRecbto')->item(0)->nodeValue) ?
-                                 date("d/m/Y H:i:s", $this->pConvertTime($doc->getElementsByTagName('dhRecbto')->item(0)->nodeValue)) : '';
+            date("d/m/Y H:i:s", $this->pConvertTime($doc->getElementsByTagName('dhRecbto')->item(0)->nodeValue)) : '';
         // Número do Protocolo de Inutilização
         $aRetorno['nProt'] = $doc->getElementsByTagName('nProt')->item(0)->nodeValue;
         if ($cStat == '') {
@@ -3298,7 +3295,7 @@ class ToolsNFePHP extends CommonNFePHP
             $aRetorno['chNFe'] = $retEvento->getElementsByTagName('chNFe')->item(0)->nodeValue;
             // data e hora da mensagem (opcional)
             $aRetorno['dhRecbto'] = !empty($retEvento->getElementsByTagName('dhRegEvento')->item(0)->nodeValue) ?
-                                    date("d/m/Y H:i:s", $this->pConvertTime($retEvento->getElementsByTagName('dhRegEvento')->item(0)->nodeValue)) : '';
+                date("d/m/Y H:i:s", $this->pConvertTime($retEvento->getElementsByTagName('dhRegEvento')->item(0)->nodeValue)) : '';
             //o evento foi aceito cStat == 135 ou cStat == 155
             //carregar o evento
             $xmlenvEvento = new DOMDocument('1.0', 'utf-8'); //cria objeto DOM
@@ -5081,7 +5078,7 @@ class ToolsNFePHP extends CommonNFePHP
     {
         $this->enableSVCAN = false;
         $this->enableSVCRS = false;
-    }        
+    }
     
     /**
      * Gera numero de lote com base em microtime
@@ -5101,19 +5098,64 @@ class ToolsNFePHP extends CommonNFePHP
      */
     private function pClearXml($xml = '', $remEnc = false)
     {
-        $retXml = $xml;
+        $aFind = array('xmlns:default="http://www.w3.org/2000/09/xmldsig#"', 'default:', ':default', "\n", "\r", "\s", "\t", );
         if ($remEnc) {
-            $retXml = str_replace('<?xml version="1.0"?>', '', $retXml);
-            $retXml = str_replace('<?xml version="1.0" encoding="utf-8"?>', '', $retXml);
-            $retXml = str_replace('<?xml version="1.0" encoding="UTF-8"?>', '', $retXml);
+            $aFind[] = '<?xml version="1.0"?>';
+            $aFind[] = '<?xml version="1.0" encoding="utf-8"?>';
+            $aFind[] = '<?xml version="1.0" encoding="UTF-8"?>';
         }
-        $retXml = str_replace("xmlns:default=\"http://www.w3.org/2000/09/xmldsig#\"", '', $retXml);
-        $retXml = str_replace('default:', '', $retXml);
-        $retXml = str_replace(':default', '', $retXml);
-        $retXml = str_replace("\n", '', $retXml);
-        $retXml = str_replace("\r", '', $retXml);
-        $retXml = str_replace("\s", '', $retXml);
-        $retXml = str_replace("\t", '', $retXml);
+        $retXml = str_replace($aFind, "", $xml);
         return $retXml;
+    }
+    
+    /**
+     * pLoadServico
+     * Monta o namespace e o cabecalho
+     * @param string $servico Identificação do Servico
+     * @param array $aURL Dados das Urls do SEFAZ
+     * @return void
+     */
+    private function pLoadServico(
+        $servico,
+        $siglaUF,
+        $tpAmb,
+        &$cUF,
+        &$urlservico,
+        &$namespace,
+        &$cabec,
+        &$metodo,
+        &$versao
+    ) {
+        $cUF = $this->cUFlist[$siglaUF];
+        //verifica se alguma contingência está habilitada,
+        //neste caso precisa recarregar os webservices
+        if ($this->enableSVCAN) {
+            $aURL = $this->pLoadSEFAZ($tpAmb, self::CONTINGENCIA_SVCAN);
+        } elseif ($this->enableSVCRS) {
+            $aURL = $this->pLoadSEFAZ($tpAmb, self::CONTINGENCIA_SVCRS);
+        } else {
+            if ($siglaUF !== $this->siglaUF) {
+                $aURL = $this->pLoadSEFAZ($tpAmb, $siglaUF);
+            } else {
+                $aURL = $this->aURL;
+            }
+        }
+        //recuperação da versão
+        $versao = $aURL[$servico]['version'];
+        //recuperação da url do serviço
+        $urlservico = $aURL[$servico]['URL'];
+        //recuperação do método
+        $metodo = $aURL[$servico]['method'];
+        //montagem do namespace do serviço
+        $operation = $aURL[$servico]['operation'];
+        $namespace = sprintf("%s/wsdl/%s", $this->URLPortal, $operation);
+        //montagem do cabeçalho da comunicação SOAP
+        $cabec = sprintf(
+            '<nfeCabecMsg xmlns="%s"><cUF>%s</cUF>'
+            . '<versaoDados>%s</versaoDados></nfeCabecMsg>',
+            $namespace,
+            $cUF,
+            $versao
+        );
     }
 }
