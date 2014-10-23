@@ -88,6 +88,7 @@ class MakeNFe
     private $dest = ''; //DOMNode
     private $enderDest = ''; //DOMNode
     private $retirada = ''; //DOMNode
+    private $entrega = ''; //DOMNode
     private $total = ''; //DOMNode
     private $pag = ''; //DOMNode
     private $cobr = ''; //DOMNode
