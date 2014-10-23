@@ -27,7 +27,7 @@
  *
  * @package     NFePHP
  * @name        ConvertNFePHP
- * @version     3.1.13
+ * @version     3.10.14
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2011 &copy; NFePHP
@@ -207,9 +207,9 @@ class ConvertNFePHP
                           $uCom, $qCom, $vUnCom, $vProd, $cEANTrib, $uTrib,
                           $qtrib, $vUnTrib, $vFrete, $vSeg, $vDesc, $vOutro,
                           $indTot, $xPed, $nItemPed, $DI, $dDI, $xLocDesemb,
-                          $UFDesemb, $dDesemb, $tpViaTransp, $vAFRMM, $tpIntermedio, 
+                          $UFDesemb, $dDesemb, $tpViaTransp, $vAFRMM, $tpIntermedio,
                           $UFTerceiro, $cExportador, $adi, $nAdicao,
-                          $nSeqAdicC, $cFabricante, $vDescDI, $nDraw, 
+                          $nSeqAdicC, $cFabricante, $vDescDI, $nDraw,
                           $detExport, $exportInd, $nRE, $chNFe, $qExport, $veicProd, $tpOP,
                           $chassi, $cCor, $xCor, $pot, $cilin, $pesoL, $pesoB,
                           $nSerie, $tpComb, $nMotor, $CMT, $dist, $anoMod,
@@ -2540,21 +2540,51 @@ class ConvertNFePHP
         $emit = $dom->getElementsByTagName("emit")->item(0);
         $cUF = $ide->getElementsByTagName('cUF')->item(0)->nodeValue;
         $dhEmi = $ide->getElementsByTagName('dhEmi')->item(0)->nodeValue;
-        $CNPJ = $emit->getElementsByTagName('CNPJ')->item(0)->nodeValue;
+        $cnpj = $emit->getElementsByTagName('CNPJ')->item(0)->nodeValue;
         $mod = $ide->getElementsByTagName('mod')->item(0)->nodeValue;
         $serie = $ide->getElementsByTagName('serie')->item(0)->nodeValue;
         $nNF = $ide->getElementsByTagName('nNF')->item(0)->nodeValue;
         $tpEmis = $ide->getElementsByTagName('tpEmis')->item(0)->nodeValue;
         $cNF = $ide->getElementsByTagName('cNF')->item(0)->nodeValue;
-        if (strlen($cNF) != 8) {
-            $cNF = $ide->getElementsByTagName('cNF')->item(0)->nodeValue = rand(10000001, 99999999);
-        }
+        $cDV = $ide->getElementsByTagName('cDV')->item(0)->nodeValue;
         $tempData = $dt = explode("-", $dhEmi);
         $forma = "%02d%02d%02d%s%02d%03d%09d%01d%08d";
-        $tempChave = sprintf($forma, $cUF, $tempData[0] - 2000, $tempData[1], $CNPJ, $mod, $serie, $nNF, $tpEmis, $cNF);
-        $cDV = $ide->getElementsByTagName('cDV')->item(0)->nodeValue = $this->calculaDV($tempChave);
-        $this->chave = $tempChave .= $cDV;
-        $infNFe = $dom->getElementsByTagName("infNFe")->item(0);
-        $infNFe->setAttribute("Id", "NFe" . $this->chave);
+        $chaveMontada = sprintf(
+            $forma,
+            $cUF,
+            $tempData[0] - 2000,
+            $tempData[1],
+            $cnpj,
+            $mod,
+            $serie,
+            $nNF,
+            $tpEmis,
+            $cNF
+        );
+        $chaveMontada .= $this->calculaDV($chaveMontada);
+        //caso a chave contida na NFe esteja errada
+        //remontar a chave
+        if ($chaveMontada != $this->chave) {
+            if (strlen($cNF) != 8) {
+                $cNF = $ide->getElementsByTagName('cNF')->item(0)->nodeValue = rand(10000001, 99999999);
+            }
+            $forma = "%02d%02d%02d%s%02d%03d%09d%01d%08d";
+            $$tempChave = sprintf(
+                $forma,
+                $cUF,
+                $tempData[0] - 2000,
+                $tempData[1],
+                $cnpj,
+                $mod,
+                $serie,
+                $nNF,
+                $tpEmis,
+                $cNF
+            );
+            $cDV = $ide->getElementsByTagName('cDV')->item(0)->nodeValue = $this->calculaDV($tempChave);
+            $this->chave = $tempChave .= $cDV;
+            $infNFe = $dom->getElementsByTagName("infNFe")->item(0);
+            $infNFe->setAttribute("Id", "NFe" . $this->chave);
+        }
     } //fim calculaChave
 }//fim da classe
