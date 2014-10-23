@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.10.02-beta
+ * @version   3.10.03-beta
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -5040,23 +5040,41 @@ class ToolsNFePHP extends CommonNFePHP
     
     /**
      * ativaContingencia
-     * @param string $tipo SVCAN ou SVCRS
+     * Ativa a contingencia SVCAN ou SVCRS conforme a 
+     * sigla do estado 
+     * @param string $siglaUF
      * @return void
-     * TODO : podemos usar a variável $this->ctgList[$siglaUF] para estabelecer 
-     * qual deverá ser o provedor da contingência SVCAN ou SVCRS 
      */
-    public function ativaContingencia($tipo = self::CONTINGENCIA_SVCAN)
+    public function ativaContingencia($siglaUF = '')
     {
-        if ($tipo == self::CONTINGENCIA_SVCAN) {
+        if ($siglaUF == self::CONTINGENCIA_SVCAN || $siglaUF == self::CONTINGENCIA_SVCRS) {
+            $siglaUF = '';
+        }
+        if ($siglaUF == '') {
+            $ctg = $this->ctgList[$this->siglaUF];
+        } else {
+            $ctg = $this->ctgList[$siglaUF];
+        }
+        if ($ctg == self::CONTINGENCIA_SVCAN) {
             $this->enableSVCAN = true;
             $this->enableSVCRS = false;
-        } elseif ($tipo == self::CONTINGENCIA_SVCRS) {
+        } elseif ($ctg == self::CONTINGENCIA_SVCRS) {
             $this->enableSVCAN = false;
             $this->enableSVCRS = true;
-        } else {
-            throw new Exception("Tipo de contingencia \"$tipo\" invalido, verifique!");
         }
     }
+    
+    /**
+     * desativaContingencia
+     * Desliga opção de contingência 
+     * 
+     * @return void
+     */
+    public function desativaContingencia()
+    {
+        $this->enableSVCAN = false;
+        $this->enableSVCRS = false;
+    }        
     
     /**
      * Gera numero de lote com base em microtime
