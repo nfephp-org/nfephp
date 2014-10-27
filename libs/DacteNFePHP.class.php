@@ -2281,7 +2281,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         {
             $tp = '';
             $mod = $this->infNF->item($k)->getElementsByTagName('mod');
-            if ($mod && !empty($mod->item(0))) {
+            if ($mod && ($mod->length > 0)) {
                 $tp = $mod->item(0)->nodeValue;
             }
             $cnpj = $this->formatCNPJCPF($this->rem);
