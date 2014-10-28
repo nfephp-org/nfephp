@@ -26,7 +26,7 @@
  * 
  * @package     NFePHP
  * @name        MakeNFePHP
- * @version     0.1.10
+ * @version     0.1.11
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright   2009-2014 &copy; NFePHP
  * @link        http://www.nfephp.org/
@@ -88,6 +88,7 @@ class MakeNFe
     private $dest = ''; //DOMNode
     private $enderDest = ''; //DOMNode
     private $retirada = ''; //DOMNode
+    private $entrega = ''; //DOMNode
     private $total = ''; //DOMNode
     private $pag = ''; //DOMNode
     private $cobr = ''; //DOMNode
