@@ -27,7 +27,7 @@
  *
  * @package     NFePHP
  * @name        ConvertNFePHP
- * @version     3.10.14
+ * @version     3.10.15
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2011 &copy; NFePHP
@@ -348,7 +348,7 @@ class ConvertNFePHP
                     if (!isset($NFref)) {
                         $notas[$currnota]['NFref'] = $dom->createElement("NFref");
                         $NFref = & $notas[$currnota]['NFref'];
-                        $ide->insertBefore($ide->appendChild($NFref), $tpImp);
+                        $ide->appendChild($NFref);
                     }
                     $refNFe = $dom->createElement("refNFe", $dados[1]);
                     $NFref->appendChild($refNFe);
@@ -359,7 +359,7 @@ class ConvertNFePHP
                     if (!isset($NFref)) {
                         $notas[$currnota]['NFref'] = $dom->createElement("NFref");
                         $NFref = & $notas[$currnota]['NFref'];
-                        $ide->insertBefore($ide->appendChild($NFref), $tpImp);
+                        $ide->appendChild($NFref);
                     }
                     $refNF = $dom->createElement("refNF");
                     $cUF = $dom->createElement("cUF", $dados[1]);
@@ -381,7 +381,7 @@ class ConvertNFePHP
                     if (!isset($NFref)) {
                         $notas[$currnota]['NFref'] = $dom->createElement("NFref");
                         $NFref = & $notas[$currnota]['NFref'];
-                        $ide->insertBefore($ide->appendChild($NFref), $tpImp);
+                        $ide->appendChild($NFref);
                     }
                     $refNFP = $dom->createElement("refNFP");
                     $cUF = $dom->createElement("cUF", $dados[1]);
@@ -419,7 +419,7 @@ class ConvertNFePHP
                     if (!isset($NFref)) {
                         $notas[$currnota]['NFref'] = $dom->createElement("NFref");
                         $NFref = & $notas[$currnota]['NFref'];
-                        $ide->insertBefore($ide->appendChild($NFref), $tpImp);
+                        $ide->appendChild($NFref);
                     }
                     //B20i|refCTe|
                     $refCTe = $dom->createElement("refCTe", $dados[1]);
@@ -430,7 +430,7 @@ class ConvertNFePHP
                     if (!isset($NFref)) {
                         $notas[$currnota]['NFref'] = $dom->createElement("NFref");
                         $NFref = & $notas[$currnota]['NFref'];
-                        $ide->insertBefore($ide->appendChild($NFref), $tpImp);
+                        $ide->appendChild($NFref);
                     }
                     //B20j|mod|nECF|nCOO|
                     $refECF = $dom->createElement("refECF");
