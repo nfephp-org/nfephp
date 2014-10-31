@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.10.03-beta
+ * @version   3.10.04-beta
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -3643,9 +3643,7 @@ class ToolsNFePHP extends CommonNFePHP
      * @param   string $xJust Justificativa quando tpEvento = 40 ou 210240
      * @param   integer $tpAmb Tipo de ambiente
      * @param   mixed  $resp variável passada como referencia e irá conter o retorno da função em um array
-     * @return mixed false
-     *
-     * TODO : terminar o código não funcional e não testado
+     * @return false ou xml do retorno do webservice
      */
     public function manifDest($chNFe = '', $tpEvento = '', $xJust = '', $tpAmb = '', &$resp = array())
     {
@@ -3765,22 +3763,14 @@ class ToolsNFePHP extends CommonNFePHP
             $dados = "<nfeDadosMsg xmlns=\"$namespace\">$dados</nfeDadosMsg>";
             //grava solicitação em temp
             if (! file_put_contents($this->temDir."$chNFe-$nSeqEvento-envMDe.xml", $Ev)) {
-                $msg = "Falha na gravacao do aruqivo envMDe!!";
-                throw new nfephpException($msg);
+                throw new nfephpException("Falha na gravacao do arquivo envMDe!!");
             }
-            //envia dados via SOAP
-            $retorno = $this->pSendSOAP($urlservico, $namespace, $cabec, $dados, $metodo, $tpAmb);
-            //verifica o retorno
-            if (!$retorno) {
-                //não houve retorno
-                $msg = "Nao houve retorno Soap verifique a mensagem de erro e o debug!!";
-                throw new nfephpException($msg);
+            //envia dados via SOAP e verifica o retorno, se nao houve gera excecao
+            if (!$retorno = $this->pSendSOAP($urlservico, $namespace, $cabec, $dados, $metodo, $tpAmb)) {
+                throw new nfephpException("Nao houve retorno Soap verifique a mensagem de erro e o debug!!");
             }
             //tratar dados de retorno
-            $xmlMDe = new DOMDocument('1.0', 'utf-8'); //cria objeto DOM
-            $xmlMDe->formatOutput = false;
-            $xmlMDe->preserveWhiteSpace = false;
-            $xmlMDe->loadXML($retorno, LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
+            $xmlMDe = new DomDocumentNFePHP($retorno);
             $retEvento = $xmlMDe->getElementsByTagName("retEvento")->item(0);
             $infEvento = $xmlMDe->getElementsByTagName("infEvento")->item(0);
             $cStat = !empty($retEvento->getElementsByTagName('cStat')->item(0)->nodeValue) ?
@@ -3810,15 +3800,10 @@ class ToolsNFePHP extends CommonNFePHP
                 throw new nfephpException($msg);
             }
             //o evento foi aceito
-            $xmlenvMDe = new DOMDocument('1.0', 'utf-8'); //cria objeto DOM
-            $xmlenvMDe->formatOutput = false;
-            $xmlenvMDe->preserveWhiteSpace = false;
-            $xmlenvMDe->loadXML($Ev, LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
+            $xmlenvMDe = new DomDocumentNFePHP($Ev);
             $evento = $xmlenvMDe->getElementsByTagName("evento")->item(0);
             //Processo completo solicitação + protocolo
-            $xmlprocMDe = new DOMDocument('1.0', 'utf-8');
-            $xmlprocMDe->formatOutput = false;
-            $xmlprocMDe->preserveWhiteSpace = false;
+            $xmlprocMDe = new DomDocumentNFePHP();
             //cria a tag procEventoNFe
             $procEventoNFe = $xmlprocMDe->createElement('procEventoNFe');
             $xmlprocMDe->appendChild($procEventoNFe);
