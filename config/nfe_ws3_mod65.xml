@@ -36,12 +36,12 @@ UF/ambiente.
     <sigla>AN</sigla>
     <homologacao>
       <RecepcaoEvento method="nfeRecepcaoEvento" operation="RecepcaoEvento" version="3.10">https://hom.nfe.fazenda.gov.br/RecepcaoEvento/RecepcaoEvento.asmx</RecepcaoEvento>            
-      <NfeConsultaDest method="nfeConsultaNFDest" operation="NfeConsultaDest" version="3.10">https://hom.nfe.fazenda.gov.br/NFeConsultaDest/NFeConsultaDest.asmx</NfeConsultaDest>
+      <NfeConsultaDest method="nfeConsultaNFDest" operation="NfeConsultaDest" version="1.01">https://hom.nfe.fazenda.gov.br/NFeConsultaDest/NFeConsultaDest.asmx</NfeConsultaDest>
       <NfeDownloadNF method="nfeDownloadNF" operation="NfeDownloadNF" version="3.10">https://hom.nfe.fazenda.gov.br/NfeDownloadNF/NfeDownloadNF.asmx</NfeDownloadNF>
     </homologacao>
     <producao>
       <RecepcaoEvento method="nfeRecepcaoEvento" operation="RecepcaoEvento" version="3.10">https://www.nfe.fazenda.gov.br/RecepcaoEvento/RecepcaoEvento.asmx</RecepcaoEvento>            
-      <NfeConsultaDest method="nfeConsultaNFDest" operation="NfeConsultaDest" version="3.10">https://www.nfe.fazenda.gov.br/NFeConsultaDest/NFeConsultaDest.asmx</NfeConsultaDest>
+      <NfeConsultaDest method="nfeConsultaNFDest" operation="NfeConsultaDest" version="1.01">https://www.nfe.fazenda.gov.br/NFeConsultaDest/NFeConsultaDest.asmx</NfeConsultaDest>
       <NfeDownloadNF method="nfeDownloadNF" operation="NfeDownloadNF" version="3.10">https://www.nfe.fazenda.gov.br/NfeDownloadNF/NfeDownloadNF.asmx</NfeDownloadNF>
     </producao>
   </UF>
