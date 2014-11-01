@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Este arquivo é parte do projeto NFePHP - Nota Fiscal eletrônica em PHP.
  *
@@ -220,13 +219,13 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
             $this->infQ = $this->dom->getElementsByTagName("infQ");
             $this->seg = $this->dom->getElementsByTagName("seg")->item(0);
             $this->rodo = $this->dom->getElementsByTagName("rodo")->item(0);
-            $this->lota = $this->__simpleGetValue($this->rodo, "lota");
+            $this->lota = $this->pSimpleGetValue($this->rodo, "lota");
             $this->moto = $this->dom->getElementsByTagName("moto")->item(0);
             $this->veic = $this->dom->getElementsByTagName("veic");
             $this->ferrov = $this->dom->getElementsByTagName("ferrov")->item(0);
             // adicionar outros modais
             $this->infCteComp = $this->dom->getElementsByTagName("infCteComp")->item(0);
-            $this->chaveCTeRef = $this->__simpleGetValue($this->infCteComp, "chave");
+            $this->chaveCTeRef = $this->pSimpleGetValue($this->infCteComp, "chave");
             $this->vPrest = $this->dom->getElementsByTagName("vPrest")->item(0);
             $this->Comp = $this->dom->getElementsByTagName("Comp");
             $this->infNF = $this->dom->getElementsByTagName("infNF");
@@ -238,7 +237,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
             $this->imp = $this->dom->getElementsByTagName("imp")->item(0);
             $this->toma4 = $this->dom->getElementsByTagName("toma4")->item(0);
             $this->toma03 = $this->dom->getElementsByTagName("toma03")->item(0);
-            $tomador = $this->__simpleGetValue($this->toma03, "toma");
+            $tomador = $this->pSimpleGetValue($this->toma03, "toma");
             //0-Remetente;1-Expedidor;2-Recebedor;3-Destinatário;4-Outros
             switch ($tomador) {
                 case '0':
@@ -259,10 +258,10 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
                     break;
                 default:
                     $this->toma = $this->toma4;
-                    $this->enderToma = $this->__simpleGetValue($this->toma4, "enderToma");
+                    $this->enderToma = $this->pSimpleGetValue($this->toma4, "enderToma");
                     break;
             }
-            $seguro = $this->__simpleGetValue($this->seg, "respSeg");
+            $seguro = $this->pSimpleGetValue($this->seg, "respSeg");
             switch ($seguro) {
                 case '0':
                     $this->respSeg = 'Remetente';
@@ -286,10 +285,10 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
                     $this->respSeg = '';
                     break;
             }
-            $this->tpEmis = $this->__simpleGetValue($this->ide, "tpEmis");
-            $this->tpImp = $this->__simpleGetValue($this->ide, "tpImp");
-            $this->tpAmb = $this->__simpleGetValue($this->ide, "tpAmb");
-            $this->tpCTe = $this->__simpleGetValue($this->ide, "tpCTe");
+            $this->tpEmis = $this->pSimpleGetValue($this->ide, "tpEmis");
+            $this->tpImp = $this->pSimpleGetValue($this->ide, "tpImp");
+            $this->tpAmb = $this->pSimpleGetValue($this->ide, "tpAmb");
+            $this->tpCTe = $this->pSimpleGetValue($this->ide, "tpCTe");
             $this->protCTe = $this->dom->getElementsByTagName("protCTe")->item(0);
         }
     } //fim construct
@@ -380,7 +379,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
             }
         }
         $this->orientacao = $orientacao;
-        $this->__adicionaLogoPeloCnpj();
+        $this->pAdicionaLogoPeloCnpj();
         $this->papel = $papel;
         $this->logoAlign = $logoAlign;
         $this->situacao_externa = $situacao_externa;
@@ -494,12 +493,14 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
                 case '2':
                     $y += 17.9;
                     $x = $xInic;
-                    $r = $this->__modalAereoDACTE($x, $y);
+                    // TODO fmertins 31/10/14: este método não existe...
+                    $r = $this->zModalAereo($x, $y);
                     break;
                 case '3':
                     $y += 17.9;
                     $x = $xInic;
-                    $r = $this->__modalAquaviarioDACTE($x, $y);
+                    // TODO fmertins 31/10/14: este método não existe...
+                    $r = $this->zModalAquaviario($x, $y);
                     break;
                 case '4':
                     $y += 17.9;
@@ -509,7 +510,8 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
                 case '5':
                     $y += 17.9;
                     $x = $xInic;
-                    $r = $this->__modalDutoviarioDACTE($x, $y);
+                    // TODO fmertins 31/10/14: este método não existe...
+                    $r = $this->zModalDutoviario($x, $y);
                     break;
             }
             if ($this->modal == '1') {
@@ -626,7 +628,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $h = 35;
         $oldY += $h;
         //desenha a caixa
-        $this->__textBox($x, $y, $w + 2, $h + 1);
+        $this->pTextBox($x, $y, $w + 2, $h + 1);
         // coloca o logo
         if (is_file($this->logomarca)) {
             $logoInfo = getimagesize($this->logomarca);
@@ -671,8 +673,8 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
             'font' => $this->fontePadrao,
             'size' => 9,
             'style' => 'B');
-        $texto = $this->__simpleGetValue($this->emit, "xNome");
-        $this->__textBox($x1, $y1, $tw, 8, $texto, $aFont, 'T', 'C', 0, '');
+        $texto = $this->pSimpleGetValue($this->emit, "xNome");
+        $this->pTextBox($x1, $y1, $tw, 8, $texto, $aFont, 'T', 'C', 0, '');
         //endereço
         $y1 = $y1 + 3;
         $aFont = array(
@@ -680,28 +682,28 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
             'size' => 7,
             'style' => '');
         $fone = $this->zFormatFone($this->enderEmit);
-        $lgr = $this->__simpleGetValue($this->enderEmit, "xLgr");
-        $nro = $this->__simpleGetValue($this->enderEmit, "nro");
-        $cpl = $this->__simpleGetValue($this->enderEmit, "xCpl");
-        $bairro = $this->__simpleGetValue($this->enderEmit, "xBairro");
-        $CEP = $this->__simpleGetValue($this->enderEmit, "CEP");
-        $CEP = $this->__format($CEP, "#####-###");
-        $mun = $this->__simpleGetValue($this->enderEmit, "xMun");
-        $UF = $this->__simpleGetValue($this->enderEmit, "UF");
-        $xPais = $this->__simpleGetValue($this->enderEmit, "xPais");
+        $lgr = $this->pSimpleGetValue($this->enderEmit, "xLgr");
+        $nro = $this->pSimpleGetValue($this->enderEmit, "nro");
+        $cpl = $this->pSimpleGetValue($this->enderEmit, "xCpl");
+        $bairro = $this->pSimpleGetValue($this->enderEmit, "xBairro");
+        $CEP = $this->pSimpleGetValue($this->enderEmit, "CEP");
+        $CEP = $this->pFormat($CEP, "#####-###");
+        $mun = $this->pSimpleGetValue($this->enderEmit, "xMun");
+        $UF = $this->pSimpleGetValue($this->enderEmit, "UF");
+        $xPais = $this->pSimpleGetValue($this->enderEmit, "xPais");
         $texto = $lgr . "," . $nro . "\n" . $bairro . " - "
                 . $CEP . " - " . $mun . " - " . $UF . " " . $xPais
                 . "\n  Fone/Fax: " . $fone;
-        $this->__textBox($x1 - 5, $y1 + 2, $tw + 5, 8, $texto, $aFont, 'T', 'C', 0, '');
+        $this->pTextBox($x1 - 5, $y1 + 2, $tw + 5, 8, $texto, $aFont, 'T', 'C', 0, '');
         //CNPJ/CPF IE
         $cpfCnpj = $this->zFormatCNPJCPF($this->emit);
-        $ie = $this->__simpleGetValue($this->emit, "IE");
+        $ie = $this->pSimpleGetValue($this->emit, "IE");
         $texto = 'CNPJ/CPF:  ' . $cpfCnpj . '     Insc.Estadual: ' . $ie;
-        $this->__textBox($x1 - 1, $y1 + 12, $tw + 5, 8, $texto, $aFont, 'T', 'C', 0, '');
+        $this->pTextBox($x1 - 1, $y1 + 12, $tw + 5, 8, $texto, $aFont, 'T', 'C', 0, '');
         //outra caixa
         $h1 = 17.5;
         $y1 = $y + $h + 1;
-        $this->__textBox($x, $y1, $w + 2, $h1);
+        $this->pTextBox($x, $y1, $w + 2, $h1);
         //TIPO DO CT-E
         $texto = 'TIPO DO CTE';
         $wa = 37;
@@ -709,8 +711,8 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
             'font' => $this->fontePadrao,
             'size' => 8,
             'style' => '');
-        $this->__textBox($x, $y1, $w * 0.5, $h1, $texto, $aFont, 'T', 'C', 0, '');
-        $tpCTe = $this->__simpleGetValue($this->ide, "tpCTe");
+        $this->pTextBox($x, $y1, $w * 0.5, $h1, $texto, $aFont, 'T', 'C', 0, '');
+        $tpCTe = $this->pSimpleGetValue($this->ide, "tpCTe");
         //0 - CT-e Normal,1 - CT-e de Complemento de Valores,
         //2 - CT-e de Anulação de Valores,3 - CT-e Substituto
         switch ($tpCTe)
@@ -731,7 +733,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
                 $texto = 'ERRO' . $tpCTe . $tpServ;
         }
         $aFont = $this->formatNegrito;
-        $this->__textBox($x, $y1 + 3, $w * 0.5, $h1, $texto, $aFont, 'T', 'C', 0, '', false);
+        $this->pTextBox($x, $y1 + 3, $w * 0.5, $h1, $texto, $aFont, 'T', 'C', 0, '', false);
         //TIPO DO SERVIÇO
         $texto = 'TIPO DO SERVIÇO';
         $wb = 36;
@@ -739,8 +741,8 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
             'font' => $this->fontePadrao,
             'size' => 8,
             'style' => '');
-        $this->__textBox($x + $wa + 4.5, $y1, $w * 0.5, $h1, $texto, $aFont, 'T', 'C', 0, '');
-        $tpServ = $this->__simpleGetValue($this->ide, "tpServ");
+        $this->pTextBox($x + $wa + 4.5, $y1, $w * 0.5, $h1, $texto, $aFont, 'T', 'C', 0, '');
+        $tpServ = $this->pSimpleGetValue($this->ide, "tpServ");
         //0 - Normal;1 - Subcontratação;2 - Redespacho;3 - Redespacho Intermediário
         switch ($tpServ)
         {
@@ -760,7 +762,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
                 $texto = 'ERRO' . $tpServ;
         }
         $aFont = $this->formatNegrito;
-        $this->__textBox($x + $wa + 4.5, $y1 + 3, $w * 0.5, $h1, $texto, $aFont, 'T', 'C', 0, '', false);
+        $this->pTextBox($x + $wa + 4.5, $y1 + 3, $w * 0.5, $h1, $texto, $aFont, 'T', 'C', 0, '', false);
         $this->pdf->Line($w * 0.5, $y1, $w * 0.5, $y1 + $h1);
         //TOMADOR DO SERVIÇO
         $texto = 'TOMADOR DO SERVIÇO';
@@ -770,10 +772,10 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
             'font' => $this->fontePadrao,
             'size' => 8,
             'style' => '');
-        $this->__textBox($x, $y2, $w * 0.5, $h1, $texto, $aFont, 'T', 'C', 0, '');
+        $this->pTextBox($x, $y2, $w * 0.5, $h1, $texto, $aFont, 'T', 'C', 0, '');
 
         $this->pdf->Line($x, $y1 + 8, $w + 3, $y1 + 8);
-        $toma = $this->__simpleGetValue($this->ide, "toma");
+        $toma = $this->pSimpleGetValue($this->ide, "toma");
         //0-Remetente;1-Expedidor;2-Recebedor;3-Destinatário;4 - Outros
         switch ($toma)
         {
@@ -796,7 +798,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
                 $texto = 'ERRO' . $toma;
         }
         $aFont = $this->formatNegrito;
-        $this->__textBox($x, $y2 + 3, $w * 0.5, $h1, $texto, $aFont, 'T', 'C', 0, '', false);
+        $this->pTextBox($x, $y2 + 3, $w * 0.5, $h1, $texto, $aFont, 'T', 'C', 0, '', false);
         //FORMA DE PAGAMENTO
         $texto = 'FORMA DE PAGAMENTO';
         $wd = 36;
@@ -804,8 +806,8 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
             'font' => $this->fontePadrao,
             'size' => 8,
             'style' => '');
-        $this->__textBox($x + $wa + 4.5, $y2, $w * 0.5, $h1, $texto, $aFont, 'T', 'C', 0, '');
-        $forma = $this->__simpleGetValue($this->ide, "forPag");
+        $this->pTextBox($x + $wa + 4.5, $y2, $w * 0.5, $h1, $texto, $aFont, 'T', 'C', 0, '');
+        $forma = $this->pSimpleGetValue($this->ide, "forPag");
         //0 - Pago;1 - A pagar;2 - outros
         switch ($forma)
         {
@@ -822,40 +824,40 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
                 $texto = 'ERRO' . $forma;
         }
         $aFont = $this->formatNegrito;
-        $this->__textBox($x + $wa + 4.5, $y2 + 3, $w * 0.5, $h1, $texto, $aFont, 'T', 'C', 0, '', false);
+        $this->pTextBox($x + $wa + 4.5, $y2 + 3, $w * 0.5, $h1, $texto, $aFont, 'T', 'C', 0, '', false);
         //##################################################################
         //coluna direita
         $x += $w + 2;
         $w = round($maxW * 0.335);
         $w1 = $w;
         $h = 11;
-        $this->__textBox($x, $y, $w + 2, $h + 1);
+        $this->pTextBox($x, $y, $w + 2, $h + 1);
         $texto = "DACTE";
         $aFont = array(
             'font' => $this->fontePadrao,
             'size' => 10,
             'style' => 'B');
-        $this->__textBox($x, $y + 1, $w, $h, $texto, $aFont, 'T', 'C', 0, '');
+        $this->pTextBox($x, $y + 1, $w, $h, $texto, $aFont, 'T', 'C', 0, '');
         $aFont = array(
             'font' => $this->fontePadrao,
             'size' => 8,
             'style' => '');
         $texto = "Documento Auxiliar do Conhecimento\nde Transporte Eletrônico";
         $h = 10;
-        $this->__textBox($x, $y + 4, $w, $h, $texto, $aFont, 'T', 'C', 0, '', false);
+        $this->pTextBox($x, $y + 4, $w, $h, $texto, $aFont, 'T', 'C', 0, '', false);
         $x1 = $x + $w + 2;
         $w = round($maxW * 0.22, 0);
         $w2 = $w;
         $h = 11;
-        $this->__textBox($x1, $y, $w + 0.5, $h + 1);
+        $this->pTextBox($x1, $y, $w + 0.5, $h + 1);
         $texto = "MODAL";
         $aFont = array(
             'font' => $this->fontePadrao,
             'size' => 8,
             'style' => '');
-        $this->__textBox($x1, $y + 1, $w, $h, $texto, $aFont, 'T', 'C', 0, '');
+        $this->pTextBox($x1, $y + 1, $w, $h, $texto, $aFont, 'T', 'C', 0, '');
         //01-Rodoviário; //02-Aéreo; //03-Aquaviário; //04-Ferroviário;//05-Dutoviário
-        $modal = $this->__simpleGetValue($this->ide, "modal");
+        $modal = $this->pSimpleGetValue($this->ide, "modal");
         $this->modal = $modal;
         switch ($modal)
         {
@@ -879,12 +881,12 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
             'font' => $this->fontePadrao,
             'size' => 10,
             'style' => 'B');
-        $this->__textBox($x1, $y + 5, $w, $h, $texto, $aFont, 'T', 'C', 0, '');
+        $this->pTextBox($x1, $y + 5, $w, $h, $texto, $aFont, 'T', 'C', 0, '');
         //outra caixa
         $y += 12;
         $h = 9;
         $w = $w1 + $w2 + 2;
-        $this->__textBox($x, $y, $w + 0.5, $h + 1);
+        $this->pTextBox($x, $y, $w + 0.5, $h + 1);
         //modelo
         $wa = 12;
         $xa = $x;
@@ -893,10 +895,10 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
             'font' => $this->fontePadrao,
             'size' => 8,
             'style' => '');
-        $this->__textBox($xa, $y + 1, $wa, $h, $texto, $aFont, 'T', 'C', 0, '');
-        $texto = $this->__simpleGetValue($this->ide, "mod");
+        $this->pTextBox($xa, $y + 1, $wa, $h, $texto, $aFont, 'T', 'C', 0, '');
+        $texto = $this->pSimpleGetValue($this->ide, "mod");
         $aFont = $this->formatNegrito;
-        $this->__textBox($xa, $y + 5, $wa, $h, $texto, $aFont, 'T', 'C', 0, '');
+        $this->pTextBox($xa, $y + 5, $wa, $h, $texto, $aFont, 'T', 'C', 0, '');
         $this->pdf->Line($x + $wa, $y, $x + $wa, $y + $h + 1);
         //serie
         $xa += $wa;
@@ -905,10 +907,10 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
             'font' => $this->fontePadrao,
             'size' => 8,
             'style' => '');
-        $this->__textBox($xa, $y + 1, $wa, $h, $texto, $aFont, 'T', 'C', 0, '');
-        $texto = $this->__simpleGetValue($this->ide, "serie");
+        $this->pTextBox($xa, $y + 1, $wa, $h, $texto, $aFont, 'T', 'C', 0, '');
+        $texto = $this->pSimpleGetValue($this->ide, "serie");
         $aFont = $this->formatNegrito;
-        $this->__textBox($xa, $y + 5, $wa, $h, $texto, $aFont, 'T', 'C', 0, '');
+        $this->pTextBox($xa, $y + 5, $wa, $h, $texto, $aFont, 'T', 'C', 0, '');
         $this->pdf->Line($xa + $wa, $y, $xa + $wa, $y + $h + 1);
         //numero
         $xa += $wa;
@@ -918,10 +920,10 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
             'font' => $this->fontePadrao,
             'size' => 8,
             'style' => '');
-        $this->__textBox($xa, $y + 1, $wa, $h, $texto, $aFont, 'T', 'C', 0, '');
-        $texto = $this->__simpleGetValue($this->ide, "nCT");
+        $this->pTextBox($xa, $y + 1, $wa, $h, $texto, $aFont, 'T', 'C', 0, '');
+        $texto = $this->pSimpleGetValue($this->ide, "nCT");
         $aFont = $this->formatNegrito;
-        $this->__textBox($xa, $y + 5, $wa, $h, $texto, $aFont, 'T', 'C', 0, '');
+        $this->pTextBox($xa, $y + 5, $wa, $h, $texto, $aFont, 'T', 'C', 0, '');
         $this->pdf->Line($xa + $wa, $y, $xa + $wa, $y + $h + 1);
         //folha
         $xa += $wa;
@@ -931,10 +933,10 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
             'font' => $this->fontePadrao,
             'size' => 8,
             'style' => '');
-        $this->__textBox($xa, $y + 1, $wa, $h, $texto, $aFont, 'T', 'C', 0, '');
+        $this->pTextBox($xa, $y + 1, $wa, $h, $texto, $aFont, 'T', 'C', 0, '');
         $texto = '1/1';
         $aFont = $this->formatNegrito;
-        $this->__textBox($xa, $y + 5, $wa, $h, $texto, $aFont, 'T', 'C', 0, '');
+        $this->pTextBox($xa, $y + 5, $wa, $h, $texto, $aFont, 'T', 'C', 0, '');
         $this->pdf->Line($xa + $wa, $y, $xa + $wa, $y + $h + 1);
         //data  hora de emissão
         $xa += $wa;
@@ -944,29 +946,29 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
             'font' => $this->fontePadrao,
             'size' => 8,
             'style' => '');
-        $this->__textBox($xa, $y + 1, $wa, $h, $texto, $aFont, 'T', 'C', 0, '');
+        $this->pTextBox($xa, $y + 1, $wa, $h, $texto, $aFont, 'T', 'C', 0, '');
         $texto = !empty($this->ide->getElementsByTagName("dhEmi")->item(0)->nodeValue) ?
-            date('d/m/Y H:i:s', $this->__convertTime($this->__simpleGetValue($this->ide, "dhEmi"))) : '';
+            date('d/m/Y H:i:s', $this->pConvertTime($this->pSimpleGetValue($this->ide, "dhEmi"))) : '';
         $aFont = $this->formatNegrito;
-        $this->__textBox($xa, $y + 5, $wa, $h, $texto, $aFont, 'T', 'C', 0, '');
+        $this->pTextBox($xa, $y + 5, $wa, $h, $texto, $aFont, 'T', 'C', 0, '');
         $this->pdf->Line($xa + $wa, $y, $xa + $wa, $y + $h + 1);
         //ISUF
         $xa += $wa;
         $wa = 32;
         $texto = 'INSC. SUFRAMA DO DESTINATÁRIO';
         $aFont = $this->formatPadrao;
-        $this->__textBox($xa, $y + 1, $wa, $h, $texto, $aFont, 'T', 'C', 0, '');
-        $texto = $this->__simpleGetValue($this->dest, "ISUF");
+        $this->pTextBox($xa, $y + 1, $wa, $h, $texto, $aFont, 'T', 'C', 0, '');
+        $texto = $this->pSimpleGetValue($this->dest, "ISUF");
         $aFont = array(
             'font' => $this->fontePadrao,
             'size' => 7,
             'style' => 'B');
-        $this->__textBox($xa, $y + 5, $wa, $h, $texto, $aFont, 'T', 'C', 0, '');
+        $this->pTextBox($xa, $y + 5, $wa, $h, $texto, $aFont, 'T', 'C', 0, '');
         //outra caixa
         $y += $h + 1;
         $h = 23;
         $h1 = 14;
-        $this->__textBox($x, $y, $w + 0.5, $h1);
+        $this->pTextBox($x, $y, $w + 0.5, $h1);
         //CODIGO DE BARRAS
         $chave_acesso = str_replace('CTe', '', $this->infCte->getAttribute("Id"));
         $bW = 85;
@@ -974,14 +976,14 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         //codigo de barras
         $this->pdf->SetFillColor(0, 0, 0);
         $this->pdf->Code128($x + (($w - $bW) / 2), $y + 2, $chave_acesso, $bW, $bH);
-        $this->__textBox($x, $y + $h1, $w + 0.5, $h1 - 6);
+        $this->pTextBox($x, $y + $h1, $w + 0.5, $h1 - 6);
         $texto = 'CHAVE DE ACESSO';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y + $h1, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y + $h1, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $aFont = $this->formatNegrito;
-        $texto = $this->__format($chave_acesso, '##.####.##.###.###/####-##-##-###-###.###.###-###.###.###-#');
-        $this->__textBox($x, $y + $h1 + 3, $w, $h, $texto, $aFont, 'T', 'C', 0, '');
-        $this->__textBox($x, $y + $h1 + 8, $w + 0.5, $h1 - 4.5);
+        $texto = $this->pFormat($chave_acesso, '##.####.##.###.###/####-##-##-###-###.###.###-###.###.###-#');
+        $this->pTextBox($x, $y + $h1 + 3, $w, $h, $texto, $aFont, 'T', 'C', 0, '');
+        $this->pTextBox($x, $y + $h1 + 8, $w + 0.5, $h1 - 4.5);
         $texto = "Consulta de autenticidade no portal nacional do CT-e, ";
         $texto .= "no site da Sefaz Autorizadora, \r\n ou em http://www.cte.fazenda.gov.br";
         if ($this->tpEmis == 5 || $this->tpEmis == 7 || $this->tpEmis == 8) {
@@ -991,7 +993,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
                 $chaveContingencia = $this->zGeraChaveAdicCont();
                 $this->pdf->Code128($x + 20, $y1 + 10, $chaveContingencia, $bW * .9, $bH / 2);
             } else {
-                $chaveContingencia = $this->__simpleGetValue($this->protCTe, "nProt");
+                $chaveContingencia = $this->pSimpleGetValue($this->protCTe, "nProt");
                 $this->pdf->Code128($x + 40, $y1 + 10, $chaveContingencia, $bW * .4 , $bH / 2);
             }
             //codigo de barras
@@ -1000,12 +1002,12 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
             'font' => $this->fontePadrao,
             'size' => 8,
             'style' => '');
-        $this->__textBox($x, $y + $h1 + 9, $w, $h, $texto, $aFont, 'T', 'C', 0, '');
+        $this->pTextBox($x, $y + $h1 + 9, $w, $h, $texto, $aFont, 'T', 'C', 0, '');
         //outra caixa
         $y += $h + 1;
         $h = 8.5;
         $wa = $w;
-        $this->__textBox($x, $y + 7.5, $w + 0.5, $h);
+        $this->pTextBox($x, $y + 7.5, $w + 0.5, $h);
         if ($this->zCteDPEC()) {
             $texto = 'NÚMERO DE REGISTRO DPEC';
         } elseif ($this->tpEmis == 5 || $this->tpEmis == 7 || $this->tpEmis == 8) {
@@ -1014,7 +1016,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
             $texto = 'PROTOCOLO DE AUTORIZAÇÃO DE USO';
         }
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y + 7.5, $wa, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y + 7.5, $wa, $h, $texto, $aFont, 'T', 'L', 0, '');
         if ($this->zCteDPEC()) {
             $texto = $this->numero_registro_dpec;
 
@@ -1024,66 +1026,66 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
                 'font' => $this->fontePadrao,
                 'size' => 8,
                 'style' => 'B');
-            $texto = $this->__format($chaveContingencia, "#### #### #### #### #### #### #### #### ####");
+            $texto = $this->pFormat($chaveContingencia, "#### #### #### #### #### #### #### #### ####");
             $cStat = '';
 
         } else {
-            $texto = $this->__simpleGetValue($this->protCTe, "nProt") . " - ";
-            $texto .= date('d/m/Y   H:i:s', $this->__convertTime($this->__simpleGetValue($this->protCTe, "dhRecbto")));
-            $texto = $this->__simpleGetValue($this->protCTe, "nProt") == '' ? '' : $texto;
+            $texto = $this->pSimpleGetValue($this->protCTe, "nProt") . " - ";
+            $texto .= date('d/m/Y   H:i:s', $this->pConvertTime($this->pSimpleGetValue($this->protCTe, "dhRecbto")));
+            $texto = $this->pSimpleGetValue($this->protCTe, "nProt") == '' ? '' : $texto;
         }
         $aFont = $this->formatNegrito;
-        $this->__textBox($x, $y + 12, $wa, $h, $texto, $aFont, 'T', 'C', 0, '');
+        $this->pTextBox($x, $y + 12, $wa, $h, $texto, $aFont, 'T', 'C', 0, '');
         //CFOP
         $x = $oldX;
         $h = 8.5;
         $w = round($maxW * 0.42);
         $y1 = $y + 7.5;
-        $this->__textBox($x, $y1, $w + 2, $h);
+        $this->pTextBox($x, $y1, $w + 2, $h);
         $texto = 'CFOP - NATUREZA DA PRESTAÇÃO';
         $aFont = array(
             'font' => $this->fontePadrao,
             'size' => 8,
             'style' => '');
-        $this->__textBox($x, $y1, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
-        $texto = $this->__simpleGetValue($this->ide, "CFOP") . ' - ' . $this->__simpleGetValue($this->ide, "natOp");
+        $this->pTextBox($x, $y1, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $texto = $this->pSimpleGetValue($this->ide, "CFOP") . ' - ' . $this->pSimpleGetValue($this->ide, "natOp");
         $aFont = $this->formatNegrito;
-        $this->__textBox($x, $y1 + 3.5, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y1 + 3.5, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         //ORIGEM DA PRESTAÇÃO
         $y += $h + 7.5;
         $x = $oldX;
         $h = 8;
         $w = ($maxW * 0.5);
-        $this->__textBox($x, $y, $w + 0.5, $h);
+        $this->pTextBox($x, $y, $w + 0.5, $h);
         $texto = 'INÍCIO DA PRESTAÇÃO';
         $aFont = array(
             'font' => $this->fontePadrao,
             'size' => 8,
             'style' => '');
-        $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
-        $texto = $this->__simpleGetValue($this->ide, "xMunIni") . ' - ' . $this->__simpleGetValue($this->ide, "UFIni");
+        $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $texto = $this->pSimpleGetValue($this->ide, "xMunIni") . ' - ' . $this->pSimpleGetValue($this->ide, "UFIni");
         $aFont = $this->formatNegrito;
-        $this->__textBox($x, $y + 3.5, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y + 3.5, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         //DESTINO DA PRESTAÇÃO
         $x = $oldX + $w + 1;
         $h = 8;
         $w = $w - 1.3;
-        $this->__textBox($x - 0.5, $y, $w + 0.5, $h);
+        $this->pTextBox($x - 0.5, $y, $w + 0.5, $h);
         $texto = 'TÉRMINO DA PRESTAÇÃO';
         $aFont = array(
             'font' => $this->fontePadrao,
             'size' => 8,
             'style' => '');
-        $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
-        $texto = $this->__simpleGetValue($this->ide, "xMunFim") . ' - ' . $this->__simpleGetValue($this->ide, "UFFim");
+        $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $texto = $this->pSimpleGetValue($this->ide, "xMunFim") . ' - ' . $this->pSimpleGetValue($this->ide, "UFFim");
         $aFont = $this->formatNegrito;
-        $this->__textBox($x, $y + 3.5, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y + 3.5, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
 
         //#########################################################################
         //Indicação de CTe Homologação, cancelamento e falta de protocolo
         $tpAmb = $this->ide->getElementsByTagName('tpAmb')->item(0)->nodeValue;
         //indicar cancelamento
-        $cStat = $this->__simpleGetValue($this->cteProc, "cStat");
+        $cStat = $this->pSimpleGetValue($this->cteProc, "cStat");
         if ($cStat == '101' || $cStat == '135' || $this->situacao_externa == NFEPHP_SITUACAO_EXTERNA_CANCELADA) {
             //101 Cancelamento
             $x = 10;
@@ -1096,10 +1098,10 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
                 'font' => $this->fontePadrao,
                 'size' => 48,
                 'style' => 'B');
-            $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'C', 'C', 0, '');
+            $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'C', 'C', 0, '');
             $this->pdf->SetTextColor(0, 0, 0);
         }
-        $cStat = $this->__simpleGetValue($this->cteProc, "cStat");
+        $cStat = $this->pSimpleGetValue($this->cteProc, "cStat");
         if ($cStat == '110' ||
             $cStat == '301' ||
             $cStat == '302' ||
@@ -1116,7 +1118,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
                 'font' => $this->fontePadrao,
                 'size' => 48,
                 'style' => 'B');
-            $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'C', 'C', 0, '');
+            $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'C', 'C', 0, '');
             $y += $h;
             $h = 5;
             $w = $maxW - (2 * $x);
@@ -1125,7 +1127,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
                 'font' => $this->fontePadrao,
                 'size' => 48,
                 'style' => 'B');
-            $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'C', 'C', 0, '');
+            $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'C', 'C', 0, '');
             $this->pdf->SetTextColor(0, 0, 0);
         }
         //indicar sem valor
@@ -1144,13 +1146,13 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
                 'font' => $this->fontePadrao,
                 'size' => 48,
                 'style' => 'B');
-            $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'C', 'C', 0, '');
+            $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'C', 'C', 0, '');
             $aFont = array(
                 'font' => $this->fontePadrao,
                 'size' => 30,
                 'style' => 'B');
             $texto = "AMBIENTE DE HOMOLOGAÇÃO";
-            $this->__textBox($x, $y + 14, $w, $h, $texto, $aFont, 'C', 'C', 0, '');
+            $this->pTextBox($x, $y + 14, $w, $h, $texto, $aFont, 'C', 'C', 0, '');
             $this->pdf->SetTextColor(0, 0, 0);
         } else {
             $x = 10;
@@ -1170,13 +1172,13 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
                     'font' => $this->fontePadrao,
                     'size' => 48,
                     'style' => 'B');
-                $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'C', 'C', 0, '');
+                $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'C', 'C', 0, '');
                 $aFont = array(
                     'font' => $this->fontePadrao,
                     'size' => 30,
                     'style' => 'B');
                 $texto = "devido à problemas técnicos";
-                $this->__textBox($x, $y + 12, $w, $h, $texto, $aFont, 'C', 'C', 0, '');
+                $this->pTextBox($x, $y + 12, $w, $h, $texto, $aFont, 'C', 'C', 0, '');
             } else {
                 if (!isset($this->cteProc)) {
                     if (!$this->zCteDPEC()) {
@@ -1185,7 +1187,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
                             'font' => $this->fontePadrao,
                             'size' => 48,
                             'style' => 'B');
-                        $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'C', 'C', 0, '');
+                        $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'C', 'C', 0, '');
                     }
                     $aFont = array(
                         'font' => $this->fontePadrao,
@@ -1193,9 +1195,9 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
                         'style' => 'B');
                     $texto = "FALTA PROTOCOLO DE APROVAÇÃO DA SEFAZ";
                     if (!$this->zCteDPEC()) {
-                        $this->__textBox($x, $y + 12, $w, $h, $texto, $aFont, 'C', 'C', 0, '');
+                        $this->pTextBox($x, $y + 12, $w, $h, $texto, $aFont, 'C', 'C', 0, '');
                     } else {
-                        $this->__textBox($x, $y + 25, $w, $h, $texto, $aFont, 'C', 'C', 0, '');
+                        $this->pTextBox($x, $y + 25, $w, $h, $texto, $aFont, 'C', 'C', 0, '');
                     }
                 } //fim cteProc
                 if ($this->tpEmis == 4) {
@@ -1205,21 +1207,21 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
                     $h = 25;
                     $w = $maxW - (2 * $x);
                     $this->pdf->SetTextColor(200, 200, 200); // 90,90,90 é muito escuro
-                    $texto = "DANFE impresso em contingência -\n"
+                    $texto = "DACTE impresso em contingência -\n"
                             . "DPEC regularmente recebido pela Receita\n"
                             . "Federal do Brasil";
                     $aFont = array(
                         'font' => $this->fontePadrao,
                         'size' => 48,
                         'style' => 'B');
-                    $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'C', 'C', 0, '');
+                    $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'C', 'C', 0, '');
                     $this->pdf->SetTextColor(0, 0, 0);
                 }
             } //fim tpEmis
             $this->pdf->SetTextColor(0, 0, 0);
         }
         return $oldY;
-    } //fim __cabecalhoDANFE
+    } //fim zCabecalho
 
     /**
      * rodapeDACTE
@@ -1236,14 +1238,14 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
             'font' => $this->fontePadrao,
             'size' => 6,
             'style' => '');
-        $this->__textBox($x, $y, $w, 4, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y, $w, 4, $texto, $aFont, 'T', 'L', 0, '');
         $texto = "DacteNFePHP ver. " . $this->version . "  Powered by NFePHP (GNU/GPLv3 GNU/LGPLv3) © www.nfephp.org";
         $aFont = array(
             'font' => $this->fontePadrao,
             'size' => 6,
             'style' => '');
-        $this->__textBox($x, $y, $w, 4, $texto, $aFont, 'T', 'R', 0, 'http://www.nfephp.org');
-    } //fim __rodapeDANFE
+        $this->pTextBox($x, $y, $w, 4, $texto, $aFont, 'T', 'R', 0, 'http://www.nfephp.org');
+    } //fim zRodape
 
     /**
      * zRemetente
@@ -1267,69 +1269,69 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $x1 = $x + 16;
         $texto = 'REMETENTE';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 1, '');
+        $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 1, '');
         $aFont = $this->formatNegrito;
-        $texto = $this->__simpleGetValue($this->rem, "xNome");
-        $this->__textBox($x1, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $texto = $this->pSimpleGetValue($this->rem, "xNome");
+        $this->pTextBox($x1, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $y += 3;
         $texto = 'ENDEREÇO';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $aFont = $this->formatNegrito;
-        $texto = $this->__simpleGetValue($this->enderReme, "xLgr") . ',';
-        $texto .= $this->__simpleGetValue($this->enderReme, "nro");
-        $texto .= ($this->__simpleGetValue($this->enderReme, "xCpl") != "") ?
-                ' - ' . $this->__simpleGetValue($this->enderReme, "xCpl") : '';
-        $this->__textBox($x1, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $texto = $this->pSimpleGetValue($this->enderReme, "xLgr") . ',';
+        $texto .= $this->pSimpleGetValue($this->enderReme, "nro");
+        $texto .= ($this->pSimpleGetValue($this->enderReme, "xCpl") != "") ?
+                ' - ' . $this->pSimpleGetValue($this->enderReme, "xCpl") : '';
+        $this->pTextBox($x1, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $y += 3;
-        $texto = $this->__simpleGetValue($this->enderReme, "xBairro");
-        $this->__textBox($x1, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $texto = $this->pSimpleGetValue($this->enderReme, "xBairro");
+        $this->pTextBox($x1, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $y += 3;
         $texto = 'MUNICÍPIO';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
-        $texto = $this->__simpleGetValue($this->enderReme, "xMun") . ' - ';
-        $texto .= $this->__simpleGetValue($this->enderReme, "UF");
+        $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $texto = $this->pSimpleGetValue($this->enderReme, "xMun") . ' - ';
+        $texto .= $this->pSimpleGetValue($this->enderReme, "UF");
         $aFont = $this->formatNegrito;
-        $this->__textBox($x1, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x1, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $x = $w - 18;
         $texto = 'CEP';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
-        $texto = $this->__format($this->__simpleGetValue($this->enderReme, "CEP"), "#####-###");
+        $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $texto = $this->pFormat($this->pSimpleGetValue($this->enderReme, "CEP"), "#####-###");
         $aFont = $this->formatNegrito;
-        $this->__textBox($x + 6, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x + 6, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $x = $oldX;
         $y += 3;
         $texto = 'CNPJ/CPF';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $cpfCnpj = $this->zFormatCNPJCPF($this->rem);
         $aFont = $this->formatNegrito;
-        $this->__textBox($x1, $y, $w, $h, $cpfCnpj, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x1, $y, $w, $h, $cpfCnpj, $aFont, 'T', 'L', 0, '');
         $x = $w - 45;
         $texto = 'INSCRIÇÃO ESTADUAL';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
-        $texto = $this->__simpleGetValue($this->rem, "IE");
+        $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $texto = $this->pSimpleGetValue($this->rem, "IE");
         $aFont = $this->formatNegrito;
-        $this->__textBox($x + 28, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x + 28, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $x = $oldX;
         $y += 3;
         $texto = 'PAÍS';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
-        $texto = $this->__simpleGetValue($this->rem, "xPais") != "" ?
-                $this->__simpleGetValue($this->rem, "xPais") : 'BRASIL';
+        $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $texto = $this->pSimpleGetValue($this->rem, "xPais") != "" ?
+                $this->pSimpleGetValue($this->rem, "xPais") : 'BRASIL';
         $aFont = $this->formatNegrito;
-        $this->__textBox($x1, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x1, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $x = $w - 25;
         $texto = 'FONE';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $texto = $this->zFormatFone($this->rem);
         $aFont = $this->formatNegrito;
-        $this->__textBox($x + 8, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x + 8, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
     } //fim da função remetenteDACTE
 
     /**
@@ -1354,68 +1356,68 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $x1 = $x + 19;
         $texto = 'DESTINATÁRIO';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x - 0.5, $y, $w, $h, $texto, $aFont, 'T', 'L', 1, '');
+        $this->pTextBox($x - 0.5, $y, $w, $h, $texto, $aFont, 'T', 'L', 1, '');
         $aFont = $this->formatNegrito;
-        $texto = $this->__simpleGetValue($this->dest, "xNome");
-        $this->__textBox($x1, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $texto = $this->pSimpleGetValue($this->dest, "xNome");
+        $this->pTextBox($x1, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $y += 3;
         $texto = 'ENDEREÇO';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $aFont = $this->formatNegrito;
-        $texto = $this->__simpleGetValue($this->enderDest, "xLgr") . ',';
-        $texto .= $this->__simpleGetValue($this->enderDest, "nro");
-        $texto .= $this->__simpleGetValue($this->enderDest, "xCpl") != "" ?
-                ' - ' . $this->__simpleGetValue($this->enderDest, "xCpl") : '';
-        $this->__textBox($x1, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $texto = $this->pSimpleGetValue($this->enderDest, "xLgr") . ',';
+        $texto .= $this->pSimpleGetValue($this->enderDest, "nro");
+        $texto .= $this->pSimpleGetValue($this->enderDest, "xCpl") != "" ?
+                ' - ' . $this->pSimpleGetValue($this->enderDest, "xCpl") : '';
+        $this->pTextBox($x1, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $y += 3;
-        $texto = $this->__simpleGetValue($this->enderDest, "xBairro");
-        $this->__textBox($x1, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $texto = $this->pSimpleGetValue($this->enderDest, "xBairro");
+        $this->pTextBox($x1, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $y += 3;
         $texto = 'MUNICÍPIO';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
-        $texto = $this->__simpleGetValue($this->enderDest, "xMun") . ' - ';
-        $texto .= $this->__simpleGetValue($this->enderDest, "UF");
+        $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $texto = $this->pSimpleGetValue($this->enderDest, "xMun") . ' - ';
+        $texto .= $this->pSimpleGetValue($this->enderDest, "UF");
         $aFont = $this->formatNegrito;
-        $this->__textBox($x1, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x1, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $x = $w - 19 + $oldX;
         $texto = 'CEP';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
-        $texto = $this->__format($this->__simpleGetValue($this->enderDest, "CEP"), "#####-###");
+        $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $texto = $this->pFormat($this->pSimpleGetValue($this->enderDest, "CEP"), "#####-###");
         $aFont = $this->formatNegrito;
-        $this->__textBox($x + 5, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x + 5, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $x = $oldX;
         $y += 3;
         $texto = 'CNPJ/CPF';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $cpfCnpj = $this->zFormatCNPJCPF($this->dest);
         $aFont = $this->formatNegrito;
-        $this->__textBox($x1, $y, $w, $h, $cpfCnpj, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x1, $y, $w, $h, $cpfCnpj, $aFont, 'T', 'L', 0, '');
         $x = $w - 47.5 + $oldX;
         $texto = 'INSCRIÇÃO ESTADUAL';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
-        $texto = $this->__simpleGetValue($this->dest, "IE");
+        $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $texto = $this->pSimpleGetValue($this->dest, "IE");
         $aFont = $this->formatNegrito;
-        $this->__textBox($x + 28, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x + 28, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $x = $oldX;
         $y += 3;
         $texto = 'PAÍS';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
-        $texto = $this->__simpleGetValue($this->dest, "xPais");
+        $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $texto = $this->pSimpleGetValue($this->dest, "xPais");
         $aFont = $this->formatNegrito;
-        $this->__textBox($x1, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x1, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $x = $w - 27 + $oldX;
         $texto = 'FONE';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $texto = $this->zFormatFone($this->dest);
         $aFont = $this->formatNegrito;
-        $this->__textBox($x + 8, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x + 8, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
     } //fim da função destinatarioDACTE
 
     /**
@@ -1440,76 +1442,76 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $x1 = $x + 16;
         $texto = 'EXPEDIDOR';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 1, '');
+        $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 1, '');
         $aFont = $this->formatNegrito;
-        $texto = $this->__simpleGetValue($this->exped, "xNome");
-        $this->__textBox($x1, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $texto = $this->pSimpleGetValue($this->exped, "xNome");
+        $this->pTextBox($x1, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $y += 3;
         $texto = 'ENDEREÇO';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $aFont = $this->formatNegrito;
         if (isset($this->enderExped)) {
-            $texto = $this->__simpleGetValue($this->enderExped, "xLgr") . ', ';
-            $texto .= $this->__simpleGetValue($this->enderExped, "nro");
-            $texto .= $this->__simpleGetValue($this->enderExped, "xCpl") != "" ? ' - ' . $this->__simpleGetValue($this->enderExped, "xCpl") : '';
+            $texto = $this->pSimpleGetValue($this->enderExped, "xLgr") . ', ';
+            $texto .= $this->pSimpleGetValue($this->enderExped, "nro");
+            $texto .= $this->pSimpleGetValue($this->enderExped, "xCpl") != "" ? ' - ' . $this->pSimpleGetValue($this->enderExped, "xCpl") : '';
         } else {
             $texto = '';
         }
-        $this->__textBox($x1, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x1, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $y += 3;
-        $texto = $this->__simpleGetValue($this->enderExped, "xBairro");
-        $this->__textBox($x1, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $texto = $this->pSimpleGetValue($this->enderExped, "xBairro");
+        $this->pTextBox($x1, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $y += 3;
         $texto = 'MUNICÍPIO';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         if (isset($this->enderExped)) {
-            $texto = $this->__simpleGetValue($this->enderExped, "xMun") . ' - ';
-            $texto .= $this->__simpleGetValue($this->enderExped, "UF");
+            $texto = $this->pSimpleGetValue($this->enderExped, "xMun") . ' - ';
+            $texto .= $this->pSimpleGetValue($this->enderExped, "UF");
         } else {
             $texto = '';
         }
         $aFont = $this->formatNegrito;
-        $this->__textBox($x1, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x1, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $x = $w - 18;
         $texto = 'CEP';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
-        $texto = $this->__format($this->__simpleGetValue($this->enderExped, "CEP"), "#####-###");
+        $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $texto = $this->pFormat($this->pSimpleGetValue($this->enderExped, "CEP"), "#####-###");
         $aFont = $this->formatNegrito;
-        $this->__textBox($x + 6, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x + 6, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $x = $oldX;
         $y += 3;
         $texto = 'CNPJ/CPF';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $cpfCnpj = $this->zFormatCNPJCPF($this->exped);
         $aFont = $this->formatNegrito;
-        $this->__textBox($x1, $y, $w, $h, $cpfCnpj, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x1, $y, $w, $h, $cpfCnpj, $aFont, 'T', 'L', 0, '');
         $x = $w - 45;
         $texto = 'INSCRIÇÃO ESTADUAL';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
-        $texto = $this->__simpleGetValue($this->exped, "IE");
+        $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $texto = $this->pSimpleGetValue($this->exped, "IE");
         $aFont = $this->formatNegrito;
-        $this->__textBox($x + 28, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x + 28, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $x = $oldX;
         $y += 3;
         $texto = 'PAÍS';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
-        $texto = $this->__simpleGetValue($this->exped, "xPais");
+        $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $texto = $this->pSimpleGetValue($this->exped, "xPais");
         $aFont = $this->formatNegrito;
-        $this->__textBox($x1, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x1, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $x = $w - 25;
         $texto = 'FONE';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         if (isset($this->exped)) {
             $texto = $this->zFormatFone($this->exped);
             $aFont = $this->formatNegrito;
-            $this->__textBox($x + 8, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+            $this->pTextBox($x + 8, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         }
     } //fim da função remetenteDACTE
 
@@ -1535,76 +1537,76 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $x1 = $x + 19;
         $texto = 'RECEBEDOR';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x - 0.5, $y, $w, $h, $texto, $aFont, 'T', 'L', 1, '');
+        $this->pTextBox($x - 0.5, $y, $w, $h, $texto, $aFont, 'T', 'L', 1, '');
         $aFont = $this->formatNegrito;
-        $texto = $this->__simpleGetValue($this->receb, "xNome");
-        $this->__textBox($x1, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $texto = $this->pSimpleGetValue($this->receb, "xNome");
+        $this->pTextBox($x1, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $y += 3;
         $texto = 'ENDEREÇO';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $aFont = $this->formatNegrito;
         if (isset($this->enderReceb)) {
-            $texto = $this->__simpleGetValue($this->enderReceb, "xLgr") . ', ';
-            $texto .= $this->__simpleGetValue($this->enderReceb, "nro");
-            $texto .= ($this->__simpleGetValue($this->enderReceb, "xCpl") != "") ? ' - ' . $this->__simpleGetValue($this->enderReceb, "xCpl") : '';
+            $texto = $this->pSimpleGetValue($this->enderReceb, "xLgr") . ', ';
+            $texto .= $this->pSimpleGetValue($this->enderReceb, "nro");
+            $texto .= ($this->pSimpleGetValue($this->enderReceb, "xCpl") != "") ? ' - ' . $this->pSimpleGetValue($this->enderReceb, "xCpl") : '';
         } else {
             $texto = '';
         }
-        $this->__textBox($x1, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x1, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $y += 3;
-        $texto = $this->__simpleGetValue($this->enderReceb, "xBairro");
-        $this->__textBox($x1, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $texto = $this->pSimpleGetValue($this->enderReceb, "xBairro");
+        $this->pTextBox($x1, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $y += 3;
         $texto = 'MUNICÍPIO';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         if (isset($this->enderReceb)) {
-            $texto = $this->__simpleGetValue($this->enderReceb, "xMun") . ' - ';
-            $texto .= $this->__simpleGetValue($this->enderReceb, "UF");
+            $texto = $this->pSimpleGetValue($this->enderReceb, "xMun") . ' - ';
+            $texto .= $this->pSimpleGetValue($this->enderReceb, "UF");
         } else {
             $texto = '';
         }
         $aFont = $this->formatNegrito;
-        $this->__textBox($x1, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x1, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $x = $w - 19 + $oldX;
         $texto = 'CEP';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
-        $texto = $this->__format($this->__simpleGetValue($this->enderReceb, "CEP"), "#####-###");
+        $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $texto = $this->pFormat($this->pSimpleGetValue($this->enderReceb, "CEP"), "#####-###");
         $aFont = $this->formatNegrito;
-        $this->__textBox($x + 5, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x + 5, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $x = $oldX;
         $y += 3;
         $texto = 'CNPJ/CPF';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $texto = $this->zFormatCNPJCPF($this->receb);
         $aFont = $this->formatNegrito;
-        $this->__textBox($x1, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x1, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $x = $w - 47 + $oldX;
         $texto = 'INSCRIÇÃO ESTADUAL';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
-        $texto = $this->__simpleGetValue($this->receb, "IE");
+        $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $texto = $this->pSimpleGetValue($this->receb, "IE");
         $aFont = $this->formatNegrito;
-        $this->__textBox($x + 28, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x + 28, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $x = $oldX;
         $y += 3;
         $texto = 'PAÍS';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
-        $texto = $this->__simpleGetValue($this->receb, "xPais");
+        $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $texto = $this->pSimpleGetValue($this->receb, "xPais");
         $aFont = $this->formatNegrito;
-        $this->__textBox($x1, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x1, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $x = $w - 27 + $oldX;
         $texto = 'FONE';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         if (isset($this->receb)) {
             $texto = $this->zFormatFone($this->receb);
             $aFont = $this->formatNegrito;
-            $this->__textBox($x + 8, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+            $this->pTextBox($x + 8, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         }
     } //fim da função recebedorDACTE
 
@@ -1629,72 +1631,72 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $h = 10;
         $texto = 'TOMADOR DO SERVIÇO';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 1, '');
+        $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 1, '');
         $aFont = $this->formatNegrito;
-        $texto = $this->__simpleGetValue($this->toma, "xNome");
-        $this->__textBox($x + 29, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $texto = $this->pSimpleGetValue($this->toma, "xNome");
+        $this->pTextBox($x + 29, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $x = $maxW * 0.60;
         $texto = 'MUNICÍPIO';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
-        $texto = $this->__simpleGetValue($this->toma, "xMun");
+        $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $texto = $this->pSimpleGetValue($this->toma, "xMun");
         $aFont = $this->formatNegrito;
-        $this->__textBox($x + 15, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x + 15, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $x = $maxW * 0.85;
         $texto = 'UF';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
-        $texto = $this->__simpleGetValue($this->toma, "UF");
+        $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $texto = $this->pSimpleGetValue($this->toma, "UF");
         $aFont = $this->formatNegrito;
-        $this->__textBox($x + 4, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x + 4, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $x = $w - 18;
         $texto = 'CEP';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
-        $texto = $this->__format($this->__simpleGetValue($this->toma, "CEP"), "#####-###");
+        $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $texto = $this->pFormat($this->pSimpleGetValue($this->toma, "CEP"), "#####-###");
         $aFont = $this->formatNegrito;
-        $this->__textBox($x + 6, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x + 6, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $y += 3;
         $x = $oldX;
         $texto = 'ENDEREÇO';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $aFont = $this->formatNegrito;
-        $texto = $this->__simpleGetValue($this->toma, "xLgr") . ',';
-        $texto .= $this->__simpleGetValue($this->toma, "nro");
-        $texto .= ($this->__simpleGetValue($this->toma, "xCpl") != "") ?
-                ' - ' . $this->__simpleGetValue($this->toma, "xCpl") : '';
-        $texto .= ' - ' . $this->__simpleGetValue($this->toma, "xBairro");
-        $this->__textBox($x + 16, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $texto = $this->pSimpleGetValue($this->toma, "xLgr") . ',';
+        $texto .= $this->pSimpleGetValue($this->toma, "nro");
+        $texto .= ($this->pSimpleGetValue($this->toma, "xCpl") != "") ?
+                ' - ' . $this->pSimpleGetValue($this->toma, "xCpl") : '';
+        $texto .= ' - ' . $this->pSimpleGetValue($this->toma, "xBairro");
+        $this->pTextBox($x + 16, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $y += 3;
         $texto = 'CNPJ/CPF';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $texto = $this->zFormatCNPJCPF($this->toma);
         $aFont = $this->formatNegrito;
-        $this->__textBox($x + 13, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x + 13, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $x = $x + 65;
         $texto = 'INSCRIÇÃO ESTADUAL';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
-        $texto = $this->__simpleGetValue($this->toma, "IE");
+        $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $texto = $this->pSimpleGetValue($this->toma, "IE");
         $aFont = $this->formatNegrito;
-        $this->__textBox($x + 28, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x + 28, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $x = $w * 0.75;
         $texto = 'PAÍS';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
-        $texto = $this->__simpleGetValue($this->toma, "xPais") != "" ?
-                $this->__simpleGetValue($this->toma, "xPais") : 'BRASIL';
+        $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $texto = $this->pSimpleGetValue($this->toma, "xPais") != "" ?
+                $this->pSimpleGetValue($this->toma, "xPais") : 'BRASIL';
         $aFont = $this->formatNegrito;
-        $this->__textBox($x + 6, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x + 6, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $x = $w - 27;
         $texto = 'FONE';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $texto = $this->zFormatFone($this->toma);
         $aFont = $this->formatNegrito;
-        $this->__textBox($x + 8, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x + 8, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
     } //fim da função tomadorDACTE
 
     /**
@@ -1721,28 +1723,28 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
             'font' => $this->fontePadrao,
             'size' => 6,
             'style' => '');
-        $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 1, '');
-        $texto = $this->__simpleGetValue($this->infCarga, "proPred");
+        $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 1, '');
+        $texto = $this->pSimpleGetValue($this->infCarga, "proPred");
         $aFont = $this->formatNegrito;
-        $this->__textBox($x, $y + 2.8, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y + 2.8, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $x = $w * 0.56;
         $this->pdf->Line($x, $y, $x, $y + 8);
         $aFont = $this->formatPadrao;
         $texto = 'OUTRAS CARACTERÍSTICAS DA CARGA';
-        $this->__textBox($x + 1, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
-        $texto = $this->__simpleGetValue($this->infCarga, "xOutCat");
+        $this->pTextBox($x + 1, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $texto = $this->pSimpleGetValue($this->infCarga, "xOutCat");
         $aFont = $this->formatNegrito;
-        $this->__textBox($x + 1, $y + 3, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x + 1, $y + 3, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $x = $w * 0.8;
         $this->pdf->Line($x, $y, $x, $y + 8);
         $aFont = $this->formatPadrao;
         $texto = 'VALOR TOTAL DA MERCADORIA';
-        $this->__textBox($x + 1, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
-        $texto = $this->__simpleGetValue($this->infCarga, "vCarga") == "" ?
-            $this->__simpleGetValue($this->infCarga, "vMerc") : $this->__simpleGetValue($this->infCarga, "vCarga");
+        $this->pTextBox($x + 1, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $texto = $this->pSimpleGetValue($this->infCarga, "vCarga") == "" ?
+            $this->pSimpleGetValue($this->infCarga, "vMerc") : $this->pSimpleGetValue($this->infCarga, "vCarga");
         $texto = number_format($texto, 2, ",", ".");
         $aFont = $this->formatNegrito;
-        $this->__textBox($x + 1, $y + 3, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x + 1, $y + 3, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $y += 8;
         $x = $oldX;
         $this->pdf->Line($x, $y, $w + 1, $y);
@@ -1751,20 +1753,20 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
             'font' => $this->fontePadrao,
             'size' => 5,
             'style' => '');
-        $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
-        $texto = $this->__simpleGetValue($this->infQ->item(0), "tpMed") . "\r\n";
+        $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $texto = $this->pSimpleGetValue($this->infQ->item(0), "tpMed") . "\r\n";
         $texto .= number_format(
-            $this->__simpleGetValue($this->infQ->item(0), "qCarga")/$this->zMultiUniPeso($this->__simpleGetValue($this->infQ->item(0),"cUnid")),
+            $this->pSimpleGetValue($this->infQ->item(0), "qCarga")/$this->zMultiUniPeso($this->pSimpleGetValue($this->infQ->item(0),"cUnid")),
             3,
             ".",
             ""
         );
-        $texto .= ' ' . $this->zUnidade($this->__simpleGetValue($this->infQ->item(0), "cUnid"));
+        $texto .= ' ' . $this->zUnidade($this->pSimpleGetValue($this->infQ->item(0), "cUnid"));
         $aFont = array(
             'font' => $this->fontePadrao,
             'size' => 7,
             'style' => 'B');
-        $this->__textBox($x, $y + 3, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y + 3, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $x = $w * 0.12;
         $this->pdf->Line($x, $y, $x, $y + 9);
         $texto = 'TP MED /UN. MED';
@@ -1772,21 +1774,21 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
             'font' => $this->fontePadrao,
             'size' => 5,
             'style' => '');
-        $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
-        $texto = $this->__simpleGetValue($this->infQ->item(1), "tpMed") . "\r\n";
+        $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $texto = $this->pSimpleGetValue($this->infQ->item(1), "tpMed") . "\r\n";
         $texto .= number_format(
-            $this->__simpleGetValue($this->infQ->item(1), "qCarga") / $this->zMultiUniPeso($this->__simpleGetValue($this->infQ->item(1),"cUnid")),
+            $this->pSimpleGetValue($this->infQ->item(1), "qCarga") / $this->zMultiUniPeso($this->pSimpleGetValue($this->infQ->item(1),"cUnid")),
             3,
             ".",
             ""
         );
-        $texto = $this->__simpleGetValue($this->infQ->item(1), "qCarga") == '' ? '' : $texto;
-        $texto .= ' ' . $this->zUnidade($this->__simpleGetValue($this->infQ->item(1), "cUnid"));
+        $texto = $this->pSimpleGetValue($this->infQ->item(1), "qCarga") == '' ? '' : $texto;
+        $texto .= ' ' . $this->zUnidade($this->pSimpleGetValue($this->infQ->item(1), "cUnid"));
         $aFont = array(
             'font' => $this->fontePadrao,
             'size' => 7,
             'style' => 'B');
-        $this->__textBox($x, $y + 3, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y + 3, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $x = $w * 0.24;
         $this->pdf->Line($x, $y, $x, $y + 9);
         $texto = 'TP MED /UN. MED';
@@ -1794,25 +1796,25 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
             'font' => $this->fontePadrao,
             'size' => 5,
             'style' => '');
-        $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
-        $texto = $this->__simpleGetValue($this->infQ->item(2), "tpMed") . "\r\n";
-        $qCarga = $this->__simpleGetValue($this->infQ->item(2), "qCarga");
+        $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $texto = $this->pSimpleGetValue($this->infQ->item(2), "tpMed") . "\r\n";
+        $qCarga = $this->pSimpleGetValue($this->infQ->item(2), "qCarga");
         $texto .= !empty($qCarga) ?
-            number_format($qCarga / $this->zMultiUniPeso($this->__simpleGetValue($this->infQ->item(2), "cUnid")), 3, ".", "") : '';
-        $texto = $this->__simpleGetValue($this->infQ->item(2), "qCarga") == '' ? '' : $texto;
-        $texto .= ' ' . $this->zUnidade($this->__simpleGetValue($this->infQ->item(2), "cUnid"));
+            number_format($qCarga / $this->zMultiUniPeso($this->pSimpleGetValue($this->infQ->item(2), "cUnid")), 3, ".", "") : '';
+        $texto = $this->pSimpleGetValue($this->infQ->item(2), "qCarga") == '' ? '' : $texto;
+        $texto .= ' ' . $this->zUnidade($this->pSimpleGetValue($this->infQ->item(2), "cUnid"));
         $aFont = array(
             'font' => $this->fontePadrao,
             'size' => 7,
             'style' => 'B');
-        $this->__textBox($x, $y + 3, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y + 3, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $x = $w * 0.36;
         $this->pdf->Line($x, $y, $x, $y + 9);
         $texto = 'CUBAGEM(M3)';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
-        if ($this->__simpleGetValue($this->infQ->item(0), "cUnid") == '00') {
-            $qCarga = $this->__simpleGetValue($this->infQ->item(0), "qCarga");
+        $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        if ($this->pSimpleGetValue($this->infQ->item(0), "cUnid") == '00') {
+            $qCarga = $this->pSimpleGetValue($this->infQ->item(0), "qCarga");
             $texto = !empty($qCarga) ? number_format($qCarga, 3, ",", ".") : '';
         } else {
             $texto = '';
@@ -1821,63 +1823,63 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
             'font' => $this->fontePadrao,
             'size' => 7,
             'style' => 'B');
-        $this->__textBox($x, $y + 3, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y + 3, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $x = $w * 0.45;
         $this->pdf->Line($x, $y, $x, $y + 9);
         $texto = 'QTDE(VOL)';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
-        $qCarga = $this->__simpleGetValue($this->infQ->item(3), "qCarga");
+        $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $qCarga = $this->pSimpleGetValue($this->infQ->item(3), "qCarga");
         $texto = !empty($qCarga) ? number_format($qCarga, 3, ",", ".") : '';
         $aFont = array(
             'font' => $this->fontePadrao,
             'size' => 7,
             'style' => 'B');
-        $this->__textBox($x, $y + 3, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y + 3, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $x = $w * 0.53;
         $this->pdf->Line($x, $y, $x, $y + 9);
         $texto = 'NOME DA SEGURADORA';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
-        $texto = $this->__simpleGetValue($this->seg, "xSeg");
+        $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $texto = $this->pSimpleGetValue($this->seg, "xSeg");
         $aFont = array(
             'font' => $this->fontePadrao,
             'size' => 7,
             'style' => 'B');
-        $this->__textBox($x + 31, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x + 31, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $y += 3;
         $this->pdf->Line($x, $y, $w + 1, $y);
         $texto = 'RESPONSÁVEL';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $texto = $this->respSeg;
         $aFont = array(
             'font' => $this->fontePadrao,
             'size' => 7,
             'style' => 'B');
-        $this->__textBox($x, $y + 3, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y + 3, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $x = $w * 0.68;
         $this->pdf->Line($x, $y, $x, $y + 6);
         $texto = 'NÚMERO DA APOLICE';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
-        $texto = $this->__simpleGetValue($this->seg, "nApol");
+        $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $texto = $this->pSimpleGetValue($this->seg, "nApol");
         $aFont = array(
             'font' => $this->fontePadrao,
             'size' => 7,
             'style' => 'B');
-        $this->__textBox($x, $y + 3, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y + 3, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $x = $w * 0.85;
         $this->pdf->Line($x, $y, $x, $y + 6);
         $texto = 'NÚMERO DA AVERBAÇÃO';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
-        $texto = $this->__simpleGetValue($this->seg, "nAver");
+        $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $texto = $this->pSimpleGetValue($this->seg, "nAver");
         $aFont = array(
             'font' => $this->fontePadrao,
             'size' => 7,
             'style' => 'B');
-        $this->__textBox($x, $y + 3, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y + 3, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
     } //fim da função zDescricaoCarga
 
     /**
@@ -1901,59 +1903,59 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $h = 25;
         $texto = 'COMPONENTES DO VALOR DA PRESTAÇÃO DO SERVIÇO';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'C', 1, '');
+        $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'C', 1, '');
         $y += 3.4;
         $this->pdf->Line($x, $y, $w + 1, $y);
         $texto = 'NOME';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w * 0.14, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y, $w * 0.14, $h, $texto, $aFont, 'T', 'L', 0, '');
         $yIniDados = $y;
         $x = $w * 0.14;
         $texto = 'VALOR';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w * 0.14, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y, $w * 0.14, $h, $texto, $aFont, 'T', 'L', 0, '');
         $x = $w * 0.28;
         $this->pdf->Line($x, $y, $x, $y + 21.5);
         $texto = 'NOME';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w * 0.14, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y, $w * 0.14, $h, $texto, $aFont, 'T', 'L', 0, '');
         $x = $w * 0.42;
         $texto = 'VALOR';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w * 0.14, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y, $w * 0.14, $h, $texto, $aFont, 'T', 'L', 0, '');
         $x = $w * 0.56;
         $this->pdf->Line($x, $y, $x, $y + 21.5);
         $texto = 'NOME';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w * 0.14, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y, $w * 0.14, $h, $texto, $aFont, 'T', 'L', 0, '');
         $x = $w * 0.70;
         $texto = 'VALOR';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w * 0.14, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y, $w * 0.14, $h, $texto, $aFont, 'T', 'L', 0, '');
         $x = $w * 0.86;
         $this->pdf->Line($x, $y, $x, $y + 21.5);
         $y += 1;
         $texto = 'VALOR TOTAL DO SERVIÇO';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w * 0.14, $h, $texto, $aFont, 'T', 'C', 0, '');
-        $texto = number_format($this->__simpleGetValue($this->vPrest, "vTPrest"), 2, ",", ".");
+        $this->pTextBox($x, $y, $w * 0.14, $h, $texto, $aFont, 'T', 'C', 0, '');
+        $texto = number_format($this->pSimpleGetValue($this->vPrest, "vTPrest"), 2, ",", ".");
         $aFont = array(
             'font' => $this->fontePadrao,
             'size' => 9,
             'style' => 'B');
-        $this->__textBox($x, $y + 4, $w * 0.14, $h, $texto, $aFont, 'T', 'C', 0, '');
+        $this->pTextBox($x, $y + 4, $w * 0.14, $h, $texto, $aFont, 'T', 'C', 0, '');
         $y += 10;
         $this->pdf->Line($x, $y, $w + 1, $y);
         $y += 1;
         $texto = 'VALOR A RECEBER';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w * 0.14, $h, $texto, $aFont, 'T', 'C', 0, '');
-        $texto = number_format($this->__simpleGetValue($this->vPrest, "vRec"), 2, ",", ".");
+        $this->pTextBox($x, $y, $w * 0.14, $h, $texto, $aFont, 'T', 'C', 0, '');
+        $texto = number_format($this->pSimpleGetValue($this->vPrest, "vRec"), 2, ",", ".");
         $aFont = array(
             'font' => $this->fontePadrao,
             'size' => 9,
             'style' => 'B');
-        $this->__textBox($x, $y + 4, $w * 0.14, $h, $texto, $aFont, 'T', 'C', 0, '');
+        $this->pTextBox($x, $y + 4, $w * 0.14, $h, $texto, $aFont, 'T', 'C', 0, '');
         $auxX = $oldX;
         $yIniDados += 4;
         foreach ($this->Comp as $k => $d) {
@@ -1965,11 +1967,11 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
             }
             $texto = $nome;
             $aFont = $this->formatPadrao;
-            $this->__textBox($auxX, $yIniDados, $w * 0.14, $h, $texto, $aFont, 'T', 'L', 0, '');
+            $this->pTextBox($auxX, $yIniDados, $w * 0.14, $h, $texto, $aFont, 'T', 'L', 0, '');
             $auxX += $w * 0.14;
             $texto = $valor;
             $aFont = $this->formatPadrao;
-            $this->__textBox($auxX, $yIniDados, $w * 0.14, $h, $texto, $aFont, 'T', 'L', 0, '');
+            $this->pTextBox($auxX, $yIniDados, $w * 0.14, $h, $texto, $aFont, 'T', 'L', 0, '');
             $auxX += $w * 0.14;
         }
     } //fim da função compValorDACTE
@@ -1995,40 +1997,40 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $h = 13;
         $texto = 'INFORMAÇÕES RELATIVAS AO IMPOSTO';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'C', 1, '');
+        $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'C', 1, '');
         $y += 3.4;
         $this->pdf->Line($x, $y, $w + 1, $y);
         $texto = 'SITUAÇÃO TRIBUTÁRIA';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w * 0.26, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y, $w * 0.26, $h, $texto, $aFont, 'T', 'L', 0, '');
         $x += $w * 0.26;
         $this->pdf->Line($x, $y, $x, $y + 9.5);
         $texto = 'BASE DE CALCULO';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w * 0.14, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y, $w * 0.14, $h, $texto, $aFont, 'T', 'L', 0, '');
         $x += $w * 0.14;
         $this->pdf->Line($x, $y, $x, $y + 9.5);
         $texto = 'ALÍQ ICMS';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w * 0.14, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y, $w * 0.14, $h, $texto, $aFont, 'T', 'L', 0, '');
         $x += $w * 0.14;
         $this->pdf->Line($x, $y, $x, $y + 9.5);
         $texto = 'VALOR ICMS';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w * 0.14, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y, $w * 0.14, $h, $texto, $aFont, 'T', 'L', 0, '');
         $x += $w * 0.14;
         $this->pdf->Line($x, $y, $x, $y + 9.5);
         $texto = '% RED. BC ICMS';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w * 0.14, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y, $w * 0.14, $h, $texto, $aFont, 'T', 'L', 0, '');
         $x += $w * 0.14;
         $this->pdf->Line($x, $y, $x, $y + 9.5);
         $texto = 'ICMS ST';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w * 0.14, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y, $w * 0.14, $h, $texto, $aFont, 'T', 'L', 0, '');
         $x = $oldX;
         $y = $y + 4;
-        $texto = $this->__simpleGetValue($this->ICMS, "CST");
+        $texto = $this->pSimpleGetValue($this->ICMS, "CST");
         switch ($texto)
         {
             case '00':
@@ -2053,34 +2055,34 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
                 $texto = "90 - ICMS outros";
                 break;
         }
-        $texto .= $this->__simpleGetValue($this->ICMSSN, "indSN");
+        $texto .= $this->pSimpleGetValue($this->ICMSSN, "indSN");
         $texto = $texto == 1 ? 'Simples Nacional' : $texto;
         $aFont = $this->formatNegrito;
-        $this->__textBox($x, $y, $w * 0.26, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y, $w * 0.26, $h, $texto, $aFont, 'T', 'L', 0, '');
         $x += $w * 0.26;
         $texto = !empty($this->ICMS->getElementsByTagName("vBC")->item(0)->nodeValue) ?
-            number_format($this->__simpleGetValue($this->ICMS, "vBC"), 2, ",", ".") :
+            number_format($this->pSimpleGetValue($this->ICMS, "vBC"), 2, ",", ".") :
             '';
         $aFont = $this->formatNegrito;
-        $this->__textBox($x, $y, $w * 0.14, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y, $w * 0.14, $h, $texto, $aFont, 'T', 'L', 0, '');
         $x += $w * 0.14;
         $texto = !empty($this->ICMS->getElementsByTagName("pICMS")->item(0)->nodeValue) ?
-            number_format($this->__simpleGetValue($this->ICMS, "pICMS"), 2, ",", ".") : '';
+            number_format($this->pSimpleGetValue($this->ICMS, "pICMS"), 2, ",", ".") : '';
         $aFont = $this->formatNegrito;
-        $this->__textBox($x, $y, $w * 0.14, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y, $w * 0.14, $h, $texto, $aFont, 'T', 'L', 0, '');
         $x += $w * 0.14;
         $texto = !empty($this->ICMS->getElementsByTagName("vICMS")->item(0)->nodeValue) ?
-            number_format($this->__simpleGetValue($this->ICMS, "vICMS"), 2, ",", ".") : '';
+            number_format($this->pSimpleGetValue($this->ICMS, "vICMS"), 2, ",", ".") : '';
         $aFont = $this->formatNegrito;
-        $this->__textBox($x, $y, $w * 0.14, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y, $w * 0.14, $h, $texto, $aFont, 'T', 'L', 0, '');
         $x += $w * 0.14;
         $texto = '';
         $aFont = $this->formatNegrito;
-        $this->__textBox($x, $y, $w * 0.14, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y, $w * 0.14, $h, $texto, $aFont, 'T', 'L', 0, '');
         $x += $w * 0.14;
         $texto = '';
         $aFont = $this->formatNegrito;
-        $this->__textBox($x, $y, $w * 0.14, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y, $w * 0.14, $h, $texto, $aFont, 'T', 'L', 0, '');
     } //fim da função compValorDACTE
 
     /**
@@ -2096,8 +2098,8 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $cUF = $this->ide->getElementsByTagName('cUF')->item(0)->nodeValue;
         $CNPJ = "00000000000000" . $this->emit->getElementsByTagName('CNPJ')->item(0)->nodeValue;
         $CNPJ = substr($CNPJ, -14);
-        $vCT = number_format($this->__simpleGetValue($this->vPrest, "vRec"), 2, "", "") * 100;
-        $ICMS_CST = $this->__simpleGetValue($this->ICMS, "CST");
+        $vCT = number_format($this->pSimpleGetValue($this->vPrest, "vRec"), 2, "", "") * 100;
+        $ICMS_CST = $this->pSimpleGetValue($this->ICMS, "CST");
         switch ($ICMS_CST)
         {
             case '00':
@@ -2122,7 +2124,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $rpos = strrpos($dd, '-');
         $dd = substr($dd, $rpos + 1);
         $chave = sprintf($forma, $cUF, $this->tpEmis, $CNPJ, $vCT, $ICMSp, $ICMSs, $dd);
-        $chave = $chave . $this->__modulo11($chave);
+        $chave = $chave . $this->pModulo11($chave);
         return $chave;
     } //fim zGeraChaveAdicCont
 
@@ -2151,7 +2153,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         }
         $texto = 'DOCUMENTOS ORIGINÁRIOS';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'C', 1, '');
+        $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'C', 1, '');
         $descr1 = 'TIPO DOC';
         $descr2 = 'CNPJ/CHAVE';
         $descr3 = 'SÉRIE/NRO. DOCUMENTO';
@@ -2159,16 +2161,16 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $this->pdf->Line($x, $y, $w + 1, $y);
         $texto = $descr1;
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w * 0.10, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y, $w * 0.10, $h, $texto, $aFont, 'T', 'L', 0, '');
         $yIniDados = $y;
         $x += $w * 0.09;
         $texto = $descr2;
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w * 0.23, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y, $w * 0.23, $h, $texto, $aFont, 'T', 'L', 0, '');
         $x += $w * 0.28;
         $texto = $descr3;
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w * 0.13, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y, $w * 0.13, $h, $texto, $aFont, 'T', 'L', 0, '');
         $x += $w * 0.13;
         if ($this->modal == '1') {
             if ($this->lota == 1) {
@@ -2181,15 +2183,15 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         }
         $texto = $descr1;
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w * 0.10, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y, $w * 0.10, $h, $texto, $aFont, 'T', 'L', 0, '');
         $x += $w * 0.10;
         $texto = $descr2;
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w * 0.23, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y, $w * 0.23, $h, $texto, $aFont, 'T', 'L', 0, '');
         $x += $w * 0.27;
         $texto = $descr3;
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w * 0.13, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y, $w * 0.13, $h, $texto, $aFont, 'T', 'L', 0, '');
         $auxX = $oldX;
         $yIniDados += 4;
         foreach ($this->infNF as $k => $d) {
@@ -2207,21 +2209,21 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
                 'font' => $this->fontePadrao,
                 'size' => 8,
                 'style' => '');
-            $this->__textBox($auxX, $yIniDados, $w * 0.10, $h, $texto, $aFont, 'T', 'L', 0, '');
+            $this->pTextBox($auxX, $yIniDados, $w * 0.10, $h, $texto, $aFont, 'T', 'L', 0, '');
             $auxX += $w * 0.09;
             $texto = $cnpj;
             $aFont = array(
                 'font' => $this->fontePadrao,
                 'size' => 8,
                 'style' => '');
-            $this->__textBox($auxX, $yIniDados, $w * 0.23, $h, $texto, $aFont, 'T', 'L', 0, '');
+            $this->pTextBox($auxX, $yIniDados, $w * 0.23, $h, $texto, $aFont, 'T', 'L', 0, '');
             $auxX += $w * 0.28;
             $texto = $doc;
             $aFont = array(
                 'font' => $this->fontePadrao,
                 'size' => 8,
                 'style' => '');
-            $this->__textBox($auxX, $yIniDados, $w * 0.13, $h, $texto, $aFont, 'T', 'L', 0, '');
+            $this->pTextBox($auxX, $yIniDados, $w * 0.13, $h, $texto, $aFont, 'T', 'L', 0, '');
             $auxX += $w * 0.14;
         }
         foreach ($this->infNFe as $k => $d) {
@@ -2239,21 +2241,21 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
                 'font' => $this->fontePadrao,
                 'size' => 8,
                 'style' => '');
-            $this->__textBox($auxX, $yIniDados, $w * 0.10, $h, $texto, $aFont, 'T', 'L', 0, '');
+            $this->pTextBox($auxX, $yIniDados, $w * 0.10, $h, $texto, $aFont, 'T', 'L', 0, '');
             $auxX += $w * 0.09;
             $texto = $chaveNFe;
             $aFont = array(
                 'font' => $this->fontePadrao,
                 'size' => 8,
                 'style' => '');
-            $this->__textBox($auxX, $yIniDados, $w * 0.27, $h, $texto, $aFont, 'T', 'L', 0, '');
+            $this->pTextBox($auxX, $yIniDados, $w * 0.27, $h, $texto, $aFont, 'T', 'L', 0, '');
             $auxX += $w * 0.28;
             $texto = $doc;
             $aFont = array(
                 'font' => $this->fontePadrao,
                 'size' => 8,
                 'style' => '');
-            $this->__textBox($auxX, $yIniDados, $w * 0.30, $h, $texto, $aFont, 'T', 'L', 0, '');
+            $this->pTextBox($auxX, $yIniDados, $w * 0.30, $h, $texto, $aFont, 'T', 'L', 0, '');
             $auxX += $w * 0.14;
         }
     } //fim da função zDocOrig
@@ -2280,28 +2282,28 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $h = 80;
         $texto = 'DETALHAMENTO DO CT-E COMPLEMENTADO';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'C', 1, '');
+        $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'C', 1, '');
         $descr1 = 'CHAVE DO CT-E COMPLEMENTADO';
         $descr2 = 'VALOR COMPLEMENTADO';
         $y += 3.4;
         $this->pdf->Line($x, $y, $w + 1, $y);
         $texto = $descr1;
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $yIniDados = $y;
         $x += $w * 0.37;
         $texto = $descr2;
         $aFont = $this->formatPadrao;
-        $this->__textBox($x - 8, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x - 8, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $x += $w * 0.13;
         $this->pdf->Line($x, $y, $x, $y + 76.5);
         $texto = $descr1;
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $x += $w * 0.3;
         $texto = $descr2;
         $aFont = $this->formatPadrao;
-        $this->__textBox($x + 8, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x + 8, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $auxX = $oldX;
         $yIniDados += 4;
         if ($auxX > $w * 0.90) {
@@ -2313,13 +2315,13 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
             'font' => $this->fontePadrao,
             'size' => 8,
             'style' => '');
-        $this->__textBox($auxX, $yIniDados, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
-        $texto = number_format($this->__simpleGetValue($this->vPrest, "vTPrest"), 2, ",", ".");
+        $this->pTextBox($auxX, $yIniDados, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $texto = number_format($this->pSimpleGetValue($this->vPrest, "vTPrest"), 2, ",", ".");
         $aFont = array(
             'font' => $this->fontePadrao,
             'size' => 8,
             'style' => '');
-        $this->__textBox($w * 0.40, $yIniDados, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($w * 0.40, $yIniDados, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
     } //fim da função zDocCompl
 
     /**
@@ -2343,7 +2345,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $h = 18;
         $texto = 'OBSERVAÇÕES';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'C', 1, '');
+        $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'C', 1, '');
 
         $y += 3.4;
         $this->pdf->Line($x, $y, $w + 1, $y);
@@ -2352,16 +2354,16 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $yIniDados = $y;
         $texto = '';
         foreach ($this->compl as $k => $d) {
-            $xObs = $this->__simpleGetValue($this->compl->item($k), "xObs");
+            $xObs = $this->pSimpleGetValue($this->compl->item($k), "xObs");
             $texto .= "\r\n" . $xObs;
         }
-        $texto .= $this->__simpleGetValue($this->imp, "infAdFisco", "\r\n");
+        $texto .= $this->pSimpleGetValue($this->imp, "infAdFisco", "\r\n");
         $texto .= $this->zLocalEntrega();
         $aFont = array(
             'font' => $this->fontePadrao,
             'size' => 7.5,
             'style' => '');
-        $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '', false);
+        $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '', false);
     } //fim da função obsDACTE
 
     /**
@@ -2375,14 +2377,14 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         if ($locEntX->length > 0) {
             $locEnt = $locEntX->item(0);
             $output = "Entrega: " . $output = $this->zFormatCNPJCPF($locEnt);
-            $output .= $this->__simpleGetValue($locEnt, "CPF") . " ";
-            $output .= $this->__simpleGetValue($locEnt, "xNome") . " ";
-            $output .= $this->__simpleGetValue($locEnt, "xLgr") . " ";
-            $output .= $this->__simpleGetValue($locEnt, "nro ") . " ";
-            $output .= $this->__simpleGetValue($locEnt, "xCpl") . " ";
-            $output .= $this->__simpleGetValue($locEnt, "xBairro") . " ";
-            $output .= $this->__simpleGetValue($locEnt, "xMun") . " ";
-            $output .= $this->__simpleGetValue($locEnt, "UF") . " ";
+            $output .= $this->pSimpleGetValue($locEnt, "CPF") . " ";
+            $output .= $this->pSimpleGetValue($locEnt, "xNome") . " ";
+            $output .= $this->pSimpleGetValue($locEnt, "xLgr") . " ";
+            $output .= $this->pSimpleGetValue($locEnt, "nro ") . " ";
+            $output .= $this->pSimpleGetValue($locEnt, "xCpl") . " ";
+            $output .= $this->pSimpleGetValue($locEnt, "xBairro") . " ";
+            $output .= $this->pSimpleGetValue($locEnt, "xMun") . " ";
+            $output .= $this->pSimpleGetValue($locEnt, "UF") . " ";
             return $output;
         }
         return "";
@@ -2414,7 +2416,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $textolota = $this->lota == 1 ? 'LOTAÇÃO' : 'CARGA FRACIONADA';
         $texto = 'DADOS ESPECÍFICOS DO MODAL RODOVIÁRIO - ' . $textolota;
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w, $h * 3.2, $texto, $aFont, 'T', 'C', 1, '');
+        $this->pTextBox($x, $y, $w, $h * 3.2, $texto, $aFont, 'T', 'C', 1, '');
         if ($this->lota == 1) {
             $this->pdf->Line($x, $y + 12, $w + 1, $y + 12);
         }
@@ -2422,49 +2424,49 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $this->pdf->Line($x, $y, $w + 1, $y);
         $texto = 'RNTRC DA EMPRESA';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w * 0.23, $h, $texto, $aFont, 'T', 'L', 0, '');
-        $texto = $this->__simpleGetValue($this->rodo, "RNTRC");
+        $this->pTextBox($x, $y, $w * 0.23, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $texto = $this->pSimpleGetValue($this->rodo, "RNTRC");
         $aFont = $this->formatNegrito;
-        $this->__textBox($x, $y + 3, $w * 0.23, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y + 3, $w * 0.23, $h, $texto, $aFont, 'T', 'L', 0, '');
         $x += $w * 0.23;
         $this->pdf->Line($x, $y, $x, $y + 8.5);
         $texto = 'CIOT';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w * 0.13, $h, $texto, $aFont, 'T', 'L', 0, '');
-        $texto = $this->__simpleGetValue($this->rodo, "CIOT");
+        $this->pTextBox($x, $y, $w * 0.13, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $texto = $this->pSimpleGetValue($this->rodo, "CIOT");
         $aFont = $this->formatNegrito;
-        $this->__textBox($x, $y + 3, $w * 0.13, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y + 3, $w * 0.13, $h, $texto, $aFont, 'T', 'L', 0, '');
         $x += $w * 0.13;
         $this->pdf->Line($x, $y, $x, $y + 8.5);
         $texto = 'DATA PREVISTA DE ENTREGA';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w * 0.15, $h, $texto, $aFont, 'T', 'L', 0, '');
-        $texto = $this->__ymd2dmy($this->__simpleGetValue($this->rodo, "dPrev"));
+        $this->pTextBox($x, $y, $w * 0.15, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $texto = $this->pYmd2dmy($this->pSimpleGetValue($this->rodo, "dPrev"));
         $aFont = $this->formatNegrito;
-        $this->__textBox($x, $y + 3, $w * 0.15, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y + 3, $w * 0.15, $h, $texto, $aFont, 'T', 'L', 0, '');
         $x += $w * 0.15;
         $this->pdf->Line($x, $y, $x, $y + 8.5);
         $h = 25;
         $texto = 'ESTE CONHECIMENTO DE TRANSPORTE ATENDE ' . "\r\n";
         $texto .= ' À LEGISLAÇÃO DE TRANSPORTE RODOVIÁRIO EM VIGOR';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y + 1, $w * 0.50, $h, $texto, $aFont, 'T', 'C', 0, '');
+        $this->pTextBox($x, $y + 1, $w * 0.50, $h, $texto, $aFont, 'T', 'C', 0, '');
         if ($this->lota == 1) {
             $y += 10;
             $x = 1;
             $texto = 'IDENTIFICAÇÃO DO CONJUNTO TRANSPORTADOR';
             $aFont = $this->formatPadrao;
-            $this->__textBox($x, $y, $w * 0.465, $h, $texto, $aFont, 'T', 'C', 0, '');
+            $this->pTextBox($x, $y, $w * 0.465, $h, $texto, $aFont, 'T', 'C', 0, '');
             $this->pdf->Line($x, $y + 3.5, $w * 0.465, $y + 3.5);
             $y += 3.5;
             $texto = 'TIPO';
             $aFont = $this->formatPadrao;
-            $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+            $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
             $yIniDados = $y;
             if (count($this->veic) >= 0) {
                 foreach ($this->veic as $k => $d) {
                     $yIniDados = $yIniDados + 3;
-                    $texto = $this->__simpleGetValue($this->veic->item($k), "tpVeic");
+                    $texto = $this->pSimpleGetValue($this->veic->item($k), "tpVeic");
                     switch ($texto) {
                         case '0':
                             $texto = 'Tração';
@@ -2479,58 +2481,58 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
                         'font' => $this->fontePadrao,
                         'size' => 6,
                         'style' => 'B');
-                    $this->__textBox($x, $yIniDados, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+                    $this->pTextBox($x, $yIniDados, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
                 } //fim foreach
             }
             $x += $w * 0.10;
             $texto = 'PLACA';
             $aFont = $this->formatPadrao;
-            $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+            $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
             $this->pdf->Line($x, $y, $x, $y + 14);
             $yIniDados = $y;
             if (count($this->veic) >= 0) {
                 foreach ($this->veic as $k => $d) {
                     $yIniDados = $yIniDados + 3;
-                    $texto = $this->__simpleGetValue($this->veic->item($k), "placa");
+                    $texto = $this->pSimpleGetValue($this->veic->item($k), "placa");
                     $aFont = array(
                         'font' => $this->fontePadrao,
                         'size' => 6,
                         'style' => 'B');
-                    $this->__textBox($x, $yIniDados, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+                    $this->pTextBox($x, $yIniDados, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
                 }
             }
             $x += $w * 0.13;
             $texto = 'UF';
             $aFont = $this->formatPadrao;
-            $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+            $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
             $this->pdf->Line($x, $y, $x, $y + 23);
             $yIniDados = $y;
             if (count($this->veic) >= 0) {
                 foreach ($this->veic as $k => $d) {
                     $yIniDados = $yIniDados + 3;
-                    $texto = $this->__simpleGetValue($this->veic->item($k), "UF");
+                    $texto = $this->pSimpleGetValue($this->veic->item($k), "UF");
                     $aFont = array(
                         'font' => $this->fontePadrao,
                         'size' => 6,
                         'style' => 'B');
-                    $this->__textBox($x, $yIniDados, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+                    $this->pTextBox($x, $yIniDados, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
                 }
             }
             $x += $w * 0.03;
             $texto = 'RNTRC';
             $aFont = $this->formatPadrao;
-            $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+            $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
             $this->pdf->Line($x, $y, $x, $y + 14);
             $yIniDados = $y;
             if (count($this->veic) >= 0) {
                 foreach ($this->veic as $k => $d) {
                     $yIniDados = $yIniDados + 3;
-                    $texto = $this->__simpleGetValue($this->veic->item($k), "RNTRC");
+                    $texto = $this->pSimpleGetValue($this->veic->item($k), "RNTRC");
                     $aFont = array(
                         'font' => $this->fontePadrao,
                         'size' => 6,
                         'style' => 'B');
-                    $this->__textBox($x, $yIniDados, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+                    $this->pTextBox($x, $yIniDados, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
                 }
             }
             $y += 14;
@@ -2540,41 +2542,41 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
                 'font' => $this->fontePadrao,
                 'size' => 5,
                 'style' => '');
-            $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+            $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
             $this->pdf->Line($x, $y, $w + 1, $y);
-            $texto = !empty($this->moto) ? $this->__simpleGetValue($this->moto, "xNome") : '';
+            $texto = !empty($this->moto) ? $this->pSimpleGetValue($this->moto, "xNome") : '';
             $aFont = array(
                 'font' => $this->fontePadrao,
                 'size' => 7,
                 'style' => 'B');
-            $this->__textBox($x, $y + 3, $w * 0.25, $h, $texto, $aFont, 'T', 'L', 0, '');
+            $this->pTextBox($x, $y + 3, $w * 0.25, $h, $texto, $aFont, 'T', 'L', 0, '');
             $x += $w * 0.23;
             $texto = 'CPF MOTORISTA';
             $aFont = array(
                 'font' => $this->fontePadrao,
                 'size' => 5,
                 'style' => '');
-            $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
-            $texto = !empty($this->moto) ? $this->__simpleGetValue($this->moto, "CPF") : '';
+            $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+            $texto = !empty($this->moto) ? $this->pSimpleGetValue($this->moto, "CPF") : '';
             $aFont = array(
                 'font' => $this->fontePadrao,
                 'size' => 7,
                 'style' => 'B');
-            $this->__textBox($x, $y + 3, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+            $this->pTextBox($x, $y + 3, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
             $x += $w * 0.23;
             $texto = 'IDENTIFICAÇÃO DOS LACRES EM TRANSITO';
             $aFont = array(
                 'font' => $this->fontePadrao,
                 'size' => 5,
                 'style' => '');
-            $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+            $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
             $this->pdf->Line($x, $y, $x, $y - 18.7);
             $this->pdf->Line($x, $y, $x, $y + 9);
             $x = $w * 0.465;
             $y -= 16;
             $texto = 'INFORMAÇÕES REFERENTES AO VALE PEDÁGIO';
             $aFont = $this->formatPadrao;
-            $this->__textBox($x, $y, $w * 0.5, $h, $texto, $aFont, 'T', 'C', 0, '');
+            $this->pTextBox($x, $y, $w * 0.5, $h, $texto, $aFont, 'T', 'C', 0, '');
             $this->pdf->Line($x, $y + 4, $w + 1, $y + 4);
             $y += 4;
             $texto = 'CNPJ FORNECEDOR';
@@ -2582,7 +2584,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
                 'font' => $this->fontePadrao,
                 'size' => 5,
                 'style' => '');
-            $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+            $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
             $this->pdf->Line($x, $y + 4, $w + 1, $y + 4);
             $y += 4;
             $texto = 'NUMERO COMPROVANTE';
@@ -2590,7 +2592,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
                 'font' => $this->fontePadrao,
                 'size' => 5,
                 'style' => '');
-            $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+            $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
             $this->pdf->Line($x, $y + 4, $w + 1, $y + 4);
             $y += 4;
             $texto = 'CNPJ RESPONSÁVEL';
@@ -2598,7 +2600,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
                 'font' => $this->fontePadrao,
                 'size' => 5,
                 'style' => '');
-            $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+            $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         }
     } //fim da função zModalRod
 
@@ -2623,7 +2625,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $h = 19.6;
         $texto = 'DADOS ESPECÍFICOS DO MODAL FERROVIÁRIO';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'C', 1, '');
+        $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'C', 1, '');
         $y += 3.4;
         $this->pdf->Line($x, $y, $w + 1, $y);
         $texto = 'DCL';
@@ -2631,14 +2633,14 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
             'font' => $this->fontePadrao,
             'size' => 7,
             'style' => 'B');
-        $this->__textBox($x, $y, $w * 0.25, $h, $texto, $aFont, 'T', 'C', 0, '');
+        $this->pTextBox($x, $y, $w * 0.25, $h, $texto, $aFont, 'T', 'C', 0, '');
         $this->pdf->Line($x + 49.6, $y, $x + 49.6, $y + 3.5);
         $texto = 'VAGÕES';
         $aFont = array(
             'font' => $this->fontePadrao,
             'size' => 7,
             'style' => 'B');
-        $this->__textBox($x + 50, $y, $w * 0.5, $h, $texto, $aFont, 'T', 'C', 0, '');
+        $this->pTextBox($x + 50, $y, $w * 0.5, $h, $texto, $aFont, 'T', 'C', 0, '');
         $y += 3.4;
         $this->pdf->Line($x, $y, $w + 1, $y);
         // DCL
@@ -2647,13 +2649,13 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
             'font' => $this->fontePadrao,
             'size' => 6,
             'style' => '');
-        $this->__textBox($x, $y, $w * 0.10, $h, $texto, $aFont, 'T', 'L', 0, '');
-        $texto = $this->__simpleGetValue($this->ferrov, "idTrem");
+        $this->pTextBox($x, $y, $w * 0.10, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $texto = $this->pSimpleGetValue($this->ferrov, "idTrem");
         $aFont = array(
             'font' => $this->fontePadrao,
             'size' => 6,
             'style' => 'B');
-        $this->__textBox($x, $y + 3, $w * 0.10, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y + 3, $w * 0.10, $h, $texto, $aFont, 'T', 'L', 0, '');
         $x += $w * 0.06;
         $y1 = $y + 12.5;
         $this->pdf->Line($x, $y, $x, $y1);
@@ -2662,13 +2664,13 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
             'font' => $this->fontePadrao,
             'size' => 6,
             'style' => '');
-        $this->__textBox($x, $y, $w * 0.10, $h, $texto, $aFont, 'T', 'L', 0, '');
-        $texto = $this->__simpleGetValue($this->rem, "nDoc");
+        $this->pTextBox($x, $y, $w * 0.10, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $texto = $this->pSimpleGetValue($this->rem, "nDoc");
         $aFont = array(
             'font' => $this->fontePadrao,
             'size' => 6,
             'style' => 'B');
-        $this->__textBox($x, $y + 3, $w * 0.10, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y + 3, $w * 0.10, $h, $texto, $aFont, 'T', 'L', 0, '');
         $x += $w * 0.06;
         $this->pdf->Line($x, $y, $x, $y1);
         $texto = 'SÉRIE';
@@ -2676,13 +2678,13 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
             'font' => $this->fontePadrao,
             'size' => 6,
             'style' => '');
-        $this->__textBox($x, $y, $w * 0.10, $h, $texto, $aFont, 'T', 'L', 0, '');
-        $texto = $this->__simpleGetValue($this->rem, "serie");
+        $this->pTextBox($x, $y, $w * 0.10, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $texto = $this->pSimpleGetValue($this->rem, "serie");
         $aFont = array(
             'font' => $this->fontePadrao,
             'size' => 6,
             'style' => 'B');
-        $this->__textBox($x, $y + 3, $w * 0.10, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y + 3, $w * 0.10, $h, $texto, $aFont, 'T', 'L', 0, '');
         $x += $w * 0.06;
         $this->pdf->Line($x, $y, $x, $y1);
         $texto = 'EMISSÃO';
@@ -2690,13 +2692,13 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
             'font' => $this->fontePadrao,
             'size' => 6,
             'style' => '');
-        $this->__textBox($x, $y, $w * 0.10, $h, $texto, $aFont, 'T', 'L', 0, '');
-        $texto = $this->__ymd2dmy($this->__simpleGetValue($this->rem, "dEmi"));
+        $this->pTextBox($x, $y, $w * 0.10, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $texto = $this->pYmd2dmy($this->pSimpleGetValue($this->rem, "dEmi"));
         $aFont = array(
             'font' => $this->fontePadrao,
             'size' => 6,
             'style' => 'B');
-        $this->__textBox($x, $y + 3, $w * 0.10, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y + 3, $w * 0.10, $h, $texto, $aFont, 'T', 'L', 0, '');
         // VAGOES
         $x += $w * 0.06;
         $this->pdf->Line($x, $y, $x, $y1);
@@ -2705,13 +2707,13 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
             'font' => $this->fontePadrao,
             'size' => 6,
             'style' => '');
-        $this->__textBox($x, $y, $w * 0.10, $h, $texto, $aFont, 'T', 'L', 0, '');
-        $texto = $this->__simpleGetValue($this->ferrov, "nVag");
+        $this->pTextBox($x, $y, $w * 0.10, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $texto = $this->pSimpleGetValue($this->ferrov, "nVag");
         $aFont = array(
             'font' => $this->fontePadrao,
             'size' => 6,
             'style' => 'B');
-        $this->__textBox($x, $y + 3, $w * 0.10, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y + 3, $w * 0.10, $h, $texto, $aFont, 'T', 'L', 0, '');
         $x += $w * 0.06;
         $this->pdf->Line($x, $y, $x, $y1);
         $texto = 'TIPO';
@@ -2719,13 +2721,13 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
             'font' => $this->fontePadrao,
             'size' => 6,
             'style' => '');
-        $this->__textBox($x, $y, $w * 0.10, $h, $texto, $aFont, 'T', 'L', 0, '');
-        $texto = $this->__simpleGetValue($this->ferrov, "tpVag");
+        $this->pTextBox($x, $y, $w * 0.10, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $texto = $this->pSimpleGetValue($this->ferrov, "tpVag");
         $aFont = array(
             'font' => $this->fontePadrao,
             'size' => 6,
             'style' => 'B');
-        $this->__textBox($x, $y + 3, $w * 0.10, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y + 3, $w * 0.10, $h, $texto, $aFont, 'T', 'L', 0, '');
         $x += $w * 0.06;
         $this->pdf->Line($x, $y, $x, $y1);
         $texto = 'CAPACIDADE';
@@ -2733,13 +2735,13 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
             'font' => $this->fontePadrao,
             'size' => 6,
             'style' => '');
-        $this->__textBox($x, $y, $w * 0.10, $h, $texto, $aFont, 'T', 'L', 0, '');
-        $texto = $this->__simpleGetValue($this->ferrov, "cap");
+        $this->pTextBox($x, $y, $w * 0.10, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $texto = $this->pSimpleGetValue($this->ferrov, "cap");
         $aFont = array(
             'font' => $this->fontePadrao,
             'size' => 6,
             'style' => 'B');
-        $this->__textBox($x, $y + 3, $w * 0.10, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y + 3, $w * 0.10, $h, $texto, $aFont, 'T', 'L', 0, '');
         $x += $w * 0.08;
         $this->pdf->Line($x, $y, $x, $y1);
         $texto = 'PESO REAL/TON';
@@ -2747,13 +2749,13 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
             'font' => $this->fontePadrao,
             'size' => 6,
             'style' => '');
-        $this->__textBox($x, $y, $w * 0.10, $h, $texto, $aFont, 'T', 'L', 0, '');
-        $texto = $this->__simpleGetValue($this->ferrov, "pesoR");
+        $this->pTextBox($x, $y, $w * 0.10, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $texto = $this->pSimpleGetValue($this->ferrov, "pesoR");
         $aFont = array(
             'font' => $this->fontePadrao,
             'size' => 6,
             'style' => 'B');
-        $this->__textBox($x, $y + 3, $w * 0.10, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y + 3, $w * 0.10, $h, $texto, $aFont, 'T', 'L', 0, '');
         $x += $w * 0.09;
         $this->pdf->Line($x, $y, $x, $y1);
         $texto = 'PESO BRUTO/TON';
@@ -2761,13 +2763,13 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
             'font' => $this->fontePadrao,
             'size' => 6,
             'style' => '');
-        $this->__textBox($x, $y, $w * 0.10, $h, $texto, $aFont, 'T', 'L', 0, '');
-        $texto = $this->__simpleGetValue($this->ferrov, "pesoBC");
+        $this->pTextBox($x, $y, $w * 0.10, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $texto = $this->pSimpleGetValue($this->ferrov, "pesoBC");
         $aFont = array(
             'font' => $this->fontePadrao,
             'size' => 6,
             'style' => 'B');
-        $this->__textBox($x, $y + 3, $w * 0.10, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y + 3, $w * 0.10, $h, $texto, $aFont, 'T', 'L', 0, '');
         $x += $w * 0.1;
         $this->pdf->Line($x, $y, $x, $y1);
         $texto = 'IDENTIFICAÇÃO DOS CONTÊINERES';
@@ -2775,13 +2777,13 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
             'font' => $this->fontePadrao,
             'size' => 6,
             'style' => '');
-        $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
-        $texto = $this->__simpleGetValue($this->ferrov, "nCont");
+        $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $texto = $this->pSimpleGetValue($this->ferrov, "nCont");
         $aFont = array(
             'font' => $this->fontePadrao,
             'size' => 6,
             'style' => 'B');
-        $this->__textBox($x, $y + 3, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y + 3, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         // FLUXO
         $x = 1;
         $y += 12.9;
@@ -2789,29 +2791,29 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $wa = round($w * 0.103) + 0.5;
         $texto = 'FLUXO FERROVIARIO';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $wa, $h1, $texto, $aFont, 'T', 'C', 1, '');
-        $texto = $this->__simpleGetValue($this->ferrov, "fluxo");
+        $this->pTextBox($x, $y, $wa, $h1, $texto, $aFont, 'T', 'C', 1, '');
+        $texto = $this->pSimpleGetValue($this->ferrov, "fluxo");
         $aFont = array(
             'font' => $this->fontePadrao,
             'size' => 7,
             'style' => 'B');
-        $this->__textBox($x, $y + 3, $wa, $h1, $texto, $aFont, 'T', 'C', 0, '');
+        $this->pTextBox($x, $y + 3, $wa, $h1, $texto, $aFont, 'T', 'C', 0, '');
         $y += 10;
         $texto = 'TIPO DE TRÁFEGO';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $wa, $h1, $texto, $aFont, 'T', 'C', 1, '');
-        $texto = $this->zConvertUnidTrafego($this->__simpleGetValue($this->ferrov, "tpTraf"));
+        $this->pTextBox($x, $y, $wa, $h1, $texto, $aFont, 'T', 'C', 1, '');
+        $texto = $this->zConvertUnidTrafego($this->pSimpleGetValue($this->ferrov, "tpTraf"));
         $aFont = array(
             'font' => $this->fontePadrao,
             'size' => 7,
             'style' => 'B');
-        $this->__textBox($x, $y + 3, $wa, $h1, $texto, $aFont, 'T', 'C', 0, '');
+        $this->pTextBox($x, $y + 3, $wa, $h1, $texto, $aFont, 'T', 'C', 0, '');
         // Novo Box Relativo a Modal Ferroviário
         $x = 22.5;
         $y += -10.2;
         $texto = 'INFORMAÇÕES DAS FERROVIAS ENVOLVIDAS';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w - 21.5, $h1 * 2.019, $texto, $aFont, 'T', 'C', 1, '');
+        $this->pTextBox($x, $y, $w - 21.5, $h1 * 2.019, $texto, $aFont, 'T', 'C', 1, '');
         $y += 3.4;
         $this->pdf->Line($x, $y, $w + 1, $y);
         $w = $w * 0.2;
@@ -2821,63 +2823,63 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
             'font' => $this->fontePadrao,
             'size' => 6,
             'style' => '');
-        $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
-        $texto = $this->__simpleGetValue($this->ferrov, "cInt");
+        $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $texto = $this->pSimpleGetValue($this->ferrov, "cInt");
         $aFont = array(
             'font' => $this->fontePadrao,
             'size' => 6,
             'style' => 'B');
-        $this->__textBox($x, $y + 3, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y + 3, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $texto = 'CNPJ';
         $aFont = array(
             'font' => $this->fontePadrao,
             'size' => 6,
             'style' => '');
-        $this->__textBox($x, $y + 6, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
-        $texto = $this->__simpleGetValue($this->ferrov, "CNPJ");
+        $this->pTextBox($x, $y + 6, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $texto = $this->pSimpleGetValue($this->ferrov, "CNPJ");
         $aFont = array(
             'font' => $this->fontePadrao,
             'size' => 6,
             'style' => 'B');
-        $this->__textBox($x, $y + 9, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y + 9, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $x += 50;
         $texto = 'NOME';
         $aFont = array(
             'font' => $this->fontePadrao,
             'size' => 6,
             'style' => '');
-        $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
-        $texto = $this->__simpleGetValue($this->ferrov, "xNome");
+        $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $texto = $this->pSimpleGetValue($this->ferrov, "xNome");
         $aFont = array(
             'font' => $this->fontePadrao,
             'size' => 6,
             'style' => 'B');
-        $this->__textBox($x, $y + 3, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y + 3, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $texto = 'INSCRICAO ESTADUAL';
         $aFont = array(
             'font' => $this->fontePadrao,
             'size' => 6,
             'style' => '');
-        $this->__textBox($x, $y + 6, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
-        $texto = $this->__simpleGetValue($this->ferrov, "IE");
+        $this->pTextBox($x, $y + 6, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $texto = $this->pSimpleGetValue($this->ferrov, "IE");
         $aFont = array(
             'font' => $this->fontePadrao,
             'size' => 6,
             'style' => 'B');
-        $this->__textBox($x, $y + 9, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y + 9, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $x += 50;
         $texto = 'PARTICIPAÇÃO OUTRA FERROVIA';
         $aFont = array(
             'font' => $this->fontePadrao,
             'size' => 6,
             'style' => '');
-        $this->__textBox($x, $y + 6, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y + 6, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         $texto = '';
         $aFont = array(
             'font' => $this->fontePadrao,
             'size' => 6,
             'style' => 'B');
-        $this->__textBox($x, $y + 9, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y + 9, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
     } //fim da função zModalFerr
 
     /**
@@ -2903,7 +2905,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $texto = 'DECLARO QUE RECEBI OS VOLUMES DESTE CONHECIMENTO EM PERFEITO ESTADO ';
         $texto .= 'PELO QUE DOU POR CUMPRIDO O PRESENTE CONTRATO DE TRANSPORTE';
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'C', 1, '');
+        $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'C', 1, '');
         $y += 3.4;
         $this->pdf->Line($x, $y, $w + 1, $y);
         $texto = 'NOME';
@@ -2911,7 +2913,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
             'font' => $this->fontePadrao,
             'size' => 6,
             'style' => '');
-        $this->__textBox($x, $y, $w * 0.25, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y, $w * 0.25, $h, $texto, $aFont, 'T', 'L', 0, '');
         $x += $w * 0.25;
         $this->pdf->Line($x, $y, $x, $y + 11.5);
         $texto = 'ASSINATURA / CARIMBO';
@@ -2919,7 +2921,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
             'font' => $this->fontePadrao,
             'size' => 6,
             'style' => '');
-        $this->__textBox($x, $y, $w * 0.25, $h - 3.4, $texto, $aFont, 'B', 'C', 0, '');
+        $this->pTextBox($x, $y, $w * 0.25, $h - 3.4, $texto, $aFont, 'B', 'C', 0, '');
         $x += $w * 0.25;
         $this->pdf->Line($x, $y, $x, $y + 11.5);
         $texto = 'TÉRMINO DA PRESTAÇÃO - DATA/HORA' . "\r\n" . "\r\n" . "\r\n";
@@ -2928,7 +2930,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
             'font' => $this->fontePadrao,
             'size' => 6,
             'style' => '');
-        $this->__textBox($x + 10, $y, $w * 0.25, $h - 3.4, $texto, $aFont, 'T', 'C', 0, '');
+        $this->pTextBox($x + 10, $y, $w * 0.25, $h - 3.4, $texto, $aFont, 'T', 'C', 0, '');
         $x = $oldX;
         $y = $y + 5;
         $this->pdf->Line($x, $y, $w * 0.255, $y);
@@ -2937,19 +2939,19 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
             'font' => $this->fontePadrao,
             'size' => 6,
             'style' => '');
-        $this->__textBox($x, $y, $w * 0.33, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y, $w * 0.33, $h, $texto, $aFont, 'T', 'L', 0, '');
         $x += $w * 0.85;
         $this->pdf->Line($x, $y + 6.4, $x, $y - 5);
         $texto = "CT-E";
         $aFont = $this->formatNegrito;
-        $this->__textBox($x, $y - 5, $w * 0.15, $h, $texto, $aFont, 'T', 'C', 0, '');
-        $texto = "\r\n Nº. DOCUMENTO  " . $this->__simpleGetValue($this->ide, "nCT") . " \n";
-        $texto .= "\r\n SÉRIE  " . $this->__simpleGetValue($this->ide, "serie");
+        $this->pTextBox($x, $y - 5, $w * 0.15, $h, $texto, $aFont, 'T', 'C', 0, '');
+        $texto = "\r\n Nº. DOCUMENTO  " . $this->pSimpleGetValue($this->ide, "nCT") . " \n";
+        $texto .= "\r\n SÉRIE  " . $this->pSimpleGetValue($this->ide, "serie");
         $aFont = array(
             'font' => $this->fontePadrao,
             'size' => 6,
             'style' => '');
-        $this->__textBox($x, $y - 8, $w * 0.15, $h, $texto, $aFont, 'C', 'C', 0, '');
+        $this->pTextBox($x, $y - 8, $w * 0.15, $h, $texto, $aFont, 'C', 'C', 0, '');
         $x = $oldX;
         $this->zhDashedLine($x, $y + 7.5, $this->wPrint, 0.1, 80);
     } //fim da função canhotoDACTE
@@ -2982,7 +2984,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
             'font' => $this->fontePadrao,
             'size' => 6,
             'style' => '');
-        $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'C', 1, '');
+        $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'C', 1, '');
         $this->pdf->Line($x, $y + 3, $w * 1.385, $y + 3);
         //o texto com os dados adicionais foi obtido na função xxxxxx
         //e carregado em uma propriedade privada da classe
@@ -2990,7 +2992,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         //$this->textoAdic com o texto completo do campo
         $y += 1;
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y + 2, $w - 2, $h - 3, $this->textoAdic, $aFont, 'T', 'L', 0, '', false);
+        $this->pTextBox($x, $y + 2, $w - 2, $h - 3, $this->textoAdic, $aFont, 'T', 'L', 0, '', false);
         //RESERVADO AO FISCO
         $texto = "RESERVADO AO FISCO";
         $x += $w;
@@ -3004,7 +3006,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
             'font' => $this->fontePadrao,
             'size' => 6,
             'style' => '');
-        $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'C', 1, '');
+        $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'C', 1, '');
         //inserir texto informando caso de contingência
         //1 – Normal – emissão normal;
         //2 – Contingência FS – emissão em contingência com impressão do DACTE em Formulário de Segurança;
@@ -3013,9 +3015,8 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         //Emissão em Contingência – DPEC;
         //5 – Contingência FS-DA - emissão em contingência com impressão do DACTE em Formulário de
         //Segurança para Impressão de Documento Auxiliar de Documento Fiscal Eletrônico (FS-DA).
-        $xJust = $this->__simpleGetValue($this->ide, "xJust", $extraBefore = ' Justificativa: ');
-        $dhCont = date('d/m/Y H:i:s', $this->__convertTime($this->__simpleGetValue($this->ide, "dhCont")));
-        $dhCont = ' Entrada em contingência : ' . $dhCont;
+        $xJust = $this->pSimpleGetValue($this->ide, 'xJust', 'Justificativa: ');
+        $dhCont = $this->pSimpleGetValue($this->ide, 'dhCont', ' Entrada em contingência : ');
         $texto = '';
         switch ($this->tpEmis)
         {
@@ -3034,7 +3035,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         }
         $y += 2;
         $aFont = $this->formatPadrao;
-        $this->__textBox($x, $y + 2, $w - 2, $h - 3, $texto, $aFont, 'T', 'L', 0, '', false);
+        $this->pTextBox($x, $y + 2, $w - 2, $h - 3, $texto, $aFont, 'T', 'L', 0, '', false);
 
         return $y + $h;
     } //fim zDadosAdic
@@ -3105,10 +3106,10 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $cnpj = !empty($field->getElementsByTagName("CNPJ")->item(0)->nodeValue) ?
             $field->getElementsByTagName("CNPJ")->item(0)->nodeValue : "";
         if ($cnpj != "" && $cnpj != "00000000000000") {
-            $cnpj = $this->__format($cnpj, '###.###.###/####-##');
+            $cnpj = $this->pFormat($cnpj, '###.###.###/####-##');
         } else {
             $cnpj = !empty($field->getElementsByTagName("CPF")->item(0)->nodeValue) ?
-                $this->__format($field->getElementsByTagName("CPF")->item(0)->nodeValue, '###.###.###.###-##') : '';
+                $this->pFormat($field->getElementsByTagName("CPF")->item(0)->nodeValue, '###.###.###.###-##') : '';
         }
         return $cnpj;
     } //fim formatCNPJCPF
