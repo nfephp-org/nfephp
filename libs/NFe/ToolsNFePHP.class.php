@@ -9,7 +9,6 @@
  * sob os termos da Licença Pública Geral Menor GNU (LGPL) como é publicada pela Fundação
  * para o Software Livre, na versão 3 da licença, ou qualquer versão posterior.
  *
- *
  * Este programa é distribuído na esperança que será útil, mas SEM NENHUMA
  * GARANTIA; nem mesmo a garantia explícita definida por qualquer VALOR COMERCIAL
  * ou de ADEQUAÇÃO PARA UM PROPÓSITO EM PARTICULAR,
@@ -2075,6 +2074,12 @@ class ToolsNFePHP extends CommonNFePHP
             if ($cStat == '') {
                 throw new nfephpException("O retorno nao contem cStat verifique o debug do soap !!");
             }
+            //tratar erro de versão do XML
+            if ($cStat == '238' || $cStat == '239') {
+                $this->pTrata239($retorno, $this->siglaUF, $this->tpAmb, $servico, $versao);
+                $msg = "Versão da mensagem não suportada no webservice!!";
+                throw new nfephpException($msg);
+            }
             //103-Lote recebido com sucesso
             //104-Lote processado, podendo ter ou não o protNFe (#AR11 no layout)
             if ($cStat != '103' && $cStat != '104') {
@@ -3137,24 +3142,11 @@ class ToolsNFePHP extends CommonNFePHP
     public function cancelEvent($chNFe = '', $nProt = '', $xJust = '', $tpAmb = '', &$aRetorno = array())
     {
         try {
-            //retorno da função
-            $aRetorno = array(
-                'bStat'=>false,
-                'tpAmb'=>'',
-                'verAplic'=>'',
-                'cStat'=>'',
-                'xMotivo'=>'',
-                'nProt'=>'',
-                'chNFe'=>'',
-                'dhRecbto'=>'');
             //validação dos dados de entrada
             if ($chNFe == '' || $nProt == '' || $xJust == '') {
                 $msg = "Não foi passado algum dos parâmetros necessários "
                         . "ID=$chNFe ou protocolo=$nProt ou justificativa=$xJust.";
                 throw new nfephpException($msg);
-            }
-            if ($tpAmb == '') {
-                $tpAmb = $this->tpAmb;
             }
             if (strlen($xJust) < 15) {
                 $msg = "A justificativa deve ter pelo menos 15 digitos!!";
@@ -3168,6 +3160,22 @@ class ToolsNFePHP extends CommonNFePHP
                 $msg = "Uma chave de NFe válida não foi passada como parâmetro $chNFe.";
                 throw new nfephpException($msg);
             }
+
+            //retorno da função
+            $aRetorno = array(
+                'bStat'=>false,
+                'tpAmb'=>'',
+                'verAplic'=>'',
+                'cStat'=>'',
+                'xMotivo'=>'',
+                'nProt'=>'',
+                'chNFe'=>'',
+                'dhRecbto'=>'');
+            
+            if ($tpAmb == '') {
+                $tpAmb = $this->tpAmb;
+            }
+            
             //estabelece o codigo do tipo de evento CANCELAMENTO
             $tpEvento = '110111';
             $descEvento = 'Cancelamento';
@@ -3175,14 +3183,6 @@ class ToolsNFePHP extends CommonNFePHP
             $nSeqEvento = '1';
             //remove qualquer caracter especial
             $xJust = $this->pCleanString($xJust);
-            //verifica se alguma das contingências está habilitada
-            if ($this->enableSVCAN) {
-                $aURL = $this->pLoadSEFAZ($tpAmb, self::CONTINGENCIA_SVCAN);
-            } elseif ($this->enableSVCRS) {
-                $aURL = $this->pLoadSEFAZ($tpAmb, self::CONTINGENCIA_SVCRS);
-            } else {
-                $aURL = $this->aURL;
-            }
             $numLote = $this->pGeraNumLote();
             //Data e hora do evento no formato AAAA-MM-DDTHH:MM:SSTZD (UTC)
             $dhEvento = date('Y-m-d\TH:i:s').$this->timeZone;
@@ -3194,20 +3194,19 @@ class ToolsNFePHP extends CommonNFePHP
             }
             //montagem do namespace do serviço
             $servico = 'RecepcaoEvento';
-            //recuperação da versão
-            $versao = $aURL[$servico]['version'];
-            //recuperação da url do serviço
-            $urlservico = $aURL[$servico]['URL'];
-            //recuperação do método
-            $metodo = $aURL[$servico]['method'];
-            //montagem do namespace do serviço
-            $operation = $aURL[$servico]['operation'];
-            $namespace = $this->URLPortal.'/wsdl/'.$operation;
-            //de acordo com o manual versão 5 de março de 2012
-            // 2   +    6     +    44         +   2  = 54 digitos
-            //“ID” + tpEvento + chave da NF-e + nSeqEvento
-            //garantir que existam 2 digitos em nSeqEvento para montar o ID com 54 digitos
-            if (strlen(trim($nSeqEvento))==1) {
+            //carrega serviço
+            $this->pLoadServico(
+                $servico,
+                $this->siglaUF,
+                $tpAmb,
+                $cUF,
+                $urlservico,
+                $namespace,
+                $cabec,
+                $metodo,
+                $versao
+            );
+            if (strlen(trim($nSeqEvento)) == 1) {
                 $zenSeqEvento = str_pad($nSeqEvento, 2, "0", STR_PAD_LEFT);
             } else {
                 $zenSeqEvento = trim($nSeqEvento);
@@ -3278,7 +3277,7 @@ class ToolsNFePHP extends CommonNFePHP
             //tratar erro de versão do XML
             if ($cStat == '238' || $cStat == '239') {
                 $this->pTrata239($retorno, $this->siglaUF, $tpAmb, $servico, $versao);
-                $msg = "Versão do arquivo XML não suportada no webservice!!";
+                $msg = "Versão da mensagem não suportada no webservice!!";
                 throw new nfephpException($msg);
             }
             //erro no processamento cStat <> 128
