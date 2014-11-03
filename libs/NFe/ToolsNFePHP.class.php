@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.10.04-beta
+ * @version   3.10.05-beta
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -1963,8 +1963,6 @@ class ToolsNFePHP extends CommonNFePHP
      * "3.10" e por isso utiliza o WS "NfeAutorizacao" sempre em modo síncrono.
      *
      * @name autoriza
-     * @package NFePHP
-     * @author Roberto L. Machado <linux.rlm at gmail dot com>
      * @param string  $sxml   string com uma nota fiscal em xml
      * @param integer $idLote id do lote e um numero (numeração sequencial)
      * @param array   $aRetorno parametro passado por referencia contendo a resposta da consulta em um array
@@ -1975,10 +1973,10 @@ class ToolsNFePHP extends CommonNFePHP
     {
         try {
             if (is_array($sxml)) {
-                throw new nfephpException("Deve ser informado apenas o XML de uma NFe não uma lista com varias.");
+                throw new nfephpException("Deve ser informado apenas um XML de uma NFe não uma matriz com varias notas.");
             }
             if (empty($sxml) || ! simplexml_load_string($sxml)) {
-                throw new nfephpException("XML de NF-e para autorizacao recebido no parametro parece invalido, verifique");
+                throw new nfephpException("XML da NF-e parece invalido, verifique!!");
             }
             if ($indSinc === 0 && $indSinc === 1) {
                 throw new nfephpException("Parametro indSinc deve ser inteiro 0 ou 1, verifique!!");
@@ -1992,7 +1990,10 @@ class ToolsNFePHP extends CommonNFePHP
                 'cStat'=>'',
                 'xMotivo'=>'',
                 'cUF'=>'',
-                'dhRecbto'=>'');
+                'dhRecbto'=>'',
+                'infRec'=>'',
+                'protNFe'=>'');
+            
             if ($indSinc === 0) {
                 //dados do recibo do lote (gerado apenas se o lote for aceito)
                 $aRetorno['infRec'] = array('nRec'=>'','tMed'=>'');
@@ -2010,38 +2011,30 @@ class ToolsNFePHP extends CommonNFePHP
                         'cStat'=>'',
                         'xMotivo'=>''));
             }
-            //verifica se alguma SVC esta habilitada, neste caso precisa recarregar os webservices
-            if ($this->enableSVCAN) {
-                $aURL = $this->pLoadSEFAZ($this->tpAmb, self::CONTINGENCIA_SVCAN);
-            } elseif ($this->enableSVCRS) {
-                $aURL = $this->pLoadSEFAZ($this->tpAmb, self::CONTINGENCIA_SVCRS);
-            } else {
-                $aURL = $this->aURL;
-            }
+            //remove <?xml version="1.0" encoding=...
+            $sNFe = preg_replace("/<\?xml.*\?>/", "", $sxml);
             //identificação do serviço: autorização de NF-e
             $servico = 'NfeAutorizacao';
-            //recuperação da versão
-            $versao = $aURL[$servico]['version'];
-            //recuperação da url do serviço
-            $urlservico = $aURL[$servico]['URL'];
-            //recuperação do método
-            $metodo = $aURL[$servico]['method'];
-            //montagem do namespace do serviço
-            $operation = $aURL[$servico]['operation'];
-            $namespace = $this->URLPortal.'/wsdl/'.$operation;
-            // limpa a variavel
-            $sNFe = $sxml;
-            //remove <?xml version="1.0" encoding=... e demais caracteres indesejados
-            $sNFe = preg_replace("/<\?xml.*\?>/", "", $sNFe);
-            $sNFe = str_replace(array("\r","\n","\s"), "", $sNFe);
-            //montagem do cabeçalho da comunicação SOAP
-            $cabec = '<nfeCabecMsg xmlns="'.$namespace.'"><cUF>'.$this->cUF
-                    .'</cUF><versaoDados>'.$versao.'</versaoDados></nfeCabecMsg>';
+             //carrega serviço
+            $this->pLoadServico(
+                $servico,
+                $this->siglaUF,
+                $this->tpAmb,
+                $cUF,
+                $urlservico,
+                $namespace,
+                $cabec,
+                $metodo,
+                $versao
+            );
             //montagem dos dados da mensagem SOAP
-            $dados = '<nfeDadosMsg xmlns="'.$namespace.'"><enviNFe xmlns="'
-                    .$this->URLPortal.'" versao="'.$versao.'"><idLote>'
-                    .$idLote.'</idLote><indSinc>'.$indSinc.'</indSinc>'
-                    .$sNFe.'</enviNFe></nfeDadosMsg>';
+            $dados = "<nfeDadosMsg xmlns=\"$namespace\">"
+                    . "<enviNFe xmlns=\"$this->URLPortal\" "
+                    . "versao=\"$versao\">"
+                    . "<idLote>$idLote.'</idLote>"
+                    . "<indSinc>$indSinc</indSinc>$sNFe"
+                    . "</enviNFe></nfeDadosMsg>";
+            
             //envia dados via SOAP
             $retorno = $this->pSendSOAP($urlservico, $namespace, $cabec, $dados, $metodo, $this->tpAmb);
             //verifica o retorno
@@ -2056,13 +2049,13 @@ class ToolsNFePHP extends CommonNFePHP
             //verifica o codigo do status da resposta, se vazio houve erro
             if ($cStat == '') {
                 throw new nfephpException("O retorno nao contem cStat verifique o debug do soap !!");
-            } elseif ($indSinc === 0 && $cStat == '103') { //103-Lote recebido com sucesso
-                $aRetorno['bStat'] = true;
-            } elseif ($indSinc === 1 && $cStat == '104') { //104-Lote processado, podendo ter ou não o protNFe (#AR11 no layout)
-                $aRetorno['bStat'] = true;
-            } else {
+            }
+            //103-Lote recebido com sucesso
+            //104-Lote processado, podendo ter ou não o protNFe (#AR11 no layout)
+            if ($cStat != '103' && $cStat != '104') {
                 throw new nfephpException(sprintf("%s - %s", $cStat, $xMotivo));
             }
+            $aRetorno['bStat'] = true;
             // status da resposta do webservice
             $aRetorno['cStat'] = $cStat;
             // motivo da resposta (opcional)
@@ -5110,7 +5103,7 @@ class ToolsNFePHP extends CommonNFePHP
     
     /**
      * pLoadServico
-     * Monta o namespace e o cabecalho
+     * Monta o namespace e o cabecalho da comunicação SOAP
      * @param string $servico Identificação do Servico
      * @param array $aURL Dados das Urls do SEFAZ
      * @return void
