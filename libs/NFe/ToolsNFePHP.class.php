@@ -1960,26 +1960,45 @@ class ToolsNFePHP extends CommonNFePHP
      * Envia NFe para a SEFAZ autorizar.
      * ATENÇÃO! Este é o antigo método "sendLot()" que enviava lotes de NF-e versão "2.00"
      * consumindo o WS "NfeRecepcao2", agora este método está preparado apenas para a versão
-     * "3.10" e por isso utiliza o WS "NfeAutorizacao" sempre em modo síncrono.
+     * "3.10" e por isso utiliza o WS "NfeAutorizacao" sempre em modo Assíncrono.
      *
      * @name autoriza
-     * @param string  $sxml   string com uma nota fiscal em xml
+     * @param mixed  $axml   string com uma nota fiscal em xml ou um array cmm várias notas
      * @param integer $idLote id do lote e um numero (numeração sequencial)
      * @param array   $aRetorno parametro passado por referencia contendo a resposta da consulta em um array
      * @param integer $indSinc Indicação webservice assíncrono (0) ou síncrono (1)
+     * @param boolean $flagZip True indica para zipar os dados de envio e false para não zipar
      * @return mixed string XML do retorno do webservice, ou false se ocorreu algum erro
      */
-    public function autoriza($sxml, $idLote, &$aRetorno = array(), $indSinc = 1)
+    public function autoriza($aXml, $idLote, &$aRetorno = array(), $indSinc = 0, $flagZip = false)
     {
         try {
-            if (is_array($sxml)) {
-                throw new nfephpException("Deve ser informado apenas um XML de uma NFe não uma matriz com varias notas.");
+            if (empty($aXml)) {
+                throw new nfephpException("Pelo menos uma NFe deve ser informada.");
             }
-            if (empty($sxml) || ! simplexml_load_string($sxml)) {
-                throw new nfephpException("XML da NF-e parece invalido, verifique!!");
+            if (empty($idLote)) {
+                throw new nfephpException("O numero de lote não pode ser vazio.");
             }
             if ($indSinc === 0 && $indSinc === 1) {
-                throw new nfephpException("Parametro indSinc deve ser inteiro 0 ou 1, verifique!!");
+                throw new nfephpException("Parametro indSinc deve ser inteiro 0 ou 1.");
+            }
+            if ($flagZip && $indSinc === 1) {
+                throw new nfephpException("Para zipar o conteúdo deve ser usado o método assincrono indSinc = 0.");
+            }
+            if ($indSinc !== 0) {
+                //acredito que solicitou o método sincrono, então soment epose haver uma NFe
+                if (is_array($aXml)) {
+                    if (count($aXml) > 1) {
+                        throw new nfephpException("Para processamento sincrono somente uma NFe é permitida sua matriz contêm mais de uma NFe.");
+                    }
+                }
+            }
+            if (is_array($aXml)) {
+                foreach ($aXml as $xml) {
+                    $sxml .= $xml;
+                }
+            } else {
+                $sxml = $aXml;
             }
             //retorno do método em array (esta estrutura espelha a estrutura do XML retornado pelo webservice
             //IMPORTANTE: esta estrutura varia parcialmente conforme o $indSinc
@@ -2027,14 +2046,20 @@ class ToolsNFePHP extends CommonNFePHP
                 $metodo,
                 $versao
             );
-            //montagem dos dados da mensagem SOAP
-            $dados = "<nfeDadosMsg xmlns=\"$namespace\">"
-                    . "<enviNFe xmlns=\"$this->URLPortal\" "
-                    . "versao=\"$versao\">"
-                    . "<idLote>$idLote.'</idLote>"
-                    . "<indSinc>$indSinc</indSinc>$sNFe"
-                    . "</enviNFe></nfeDadosMsg>";
-            
+            $data = "<enviNFe xmlns=\"$this->URLPortal\" "
+                . "versao=\"$versao\">"
+                . "<idLote>$idLote.'</idLote>"
+                . "<indSinc>$indSinc</indSinc>$sNFe"
+                . "</enviNFe>";
+            if ($flagZip) {
+                $gzdata = gzencode($data, 9);
+                $mensagem = base64_encode($gzdata);
+                $dados = "<nfeDadosMsgZip xmlns=\"$namespace\">$gzdata</nfeDadosMsgZip>";
+                $metodo = $metodo."Zip";
+            } else {
+                //montagem dos dados da mensagem SOAP
+                $dados = "<nfeDadosMsg xmlns=\"$namespace\">$data</nfeDadosMsg>";
+            }
             //envia dados via SOAP
             $retorno = $this->pSendSOAP($urlservico, $namespace, $cabec, $dados, $metodo, $this->tpAmb);
             //verifica o retorno
@@ -2068,7 +2093,7 @@ class ToolsNFePHP extends CommonNFePHP
             $aRetorno['tpAmb'] = $this->pSimpleGetValue($doc, "tpAmb");
             $aRetorno['verAplic'] = $this->pSimpleGetValue($doc, "verAplic");
             $aRetorno['cUF'] = $this->pSimpleGetValue($doc, "cUF");
-            if ($indSinc == 1) {
+            if ($indSinc === 1) {
                 //retorno síncrono do webservice: dados do protocolo da NF-e
                 $nodeProtNFe = $doc->getElementsByTagName('protNFe')->item(0);
                 $nodeInfProt = $doc->getElementsByTagName('infProt')->item(0);
