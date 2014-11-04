@@ -23,7 +23,7 @@
  *
  * @package     NFePHP
  * @name        CommonNFePHP.class.php
- * @version     1.0.7
+ * @version     1.0.8
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2012 &copy; NFePHP
@@ -574,5 +574,50 @@ class CommonNFePHP
         //Zerando rotação
         $this->pdf->Rotate(0, $x, $y);
         return ($y1-$y)-$incY;
+    }
+    
+    /**
+     * tzdBR
+     * @param string $siglaUF
+     * @return string com o TZD (Time Zone Designator)
+     */
+    public function tzdBR($siglaUF = '')
+    {
+        if ($siglaUF == '') {
+            return '';
+        }
+        
+        $tzUFlist = array(
+            'AC'=>'America/Rio_Branco',
+            'AL'=>'America/Maceio',
+            'AM'=>'America/Manaus',
+            'AP'=>'America/Belem',
+            'BA'=>'America/Bahia',
+            'CE'=>'America/Fortaleza',
+            'DF'=>'America/Sao_Paulo',
+            'ES'=>'America/Sao_Paulo',
+            'GO'=>'America/Sao_Paulo',
+            'MA'=>'America/Fortaleza',
+            'MG'=>'America/Sao_Paulo',
+            'MS'=>'America/Campo_Grande',
+            'MT'=>'America/Cuiaba',
+            'PA'=>'America/Belem',
+            'PB'=>'America/Fortaleza',
+            'PE'=>'America/Recife',
+            'PI'=>'America/Fortaleza',
+            'PR'=>'America/Sao_Paulo',
+            'RJ'=>'America/Sao_Paulo',
+            'RN'=>'America/Fortaleza',
+            'RO'=>'America/Porto_Velho',
+            'RR'=>'America/Boa_Vista',
+            'RS'=>'America/Sao_Paulo',
+            'SC'=>'America/Sao_Paulo',
+            'SE'=>'America/Maceio',
+            'SP'=>'America/Sao_Paulo',
+            'TO'=>'America/Araguaina');
+        
+        //seta a zona de tempo
+        date_default_timezone_set($tzUFlist[$siglaUF]);
+        return (string) date('P');
     }
 }
