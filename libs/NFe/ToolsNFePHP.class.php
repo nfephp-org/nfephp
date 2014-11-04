@@ -641,38 +641,6 @@ class ToolsNFePHP extends CommonNFePHP
                                  '53'=>'DF',
                                  '91'=>'SVAN');
     /**
-     * tzUFlist
-     * Lista das zonas de tempo para os estados brasileiros
-     * @var array
-     */
-    private $tzUFlist = array('AC'=>'America/Rio_Branco',
-                              'AL'=>'America/Sao_Paulo',
-                              'AM'=>'America/Manaus',
-                              'AP'=>'America/Sao_Paulo',
-                              'BA'=>'America/Bahia',
-                              'CE'=>'America/Fortaleza',
-                              'DF'=>'America/Sao_Paulo',
-                              'ES'=>'America/Sao_Paulo',
-                              'GO'=>'America/Sao_Paulo',
-                              'MA'=>'America/Sao_Paulo',
-                              'MG'=>'America/Sao_Paulo',
-                              'MS'=>'America/Campo_Grande',
-                              'MT'=>'America/Cuiaba',
-                              'PA'=>'America/Belem',
-                              'PB'=>'America/Sao_Paulo',
-                              'PE'=>'America/Recife',
-                              'PI'=>'America/Sao_Paulo',
-                              'PR'=>'America/Sao_Paulo',
-                              'RJ'=>'America/Sao_Paulo',
-                              'RN'=>'America/Sao_Paulo',
-                              'RO'=>'America/Porto_Velho',
-                              'RR'=>'America/Boa_Vista',
-                              'RS'=>'America/Sao_Paulo',
-                              'SC'=>'America/Sao_Paulo',
-                              'SE'=>'America/Sao_Paulo',
-                              'SP'=>'America/Sao_Paulo',
-                              'TO'=>'America/Sao_Paulo');
-    /**
      * aMail
      * Matriz com os dados para envio de emails
      * FROM HOST USER PASS
@@ -985,29 +953,8 @@ class ToolsNFePHP extends CommonNFePHP
             return false;
         }
         //definir o timezone default para o estado do emitente
-        $timezone = $this->tzUFlist[$this->siglaUF];
-        date_default_timezone_set($timezone);
-        //estados que participam do horario de verão
-        $aUFhv = array('ES','GO','MG','MS','PR','RJ','RS','SP','SC');
-        //corrigir o timeZone
-        if ($this->siglaUF == 'AC' ||
-            $this->siglaUF == 'AM' ||
-            $this->siglaUF == 'MT' ||
-            $this->siglaUF == 'MS' ||
-            $this->siglaUF == 'RO' ||
-            $this->siglaUF == 'RR') {
-            $this->timeZone = '-04:00';
-        }
-        //verificar se estamos no horário de verão *** depende da configuração do servidor ***
-        if (date('I') == 1) {
-            //estamos no horario de verão verificar se o estado está incluso
-            if (in_array($this->siglaUF, $aUFhv)) {
-                $itz = (int) $this->timeZone;
-                $itz++;
-                $this->timeZone = '-'.sprintf("%02d", abs($itz)).':00';
-                //poderia ser obtido com date('P')
-            }
-        }//fim check horario verao
+        //já ajustado ao horario de verão (se aplicável)
+        $this->timeZone = $this->pTzdBR($this->siglaUF);
         return true;
     } //fim construct
 
@@ -1820,19 +1767,20 @@ class ToolsNFePHP extends CommonNFePHP
             //recarrega as url referentes aos dados passados como parametros para a função
             $aURL = $this->pLoadSEFAZ($tpAmb, $siglaUF);
         }
-        //busca o código da UF a partir da sigla
-        $cUF = $this->cUFlist[$siglaUF];
         //identificação do serviço
         $servico = 'NfeConsultaCadastro';
-        //recuperação da versão
-        $versao = $aURL[$servico]['version'];
-        //recuperação da url do serviço
-        $urlservico = $aURL[$servico]['URL'];
-        //recuperação do método
-        $metodo = $aURL[$servico]['method'];
-        //montagem do namespace do serviço
-        $operation = $aURL[$servico]['operation'];
-        $namespace = $this->URLPortal.'/wsdl/'.$operation;
+        //carrega serviço
+        $this->pLoadServico(
+            $servico,
+            $siglaUF,
+            $tpAmb,
+            $cUF,
+            $urlservico,
+            $namespace,
+            $cabec,
+            $metodo,
+            $versao
+        );
         if ($urlservico=='') {
             $msg = "Este serviço não está disponível para a SEFAZ $siglaUF!!!";
             $this->pSetError($msg);
@@ -1841,9 +1789,6 @@ class ToolsNFePHP extends CommonNFePHP
             }
             return false;
         }
-        //montagem do cabeçalho da comunicação SOAP
-        $cabec = '<nfeCabecMsg xmlns="'. $namespace.'"><cUF>'.$cUF
-               .'</cUF><versaoDados>'.$versao.'</versaoDados></nfeCabecMsg>';
         //montagem dos dados da mensagem SOAP
         $dados = '<nfeDadosMsg xmlns="'. $namespace.'"><ConsCad xmlns="'
                .$this->URLnfe.'" versao="'.$versao.'"><infCons><xServ>CONS-CAD</xServ><UF>'.$siglaUF.'</UF>'
@@ -1882,7 +1827,7 @@ class ToolsNFePHP extends CommonNFePHP
         }
         //tratar erro 239 Versão do arquivo XML não suportada
         if ($cStat == '239') {
-            $this->pTrata239($retorno, $this->siglaUF, $tpAmb, $servico, $versao);
+            $this->pTrata239($retorno, $siglaUF, $tpAmb, $servico, $versao);
             $msg = "Versão do arquivo XML não suportada!!";
             $this->pSetError($msg);
             if ($this->exceptions) {
@@ -2153,6 +2098,12 @@ class ToolsNFePHP extends CommonNFePHP
     public function getProtocol($recibo = '', $chave = '', $tpAmb = '', &$aRetorno = array())
     {
         try {
+            if ($recibo == '' && $chave == '') {
+                throw new nfephpException("ERRO. Favor indicar o numero do recibo ou a chave de acesso da NF-e!");
+            }
+            if ($recibo != '' && $chave != '') {
+                throw new nfephpException("ERRO. Favor indicar somente o numero do recibo ou a chave de acesso da NF-e!");
+            }
             //carrega defaults do array de retorno
             $aRetorno = array(
                 'bStat'=>false,
@@ -2164,82 +2115,45 @@ class ToolsNFePHP extends CommonNFePHP
                 'aProt'=>'',
                 'aCanc'=>'',
                 'xmlRetorno'=>'');
-            $cUF = $this->cUF;
-            $siglaUF = $this->siglaUF;
+            
             if ($tpAmb == '') {
                 $tpAmb = $this->tpAmb;
             }
-            if (!in_array($tpAmb, array(self::AMBIENTE_PRODUCAO, self::AMBIENTE_HOMOLOGACAO))) {
-                $tpAmb = self::AMBIENTE_HOMOLOGACAO;
-            }
-            $aURL = $this->aURL;
             $ctpEmissao = '';
             //verifica se a chave foi passada
             if ($chave != '') {
                 //se sim extrair o cUF da chave
                 $cUF = substr($chave, 0, 2);
+                $siglaUF = $this->siglaUFList[$cUF];
                 $ctpEmissao = substr($chave, 34, 1);
-                //testar para ver se é o mesmo do emitente
-                if ($cUF != $this->cUF || $tpAmb != $this->tpAmb) {
-                    //se não for o mesmo carregar a sigla
-                    $siglaUF = $this->siglaUFList[$cUF];
-                    //recarrega as url referentes aos dados passados como parametros para a função
-                    $aURL = $this->pLoadSEFAZ($tpAmb, $siglaUF);
-                }
-            }
-            //verifica se alguma SVC esta habilitada
-            if ($this->enableSVCAN) {
-                $aURL = $this->pLoadSEFAZ($tpAmb, self::CONTINGENCIA_SVCAN);
-            } elseif ($this->enableSVCRS) {
-                $aURL = $this->pLoadSEFAZ($tpAmb, self::CONTINGENCIA_SVCRS);
-            }
-            if ($recibo == '' && $chave == '') {
-                throw new nfephpException("ERRO. Favor indicar o numero do recibo ou a chave de acesso da NF-e!");
-            }
-            if ($recibo != '' && $chave != '') {
-                throw new nfephpException("ERRO. Favor indicar somente o numero do recibo ou a chave de acesso da NF-e!");
-            }
-            //consulta pelo recibo
-            if ($recibo != '' && $chave == '') {
-                //buscar os protocolos pelo numero do recibo do lote
-                //identificação do serviço
+                $servico = 'NfeConsultaProtocolo';
+            } else {
+                $cUF = $this->cUF;
+                $siglaUF = $this->siglaUF;
                 $servico = 'NfeRetAutorizacao';
-                //recuperação da versão
-                $versao = $aURL[$servico]['version'];
-                //recuperação da url do serviço
-                $urlservico = $aURL[$servico]['URL'];
-                //recuperação do método
-                $metodo = $aURL[$servico]['method'];
-                //montagem do namespace do serviço
-                $operation = $aURL[$servico]['operation'];
-                $namespace = $this->URLPortal.'/wsdl/'.$operation;
-                //montagem do cabeçalho da comunicação SOAP
-                $cabec = '<nfeCabecMsg xmlns="'.$namespace.'"><cUF>'
-                       .$cUF.'</cUF><versaoDados>'.$versao.'</versaoDados></nfeCabecMsg>';
+                
+            }
+            //carrega serviço
+            $this->pLoadServico(
+                $servico,
+                $siglaUF,
+                $tpAmb,
+                $cUF,
+                $urlservico,
+                $namespace,
+                $cabec,
+                $metodo,
+                $versao
+            );
+            if ($recibo != '') {
+                //consulta pelo recibo
                 //montagem dos dados da mensagem SOAP
                 $dados = '<nfeDadosMsg xmlns="'.$namespace.'"><consReciNFe xmlns="'
                        .$this->URLPortal.'" versao="'. $versao.'"><tpAmb>'
                        .$tpAmb.'</tpAmb><nRec>'.$recibo .'</nRec></consReciNFe></nfeDadosMsg>';
                 //nome do arquivo
                 $nomeArq = $recibo.'-protrec.xml';
-            }
-            //consulta pela chave
-            if ($recibo == '' && $chave != '') {
-                //buscar o protocolo pelo numero da chave de acesso
-                //identificação do serviço
-                $servico = 'NfeConsultaProtocolo';
-                //recuperação da versão
-                $versao = $aURL[$servico]['version'];
-                //recuperação da url do serviço
-                $urlservico = $aURL[$servico]['URL'];
-                //recuperação do método
-                $metodo = $aURL[$servico]['method'];
-                //montagem do namespace do serviço
-                $operation = $aURL[$servico]['operation'];
-                $namespace = $this->URLPortal.'/wsdl/'.$operation;
-                //montagem do cabeçalho da comunicação SOAP
-                $cabec = '<nfeCabecMsg xmlns="'. $namespace.'"><cUF>'
-                       .$cUF.'</cUF><versaoDados>'.$versao.'</versaoDados></nfeCabecMsg>';
+            } else {
                 //montagem dos dados da mensagem SOAP
                 $dados = '<nfeDadosMsg xmlns="'.$namespace.'"><consSitNFe xmlns="'
                        .$this->URLPortal.'" versao="'.$versao.'"><tpAmb>'
@@ -2323,11 +2237,10 @@ class ToolsNFePHP extends CommonNFePHP
                     $nome = $this->temDir.$nomeArq;
                     $nome = $doc->save($nome);
                 }
-            }
-            //Retorno da consulta pelo recibo
-            //NFeRetRecepcao 104 tem retornos
-            //nRec cStat xMotivo cUF cMsg xMsg protNfe* infProt chNFe dhRecbto nProt cStat xMotivo
-            if ($recibo != '') {
+            } else {
+                //Retorno da consulta pelo recibo
+                //NFeRetRecepcao 104 tem retornos
+                //nRec cStat xMotivo cUF cMsg xMsg protNfe* infProt chNFe dhRecbto nProt cStat xMotivo
                 $countI = 0;
                 $aRetorno['bStat'] = true;
                 // status do serviço
@@ -3436,26 +3349,24 @@ class ToolsNFePHP extends CommonNFePHP
                 $tpAmb = $this->tpAmb;
             }
             $aURL = $this->aURL;
-            $numLote = $this->pGeraNumLote();
+            $numLote = $this->pGeraNumLote(15);
             //Data e hora do evento no formato AAAA-MM-DDTHH:MM:SSTZD (UTC)
             $dhEvento = date('Y-m-d').'T'.date('H:i:s').$this->timeZone;
-            //se o envio for para svan mudar o numero no orgão para 91
-            if ($this->enableSVAN) {
-                $cOrgao='91';
-            } else {
-                $cOrgao=$this->cUF;
-            }
+            
             //montagem do namespace do serviço
             $servico = 'RecepcaoEvento';
-            //recuperação da versão
-            $versao = $aURL[$servico]['version'];
-            //recuperação da url do serviço
-            $urlservico = $aURL[$servico]['URL'];
-            //recuperação do método
-            $metodo = $aURL[$servico]['method'];
-            //montagem do namespace do serviço
-            $operation = $aURL[$servico]['operation'];
-            $namespace = $this->URLPortal.'/wsdl/'.$operation;
+             //carrega serviço
+            $this->pLoadServico(
+                $servico,
+                $this->siglaUF,
+                $tpAmb,
+                $cUF,
+                $urlservico,
+                $namespace,
+                $cabec,
+                $metodo,
+                $versao
+            );
             //estabelece o codigo do tipo de evento
             $tpEvento = '110110';
             //de acordo com o manual versão 5 de março de 2012
@@ -3476,6 +3387,12 @@ class ToolsNFePHP extends CommonNFePHP
                     . 'tais como: base de calculo, aliquota, diferenca de preco, quantidade, valor da '
                     . 'operacao ou da prestacao; II - a correcao de dados cadastrais que implique mudanca '
                     . 'do remetente ou do destinatario; III - a data de emissao ou de saida.';
+            //se o envio for para svan mudar o numero no orgão para 91
+            if ($this->enableSVAN) {
+                $cOrgao='91';
+            } else {
+                $cOrgao=$this->cUF;
+            }
             //monta mensagem
             $Ev='';
             $Ev .= "<evento xmlns=\"$this->URLPortal\" versao=\"$versao\">";
@@ -3504,9 +3421,6 @@ class ToolsNFePHP extends CommonNFePHP
             $dados .= "<idLote>$numLote</idLote>";
             $dados .= $Ev;
             $dados .= "</envEvento>";
-            //montagem da mensagem
-            $cabec = "<nfeCabecMsg xmlns=\"$namespace\"><cUF>$this->cUF</cUF>"
-                    . "<versaoDados>$versao</versaoDados></nfeCabecMsg>";
             $dados = "<nfeDadosMsg xmlns=\"$namespace\">$dados</nfeDadosMsg>";
             //grava solicitação em temp
             if (! file_put_contents($this->temDir."$chNFe-$nSeqEvento-envCCe.xml", $Ev)) {
@@ -4029,7 +3943,7 @@ class ToolsNFePHP extends CommonNFePHP
      *
      * @name loadSEFAZ
      * @param  string $tpAmb     Pode ser "2-homologacao" ou "1-producao"
-     * @param  string $sUF       Sigla da Unidade da Federação (ex. SP, RS, etc..)
+     * @param  string $sUF       Sigla da Unidade da Federação (ex. SP, RS, SVRS, etc..)
      * @return mixed             false se houve erro ou array com os dados dos URLs da SEFAZ
      * @see /config/nfe_ws3_modXX.xml
      */
@@ -4992,26 +4906,6 @@ class ToolsNFePHP extends CommonNFePHP
     }//fim gunzip1
 
     /**
-     * convertTime
-     * Converte o campo data/hora retornado pelo webservice em um timestamp unix
-     *
-     * @name convertTime
-     * @param  string $DataHora Exemplo: "2014-03-28T14:39:54-03:00"
-     * @return float
-     */
-    protected function pConvertTime($dataHora = '')
-    {
-        $timestampDH = 0;
-        if ($dataHora) {
-            $aDH = explode('T', $dataHora);
-            $adDH = explode('-', $aDH[0]);
-            $atDH = explode(':', substr($aDH[1], 0, 8));//substring para recuperar apenas a hora, sem o fuso horário
-            $timestampDH = mktime($atDH[0], $atDH[1], $atDH[2], $adDH[1], $adDH[2], $adDH[0]);
-        }
-        return $timestampDH;
-    } //fim convertTime
-
-    /**
      * pSplitLines
      * Divide a string do chave publica em linhas com 76 caracteres (padrão original)
      *
@@ -5026,24 +4920,6 @@ class ToolsNFePHP extends CommonNFePHP
         }
         return $cnt;
     }//fim splitLines
-
-    /**
-     * cleanString
-     * Remove todos dos caracteres espceiais do texto e os acentos
-     *
-     * @name cleanString
-     * @return  string Texto sem caractere especiais
-     */
-    private function pCleanString($texto)
-    {
-        $aFind = array('&','á','à','ã','â','é','ê','í','ó','ô','õ','ú','ü',
-            'ç','Á','À','Ã','Â','É','Ê','Í','Ó','Ô','Õ','Ú','Ü','Ç');
-        $aSubs = array('e','a','a','a','a','e','e','i','o','o','o','u','u',
-            'c','A','A','A','A','E','E','I','O','O','O','U','U','C');
-        $novoTexto = str_replace($aFind, $aSubs, $texto);
-        $novoTexto = preg_replace("/[^a-zA-Z0-9 @,-.;:\/]/", "", $novoTexto);
-        return $novoTexto;
-    }//fim cleanString
 
     /**
      * pSetError
@@ -5096,35 +4972,7 @@ class ToolsNFePHP extends CommonNFePHP
         $this->enableSVCAN = false;
         $this->enableSVCRS = false;
     }
-    
-    /**
-     * Gera numero de lote com base em microtime
-     * @return string 
-     */
-    private function pGeraNumLote()
-    {
-        return substr(str_replace(',', '', number_format(microtime(true)*1000000, 0)), 0, 15);
-    }
-
-    /**
-     * pClearXml
-     * Remove \r \n \s \t 
-     * @param string $xml
-     * @param boolean $remEnc remover encoding
-     * @return string
-     */
-    private function pClearXml($xml = '', $remEnc = false)
-    {
-        $aFind = array('xmlns:default="http://www.w3.org/2000/09/xmldsig#"', 'default:', ':default', "\n", "\r", "\s", "\t", );
-        if ($remEnc) {
-            $aFind[] = '<?xml version="1.0"?>';
-            $aFind[] = '<?xml version="1.0" encoding="utf-8"?>';
-            $aFind[] = '<?xml version="1.0" encoding="UTF-8"?>';
-        }
-        $retXml = str_replace($aFind, "", $xml);
-        return $retXml;
-    }
-    
+  
     /**
      * pLoadServico
      * Monta o namespace e o cabecalho da comunicação SOAP
