@@ -23,7 +23,7 @@
  *
  * @package     NFePHP
  * @name        CommonNFePHP.class.php
- * @version     1.0.8
+ * @version     1.0.9
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2012 &copy; NFePHP
@@ -584,7 +584,7 @@ class CommonNFePHP
      * @param string $siglaUF
      * @return string com o TZD (Time Zone Designator)
      */
-    public function tzdBR($siglaUF = '')
+    protected function pTzdBR($siglaUF = '')
     {
         if ($siglaUF == '') {
             return '';
@@ -623,4 +623,52 @@ class CommonNFePHP
         date_default_timezone_set($tzUFlist[$siglaUF]);
         return (string) date('P');
     }
+    
+      
+    /**
+     * Gera numero de lote com base em microtime
+     * @param integer $numdigits numero de digitos para o lote
+     * @return string 
+     */
+    protected function pGeraNumLote($numdigits = 15)
+    {
+        return substr(str_replace(',', '', number_format(microtime(true)*1000000, 0)), 0, $numdigits);
+    }
+
+    /**
+     * pClearXml
+     * Remove \r \n \s \t 
+     * @param string $xml
+     * @param boolean $remEnc remover encoding
+     * @return string
+     */
+    protected function pClearXml($xml = '', $remEnc = false)
+    {
+        $aFind = array('xmlns:default="http://www.w3.org/2000/09/xmldsig#"', 'default:', ':default', "\n", "\r", "\s", "\t", );
+        if ($remEnc) {
+            $aFind[] = '<?xml version="1.0"?>';
+            $aFind[] = '<?xml version="1.0" encoding="utf-8"?>';
+            $aFind[] = '<?xml version="1.0" encoding="UTF-8"?>';
+        }
+        $retXml = str_replace($aFind, "", $xml);
+        return $retXml;
+    }
+    
+    /**
+     * cleanString
+     * Remove todos dos caracteres espceiais do texto e os acentos
+     *
+     * @name cleanString
+     * @return  string Texto sem caractere especiais
+     */
+    protected function pCleanString($texto)
+    {
+        $aFind = array('&','á','à','ã','â','é','ê','í','ó','ô','õ','ú','ü',
+            'ç','Á','À','Ã','Â','É','Ê','Í','Ó','Ô','Õ','Ú','Ü','Ç');
+        $aSubs = array('e','a','a','a','a','e','e','i','o','o','o','u','u',
+            'c','A','A','A','A','E','E','I','O','O','O','U','U','C');
+        $novoTexto = str_replace($aFind, $aSubs, $texto);
+        $novoTexto = preg_replace("/[^a-zA-Z0-9 @,-.;:\/]/", "", $novoTexto);
+        return $novoTexto;
+    }//fim cleanString
 }
