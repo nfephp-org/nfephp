@@ -4237,7 +4237,7 @@ class ToolsNFePHP extends CommonNFePHP
      * @param    array   $aRetorno variavel passa por referência Array com os dados do certificado
      * @return  boolean true ou false
      */
-    protected function pValidCerts($cert = '', &$aRetorno = '')
+    public function pValidCerts($cert = '', &$aRetorno = '')
     {
         try {
             if ($cert == '') {
