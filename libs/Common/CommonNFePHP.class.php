@@ -578,6 +578,9 @@ class CommonNFePHP
     
     /**
      * tzdBR
+     * Para esta função funcionar corretamente é importante 
+     * que os pacotes referentes ao Horario de verão estejam
+     * atualizados instalados e ativos no sistema operacional
      * @param string $siglaUF
      * @return string com o TZD (Time Zone Designator)
      */
