@@ -711,6 +711,7 @@ class ToolsNFePHPTest extends PHPUnit_Framework_TestCase
             . '<tpAmb>2</tpAmb>'
             . '<verAplic>123</verAplic>'
             . '<cUF>SP</cUF>'
+            . '<dhRecbto>'.date('Y-m-d\Th:i:s').'</dhRecbto>'
             . '<protNFe versao="3.10">'
             . '<chNFe>11101284613439000180550010000004881093997017</chNFe>'
             . '<nProt>311100000046263</nProt>'
