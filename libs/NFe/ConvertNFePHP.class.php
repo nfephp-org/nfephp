@@ -27,7 +27,7 @@
  *
  * @package     NFePHP
  * @name        ConvertNFePHP
- * @version     3.10.15
+ * @version     3.10.16
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2011 &copy; NFePHP
@@ -531,15 +531,17 @@ class ConvertNFePHP
                         //Verificar a regra abaixo p/Homologação - 9=Nao contribuinte que pode ou não ter I.E.
                         $indIEDest = $dom->createElement("indIEDest", "9");
                         $dest->appendChild($indIEDest);
-                        $IE = $dom->createElement("IE", '');
-                        $dest->appendChild($IE);
+                        //$IE = $dom->createElement("IE", '');
+                        //$dest->appendChild($IE);
                     } else {
                         $xNome = $dom->createElement("xNome", $dados[1]);
                         $dest->appendChild($xNome);
                         $indIEDest = $dom->createElement("indIEDest", $dados[2]);
                         $dest->appendChild($indIEDest);
-                        $IE = $dom->createElement("IE", $dados[3]);
-                        $dest->appendChild($IE);
+                        if ($dados[2] != '2' && $dados[2] != '9') {
+                            $IE = $dom->createElement("IE", $dados[3]);
+                            $dest->appendChild($IE);
+                        }
                     }
                     if (!empty($dados[4])) {
                         $ISUF = $dom->createElement("ISUF", $dados[4]);
