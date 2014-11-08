@@ -4104,7 +4104,7 @@ class ToolsNFePHP extends CommonNFePHP
      * @param  boolean $testaVal True testa a validade do certificado ou false não testa
      * @return boolean true se o certificado foi carregado e false se não
      */
-    protected function pLoadCerts($testaVal = true)
+    public function pLoadCerts($testaVal = true)
     {
         try {
             if (!function_exists('openssl_pkcs12_read')) {
