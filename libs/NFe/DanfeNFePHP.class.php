@@ -1683,8 +1683,18 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $texto = 'HORA DA SAÍDA';
         $aFont = array('font'=>$this->fontePadrao, 'size'=>6, 'style'=>'');
         $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 1, '');
-        $texto = ! empty($this->ide->getElementsByTagName("hSaiEnt")->item(0)->nodeValue) ?
-                $this->ide->getElementsByTagName("hSaiEnt")->item(0)->nodeValue:"";
+        
+        $dhSaiEnt = ! empty($this->ide->getElementsByTagName("dhSaiEnt")->item(0)->nodeValue) ?
+                $this->ide->getElementsByTagName("dhSaiEnt")->item(0)->nodeValue:"";
+                
+        //Separa a data da hora
+        $dhSaiEntSep = explode('T', $dhSaiEnt);
+        $horaSaidaTimeZone = $dhSaiEntSep[1];
+        
+        //Separa a hora do timezone
+        $horaSaidaTimeZoneSep = explode('-', $horaSaidaTimeZone);
+        $texto = $horaSaidaTimeZoneSep[0];
+                
         $aFont = array('font'=>$this->fontePadrao, 'size'=>10, 'style'=>'B');
         $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'B', 'C', 0, '');
         return ($y + $h);
