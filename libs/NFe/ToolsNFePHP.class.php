@@ -2387,46 +2387,85 @@ class ToolsNFePHP extends CommonNFePHP
         return $retorno;
     } //fim getProtocol
 
-    
-    public function getDistDFe()
+    /**
+     * getDistDFe
+     * Serviço destinado à distribuição de informações resumidas e documentos fiscais eletrônicos de interesse de um
+     * ator, seja este pessoa física ou jurídica.
+     * 
+     * Este serviço é oferecido apenas no AN - Ambiente Nacional
+     * 
+     * ATENÇÃO!!! Em desenvolvimento... (fmertins 07/11/2014)
+     * 
+     * @name getDistDFe
+     * @param string $cUf    Codigo da UF do auor
+     * @param string $cnpj   [/Choice Element\] CNPJ do interessado no DF-e
+     * @param string $cpf    [\Choice Element/] CPF do interessado no DF-e
+     * @param string $ultNSU [/Choice Element\] Ultimo NSU recebido pelo autor
+     * @param string $NSU    [\Choice Element/] Numero Sequencial Unico especifico
+     * @param string $tpAmb Tipo de ambiente 1=Produção 2=Homologação
+     * @param array  $resp Estrutura com os retornos parametro passado por REFERENCIA
+     * @return mixed False ou xml com os dados
+     */
+    public function getDistDFe($cUf = '', $cnpj = '', $cpf = '', $ultNSU = '', $NSU = '', $tpAmb = '', &$resp = array())
     {
-        //identificação do serviço
-        $servico = 'NfeDistribuicaoDFe';
-        //recuperação da versão
-        $versao = $aURL[$servico]['version'];
-        //recuperação da url do serviço
-        $urlservico = $aURL[$servico]['URL'];
-        //recuperação do método
-        $metodo = $aURL[$servico]['method'];
-        //montagem do namespace do serviço
-        $operation = $aURL[$servico]['operation'];
-        $namespace = $this->URLPortal.'/wsdl/'.$operation;
-        //monta a consulta
-        $cons = '';
-        $cons .= '<distDFeInt xmlns="'.$this->URLPortal.'" versao="'.$versao.'">';
-        $cons .= '<tpAmb>'.$tpAmb.'</tpAmb><distNSU><xServ>DISTRIBUIR DFE DE INTERESSE</xServ>';
-        $cons .= '<CNPJ>'.$this->cnpj.'</CNPJ><ultNSU>'.$ultNSU.'</ultNSU><qNSU><qNSU></distNSU></distDFeInt>';
-        $cons = '';
-        $cons .= '<distDFeInt xmlns="'.$this->URLPortal.'" versao="'.$versao.'">';
-        $cons .= '<tpAmb>'.$tpAmb.'</tpAmb><consNSU><xServ>CONSULTAR DF-E POR NSU</xServ>';
-        $cons .= '<CNPJ>'.$this->cnpj.'</CNPJ><NSU>'.$numNSU.'</NSU></consNSU></distDFeInt>';
-        //montagem do cabeçalho da comunicação SOAP
-        $cabec = '<nfeCabecMsg xmlns="'. $namespace.'"><cUF>'.$this->cUF.'</cUF>';
-        $cabec .= '<versaoDados>'.$versao.'</versaoDados></nfeCabecMsg>';
-        //montagem dos dados da mensagem SOAP
-        $dados = '<nfeDadosMsg xmlns="'.$namespace.'">'.$cons.'</nfeDadosMsg>';
-        //grava solicitação em temp
-        if (! file_put_contents($this->temDir."$this->cnpj-$ultNSU-$datahora-consDFe.xml", $cons)) {
-            $msg = "Falha na gravacao do arquivo LNFe (Lista de NFe)!!";
-            $this->pSetError($msg);
-        }
-        //envia dados via SOAP
-        $retorno = $this->pSendSOAP($urlservico, $namespace, $cabec, $dados, $metodo, $tpAmb);
-        //verifica o retorno
-        if (!$retorno) {
-        }
-        //TODO terminar novo serviço
-    }
+        try {
+            //validações dos parametros
+            if (!strlen($ultNSU) && !strlen($NSU)) {
+                throw new nfephpException("Erro, informe o ultimo NSU ~ou~ o NSU especifico!");
+            } else if (strlen($ultNSU) && strlen($NSU)) {
+                throw new nfephpException("Erro, nao informe simultaneamente o Ultimo NSU e o NSU especifico!");
+            } else if (!strlen($cnpj) && !strlen($cpf)) {
+                throw new nfephpException("Erro, informe o CNPJ ~ou~ o CPF!");
+            } else if (strlen($cnpj) && strlen($cpf)) {
+               throw new nfephpException("Erro, nao informe simultaneamente o CNPJ e o CPF!");
+            } else if (!is_numeric($cUf) || !strlen($cUf)) {
+               throw new nfephpException("Erro, informe o codigo da UF e deve ser numerico!");
+            }//fim das validações dos parametros
+            //identificação do serviço
+            $servico = 'NfeDistribuicaoDFe';
+            //recuperação da versão
+            $versao = $aURL[$servico]['version'];
+            //recuperação da url do serviço
+            $urlservico = $aURL[$servico]['URL'];
+            //recuperação do método
+            $metodo = $aURL[$servico]['method'];
+            //montagem do namespace do serviço
+            $operation = $aURL[$servico]['operation'];
+            $namespace = $this->URLPortal.'/wsdl/'.$operation;
+            //monta a consulta
+            $cons = '<distDFeInt xmlns="'.$this->URLPortal.'" versao="'.$versao.'">';
+            $cons .= "<tpAmb>$tpAmb</tpAmb><cUFAutor><xServ>$cUf</cUFAutor>";
+            $cons .= ($cnpj ? "<CNPJ>$cnpj</CNPJ>" : "<CPF>$cpf</CPF>");
+            $cons .= ($ultNSU ? "<distNSU><ultNSU>$ultNSU</ultNSU></distNSU>" : "<consNSU><NSU>$NSU</NSU></consNSU>");
+            $cons .= '</distDFeInt>';
+            //montagem do cabeçalho da comunicação SOAP
+            $cabec = '<nfeCabecMsg xmlns="'. $namespace.'"><cUF>'.$this->cUF.'</cUF>';
+            $cabec .= '<versaoDados>'.$versao.'</versaoDados></nfeCabecMsg>';
+            //montagem dos dados da mensagem SOAP
+            $dados = '<nfeDadosMsg xmlns="'.$namespace.'">'.$cons.'</nfeDadosMsg>';
+            //grava solicitação em temp
+            $tipoDoc = $cnpj ? $cnpj : $cpf;
+            $tipoNSU = $ultNSU ? $ultNSU : $NSU;
+            $datahora = date('Ymd_His');
+            if (! file_put_contents($this->temDir.$tipoDoc."-$tipoNSU-$datahora-consDFe.xml", $cons)) {
+                throw new nfephpException("Falha na gravacao do arquivo DFe de entrada!");
+            }
+            //envia dados via SOAP
+            $retorno = $this->pSendSOAP($urlservico, $namespace, $cabec, $dados, $metodo, $tpAmb);
+            //TODO continuar a implementação...
+            //verifica o retorno
+            if (!$retorno) {
+            }
+        } catch (nfephpException $e) {
+            $this->pSetError($e->getMessage());
+            if ($this->exceptions) {
+                throw $e;
+            }
+            return false;
+        }//fim catch
+        $resp = array('indCont'=>$indCont,'ultNSU'=>$ultNSU,'NFe'=>$aNFe,'Canc'=>$aCanc,'CCe'=>$aCCe);
+        return $retorno;
+    }//fim getDistDFe
     
     /**
      * getListNFe
@@ -2450,7 +2489,7 @@ class ToolsNFePHP extends CommonNFePHP
      * retornará unicamente as notas fiscais que tenham sido recepcionadas 
      * nos últimos 15 dias.
      * @param string $tpAmb Tipo de ambiente 1=Produção 2=Homologação
-     * @param array $resp Array com os retornos parametro passado por REFRENCIA
+     * @param array $resp Array com os retornos parametro passado por REFERENCIA
      * @return mixed False ou xml com os dados
      */
     public function getListNFe($ambNac = true, $indNFe = '0', $indEmi = '0', $ultNSU = '', $tpAmb = '', &$resp = array())
