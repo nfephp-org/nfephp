@@ -982,7 +982,7 @@ class ToolsNFePHP extends CommonNFePHP
         $timezone = $this->tzUFlist[$this->siglaUF];
         date_default_timezone_set($timezone);
         //estados que participam do horario de verão
-        $aUFhv = array('ES','GO','MG','MS','PR','RJ','RS','SP','SC');
+        $aUFhv = array('ES','DF','GO','MG','MS','PR','RJ','RS','SP','SC');
         //corrigir o timeZone
         if ($this->siglaUF == 'AC' ||
             $this->siglaUF == 'AM' ||
