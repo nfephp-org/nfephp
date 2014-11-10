@@ -5,7 +5,7 @@
     <homologacao>
         <MDFeRecepcao method='mdfeRecepcaoLote' version = '1.00'>https://mdfe-hml.sefaz.rs.gov.br/ws/MDFerecepcao/MDFeRecepcao.asmx</MDFeRecepcao>
         <MDFeRetRecepcao method='mdfeRetRecepcao' version = '1.00'>https://mdfe-hml.sefaz.rs.gov.br/ws/MDFeRetRecepcao/MDFeRetRecepcao.asmx</MDFeRetRecepcao>
-        <MDFeRecepcaoEvento method='mdfeRecepcaoEvento' version = '1.00'>https://mdfe-hml.sefaz.rs.gov.br/ws/MDFeRecepcaoEvento/MDFeRecepcaoEvento.asm</MDFeRecepcaoEvento>
+        <MDFeRecepcaoEvento method='mdfeRecepcaoEvento' version = '1.00'>https://mdfe-hml.sefaz.rs.gov.br/ws/MDFeRecepcaoEvento/MDFeRecepcaoEvento.asmx</MDFeRecepcaoEvento>
         <MDFeConsultaSituacao method='mdfeConsultaMDF' version = '1.00'>https://mdfe-hml.sefaz.rs.gov.br/ws/MDFeConsultaSit/MDFeConsultaSit.asmx</MDFeConsultaSituacao>
         <MDFeStatusServico method='mdfeStatusServicoMDF' version = '1.00'>https://mdfe-hml.sefaz.rs.gov.br/ws/MDFeStatusServico/MDFeStatusServico.asmx</MDFeStatusServico>
     </homologacao>
