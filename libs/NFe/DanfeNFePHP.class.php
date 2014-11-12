@@ -1686,14 +1686,19 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         
         $dhSaiEnt = ! empty($this->ide->getElementsByTagName("dhSaiEnt")->item(0)->nodeValue) ?
                 $this->ide->getElementsByTagName("dhSaiEnt")->item(0)->nodeValue:"";
-                
-        //Separa a data da hora
-        $dhSaiEntSep = explode('T', $dhSaiEnt);
-        $horaSaidaTimeZone = $dhSaiEntSep[1];
-        
-        //Separa a hora do timezone
-        $horaSaidaTimeZoneSep = explode('-', $horaSaidaTimeZone);
-        $texto = $horaSaidaTimeZoneSep[0];
+    
+        // Verifica se o campo Data Hora existe
+        if ($dhSaiEnt != '') {
+            //Separa a data da hora
+            $dhSaiEntSep = explode('T', $dhSaiEnt);
+            $horaSaidaTimeZone = $dhSaiEntSep[1];
+
+            //Separa a hora do timezone
+            $horaSaidaTimeZoneSep = explode('-', $horaSaidaTimeZone);
+            $texto = $horaSaidaTimeZoneSep[0];
+        } else {
+            $texto = '';
+        }
                 
         $aFont = array('font'=>$this->fontePadrao, 'size'=>10, 'style'=>'B');
         $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'B', 'C', 0, '');
