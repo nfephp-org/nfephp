@@ -110,7 +110,7 @@ class ToolsNFePHPTest extends PHPUnit_Framework_TestCase
         $tool->ativaContingencia('SP');
         $this->assertTrue($tool->enableSVCAN);
         $this->assertFalse($tool->enableSVCRS);
-        
+
         $tool->desativaContingencia();
         $this->assertFalse($tool->enableSVCAN);
         $this->assertFalse($tool->enableSVCRS);
@@ -711,7 +711,7 @@ class ToolsNFePHPTest extends PHPUnit_Framework_TestCase
             . '<tpAmb>2</tpAmb>'
             . '<verAplic>123</verAplic>'
             . '<cUF>SP</cUF>'
-            . '<dhRecbto>'.date('Y-m-d\Th:i:s').'</dhRecbto>'
+            . '<dhRecbto>' . date('Y-m-d\Th:i:s') . '</dhRecbto>'
             . '<protNFe versao="3.10">'
             . '<chNFe>11101284613439000180550010000004881093997017</chNFe>'
             . '<nProt>311100000046263</nProt>'
@@ -957,5 +957,43 @@ class ToolsNFePHPTest extends PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('descEvento', $cce);
         $this->assertArrayHasKey('xCorrecao', $cce);
         $this->assertArrayHasKey('tpNF', $cce);
+    }
+
+    public function testDownloadNfeAPartirDeUmaChaveDeAcesso()
+    {
+        $mockBuilder = $this->getMockBuilder('ToolsNFePHP');
+        $mockBuilder->setConstructorArgs(array($this->configTest, 1, true));
+        $mockBuilder->setMethods(array('pSendSOAP'));
+
+        $dom = new DOMDocument('1.0', 'UTF-8');
+        $dom->load(__DIR__ . '/../fixtures/xml/11101284613439000180550010000004881093997017-nfeProt.xml');
+
+        /** @var ToolsNFePHP $tool */
+        $tool = $mockBuilder->getMock();
+        $xmlRetornoInutilizacao = '<?xml version="1.0" encoding="utf-8"?>'
+            . '<retDownloadNFe versao="3.10">'
+            . '<tpAmb>2</tpAmb>'
+            . '<cStat>139</cStat>'
+            . '<xMotivo>Pedido de download Processado</xMotivo>'
+            . '<dhResp>2014-08-31T09:00:00</dhResp>'
+            . '<retNFe>'
+            . '<cStat>140</cStat>'
+            . '<xMotivo>Download disponibilizado</xMotivo>'
+            . '<procNFe>'
+            . $dom->saveHTML()
+            . '</procNFe>'
+            . '</retNFe>'
+            . '</retDownloadNFe>';
+        $tool->expects($this->any())->method('pSendSOAP')->will($this->returnValue($xmlRetornoInutilizacao));
+
+        $xml = $tool->getNFe(true, '11101284613439000180550010000004881093997017');
+
+        $this->assertNotEmpty($xml);
+
+        $temporariasDir = $this->configTest['arquivosDir'] . '/homologacao/temporarias';
+        $this->assertFileExists($temporariasDir . '/11101284613439000180550010000004881093997017-resDWNFe.xml');
+
+        $recebidasDir = $this->configTest['arquivosDir'] . '/homologacao/recebidas';
+        $this->assertFileExists($recebidasDir . '/11101284613439000180550010000004881093997017-procNFe.xml');
     }
 }
