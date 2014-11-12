@@ -2285,7 +2285,7 @@ class MDFeNFePHP {
         $alias = $this->aliaslist[$sUF];
         $this->enableSVAN = ($alias == 'SVAN');
         // Estabelece a expressão xpath de busca
-        $xpathExpression = "/WS/UF[sigla='" . $alias . "']/$sAmbiente";
+        $xpathExpression = "/WS/UF/$sAmbiente";
         // Para cada "nó" no xml que atenda aos critérios estabelecidos
         foreach ($xml->xpath($xpathExpression) as $gUF) {
             // Para cada "nó filho" retonado
