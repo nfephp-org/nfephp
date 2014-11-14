@@ -2394,7 +2394,7 @@ class ToolsNFePHP extends CommonNFePHP
      * 
      * Este serviço é oferecido apenas no AN - Ambiente Nacional
      * 
-     * ATENÇÃO!!! Em desenvolvimento... (fmertins 07/11/2014)
+     * ATENÇÃO!!! Versão beta, em desenvolvimento... (fmertins 14/11/2014)
      * 
      * @name getDistDFe
      * @param string $cUf    Codigo da UF do auor
@@ -2421,8 +2421,10 @@ class ToolsNFePHP extends CommonNFePHP
             } else if (!is_numeric($cUf) || !strlen($cUf)) {
                throw new nfephpException("Erro, informe o codigo da UF e deve ser numerico!");
             }//fim das validações dos parametros
+            //carrega os webservices sempre do Ambiente Nacional, este WS nao existe nos estados
+            $aURL = $this->pLoadSEFAZ($tpAmb, 'AN');
             //identificação do serviço
-            $servico = 'NfeDistribuicaoDFe';
+            $servico = 'NFeDistribuicaoDFe';
             //recuperação da versão
             $versao = $aURL[$servico]['version'];
             //recuperação da url do serviço
@@ -2434,7 +2436,7 @@ class ToolsNFePHP extends CommonNFePHP
             $namespace = $this->URLPortal.'/wsdl/'.$operation;
             //monta a consulta
             $cons = '<distDFeInt xmlns="'.$this->URLPortal.'" versao="'.$versao.'">';
-            $cons .= "<tpAmb>$tpAmb</tpAmb><cUFAutor><xServ>$cUf</cUFAutor>";
+            $cons .= "<tpAmb>$tpAmb</tpAmb><cUFAutor>$cUf</cUFAutor>";
             $cons .= ($cnpj ? "<CNPJ>$cnpj</CNPJ>" : "<CPF>$cpf</CPF>");
             $cons .= ($ultNSU ? "<distNSU><ultNSU>$ultNSU</ultNSU></distNSU>" : "<consNSU><NSU>$NSU</NSU></consNSU>");
             $cons .= '</distDFeInt>';
@@ -2442,7 +2444,9 @@ class ToolsNFePHP extends CommonNFePHP
             $cabec = '<nfeCabecMsg xmlns="'. $namespace.'"><cUF>'.$this->cUF.'</cUF>';
             $cabec .= '<versaoDados>'.$versao.'</versaoDados></nfeCabecMsg>';
             //montagem dos dados da mensagem SOAP
-            $dados = '<nfeDadosMsg xmlns="'.$namespace.'">'.$cons.'</nfeDadosMsg>';
+            $dados = '<nfeDistDFeInteresse xmlns="'.$namespace.'">';
+            $dados .= "<nfeDadosMsg>$cons</nfeDadosMsg>";
+            $dados .= '</nfeDistDFeInteresse>';
             //grava solicitação em temp
             $tipoDoc = $cnpj ? $cnpj : $cpf;
             $tipoNSU = $ultNSU ? $ultNSU : $NSU;
@@ -2450,12 +2454,11 @@ class ToolsNFePHP extends CommonNFePHP
             if (! file_put_contents($this->temDir.$tipoDoc."-$tipoNSU-$datahora-consDFe.xml", $cons)) {
                 throw new nfephpException("Falha na gravacao do arquivo DFe de entrada!");
             }
-            //envia dados via SOAP
-            $retorno = $this->pSendSOAP($urlservico, $namespace, $cabec, $dados, $metodo, $tpAmb);
-            //TODO continuar a implementação...
-            //verifica o retorno
-            if (!$retorno) {
+            //envia dados via SOAP e verifica o retorno
+            if (!$retorno = $this->pSendSOAP($urlservico, $namespace, $cabec, $dados, $metodo, $tpAmb)) {
+               throw new nfephpException("Nao houve retorno Soap verifique a mensagem de erro e o debug!!");
             }
+            //TODO continuar a implementação, montar o array de resposta...
         } catch (nfephpException $e) {
             $this->pSetError($e->getMessage());
             if ($this->exceptions) {
@@ -2463,6 +2466,7 @@ class ToolsNFePHP extends CommonNFePHP
             }
             return false;
         }//fim catch
+        //TODO continuar a implementação, montar o array de resposta...
         $resp = array('indCont'=>$indCont,'ultNSU'=>$ultNSU,'NFe'=>$aNFe,'Canc'=>$aCanc,'CCe'=>$aCCe);
         return $retorno;
     }//fim getDistDFe
