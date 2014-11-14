@@ -1771,126 +1771,132 @@ class CTeNFePHP
                     . $chave . '</chCTe></consSitCTe></cteDadosMsg>';
         }
         // Envia a solicitação via SOAP
-        $retorno = $this->zSendSOAP($urlservico, $namespace, $cabec, $dados, $metodo, $tpAmb);
+        $retorno = $this->zSendSOAP($urlservico, $namespace, $cabec, $dados, $metodo, $tpAmb);    
         // Verifica o retorno
-        if ($retorno) {
-            // Tratar dados de retorno
-            $doc = new DOMDocument();
-            $doc->formatOutput = false;
-            $doc->preserveWhiteSpace = false;
-            $doc->loadXML($retorno, LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
-            $cStat = !empty($doc->getElementsByTagName('cStat')->item(0)->nodeValue) ?
-                    $doc->getElementsByTagName('cStat')->item(0)->nodeValue : '';
-            if ($cStat == '') {
-                return false;
-            }
-            // O retorno vai variar se for buscado o protocolo ou recibo
-            // Retorno nda consulta pela Chave do CTe
-            // retConsSitCTe 100 aceita 110 denegada 101 cancelada ou outro recusada
-            // cStat xMotivo cUF chCTe protCTe retCancCTe
-            if ($chave != '') {
-                $aRetorno['bStat'] = true;
-                $aRetorno['cStat'] = $doc->getElementsByTagName('cStat')->item(0)->nodeValue;
-                $aRetorno['xMotivo'] = !empty($doc->getElementsByTagName('xMotivo')->item(0)->nodeValue) ?
-                        $doc->getElementsByTagName('xMotivo')->item(0)->nodeValue : '';
-                $infProt = $doc->getElementsByTagName('infProt')->item($i);
-                $infCanc = $doc->getElementsByTagName('infCanc')->item(0);
+        if ( empty($retorno) ) {
+            $this->errStatus = true;
+            $this->errMsg = 'Nao houve retorno Soap verifique a mensagem de erro e o debug!!';
+            return false;
+        }
+
+        // Tratar dados de retorno
+        $doc = new DOMDocument();
+        $doc->formatOutput = false;
+        $doc->preserveWhiteSpace = false;
+        $doc->loadXML($retorno, LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
+        $cStat = $doc->getElementsByTagName('cStat')->item(0)->nodeValue;
+
+        if ( empty($cStat) ) {
+            $this->errStatus = true;
+            $this->errMsg = 'Não foi encontrado valor válido para cStat!!';
+            return false;
+        }
+
+        // O retorno vai variar se for buscado o protocolo ou recibo
+        // Retorno nda consulta pela Chave do CTe
+        // retConsSitCTe 100 aceita 110 denegada 101 cancelada ou outro recusada
+        // cStat xMotivo cUF chCTe protCTe retCancCTe
+        if ($chave != '') {
+            $aRetorno['bStat'] = true;
+            $aRetorno['cStat'] = $doc->getElementsByTagName('cStat')->item(0)->nodeValue;
+            $aRetorno['xMotivo'] = !empty($doc->getElementsByTagName('xMotivo')->item(0)->nodeValue) ?
+                    $doc->getElementsByTagName('xMotivo')->item(0)->nodeValue : '';
+            $infProt = $doc->getElementsByTagName('infProt')->item($i);
+            $infCanc = $doc->getElementsByTagName('infCanc')->item(0);
+            $aProt = '';
+            if (isset($infProt)) {
+                foreach ($infProt->childNodes as $t) {
+                    $aProt[$i][$t->nodeName] = $t->nodeValue;
+                }
+                $aProt['dhRecbto'] = !empty($aProt['dhRecbto']) ?
+                        date(
+                            "d/m/Y H:i:s",
+                            $this->zConvertTime($aProt['dhRecbto'])
+                        ) : '';
+            } else {
                 $aProt = '';
-                if (isset($infProt)) {
-                    foreach ($infProt->childNodes as $t) {
-                        $aProt[$i][$t->nodeName] = $t->nodeValue;
-                    }
-                    $aProt['dhRecbto'] = !empty($aProt['dhRecbto']) ?
-                            date(
-                                "d/m/Y H:i:s",
-                                $this->zConvertTime($aProt['dhRecbto'])
-                            ) : '';
-                } else {
-                    $aProt = '';
-                }
-                if (isset($infCanc)) {
-                    foreach ($infCanc->childNodes as $t) {
-                        $aCanc[$t->nodeName] = $t->nodeValue;
-                    }
-                    $aCanc['dhRecbto'] = !empty($aCanc['dhRecbto']) ?
-                            date("d/m/Y H:i:s", $this->zConvertTime($aCanc['dhRecbto'])) : '';
-                } else {
-                    $aCanc = '';
-                }
-                $aRetorno['aProt'] = $aProt;
-                $aRetorno['aCanc'] = $aCanc;
-                // Gravar o retorno na pasta temp apenas se a nota foi aprovada, cancelada ou denegada
-                if ($aRetorno['cStat'] == 100 || $aRetorno['cStat'] == 101 || $aRetorno['cStat'] == 110) {
-                    // Nome do arquivo
-                    $nomeArq = $chave . '-prot.xml';
-                    $nome = $this->temDir . $nomeArq;
-                    $nome = $doc->save($nome);
-                }
             }
-            // Retorno da consulta pelo recibo
-            // CTeRetRecepcao 104 tem retornos
-            // nRec cStat xMotivo cUF cMsg xMsg protCte* infProt chCTe dhRecbto nProt cStat xMotivo
-            if ($recibo != '') {
-                $aRetorno['bStat'] = true;
-                // status do serviço
-                $aRetorno['cStat'] = $doc->getElementsByTagName('cStat')->item(0)->nodeValue;
-                // motivo da resposta (opcional)
-                $aRetorno['xMotivo'] = !empty($doc->getElementsByTagName('xMotivo')->item(0)->nodeValue) ?
-                        $doc->getElementsByTagName('xMotivo')->item(0)->nodeValue : '';
-                if ($cStat == '104') {
-                    $aProt = '';
-                    //aqui podem ter varios retornos dependendo do numero de CTe enviados no Lote e já processadas
-                    $protCTe = $doc->getElementsByTagName('protCTe');
-                    foreach ($protCTe as $d) {
-                        $infProt = $d->getElementsByTagName('infProt')->item($i);
-                        $protcStat = $infProt->getElementsByTagName('cStat')->item(0)->nodeValue;
-                        //pegar os dados do protolo para retornar
-                        foreach ($infProt->childNodes as $t) {
-                            $aProt[$i][$t->nodeName] = $t->nodeValue;
-                        }
-                        $i++; //incluido increment para controlador de indice do array
-                        //salvar o protocolo somente se a nota estiver approvada ou denegada
-                        if ($protcStat == 100 || $protcStat == 110) {
-                            $nomeprot = $this->temDir
-                                . $infProt->getElementsByTagName('chCTe')->item(0)->nodeValue.'-prot.xml';
-                            //salvar o protocolo em arquivo
-                            $novoprot = new DOMDocument('1.0', 'UTF-8');
-                            $novoprot->formatOutput = true;
-                            $novoprot->preserveWhiteSpace = false;
-                            $pCTe = $novoprot->createElement("protCTe");
-                            $pCTe->setAttribute("versao", "1.03");
-                            // Importa o node e todo o seu conteudo
-                            $node = $novoprot->importNode($infProt, true);
-                            // acrescenta ao node principal
-                            $pCTe->appendChild($node);
-                            $novoprot->appendChild($pCTe);
-                            $xml = $novoprot->saveXML();
-                            $xml = str_replace(
-                                '<?xml version="1.0" encoding="UTF-8  standalone="no"?>',
-                                '<?xml version="1.0" encoding="UTF-8"?>',
-                                $xml
-                            );
-                            $xml = str_replace(array("default:",":default","\n"), "", $xml);
-                            $xml = str_replace("  ", " ", $xml);
-                            $xml = str_replace("  ", " ", $xml);
-                            $xml = str_replace("  ", " ", $xml);
-                            $xml = str_replace("  ", " ", $xml);
-                            $xml = str_replace("  ", " ", $xml);
-                            $xml = str_replace("> <", "><", $xml);
-                            file_put_contents($nomeprot, $xml);
-                        }
-                    }
+            if (isset($infCanc)) {
+                foreach ($infCanc->childNodes as $t) {
+                    $aCanc[$t->nodeName] = $t->nodeValue;
                 }
-                //passa o valor de $aProt para o array de retorno
-                $aRetorno['aProt'] = $aProt;
-                $nomeArq = $recibo . '-recprot.xml';
+                $aCanc['dhRecbto'] = !empty($aCanc['dhRecbto']) ?
+                        date("d/m/Y H:i:s", $this->zConvertTime($aCanc['dhRecbto'])) : '';
+            } else {
+                $aCanc = '';
+            }
+            $aRetorno['aProt'] = $aProt;
+            $aRetorno['aCanc'] = $aCanc;
+            // Gravar o retorno na pasta temp apenas se a nota foi aprovada, cancelada ou denegada
+            if ($aRetorno['cStat'] == 100 || $aRetorno['cStat'] == 101 || $aRetorno['cStat'] == 110) {
+                // Nome do arquivo
+                $nomeArq = $chave . '-prot.xml';
                 $nome = $this->temDir . $nomeArq;
                 $nome = $doc->save($nome);
             }
-        } else {
-            $this->errStatus = true;
-            $this->errMsg = 'Nao houve retorno Soap verifique a mensagem de erro e o debug!!';
-            $aRetorno = false;
+        }
+        // Retorno da consulta pelo recibo
+        // CTeRetRecepcao 104 tem retornos
+        // nRec cStat xMotivo cUF cMsg xMsg protCte* infProt chCTe dhRecbto nProt cStat xMotivo
+        if ($recibo != '') {
+            $aRetorno['bStat'] = true;
+            // status do serviço
+            $aRetorno['cStat'] = $doc->getElementsByTagName('cStat')->item(0)->nodeValue;
+            // motivo da resposta (opcional)
+            if ( ! empty($doc->getElementsByTagName('xMotivo')->item(0)->nodeValue) ) {
+                $aRetorno['xMotivo'] = $doc->getElementsByTagName('xMotivo')->item(0)->nodeValue;
+            }
+
+            if ($cStat == '104') {
+                $aProt = '';
+                //aqui podem ter varios retornos dependendo do numero de CTe enviados no Lote e já processadas
+                $protCTe = $doc->getElementsByTagName('protCTe');
+                foreach ($protCTe as $d) {
+                    $infProt = $d->getElementsByTagName('infProt')->item(0);
+                    $protcStat = $infProt->getElementsByTagName('cStat')->item(0)->nodeValue;
+                    //pegar os dados do protolo para retornar
+                    foreach ($infProt->childNodes as $t) {
+                        $aProt[$i][$t->nodeName] = $t->nodeValue;
+                    }
+                    $i++; //incluido increment para controlador de indice do array
+                    //salvar o protocolo somente se a nota estiver approvada ou denegada
+                    if ($protcStat == 100 || $protcStat == 110) {
+                        $nomeprot = $this->temDir
+                            . $infProt->getElementsByTagName('chCTe')->item(0)->nodeValue.'-prot.xml';
+                        //salvar o protocolo em arquivo
+                        $novoprot = new DOMDocument('1.0', 'UTF-8');
+                        $novoprot->formatOutput = true;
+                        $novoprot->preserveWhiteSpace = false;
+                        $pCTe = $novoprot->createElement("protCTe");
+                        $pCTe->setAttribute("versao", "1.03");
+                        // Importa o node e todo o seu conteudo
+                        $node = $novoprot->importNode($infProt, true);
+                        // acrescenta ao node principal
+                        $pCTe->appendChild($node);
+                        $novoprot->appendChild($pCTe);
+                        $xml = $novoprot->saveXML();
+                        $xml = str_replace(
+                            '<?xml version="1.0" encoding="UTF-8  standalone="no"?>',
+                            '<?xml version="1.0" encoding="UTF-8"?>',
+                            $xml
+                        );
+                        $xml = str_replace(array("default:",":default","\n"), "", $xml);
+                        $xml = str_replace("  ", " ", $xml);
+                        $xml = str_replace("  ", " ", $xml);
+                        $xml = str_replace("  ", " ", $xml);
+                        $xml = str_replace("  ", " ", $xml);
+                        $xml = str_replace("  ", " ", $xml);
+                        $xml = str_replace("> <", "><", $xml);
+                        file_put_contents($nomeprot, $xml);
+                    }
+                }
+                // Atualiza o valor de aProt
+                $aRetorno['aProt'] = $aProt;
+            }
+            //passa o valor de $aProt para o array de retorno
+            $nomeArq = $recibo . '-recprot.xml';
+            $nome = $this->temDir . $nomeArq;
+            $nome = $doc->save($nome);
         }
         return $aRetorno;
     }
