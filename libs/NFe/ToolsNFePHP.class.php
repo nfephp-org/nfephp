@@ -3239,13 +3239,9 @@ class ToolsNFePHP extends CommonNFePHP
             $xmlprocEvento->preserveWhiteSpace = false;
             //cria a tag procEventoNFe
             $procEventoNFe = $xmlprocEvento->createElement('procEventoNFe');
+            $procEventoNFe->setAttribute('versao', $versao);
+            $procEventoNFe->setAttribute('xmlns', $this->URLPortal);
             $xmlprocEvento->appendChild($procEventoNFe);
-            //estabele o atributo de versão
-            $eventProc_att1 = $procEventoNFe->appendChild($xmlprocEvento->createAttribute('versao'));
-            $eventProc_att1->appendChild($xmlprocEvento->createTextNode($versao));
-            //estabelece o atributo xmlns
-            $eventProc_att2 = $procEventoNFe->appendChild($xmlprocEvento->createAttribute('xmlns'));
-            $eventProc_att2->appendChild($xmlprocEvento->createTextNode($this->URLPortal));
             //carrega o node evento
             $node1 = $xmlprocEvento->importNode($evento, true);
             $procEventoNFe->appendChild($node1);

@@ -996,4 +996,48 @@ class ToolsNFePHPTest extends PHPUnit_Framework_TestCase
         $recebidasDir = $this->configTest['arquivosDir'] . '/homologacao/recebidas';
         $this->assertFileExists($recebidasDir . '/11101284613439000180550010000004881093997017-procNFe.xml');
     }
+
+    public function testCancelamentoViaEvento()
+    {
+        $mockBuilder = $this->getMockBuilder('ToolsNFePHP');
+        $mockBuilder->setConstructorArgs(array($this->configTest, 1, true));
+        $mockBuilder->setMethods(array('pSendSOAP'));
+
+        $chaveNFe = '11101284613439000180550010000004881093997017';
+
+        /** @var ToolsNFePHP $tool */
+        $tool = $mockBuilder->getMock();
+        $xmlRetornoInutilizacao = '<?xml version="1.0" encoding="utf-8"?>'
+            . '<retEnvEvento versao="3.10">'
+            . '<tpAmb>2</tpAmb>'
+            . '<cStat>128</cStat>'
+            . '<xMotivo>Lote Processado</xMotivo>'
+            . '<retEvento>'
+            . '<verAplic>2</verAplic>'
+            . '<tpAmb>2</tpAmb>'
+            . '<cStat>135</cStat>'
+            . '<xMotivo>Evento registrado e vinculado a NF-e </xMotivo>'
+            . '<nProt>123456789</nProt>'
+            . '<chNFe>' . $chaveNFe . '</chNFe>'
+            . '<dhRegEvento>2014-08-31T09:00:00</dhRegEvento>'
+            . '</retEvento>'
+            . '</retEnvEvento>';
+        $tool->expects($this->any())->method('pSendSOAP')->will($this->returnValue($xmlRetornoInutilizacao));
+
+        $xml = $tool->cancelEvent($chaveNFe, '311100000046263', 'Teste de cancelamento via evento', '', $retorno);
+
+        $this->assertNotEmpty($xml);
+
+        $temporariasDir = $this->configTest['arquivosDir'] . '/homologacao/temporarias';
+        $this->assertFileExists($temporariasDir . '/' . $chaveNFe . '-1-eventCanc.xml');
+
+        $canceladasDir = $this->configTest['arquivosDir'] . '/homologacao/canceladas';
+        $this->assertFileExists($canceladasDir . '/' . $chaveNFe . '-1-procCanc.xml');
+
+        $this->assertTrue(is_array($retorno));
+        $this->assertNotEmpty($retorno);
+        $this->assertEquals($chaveNFe, $retorno['chNFe']);
+        $this->assertEquals('135', $retorno['cStat']);
+        $this->assertEquals('123456789', $retorno['nProt']);
+    }
 }
