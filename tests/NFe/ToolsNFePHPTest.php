@@ -996,4 +996,133 @@ class ToolsNFePHPTest extends PHPUnit_Framework_TestCase
         $recebidasDir = $this->configTest['arquivosDir'] . '/homologacao/recebidas';
         $this->assertFileExists($recebidasDir . '/11101284613439000180550010000004881093997017-procNFe.xml');
     }
+
+    public function testCancelamentoViaEvento()
+    {
+        $mockBuilder = $this->getMockBuilder('ToolsNFePHP');
+        $mockBuilder->setConstructorArgs(array($this->configTest, 1, true));
+        $mockBuilder->setMethods(array('pSendSOAP'));
+
+        $chaveNFe = '11101284613439000180550010000004881093997017';
+
+        /** @var ToolsNFePHP $tool */
+        $tool = $mockBuilder->getMock();
+        $xmlRetornoInutilizacao = '<?xml version="1.0" encoding="utf-8"?>'
+            . '<retEnvEvento versao="3.10">'
+            . '<tpAmb>2</tpAmb>'
+            . '<cStat>128</cStat>'
+            . '<xMotivo>Lote Processado</xMotivo>'
+            . '<retEvento>'
+            . '<verAplic>2</verAplic>'
+            . '<tpAmb>2</tpAmb>'
+            . '<cStat>135</cStat>'
+            . '<xMotivo>Evento registrado e vinculado a NF-e </xMotivo>'
+            . '<nProt>123456789</nProt>'
+            . '<chNFe>' . $chaveNFe . '</chNFe>'
+            . '<dhRegEvento>2014-08-31T09:00:00</dhRegEvento>'
+            . '</retEvento>'
+            . '</retEnvEvento>';
+        $tool->expects($this->any())->method('pSendSOAP')->will($this->returnValue($xmlRetornoInutilizacao));
+
+        $actualResult = array();
+        $xml = $tool->cancelEvent($chaveNFe, '311100000046263', 'Teste de cancelamento via evento', '', $actualResult);
+
+        $this->assertNotEmpty($xml);
+
+        $temporariasDir = $this->configTest['arquivosDir'] . '/homologacao/temporarias';
+        $this->assertFileExists($temporariasDir . '/' . $chaveNFe . '-1-eventCanc.xml');
+
+        $canceladasDir = $this->configTest['arquivosDir'] . '/homologacao/canceladas';
+        $this->assertFileExists($canceladasDir . '/' . $chaveNFe . '-1-procCanc.xml');
+
+        $expectedResult = array (
+            'bStat' => true,
+            'tpAmb' => '2',
+            'verAplic' => '2',
+            'cStat' => '135',
+            'xMotivo' => 'Evento registrado e vinculado a NF-e ',
+            'nProt' => '123456789',
+            'chNFe' => '11101284613439000180550010000004881093997017',
+            'dhRecbto' => '31/08/2014 09:00:00',
+        );
+        $this->assertEquals($expectedResult, $actualResult);
+    }
+
+    public function testEnvioDaCartaDeCorrecao()
+    {
+        $mockBuilder = $this->getMockBuilder('ToolsNFePHP');
+        $mockBuilder->setConstructorArgs(array($this->configTest, 1, true));
+        $mockBuilder->setMethods(array('pSendSOAP'));
+
+        $chaveNFe = '11101284613439000180550010000004881093997017';
+
+        /** @var ToolsNFePHP $tool */
+        $tool = $mockBuilder->getMock();
+        $xmlRetornoInutilizacao = '<?xml version="1.0" encoding="utf-8"?>'
+            . '<retEnvEvento versao="3.10">'
+            . '<tpAmb>2</tpAmb>'
+            . '<cStat>128</cStat>'
+            . '<xMotivo>Lote Processado</xMotivo>'
+            . '<idLote>123456789</idLote>'
+            . '<retEvento versao="3.10">'
+            . '<verAplic>2</verAplic>'
+            . '<tpAmb>2</tpAmb>'
+            . '<cStat>135</cStat>'
+            . '<xMotivo>Evento registrado e vinculado a NF-e </xMotivo>'
+            . '<nProt>123456789</nProt>'
+            . '<chNFe>' . $chaveNFe . '</chNFe>'
+            . '<dhRegEvento>2014-08-31T09:00:00</dhRegEvento>'
+            . '<infEvento id="123456789"/>'
+            . '<cOrgao>35</cOrgao>'
+            . '<tpEvento>35</tpEvento>'
+            . '<nSeqEvento>35</nSeqEvento>'
+            . '<CNPJDest>35</CNPJDest>'
+            . '<CPFDest>35</CPFDest>'
+            . '<emailDest>35</emailDest>'
+            . '</retEvento>'
+            . '</retEnvEvento>';
+        $tool->expects($this->any())->method('pSendSOAP')->will($this->returnValue($xmlRetornoInutilizacao));
+
+        $actualResult = array();
+        $xml = $tool->envCCe($chaveNFe, 'Teste de envio da carta de correcao', 1, '', $actualResult);
+
+        $this->assertNotEmpty($xml);
+
+        $temporariasDir = $this->configTest['arquivosDir'] . '/homologacao/temporarias';
+        $this->assertFileExists($temporariasDir . '/' . $chaveNFe . '-1-eventCanc.xml');
+
+        $canceladasDir = $this->configTest['arquivosDir'] . '/homologacao/cartacorrecao';
+        $this->assertFileExists($canceladasDir . '/' . $chaveNFe . '-1-procCCe.xml');
+
+        $expectedResult = array(
+            'bStat' => true,
+            'versao' => '3.10',
+            'idLote' => '123456789',
+            'tpAmb' => '2',
+            'verAplic' => '2',
+            'cOrgao' => '35',
+            'cStat' => '128',
+            'xMotivo' => 'Lote Processado',
+            'retEvento' => array(
+                'versao' => '3.10',
+                'infEvento' => array(
+                    'id' => '123456789',
+                    'tpAmb' => '2',
+                    'verAplic' => '2',
+                    'cOrgao' => '35',
+                    'cStat' => '135',
+                    'xMotivo' => 'Evento registrado e vinculado a NF-e ',
+                    'chNFe' => '11101284613439000180550010000004881093997017',
+                    'tpEvento' => '35',
+                    'nSeqEvento' => '35',
+                    'CNPJDest' => '35',
+                    'CPFDest' => '35',
+                    'emailDest' => '35',
+                    'dhRegEvento' => '2014-08-31T09:00:00',
+                    'nProt' => '123456789',
+                ),
+            ),
+        );
+        $this->assertEquals($expectedResult, $actualResult);
+    }
 }

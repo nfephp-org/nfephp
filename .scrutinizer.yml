@@ -6,6 +6,8 @@ before_commands:
     - "composer install --no-interaction --prefer-source --no-dev"
 
 tools:
+    external_code_coverage:
+        timeout: 600
     php_analyzer: true
     php_changetracking: true
     php_code_sniffer:

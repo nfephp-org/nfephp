@@ -12,3 +12,5 @@ before_script:
 
 script:
   - "phpunit -c phpunit.xml.dist"
+  - wget https://scrutinizer-ci.com/ocular.phar
+  - php ocular.phar code-coverage:upload --access-token="7b45efc26f53d18ff308712f458eea708586c64c1ec162c101b6dff2079770bf" --format=php-clover build/logs/clover.xml
