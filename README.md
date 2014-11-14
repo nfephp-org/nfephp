@@ -16,6 +16,11 @@ Objetivo
 -----
 A API permite que um programa emissor de NFe se comunique com a SEFAZ. A API não foi criada para ela própria emitir a NFe tendo em vista a enorme quantidade de informações necessárias e as características e especificidades de cada emitente.
 
+Licenciamento
+-----
+* LGPL v3+
+* GPL  v3+
+
 Dependências
 -------
 * Apache: <http://httpd.apache.org/>
