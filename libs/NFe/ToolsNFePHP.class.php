@@ -3470,13 +3470,9 @@ class ToolsNFePHP extends CommonNFePHP
             $xmlprocCCe->preserveWhiteSpace = false;
             //cria a tag procEventoNFe
             $procEventoNFe = $xmlprocCCe->createElement('procEventoNFe');
+            $procEventoNFe->setAttribute('versao', $versao);
+            $procEventoNFe->setAttribute('xmlns', $this->URLPortal);
             $xmlprocCCe->appendChild($procEventoNFe);
-            //estabele o atributo de versão
-            $eventProc_att1 = $procEventoNFe->appendChild($xmlprocCCe->createAttribute('versao'));
-            $eventProc_att1->appendChild($xmlprocCCe->createTextNode($versao));
-            //estabelece o atributo xmlns
-            $eventProc_att2 = $procEventoNFe->appendChild($xmlprocCCe->createAttribute('xmlns'));
-            $eventProc_att2->appendChild($xmlprocCCe->createTextNode($this->URLPortal));
             //carrega o node evento
             $node1 = $xmlprocCCe->importNode($evento, true);
             $procEventoNFe->appendChild($node1);
@@ -3545,7 +3541,8 @@ class ToolsNFePHP extends CommonNFePHP
             $aRetEvento['infEvento'] = $aInfEvento;
             $aResp['retEvento'] = $aRetEvento;
             //salva o arquivo xml
-            if (!file_put_contents($this->cccDir."$chNFe-$nSeqEvento-procCCe.xml", $procXML)) {
+            $file = $this->cccDir."$chNFe-$nSeqEvento-procCCe.xml";
+            if (!file_put_contents($file, $procXML)) {
                 $msg = "Falha na gravacao da procCCe!!";
                 $this->pSetError($msg);
                 throw new nfephpException($msg);
