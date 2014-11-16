@@ -27,7 +27,7 @@
  *
  * @package     NFePHP
  * @name        ConvertNFePHP
- * @version     3.10.16
+ * @version     3.10.17
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2011 &copy; NFePHP
@@ -2571,7 +2571,7 @@ class ConvertNFePHP
                 $cNF = $ide->getElementsByTagName('cNF')->item(0)->nodeValue = rand(10000001, 99999999);
             }
             $forma = "%02d%02d%02d%s%02d%03d%09d%01d%08d";
-            $$tempChave = sprintf(
+            $tempChave = sprintf(
                 $forma,
                 $cUF,
                 $tempData[0] - 2000,
