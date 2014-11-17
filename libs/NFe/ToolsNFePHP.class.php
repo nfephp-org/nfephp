@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.10.04-beta
+ * @version   3.10.05-beta
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -2387,78 +2387,144 @@ class ToolsNFePHP extends CommonNFePHP
         return $retorno;
     } //fim getProtocol
 
-    /**
+   /**
      * getDistDFe
      * Serviço destinado à distribuição de informações resumidas e documentos fiscais eletrônicos de interesse de um
      * ator, seja este pessoa física ou jurídica.
      * 
      * Este serviço é oferecido apenas no AN - Ambiente Nacional
+     * Web Service de Consulta da Relação de Documentos Destinados
+     * este método irá substituir o método getListNFe
      * 
      * ATENÇÃO!!! Versão beta, em desenvolvimento... (fmertins 14/11/2014)
      * 
      * @name getDistDFe
-     * @param string $cUf    Codigo da UF do auor
-     * @param string $cnpj   [/Choice Element\] CNPJ do interessado no DF-e
-     * @param string $cpf    [\Choice Element/] CPF do interessado no DF-e
-     * @param string $ultNSU [/Choice Element\] Ultimo NSU recebido pelo autor
-     * @param string $NSU    [\Choice Element/] Numero Sequencial Unico especifico
-     * @param string $tpAmb Tipo de ambiente 1=Produção 2=Homologação
-     * @param array  $resp Estrutura com os retornos parametro passado por REFERENCIA
+     * @param string $cUFAutor   Codigo da UF do autor
+     * @param string $cnpj      CNPJ do interessado no DF-e
+     * @param string $cpf       CPF do interessado no DF-e
+     * @param string $ultNSU    Último NSU recebido pelo autor
+     * @param string $numNSU    Numero Sequencial Unico especifico
+     * @param string $tpAmb     Tipo de ambiente 1=Produção 2=Homologação
+     * @param array  $resp      Estrutura com os retornos parametro passado por REFERENCIA
      * @return mixed False ou xml com os dados
      */
-    public function getDistDFe($cUf = '', $cnpj = '', $cpf = '', $ultNSU = '', $NSU = '', $tpAmb = '', &$resp = array())
-    {
+    public function getDistDFe(
+        $cUFAutor = '',
+        $cnpj = '',
+        $cpf = '',
+        $ultNSU = '',
+        $numNSU = '',
+        $tpAmb = '',
+        &$resp = array()
+    ) {
+        $resp = array(
+            'bStat' => false,
+            'cStat' => '',
+            'xMotivo' => '',
+            'dhResp' => '',
+            'ultNSU' => '',
+            'maxNSU' => '',
+            'NSU' => '',
+            'schema' => '',
+            'docs' => array()
+        );
+
         try {
             //validações dos parametros
-            if (!strlen($ultNSU) && !strlen($NSU)) {
-                throw new nfephpException("Erro, informe o ultimo NSU ~ou~ o NSU especifico!");
-            } else if (strlen($ultNSU) && strlen($NSU)) {
-                throw new nfephpException("Erro, nao informe simultaneamente o Ultimo NSU e o NSU especifico!");
-            } else if (!strlen($cnpj) && !strlen($cpf)) {
-                throw new nfephpException("Erro, informe o CNPJ ~ou~ o CPF!");
-            } else if (strlen($cnpj) && strlen($cpf)) {
-               throw new nfephpException("Erro, nao informe simultaneamente o CNPJ e o CPF!");
-            } else if (!is_numeric($cUf) || !strlen($cUf)) {
-               throw new nfephpException("Erro, informe o codigo da UF e deve ser numerico!");
+            if (empty($ultNSU) && empty($numNSU)) {
+                throw new nfephpException("Informe o último NSU ou o NSU especifico");
+            } elseif (!empty($ultNSU) && empty($numNSU)) {
+                throw new nfephpException("Não informe simultaneamente o último NSU e o NSU especifico, apenas um ou outro");
+            } elseif (empty($cnpj) && empty($cpf)) {
+                throw new nfephpException("Informe o CNPJ ou o CPF do autor");
+            } elseif (!empty($cnpj) && !empty($cpf)) {
+                throw new nfephpException("Não informe simultaneamente o CNPJ e o CPF");
+            } elseif (!is_numeric($cUFAutor) || empty($cUFAutor)) {
+                throw new nfephpException("Informe o código numérico da UF");
             }//fim das validações dos parametros
-            //carrega os webservices sempre do Ambiente Nacional, este WS nao existe nos estados
-            $aURL = $this->pLoadSEFAZ($tpAmb, 'AN');
-            //identificação do serviço
-            $servico = 'NFeDistribuicaoDFe';
-            //recuperação da versão
-            $versao = $aURL[$servico]['version'];
-            //recuperação da url do serviço
-            $urlservico = $aURL[$servico]['URL'];
-            //recuperação do método
-            $metodo = $aURL[$servico]['method'];
             //montagem do namespace do serviço
-            $operation = $aURL[$servico]['operation'];
-            $namespace = $this->URLPortal.'/wsdl/'.$operation;
+            $servico = 'NFeDistribuicaoDFe';
+            //carrega serviço
+            $this->pLoadServico(
+                $servico,
+                'AN',
+                $tpAmb,
+                $cUF,
+                $urlservico,
+                $namespace,
+                $cabec,
+                $metodo,
+                $versao
+            );
             //monta a consulta
             $cons = '<distDFeInt xmlns="'.$this->URLPortal.'" versao="'.$versao.'">';
-            $cons .= "<tpAmb>$tpAmb</tpAmb><cUFAutor>$cUf</cUFAutor>";
+            $cons .= "<tpAmb>$tpAmb</tpAmb><cUFAutor>$cUFAutor</cUFAutor>";
             $cons .= ($cnpj ? "<CNPJ>$cnpj</CNPJ>" : "<CPF>$cpf</CPF>");
             $cons .= ($ultNSU ? "<distNSU><ultNSU>$ultNSU</ultNSU></distNSU>" : "<consNSU><NSU>$NSU</NSU></consNSU>");
             $cons .= '</distDFeInt>';
-            //montagem do cabeçalho da comunicação SOAP
-            $cabec = '<nfeCabecMsg xmlns="'. $namespace.'"><cUF>'.$this->cUF.'</cUF>';
-            $cabec .= '<versaoDados>'.$versao.'</versaoDados></nfeCabecMsg>';
             //montagem dos dados da mensagem SOAP
             $dados = '<nfeDistDFeInteresse xmlns="'.$namespace.'">';
             $dados .= "<nfeDadosMsg>$cons</nfeDadosMsg>";
             $dados .= '</nfeDistDFeInteresse>';
             //grava solicitação em temp
-            $tipoDoc = $cnpj ? $cnpj : $cpf;
             $tipoNSU = $ultNSU ? $ultNSU : $NSU;
             $datahora = date('Ymd_His');
-            if (! file_put_contents($this->temDir.$tipoDoc."-$tipoNSU-$datahora-consDFe.xml", $cons)) {
+            if (! file_put_contents($this->temDir."-$tipoNSU-$datahora-consDFe.xml", $cons)) {
                 throw new nfephpException("Falha na gravacao do arquivo DFe de entrada!");
             }
             //envia dados via SOAP e verifica o retorno
             if (!$retorno = $this->pSendSOAP($urlservico, $namespace, $cabec, $dados, $metodo, $tpAmb)) {
-               throw new nfephpException("Nao houve retorno Soap verifique a mensagem de erro e o debug!!");
+                throw new nfephpException("Nao houve retorno Soap verifique a mensagem de erro e o debug!!");
             }
-            //TODO continuar a implementação, montar o array de resposta...
+            //tratar dados de retorno
+            $xmlretDFe = new DOMDocument('1.0', 'utf-8'); //cria objeto DOM
+            $xmlretDFe->formatOutput = false;
+            $xmlretDFe->preserveWhiteSpace = false;
+            $xmlretDFe->loadXML($retorno, LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
+            $retDistDFeInt = $xmlretDFe->getElementsByTagName("retDistDFeInt")->item(0);
+            $cStat = !empty($retDistDFeInt->getElementsByTagName('cStat')->item(0)->nodeValue) ?
+                    $retDistDFeInt->getElementsByTagName('cStat')->item(0)->nodeValue : '';
+            $xMotivo = !empty($retDistDFeInt->getElementsByTagName('xMotivo')->item(0)->nodeValue) ?
+                    $retDistDFeInt->getElementsByTagName('xMotivo')->item(0)->nodeValue : '';
+            if ($cStat == '') {
+                //houve erro
+                $msg = "cStat está em branco, houve erro na comunicação Soap "
+                        . "verifique a mensagem de erro e o debug!!";
+                throw new nfephpException($msg);
+            }
+            $bStat = true;
+            $dhResp = !empty($retDistDFeInt->getElementsByTagName('dhResp')->item(0)->nodeValue) ?
+                    $retDistDFeInt->getElementsByTagName('dhResp')->item(0)->nodeValue : '';
+            $ultNSU = !empty($retDistDFeInt->getElementsByTagName('ultNSU')->item(0)->nodeValue) ?
+                    $retDistDFeInt->getElementsByTagName('ultNSU')->item(0)->nodeValue : '';
+            $maxNSU = !empty($retDistDFeInt->getElementsByTagName('maxNSU')->item(0)->nodeValue) ?
+                    $retDistDFeInt->getElementsByTagName('maxNSU')->item(0)->nodeValue : '';
+            $NSU = !empty($retDistDFeInt->getElementsByTagName('NSU')->item(0)->nodeValue) ?
+                    $retDistDFeInt->getElementsByTagName('NSU')->item(0)->nodeValue : '';
+            $schema = !empty($retDistDFeInt->getElementsByTagName('schema')->item(0)->nodeValue) ?
+                    $retDistDFeInt->getElementsByTagName('schema')->item(0)->nodeValue : '';
+            if ($cStat == '138') {
+                //existe documento
+                $loteDistDFeInt = $retDistDFeInt->getElementsByTagName('loteDistDFeInt');
+                $docs = $loteDistDFeInt->getElementsByTagName('docZip');
+                foreach ($docs as $doc) {
+                    //o conteudo desse dado é um zip em base64
+                    //para deszipar deve primeiro desconverter de base64
+                    //e depois aplicar a descompactação unzip
+                    $aDocs[] = $doc->item(0)->nodeValue;
+                }
+            }
+            $resp = array(
+                'bStat' => $bStat,
+                'cStat' => $cStat,
+                'xMotivo' => $xMotivo,
+                'dhResp' =>$dhResp,
+                'ultNSU' =>$ultNSU,
+                'maxNSU' => $maxNSU,
+                'NSU' => $NSU,
+                'schema' => $schema,
+                'docs' => $aDocs
+            );
         } catch (nfephpException $e) {
             $this->pSetError($e->getMessage());
             if ($this->exceptions) {
@@ -2466,8 +2532,6 @@ class ToolsNFePHP extends CommonNFePHP
             }
             return false;
         }//fim catch
-        //TODO continuar a implementação, montar o array de resposta...
-        $resp = array('indCont'=>$indCont,'ultNSU'=>$ultNSU,'NFe'=>$aNFe,'Canc'=>$aCanc,'CCe'=>$aCCe);
         return $retorno;
     }//fim getDistDFe
     
