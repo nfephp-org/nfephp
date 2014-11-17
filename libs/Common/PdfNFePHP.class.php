@@ -599,8 +599,8 @@ class PdfNFePHP extends FPDF {
      * @name        WordWrap
      * @version     1.0
      * @author      Ron Korving
-     * @param type $text
-     * @param type $maxwidth
+     * @param string $text
+     * @param int $maxwidth
      * @return int 
      */
     public function WordWrap(&$text, $maxwidth){

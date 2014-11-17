@@ -39,11 +39,15 @@
 
 class CommonNFePHP
 {
-    
+    /**
+     * @var PdfNFePHP
+     */
+    protected $pdf;
+
     /**
      * pAdicionaLogoPeloCnpj
      * @param none
-     * @return none
+     * @return void
      */
     protected function pAdicionaLogoPeloCnpj()
     {
@@ -81,15 +85,16 @@ class CommonNFePHP
             return;
         }
     }
-    
+
     /**
      * pSimpleGetValue
      * Extrai o valor do node DOM
      * @param object $theObj Instancia de DOMDocument ou DOMElement
      * @param string $keyName identificador da TAG do xml
      * @param string $extraTextBefore prefixo do retorno
-     * @param string extraTextAfter sufixo do retorno
-     * @param number itemNum numero do item a ser retornado
+     * @param string $extraTextAfter sufixo do retorno
+     * @param int $itemNum numero do item a ser retornado
+     * @throws nfephpException
      * @return string
      */
     protected function pSimpleGetValue($theObj, $keyName, $extraTextBefore = '', $extraTextAfter = '', $itemNum = 0)
@@ -114,7 +119,7 @@ class CommonNFePHP
      * pSimpleGetDate
      * Recupera e reformata a data do padrão da NFe para dd/mm/aaaa
      * @author Marcos Diez
-     * @param DOM $theObj
+     * @param DOMDocument $theObj
      * @param string $keyName identificador da TAG do xml
      * @param string $extraText prefixo do retorno
      * @return string
@@ -183,7 +188,7 @@ class CommonNFePHP
      * Converte a imformação de data e tempo contida na NFe
      * 
      * @param string $DH Informação de data e tempo extraida da NFe
-     * @return timestamp UNIX Para uso com a funçao date do php
+     * @return int UNIX Para uso com a funçao date do php
      */
     protected function pConvertTime($DH = '')
     {
@@ -321,14 +326,14 @@ class CommonNFePHP
      * @param array $aFont Matriz com as informações para formatação do texto com fonte, tamanho e estilo
      * @param string $vAlign Alinhamento vertical do texto, T-topo C-centro B-base
      * @param string $hAlign Alinhamento horizontal do texto, L-esquerda, C-centro, R-direita
-     * @param boolean $border TRUE ou 1 desenha a borda, FALSE ou 0 Sem borda
+     * @param bool|int $border TRUE ou 1 desenha a borda, FALSE ou 0 Sem borda
      * @param string $link Insere um hiperlink
-     * @param boolean $force Se for true força a caixa com uma unica linha 
-     * e para isso atera o tamanho do fonte até caber no espaço, 
+     * @param boolean $force Se for true força a caixa com uma unica linha
+     * e para isso atera o tamanho do fonte até caber no espaço,
      * se falso mantem o tamanho do fonte e usa quantas linhas forem necessárias
-     * @param number $hmax
-     * @param number $vOffSet incremento forçado na na posição Y
-     * @return number $height Qual a altura necessária para desenhar esta textBox
+     * @param int $hmax
+     * @param int $vOffSet incremento forçado na na posição Y
+     * @return int Qual a altura necessária para desenhar esta textBox
      */
     protected function pTextBox(
         $x,
@@ -380,6 +385,7 @@ class CommonNFePHP
         $altText = $incY * $n;
         //separar o texto em linhas
         $lines = explode("\n", $text);
+        $y1 = 0;
         //verificar o alinhamento vertical
         if ($vAlign == 'T') {
             //alinhado ao topo
@@ -406,6 +412,7 @@ class CommonNFePHP
                     $comp = $this->pdf->GetStringWidth($texto);
                 }
             }
+            $x1 = 0;
             //ajustar ao alinhamento horizontal
             if ($hAlign == 'L') {
                 $x1 = $x+0.5;
@@ -455,13 +462,13 @@ class CommonNFePHP
      * @param array $aFont Matriz com as informações para formatação do texto com fonte, tamanho e estilo
      * @param string $vAlign Alinhamento vertical do texto, T-topo C-centro B-base
      * @param string $hAlign Alinhamento horizontal do texto, L-esquerda, C-centro, R-direita
-     * @param boolean $border TRUE ou 1 desenha a borda, FALSE ou 0 Sem borda
+     * @param bool|int $border TRUE ou 1 desenha a borda, FALSE ou 0 Sem borda
      * @param string $link Insere um hiperlink
-     * @param boolean $force Se for true força a caixa com uma unica linha 
+     * @param boolean $force Se for true força a caixa com uma unica linha
      * e para isso atera o tamanho do fonte até caber no espaço,
      * se falso mantem o tamanho do fonte e usa quantas linhas forem necessárias
-     * @param number $hmax
-     * @param number $vOffSet incremento forçado na na posição Y
+     * @param int $hmax
+     * @param int $vOffSet incremento forçado na na posição Y
      * @return number $height Qual a altura necessária para desenhar esta textBox
      */
     protected function pTextBox90(
@@ -516,6 +523,7 @@ class CommonNFePHP
         $altText = $incY * $n;
         //separar o texto em linhas
         $lines = explode("\n", $text);
+        $y1 = 0;
         //verificar o alinhamento vertical
         if ($vAlign == 'T') {
             //alinhado ao topo
@@ -542,6 +550,7 @@ class CommonNFePHP
                     $comp = $this->pdf->GetStringWidth($texto);
                 }
             }
+            $x1 = 0;
             //ajustar ao alinhamento horizontal
             if ($hAlign == 'L') {
                 $x1 = $x+0.5;
