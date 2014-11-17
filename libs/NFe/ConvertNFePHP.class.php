@@ -27,7 +27,7 @@
  *
  * @package     NFePHP
  * @name        ConvertNFePHP
- * @version     3.10.17
+ * @version     3.10.18
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2011 &copy; NFePHP
@@ -1102,25 +1102,31 @@ class ConvertNFePHP
                     }
                     $prod->appendChild($arma);
                     break;
-                case "L101":
+                case "LA":
                     //Grupo de informações específicas para combustíveis líquidos e lubrificantes [prod]
+                    //LA|cProdANP|pMixGN|CODIF|qTemp|UFCons|
                     $comb = $dom->createElement("comb");
                     $cProdANP = $dom->createElement("cProdANP", $dados[1]);
                     $comb->appendChild($cProdANP);
                     if (!empty($dados[2])) {
-                        $CODIF = $dom->createElement("CODIF", $dados[2]);
-                        $comb->appendChild($CODIF);
+                        $pMixGN = $dom->createElement("pMixGN", $dados[2]);
+                        $comb->appendChild($pMixGN);
                     }
                     if (!empty($dados[3])) {
-                        $qTemp = $dom->createElement("qTemp", $dados[3]);
+                        $CODIF = $dom->createElement("CODIF", $dados[3]);
+                        $comb->appendChild($CODIF);
+                    }
+                    if (!empty($dados[4])) {
+                        $qTemp = $dom->createElement("qTemp", $dados[4]);
                         $comb->appendChild($qTemp);
                     }
-                    $UFCons = $dom->createElement("UFCons", $dados[4]);
+                    $UFCons = $dom->createElement("UFCons", $dados[5]);
                     $comb->appendChild($UFCons);
                     $prod->appendChild($comb);
                     break;
-                case "L105":
+                case "LA07":
                     //Grupo da CIDE [comb]
+                    //LA07|qBCprod|vAliqProd|vCIDE|
                     $CIDE = $dom->createElement("CIDE");
                     $qBCprod = $dom->createElement("qBCprod", $dados[1]);
                     $CIDE->appendChild($qBCprod);
@@ -1129,6 +1135,11 @@ class ConvertNFePHP
                     $vCIDE = $dom->createElement("vCIDE", $dados[3]);
                     $CIDE->appendChild($vCIDE);
                     $comb->appendChild($CIDE);
+                    break;
+                case "LB":
+                    //Número do RECOPI
+                    $recopi = $dom->createElement("nRECOPI", $dados[1]);
+                    $prod->appendChild($recopi);
                     break;
                 case "M":
                     //GRUPO DE TRIBUTOS INCIDENTES NO PRODUTO SERVICO
