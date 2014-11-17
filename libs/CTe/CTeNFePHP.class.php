@@ -2151,7 +2151,7 @@ class CTeNFePHP
             //monta mensagem
             $Ev = '';
             $Ev .= "<infEvento Id=\"$eventId\">";
-            $Ev .= "<cOrgao>$cOrgao</cOrgao>";
+            $Ev .= "<cOrgao>$this->cUF</cOrgao>";
             $Ev .= "<tpAmb>$tpAmb</tpAmb>";
             $Ev .= "<CNPJ>$this->cnpj</CNPJ>";
             $Ev .= "<chCTe>$chCTe</chCTe>";
@@ -2321,7 +2321,7 @@ class CTeNFePHP
             //monta mensagem
             $Ev = '';
             $Ev .= "<infEvento Id=\"$eventId\">";
-            $Ev .= "<cOrgao>$cOrgao</cOrgao>";
+            $Ev .= "<cOrgao>$this->cUF</cOrgao>";
             $Ev .= "<tpAmb>$tpAmb</tpAmb>";
             $Ev .= "<CNPJ>$this->cnpj</CNPJ>";
             $Ev .= "<chCTe>$chCTe</chCTe>";
