@@ -46,7 +46,6 @@ class CommonNFePHP
 
     /**
      * pAdicionaLogoPeloCnpj
-     * @param none
      * @return void
      */
     protected function pAdicionaLogoPeloCnpj()

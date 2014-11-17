@@ -951,15 +951,13 @@ class NFSe {
      * usando as chaves publica e privada parametrizadas na contrução da classe.
      * Conforme Manual de Integração Versão 4.0.1
      *
-     * @name __sendSOAPNFSe
-     * @version 1.0
-     * @package NFePHP
-     * @param string $urlsefaz
-     * @param string $namespace
+     * @param $urlwebservice
      * @param string $cabecalho
      * @param string $dados
      * @param string $metodo
-     * @param numeric $ambiente
+     * @param int $ambiente
+     * @version 1.0
+     * @package NFePHP
      * @return mixed False se houve falha ou o retorno em xml do SEFAZ
      */
     private function __sendSOAPNFSe($urlwebservice,$cabecalho,$dados,$metodo,$ambiente){
@@ -1045,5 +1043,3 @@ class NFSeSOAPClient extends SoapClient {
         return (parent::__doRequest($request, $location, $action, $version));
     }
 } //fim da classe NFSeSOAPClient
-
-?>

@@ -393,6 +393,7 @@ class ImapNFePHP
                     $response[$nMsg-1]['subject'] = $message->subject;
                     $response[$nMsg-1]['date'] = $message->date;
                     $response[$nMsg-1]['attachments'] = $aAtt;
+                    $success = false;
                     if ($actionmark) {
                         $success = $this->imapAction($msgno, $message->uid);
                     }

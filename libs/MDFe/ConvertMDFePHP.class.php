@@ -95,9 +95,6 @@ class ConvertMDFePHP
      * contruct
      * Método contrutor da classe
      *
-     * @name contruct
-     * @param boolean $limparString Ativa flag para limpar os caracteres especiais e acentos
-     * @return none
      */
     public function __construct()
     {
@@ -108,12 +105,14 @@ class ConvertMDFePHP
      * MDFetxt2xml
      * Converte o arquivo txt em um array para ser mais facilmente tratado
      *
-     * @name MDFetxt2xml
      * @param mixed $txt Path para o arquivo txt, array ou o conteudo do txt em uma string
+     * @param string $tpAmb
+     * @param string $tipEmiss
      * @return string xml construido
      */
     public function MDFetxt2xml($txt, $tpAmb, $tipEmiss)
     {
+        $aDados = null;
         if (is_file($txt)) {
             $aDados = file($txt, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES | FILE_TEXT);
         } else {

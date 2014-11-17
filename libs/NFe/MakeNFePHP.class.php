@@ -130,13 +130,13 @@ class MakeNFe
     private $aProcRef = array(); //array de DOMNodes
     private $aForDia = array(); //array de DOMNodes
     private $aDeduc = array(); //array de DOMNodes
-    
+
     /**
      * __contruct
      * Função construtora cria um objeto DOMDocument
      * que será carregado com a NFe
-     * 
-     * @return none
+     * @param bool $formatOutput
+     * @param bool $preserveWhiteSpace
      */
     public function __construct($formatOutput = true, $preserveWhiteSpace = false)
     {
@@ -2884,7 +2884,7 @@ class MakeNFe
      * @param string $vOrig
      * @param string $vDesc
      * @param string $vLiq
-     * @return DOMElemente
+     * @return DOMElement
      */
     public function tagfat(
         $nFat = '',

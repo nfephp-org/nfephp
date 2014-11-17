@@ -117,7 +117,6 @@ class ConvertNFePHP
      *
      * @name contruct
      * @param boolean $limparString Ativa flag para limpar os caracteres especiais e acentos
-     * @return none
      */
     public function __construct($limparString = true)
     {

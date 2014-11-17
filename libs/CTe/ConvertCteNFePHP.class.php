@@ -2643,4 +2643,3 @@ var_dump($XML['xml'][0]['xml']);
 $TXT=$nfe->XML2TXT( $XML['xml'][0]['xml'] );
 var_dump($TXT);
 */
-?>

@@ -346,7 +346,7 @@ class Emitente extends Base implements iXml
      * pTagemit
      * Identificação do emitente da NF-e C01 pai A01
      * tag NFe/infNFe/emit
-     * @return none
+     * @return void
      */
     private function pTagemit()
     {
@@ -415,7 +415,7 @@ class Emitente extends Base implements iXml
      * pTagenderEmit
      * Endereço do emitente C05 pai C01
      * tag NFe/infNFe/emit/endEmit
-     * @return none
+     * @return void
      */
     private function pTagenderEmit()
     {

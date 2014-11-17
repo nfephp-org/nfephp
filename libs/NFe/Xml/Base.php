@@ -9,15 +9,14 @@ class Base
 {
     public $dom; //DOMDOcument
     public $erros = array(); //Array
-    
+
     /**
      * __contruct
      * Função construtora cria um objeto DOMDocument
      * que será carregado com a NFe
-     * 
-     * @return none
+     * @param DOMDocument $dom
      */
-    public function __construct($dom = '')
+    public function __construct($dom = null)
     {
         if (!empty($dom)) {
             $this->dom = $dom;

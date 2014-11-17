@@ -19,12 +19,3 @@ tools:
     php_mess_detector: true
     php_pdepend: true
     php_sim: true
-
-build:
-    tests:
-        override:
-            -
-                command: 'phpunit --coverage-clover=clover.xml'
-                coverage:
-                    file: 'clover.xml'
-                    format: 'php-clover'

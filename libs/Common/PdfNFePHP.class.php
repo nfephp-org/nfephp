@@ -815,7 +815,7 @@ class PdfNFePHP extends FPDF {
      * @param number $w Comprimento da linha, em mm
      * @param number $h Espessura da linha, em mm
      * @param number $n Numero de traços na seção da linha com o comprimento $w
-     * @return none
+     * @return void
      */
     public function DashedHLine($x,$y,$w,$h,$n) {
         $this->SetDrawColor(110);
@@ -844,7 +844,7 @@ class PdfNFePHP extends FPDF {
     * @param number $w Comprimento da linha, em mm
     * @param number $yfinal Espessura da linha, em mm
     * @param number $n Numero de traços na seção da linha com o comprimento $w
-    * @return none
+    * @return void
     */
     public function DashedVLine($x,$y,$w,$yfinal,$n) {
         $this->SetLineWidth($w);
@@ -862,4 +862,3 @@ class PdfNFePHP extends FPDF {
     } //fim função DashedVLine
     
 } //fim da classe PdfNFe
-?>

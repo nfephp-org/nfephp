@@ -117,7 +117,6 @@ class ConvertCTePHP extends CommonNFePHP
      * Método contrutor da classe
      *
      * @param boolean $limpar_string Ativa flag para limpar os caracteres especiais e acentos
-     * @return none
      */
     function __construct($limpar_string = true)
     {
