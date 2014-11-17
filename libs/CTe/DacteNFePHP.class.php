@@ -31,7 +31,7 @@
  * @author    Roberto L. Machado <linux.rlm@gmail.com>
  * @copyright 2009-2013 &copy; NFePHP
  * @license   GNU/GPL v.3 or GNU/LGPL v.3
- * @version   GIT: 1.3.0
+ * @version   GIT: 1.3.1
  * @link      http://www.nfephp.org/
  *
  *        CONTRIBUIDORES (por ordem alfabetica):
@@ -47,7 +47,7 @@
 
 //define o caminho base da instalação do sistema
 if (!defined('PATH_ROOT')) {
-    define('PATH_ROOT', dirname(dirname(dirname(__file__))).DIRECTORY_SEPARATOR);
+    define('PATH_ROOT', dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR);
 }
 //ajuste do tempo limite de resposta do processo
 set_time_limit(1800);
