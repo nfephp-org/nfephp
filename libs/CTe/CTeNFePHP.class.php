@@ -2149,7 +2149,9 @@ class CTeNFePHP
             }
             $eventId = "ID".$tpEvento.$chCTe.$zenSeqEvento;
             //monta mensagem
+            
             $Ev = '';
+            $Ev .= "<eventoCTe xmlns=\"$this->URLPortal\" versao=\"$versao\">";
             $Ev .= "<infEvento Id=\"$eventId\">";
             $Ev .= "<cOrgao>$this->cUF</cOrgao>";
             $Ev .= "<tpAmb>$tpAmb</tpAmb>";
@@ -2158,21 +2160,17 @@ class CTeNFePHP
             $Ev .= "<dhEvento>$dhEvento</dhEvento>";
             $Ev .= "<tpEvento>$tpEvento</tpEvento>";
             $Ev .= "<nSeqEvento>$nSeqEvento</nSeqEvento>";
-            $Ev .= "<detEvento versao=\"$versao\">";
+            $Ev .= "<detEvento versaoEvento=\"$versao\">";
             $Ev .= "<evCancCTe>";
             $Ev .= "<descEvento>$descEvento</descEvento>";
             $Ev .= "<nProt>$nProt</nProt>";
             $Ev .= "<xJust>$xJust</xJust>";
-            $Ev .= "</evCancCTe></detEvento></infEvento>";
+            $Ev .= "</evCancCTe></detEvento></infEvento></eventoCTe>";
             //assinatura dos dados
             $tagid = 'infEvento';
-            $Ev = $this->signXML($Ev, $tagid);
+            //montagem dos dados - com a assinatura
+            $dados = $this->signXML($Ev, $tagid);
             //carrega uma matriz temporária com os eventos assinados
-            //montagem dos dados
-            $dados = '';
-            $dados .= "<eventoCTe xmlns=\"$this->URLPortal\" versao=\"$versao\">";
-            $dados .= $Ev;
-            $dados .= "</eventoCTe>";
             //montagem da mensagem
             $cabec = "<cteCabecMsg xmlns=\"$namespace\"><cUF>$this->cUF</cUF>"
                     . "<versaoDados>$versao</versaoDados></cteCabecMsg>";
