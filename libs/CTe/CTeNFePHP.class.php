@@ -1352,7 +1352,7 @@ class CTeNFePHP
             $newNode = $xmldoc->createElement('X509Certificate', $cert);
             $X509Data->appendChild($newNode);
             //grava na string o objeto DOM
-            $docxml = $xmldoc->saveXML($xmldoc->documentElement);
+            $docxml = $xmldoc->saveXML();
             // libera a memoria
             openssl_free_key($pkeyid);
             //retorna o documento assinado
