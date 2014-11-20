@@ -44,11 +44,13 @@
     },
     "autoload": {
         "psr-0": {
-            "nfephp": "src"
+            "": "libs/"
         },
         "classmap": [
             "./libs/CTe/",
             "./libs/Common/",
+            "./libs/Common/Certificate/",
+            "./libs/Common/Exception/",
             "./libs/External/FPDF/fpdf.php",
             "./libs/External/PHPMailer/class.phpmailer.php",
             "./libs/External/PHPMailer/class.pop3.php",
