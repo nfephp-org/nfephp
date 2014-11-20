@@ -13,6 +13,6 @@ class AsnTest extends PHPUnit_Framework_TestCase
         $certificado = dirname(dirname(dirname(__FILE__))) . '/fixtures/certs/certificado_pubKEY.pem';
         $certPem = file_get_contents($certificado);
         $cnpj = Asn::getCNPJCert($certPem);
-        $this->assertEquals($cnpj, '29999090910270');
+        $this->assertEquals($cnpj, '99999090910270');
     }
 }
