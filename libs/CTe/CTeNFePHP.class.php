@@ -1904,17 +1904,18 @@ class CTeNFePHP
     /**
      * Solicita inutilizaçao de uma serie de numeros de CT
      *
-     * @name inutNF
-     * @param    string  $nAno       ano com 2 digitos
+     * @name    inutNF
+     * @param   string  $nAno       ano com 2 digitos
      * @param   string  $nSerie     serie do CT 1 até 3 digitos
      * @param   integer $nIni       numero inicial 1 até 9 digitos zero a esq
      * @param   integer $nFin       numero Final 1 até 9 digitos zero a esq
      * @param   string  $xJust      justificativa 15 até 255 digitos
-     * @return    mixed false ou array ['bStat'=>boolean,'cStat'=>'','xMotivo'=>'','dhRecbto'=>'','nProt'=>'']
+     * @return  mixed false ou array ['bStat'=>boolean,'cStat'=>'','xMotivo'=>'','dhRecbto'=>'','nProt'=>'']
+     * @throws  nfephpException Caso de não tenha dados suficiente para enviar solicitação de inutilização ou falha na ecrita em disco do arquivo xml.
      */
     public function inutCT($nAno = '', $nSerie = '1', $nIni = '', $nFin = '', $xJust = '')
     {
-        // Variavel de retorno do metodo
+       // Variavel de retorno do metodo
         $aRetorno = array (
             'bStat' => false,
             'cStat' => '',
@@ -1923,12 +1924,10 @@ class CTeNFePHP
             'nProt' => '');
         // Valida dos dados de entrada
         if ($nAno == '' || $nIni == '' || $nFin == '' || $xJust == '') {
-            $this->errStatus = true;
-            $this->errMsg = "Não foi passado algum dos parametos necessários ANO=$nAno "
+            $msg = "Não foi passado algum dos parametos necessários ANO=$nAno "
                     . "inicio=$nIni fim=$nFin justificativa=$xJust.";
-            return false;
+            throw new nfephpException($msg);
         }
-
         // Verifica se o SCAN esta habilitado
         $aURL = $this->aURL;
         if ($this->enableSCAN) {
@@ -1939,49 +1938,31 @@ class CTeNFePHP
             );
         }
         // Valida o campo ano
-        if (strlen($nAno) > 2) {
-            $this->errStatus = true;
-            $this->errMsg = 'O ano tem mais de 2 digitos. Corrija e refaça o processo!!';
-            return false;
-        } else {
-            if (strlen($nAno) < 2) {
-                $this->errStatus = true;
-                $this->errMsg = 'O ano tem menos de 2 digitos. Corrija e refaça o processo!!';
-                return false;
-            }
+        if (strlen($nAno) != 2) {
+            $msg = 'O ano deve ter somente 2 digitos. Corrija e refaça o processo!!';
+            throw new nfephpException($msg);
         }
         // Valida o campo serie
         if (strlen($nSerie) == 0 || strlen($nSerie) > 3) {
-            $this->errStatus = true;
-            $this->errMsg = "O campo serie está errado: $nSerie. Corrija e refaça o processo!!";
-            return false;
+            $msg = "O campo serie está errado: $nSerie. Corrija e refaça o processo!!";
+            throw new nfephpException($msg);
         }
         // Valida o campo numero inicial
         if (strlen($nIni) < 1 || strlen($nIni) > 9) {
-            $this->errStatus = true;
-            $this->errMsg = "O campo numero inicial está errado: $nIni. Corrija e refaça o processo!!";
-            return false;
+            $msg = "O campo numero inicial está errado: $nIni. Corrija e refaça o processo!!";
+            throw new nfephpException($msg);
         }
         // Valida o campo numero final
         if (strlen($nFin) < 1 || strlen($nFin) > 9) {
-            $this->errStatus = true;
-            $this->errMsg = "O campo numero final está errado: $nFin. Corrija e refaça o processo!!";
-            return false;
+            $msg = "O campo numero final está errado: $nFin. Corrija e refaça o processo!!";
+            throw new nfephpException($msg);
         }
         // Valida o campo justificativa
         $nL = strlen($xJust);
-        if ($nL < 15) {
-            $this->errStatus = true;
-            $this->errMsg = "A justificativa é menor que o permitido, apenas $nL letras. "
-                    . "Corrija e refaça o processo!!";
-            return false;
-        } else {
-            if ($nL > 255) {
-                $this->errStatus = true;
-                $this->errMsg = "A justificativa é maior que o permitido, $nL letras, "
-                        . "no máximo podem ser 255. Corrija e refaça o processo!!";
-                return false;
-            }
+        if ($nL < 15 || $nL > 255) {
+            $msg = "A justificativa tem que ter entre 15 e 255 caracteres, encontrado $nL. "
+                . "Corrija e refaça o processo!!";
+            throw new nfephpException($msg);
         }
         // Identificação do serviço
         $servico = 'CteInutilizacao';
@@ -2027,48 +2008,46 @@ class CTeNFePHP
         // Envia a solicitação via SOAP
         $retorno = $this->zSendSOAP($urlservico, $namespace, $cabec, $dados, $metodo, $this->tpAmb);
         // Verifica o retorno
-        if ($retorno) {
-            //tratar dados de retorno
-            $doc = new DOMDocument();
-            $doc->formatOutput = false;
-            $doc->preserveWhiteSpace = false;
-            $doc->loadXML($retorno, LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
-            $cStat = !empty($doc->getElementsByTagName('cStat')->item(0)->nodeValue) ?
-                    $doc->getElementsByTagName('cStat')->item(0)->nodeValue : '';
-            if ($cStat == '') {
-                //houve erro
-                return false;
-            } else {
-                //verificar o status da solicitação
-                if ($cStat == '102') {
-                    $aRetorno['bStat'] = true;
-                }
-            }
-
-            // Status do serviço se 102 inutilização aceita
-            $aRetorno['cStat'] = $doc->getElementsByTagName('cStat')->item(0)->nodeValue;
-            // Motivo da resposta (opcional)
-            $aRetorno['xMotivo'] = !empty($doc->getElementsByTagName('xMotivo')->item(0)->nodeValue) ?
-                    $doc->getElementsByTagName('xMotivo')->item(0)->nodeValue : '';
-            // Data e hora da mensagem (opcional)
-            $aRetorno['dhRecbto'] = !empty($doc->getElementsByTagName('dhRecbto')->item(0)->nodeValue) ?
-                    date(
-                        "d/m/Y H:i",
-                        $this->zConvertTime($doc->getElementsByTagName('dhRecbto')->item(0)->nodeValue)
-                    ) : '';
-            // Numero do protocolo de aceitação da inutilização (opcional)
-            $aRetorno['nProt'] = !empty($doc->getElementsByTagName('nProt')->item(0)->nodeValue) ?
-                    $doc->getElementsByTagName('nProt')->item(0)->nodeValue : '';
-            // Grava o retorno na pasta temp
-            $nome = $this->temDir . $id . '-inut.xml';
-            $nome = $doc->save($nome);
-        } else {
-            $this->errStatus = true;
-            $this->errMsg = 'Nao houve retorno Soap verifique o debug!!';
-            $aRetorno = false;
+        if (! $retorno ) {
+            $msg = "Nao houve retorno Soap verifique a mensagem de erro e o debug!!";
+            throw new nfephpException($msg);
         }
+        // Tratar dados de retorno
+        $doc = new DOMDocument('1.0', 'utf-8');
+        $doc->formatOutput = false;
+        $doc->preserveWhiteSpace = false;
+        $doc->loadXML($retorno, LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
+        // Verifica retorno - cStat
+        if ( empty($doc->getElementsByTagName('cStat')->item(0)->nodeValue) ) {
+            $msg = "cStat está em branco, houve erro na comunicação Soap "
+                    . "verifique a mensagem de erro e o debug!!";
+            throw new nfephpException($msg);
+        }
+        // Verificar o status da solicitação
+        $aRetorno['cStat'] = $doc->getElementsByTagName('cStat')->item(0)->nodeValue;
+        // Motivo da resposta (opcional)
+        if (! empty($doc->getElementsByTagName('xMotivo')->item(0)->nodeValue) ) {
+            $aRetorno['xMotivo'] = $doc->getElementsByTagName('xMotivo')->item(0)->nodeValue;
+        }
+        // Data e hora da mensagem (opcional)
+        if (! empty($doc->getElementsByTagName('dhRecbto')->item(0)->nodeValue) ) {
+            $dateTemp = $this->zConvertTime($doc->getElementsByTagName('dhRecbto')->item(0)->nodeValue) ;
+            $aRetorno['dhRecbto'] = date("d/m/Y H:i", $dateTemp);
+        }
+        // Número do protocolo de aceitação da inutilização (opcional)
+        if (! empty($doc->getElementsByTagName('nProt')->item(0)->nodeValue) ) {
+            $aRetorno['nProt'] = $doc->getElementsByTagName('nProt')->item(0)->nodeValue;
+        }
+        if ($aRetorno['cStat'] != '102') {
+            return $aRetorno;
+        }
+        $aRetorno['bStat'] = true;
+        // Grava o retorno na pasta temp
+        $nome = $this->temDir . $id . '-inut.xml';
+        $nome = $doc->save($nome);
+
         return $aRetorno;
-    } //fim inutCTe
+    }
 
     /**
      * cancelEvent
@@ -2196,13 +2175,12 @@ class CTeNFePHP
         $xmlretEvent->loadXML($retorno, LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
         $retEventoCTe = $xmlretEvent->getElementsByTagName("retEventoCTe")->item(0);
         // Verifica retorno - cStat
-        if (! empty($retEventoCTe->getElementsByTagName('cStat')->item(0)->nodeValue) ) {
-            $aRetorno['cStat'] = $retEventoCTe->getElementsByTagName('cStat')->item(0)->nodeValue;
-        } else {
+        if ( empty($retEventoCTe->getElementsByTagName('cStat')->item(0)->nodeValue) ) {
             $msg = "cStat está em branco, houve erro na comunicação Soap "
                     . "verifique a mensagem de erro e o debug!!";
             throw new nfephpException($msg);                
         }
+        $aRetorno['cStat'] = $retEventoCTe->getElementsByTagName('cStat')->item(0)->nodeValue;
         // Motivo da resposta (opcional)
         if (! empty($retEventoCTe->getElementsByTagName('xMotivo')->item(0)->nodeValue) ) {
             $aRetorno['xMotivo'] = $retEventoCTe->getElementsByTagName('xMotivo')->item(0)->nodeValue;
