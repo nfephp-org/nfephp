@@ -8,6 +8,9 @@ before_commands:
 tools:
     external_code_coverage:
         timeout: 600
+    php_code_coverage:
+        enabled: true
+        test_command: phpunit --colors --verbose	
     php_analyzer: true
     php_changetracking: true
     php_code_sniffer:
