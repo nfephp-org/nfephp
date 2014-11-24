@@ -64,6 +64,13 @@ class Pkcs12
     public $certKey = '';
     
     /**
+     * Flag para ignorar testes de validade do certificado
+     * isso é usado apenas para fins de testes
+     * @var boolean 
+     */
+    public $ignoreValidCert = false;
+    
+    /**
      * Path para a chave publica em arquivo
      * @var string
      */
@@ -101,10 +108,11 @@ class Pkcs12
      * @param string $pubKey Chave publica em formato PEM, não o path mas a chave em si
      * @param string $priKey Chave privada em formato PEM, não o path mas a chave em si
      * @param string $certKey Certificado em formato PEM, não o path mas a chave em si
+     * @paran boolean $ignoreValidCert Ignora a validade do certificado, mais usado para fins de teste 
      * @throws Exception\InvalidArgumentException
      * @throws Exception\RuntimeException
      */
-    public function __construct($pathCerts = '', $cnpj = '', $pubKey = '', $priKey = '', $certKey = '')
+    public function __construct($pathCerts = '', $cnpj = '', $pubKey = '', $priKey = '', $certKey = '', $ignoreValidCert = false)
     {
         if (strlen(trim($cnpj))!= 14) {
             throw new Exception\InvalidArgumentException(
@@ -121,8 +129,9 @@ class Pkcs12
             }
             $this->pathCerts = trim($pathCerts);
         }
+        $this->ignoreValidCert = $ignoreValidCert;
         $flagCert = false;
-        if ($pubKey != '' && $priKey != '' && strlen($pubKey) > 2000 && strlen($priKey) > 2000) {
+        if ($pubKey != '' && $priKey != '' && strlen($pubKey) > 500 && strlen($priKey) > 500) {
             $this->pubKey = $pubKey;
             $this->priKey = $priKey;
             $this->certKey = $priKey."\r\n".$pubKey;
@@ -155,7 +164,9 @@ class Pkcs12
         if ($flagCert) {
             //já que o certificado existe, verificar seu prazo de validade
             //o certificado será removido se estiver vencido
-            return $this->zValidCerts($this->pubKey);
+            if (!$this->ignoreValidCert) {
+                return $this->zValidCerts($this->pubKey);
+            }
         } else {
             if (substr($this->pathCerts, -1) !== DIRECTORY_SEPARATOR) {
                 $this->pathCerts .= DIRECTORY_SEPARATOR;
@@ -173,7 +184,9 @@ class Pkcs12
                 $this->priKey = file_get_contents($this->priKeyFile);
                 $this->certKey = file_get_contents($this->certKeyFile);
                 //já que o certificado existe, verificar seu prazo de validade
-                return $this->zValidCerts($this->pubKey);
+                if (! $this->ignoreValidCert) {
+                    return $this->zValidCerts($this->pubKey);
+                }
             }
         }
         return true;
@@ -295,14 +308,16 @@ class Pkcs12
      * aadChain
      * 
      * @param type $aCerts Array com os caminhos completos para cada certificado da cadeia
-     *                     ou um array com o conteúdo desses certificados 
+     *                     ou um array com o conteúdo desses certificados
+     * @return void 
      */
     public function aadChain($aCerts = array())
     {
         $certificate = $this->certKey;
         foreach ($aCerts as $cert) {
             if (is_file($cert)) {
-                $certificate .= "\r\n" . file_get_contents($cert);
+                $dados = file_get_contents($cert);
+                $certificate .= "\r\n" . $dados;
             } else {
                 $certificate .= "\r\n" . $cert;
             }
@@ -490,7 +505,7 @@ class Pkcs12
             $msg = "Não foi passado um xml para a verificação.";
             throw new Exception\InvalidArgumentException($msg);
         }
-        if ($tag=='') {
+        if ($tagid=='') {
             $msg = "Não foi indicada a TAG a ser verificada.";
             throw new Exception\InvalidArgumentException($msg);
         }
@@ -502,7 +517,7 @@ class Pkcs12
         $dom->preserveWhiteSpace = false;
         $dom->formatOutput = false;
         $dom->loadXML($xml, LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
-        $node = $dom->getElementsByTagName($tag)->item(0);
+        $node = $dom->getElementsByTagName($tagid)->item(0);
         if (!isset($node)) {
             throw new Exception\RuntimeException(
                 "A tag < $tagid > não existe no XML!!"
