@@ -3211,3 +3211,14 @@ VERSÃO 2.00
         }
     }
 */
+// teste:
+#$nfe=new ConvertNfeNFePHP();
+#$TXT_ORI=implode("\n", $nfe->campos_v200 );
+##$TXT_ORI=implode("|\n", array_keys($nfe->campos_v200) );$TXT_ORI=str_replace("A|\nB|","A|2.00|ID|\nB|",$TXT_ORI);
+#$TXT_ORI=str_replace('versao','2.00',$TXT_ORI);
+#$TXT_ORI="A|2.00|ID|\nB|\nC|\n";
+#
+#$XML=$nfe->TXT2XML( $TXT_ORI,true );//$TXT_ORI,true );
+#var_dump($XML['xml'][0]['xml']);
+#$TXT=$nfe->XML2TXT( $XML['xml'][0]['xml'] );
+#var_dump($TXT);
