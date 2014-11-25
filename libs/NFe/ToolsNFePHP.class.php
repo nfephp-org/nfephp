@@ -341,7 +341,7 @@ class ToolsNFePHP extends CommonNFePHP
     /**
      * pfxTimeStamp
      * Timestamp da validade do certificado A1 PKCS12 .pfx
-     * @var timestamp
+     * @var int
      */
     private $pfxTimestamp = 0;
     /**
@@ -4456,7 +4456,7 @@ class ToolsNFePHP extends CommonNFePHP
      * @param string $cabecalho
      * @param string $dados
      * @param string $metodo
-     * @param numeric $ambiente
+     * @param int $ambiente
      * @param string $siglaUF sem uso mantido apenas para compatibilidade com sendSOAP
      * @return mixed false se houve falha ou o retorno em xml do SEFAZ
      */
@@ -4622,7 +4622,7 @@ class ToolsNFePHP extends CommonNFePHP
      * Obtêm o numero do último lote de envio
      *
      * @name pGetNumLot
-     * @return numeric Numero do Lote
+     * @return int Numero do Lote
      */
     protected function pGetNumLot()
     {
@@ -4643,7 +4643,7 @@ class ToolsNFePHP extends CommonNFePHP
      * Grava o numero do lote de envio usado
      *
      * @name pPutNumLot
-     * @param numeric $num Inteiro com o numero do lote enviado
+     * @param int $num Inteiro com o numero do lote enviado
      * @return boolean true sucesso ou FALSO erro
      */
     protected function pPutNumLot($num)
@@ -4752,7 +4752,7 @@ class ToolsNFePHP extends CommonNFePHP
      * @name pTrata239
      * @param string $xml xml retornado da SEFAZ
      * @param string $siglaUF sigla do estado
-     * @param numeric $tpAmb tipo do ambiente
+     * @param int $tpAmb tipo do ambiente
      * @param string $metodo método
      */
     private function pTrata239($xml = '', $siglaUF = '', $tpAmb = '', $servico = '', $versaodefault = '')
@@ -5029,7 +5029,7 @@ class ToolsNFePHP extends CommonNFePHP
      *
      * @name pSetError
      * @param   string $msg Descrição do erro
-     * @return  none
+     * @return  void
      */
     private function pSetError($msg)
     {

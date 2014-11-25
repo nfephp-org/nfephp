@@ -329,7 +329,7 @@ class Destinatario extends Base implements iXml
      * pTagDest
      * Identificação do Destinatário da NF-e E01 pai A01
      * tag NFe/infNFe/dest (opcional para modelo 65)
-     * @return none
+     * @return void
      */
     public function tagdest()
     {
@@ -417,7 +417,7 @@ class Destinatario extends Base implements iXml
      * Endereço do Destinatário da NF-e E05 pai E01 
      * tag NFe/infNFe/dest/enderDest  (opcional para modelo 65)
      * Os dados do destinatário devem ser inseridos antes deste método
-     * @return none
+     * @return void
      */
     private function pTagEnderDest()
     {

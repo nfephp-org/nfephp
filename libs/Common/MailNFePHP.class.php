@@ -80,16 +80,16 @@ class MailNFePHP
      * @var string 
      */
     protected $layouthtml = '';
-    
+
     /**
      * __contruct
      * Construtor da classe MailNFePHP
      * @param array $aConfig Matriz com os dados de configuração
-     * @param number $mododebug (Optional) 1-SIM ou 0-NÃO (0 default)
+     * @param int $mododebug (Optional) 1-SIM ou 0-NÃO (0 default)
      * @package NFePHP
-     * @author  Roberto L. Machado <linux dot rlm at gmail dot com> 
+     * @author  Roberto L. Machado <linux dot rlm at gmail dot com>
      */
-    public function __construct($aConfig = '', $mododebug = 0)
+    public function __construct($aConfig = array(), $mododebug = 0)
     {
         if (is_numeric($mododebug)) {
             $this->debugMode = $mododebug;
@@ -108,7 +108,7 @@ class MailNFePHP
             $this->layouthtml = file_get_contents('../config/layout_email.html');
         }
         $this->mailERROR='';
-        if (is_array($aConfig)) {
+        if (!empty($aConfig)) {
             $this->mailAuth  = $aConfig['mailAuth'];
             $this->mailFROM  = $aConfig['mailFROM'];
             $this->mailHOST = $aConfig['mailHOST'];
@@ -171,14 +171,13 @@ class MailNFePHP
             }
         }
     } // end__construct
-    
+
     /**
-     * enviaMail 
+     * enviaMail
      * Função de envio de emails da NFe a partir dos endereços de email inclusos no próprio xml
      *
-     * @name    enviaMail
-     * @param   string $filename passar uma string com o caminho completo para o arquivo XML
-     * @param   string $para Força o envio da comunicação apenas para o email indicado
+     * @param string $filename passar uma string com o caminho completo para o arquivo XML
+     * @param string $sendto Força o envio da comunicação apenas para o email indicado
      * @return  boolean TRUE sucesso ou FALSE falha
      */
     public function enviaMail($filename = '', $sendto = '')

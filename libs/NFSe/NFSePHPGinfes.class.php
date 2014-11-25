@@ -170,7 +170,6 @@ class NFSePHPGinfes extends ToolsNFePHP {
      * @param int $mododebug
      * @param boolean $exceptions
      * @param boolean $save_files : atributo que visa o salvamento automático das informações
-     * @return none
      */
     public function __construct($aConfig = '', $mododebug = 2, $exceptions = false, $save_files = true) {
         
@@ -1232,7 +1231,7 @@ class NFSePHPGinfes extends ToolsNFePHP {
     /**
      * __cria_estrutura_diretorios
      * cria toda a estrutura de diretórios necessarira à NFS-e
-     * @return none
+     * @return void
      */
     private function __cria_estrutura_diretorios(){
         
@@ -1347,7 +1346,7 @@ class NFSePHPGinfes extends ToolsNFePHP {
      * salva arquivo de lote no diretorio de aprovados
      * 
      * @param string $numero
-     * @return none
+     * @return void
      */
     private function __save_lote_aprovado($numero) {
         $from = $this->nfseDir . "lotes/enviados" . DIRECTORY_SEPARATOR;
@@ -1380,5 +1379,3 @@ class NFSePHPGinfes extends ToolsNFePHP {
     }//__view_xml_file
 
 }//fim da classe NFSe
-
-?>

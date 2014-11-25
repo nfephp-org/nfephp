@@ -21,12 +21,12 @@ class Transporte extends Base implements iXml
     private $veicTransp; //DOMElement
     private $aReboque = array(); //Array de DOMElement
     private $aVol = array(); //Array de DOMElement
-    
+
     /**
      * __contruct
      * Função construtora cria um objeto DOMDocument
-     * 
-     * @return void
+     *
+     * @param string $dom
      */
     public function __construct($dom = '')
     {
@@ -118,6 +118,12 @@ class Transporte extends Base implements iXml
      * pTagRetTransp
      * Grupo Retenção ICMS transporte X11 pai X01
      * tag NFe/infNFe/transp/retTransp (opcional)
+     * @param string $vServ
+     * @param string $vBCRet
+     * @param string $pICMSRet
+     * @param string $vICMSRet
+     * @param string $cfop
+     * @param string $cMunFG
      * @return void
      */
     public function setRetencaoICMS(
@@ -309,8 +315,8 @@ class Transporte extends Base implements iXml
      * zTagTransp
      * Grupo Informações do Transporte X01 pai A01
      * tag NFe/infNFe/transp (obrigatório)
-     * @param string $modFrete
-     * @return vopid
+     * @throws Exception
+     * @return void
      */
     private function zTagTransp()
     {

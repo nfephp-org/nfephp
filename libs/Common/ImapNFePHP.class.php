@@ -385,6 +385,7 @@ class ImapNFePHP
                 $aResults = @imap_fetch_overview($this->imapconn, $uid, FT_UID);
                 foreach ($aResults as $message) {
                     $msgno = $message->msgno;
+                    $aAtt = array();
                     $actionmark = $this->downFile($msgno, $aAtt);
                     $response[$nMsg-1]['actionmark'] = $actionmark;
                     $response[$nMsg-1]['action'] = $this->imapaction;
@@ -392,6 +393,7 @@ class ImapNFePHP
                     $response[$nMsg-1]['subject'] = $message->subject;
                     $response[$nMsg-1]['date'] = $message->date;
                     $response[$nMsg-1]['attachments'] = $aAtt;
+                    $success = false;
                     if ($actionmark) {
                         $success = $this->imapAction($msgno, $message->uid);
                     }

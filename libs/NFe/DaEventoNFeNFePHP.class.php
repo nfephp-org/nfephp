@@ -679,5 +679,3 @@ class DaEventoNFeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
     }//fim printCCe
      
 } //fim CCeNFePHP
-
-?>

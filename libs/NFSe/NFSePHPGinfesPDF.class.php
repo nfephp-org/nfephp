@@ -243,8 +243,7 @@ class NFSePHPGinfesPDF extends FPDF {
 
 
     /**
-     * 
-     * @param type $arquivo_pdf_destino
+     * @param string $arquivo_pdf_destino
      */
     public function printNFSe($arquivo_pdf_destino='') {
         $xml = file_get_contents($this->arquivo_xml_origem);
@@ -430,28 +429,26 @@ class NFSePHPGinfesPDF extends FPDF {
     } //fim printNFSe
 
     /**
-     * 
-     * @param type $w
-     * @param type $h
-     * @param type $txt
-     * @param type $border
-     * @param type $align
-     * @param type $fill
+     * @param $w
+     * @param $h
+     * @param $txt
+     * @param int $border
+     * @param string $align
+     * @param bool $fill
      */
     public function MultiCell($w, $h, $txt, $border=0, $align='J', $fill=false){
         parent::MultiCell($w, $h, utf8_decode($txt), $border, $align, $fill);
     }
-    
+
     /**
-     * 
-     * @param type $w
-     * @param type $h
-     * @param type $txt
-     * @param type $border
-     * @param type $ln
-     * @param type $align
-     * @param type $fill
-     * @param type $link
+     * @param int $w
+     * @param int $h
+     * @param string $txt
+     * @param int $border
+     * @param int $ln
+     * @param string $align
+     * @param bool $fill
+     * @param string $link
      */
     public function Cell($w, $h=0, $txt='', $border=0, $ln=0, $align='', $fill=false, $link=''){
          parent::Cell($w, $h, utf8_decode($txt), $border, $ln, $align, $fill, $link);
@@ -460,9 +457,9 @@ class NFSePHPGinfesPDF extends FPDF {
     
     /**
      * 
-     * @param type $angle
-     * @param type $x
-     * @param type $y
+     * @param float $angle
+     * @param int $x
+     * @param int $y
      */
     protected function Rotate($angle, $x = -1, $y = -1) {
         if ($x == -1) {
@@ -488,4 +485,3 @@ class NFSePHPGinfesPDF extends FPDF {
     
     
 }//fim NFSePHPGinfesPDF
-?>

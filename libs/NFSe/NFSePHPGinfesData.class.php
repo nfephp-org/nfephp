@@ -73,8 +73,7 @@ class NFSePHPGinfesData {
 
     /**
      * 
-     * @param array itens {valor, valorDeducoes, valorPis, valorCofins, valorIr, valorCsll, issRetido,valorIss,valorIssRetido,outrasRetencoes, baseCalculo,aliquota,valorLiquidoNfse,descontoIncondicionado,descontoCondicionado,itemListaServico,codigoCnae,discriminacao} 
-     * 
+     * @var array itens {valor, valorDeducoes, valorPis, valorCofins, valorIr, valorCsll, issRetido,valorIss,valorIssRetido,outrasRetencoes, baseCalculo,aliquota,valorLiquidoNfse,descontoIncondicionado,descontoCondicionado,itemListaServico,codigoCnae,discriminacao}
      */
     private $Item =
             array(
@@ -132,7 +131,7 @@ class NFSePHPGinfesData {
 
     /**
      * 
-     * @param type $rps
+     * @param string $rps
      */
     public function __construct($rps) {
         $this->numrps = date("ym") . sprintf('%011s', $rps);
@@ -140,8 +139,8 @@ class NFSePHPGinfesData {
 
     /**
      * 
-     * @param type $campo
-     * @param type $valor
+     * @param string $campo
+     * @param mixed $valor
      */
     public function set($campo, $valor) {
         $this->{$campo} = $valor;
@@ -149,8 +148,8 @@ class NFSePHPGinfesData {
 
     /**
      * 
-     * @param type $campo
-     * @return type
+     * @param string $campo
+     * @return array
      */
     public function get($campo) {
         return $this->{$campo};
@@ -158,8 +157,8 @@ class NFSePHPGinfesData {
 
     /**
      * 
-     * @param type $campo
-     * @param type $valor
+     * @param string $campo
+     * @param string $valor
      */
     public function setItem($campo, $valor) {
         $this->Item[$campo] = $valor;
@@ -169,7 +168,7 @@ class NFSePHPGinfesData {
     
     /**
      * 
-     * @return type
+     * @return array
      */
     public function getArrayItem(){
         return $this->Item;
@@ -177,8 +176,8 @@ class NFSePHPGinfesData {
 
     /**
      * 
-     * @param type $campo
-     * @return type
+     * @param string $campo
+     * @return array
      */
     public function getItem($campo) {
         return $this->Item[$campo];
@@ -198,5 +197,3 @@ class NFSePHPGinfesData {
         $this->IM = $im;
     }
 }
-
-?>

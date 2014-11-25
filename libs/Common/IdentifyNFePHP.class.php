@@ -821,7 +821,8 @@ if (!class_exists('IdentifyNFePHP')) {
                 "-D " .
                 escapeshellarg($arquivo_tmp);
             #echo "zbarimg=> $cmd\n";
-            @exec($cmd, $output);
+            $output = array();
+            @exec($cmd, $output = array());
             if (!$force_imagem) {
                 @unlink($arquivo_tmp); // apaga arquivo tmp
             }

@@ -331,12 +331,10 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
     }
 
     /**
-     * printDocument
-     *
-     * @param  type $nome
-     * @param  type $destino
-     * @param  type $printer
-     * @return type
+     * @param string $nome
+     * @param string $destino
+     * @param string $printer
+     * @return string
      */
     public function printDocument($nome = '', $destino = 'I', $printer = '')
     {
@@ -3048,7 +3046,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
      * @param  number $w Comprimento da linha, em mm
      * @param  number $h Espessura da linha, em mm
      * @param  number $n Numero de traços na seção da linha com o comprimento $w
-     * @return none
+     * @return void
      */
     protected function zhDashedLine($x, $y, $w, $h, $n)
     {
@@ -3067,12 +3065,12 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
      * zhDashedVerticalLine
      * Desenha uma linha vertical tracejada com o FPDF
      *
-     * @param  number $x      Posição horizontal inicial, em mm
-     * @param  number $y      Posição vertical inicial, em mm
-     * @param  number $w      Comprimento da linha, em mm
-     * @param  number $yfinal Espessura da linha, em mm
-     * @param  number $n      Numero de traços na seção da linha com o comprimento $w
-     * @return none
+     * @param  int $x      Posição horizontal inicial, em mm
+     * @param  int $y      Posição vertical inicial, em mm
+     * @param  int $w      Comprimento da linha, em mm
+     * @param  int $yfinal Espessura da linha, em mm
+     * @param  int $n      Numero de traços na seção da linha com o comprimento $w
+     * @return void
      */
     protected function zhDashedVerticalLine($x, $y, $w, $yfinal, $n)
     {

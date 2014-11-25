@@ -2330,7 +2330,6 @@ class MDFeNFePHP {
      *   $this->passKey
      *
      * @name __loadCerts
-     * @param   none
      * @return    boolean true se o certificado foi carregado e false se nao
      **/
     protected function __loadCerts() {
@@ -2574,7 +2573,7 @@ class MDFeNFePHP {
      * @param string $cabecalho
      * @param string $dados
      * @param string $metodo
-     * @param numeric $ambiente  tipo de ambiente 1 - produção e 2 - homologação
+     * @param int $ambiente  tipo de ambiente 1 - produção e 2 - homologação
      * @param string $UF unidade da federação, necessário para diferenciar AM, MT e PR
      * @return mixed false se houve falha ou o retorno em xml do SEFAZ
      */
@@ -2677,7 +2676,7 @@ class MDFeNFePHP {
      * @param string $cabecalho
      * @param string $dados
      * @param string $metodo
-     * @param numeric $ambiente
+     * @param int $ambiente
      * @param string $UF sem uso mantido apenas para compatibilidade com __sendSOAP
      * @return mixed false se houve falha ou o retorno em xml do SEFAZ
      */
@@ -2852,7 +2851,7 @@ class MDFeNFePHP {
     *
     * @name __convertTime
     * @param    string   $DH
-    * @return   timestamp
+    * @return   int
     * @access   private
     **/
     protected function __convertTime($DH) {
@@ -2870,8 +2869,7 @@ class MDFeNFePHP {
      * Obtêm o numero do último lote de envio
      *
      * @name __getNumLot
-     * @param none
-     * @return numeric Numero do Lote
+     * @return int Numero do Lote
      */
     protected function __getNumLot() {
          $lotfile = $this->raizDir . 'config/numloteMDFE.xml';
@@ -2891,7 +2889,7 @@ class MDFeNFePHP {
      * Grava o numero do lote de envio usado
      *
      * @name __putNumLot
-     * @param numeric $num Inteiro com o numero do lote enviado
+     * @param int $num Inteiro com o numero do lote enviado
      * @return boolean true sucesso ou FALSO erro
      */
     protected function __putNumLot($num) {
@@ -2913,7 +2911,7 @@ class MDFeNFePHP {
      *
      * @name __setError
      * @param   string $msg Descrição do erro
-     * @return  none
+     * @return  void
      */
     private function __setError($msg) {
         $this->errMsg .= "$msg\n";

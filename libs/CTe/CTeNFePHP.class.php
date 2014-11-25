@@ -2693,7 +2693,6 @@ class CTeNFePHP
      *   $this->passKey
      *
      * @name   zLoadCerts
-     * @param  none
      * @return boolean true se o certificado foi carregado e false se nao
      **/
     protected function zLoadCerts()
@@ -2940,7 +2939,7 @@ class CTeNFePHP
      * @param string $cabecalho
      * @param string $dados
      * @param string $metodo
-     * @param numeric $ambiente
+     * @param int $ambiente
      * @return mixed false se houve falha ou o retorno em xml do SEFAZ
      */
     protected function zSendSOAP($urlsefaz, $namespace, $cabecalho, $dados, $metodo, $ambiente)
@@ -3090,7 +3089,7 @@ class CTeNFePHP
      *
      * @name zConvertTime
      * @param    string   $DH
-     * @return   timestamp
+     * @return   int
      * @access   private
      */
     protected function zConvertTime($DH)
@@ -3109,8 +3108,7 @@ class CTeNFePHP
      * Obtêm o numero do último lote de envio
      *
      * @name zGetNumLot
-     * @param none
-     * @return numeric Numero do Lote
+     * @return int Numero do Lote
      */
     protected function zGetNumLot()
     {
@@ -3131,7 +3129,7 @@ class CTeNFePHP
      * Grava o numero do lote de envio usado
      *
      * @name zPutNumLot
-     * @param numeric $num Inteiro com o numero do lote enviado
+     * @param int $num Inteiro com o numero do lote enviado
      * @return boolean true sucesso ou FALSO erro
      */
     protected function zPutNumLot($num)
@@ -3153,7 +3151,7 @@ class CTeNFePHP
      *
      * @name zSetError
      * @param   string $msg Descrição do erro
-     * @return  none
+     * @return  void
      */
     private function zSetError($msg)
     {

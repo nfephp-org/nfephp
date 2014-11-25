@@ -188,35 +188,33 @@ class DaCancnfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
 	}
 	return true;
     }//fim simpleConsistencyCheck
-  
+
     /**
      * monta
-     * 
+     *
      * @package NFePHP
      * @name monta
      * @version 1.0
      * @author Marcos Diez
-     * @param type $orientacao
-     * @param type $papel
-     * @param type $logoAlign
-     * @return type 
-     */    
+     * @param string $orientacao
+     * @param string $papel
+     * @param string $logoAlign
+     * @param int $situacao_externa
+     * @param bool $CLASSE_PDF
+     * @return string
+     */
     public function monta($orientacao='',$papel='A4',$logoAlign='C',$situacao_externa=NFEPHP_SITUACAO_EXTERNA_NONE,$CLASSE_PDF=false){
         return $this->montaDaCancnfe($orientacao,$papel,$logoAlign,$situacao_externa,$CLASSE_PDF);
     }//fim monta
-    
+
     /**
      * printDocument
-     * 
+     *
      * @package NFePHP
      * @name montaDANFE
      * @version 1.0
      * @author Marcos Diez
-     * @param type $nome 
-     * @param type $destino
-     * @param type $printer
-     * @return object pdf 
-     */ 	
+     */
     public function printDocument($nome='',$destino='I',$printer=''){
         return $this->printDaCancnfe($nome,$destino,$printer);
     }//fim printDocument
@@ -314,13 +312,13 @@ class DaCancnfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
             return $this->id;
         }        
     } //fim __buildCCe
-    
+
     /**
-     * 
-     * @param type $x
-     * @param type $y
-     * @param type $pag
-     * @return type
+     * @param int $x
+     * @param int $y
+     * @param int $pag
+     * @param int $situacao_externa
+     * @return int
      */
     private function __headerCCe($x,$y,$pag,$situacao_externa=NFEPHP_SITUACAO_EXTERNA_NONE){
         $oldX = $x;
@@ -512,8 +510,7 @@ class DaCancnfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
     }// fim __headerCCe
     
     /**
-     * 
-     * @param type $x
+     * @param int $x
      * @param int $y
      */
     private function __bodyCCe($x,$y){
@@ -530,12 +527,11 @@ class DaCancnfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
         
         
     }//fim __bodyCCe
-    
-    
+
+
     /**
-     * 
-     * @param type $x
-     * @param type $y
+     * @param int $x
+     * @param int $y
      */
     private function __footerCCe($x,$y){
         $w = $this->wPrint;
@@ -555,11 +551,10 @@ class DaCancnfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
     }//fim __footerCCe
 
     /**
-     * 
-     * @param type $nome
+     * @param string $nome
      * @param string $destino
-     * @param type $printer
-     * @return type
+     * @param string $printer
+     * @return mixed
      */
     public function printDaCancnfe($nome='',$destino='I',$printer=''){
         $arq = $this->pdf->Output($nome,$destino);
@@ -594,5 +589,3 @@ class DaCancnfeNFePHP extends CommonNFePHP implements DocumentoNFePHP {
 */
     }//fim printCCe
 } //fim CCeNFePHP
-
-?>
