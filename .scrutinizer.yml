@@ -1,5 +1,5 @@
 filter:
-    excluded_paths: [vendor/*, tests/*, libs/External/*]
+    excluded_paths: [vendor/*, exemplos/*, tests/*, libs/External/*]
     paths: [libs/*]
 
 before_commands:
