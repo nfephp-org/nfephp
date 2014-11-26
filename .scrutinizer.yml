@@ -6,6 +6,9 @@ before_commands:
     - "composer install --no-interaction --prefer-source --no-dev"
 
 tools:
+    php_code_coverage:
+        enabled: true
+        test_command: phpunit --colors --verbose
     php_analyzer: true
     php_changetracking: true
     php_code_sniffer:
@@ -14,3 +17,4 @@ tools:
     php_mess_detector: true
     php_pdepend: true
     php_sim: true
+
