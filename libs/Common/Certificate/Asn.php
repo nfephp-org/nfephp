@@ -200,6 +200,23 @@ class Asn extends Base
             return array_pop($result);
         }
     }//fim parseASN
+    
+    /**
+     * parseCommon
+     * 
+     * @param string $data
+     * @param string $result
+     * @return string
+     */
+    protected static function parseCommon($data, &$result)
+    {
+        self::$len = (integer) ord($data[1]);
+        $bytes = 0;
+        self::getLength(self::$len, $bytes, (string) $data);
+        $result = substr($data, 2 + $bytes, self::$len);
+        return substr($data, 2 + $bytes + self::$len);
+    }
+
 
     /**
      * parseBooleanType
@@ -228,11 +245,7 @@ class Asn extends Base
      */
     protected static function parseIntegerType(&$data, &$result)
     {
-        self::$len = (integer) ord($data[1]);
-        $bytes = 0;
-        self::getLength(self::$len, $bytes, (string) $data);
-        $integerData = substr($data, 2 + $bytes, self::$len);
-        $dataI = substr($data, 2 + $bytes + self::$len);
+        $dataI = self::parseCommon($data, $integerData);
         if (self::$len == 16) {
             $result[] = array(
                 'integer('.self::$len.')',
@@ -287,11 +300,7 @@ class Asn extends Base
     protected static function parseTimesType(&$data, &$result)
     {
         // Time types
-        self::$len = (integer) ord($data[1]);
-        $bytes = 0;
-        self::getLength(self::$len, $bytes, (string) $data);
-        $timeData = substr($data, 2 + $bytes, self::$len);
-        $dataI = substr($data, 2 + $bytes + self::$len);
+        $dataI = self::parseCommon($data, $timeData);
         $result[] = array(
             'utctime (' . self::$len . ')',
              $timeData);
@@ -308,11 +317,7 @@ class Asn extends Base
     protected static function parsePrintableString(&$data, &$result)
     {
         // Printable string type
-        self::$len = (integer) ord($data[1]);
-        $bytes = 0;
-        self::getLength(self::$len, $bytes, (string) $data);
-        $stringData = substr($data, 2 + $bytes, self::$len);
-        $data = substr($data, 2 + $bytes + self::$len);
+        $data = self::parseCommon($data, $stringData);
         $result[] = array(
             'Printable String (' . self::$len . ')',
             $stringData);
@@ -329,11 +334,7 @@ class Asn extends Base
     protected static function parseCharString(&$data, &$result)
     {
         // Character string type
-        self::$len = (integer) ord($data[1]);
-        $bytes = 0;
-        self::getLength(self::$len, $bytes, (string) $data);
-        $stringData = substr($data, 2 + $bytes, self::$len);
-        $data = substr($data, 2 + $bytes + self::$len);
+        $data = self::parseCommon($data, $stringData);
         $result[] = array(
             'string (' . self::$len . ')',
             self::printHex((string) $stringData));
@@ -350,11 +351,7 @@ class Asn extends Base
     protected static function parseExtensions(&$data, &$result, $text)
     {
         // Extensions
-        self::$len = (integer) ord($data[1]);
-        $bytes = 0;
-        self::getLength(self::$len, $bytes, (string) $data);
-        $extensionData = substr($data, 2 + $bytes, self::$len);
-        $data = substr($data, 2 + $bytes + self::$len);
+        $data = self::parseCommon($data, $extensionData);
         $result[] = array(
             "$text (" . self::$len . ")",
             array(self::parseASN((string) $extensionData, true)));
@@ -370,11 +367,7 @@ class Asn extends Base
     protected static function parseSequence(&$data, &$result)
     {
         // Sequence
-        self::$len = (integer) ord($data[1]);
-        $bytes = 0;
-        self::getLength(self::$len, $bytes, (string) $data);
-        $sequenceData = substr($data, 2 + $bytes, self::$len);
-        $data = substr($data, 2 + $bytes + self::$len);
+        $data = self::parseCommon($data, $sequenceData);
         $values = self::parseASN((string) $sequenceData);
         if (!is_array($values) || is_string($values[0])) {
             $values = array($values);
@@ -396,11 +389,7 @@ class Asn extends Base
         //lista com os números e descrição dos OID
         include_once('oidsTable.php');
         // Object identifier type
-        self::$len = (integer) ord($data[1]);
-        $bytes = 0;
-        self::getLength(self::$len, $bytes, (string) $data);
-        $oidData = substr($data, 2 + $bytes, self::$len);
-        $data = substr($data, 2 + $bytes + self::$len);
+        $data = self::parseCommon($data, $oidData);
         // Unpack the OID
         $plain  = floor(ord($oidData[0]) / 40);
         $plain .= '.' . ord($oidData[0]) % 40;
@@ -435,11 +424,7 @@ class Asn extends Base
      */
     protected static function parseSetOf(&$data, &$result)
     {
-        self::$len = (integer) ord($data[1]);
-        $bytes = 0;
-        self::getLength(self::$len, $bytes, (string) $data);
-        $sequenceData = substr($data, 2 + $bytes, self::$len);
-        $data = substr($data, 2 + $bytes + self::$len);
+        $data = self::parseCommon($data, $sequenceData);
         $result[] = array(
             'set (' . self::$len . ')',
             self::parseASN((string) $sequenceData));
@@ -456,11 +441,7 @@ class Asn extends Base
     protected static function parseOctetSting(&$data, &$result, $contextEspecific)
     {
         // Octetstring type
-        self::$len = (integer) ord($data[1]);
-        $bytes = 0;
-        self::getLength(self::$len, $bytes, (string) $data);
-        $octectstringData = substr($data, 2 + $bytes, self::$len);
-        $data = substr($data, 2 + $bytes + self::$len);
+        $data = self::parseCommon($data, $octectstringData);
         if ($contextEspecific) {
             $result[] = array(
                 'octet string('.self::$len.')',
@@ -483,11 +464,7 @@ class Asn extends Base
     protected static function parseUtf8String(&$data, &$result, $contextEspecific)
     {
         // UTF8 STRING
-        self::$len = (integer) ord($data[1]);
-        $bytes = 0;
-        self::getLength(self::$len, $bytes, (string) $data);
-        $octectstringData = substr($data, 2 + $bytes, self::$len);
-        $data = substr($data, 2 + $bytes + self::$len);
+        $data = self::parseCommon($data, $octectstringData);
         if ($contextEspecific) {
             $result[] = array(
                 'utf8 string('.self::$len.')',
@@ -509,11 +486,7 @@ class Asn extends Base
     protected static function parseIA5String(&$data, &$result)
     {
         // Character string type
-        self::$len = (integer) ord($data[1]);
-        $bytes = 0;
-        self::getLength(self::$len, $bytes, (string) $data);
-        $stringData = substr($data, 2 + $bytes, self::$len);
-        $data = substr($data, 2 + $bytes + self::$len);
+        $data = self::parseCommon($data, $stringData);
         $result[] = array(
             'IA5 String (' . self::$len . ')',
             $stringData);
@@ -529,11 +502,7 @@ class Asn extends Base
     protected static function parseString(&$data, &$result)
     {
         // Character string type
-        self::$len = (integer) ord($data[1]);
-        $bytes = 0;
-        self::getLength(self::$len, $bytes, (string) $data);
-        $stringData = substr($data, 2 + $bytes, self::$len);
-        $data = substr($data, 2 + $bytes + self::$len);
+        $data = self::parseCommon($data, $stringData);
         $result[] = array(
             'string (' . self::$len . ')',
             $stringData);
@@ -549,11 +518,7 @@ class Asn extends Base
     protected static function parseBitString(&$data, &$result)
     {
         // Bitstring type
-        self::$len = (integer) ord($data[1]);
-        $bytes = 0;
-        self::getLength(self::$len, $bytes, (string) $data);
-        $bitstringData = substr($data, 2 + $bytes, self::$len);
-        $data = substr($data, 2 + $bytes + self::$len);
+        $data = self::parseCommon($data, $bitstringData);
         $result[] = array(
             'bit string ('.self::$len.')',
             'UnsedBits:'.ord($bitstringData[0]).':'.ord($bitstringData[1]));
