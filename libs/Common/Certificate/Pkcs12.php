@@ -280,7 +280,6 @@ class Pkcs12
                 );
             }
         }
-        
         //monta o path completo com o nome da chave privada
         $this->priKeyFile = $this->pathCerts.$this->cnpj.'_priKEY.pem';
         //monta o path completo com o nome da chave publica
@@ -402,7 +401,7 @@ class Pkcs12
             );
         }
         //executa a assinatura
-        $xmlResp = $this->signXML($xmldoc, $node, $objSSLPriKey);
+        $xmlResp = $this->zSignXML($xmldoc, $root, $node, $objSSLPriKey);
         //libera a chave privada
         openssl_free_key($objSSLPriKey);
         return $xmlResp;
@@ -414,12 +413,13 @@ class Pkcs12
      * Método que provê a assinatura do xml conforme padrão SEFAZ
      * 
      * @param DOMDocument $xmlDoc
+     * @param DOMElement $root
      * @param DOMElement $node
      * @param resource $objSSLPriKey  
      * @return string xml assinado
      * @throws Exception\RuntimeException
      */
-    private function zSignXML($xmldoc, $node, $objSSLPriKey)
+    private function zSignXML($xmldoc, $root, $node, $objSSLPriKey)
     {
         $nsDSIG = 'http://www.w3.org/2000/09/xmldsig#';
         $nsCannonMethod = 'http://www.w3.org/TR/2001/REC-xml-c14n-20010315';
