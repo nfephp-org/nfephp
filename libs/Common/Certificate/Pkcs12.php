@@ -16,7 +16,6 @@ namespace Common\Certificate;
 use Common\Certificate\Asn;
 use Common\Exception;
 use \DOMDocument;
-use \DOMNode;
 
 class Pkcs12
 {
@@ -112,13 +111,23 @@ class Pkcs12
      * @throws Exception\InvalidArgumentException
      * @throws Exception\RuntimeException
      */
-    public function __construct($pathCerts = '', $cnpj = '', $pubKey = '', $priKey = '', $certKey = '', $ignoreValidCert = false)
-    {
+    public function __construct(
+        $pathCerts = '',
+        $cnpj = '',
+        $pubKey = '',
+        $priKey = '',
+        $certKey = '',
+        $ignoreValidCert = false
+    ) {
         if (strlen(trim($cnpj))!= 14) {
             throw new Exception\InvalidArgumentException(
                 "Um CNPJ válido deve ser passado e são permitidos apenas números. "
                 . "Valor passado [$cnpj]."
             );
+        }
+        if (empty($pathCerts)) {
+            //estabelecer diretorio default
+            $pathCerts = dirname(dirname(dirname(dirname(__FILE__)))).DIRECTORY_SEPARATOR.'certs'.DIRECTORY_SEPARATOR;
         }
         if (! empty($pathCerts)) {
             if (!is_dir(trim($pathCerts))) {
@@ -271,6 +280,7 @@ class Pkcs12
                 );
             }
         }
+        
         //monta o path completo com o nome da chave privada
         $this->priKeyFile = $this->pathCerts.$this->cnpj.'_priKEY.pem';
         //monta o path completo com o nome da chave publica
@@ -279,29 +289,41 @@ class Pkcs12
         $this->certKeyFile = $this->pathCerts.$this->cnpj.'_certKEY.pem';
         $this->zRemovePemFiles();
         if ($createFiles) {
-            if (empty($this->pathCerts)) {
-                throw new Exception\InvalidArgumentException(
-                    "Não está definido o diretório para armazenar os certificados."
-                );
-            }
-            if (! is_dir($this->pathCerts)) {
-                throw new Exception\InvalidArgumentException(
-                    "Não existe o diretório para armazenar os certificados."
-                );
-            }
-            //recriar os arquivos pem com o arquivo pfx
-            if (!file_put_contents($this->priKeyFile, $x509certdata['pkey'])) {
-                throw new Exception\RuntimeException(
-                    "Falha de permissão de escrita na pasta dos certificados!!"
-                );
-            }
-            file_put_contents($this->pubKeyFile, $x509certdata['cert']);
-            file_put_contents($this->certKeyFile, $x509certdata['pkey']."\r\n".$x509certdata['cert']);
+            $this->zSavePemFiles($x509certdata);
         }
         $this->pubKey=$x509certdata['cert'];
         $this->priKey=$x509certdata['pkey'];
         $this->certKey=$x509certdata['pkey']."\r\n".$x509certdata['cert'];
         return true;
+    }
+    
+    /**
+     * zSavePemFiles
+     * 
+     * @param array $x509certdata
+     * @throws Exception\InvalidArgumentException
+     * @throws Exception\RuntimeException
+     */
+    private function zSavePemFiles($x509certdata)
+    {
+        if (empty($this->pathCerts)) {
+            throw new Exception\InvalidArgumentException(
+                "Não está definido o diretório para armazenar os certificados."
+            );
+        }
+        if (! is_dir($this->pathCerts)) {
+            throw new Exception\InvalidArgumentException(
+                "Não existe o diretório para armazenar os certificados."
+            );
+        }
+        //recriar os arquivos pem com o arquivo pfx
+        if (!file_put_contents($this->priKeyFile, $x509certdata['pkey'])) {
+            throw new Exception\RuntimeException(
+                "Falha de permissão de escrita na pasta dos certificados!!"
+            );
+        }
+        file_put_contents($this->pubKeyFile, $x509certdata['cert']);
+        file_put_contents($this->certKeyFile, $x509certdata['pkey']."\r\n".$x509certdata['cert']);
     }
     
     /**
@@ -331,11 +353,9 @@ class Pkcs12
     /**
      * signXML
      * 
-     * Método que provê a assinatura do xml conforme padrão SEFAZ
-     * 
-     * @param string $docxml Path completo para o xml ou o próprio xml em uma string
-     * @param string $tagid TAG a ser assinada
-     * @return mixed false em caso de erro ou uma string com o conteudo do xml já assinado
+     * @param string $docxml
+     * @param string $tagid
+     * @return string xml assinado
      * @throws Exception\InvalidArgumentException
      * @throws Exception\RuntimeException
      */
@@ -368,13 +388,6 @@ class Pkcs12
         $order = array("\r\n", "\n", "\r", "\t");
         $xml = str_replace($order, '', $xml);
         
-        $nsDSIG = 'http://www.w3.org/2000/09/xmldsig#';
-        $nsCannonMethod = 'http://www.w3.org/TR/2001/REC-xml-c14n-20010315';
-        $nsSignatureMethod = 'http://www.w3.org/2000/09/xmldsig#rsa-sha1';
-        $nsTransformMethod1 ='http://www.w3.org/2000/09/xmldsig#enveloped-signature';
-        $nsTransformMethod2 = 'http://www.w3.org/TR/2001/REC-xml-c14n-20010315';
-        $nsDigestMethod = 'http://www.w3.org/2000/09/xmldsig#sha1';
-        
         $xmldoc = new DOMDocument('1.0', 'utf-8');// carrega o documento no DOM
         $xmldoc->preserveWhiteSpace = false; //elimina espaços em branco
         $xmldoc->formatOutput = false;
@@ -388,6 +401,33 @@ class Pkcs12
                 "A tag < $tagid > não existe no XML!!"
             );
         }
+        //executa a assinatura
+        $xmlResp = $this->signXML($xmldoc, $node, $objSSLPriKey);
+        //libera a chave privada
+        openssl_free_key($objSSLPriKey);
+        return $xmlResp;
+    }
+    
+    /**
+     * zSignXML
+     * 
+     * Método que provê a assinatura do xml conforme padrão SEFAZ
+     * 
+     * @param DOMDocument $xmlDoc
+     * @param DOMElement $node
+     * @param resource $objSSLPriKey  
+     * @return string xml assinado
+     * @throws Exception\RuntimeException
+     */
+    private function zSignXML($xmldoc, $node, $objSSLPriKey)
+    {
+        $nsDSIG = 'http://www.w3.org/2000/09/xmldsig#';
+        $nsCannonMethod = 'http://www.w3.org/TR/2001/REC-xml-c14n-20010315';
+        $nsSignatureMethod = 'http://www.w3.org/2000/09/xmldsig#rsa-sha1';
+        $nsTransformMethod1 ='http://www.w3.org/2000/09/xmldsig#enveloped-signature';
+        $nsTransformMethod2 = 'http://www.w3.org/TR/2001/REC-xml-c14n-20010315';
+        $nsDigestMethod = 'http://www.w3.org/2000/09/xmldsig#sha1';
+        
         //pega o atributo id do node a ser assinado
         $idSigned = trim($node->getAttribute("Id"));
         //extrai os dados da tag para uma string na forma canonica
@@ -483,8 +523,6 @@ class Pkcs12
         $x509DataNode->appendChild($x509CertificateNode);
         //salva o xml completo em uma string
         $xmlResp = $xmldoc->saveXML();
-        //libera a chave privada
-        openssl_free_key($objSSLPriKey);
         //retorna o documento assinado
         return $xmlResp;
     }
