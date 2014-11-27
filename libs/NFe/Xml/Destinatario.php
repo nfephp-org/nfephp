@@ -1,13 +1,10 @@
 <?php
 
-//namespace NFe\Xml;
+namespace NFe\Xml;
 
-//use NFe\Xml\Base;
-//use NFe\Xml\iXml;
-//use \DOMDocument;
-
-require_once('Base.php');
-require_once('iXml.php');
+use NFe\Xml\Base;
+use NFe\Xml\iXml;
+use \DOMDocument;
 
 class Destinatario extends Base implements iXml
 {

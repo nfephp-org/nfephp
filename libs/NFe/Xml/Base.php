@@ -1,9 +1,9 @@
 <?php
 
-//namespace NFe\Xml;
+namespace NFe\Xml;
 
-//use \DOMDocument;
-//use \Exception;
+use \DOMDocument;
+use \Exception;
 
 class Base
 {
