@@ -26,7 +26,7 @@
  * 
  * @package     NFePHP
  * @name        MakeNFePHP
- * @version     0.1.11
+ * @version     0.1.12
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright   2009-2014 &copy; NFePHP
  * @link        http://www.nfephp.org/
@@ -40,10 +40,10 @@
  * 
  */
 
-//namespace NFe;
+namespace NFe;
 
-//use \DOMDocument;
-//use \DOMElement;
+use \DOMDocument;
+use \DOMElement;
 
 class MakeNFe
 {
@@ -114,8 +114,6 @@ class MakeNFe
     private $aComb = array(); //array de DOMNodes
     private $aImposto = array(); //array de DOMNodes
     private $aICMS = array(); //array de DOMNodes
-    private $aICMSST = array(); //array de DOMNodes
-    private $aICMSSN = array(); //array de DOMNodes
     private $aIPI = array(); //array de DOMNodes
     private $aII = array(); //array de DOMNodes
     private $aISSQN = array(); //array de DOMNodes
