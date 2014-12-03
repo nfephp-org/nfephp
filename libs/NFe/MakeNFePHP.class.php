@@ -26,7 +26,7 @@
  * 
  * @package     NFePHP
  * @name        MakeNFePHP
- * @version     0.1.11
+ * @version     0.1.12
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright   2009-2014 &copy; NFePHP
  * @link        http://www.nfephp.org/
@@ -2038,17 +2038,17 @@ class MakeNFe
         if ($cst == '00' || $cst == '49'|| $cst == '50' || $cst == '99') {
             $ipiTrib = $this->dom->createElement('IPITrib');
             $this->zAddChild($ipiTrib, "CST", $cst, true, "[item $nItem] Código da situação tributária do IPI");
-            $this->zAddChild($ipiTrib, "vBC", $vBC, true, "[item $nItem] Valor da BC do IPI");
-            $this->zAddChild($ipiTrib, "pIPI", $pIPI, true, "[item $nItem] Alíquota do IPI");
+            $this->zAddChild($ipiTrib, "vBC", $vBC, false, "[item $nItem] Valor da BC do IPI");
+            $this->zAddChild($ipiTrib, "pIPI", $pIPI, false, "[item $nItem] Alíquota do IPI");
             $this->zAddChild(
                 $ipiTrib,
                 "qUnid",
                 $qUnid,
-                true,
+                false,
                 "[item $nItem] Quantidade total na unidade padrão para tributação "
                 . "(somente para os produtos tributados por unidade)"
             );
-            $this->zAddChild($ipiTrib, "vUnid", $vUnid, true, "[item $nItem] Valor por Unidade Tributável");
+            $this->zAddChild($ipiTrib, "vUnid", $vUnid, false, "[item $nItem] Valor por Unidade Tributável");
             $this->zAddChild($ipiTrib, "vIPI", $vIPI, true, "[item $nItem] Valor do IPI");
             $ipi->appendChild($ipiTrib);
         } else {
