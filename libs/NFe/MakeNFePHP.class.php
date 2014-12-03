@@ -1607,7 +1607,7 @@ class MakeNFe
                 $icms = $this->dom->createElement("ICMS30");
                 $this->zAddChild($icms, 'orig', $orig, true, "$identificador [item $nItem] Origem da mercadoria");
                 $this->zAddChild($icms, 'CST', $cst, true, "$identificador [item $nItem] Tributação do ICMS = 30");
-                $this->zAddChild($icms, 'modBCST', $modBC, true, "$identificador [item $nItem] Modalidade de determinação da BC do ICMS ST");
+                $this->zAddChild($icms, 'modBCST', $modBCST, true, "$identificador [item $nItem] Modalidade de determinação da BC do ICMS ST");
                 $this->zAddChild(
                     $icms,
                     'pMVAST',
@@ -1659,7 +1659,7 @@ class MakeNFe
                 $this->zAddChild($icms, 'vBC', $vBC, true, "$identificador [item $nItem] Valor da BC do ICMS");
                 $this->zAddChild($icms, 'pICMS', $pICMS, true, "$identificador [item $nItem] Alíquota do imposto");
                 $this->zAddChild($icms, 'vICMS', $vICMS, true, "$identificador [item $nItem] Valor do ICMS");
-                $this->zAddChild($icms, 'modBCST', $modBC, true, "$identificador [item $nItem] Modalidade de determinação da BC do ICMS ST");
+                $this->zAddChild($icms, 'modBCST', $modBCST, true, "$identificador [item $nItem] Modalidade de determinação da BC do ICMS ST");
                 $this->zAddChild(
                     $icms,
                     'pMVAST',
@@ -1683,7 +1683,7 @@ class MakeNFe
                 $this->zAddChild($icms, 'pRedBC', $pRedBC, false, "$identificador [item $nItem] Percentual da Redução de BC");
                 $this->zAddChild($icms, 'pICMS', $pICMS, true, "$identificador [item $nItem] Alíquota do imposto");
                 $this->zAddChild($icms, 'vICMS', $vICMS, true, "$identificador [item $nItem] Valor do ICMS");
-                $this->zAddChild($icms, 'modBCST', $modBC, true, "$identificador [item $nItem] Modalidade de determinação da BC do ICMS ST");
+                $this->zAddChild($icms, 'modBCST', $modBCST, true, "$identificador [item $nItem] Modalidade de determinação da BC do ICMS ST");
                 $this->zAddChild(
                     $icms,
                     'pMVAST',
