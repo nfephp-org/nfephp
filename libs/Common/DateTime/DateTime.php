@@ -59,16 +59,31 @@ class DateTime
      * @param string $DH Informação de data e tempo extraida da NFe
      * @return timestamp UNIX Para uso com a funçao date do php
      */
-    public static function convertSefazTimeToTimestamp($DH = '')
+    public static function convertSefazTimeToTimestamp($dataHora = '')
     {
-        if ($DH == '') {
+        if ($dataHora == '') {
             return '';
         }
-        $aDH = explode('T', $DH);
+        $aDH = explode('T', $dataHora);
         $adDH = explode('-', $aDH[0]);
         $inter = explode('-', $aDH[1]);
         $atDH = explode(':', $inter[0]);
-        $timestampDH = mktime($atDH[0], $atDH[1], $atDH[2], $adDH[1], $adDH[2], $adDH[0]);
-        return $timestampDH;
+        $timestamp = mktime($atDH[0], $atDH[1], $atDH[2], $adDH[1], $adDH[2], $adDH[0]);
+        return $timestamp;
+    }
+    
+    /**
+     * convertTimestampToSefazTime
+     * Converte um timestamp php em data/hora no formato usado
+     * pela SEFAZ 2014-12-17T13:22:33-02:00
+     * @param double $timestamp
+     * @return string
+     */
+    public static function convertTimestampToSefazTime($timestamp = '')
+    {
+        if ($timestamp == '') {
+            return (string) str_replace(' ', 'T', date('Y-m-d H:i:sP'));
+        }
+        return (string) str_replace(' ', 'T', date('Y-m-d H:i:sP', $timestamp));
     }
 }
