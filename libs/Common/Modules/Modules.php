@@ -17,9 +17,6 @@ class Modules
     protected $cRed = '#FF0000';
     protected $cGreen = '#00CC00';
 
-    /**
-     * 
-     */
     public function __construct()
     {
         ob_start();
@@ -138,164 +135,56 @@ class Modules
     }
     
     /**
-     * testCurl
+     * Rotina de teste dos molulos instalados 
+     * se a versão é suficiente e se estão habilitados
+     * @param string $name
+     * @param string $alias
+     * @param string $param1
+     * @param string $param2
      * @param string $limit
+     * @param string $coment
      * @return string
      */
-    public function testCurl($limit = '7.10.2')
-    {
-        $modcurl = false;
-        if ($modcurl = $this->isLoaded('curl')) {
-            $modcurlVer = $this->getModuleSetting('curl', 'cURL Information');
-            $modcurlSsl = $this->getModuleSetting('curl', 'SSL Version');
-        }
-        $cCurl = $this->cRed;
-        $curlver = ' N&atilde;o instalado !!!';
+    public function testModule(
+        $name,
+        $alias = '',
+        $param1 = '',
+        $param2 = '',
+        $limit = '',
+        $coment = ''
+    ) {
+        $cor = $this->cRed;
+        $msg = ' N&atilde;o instalado !!!';
         $status = 'NOK';
-        if ($modcurl) {
-            $curlver = $this->convVer($modcurlVer);
-            if ($curlver > $this->convVer($limit)) {
-                $curlver = ' vers&atilde;o ' . $modcurlVer;
-                $cCurl = $this->cGreen;
-                $status = 'OK';
+        $modStatus = $this->isLoaded($name);
+        $enabled = true;
+        $num = $limit;
+        if ($modStatus) {
+            if (!empty($param1)) {
+                $version = $this->getModuleSetting($name, $param1);
+                $num = (int) $this->convVer($version);
+                $msg = ' vers&atilde;o ' . $version;
+            }
+            if (!empty($param2)) {
+                $enabled = $this->getModuleSetting($name, $param2);
             }
         }
+        if ($num >= (int) $this->convVer($limit) && $enabled == 'enabled') {
+            $cor = $this->cGreen;
+            $status = 'OK';
+        }
         return "<tr bgcolor=\"#FFFF99\">"
-            . "<td>cURL $curlver [ $modcurlSsl ]</td>"
-            . "<td bgcolor=\"$cCurl\"><div align=\"center\">$status</div></td>"
-            . "<td>A vers&atilde;o do cURL deve ser $limit ou maior</td></tr>";
+            . "<td>$alias $msg</td>"
+            . "<td bgcolor=\"$cor\"><div align=\"center\">$status</div></td>"
+            . "<td>$coment</td></tr>";
     }
     
     /**
-     * testSSL
-     * @param string $limit
+     * Rotina para teste de escrita no path especificado
+     * @param string $path
+     * @param string $message
      * @return string
      */
-    public function testSSL($limit = '0.9.0')
-    {
-        $modssl = $this->isLoaded('openssl');
-        if ($modssl) {
-            $modsslVer = $this->getModuleSetting('openssl', 'OpenSSL Library Version');
-            $modsslEnable = $this->getModuleSetting('openssl', 'OpenSSL support');
-        }
-        $cSSL = $this->cRed;
-        $status = 'NOK';
-        $sslver = ' N&atilde;o instalado !!!';
-        if ($modssl) {
-            if ($modsslEnable == 'enabled') {
-                $cSSL = $this->cGreen;
-                $sslver = $modsslVer;
-                $status = 'OK';
-            }
-        }
-        return "<tr bgcolor=\"#FFFF99\">"
-            . "<td>SSL $sslver</td>"
-            . "<td bgcolor=\"$cSSL\"><div align=\"center\">$status</div></td>"
-            . "<td>A vers&atilde;o do OpenSSL deve ser $limit ou maior</td></tr>";
-    }
-    
-    /**
-     * testDOM
-     * @param string $limit
-     * @return string
-     */
-    public function testDOM($limit = '2.7.0')
-    {
-        $moddom = $this->isLoaded('dom');
-        if ($moddom) {
-            $moddomEnable = $this->getModuleSetting('dom', 'DOM/XML');
-            $moddomLibxml = $this->getModuleSetting('dom', 'libxml Version');
-        }
-        $cDOM = $this->cRed;
-        $domver = ' N&atilde;o instalado !!!';
-        $status = 'NOK';
-        if ($moddom) {
-            $domver = $this->convVer($moddomLibxml);
-            if ($domver > $this->convVer($limit) && $moddomEnable=='enabled') {
-                $domver = ' libxml vers&atilde;o ' . $moddomLibxml;
-                $cDOM = $this->cGreen;
-                $status = 'OK';
-            } else {
-                $domver = '';
-            }
-        }
-        return "<tr bgcolor=\"#FFFF99\">"
-            . "<td>DOM $domver</td>"
-            . "<td bgcolor=\"$cDOM\"><div align=\"center\">$status</div></td>"
-            . "<td>O vers&atilde;o do libxml deve ser $limit ou maior</td></tr>";
-    }
-    
-    /**
-     * testSOAP
-     * @return string
-     */
-    public function testSOAP()
-    {
-        $modsoap = $this->isLoaded('soap');
-        if ($modsoap) {
-            $modsoapEnable = $this->getModuleSetting('soap', 'Soap Client');
-        }
-        $cSOAP = $this->cRed;
-        $soapver = ' N&atilde;o instalado !!!';
-        $status = 'NOK';
-        if ($modsoap) {
-            if ($modsoapEnable=='enabled') {
-                $cSOAP = $this->cGreen;
-                $soapver = $modsoapEnable;
-                $status = 'OK';
-            }
-        }
-        return "<tr bgcolor=\"#FFFF99\">"
-            . "<td>SOAP</td><td bgcolor=\"$cSOAP\"><div align=\"center\">$status</div></td>"
-            . "<td>$soapver</td></tr>";
-    }
-
-    public function testGD($limit = '1.1.1')
-    {
-        $modgd = $this->isLoaded('gd');
-        if ($modgd) {
-            $modgdVer = $this->getModuleSetting('gd', 'GD Version');
-        }
-        $cgd = $this->cRed;
-        $gdver = ' N&atilde;o instalado !!!';
-        $status = 'NOK';
-        if ($modgd) {
-            $gdver = $this->convVer($modgdVer);
-            if ($gdver  > $this->convVer($limit)) {
-                $cgd = $this->cGreen;
-                $gdver = ' vers&atilde;o ' . $modgdVer;
-                $status = 'OK';
-            }
-        }
-        return "<tr bgcolor=\"#FFFF99\">"
-            . "<td>GD $gdver</td>"
-            . "<td bgcolor=\"$cgd\"><div align=\"center\">$status</div></td>"
-            . "<td>gd &eacute; necess&aacute;rio para impressão</td></tr>";
-    }
-
-    public function testZIP()
-    {
-        $modZip = $this->isLoaded('zip');
-        if ($modZip) {
-            $modzipEnable = $this->getModuleSetting('zip', 'Zip');
-            $modzipVer = $this->getModuleSetting('zip', 'Zip version');
-        }
-        $cZIP = $this->cRed;
-        $zipver = ' N&atilde;o instalado !!!';
-        $status = 'NOK';
-        if ($modZip) {
-            if ($modzipEnable=='enabled') {
-                $cZIP = $this->cGreen;
-                $status = 'OK';
-                $zipver = ' vers&atilde;o ' . $modzipVer;
-            }
-        }
-        return "<tr bgcolor=\"#FFFF99\">"
-            . "<td>ZIP $zipver</td>"
-            . "<td bgcolor=\"$cZIP\"><div align=\"center\">$status</div></td>"
-            . "<td>ZIP necess&aacute;rio para download da NFe</td></tr>";
-    }
-    
     public function writeTest($path = '', $message = '')
     {
         $wdCerts= 'O diret&oacute;rio N&Atilde;O EXISTE';
