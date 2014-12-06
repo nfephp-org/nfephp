@@ -26,7 +26,7 @@
  * 
  * @package     NFePHP
  * @name        MakeNFePHP
- * @version     0.1.12
+ * @version     0.1.13
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright   2009-2014 &copy; NFePHP
  * @link        http://www.nfephp.org/
@@ -42,6 +42,7 @@
 
 namespace NFe;
 
+use Common\DateTime\DateTime;
 use \DOMDocument;
 use \DOMElement;
 
@@ -80,6 +81,7 @@ class MakeNFe
     public $dom; //DOMDocument
     
     //propriedades privadas utilizadas internamente pela classe
+    private $timeZone = '-03:00';
     private $NFe = ''; //DOMNode
     private $infNFe = ''; //DOMNode
     private $ide = ''; //DOMNode
@@ -138,6 +140,7 @@ class MakeNFe
      */
     public function __construct($formatOutput = true, $preserveWhiteSpace = false)
     {
+        $this->timeZone = DateTime::tzdBR($this->aConfig['siglaUF']);
         $this->dom = new DOMDocument('1.0', 'UTF-8');
         $this->dom->formatOutput = $formatOutput;
         $this->dom->preserveWhiteSpace = $preserveWhiteSpace;
@@ -212,6 +215,7 @@ class MakeNFe
         $this->zAppChild($this->NFe, $this->infNFe, 'Falta tag "NFe"');
         //[0] tag NFe
         $this->zAppChild($this->dom, $this->NFe, 'Falta DOMDocument');
+        $this->zTestaChaveXML($this->dom);
         $this->xml = $this->dom->saveXML();
         return true;
     }
@@ -297,6 +301,9 @@ class MakeNFe
         $this->zAddChild($ide, "mod", $mod, true, $identificador . "Código do Modelo do Documento Fiscal");
         $this->zAddChild($ide, "serie", $serie, true, $identificador . "Série do Documento Fiscal");
         $this->zAddChild($ide, "nNF", $nNF, true, $identificador . "Número do Documento Fiscal");
+        if ($dhEmi == '') {
+            $dhEmi = DateTime::convertTimestampToSefazTime();
+        }
         $this->zAddChild($ide, "dhEmi", $dhEmi, true, $identificador . "Data e hora de emissão do Documento Fiscal");
         if ($mod == '55' && $dhSaiEnt != '') {
             $this->zAddChild(
@@ -3492,6 +3499,98 @@ class MakeNFe
         }
         if (!empty($child)) {
             $parent->appendChild($child);
+        }
+    }
+    
+    /**
+     * zCalculaDV
+     * Função para o calculo o digito verificador da chave da NFe
+     * 
+     * @name calculaDV
+     * @param string $chave43
+     * @return string 
+     */
+    private function zCalculaDV($chave43)
+    {
+        $multiplicadores = array(2, 3, 4, 5, 6, 7, 8, 9);
+        $i = 42;
+        $soma_ponderada = 0;
+        while ($i >= 0) {
+            for ($m = 0; $m < count($multiplicadores) && $i >= 0; $m++) {
+                $soma_ponderada+= $chave43[$i] * $multiplicadores[$m];
+                $i--;
+            }
+        }
+        $resto = $soma_ponderada % 11;
+        if ($resto == '0' || $resto == '1') {
+            $cDV = 0;
+        } else {
+            $cDV = 11 - $resto;
+        }
+        return $cDV;
+    } //fim calculaDV
+
+    /**
+     * zTestaChaveXML
+     * Remonta a chave da NFe de 44 digitos com base em seus dados
+     * Isso é útil no caso da chave informada estar errada
+     * se a chave estiver errada a mesma é substituida
+     * @param object $dom
+     */
+    private function zTestaChaveXML($dom)
+    {
+        $infNFe= $dom->getElementsByTagName("infNFe")->item(0);
+        $ide = $dom->getElementsByTagName("ide")->item(0);
+        $emit = $dom->getElementsByTagName("emit")->item(0);
+        $cUF = $ide->getElementsByTagName('cUF')->item(0)->nodeValue;
+        $dhEmi = $ide->getElementsByTagName('dhEmi')->item(0)->nodeValue;
+        $cnpj = $emit->getElementsByTagName('CNPJ')->item(0)->nodeValue;
+        $mod = $ide->getElementsByTagName('mod')->item(0)->nodeValue;
+        $serie = $ide->getElementsByTagName('serie')->item(0)->nodeValue;
+        $nNF = $ide->getElementsByTagName('nNF')->item(0)->nodeValue;
+        $tpEmis = $ide->getElementsByTagName('tpEmis')->item(0)->nodeValue;
+        $cNF = $ide->getElementsByTagName('cNF')->item(0)->nodeValue;
+        $cDV = $ide->getElementsByTagName('cDV')->item(0)->nodeValue;
+        
+        $chave = str_replace('NFe', '', $infNFe->getAttribute("Id"));
+        $tempData = explode("-", $dhEmi);
+        $forma = "%02d%02d%02d%s%02d%03d%09d%01d%08d";
+        $chaveMontada = sprintf(
+            $forma,
+            $cUF,
+            $tempData[0] - 2000,
+            $tempData[1],
+            $cnpj,
+            $mod,
+            $serie,
+            $nNF,
+            $tpEmis,
+            $cNF
+        );
+        $chaveMontada .= $this->calculaDV($chaveMontada);
+        //caso a chave contida na NFe esteja errada
+        //remontar a chave
+        if ($chaveMontada != $chave) {
+            if (strlen($cNF) != 8) {
+                $cNF = $ide->getElementsByTagName('cNF')->item(0)->nodeValue = rand(10000001, 99999999);
+            }
+            $forma = "%02d%02d%02d%s%02d%03d%09d%01d%08d";
+            $tempChave = sprintf(
+                $forma,
+                $cUF,
+                $tempData[0] - 2000,
+                $tempData[1],
+                $cnpj,
+                $mod,
+                $serie,
+                $nNF,
+                $tpEmis,
+                $cNF
+            );
+            $cDV = $ide->getElementsByTagName('cDV')->item(0)->nodeValue = $this->calculaDV($tempChave);
+            $chave = $tempChave.$cDV;
+            $infNFe = $dom->getElementsByTagName("infNFe")->item(0);
+            $infNFe->setAttribute("Id", "NFe" . $chave);
         }
     }
 }
