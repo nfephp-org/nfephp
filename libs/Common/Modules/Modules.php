@@ -158,7 +158,8 @@ class Modules
         $status = 'NOK';
         $modStatus = $this->isLoaded($name);
         $enabled = true;
-        $num = $limit;
+        $version = '';
+        $num = '';
         if ($modStatus) {
             if (!empty($param1)) {
                 $version = $this->getModuleSetting($name, $param1);
@@ -172,6 +173,9 @@ class Modules
         if ($num >= (int) $this->convVer($limit) && $enabled == 'enabled') {
             $cor = $this->cGreen;
             $status = 'OK';
+            if ($version == '') {
+                $msg = '';
+            }
         }
         return "<tr bgcolor=\"#FFFF99\">"
             . "<td>$alias $msg</td>"
