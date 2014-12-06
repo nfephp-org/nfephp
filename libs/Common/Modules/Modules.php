@@ -156,11 +156,10 @@ class Modules
         $cor = $this->cRed;
         $msg = ' N&atilde;o instalado !!!';
         $status = 'NOK';
-        $modStatus = $this->isLoaded($name);
-        $enabled = true;
-        $version = '';
-        $num = '';
-        if ($modStatus) {
+        if ($this->isLoaded($name)) {
+            $msg = '';
+            $num = '';
+            $enabled = 'enabled';
             if (!empty($param1)) {
                 $version = $this->getModuleSetting($name, $param1);
                 $num = (int) $this->convVer($version);
@@ -169,12 +168,9 @@ class Modules
             if (!empty($param2)) {
                 $enabled = $this->getModuleSetting($name, $param2);
             }
-        }
-        if ($num >= (int) $this->convVer($limit) && $enabled == 'enabled') {
-            $cor = $this->cGreen;
-            $status = 'OK';
-            if ($version == '') {
-                $msg = '';
+            if ($num >= (int) $this->convVer($limit) && $enabled == 'enabled') {
+                $cor = $this->cGreen;
+                $status = 'OK';
             }
         }
         return "<tr bgcolor=\"#FFFF99\">"
