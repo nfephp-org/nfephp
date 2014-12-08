@@ -178,29 +178,4 @@ class Modules
             . "<td bgcolor=\"$cor\"><div align=\"center\">$status</div></td>"
             . "<td>$coment</td></tr>";
     }
-    
-    /**
-     * Rotina para teste de escrita no path especificado
-     * @param string $path
-     * @param string $message
-     * @return string
-     */
-    public function writeTest($path = '', $message = '')
-    {
-        $wdCerts= 'O diret&oacute;rio N&Atilde;O EXISTE';
-        $cdCerts = $this->cRed;
-        if (is_dir($path)) {
-            $filen = $path.DIRECTORY_SEPARATOR.'teste.txt';
-            $wdCerts= ' Sem permiss&atilde;o !!';
-            if (file_put_contents($filen, "teste\r\n")) {
-                $cdCerts = $this->cGreen;
-                $wdCerts= ' Permiss&atilde;o OK';
-                unlink($filen);
-            }
-        }
-        return "<tr bgcolor=\"#FFFFCC\">"
-            . "<td>$message</td>"
-            . "<td bgcolor=\"$cdCerts\"><div align=\"center\">$wdCerts</div></td>"
-            . "<td>O diret&oacute;rio deve ter permiss&atilde;o de escrita</td></tr>";
-    }
 }

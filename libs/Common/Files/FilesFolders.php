@@ -2,6 +2,16 @@
 
 namespace Common\Files;
 
+/**
+ * Classe auxiliar para criar, listar e testar os diretórios utilizados pela API
+ * @category   NFePHP
+ * @package    NFePHP\Common\Files
+ * @copyright  Copyright (c) 2008-2014
+ * @license    http://www.gnu.org/licenses/lesser.html LGPL v3
+ * @author     Roberto L. Machado <linux.rlm at gmail dot com>
+ * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
+ */
+
 use Common\Exception\RuntimeException;
 
 class FilesFolders
@@ -118,5 +128,38 @@ class FilesFolders
         }
         sort($aName);
         return $aName;
+    }
+    
+    /**
+     * Rotina para teste de escrita no path especificado
+     * Usada na rotina de configuração (install.php)
+     * @param string $path
+     * @param string $message
+     * @param string $respHtml passado por referencia irá conter a resposta em html
+     * @return boolean
+     */
+    public function writeTest($path = '', $message = '', &$respHtml = '')
+    {
+        $cRed = '#FF0000';
+        $cGreen = '#00CC00';
+        $comentDir = 'O diret&oacute;rio N&Atilde;O EXISTE';
+        $corDir = $cRed;
+        if (is_dir($path)) {
+            $filen = $path.DIRECTORY_SEPARATOR.'teste.txt';
+            $comentDir = ' Sem permiss&atilde;o !!';
+            if (file_put_contents($filen, "teste\r\n")) {
+                $corDir = $cGreen;
+                $comentDir = ' Permiss&atilde;o OK';
+                unlink($filen);
+            }
+        }
+        $respHtml = "<tr bgcolor=\"#FFFFCC\">"
+            . "<td>$message</td>"
+            . "<td bgcolor=\"$corDir\"><div align=\"center\">$comentDir</div></td>"
+            . "<td>O diret&oacute;rio deve ter permiss&atilde;o de escrita</td></tr>";
+        if ($corDir == $cRed) {
+            return false;
+        }
+        return true;
     }
 }
