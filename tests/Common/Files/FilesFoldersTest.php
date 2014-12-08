@@ -8,7 +8,7 @@ use Common\Files\FilesFolders;
 
 class FilesFoldersTest extends PHPUnit_Framework_TestCase
 {
-    public function testCreateFolders()
+    public function testCreateFoldersSuccess()
     {
         $folderBase = dirname(dirname(dirname(__FILE__))) . '/fixtures/NFe';
         $folders = new FilesFolders();
@@ -18,7 +18,19 @@ class FilesFoldersTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($resp);
     }
     
-    public function testListDir()
+    public function testCreateFoldersFail()
+    {
+        $folderBase = '/root';
+        $folders = new FilesFolders();
+        try {
+            $resp = $folders->createFolders($folderBase);
+        } catch (RuntimeException $expected) {
+            return;
+        }
+        $this->fail('Teste de Criação de Diretório - A excessão esperada não foi disparada.');
+    }
+    
+    public function testListDirSuccess()
     {
         $files = array(
             dirname(dirname(dirname(__FILE__))) . '/fixtures/certs/99999090910270_certKEY.pem',
@@ -32,9 +44,27 @@ class FilesFoldersTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($aList, $files);
     }
     
+    public function testListDirFail()
+    {
+        $folderBase = '/root';
+        $folders = new FilesFolders();
+        try {
+            $aList = $folders->listDir($folderBase, '*.*', 'false');
+        } catch (RuntimeException $expected) {
+            return;
+        }
+        $this->fail('Teste da Listagem do Diretório - A excessão esperada não foi disparada.');
+    }
+            
     public function testWriteTest()
     {
-        $htmlStandard = '<tr bgcolor="#FFFFCC"><td>Test</td><td bgcolor="#00CC00"><div align="center"> Permiss&atilde;o OK</div></td><td>O diret&oacute;rio deve ter permiss&atilde;o de escrita</td></tr>';
+        $htmlStandard = '<tr bgcolor="#FFFFCC">'
+                . '<td>Test</td>'
+                . '<td bgcolor="#00CC00">'
+                . '<div align="center"> Permiss&atilde;o OK</div>'
+                . '</td>'
+                . '<td>O diret&oacute;rio deve ter permiss&atilde;o de escrita</td>'
+                . '</tr>';
         $folderBase = dirname(dirname(dirname(__FILE__))) . '/fixtures/certs';
         $folders = new FilesFolders();
         $respHtml = '';

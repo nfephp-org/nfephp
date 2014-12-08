@@ -95,7 +95,7 @@ class FilesFolders
             //verifica se o parametro $dir define um diretorio real
             if (is_dir($dir)) {
                 //mude para o novo diretorio
-                chdir($dir);
+                @chdir($dir);
                 //pegue o diretorio
                 $diretorio = getcwd().DIRECTORY_SEPARATOR;
                 if (strtolower($dir) != strtolower($diretorio)) {
