@@ -12,7 +12,7 @@ namespace Common\Files;
  * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
  */
 
-use Common\Exception\RuntimeException;
+use Common\Exception;
 
 class FilesFolders
 {
@@ -58,10 +58,14 @@ class FilesFolders
         foreach ($ambientes as $ambiente) {
             $folder = $dirPath.DIRECTORY_SEPARATOR.$ambiente;
             if (!is_dir($folder)) {
-                mkdir($folder, 0777);
+                if (! mkdir($folder, 0777)) {
+                    throw new Exception\RuntimeException(
+                        "Não foi possivel criar o diretorio. Verifique as permissões"
+                    );
+                }
             }
             foreach ($subdirs as $subdir) {
-                $folder = $arqDir.DIRECTORY_SEPARATOR.$ambiente.DIRECTORY_SEPARATOR.$subdir;
+                $folder = $dirPath.DIRECTORY_SEPARATOR.$ambiente.DIRECTORY_SEPARATOR.$subdir;
                 if (!is_dir($folder)) {
                     mkdir($folder, 0777);
                 }
@@ -159,6 +163,34 @@ class FilesFolders
             . "<td>O diret&oacute;rio deve ter permiss&atilde;o de escrita</td></tr>";
         if ($corDir == $cRed) {
             return false;
+        }
+        return true;
+    }
+    
+    /**
+     * Apaga um diretorio e todo o seu conteúdo
+     * @param string $dirPath
+     * @return boolean
+     * @throws Exception\RuntimeException
+     */
+    public function removeFolder($dirPath)
+    {
+        $files = array_diff(scandir($dirPath), array('.','..'));
+        foreach ($files as $file) {
+            if (is_dir("$dirPath/$file")) {
+                $this->removeFolder("$dirPath/$file");
+            } else {
+                if (! unlink("$dirPath/$file")) {
+                    throw new Exception\RuntimeException(
+                        "Falha! sem permissão de exclusão do arquivo $dirPath/$file"
+                    );
+                }
+            }
+        }
+        if (! rmdir($dirPath)) {
+            throw new Exception\RuntimeException(
+                "Falha! sem permissão de exclusão do diretório $dirPath"
+            );
         }
         return true;
     }
