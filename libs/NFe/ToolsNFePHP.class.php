@@ -1323,19 +1323,19 @@ class ToolsNFePHP extends CommonNFePHP
             //cancelamento por evento NOVO
             $retEvento = $prot->getElementsByTagName("retEvento")->item(0);
             if (isset($retEvento)) {
-                $protver     = trim($retEvento->getAttribute("versao"));
-                $tpAmb       = $retEvento->getElementsByTagName("tpAmb")->item(0)->nodeValue;
-                $verAplic    = $retEvento->getElementsByTagName("verAplic")->item(0)->nodeValue;
-                $chNFe       = $retEvento->getElementsByTagName("chNFe")->item(0)->nodeValue;
-                $dhRecbto    = $retEvento->getElementsByTagName("dhRegEvento")->item(0)->nodeValue;
-                $nProt       = $retEvento->getElementsByTagName("nProt")->item(0)->nodeValue;
-                $cStat       = $retEvento->getElementsByTagName("cStat")->item(0)->nodeValue;
-                $tpEvento    = $retEvento->getElementsByTagName("tpEvento")->item(0)->nodeValue;
-                $xMotivo     = $retEvento->getElementsByTagName("xMotivo")->item(0)->nodeValue;
-                $digVal      = $DigestValue;
-                if ($tpEvento != '110111') {
-                    $msg = 'O arquivo indicado para ser anexado não é um evento de cancelamento! '.$protfile;
-                    throw new nfephpException($msg);
+                //verificar se se trata de cancelamento caso seja alterar o protocolo
+                //se não deixar 
+                if ($retEvento->getElementsByTagName("tpEvento")->item(0)->nodeValue == '110111') {
+                    $protver     = trim($retEvento->getAttribute("versao"));
+                    $tpAmb       = $retEvento->getElementsByTagName("tpAmb")->item(0)->nodeValue;
+                    $verAplic    = $retEvento->getElementsByTagName("verAplic")->item(0)->nodeValue;
+                    $chNFe       = $retEvento->getElementsByTagName("chNFe")->item(0)->nodeValue;
+                    $dhRecbto    = $retEvento->getElementsByTagName("dhRegEvento")->item(0)->nodeValue;
+                    $nProt       = $retEvento->getElementsByTagName("nProt")->item(0)->nodeValue;
+                    $cStat       = $retEvento->getElementsByTagName("cStat")->item(0)->nodeValue;
+                    $tpEvento    = $retEvento->getElementsByTagName("tpEvento")->item(0)->nodeValue;
+                    $xMotivo     = $retEvento->getElementsByTagName("xMotivo")->item(0)->nodeValue;
+                    $digVal      = $DigestValue;
                 }
             }
             if (!isset($protNFe) && !isset($retCancNFe) && !isset($retEvento)) {
