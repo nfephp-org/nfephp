@@ -2915,7 +2915,7 @@ class ToolsNFePHP extends CommonNFePHP
     }//fim getNFe
 
     /**
-     * Solicita inutilizaçaao de uma série de números de NF. O processo de inutilização
+     * Solicita inutilização de uma série de números de NF. O processo de inutilização
      * será gravado na "pasta Inutilizadas".
      * 
      * ATENÇÃO: este webservice *não* é oferecido pelas SVC (Sefaz Virtual de Contingência)
@@ -2931,8 +2931,15 @@ class ToolsNFePHP extends CommonNFePHP
      * @param array   $aRetorno Array com os dados de Retorno
      * @return mixed false ou string com o xml do processo de inutilização
      */
-    public function inutNF($nAno = '', $nSerie = '1', $nIni = '', $nFin = '', $xJust = '', $tpAmb = '', &$aRetorno = array())
-    {
+    public function inutNF(
+        $nAno = '',
+        $nSerie = '1',
+        $nIni = '',
+        $nFin = '',
+        $xJust = '',
+        $tpAmb = '',
+        &$aRetorno = array()
+    ) {
         //retorno da função
         $aRetorno = array(
             'bStat'=>false,
@@ -2970,6 +2977,17 @@ class ToolsNFePHP extends CommonNFePHP
         }
         if (strlen($xJust) > 255) {
             $msg = "A justificativa deve ter no máximo 255 digitos!!";
+            $this->pSetError($msg);
+            if ($this->exceptions) {
+                throw new nfephpException($msg);
+            }
+            return false;
+        }
+        if (! is_numeric($nAno) || ! is_numeric($nSerie) || ! is_numeric($nIni) || ! is_numeric($nFin)) {
+            $msg = "'Ano':$nAno, "
+                . "'Série':$nSerie, "
+                . "'número inicial':$nIni e "
+                . "'número final':$nFin devem ser numericos!!";
             $this->pSetError($msg);
             if ($this->exceptions) {
                 throw new nfephpException($msg);
