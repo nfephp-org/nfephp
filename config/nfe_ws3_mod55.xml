@@ -236,7 +236,7 @@ AM Consulta de Cadastro não EXISTE
     <homologacao>
       <NfeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10">https://homologacao.nfe.sefaz.rs.gov.br/ws/NfeAutorizacao/NFeAutorizacao.asmx</NfeAutorizacao>
       <NfeConsultaCadastro method="consultaCadastro2" operation="NfeConsultaCadastro" version="2.00">https://sef.sefaz.rs.gov.br/ws/cadconsultacadastro/cadconsultacadastro2.asmx</NfeConsultaCadastro>
-      <NfeConsultaDest method="nfeConsultaNFDest" operation="NfeConsultaDest" version="2.00">https://homologacao.nfe.sefaz.rs.gov.br/ws/nfeConsultaDest/nfeConsultaDest.asmx</NfeConsultaDest>
+      <NfeConsultaDest method="nfeConsultaNFDest" operation="NfeConsultaDest" version="1.01">https://homologacao.nfe.sefaz.rs.gov.br/ws/nfeConsultaDest/nfeConsultaDest.asmx</NfeConsultaDest>
       <NfeConsultaProtocolo method="nfeConsultaNF2" operation="NfeConsulta2" version="3.10">https://homologacao.nfe.sefaz.rs.gov.br/ws/NfeConsulta/NfeConsulta2.asmx</NfeConsultaProtocolo>
       <NfeDownloadNF method="nfeDownloadNF" operation="NfeDownloadNF" version="2.00">https://homologacao.nfe.sefaz.rs.gov.br/ws/nfeDownloadNF/nfeDownloadNF.asmx</NfeDownloadNF>
       <NfeInutilizacao method="nfeInutilizacaoNF2" operation="NfeInutilizacao2" version="3.10">https://homologacao.nfe.sefaz.rs.gov.br/ws/nfeinutilizacao/nfeinutilizacao2.asmx</NfeInutilizacao>
@@ -247,7 +247,7 @@ AM Consulta de Cadastro não EXISTE
     <producao>
       <NfeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10">https://nfe.sefaz.rs.gov.br/ws/NfeAutorizacao/NFeAutorizacao.asmx</NfeAutorizacao>
       <NfeConsultaCadastro method="consultaCadastro2" operation="NfeConsultaCadastro" version="2.00">https://sef.sefaz.rs.gov.br/ws/cadconsultacadastro/cadconsultacadastro2.asmx</NfeConsultaCadastro>
-      <NfeConsultaDest method="nfeConsultaNFDest" operation="NfeConsultaDest" version="2.00">https://nfe.sefaz.rs.gov.br/ws/nfeConsultaDest/nfeConsultaDest.asmx</NfeConsultaDest>
+      <NfeConsultaDest method="nfeConsultaNFDest" operation="NfeConsultaDest" version="1.01">https://nfe.sefaz.rs.gov.br/ws/nfeConsultaDest/nfeConsultaDest.asmx</NfeConsultaDest>
       <NfeConsultaProtocolo method="nfeConsultaNF2" operation="NfeConsulta2" version="3.10">https://nfe.sefaz.rs.gov.br/ws/NfeConsulta/NfeConsulta2.asmx</NfeConsultaProtocolo>
       <NfeDownloadNF method="nfeDownloadNF" operation="NfeDownloadNF" version="2.00">https://nfe.sefaz.rs.gov.br/ws/nfeDownloadNF/nfeDownloadNF.asmx</NfeDownloadNF>
       <NfeInutilizacao method="nfeInutilizacaoNF2" operation="NfeInutilizacao2" version="3.10">https://nfe.sefaz.rs.gov.br/ws/NfeInutilizacao/NfeInutilizacao2.asmx</NfeInutilizacao>
