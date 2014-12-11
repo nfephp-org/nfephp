@@ -23,7 +23,7 @@
  *
  * @package     NFePHP
  * @name        DanfeNFePHP.class.php
- * @version     2.2.3
+ * @version     2.2.4
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2012 &copy; NFePHP
@@ -1177,11 +1177,11 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
             $fone = ! empty($this->enderEmit->getElementsByTagName("fone")->item(0)->nodeValue) ? $this->enderEmit->getElementsByTagName("fone")->item(0)->nodeValue : '';
             $foneLen = strlen($fone);
             if ($foneLen > 0) {
-                $fone2 = substr($fone, 0, $foneLen-4);
-                $fone1 = substr($fone, 0, $foneLen-8);
-                $fone = '(' . $fone1 . ') ' . substr($fone2, -4) . '-' . substr($fone, -4);
-            } else {
-                $fone = '';
+                $fone2 = substr($fone, 0, $foneLen-8);
+                $fone1 = substr($fone, -8);
+                $fone11 = substr($fone1, 0, 4);
+                $fone12 = substr($fone1, -4);
+                $fone = "($fone2) $fone11-$fone12";
             }
             $lgr = $this->pSimpleGetValue($this->enderEmit, "xLgr");
             $nro = $this->pSimpleGetValue($this->enderEmit, "nro");
