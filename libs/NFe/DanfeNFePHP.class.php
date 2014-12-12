@@ -23,7 +23,7 @@
  *
  * @package     NFePHP
  * @name        DanfeNFePHP.class.php
- * @version     2.2.4
+ * @version     2.2.5
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2012 &copy; NFePHP
@@ -204,7 +204,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
      * versão
      * @var string 
      */
-    protected $version = '2.2.3';
+    protected $version = '2.2.5';
     /**
      * Texto
      * @var string 
@@ -1175,14 +1175,6 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
             $y1 = $y1+5;
             $aFont = array('font'=>$this->fontePadrao, 'size'=>8, 'style'=>'');
             $fone = ! empty($this->enderEmit->getElementsByTagName("fone")->item(0)->nodeValue) ? $this->enderEmit->getElementsByTagName("fone")->item(0)->nodeValue : '';
-            $foneLen = strlen($fone);
-            if ($foneLen > 0) {
-                $fone2 = substr($fone, 0, $foneLen-8);
-                $fone1 = substr($fone, -8);
-                $fone11 = substr($fone1, 0, 4);
-                $fone12 = substr($fone1, -4);
-                $fone = "($fone2) $fone11-$fone12";
-            }
             $lgr = $this->pSimpleGetValue($this->enderEmit, "xLgr");
             $nro = $this->pSimpleGetValue($this->enderEmit, "nro");
             $cpl = $this->pSimpleGetValue($this->enderEmit, "xCpl", " - ");
