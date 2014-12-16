@@ -123,7 +123,7 @@ AM Consulta de Cadastro não EXISTE
     <producao>
       <NfeAutorizacao method="NfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10">https://nfe.fazenda.mg.gov.br/nfe2/services/NfeAutorizacao</NfeAutorizacao>
       <NfeConsultaCadastro method="consultaCadastro2" operation="NfeConsultaCadastro" version="2.00">https://nfe.fazenda.mg.gov.br/nfe2/services/cadconsultacadastro2</NfeConsultaCadastro>
-      <NfeConsultaProtocolo method="nfeConsultaNF2" operation="NfeConsulta2" version="2.00">https://nfe.fazenda.mg.gov.br/nfe2/services/NfeConsulta2</NfeConsultaProtocolo>
+      <NfeConsultaProtocolo method="nfeConsultaNF2" operation="NfeConsulta2" version="2.01">https://nfe.fazenda.mg.gov.br/nfe2/services/NfeConsulta2</NfeConsultaProtocolo>
       <NfeInutilizacao method="nfeInutilizacaoNF2" operation="NfeInutilizacao2" version="2.00">https://nfe.fazenda.mg.gov.br/nfe2/services/NfeInutilizacao2</NfeInutilizacao>
       <NfeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10">https://nfe.fazenda.mg.gov.br/nfe2/services/NfeRetAutorizacao</NfeRetAutorizacao>
       <NfeStatusServico method="nfeStatusServicoNF2" operation="NfeStatusServico2" version="2.00">https://nfe.fazenda.mg.gov.br/nfe2/services/NfeStatus2</NfeStatusServico>
