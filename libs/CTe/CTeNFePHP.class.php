@@ -1904,17 +1904,18 @@ class CTeNFePHP
     /**
      * Solicita inutilizaçao de uma serie de numeros de CT
      *
-     * @name inutNF
-     * @param    string  $nAno       ano com 2 digitos
+     * @name    inutNF
+     * @param   string  $nAno       ano com 2 digitos
      * @param   string  $nSerie     serie do CT 1 até 3 digitos
      * @param   integer $nIni       numero inicial 1 até 9 digitos zero a esq
      * @param   integer $nFin       numero Final 1 até 9 digitos zero a esq
      * @param   string  $xJust      justificativa 15 até 255 digitos
-     * @return    mixed false ou array ['bStat'=>boolean,'cStat'=>'','xMotivo'=>'','dhRecbto'=>'','nProt'=>'']
+     * @return  mixed false ou array ['bStat'=>boolean,'cStat'=>'','xMotivo'=>'','dhRecbto'=>'','nProt'=>'']
+     * @throws  nfephpException Caso de não tenha dados suficiente para enviar solicitação de inutilização ou falha na ecrita em disco do arquivo xml.
      */
     public function inutCT($nAno = '', $nSerie = '1', $nIni = '', $nFin = '', $xJust = '')
     {
-        // Variavel de retorno do metodo
+       // Variavel de retorno do metodo
         $aRetorno = array (
             'bStat' => false,
             'cStat' => '',
@@ -1923,12 +1924,10 @@ class CTeNFePHP
             'nProt' => '');
         // Valida dos dados de entrada
         if ($nAno == '' || $nIni == '' || $nFin == '' || $xJust == '') {
-            $this->errStatus = true;
-            $this->errMsg = "Não foi passado algum dos parametos necessários ANO=$nAno "
+            $msg = "Não foi passado algum dos parametos necessários ANO=$nAno "
                     . "inicio=$nIni fim=$nFin justificativa=$xJust.";
-            return false;
+            throw new nfephpException($msg);
         }
-
         // Verifica se o SCAN esta habilitado
         $aURL = $this->aURL;
         if ($this->enableSCAN) {
@@ -1939,49 +1938,31 @@ class CTeNFePHP
             );
         }
         // Valida o campo ano
-        if (strlen($nAno) > 2) {
-            $this->errStatus = true;
-            $this->errMsg = 'O ano tem mais de 2 digitos. Corrija e refaça o processo!!';
-            return false;
-        } else {
-            if (strlen($nAno) < 2) {
-                $this->errStatus = true;
-                $this->errMsg = 'O ano tem menos de 2 digitos. Corrija e refaça o processo!!';
-                return false;
-            }
+        if (strlen($nAno) != 2) {
+            $msg = 'O ano deve ter somente 2 digitos. Corrija e refaça o processo!!';
+            throw new nfephpException($msg);
         }
         // Valida o campo serie
         if (strlen($nSerie) == 0 || strlen($nSerie) > 3) {
-            $this->errStatus = true;
-            $this->errMsg = "O campo serie está errado: $nSerie. Corrija e refaça o processo!!";
-            return false;
+            $msg = "O campo serie está errado: $nSerie. Corrija e refaça o processo!!";
+            throw new nfephpException($msg);
         }
         // Valida o campo numero inicial
         if (strlen($nIni) < 1 || strlen($nIni) > 9) {
-            $this->errStatus = true;
-            $this->errMsg = "O campo numero inicial está errado: $nIni. Corrija e refaça o processo!!";
-            return false;
+            $msg = "O campo numero inicial está errado: $nIni. Corrija e refaça o processo!!";
+            throw new nfephpException($msg);
         }
         // Valida o campo numero final
         if (strlen($nFin) < 1 || strlen($nFin) > 9) {
-            $this->errStatus = true;
-            $this->errMsg = "O campo numero final está errado: $nFin. Corrija e refaça o processo!!";
-            return false;
+            $msg = "O campo numero final está errado: $nFin. Corrija e refaça o processo!!";
+            throw new nfephpException($msg);
         }
         // Valida o campo justificativa
         $nL = strlen($xJust);
-        if ($nL < 15) {
-            $this->errStatus = true;
-            $this->errMsg = "A justificativa é menor que o permitido, apenas $nL letras. "
-                    . "Corrija e refaça o processo!!";
-            return false;
-        } else {
-            if ($nL > 255) {
-                $this->errStatus = true;
-                $this->errMsg = "A justificativa é maior que o permitido, $nL letras, "
-                        . "no máximo podem ser 255. Corrija e refaça o processo!!";
-                return false;
-            }
+        if ($nL < 15 || $nL > 255) {
+            $msg = "A justificativa tem que ter entre 15 e 255 caracteres, encontrado $nL. "
+                . "Corrija e refaça o processo!!";
+            throw new nfephpException($msg);
         }
         // Identificação do serviço
         $servico = 'CteInutilizacao';
@@ -2027,48 +2008,46 @@ class CTeNFePHP
         // Envia a solicitação via SOAP
         $retorno = $this->zSendSOAP($urlservico, $namespace, $cabec, $dados, $metodo, $this->tpAmb);
         // Verifica o retorno
-        if ($retorno) {
-            //tratar dados de retorno
-            $doc = new DOMDocument();
-            $doc->formatOutput = false;
-            $doc->preserveWhiteSpace = false;
-            $doc->loadXML($retorno, LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
-            $cStat = !empty($doc->getElementsByTagName('cStat')->item(0)->nodeValue) ?
-                    $doc->getElementsByTagName('cStat')->item(0)->nodeValue : '';
-            if ($cStat == '') {
-                //houve erro
-                return false;
-            } else {
-                //verificar o status da solicitação
-                if ($cStat == '102') {
-                    $aRetorno['bStat'] = true;
-                }
-            }
-
-            // Status do serviço se 102 inutilização aceita
-            $aRetorno['cStat'] = $doc->getElementsByTagName('cStat')->item(0)->nodeValue;
-            // Motivo da resposta (opcional)
-            $aRetorno['xMotivo'] = !empty($doc->getElementsByTagName('xMotivo')->item(0)->nodeValue) ?
-                    $doc->getElementsByTagName('xMotivo')->item(0)->nodeValue : '';
-            // Data e hora da mensagem (opcional)
-            $aRetorno['dhRecbto'] = !empty($doc->getElementsByTagName('dhRecbto')->item(0)->nodeValue) ?
-                    date(
-                        "d/m/Y H:i",
-                        $this->zConvertTime($doc->getElementsByTagName('dhRecbto')->item(0)->nodeValue)
-                    ) : '';
-            // Numero do protocolo de aceitação da inutilização (opcional)
-            $aRetorno['nProt'] = !empty($doc->getElementsByTagName('nProt')->item(0)->nodeValue) ?
-                    $doc->getElementsByTagName('nProt')->item(0)->nodeValue : '';
-            // Grava o retorno na pasta temp
-            $nome = $this->temDir . $id . '-inut.xml';
-            $nome = $doc->save($nome);
-        } else {
-            $this->errStatus = true;
-            $this->errMsg = 'Nao houve retorno Soap verifique o debug!!';
-            $aRetorno = false;
+        if (! $retorno ) {
+            $msg = "Nao houve retorno Soap verifique a mensagem de erro e o debug!!";
+            throw new nfephpException($msg);
         }
+        // Tratar dados de retorno
+        $doc = new DOMDocument('1.0', 'utf-8');
+        $doc->formatOutput = false;
+        $doc->preserveWhiteSpace = false;
+        $doc->loadXML($retorno, LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
+        // Verifica retorno - cStat
+        if ( empty($doc->getElementsByTagName('cStat')->item(0)->nodeValue) ) {
+            $msg = "cStat está em branco, houve erro na comunicação Soap "
+                    . "verifique a mensagem de erro e o debug!!";
+            throw new nfephpException($msg);
+        }
+        // Verificar o status da solicitação
+        $aRetorno['cStat'] = $doc->getElementsByTagName('cStat')->item(0)->nodeValue;
+        // Motivo da resposta (opcional)
+        if (! empty($doc->getElementsByTagName('xMotivo')->item(0)->nodeValue) ) {
+            $aRetorno['xMotivo'] = $doc->getElementsByTagName('xMotivo')->item(0)->nodeValue;
+        }
+        // Data e hora da mensagem (opcional)
+        if (! empty($doc->getElementsByTagName('dhRecbto')->item(0)->nodeValue) ) {
+            $dateTemp = $this->zConvertTime($doc->getElementsByTagName('dhRecbto')->item(0)->nodeValue) ;
+            $aRetorno['dhRecbto'] = date("d/m/Y H:i", $dateTemp);
+        }
+        // Número do protocolo de aceitação da inutilização (opcional)
+        if (! empty($doc->getElementsByTagName('nProt')->item(0)->nodeValue) ) {
+            $aRetorno['nProt'] = $doc->getElementsByTagName('nProt')->item(0)->nodeValue;
+        }
+        if ($aRetorno['cStat'] != '102') {
+            return $aRetorno;
+        }
+        $aRetorno['bStat'] = true;
+        // Grava o retorno na pasta temp
+        $nome = $this->temDir . $id . '-inut.xml';
+        $nome = $doc->save($nome);
+
         return $aRetorno;
-    } //fim inutCTe
+    }
 
     /**
      * cancelEvent
@@ -2076,10 +2055,12 @@ class CTeNFePHP
      * - O xml do evento de cancelamento será salvo na pasta Canceladas
      *
      * @name cancelEvent
-     * @param string $chCTe
-     * @param string $nProt
-     * @param string $xJust
-     * @param number $tpAmb
+     * @param string $chCTe chave do CTe.
+     * @param string $nProt Número de protocolo.
+     * @param string $xJust Justificativa.
+     * @param number $tpAmb Tipo de ambiente. (1-produção, 2-homologação)
+     * @return array $aRetorno array ['bStat'=>boolean,'cStat'=>'','xMotivo'=>'','dhRecbto'=>'','nProt'=>'']
+     * @throws nfephpException Caso de não tenha dados suficiente para enviar solicitação de cancelamento ou falha na ecrita em disco do arquivo xml.
      */
     public function cancelEvent($chCTe = '', $nProt = '', $xJust = '', $tpAmb = '')
     {
@@ -2090,161 +2071,158 @@ class CTeNFePHP
             'xMotivo' => '',
             'dhRegEvento' => '',
             'nProt' => '');
-        try {
-            //validação dos dados de entrada
-            if ($chCTe == '' || $nProt == '' || $xJust == '') {
-                $msg = "Não foi passado algum dos parâmetros necessários "
-                        . "ID=$chCTe ou protocolo=$nProt ou justificativa=$xJust.";
-                throw new nfephpException($msg);
-            }
-            if ($tpAmb == '') {
-                $tpAmb = $this->tpAmb;
-            }
-            if (strlen($xJust) < 15) {
-                $msg = "A justificativa deve ter pelo menos 15 digitos!!";
-                throw new nfephpException($msg);
-            }
-            if (strlen($xJust) > 255) {
-                $msg = "A justificativa deve ter no máximo 255 digitos!!";
-                throw new nfephpException($msg);
-            }
-            if (strlen($chCTe) != 44) {
-                $msg = "Uma chave de CTe válida não foi passada como parâmetro $chCTe.";
-                throw new nfephpException($msg);
-            }
-            //estabelece o codigo do tipo de evento CANCELAMENTO
-            $tpEvento = '110111';
-            $descEvento = 'Cancelamento';
-            //para cancelamento o numero sequencia do evento sempre será 1
-            $nSeqEvento = '1';
-            // Verifica se o SCAN esta habilitado
-            $aURL = $this->aURL;
-            if ($this->enableSCAN) {
-                $aURL = $this->loadSEFAZ(
-                    $this->raizDir.'config'.DIRECTORY_SEPARATOR.$this->xmlURLfile,
-                    $this->tpAmb,
-                    'SCAN'
-                );
-            }
-            //Data e hora do evento no formato AAAA-MM-DDTHH:MM:SSTZD (UTC)
-            $dhEvento = date('Y-m-d').'T'.date('H:i:s').$this->timeZone;
-            //montagem do namespace do serviço
-            $servico = 'CteRecepcaoEvento';
-            //recuperação da versão
-            $versao = $aURL[$servico]['version'];
-            //recuperação da url do serviço
-            $urlservico = $aURL[$servico]['URL'];
-            //recuperação do método
-            $metodo = $aURL[$servico]['method'];
-            //montagem do namespace do serviço
-            $namespace = $this->URLPortal.'/wsdl/'.$servico;
-            //de acordo com o manual versão 5 de março de 2012
-            // 2   +    6     +    44         +   2  = 54 digitos
-            //“ID” + tpEvento + chave da NF-e + nSeqEvento
-            //garantir que existam 2 digitos em nSeqEvento para montar o ID com 54 digitos
-            if (strlen(trim($nSeqEvento))==1) {
-                $zenSeqEvento = str_pad($nSeqEvento, 2, "0", STR_PAD_LEFT);
-            } else {
-                $zenSeqEvento = trim($nSeqEvento);
-            }
-            $eventId = "ID".$tpEvento.$chCTe.$zenSeqEvento;
-            //monta mensagem
-            
-            $Ev = '';
-            $Ev .= "<eventoCTe xmlns=\"$this->URLPortal\" versao=\"$versao\">";
-            $Ev .= "<infEvento Id=\"$eventId\">";
-            $Ev .= "<cOrgao>$this->cUF</cOrgao>";
-            $Ev .= "<tpAmb>$tpAmb</tpAmb>";
-            $Ev .= "<CNPJ>$this->cnpj</CNPJ>";
-            $Ev .= "<chCTe>$chCTe</chCTe>";
-            $Ev .= "<dhEvento>$dhEvento</dhEvento>";
-            $Ev .= "<tpEvento>$tpEvento</tpEvento>";
-            $Ev .= "<nSeqEvento>$nSeqEvento</nSeqEvento>";
-            $Ev .= "<detEvento versaoEvento=\"$versao\">";
-            $Ev .= "<evCancCTe>";
-            $Ev .= "<descEvento>$descEvento</descEvento>";
-            $Ev .= "<nProt>$nProt</nProt>";
-            $Ev .= "<xJust>$xJust</xJust>";
-            $Ev .= "</evCancCTe></detEvento></infEvento></eventoCTe>";
-            //assinatura dos dados
-            $tagid = 'infEvento';
-            //montagem dos dados - com a assinatura
-            $dados = $this->signXML($Ev, $tagid);
-            //carrega uma matriz temporária com os eventos assinados
-            //montagem da mensagem
-            $cabec = "<cteCabecMsg xmlns=\"$namespace\"><cUF>$this->cUF</cUF>"
-                    . "<versaoDados>$versao</versaoDados></cteCabecMsg>";
-            $dados = "<cteDadosMsg xmlns=\"$namespace\">$dados</cteDadosMsg>";
-            //grava solicitação em temp
-            $arqName = $this->temDir."$chCTe-$nSeqEvento-eventCanc.xml";
-            if (!file_put_contents($arqName, $Ev)) {
-                $msg = "Falha na gravação do arquivo $arqName";
-                throw new nfephpException($msg);
-            }
-            // Envia a solicitação via SOAP
-            $retorno = $this->zSendSOAP($urlservico, $namespace, $cabec, $dados, $metodo, $this->tpAmb);
-            //verifica o retorno
-            if (!$retorno) {
-                //não houve retorno
-                $msg = "Nao houve retorno Soap verifique a mensagem de erro e o debug!!";
-                throw new nfephpException($msg);
-            }
-            //tratar dados de retorno
-            $xmlretEvent = new DOMDocument('1.0', 'utf-8'); //cria objeto DOM
-            $xmlretEvent->formatOutput = false;
-            $xmlretEvent->preserveWhiteSpace = false;
-            $xmlretEvent->loadXML($retorno, LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
-            $retEventoCTe = $xmlretEvent->getElementsByTagName("retEventoCTe")->item(0);
-            $cStat = !empty($retEventoCTe->getElementsByTagName('cStat')->item(0)->nodeValue) ?
-                    $retEventoCTe->getElementsByTagName('cStat')->item(0)->nodeValue : '';
-            $xMotivo = !empty($retEventoCTe->getElementsByTagName('xMotivo')->item(0)->nodeValue) ?
-                    $retEventoCTe->getElementsByTagName('xMotivo')->item(0)->nodeValue : '';
-            if ($cStat == '') {
-                //houve erro
-                $msg = "cStat está em branco, houve erro na comunicação Soap "
-                        . "verifique a mensagem de erro e o debug!!";
-                throw new nfephpException($msg);
-            }
-            //erro no processamento cStat <> 128
-            if ($cStat != '128') {
-                //se cStat <> 135 houve erro e o lote foi rejeitado
-                $msg = "Retorno de ERRO: $cStat - $xMotivo";
-                throw new nfephpException($msg);
-            }
-            if ($cStat != '135' && $cStat != '155') {
-                //se cStat <> 135 houve erro e o lote foi rejeitado
-                $msg = "Retorno de ERRO: $cStat - $xMotivo";
-                throw new nfephpException($msg);
-            }
-            if ($cStat == '135') {
-                $aRetorno['bStat'] = true;
-            }
-            // Status do serviço se 135 cancelamento aceito
-            $aRetorno['cStat'] = $cStat;
-            // Motivo da resposta (opcional)
-            $aRetorno['xMotivo'] = $xMotivo;
-            // Data e hora da mensagem (opcional)
-            $aRetorno['dhRegEvento'] = !empty($retEventoCTe->getElementsByTagName('dhRegEvento')->item(0)->nodeValue) ?
-                    date(
-                        "d/m/Y H:i",
-                        $this->zConvertTime($retEventoCTe->getElementsByTagName('dhRegEvento')->item(0)->nodeValue)
-                    ) : '';
-            // Numero do protocolo de cancelamento da CTe (opcional)
-            $aRetorno['nProt'] = !empty($retEventoCTe->getElementsByTagName('nProt')->item(0)->nodeValue) ?
-                    $retEventoCTe->getElementsByTagName('nProt')->item(0)->nodeValue : '';
-            //salva o arquivo xml
-            $arqName = $this->canDir."$chCTe-$nSeqEvento-procCanc.xml";
-            if (!file_put_contents($arqName, $procXML)) {
-                $msg = "Falha na gravação do arquivo $arqName";
-                throw new nfephpException($msg);
-            }
-        } catch (nfephpException $e) {
-            $this->errStatus = true;
-            $this->errMsg = 'Nao houve retorno Soap verifique a mensagem de erro e o debug!!';
-            $aRetorno = false;
+        //validação dos dados de entrada
+        if ($chCTe == '' || $nProt == '' || $xJust == '') {
+            $msg = "Não foi passado algum dos parâmetros necessários "
+                    . "ID=$chCTe ou protocolo=$nProt ou justificativa=$xJust.";
+            throw new nfephpException($msg);
         }
+        if ($tpAmb == '') {
+            $tpAmb = $this->tpAmb;
+        }
+        if (strlen($xJust) < 15) {
+            $msg = "A justificativa deve ter pelo menos 15 digitos!!";
+            throw new nfephpException($msg);
+        }
+        if (strlen($xJust) > 255) {
+            $msg = "A justificativa deve ter no máximo 255 digitos!!";
+            throw new nfephpException($msg);
+        }
+        if (strlen($chCTe) != 44) {
+            $msg = "Uma chave de CTe válida não foi passada como parâmetro $chCTe.";
+            throw new nfephpException($msg);
+        }
+        // Estabelece o codigo do tipo de evento CANCELAMENTO
+        $tpEvento = '110111';
+        $descEvento = 'Cancelamento';
+        // Para cancelamento o numero sequencia do evento sempre será 1
+        $nSeqEvento = '1';
+        // Verifica se o SCAN esta habilitado
+        $aURL = $this->aURL;
+        if ($this->enableSCAN) {
+            $aURL = $this->loadSEFAZ(
+                $this->raizDir.'config'.DIRECTORY_SEPARATOR.$this->xmlURLfile,
+                $this->tpAmb,
+                'SCAN'
+            );
+        }
+        // Data e hora do evento no formato AAAA-MM-DDTHH:MM:SS
+        $dhEvento = new DateTime();
+        $dhEvento = $dhEvento->format('Y-m-d\TH:i:s');
+        // Montagem do namespace do serviço
+        $servico = 'CteRecepcaoEvento';
+        // Recuperação da versão
+        $versao = $aURL[$servico]['version'];
+        // Recuperação da url do serviço
+        $urlservico = $aURL[$servico]['URL'];
+        // Recuperação do método
+        $metodo = $aURL[$servico]['method'];
+        // Montagem do namespace do serviço
+        $namespace = $this->URLPortal.'/wsdl/'.$servico;
+        //de acordo com o manual versão 5 de março de 2012
+        // 2   +    6     +    44         +   2  = 54 digitos
+        //“ID” + tpEvento + chave da NF-e + nSeqEvento
+        //garantir que existam 2 digitos em nSeqEvento para montar o ID com 54 digitos
+        if (strlen(trim($nSeqEvento)) == 1) {
+            $zenSeqEvento = str_pad($nSeqEvento, 2, "0", STR_PAD_LEFT);
+        } else {
+            $zenSeqEvento = trim($nSeqEvento);
+        }
+        $eventId = "ID".$tpEvento.$chCTe.$zenSeqEvento;
+        // Monta mensagem
+        $Ev = '';
+        $Ev .= "<eventoCTe xmlns=\"$this->URLPortal\" versao=\"$versao\">";
+        $Ev .= "<infEvento Id=\"$eventId\">";
+        $Ev .= "<cOrgao>$this->cUF</cOrgao>";
+        $Ev .= "<tpAmb>$tpAmb</tpAmb>";
+        $Ev .= "<CNPJ>$this->cnpj</CNPJ>";
+        $Ev .= "<chCTe>$chCTe</chCTe>";
+        $Ev .= "<dhEvento>$dhEvento</dhEvento>";
+        $Ev .= "<tpEvento>$tpEvento</tpEvento>";
+        $Ev .= "<nSeqEvento>$nSeqEvento</nSeqEvento>";
+        $Ev .= "<detEvento versaoEvento=\"$versao\">";
+        $Ev .= "<evCancCTe>";
+        $Ev .= "<descEvento>$descEvento</descEvento>";
+        $Ev .= "<nProt>$nProt</nProt>";
+        $Ev .= "<xJust>$xJust</xJust>";
+        $Ev .= "</evCancCTe></detEvento></infEvento></eventoCTe>";
+        // Assinatura dos dados
+        $tagid = 'infEvento';
+        // Montagem dos dados - com a assinatura
+        $dados = $this->signXML($Ev, $tagid);
+        // Carrega uma matriz temporária com os eventos assinados
+        // Montagem da mensagem
+        $cabec = "<cteCabecMsg xmlns=\"$namespace\"><cUF>$this->cUF</cUF>"
+                . "<versaoDados>$versao</versaoDados></cteCabecMsg>";
+        $dados = "<cteDadosMsg xmlns=\"$namespace\">$dados</cteDadosMsg>";
+        // Grava solicitação em temp
+        $arqName = $this->temDir."$chCTe-$nSeqEvento-eventCanc.xml";
+        if (! file_put_contents($arqName, $Ev) ) {
+            $msg = "Falha na gravação do arquivo $arqName";
+            throw new nfephpException($msg);
+        }
+        // Envia a solicitação via SOAP
+        $retorno = $this->zSendSOAP($urlservico, $namespace, $cabec, $dados, $metodo, $this->tpAmb);
+        // Verifica o retorno
+        if (! $retorno ) {
+            $msg = "Nao houve retorno Soap verifique a mensagem de erro e o debug!!";
+            throw new nfephpException($msg);
+        }
+        // Tratar dados de retorno
+        $xmlretEvent = new DOMDocument('1.0', 'utf-8'); //cria objeto DOM
+        $xmlretEvent->formatOutput = false;
+        $xmlretEvent->preserveWhiteSpace = false;
+        $xmlretEvent->loadXML($retorno, LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
+        $retEventoCTe = $xmlretEvent->getElementsByTagName("retEventoCTe")->item(0);
+        // Verifica retorno - cStat
+        if ( empty($retEventoCTe->getElementsByTagName('cStat')->item(0)->nodeValue) ) {
+            $msg = "cStat está em branco, houve erro na comunicação Soap "
+                    . "verifique a mensagem de erro e o debug!!";
+            throw new nfephpException($msg);                
+        }
+        $aRetorno['cStat'] = $retEventoCTe->getElementsByTagName('cStat')->item(0)->nodeValue;
+        // Motivo da resposta (opcional)
+        if (! empty($retEventoCTe->getElementsByTagName('xMotivo')->item(0)->nodeValue) ) {
+            $aRetorno['xMotivo'] = $retEventoCTe->getElementsByTagName('xMotivo')->item(0)->nodeValue;
+        }
+        // Tratamento padrão para resposta de rejeição
+        if ($aRetorno['cStat'] != '135') {
+            return $aRetorno;
+        }
+        // Status do serviço se 135 cancelamento aceito
+        $aRetorno['bStat'] = true;
+        // Data e hora da mensagem (opcional)
+        if (! empty($retEventoCTe->getElementsByTagName('dhRegEvento')->item(0)->nodeValue) ) {
+            $dateTemp = $this->zConvertTime($retEventoCTe->getElementsByTagName('dhRegEvento')->item(0)->nodeValue);
+            $aRetorno['dhRegEvento'] = date("d/m/Y H:i", $dateTemp);
+        }
+        // Número do protocolo de cancelamento da CTe (opcional)
+        if (! empty($retEventoCTe->getElementsByTagName('nProt')->item(0)->nodeValue) ) {
+            $aRetorno['nProt'] = $retEventoCTe->getElementsByTagName('nProt')->item(0)->nodeValue;
+        }
+        // Salvar o protocolo em arquivo
+        $xmlCancelamento = new DOMDocument('1.0', 'UTF-8');
+        $xmlCancelamento->formatOutput = true;
+        $xmlCancelamento->preserveWhiteSpace = false;
+        // Importa as informações do evento (cancelamento) recebida da SEFAZ
+        $node = $xmlCancelamento->importNode( $retEventoCTe , true);
+        // Adiciona no novo (protocolo) arquivo xml
+        $xmlCancelamento->appendChild($node);
+        // Prepara o arquivo para ser gravado em disco
+        $procXML = $xmlCancelamento->saveXML();
+        $procXML = str_replace(array("default:",":default","\n"), "", $procXML);
+        $procXML = preg_replace('/>(\\s+)</', '><', $procXML);
+        // Caminho/nome do aquivo xml
+        $arqName = $this->canDir."$chCTe-$nSeqEvento-procCanc.xml";
+        // Salva o arquivo xml
+        if (! file_put_contents($arqName, $procXML) ) {
+            $msg = "Falha na gravação do arquivo $arqName.\n";
+            $msg .= sprintf( "cStat: %s, nProt: %s", $aRetorno['cStat'], $aRetorno['nProt'] );
+            throw new nfephpException($msg);
+        }
+        
         return $aRetorno;
-    } //fim cancEvent
+    }
 
     /**
      * envCCe
