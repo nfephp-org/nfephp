@@ -3,7 +3,7 @@
 /**
  * NFSe
  * Exemplo de envio de RPS de Prefeitura de Campinas
- * Contribuição de Renan Ferreira <renan.ferreira@vercan.com.br>
+ * Contribuição de Renan Ferreira <rhfphp at gmail dot com>
  * em 12/12/2014
  */
 
