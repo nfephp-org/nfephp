@@ -241,7 +241,7 @@ class Pkcs12
      * Os certificados serão armazenados como <CNPJ>-<tipo>.pem  
      * 
      * @param string $pfxContent arquivo PFX
-     * @param string $keyPass Senha de acesso ao certificado PFX
+     * @param string $password Senha de acesso ao certificado PFX
      * @param boolean $createFiles se true irá criar os arquivos pem das chaves digitais, caso contrario não
      * @return boolean
      * @throws Exception\InvalidArgumentException
@@ -254,7 +254,7 @@ class Pkcs12
         $ignoreValidity = false,
         $ignoreOwner = false
     ) {
-        if ($keyPass == '') {
+        if ($password == '') {
             throw new Exception\InvalidArgumentException(
                 "A senha de acesso para o certificado pfx não pode ser vazia."
             );
