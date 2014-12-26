@@ -11,10 +11,10 @@ Common/DateTime;
 ```
 
 Métodos
-----------
+==========
 
 tzdBR
-=========
+--------
 ```php
 string DateTime::tzdBR(string $siglaUF)
 ```
@@ -23,10 +23,11 @@ O Time Zone Default do <b>ambiente PHP será modificado também</b>, caso seja p
 Parâmetros
 --------
 <b>siglaUF</b>
+
 string com a sigla da unidade da federação em letras maiusculas, caso seja passado uma sigla invalida ou vazia será retornado uma string vazia 
 
 convertSefazTimeToTimestamp
-=========
+--------
 ```php
 int DateTime::convertSefazTimeToTimestamp(string $dataHora)
 ```
@@ -34,16 +35,17 @@ Esta função estática retorna um "timestamp" para uma data no formato usado pe
 Parâmetros
 --------
 <b>dataHora</b>
+
 string com o parâmetro data extraído do xml da SEFAZ.
 
 convertTimestampToSefazTime
-=======
+--------
 ```php
 string DateTime::convertTimestampToSefazTime(int $timestamp)
 ```
 Esta função estática retorna um string no formato de data usado pela SEFAZ "YYYY-MM-DDThh:mm:ssTZ", a partir de um "timestamp".
-
 Parâmetros
 --------
 <b>timestamp</b>
+
 integer timestamp UNIX para ser convertido ao padrão usado pela SEFAZ. Caso nenhum parametro seja passado será retornado a data e hora atual no dito padrão, , incluindo o Time Zone default, portanto antes de usar essa função é recomendável que a primeira função "tzdBR" seja usada ou que o Time Zone Default esteja configurado corretamente.
