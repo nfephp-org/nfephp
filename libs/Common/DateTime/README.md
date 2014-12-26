@@ -9,8 +9,8 @@ Common/DateTime;
 FUNÇÕES
 ==============
  
-<span style="color:#00FF00;">string</span><span style="color:blue;"> DateTime::tzdBR(</span><span style="color:green;">string</span><span style="color:blue;"> $siglaUF)</span>
----------
+<b>string DateTime::tzdBR(string $siglaUF)</b>
+
 Esta função estática retorna o "timeZone" de qualquer unidade da federação como uma string no formato "-03:00",
 a $siglaUF pode ser a sigla de qualquer estado brasileiro (ex. SP, MG, PR, etc..), caso não seja passado nenhum
 valor válido o retorno será uma string vazia.
