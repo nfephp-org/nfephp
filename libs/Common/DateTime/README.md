@@ -11,7 +11,9 @@ Common/DateTime;
 FUNÇÕES
 ----------
  
-<b>string DateTime::tzdBR(string $siglaUF)</b>
+```php
+string DateTime::tzdBR(string $siglaUF)
+```
 
 Esta função estática retorna o "timeZone" de qualquer unidade da federação como uma string no formato "-03:00",
 a $siglaUF pode ser a sigla de qualquer estado brasileiro (ex. SP, MG, PR, etc..), caso não seja passado nenhum
