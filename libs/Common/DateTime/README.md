@@ -6,10 +6,12 @@ Esta classe auxiliar provê três funções básicas para o tratamento de datas 
 
 Namespace
 =============
+<b>
 ```php
 Common/DateTime;
 ```
-----------
+</b>
+
 FUNÇÕES
 ----------
  
