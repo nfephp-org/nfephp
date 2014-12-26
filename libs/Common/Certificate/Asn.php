@@ -26,14 +26,14 @@ class Asn extends Base
      * 
      * Obtêm o numero de CNPJ da chave publica do Certificado (A1)
      * 
-     * @param string $cert_pem conteudo do certificado 
+     * @param string $certpem conteúdo do certificado
      * @return string CNPJ
      */
     public static function getCNPJCert($certPem)
     {
         $certDer = self::pem2Der((string) $certPem);
         $data = self::getOIDdata((string) $certDer, '2.16.76.1.3.3');
-        return $data[0][1][1][0][1];
+        return (string) $data[0][1][1][0][1];
     }//fim getCNPJCert
     
     /**

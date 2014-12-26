@@ -119,7 +119,8 @@ class Pkcs12
         $certKey = '',
         $ignoreValidCert = false
     ) {
-        if (strlen(trim($cnpj))!= 14) {
+        $ncnpj = preg_replace('/[^0-9]/', '', $cnpj);
+        if (strlen(trim($ncnpj))!= 14) {
             throw new Exception\InvalidArgumentException(
                 "Um CNPJ válido deve ser passado e são permitidos apenas números. "
                 . "Valor passado [$cnpj]."
@@ -149,7 +150,7 @@ class Pkcs12
         if ($certKey != '') {
             $this->certKey = $certKey;
         }
-        $this->cnpj = trim($cnpj);
+        $this->cnpj = $ncnpj;
         if (! $this->zInit($flagCert)) {
             throw new Exception\RuntimeException($this->error);
         }
@@ -248,7 +249,7 @@ class Pkcs12
      */
     public function loadPfx(
         $pfxContent = '',
-        $keyPass = '',
+        $password = '',
         $createFiles = true,
         $ignoreValidity = false,
         $ignoreOwner = false
@@ -260,7 +261,7 @@ class Pkcs12
         }
         //carrega os certificados e chaves para um array denominado $x509certdata
         $x509certdata = array();
-        if (!openssl_pkcs12_read($pfxContent, $x509certdata, $keyPass)) {
+        if (!openssl_pkcs12_read($pfxContent, $x509certdata, $password)) {
             throw new Exception\RuntimeException(
                 "O certificado não pode ser lido!! Senha errada ou arquivo corrompido ou formato inválido!!"
             );
