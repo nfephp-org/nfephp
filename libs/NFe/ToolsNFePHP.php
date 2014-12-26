@@ -51,7 +51,7 @@ class Tools
      * Time Zone Designator
      * @var string
      */
-    public $timeZone = '-3.00';
+    public $timeZone = '-03:00';
 
     /**
      * enableSVCRS
