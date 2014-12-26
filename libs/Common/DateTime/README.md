@@ -18,10 +18,8 @@ FUNÇÕES
 string DateTime::tzdBR(string $siglaUF)
 ```
 
-Esta função estática retorna o "timeZone" de qualquer unidade da federação como uma string no formato "-03:00",
-a $siglaUF pode ser a sigla de qualquer estado brasileiro (ex. SP, MG, PR, etc..), caso não seja passado nenhum
-valor válido o retorno será uma string vazia.
-O Time Zone Default do ambiente PHP será modificado também, caso seja passado um valor válido.
+Esta função estática retorna o "Time Zone Designator" de qualquer unidade da federação como uma string no formato "-03:00", a $siglaUF pode ser a sigla de qualquer estado brasileiro (ex. SP, MG, PR, etc..), caso não seja passado nenhum valor válido o retorno será uma string vazia.
+O Time Zone Default do <b>ambiente PHP será modificado também</b>, caso seja passado um valor válido.
 
    
 
