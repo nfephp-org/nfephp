@@ -22,12 +22,16 @@ O Time Zone Default do ambiente PHP será modificado também, caso seja passado 
 
    
 
-<b>int DateTime::convertSefazTimeToTimestamp(string $dataHora)</b>
+```php
+int DateTime::convertSefazTimeToTimestamp(string $dataHora)
+```
 
 Esta função estática retorna um "timestamp" para uma data no formato usado pela SEFAZ "YYYY-MM-DDThh:mm:ssTZ".
 
 
-<b>string DateTime::convertTimestampToSefazTime(int $timestamp)</b>
+```php
+string DateTime::convertTimestampToSefazTime(int $timestamp)
+```
 
 Esta função estática retorna um string no formato de data usado pela SEFAZ "YYYY-MM-DDThh:mm:ssTZ", a partir de um "timestamp".
 Caso nada seja passado no parâmetro será retornado a data e hora atual no formato SEFAZ, incluindo o Time Zone default, portanto antes de usar essa função é recomendável que a primeira função "tzdBR" seja usada ou que o Time Zone Default esteja configurado corretamente.
