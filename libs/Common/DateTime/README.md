@@ -9,7 +9,7 @@ Namespace
 ```php
 Common/DateTime;
 ```
-
+----------
 FUNÇÕES
 ----------
  
