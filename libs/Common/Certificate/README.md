@@ -22,9 +22,9 @@ Métodos Públicos
 Método contrutor da classe - ao instanciar a classe a mesma executa algumas configurações básicas.
  
 ```php
-use Common\Certificate;
+use Common\Certificate\Pkcs12;
 
-$oCertificate = new Certificate/Pkcs12(string $pathCerts,string $cnpj[,string $pubKey[,string $priKey[,string $certKey,boolean $ignoreValidCert]]])
+$oCertificate = new Pkcs12(string $pathCerts,string $cnpj[,string $pubKey[,string $priKey[,string $certKey,boolean $ignoreValidCert]]])
 ```                                               
 Parâmetros
 --------
@@ -176,6 +176,8 @@ getCNPJCert
 --------
 Este método extrai do interior do certificado digital A1, a identificação do CNPJ do proprietário.
 ```php
+use Common\Certificate\Asn;
+
 string Asn::getCNPJCert($certPem)
 ```
 Parâmetros
