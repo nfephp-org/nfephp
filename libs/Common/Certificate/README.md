@@ -1,8 +1,8 @@
 Neste diretório se encontram um grupo de classes e arquivos para o tratamento e uso de Certificados Digitais modelo A1 (pkcs12) usados pela API para as assinaturas digitais e a comunicação SOAP (ssl) com as unidades autorizadoras, seja para NFe, NFSe, CTe, MDFe, ou CLe.
 É importante relembrar que o PHP usa apenas certificados modelo A1 e não existe nenhuma forma estável ou confiável de utilizar os certificados modelo A3 (token ou smart card), portanto: 
-NÃO É POSSIVEL USAR CERTIFICADOS MODELO A3 COM O PHP
+NÃO É POSSÍVEL USAR CERTIFICADOS MODELO A3 COM O PHP
 =========
-<b>Para o uso destas classe é impressindivel que esteja intalado e ativo o modulo do OpenSSL do PHP.</b>
+<b>Para o uso destas classe é impressindível que esteja instalado e ativo o módulo do OpenSSL do PHP.</b>
 
 Namespace
 =========
@@ -12,7 +12,7 @@ Common/Certificate;
 
 Class Pkcs12
 ==========
-Esta é a classe principal para o uso dos certificados digitais, e provê os métodos principais para converter os certificados pfx em PEM (para uso do PHP), realiza as assinaturas digitais dos xml e faz as verificações e validações dos mesmos. 
+Esta é a classe principal para o uso dos certificados digitais, e provê os métodos principais para converter os certificados pfx em PEM (para uso do PHP), realizar as assinaturas digitais dos xml e fazer as verificações e validações dos certificados e das assinaturas digitais. 
 
 Métodos Públicos
 ==========
@@ -22,6 +22,8 @@ Métodos Públicos
 Método contrutor da classe - ao instanciar a classe a mesma executa algumas configurações básicas.
  
 ```php
+use Common\Certificate;
+
 $oCertificate = new Certificate/Pkcs12(string $pathCerts,string $cnpj[,string $pubKey[,string $priKey[,string $certKey,boolean $ignoreValidCert]]])
 ```                                               
 Parâmetros
