@@ -78,7 +78,7 @@ class MakeNFe
      * Variável onde será montado o xml da NFe
      * @var DOMDocument
      */
-    public $dom; //DOMDocument
+    public $dom;
     
     //propriedades privadas utilizadas internamente pela classe
     private $timeZone = '-03:00';
@@ -760,17 +760,83 @@ class MakeNFe
             throw new Exception('A TAG dest deve ser criada antes do endereço do mesmo.');
         }
         $this->enderDest = $this->dom->createElement("enderDest");
-        $this->zAddChild($this->enderDest, "xLgr", $xLgr, true, $identificador . "Logradouro do Endereço do Destinatário");
-        $this->zAddChild($this->enderDest, "nro", $nro, true, $identificador . "Número do Endereço do Destinatário");
-        $this->zAddChild($this->enderDest, "xCpl", $xCpl, false, $identificador . "Complemento do Endereço do Destinatário");
-        $this->zAddChild($this->enderDest, "xBairro", $xBairro, true, $identificador . "Bairro do Endereço do Destinatário");
-        $this->zAddChild($this->enderDest, "cMun", $cMun, true, $identificador . "Código do município do Endereço do Destinatário");
-        $this->zAddChild($this->enderDest, "xMun", $xMun, true, $identificador . "Nome do município do Endereço do Destinatário");
-        $this->zAddChild($this->enderDest, "UF", $siglaUF, true, $identificador . "Sigla da UF do Endereço do Destinatário");
-        $this->zAddChild($this->enderDest, "CEP", $cep, false, $identificador . "Código do CEP do Endereço do Destinatário");
-        $this->zAddChild($this->enderDest, "cPais", $cPais, false, $identificador . "Código do País do Endereço do Destinatário");
-        $this->zAddChild($this->enderDest, "xPais", $xPais, false, $identificador . "Nome do País do Endereço do Destinatário");
-        $this->zAddChild($this->enderDest, "fone", $fone, false, $identificador . "Telefone do Endereço do Destinatário");
+        $this->zAddChild(
+            $this->enderDest,
+            "xLgr",
+            $xLgr,
+            true,
+            $identificador . "Logradouro do Endereço do Destinatário"
+        );
+        $this->zAddChild(
+            $this->enderDest,
+            "nro",
+            $nro,
+            true,
+            $identificador . "Número do Endereço do Destinatário"
+        );
+        $this->zAddChild(
+            $this->enderDest,
+            "xCpl",
+            $xCpl,
+            false,
+            $identificador . "Complemento do Endereço do Destinatário"
+        );
+        $this->zAddChild(
+            $this->enderDest,
+            "xBairro",
+            $xBairro,
+            true,
+            $identificador . "Bairro do Endereço do Destinatário"
+        );
+        $this->zAddChild(
+            $this->enderDest,
+            "cMun",
+            $cMun,
+            true,
+            $identificador . "Código do município do Endereço do Destinatário"
+        );
+        $this->zAddChild(
+            $this->enderDest,
+            "xMun",
+            $xMun,
+            true,
+            $identificador . "Nome do município do Endereço do Destinatário"
+        );
+        $this->zAddChild(
+            $this->enderDest,
+            "UF",
+            $siglaUF,
+            true,
+            $identificador . "Sigla da UF do Endereço do Destinatário"
+        );
+        $this->zAddChild(
+            $this->enderDest,
+            "CEP",
+            $cep,
+            false,
+            $identificador . "Código do CEP do Endereço do Destinatário"
+        );
+        $this->zAddChild(
+            $this->enderDest,
+            "cPais",
+            $cPais,
+            false,
+            $identificador . "Código do País do Endereço do Destinatário"
+        );
+        $this->zAddChild(
+            $this->enderDest,
+            "xPais",
+            $xPais,
+            false,
+            $identificador . "Nome do País do Endereço do Destinatário"
+        );
+        $this->zAddChild(
+            $this->enderDest,
+            "fone",
+            $fone,
+            false,
+            $identificador . "Telefone do Endereço do Destinatário"
+        );
         $node = $this->dest->getElementsByTagName("indIEDest")->item(0);
         if (!isset($node)) {
             $node = $this->dest->getElementsByTagName("IE")->item(0);
@@ -812,10 +878,33 @@ class MakeNFe
         } else {
             $this->zAddChild($this->retirada, "CPF", $cpf, true, $identificador . "CPF do Cliente da Retirada");
         }
-        $this->zAddChild($this->retirada, "xLgr", $xLgr, true, $identificador . "Logradouro do Endereco do Cliente da Retirada");
-        $this->zAddChild($this->retirada, "nro", $nro, true, $identificador . "Número do Endereco do Cliente da Retirada");
-        $this->zAddChild($this->retirada, "xCpl", $xCpl, false, $identificador . "Complemento do Endereco do Cliente da Retirada");
-        $this->zAddChild($this->retirada, "xBairro", $xBairro, true, $identificador . "Bairro do Endereco do Cliente da Retirada");
+        $this->zAddChild(
+            $this->retirada,
+            "xLgr",
+            $xLgr,
+            true,
+            $identificador . "Logradouro do Endereco do Cliente da Retirada"
+        );
+        $this->zAddChild(
+            $this->retirada,
+            "nro",
+            $nro,
+            true, $identificador . "Número do Endereco do Cliente da Retirada"
+        );
+        $this->zAddChild(
+            $this->retirada,
+            "xCpl",
+            $xCpl,
+            false,
+            $identificador . "Complemento do Endereco do Cliente da Retirada"
+        );
+        $this->zAddChild(
+            $this->retirada,
+            "xBairro",
+            $xBairro,
+            true,
+            $identificador . "Bairro do Endereco do Cliente da Retirada"
+        );
         $this->zAddChild(
             $this->retirada,
             "cMun",
@@ -867,10 +956,34 @@ class MakeNFe
         } else {
             $this->zAddChild($this->entrega, "CPF", $cpf, true, $identificador . "CPF do Cliente da Entrega");
         }
-        $this->zAddChild($this->entrega, "xLgr", $xLgr, true, $identificador . "Logradouro do Endereco do Cliente da Entrega");
-        $this->zAddChild($this->entrega, "nro", $nro, true, $identificador . "Número do Endereco do Cliente da Entrega");
-        $this->zAddChild($this->entrega, "xCpl", $xCpl, false, $identificador . "Complemento do Endereco do Cliente da Entrega");
-        $this->zAddChild($this->entrega, "xBairro", $xBairro, true, $identificador . "Bairro do Endereco do Cliente da Entrega");
+        $this->zAddChild(
+            $this->entrega,
+            "xLgr",
+            $xLgr,
+            true,
+            $identificador . "Logradouro do Endereco do Cliente da Entrega"
+        );
+        $this->zAddChild(
+            $this->entrega,
+            "nro",
+            $nro,
+            true,
+            $identificador . "Número do Endereco do Cliente da Entrega"
+        );
+        $this->zAddChild(
+            $this->entrega,
+            "xCpl",
+            $xCpl,
+            false,
+            $identificador . "Complemento do Endereco do Cliente da Entrega"
+        );
+        $this->zAddChild(
+            $this->entrega,
+            "xBairro",
+            $xBairro,
+            true,
+            $identificador . "Bairro do Endereco do Cliente da Entrega"
+        );
         $this->zAddChild(
             $this->entrega,
             "cMun",
@@ -878,8 +991,20 @@ class MakeNFe
             true,
             $identificador . "Código do município do Endereco do Cliente da Entrega"
         );
-        $this->zAddChild($this->entrega, "xMun", $xMun, true, $identificador . "Nome do município do Endereco do Cliente da Entrega");
-        $this->zAddChild($this->entrega, "UF", $siglaUF, true, $identificador . "Sigla da UF do Endereco do Cliente da Entrega");
+        $this->zAddChild(
+            $this->entrega,
+            "xMun",
+            $xMun,
+            true,
+            $identificador . "Nome do município do Endereco do Cliente da Entrega"
+        );
+        $this->zAddChild(
+            $this->entrega,
+            "UF",
+            $siglaUF,
+            true,
+            $identificador . "Sigla da UF do Endereco do Cliente da Entrega"
+        );
         return $this->entrega;
     }
     
@@ -1054,7 +1179,13 @@ class MakeNFe
     ) {
         $identificador = 'I01 <prod> - ';
         $prod = $this->dom->createElement("prod");
-        $this->zAddChild($prod, "cProd", $cProd, true, $identificador . "[item $nItem] Código do produto ou serviço");
+        $this->zAddChild(
+            $prod,
+            "cProd",
+            $cProd,
+            true,
+            $identificador . "[item $nItem] Código do produto ou serviço"
+        );
         $this->zAddChild(
             $prod,
             "cEAN",
@@ -1064,8 +1195,20 @@ class MakeNFe
             . "código EAN ou código de barras",
             true
         );
-        $this->zAddChild($prod, "xProd", $xProd, true, $identificador . "[item $nItem] Descrição do produto ou serviço");
-        $this->zAddChild($prod, "NCM", $NCM, true, $identificador . "[item $nItem] Código NCM com 8 dígitos ou 2 dígitos (gênero)");
+        $this->zAddChild(
+            $prod,
+            "xProd",
+            $xProd,
+            true,
+            $identificador . "[item $nItem] Descrição do produto ou serviço"
+        );
+        $this->zAddChild(
+            $prod,
+            "NCM",
+            $NCM,
+            true,
+            $identificador . "[item $nItem] Código NCM com 8 dígitos ou 2 dígitos (gênero)"
+        );
         $this->zAddChild(
             $prod,
             "NVE",
@@ -1073,12 +1216,48 @@ class MakeNFe
             false,
             $identificador . "[item $nItem] Codificação NVE - Nomenclatura de Valor Aduaneiro e Estatística"
         );
-        $this->zAddChild($prod, "EXTIPI", $EXTIPI, false, $identificador . "[item $nItem] Preencher de acordo com o código EX da TIPI");
-        $this->zAddChild($prod, "CFOP", $CFOP, true, $identificador . "[item $nItem] Código Fiscal de Operações e Prestações");
-        $this->zAddChild($prod, "uCom", $uCom, true, $identificador . "[item $nItem] Unidade Comercial do produto");
-        $this->zAddChild($prod, "qCom", $qCom, true, $identificador . "[item $nItem] Quantidade Comercial do produto");
-        $this->zAddChild($prod, "vUnCom", $vUnCom, true, $identificador . "[item $nItem] Valor Unitário de Comercialização do produto");
-        $this->zAddChild($prod, "vProd", $vProd, true, $identificador . "[item $nItem] Valor Total Bruto dos Produtos ou Serviços");
+        $this->zAddChild(
+            $prod,
+            "EXTIPI",
+            $EXTIPI,
+            false,
+            $identificador . "[item $nItem] Preencher de acordo com o código EX da TIPI"
+        );
+        $this->zAddChild(
+            $prod,
+            "CFOP",
+            $CFOP,
+            true,
+            $identificador . "[item $nItem] Código Fiscal de Operações e Prestações"
+        );
+        $this->zAddChild(
+            $prod,
+            "uCom",
+            $uCom,
+            true,
+            $identificador . "[item $nItem] Unidade Comercial do produto"
+        );
+        $this->zAddChild(
+            $prod,
+            "qCom",
+            $qCom,
+            true,
+            $identificador . "[item $nItem] Quantidade Comercial do produto"
+        );
+        $this->zAddChild(
+            $prod,
+            "vUnCom",
+            $vUnCom,
+            true,
+            $identificador . "[item $nItem] Valor Unitário de Comercialização do produto"
+        );
+        $this->zAddChild(
+            $prod,
+            "vProd",
+            $vProd,
+            true,
+            $identificador . "[item $nItem] Valor Total Bruto dos Produtos ou Serviços"
+        );
         $this->zAddChild(
             $prod,
             "cEANTrib",
@@ -1088,13 +1267,55 @@ class MakeNFe
             . "código EAN ou código de barras",
             true
         );
-        $this->zAddChild($prod, "uTrib", $uTrib, true, $identificador . "[item $nItem] Unidade Tributável do produto");
-        $this->zAddChild($prod, "qTrib", $qTrib, true, $identificador . "[item $nItem] Quantidade Tributável do produto");
-        $this->zAddChild($prod, "vUnTrib", $vUnTrib, true, $identificador . "[item $nItem] Valor Unitário de tributação do produto");
-        $this->zAddChild($prod, "vFrete", $vFrete, false, $identificador . "[item $nItem] Valor Total do Frete");
-        $this->zAddChild($prod, "vSeg", $vSeg, false, $identificador . "[item $nItem] Valor Total do Seguro");
-        $this->zAddChild($prod, "vDesc", $vDesc, false, $identificador . "[item $nItem] Valor do Desconto");
-        $this->zAddChild($prod, "vOutro", $vOutro, false, $identificador . "[item $nItem] Outras despesas acessórias");
+        $this->zAddChild(
+            $prod,
+            "uTrib",
+            $uTrib,
+            true,
+            $identificador . "[item $nItem] Unidade Tributável do produto"
+        );
+        $this->zAddChild(
+            $prod,
+            "qTrib",
+            $qTrib,
+            true,
+            $identificador . "[item $nItem] Quantidade Tributável do produto"
+        );
+        $this->zAddChild(
+            $prod,
+            "vUnTrib",
+            $vUnTrib,
+            true,
+            $identificador . "[item $nItem] Valor Unitário de tributação do produto"
+        );
+        $this->zAddChild(
+            $prod,
+            "vFrete",
+            $vFrete,
+            false,
+            $identificador . "[item $nItem] Valor Total do Frete"
+        );
+        $this->zAddChild(
+            $prod,
+            "vSeg",
+            $vSeg,
+            false,
+            $identificador . "[item $nItem] Valor Total do Seguro"
+        );
+        $this->zAddChild(
+            $prod,
+            "vDesc",
+            $vDesc,
+            false,
+            $identificador . "[item $nItem] Valor do Desconto"
+        );
+        $this->zAddChild(
+            $prod,
+            "vOutro",
+            $vOutro,
+            false,
+            $identificador . "[item $nItem] Outras despesas acessórias"
+        );
         $this->zAddChild(
             $prod,
             "indTot",
@@ -1102,8 +1323,20 @@ class MakeNFe
             true,
             $identificador . "[item $nItem] Indica se valor do Item (vProd) entra no valor total da NF-e (vProd)"
         );
-        $this->zAddChild($prod, "xPed", $xPed, false, $identificador . "[item $nItem] Número do Pedido de Compra");
-        $this->zAddChild($prod, "nItemPed", $nItemPed, false, $identificador . "[item $nItem] Item do Pedido de Compra");
+        $this->zAddChild(
+            $prod,
+            "xPed",
+            $xPed,
+            false,
+            $identificador . "[item $nItem] Número do Pedido de Compra"
+        );
+        $this->zAddChild(
+            $prod,
+            "nItemPed",
+            $nItemPed,
+            false,
+            $identificador . "[item $nItem] Item do Pedido de Compra"
+        );
         $this->zAddChild(
             $prod,
             "nFCI",
@@ -1111,7 +1344,13 @@ class MakeNFe
             false,
             $identificador . "[item $nItem] Número de controle da FCI - Ficha de Conteúdo de Importação"
         );
-        $this->zAddChild($prod, "nRECOPI", $nRECOPI, false, $identificador . "[item $nItem] Número do RECOPI");
+        $this->zAddChild(
+            $prod,
+            "nRECOPI",
+            $nRECOPI,
+            false,
+            $identificador . "[item $nItem] Número do RECOPI"
+        );
         $this->aProd[$nItem] = $prod;
         return $prod;
     }
