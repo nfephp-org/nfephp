@@ -4,8 +4,7 @@ require_once('../../libs/NFe/ToolsNFePHP.class.php');
 $nfe = new ToolsNFePHP;
 header('Content-type: text/html; charset=UTF-8');
 $sUF = 'AC;AL;AM;AP;BA;CE;DF;ES;GO;MA;MG;MS;MT;PA;PB;PE;PI;PR;RJ;RN;RO;RR;RS;SC;SE;SP;TO';
-//$sUF = 'SP'; //falha ao utilizar PR com SOAP nativo
-$sUF = 'BA;CE;GO;MG;MS;MT;PE;PR';
+$sUF = 'SP';
 
 //determina o ambiente 1-produção 2-homologação
 $tpAmb= '2';
@@ -17,9 +16,8 @@ if ($tpAmb == 1) {
 }
 
 foreach ($aUF as $UF) {
-    $alias = $nfe->aliaslist[$UF];
     echo '<BR><HR/><BR>';
-    echo "$UF [ $sAmb ] ==> $alias <BR>";
+    echo "$UF [ $sAmb ] ==> $UF <BR>";
     $resp = $nfe->statusServico($UF, $tpAmb, $retorno);
     echo print_r($retorno);
     echo '<BR>';
@@ -30,6 +28,8 @@ foreach ($aUF as $UF) {
     echo $UF . '[' . $sAmb . '] - ' . $retorno['xMotivo'] . '<BR><BR><HR/><BR>';
     flush();
 }
+
+/*
 //Contignecia SVCAN
 $UF = 'SP';
 $nfe->ativaContingencia('SVCAN');
@@ -60,3 +60,4 @@ echo htmlspecialchars($nfe->soapDebug);
 echo '</PRE><BR>';
 echo $UF . '[' . $sAmb . '] - ' . $retorno['xMotivo'] . '<BR><BR><HR/><BR>';
 flush();
+*/
