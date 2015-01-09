@@ -31,19 +31,17 @@ class CurlSoapTest extends PHPUnit_Framework_TestCase
         $resp = $soap->getProxy();
         $this->assertEquals($resp, $aProxy);
     }
-    
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
     public function testExceptionAoPassarCertificados()
     {
         $priKey = dirname(dirname(dirname(__FILE__))) . '/fixtures/certs/99999090910270_priKEY.pem';
         $pubKey = dirname(dirname(dirname(__FILE__))) . '/fixtures/certs/0000_pubKEY.pem';
         $certKey = dirname(dirname(dirname(__FILE__))) . '/fixtures/certs/99999090910270_certKEY.pem';
         $timeout = '10';
-        try {
-            $soap = new CurlSoap($priKey, $pubKey, $certKey, $timeout);
-        } catch (InvalidArgumentException $expected) {
-            return;
-        }
-        $this->fail('Teste dos certificados - A excessão esperada não foi disparada.');
+        $soap = new CurlSoap($priKey, $pubKey, $certKey, $timeout);
     }
     
     public function testGetWsdl()
