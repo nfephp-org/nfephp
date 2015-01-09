@@ -1655,8 +1655,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $texto = 'FONE / FAX';
         $aFont = array('font'=>$this->fontePadrao, 'size'=>6, 'style'=>'');
         $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 1, '');
-        $texto = ! empty($this->dest->getElementsByTagName("fone")->item(0)->nodeValue) ?
-                $this->pFormat($this->dest->getElementsByTagName("fone")->item(0)->nodeValue, '(##) ####-####') : '';
+        $texto = $this->dest->getElementsByTagName("fone")->item(0)->nodeValue;
         $aFont = array('font'=>$this->fontePadrao, 'size'=>10, 'style'=>'B');
         $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'B', 'C', 0, '');
         //INSCRIÇÃO ESTADUAL
