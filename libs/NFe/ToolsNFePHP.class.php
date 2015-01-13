@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.10.05-beta
+ * @version   3.10.06-beta
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -1706,12 +1706,17 @@ class ToolsNFePHP extends CommonNFePHP
             //montagem do namespace do serviço
             $namespace = $this->URLPortal.'/wsdl/'.$servico.'2';
             //montagem do cabeçalho da comunicação SOAP
-            $cabec = '<nfeCabecMsg xmlns="'. $namespace.'"><cUF>'.$cUF
-                   .'</cUF><versaoDados>'.$versao.'</versaoDados></nfeCabecMsg>';
+            $cabec = "<nfeCabecMsg xmlns=\"$namespace\">"
+                    . "<cUF>$cUF</cUF>"
+                    . "<versaoDados>$versao</versaoDados>"
+                    . "</nfeCabecMsg>";
             //montagem dos dados da mensagem SOAP
-            $dados = '<nfeDadosMsg xmlns="'. $namespace.'"><consStatServ xmlns="'
-                   .$this->URLPortal.'" versao="'.$versao.'"><tpAmb>'.$tpAmb.'</tpAmb><cUF>'
-                   .$cUF.'</cUF><xServ>STATUS</xServ></consStatServ></nfeDadosMsg>';
+            $dados = "<nfeDadosMsg xmlns=\"$namespace\">"
+                    . "<consStatServ xmlns=\"$this->URLPortal\" versao=\"$versao\">"
+                    . "<tpAmb>$tpAmb</tpAmb>"
+                    . "<cUF>$cUF</cUF>"
+                    . "<xServ>STATUS</xServ>"
+                    . "</consStatServ></nfeDadosMsg>";
             //consome o webservice e verifica o retorno do SOAP
             if (! $retorno = $this->pSendSOAP($urlservico, $namespace, $cabec, $dados, $metodo, $tpAmb)) {
                 throw new nfephpException("Nao houve retorno Soap verifique a mensagem de erro e o debug!!");
@@ -1841,12 +1846,17 @@ class ToolsNFePHP extends CommonNFePHP
             return false;
         }
         //montagem do cabeçalho da comunicação SOAP
-        $cabec = '<nfeCabecMsg xmlns="'. $namespace.'"><cUF>'.$cUF
-               .'</cUF><versaoDados>'.$versao.'</versaoDados></nfeCabecMsg>';
+        $cabec = "<nfeCabecMsg xmlns=\"$namespace\">"
+                . "<cUF>$cUF</cUF>"
+                . "<versaoDados>$versao</versaoDados>"
+                . "</nfeCabecMsg>";
         //montagem dos dados da mensagem SOAP
-        $dados = '<nfeDadosMsg xmlns="'. $namespace.'"><ConsCad xmlns="'
-               .$this->URLnfe.'" versao="'.$versao.'"><infCons><xServ>CONS-CAD</xServ><UF>'.$siglaUF.'</UF>'
-               .$filtro.'</infCons></ConsCad></nfeDadosMsg>';
+        $dados = "<nfeDadosMsg xmlns=\"$namespace\">"
+                . "<ConsCad xmlns=\"$this->URLnfe\" versao=\"$versao\">"
+                . "<infCons>"
+                . "<xServ>CONS-CAD</xServ>"
+                . "<UF>$siglaUF</UF>$filtro</infCons>"
+                . "</ConsCad></nfeDadosMsg>";
         //envia a solicitação via SOAP
         $retorno = $this->pSendSOAP($urlservico, $namespace, $cabec, $dados, $metodo, $tpAmb);
         //verifica o retorno
@@ -1970,7 +1980,7 @@ class ToolsNFePHP extends CommonNFePHP
      * @param integer $indSinc Indicação webservice assíncrono (0) ou síncrono (1)
      * @return mixed string XML do retorno do webservice, ou false se ocorreu algum erro
      */
-    public function autoriza($sxml, $idLote, &$aRetorno = array(), $indSinc = 1)
+    public function autoriza($sxml, $idLote, &$aRetorno = array(), $indSinc = 0)
     {
         try {
             //retorno do método em array (esta estrutura espelha a estrutura do XML retornado pelo webservice
@@ -2023,7 +2033,8 @@ class ToolsNFePHP extends CommonNFePHP
             $namespace = $this->URLPortal.'/wsdl/'.$operation;
             //valida o parâmetro da string do XML da NF-e
             if (empty($sxml) || ! simplexml_load_string($sxml)) {
-                throw new nfephpException("XML de NF-e para autorizacao recebido no parametro parece invalido, verifique");
+                throw new nfephpException("XML de NF-e para autorizacao "
+                        . "recebido no parametro parece invalido, verifique");
             }
             // limpa a variavel
             $sNFe = $sxml;
@@ -2031,13 +2042,15 @@ class ToolsNFePHP extends CommonNFePHP
             $sNFe = preg_replace("/<\?xml.*\?>/", "", $sNFe);
             $sNFe = str_replace(array("\r","\n","\s"), "", $sNFe);
             //montagem do cabeçalho da comunicação SOAP
-            $cabec = '<nfeCabecMsg xmlns="'.$namespace.'"><cUF>'.$this->cUF
-                    .'</cUF><versaoDados>'.$versao.'</versaoDados></nfeCabecMsg>';
+            $cabec = "<nfeCabecMsg xmlns=\"$namespace\">"
+                    . "<cUF>$this->cUF</cUF>"
+                    . "<versaoDados>$versao</versaoDados>"
+                    . "</nfeCabecMsg>";
             //montagem dos dados da mensagem SOAP
-            $dados = '<nfeDadosMsg xmlns="'.$namespace.'"><enviNFe xmlns="'
-                    .$this->URLPortal.'" versao="'.$versao.'"><idLote>'
-                    .$idLote.'</idLote><indSinc>'.$indSinc.'</indSinc>'
-                    .$sNFe.'</enviNFe></nfeDadosMsg>';
+            $dados = "<nfeDadosMsg xmlns=\"$namespace\">"
+                    . "<enviNFe xmlns=\"$this->URLPortal\" versao=\"$versao\">"
+                    . "<idLote>$idLote</idLote>"
+                    . "<indSinc>$indSinc</indSinc>$sNFe</enviNFe></nfeDadosMsg>";
             //envia dados via SOAP
             $retorno = $this->pSendSOAP($urlservico, $namespace, $cabec, $dados, $metodo, $this->tpAmb);
             //verifica o retorno
@@ -2167,10 +2180,12 @@ class ToolsNFePHP extends CommonNFePHP
                 $aURL = $this->pLoadSEFAZ($tpAmb, self::CONTINGENCIA_SVCRS);
             }
             if ($recibo == '' && $chave == '') {
-                throw new nfephpException("ERRO. Favor indicar o numero do recibo ou a chave de acesso da NF-e!");
+                throw new nfephpException("ERRO. Favor indicar o numero do "
+                        . "recibo ou a chave de acesso da NF-e!");
             }
             if ($recibo != '' && $chave != '') {
-                throw new nfephpException("ERRO. Favor indicar somente o numero do recibo ou a chave de acesso da NF-e!");
+                throw new nfephpException("ERRO. Favor indicar somente o "
+                        . "numero do recibo ou a chave de acesso da NF-e!");
             }
             //consulta pelo recibo
             if ($recibo != '' && $chave == '') {
@@ -2187,12 +2202,17 @@ class ToolsNFePHP extends CommonNFePHP
                 $operation = $aURL[$servico]['operation'];
                 $namespace = $this->URLPortal.'/wsdl/'.$operation;
                 //montagem do cabeçalho da comunicação SOAP
-                $cabec = '<nfeCabecMsg xmlns="'.$namespace.'"><cUF>'
-                       .$cUF.'</cUF><versaoDados>'.$versao.'</versaoDados></nfeCabecMsg>';
+                $cabec = "<nfeCabecMsg xmlns=\"$namespace\">"
+                        . "<cUF>$cUF</cUF>"
+                        . "<versaoDados>$versao</versaoDados>"
+                        . "</nfeCabecMsg>";
                 //montagem dos dados da mensagem SOAP
-                $dados = '<nfeDadosMsg xmlns="'.$namespace.'"><consReciNFe xmlns="'
-                       .$this->URLPortal.'" versao="'. $versao.'"><tpAmb>'
-                       .$tpAmb.'</tpAmb><nRec>'.$recibo .'</nRec></consReciNFe></nfeDadosMsg>';
+                $dados = "<nfeDadosMsg xmlns=\"$namespace\">"
+                        . "<consReciNFe xmlns=\"$this->URLPortal\" versao=\"$versao\">"
+                        . "<tpAmb>$tpAmb</tpAmb>"
+                        . "<nRec>$recibo</nRec>"
+                        . "</consReciNFe>"
+                        . "</nfeDadosMsg>";
                 //nome do arquivo
                 $nomeArq = $recibo.'-protrec.xml';
             }
@@ -2211,13 +2231,17 @@ class ToolsNFePHP extends CommonNFePHP
                 $operation = $aURL[$servico]['operation'];
                 $namespace = $this->URLPortal.'/wsdl/'.$operation;
                 //montagem do cabeçalho da comunicação SOAP
-                $cabec = '<nfeCabecMsg xmlns="'. $namespace.'"><cUF>'
-                       .$cUF.'</cUF><versaoDados>'.$versao.'</versaoDados></nfeCabecMsg>';
+                $cabec = "<nfeCabecMsg xmlns=\"$namespace\">"
+                        . "<cUF>$cUF</cUF>"
+                        . "<versaoDados>$versao</versaoDados>"
+                        . "</nfeCabecMsg>";
                 //montagem dos dados da mensagem SOAP
-                $dados = '<nfeDadosMsg xmlns="'.$namespace.'"><consSitNFe xmlns="'
-                       .$this->URLPortal.'" versao="'.$versao.'"><tpAmb>'
-                       .$tpAmb.'</tpAmb><xServ>CONSULTAR</xServ><chNFe>'
-                       .$chave .'</chNFe></consSitNFe></nfeDadosMsg>';
+                $dados = "<nfeDadosMsg xmlns=\"$namespace\">"
+                        . "<consSitNFe xmlns=\"$this->URLPortal\" versao=\"$versao\">"
+                        . "<tpAmb>$tpAmb</tpAmb>"
+                        . "<xServ>CONSULTAR</xServ>"
+                        . "<chNFe>$chave</chNFe>"
+                        . "</consSitNFe></nfeDadosMsg>";
             }
             //envia a solicitação via SOAP
             if (!$retorno = $this->pSendSOAP($urlservico, $namespace, $cabec, $dados, $metodo, $tpAmb)) {
@@ -2596,15 +2620,15 @@ class ToolsNFePHP extends CommonNFePHP
             $namespace = $this->URLPortal.'/wsdl/'.$operation;
             //monta a consulta
             $cons = '';
-            $cons .= '<consNFeDest xmlns="'.$this->URLPortal.'" versao="'.$versao.'">';
-            $cons .= '<tpAmb>'.$tpAmb.'</tpAmb><xServ>CONSULTAR NFE DEST</xServ>';
-            $cons .= '<CNPJ>'.$this->cnpj.'</CNPJ><indNFe>'.$indNFe.'</indNFe>';
-            $cons .= '<indEmi>'.$indEmi.'</indEmi><ultNSU>'.$ultNSU.'</ultNSU></consNFeDest>';
+            $cons .= "<consNFeDest xmlns=\"$this->URLPortal\" versao=\"$versao\">";
+            $cons .= "<tpAmb>$tpAmb</tpAmb><xServ>CONSULTAR NFE DEST</xServ>";
+            $cons .= "<CNPJ>$this->cnpj</CNPJ><indNFe>$indNFe</indNFe>";
+            $cons .= "<indEmi>$indEmi</indEmi><ultNSU>$ultNSU</ultNSU></consNFeDest>";
             //montagem do cabeçalho da comunicação SOAP
-            $cabec = '<nfeCabecMsg xmlns="'. $namespace.'"><cUF>'.$this->cUF.'</cUF>';
-            $cabec .= '<versaoDados>'.$versao.'</versaoDados></nfeCabecMsg>';
+            $cabec = "<nfeCabecMsg xmlns=\"$namespace\"><cUF>$this->cUF</cUF>";
+            $cabec .= "<versaoDados>$versao</versaoDados></nfeCabecMsg>";
             //montagem dos dados da mensagem SOAP
-            $dados = '<nfeDadosMsg xmlns="'.$namespace.'">'.$cons.'</nfeDadosMsg>';
+            $dados = "<nfeDadosMsg xmlns=\"$namespace\">$cons</nfeDadosMsg>";
             //grava solicitação em temp
             if (!file_put_contents($this->temDir."$this->cnpj-$ultNSU-$datahora-LNFe.xml", $cons)) {
                 $msg = "Falha na gravacao do arquivo LNFe (Lista de NFe)!!";
@@ -2806,13 +2830,15 @@ class ToolsNFePHP extends CommonNFePHP
                 throw new nfephpException('Nao existe este servico na SEFAZ consultada.');
             }
             //montagem do cabeçalho da comunicação SOAP
-            $cabec = '<nfeCabecMsg xmlns="'. $namespace.'"><cUF>'
-                   .$this->cUF.'</cUF><versaoDados>'.$versao.'</versaoDados></nfeCabecMsg>';
+            $cabec = "<nfeCabecMsg xmlns=\"$namespace\"><cUF>$this->cUF</cUF><versaoDados>$versao</versaoDados></nfeCabecMsg>";
             //montagem dos dados da mensagem SOAP
-            $dados = '<nfeDadosMsg xmlns="'.$namespace.'"><downloadNFe xmlns="'
-                   .$this->URLPortal.'" versao="'.$versao.'"><tpAmb>'
-                   .$tpAmb.'</tpAmb><xServ>DOWNLOAD NFE</xServ><CNPJ>'
-                   .$this->cnpj.'</CNPJ><chNFe>'.$chNFe.'</chNFe></downloadNFe></nfeDadosMsg>';
+            $dados = "<nfeDadosMsg xmlns=\"$namespace\">"
+                    . "<downloadNFe xmlns=\"$this->URLPortal\" versao=\"$versao\">"
+                    . "<tpAmb>$tpAmb</tpAmb>"
+                    . "<xServ>DOWNLOAD NFE</xServ>"
+                    . "<CNPJ>$this->cnpj</CNPJ>"
+                    . "<chNFe>$chNFe</chNFe>"
+                    . "</downloadNFe></nfeDadosMsg>";
             //envia dados via SOAP e verifica o retorno
             if (!$retorno = $this->pSendSOAP($urlservico, $namespace, $cabec, $dados, $metodo, $tpAmb)) {
                 throw new nfephpException("Nao houve retorno Soap verifique a mensagem de erro e o debug!!");
@@ -3084,26 +3110,27 @@ class ToolsNFePHP extends CommonNFePHP
                 . str_pad($nIni, 9, '0', STR_PAD_LEFT)
                 . str_pad($nFin, 9, '0', STR_PAD_LEFT);
         //montagem do cabeçalho da comunicação SOAP
-        $cabec = '<nfeCabecMsg xmlns="'.$namespace.'"><cUF>'
-                . $this->cUF.'</cUF><versaoDados>'.$versao.'</versaoDados></nfeCabecMsg>';
+        $cabec = "<nfeCabecMsg xmlns=\"$namespace\">"
+                . "<cUF>$this->cUF</cUF>"
+                . "<versaoDados>$versao</versaoDados>"
+                . "</nfeCabecMsg>";
         //montagem do corpo da mensagem
-        $dXML = '<inutNFe xmlns="'.$this->URLnfe.'" versao="'.$versao.'">';
-        $dXML .= '<infInut Id="'.$id.'">';
-        $dXML .= '<tpAmb>'.$tpAmb.'</tpAmb>';
-        $dXML .= '<xServ>INUTILIZAR</xServ>';
-        $dXML .= '<cUF>'.$this->cUF.'</cUF>';
-        $dXML .= '<ano>'.$nAno.'</ano>';
-        $dXML .= '<CNPJ>'.$this->cnpj.'</CNPJ>';
-        $dXML .= '<mod>55</mod>';
-        $dXML .= '<serie>'.$nSerie.'</serie>';
-        $dXML .= '<nNFIni>'.$nIni.'</nNFIni>';
-        $dXML .= '<nNFFin>'.$nFin.'</nNFFin>';
-        $dXML .= '<xJust>'.$xJust.'</xJust>';
-        $dXML .= '</infInut>';
-        $dXML .= '</inutNFe>';
+        $dXML = "<inutNFe xmlns=\"$this->URLnfe\" versao=\"$versao\">"
+                . "<infInut Id=\"$id\">"
+                . "<tpAmb>$tpAmb</tpAmb>"
+                . "<xServ>INUTILIZAR</xServ>"
+                . "<cUF>$this->cUF</cUF>"
+                . "<ano>$nAno</ano>"
+                . "<CNPJ>$this->cnpj</CNPJ>"
+                . "<mod>55</mod>"
+                . "<serie>$nSerie</serie>"
+                . "<nNFIni>$nIni</nNFIni>"
+                . "<nNFFin>$nFin</nNFFin>"
+                . "<xJust>$xJust</xJust>"
+                . "</infInut></inutNFe>";
         //assina a lsolicitação de inutilização
         $dXML = $this->signXML($dXML, 'infInut');
-        $dados = '<nfeDadosMsg xmlns="'.$namespace.'">'.$dXML.'</nfeDadosMsg>';
+        $dados = "<nfeDadosMsg xmlns=\"$namespace\">$dXML</nfeDadosMsg>";
         //remove as tags xml que porventura tenham sido inclusas
         $dados = $this->pClearXml($dados, true);
         //grava a solicitação de inutilização
@@ -3849,7 +3876,7 @@ class ToolsNFePHP extends CommonNFePHP
             $metodo = $aURL[$servico]['method'];
             //montagem do namespace do serviço
             $operation = $aURL[$servico]['operation'];
-            $namespace = $this->URLPortal.'/wsdl/'.$operation;            
+            $namespace = $this->URLPortal.'/wsdl/'.$operation;
             // 2   +    6     +    44         +   2  = 54 digitos
             //“ID” + tpEvento + chave da NF-e + nSeqEvento
             $nSeqEvento = '1';
