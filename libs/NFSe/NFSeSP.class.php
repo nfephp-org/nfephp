@@ -167,7 +167,7 @@ class NFSeSP
         } catch (SoapFault $e) {
             throw new \Common\Exception\RuntimeException($e->getMessage());
         } catch (Exception $e) {
-            throw new $e;
+            throw $e;
         }
     }
 
@@ -192,7 +192,7 @@ class NFSeSP
         } catch (SoapFault $e) {
             throw new \Common\Exception\RuntimeException($e->getMessage());
         } catch (Exception $e) {
-            throw new $e;
+            throw $e;
         }
         return new SimpleXMLElement($result->RetornoXML);
     }
