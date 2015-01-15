@@ -69,7 +69,6 @@ class NFSeSP
         // obtem o timestamp da data de hoje
         $dHoje = gmmktime(0, 0, 0, date("m"), date("d"), date("Y"));
         if (!$this->ignoreCertExpired AND $certValidDate < time()) {
-            $date = date('Y-m-d', $certValidDate);
             error_log(__METHOD__ . ': Certificado expirado em ' . date('Y-m-d', $certValidDate));
             return false;
         }
@@ -143,7 +142,6 @@ class NFSeSP
             error_log('Exception: ' . $e->getMessage());
             echo "erro de conexão soap. Tente novamente mais tarde !<br>\n";
             echo $e->getMessage();
-            return false;
         }
     }
 
@@ -169,7 +167,7 @@ class NFSeSP
     private function createXML($operation)
     {
         $xmlDoc = new DOMDocument('1.0', 'UTF-8');
-        $xmlDoc->preservWhiteSpace = false;
+        $xmlDoc->preserveWhiteSpace = false;
         $xmlDoc->formatOutput = false;
         $data = '<?xml version="1.0" encoding="UTF-8"?><Pedido' . $operation . ' xmlns:xsd="' . $this->urlXsd .'" xmlns="' . $this->urlNfe . '" xmlns:xsi="' . $this->urlXsi . '"></Pedido' . $operation . '>';
         $xmlDoc->loadXML(str_replace(array("\r\n", "\n", "\r"), '', $data), LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
@@ -186,7 +184,7 @@ class NFSeSP
     private function createXMLp1($operation)
     {
         $xmlDoc = new DOMDocument('1.0', 'UTF-8');
-        $xmlDoc->preservWhiteSpace = false;
+        $xmlDoc->preserveWhiteSpace = false;
         $xmlDoc->formatOutput = false;
         $data = '<?xml version="1.0" encoding="UTF-8"?><Pedido'.$operation.' xmlns="' . $this->urlNfe . '" xmlns:xsi="' . $this->urlXsi . '"></Pedido' . $operation . '>';
         $xmlDoc->loadXML(str_replace(array("\r\n", "\n", "\r"), '', $data), LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
@@ -326,11 +324,12 @@ class NFSeSP
         $rpsNode->appendChild($xmlDoc->createElement('Discriminacao', $rps->discriminacao)); // 1-1
     }
 
-   /**
-    * Send a RPS to replace for NF-e
-    *
-    * @param NFeRPS $rps
-    */
+    /**
+     * Send a RPS to replace for NF-e
+     *
+     * @param NFeRPS $rps
+     * @return bool|\SimpleXMLElement
+     */
     public function sendRPS(NFeRPS $rps)
     {
         $operation = 'EnvioRPS';
@@ -341,13 +340,13 @@ class NFSeSP
     }
 
 
-
     /**
      * Send a batch of RPSs to replace for NF-e
      *
      * @param array $rangeDate ('start' => start date of RPSs, 'end' => end date of RPSs)
      * @param array $valorTotal ('servicos' => total value of RPSs, 'deducoes' => total deductions on values of RPSs)
      * @param array $rps Collection of NFeRPS
+     * @return bool|\SimpleXMLElement
      */
     public function sendRPSBatch($rangeDate, $valorTotal, $rps)
     {
@@ -392,8 +391,8 @@ class NFSeSP
     }
 
     /**
-     *
-     * @param array $nfe Array of NFe numbers
+     * Has responsible to cancel NFe numbers created from sendRPSBatch method
+     * @param array $nfeNumbers  Array of NFe numbers
      * @return bool|\SimpleXMLElement
      */
     public function cancelNFe(array $nfeNumbers)
@@ -413,17 +412,22 @@ class NFSeSP
             $content = sprintf('%08s', $this->ccmPrestador) .
                 sprintf('%012s', $nfeNumber);
             $signatureValue = '';
-            $digestValue = base64_encode(hash('sha1', $content, true));
             $pkeyId = openssl_get_privatekey(file_get_contents($this->privateKey));
-            //      openssl_sign($digestValue, $signatureValue, $pkeyId);
             openssl_sign($content, $signatureValue, $pkeyId, OPENSSL_ALGO_SHA1);
             openssl_free_key($pkeyId);
             $detail->appendChild(new DOMElement('AssinaturaCancelamento', base64_encode($signatureValue)));
         }
-        $docxml = $xmlDoc->saveXML();
         return $this->send($operation, $xmlDoc);
     }
 
+    /**
+     * It will find a NFe document from given number or
+     * RPS document when given $rpsNumber and $rpsSerie
+     * @param string $nfeNumber NFe Number
+     * @param string $rpsNumber RPS Number
+     * @param string $rpsSerie RPS Serie
+     * @return bool|SimpleXMLElement Returns a XML with NFe or RPS data.
+     */
     public function queryNFe($nfeNumber, $rpsNumber, $rpsSerie)
     {
         $operation = 'ConsultaNFe';
@@ -453,10 +457,11 @@ class NFSeSP
     /**
      * queryNFeReceived and queryNFeIssued have the same XML request model
      *
-     * @param string $cnpj
-     * @param string $ccm
+     * @param string $cnpj CNPJ to find
+     * @param string $ccm State Registration
      * @param string $startDate YYYY-MM-DD
      * @param string $endDate YYYY-MM-DD
+     * @return \DOMDocument
      */
     private function queryNFeWithDateRange($cnpj, $ccm, $startDate, $endDate)
     {
@@ -480,10 +485,11 @@ class NFSeSP
     /**
      * Query NF-e's that CNPJ/CCM company received from other companies
      *
-     * @param string $cnpj
-     * @param string $ccm
+     * @param string $cnpj CNPJ to find
+     * @param string $ccm State Registration
      * @param string $startDate YYYY-MM-DD
      * @param string $endDate YYYY-MM-DD
+     * @return bool|\SimpleXMLElement
      */
     public function queryNFeReceived($cnpj, $ccm, $startDate, $endDate)
     {
@@ -499,6 +505,7 @@ class NFSeSP
      * @param string $ccm
      * @param string $startDate YYYY-MM-DD
      * @param string $endDate YYYY-MM-DD
+     * @return bool|\SimpleXMLElement
      */
     public function queryNFeIssued($cnpj, $ccm, $startDate, $endDate)
     {
@@ -521,6 +528,7 @@ class NFSeSP
      * If $batchNumber param is null, last match info will be returned
      *
      * @param integer $batchNumber
+     * @return bool|\SimpleXMLElement
      */
     public function queryBatchInfo($batchNumber = null)
     {
@@ -538,6 +546,7 @@ class NFSeSP
      * Returns CCM for given CNPJ
      *
      * @param string $cnpj
+     * @return bool|string
      */
     public function queryCNPJ($cnpj)
     {
@@ -551,7 +560,6 @@ class NFSeSP
             $cnpjTaxpayer->appendChild($xmlDoc->createElement('CNPJ', (string) sprintf('%014s', $cnpj)));
         }
         $root->appendChild($cnpjTaxpayer);
-        $docxml = $xmlDoc->saveXML();
         if ($return = $this->send($operation, $xmlDoc)) {
             if ($return->Detalhe->InscricaoMunicipal <> "") {
                 return $return->Detalhe->InscricaoMunicipal;
@@ -570,8 +578,8 @@ class NFSeSP
     /**
      * Create a line with RPS description for batch file
      *
-     * @param unknown_type $rps
-     * @param unknown_type $body
+     * @param NFeRPS $rps
+     * @param string $body
      */
     private function insertTextRPS(NFeRPS $rps, &$body)
     {
@@ -616,7 +624,6 @@ class NFSeSP
      */
     public function textFile($rangeDate, $valorTotal, $rps)
     {
-        $file = '';
         $header = "1" .
             "001" .
             $this->ccmPrestador .
