@@ -22,10 +22,11 @@ class NFSeSPTest extends PHPUnit_Framework_TestCase
     public function getSoapClientMock()
     {
         $mockBuider = $this->getMockBuilder('SoapClient')->disableOriginalConstructor();
-        $mockBuider->setMethods(array('EnvioRPS'));
-
+        $mockBuider->setMethods(array('EnvioRPS', 'EnvioLoteRPS','TesteEnvioLoteRPS'));
         $mock = $mockBuider->getMock();
         $mock->expects($this->any())->method('EnvioRPS')->will($this->returnCallback(array('NFSeTest_Provider_SendRps', 'response')));
+        $mock->expects($this->any())->method('EnvioLoteRPS')->will($this->returnCallback(array('NFSeTest_Provider_SendBatchRps', 'response')));
+        $mock->expects($this->any())->method('TesteEnvioLoteRPS')->will($this->returnCallback(array('NFSeTest_Provider_SendBatchRps', 'response')));
         return $mock;
     }
 
@@ -79,5 +80,43 @@ class NFSeSPTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf('SimpleXMLElement', $returned);
         $this->assertEquals('true', $returned->Cabecalho->Sucesso);
         $this->assertEquals("123", $returned->ChaveNFeRPS->ChaveRPS->NumeroRPS);
+    }
+
+    public function testSendABatchOfRpsToReplaceForNfe()
+    {
+        $rps123 = $this->getNFSeRPS();
+        $rps123->numero = 123;
+        $rps321 = $this->getNFSeRPS();
+        $rps321->numero = 321;
+
+        $nfse = $this->getNFSeSPMock();
+        $returned = $nfse->sendRPSBatch(
+            array('inicio' => date('Y-m-d H:s:i'), 'fim' => date('Y-m-d H:s:i')),
+            array('servicos' => 0.0, 'deducoes' => 0.00),
+            array($rps123, $rps321)
+        );
+
+        $this->assertInstanceOf('SimpleXMLElement', $returned);
+        $this->assertEquals('true', $returned->Cabecalho->Sucesso);
+        $this->assertEquals(2, count($returned->ChaveNFeRPS->ChaveRPS));
+        foreach (array("123", "321") as $key => $number) {
+            $this->assertEquals($number, $returned->ChaveNFeRPS->ChaveRPS[$key]->NumeroRPS);
+        }
+    }
+
+    public function testSendABatchOfRpsToReplaceForNfeForTestOnly()
+    {
+        $rps = $this->getNFSeRPS();
+        $rps->numero = 123;
+        $nfse = $this->getNFSeSPMock();
+        $returned = $nfse->sendRPSBatchTest(
+            array('inicio' => date('Y-m-d H:s:i', strtotime('-1 day')), 'fim' => date('Y-m-d H:s:i')),
+            array('servicos' => 0.0, 'deducoes' => 0.00),
+            array($rps)
+        );
+        $this->assertInstanceOf('SimpleXMLElement', $returned);
+        $this->assertEquals('true', $returned->Cabecalho->Sucesso);
+        $this->assertEquals(1, count($returned->ChaveNFeRPS->ChaveRPS));
+        $this->assertEquals("123", $returned->ChaveNFeRPS->ChaveRPS[0]->NumeroRPS);
     }
 }
