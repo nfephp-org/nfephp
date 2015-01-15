@@ -235,7 +235,7 @@ class NFSeSPTest extends PHPUnit_Framework_TestCase
     public function testQueryCPF()
     {
         $nfse = $this->getNFSeSPMock();
-        $returned = $nfse->queryCNPJ('11122233344');
+        $returned = $nfse->queryCPF('11122233344');
         $this->assertTrue(is_string($returned));
         $this->assertEquals('1234567890', $returned);
     }

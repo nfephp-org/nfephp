@@ -407,19 +407,8 @@ class NFSeSP
      */
     public function sendRPSBatch($rangeDate, $valorTotal, $rps)
     {
-        $operation = 'EnvioLoteRPS';
-        $xmlDoc = $this->makeXmlHeader($operation);
-        $header = $xmlDoc->documentElement->getElementsByTagName('Cabecalho')->item(0);
-        $header->appendChild($xmlDoc->createElement('transacao', 'false'));
-        $header->appendChild($xmlDoc->createElement('dtInicio', $rangeDate['inicio']));
-        $header->appendChild($xmlDoc->createElement('dtFim', $rangeDate['fim']));
-        $header->appendChild($xmlDoc->createElement('QtdRPS', count($rps)));
-        $header->appendChild($xmlDoc->createElement('ValorTotalServicos', $valorTotal['servicos']));
-        $header->appendChild($xmlDoc->createElement('ValorTotalDeducoes', $valorTotal['deducoes']));
-        foreach ($rps as $item) {
-            $this->makeRPSXml($item, $xmlDoc);
-        }
-        return $this->send($operation, $xmlDoc);
+        $xmlDoc = $this->makeBatchMessage($rangeDate, $valorTotal, $rps);
+        return $this->send('EnvioLoteRPS', $xmlDoc);
     }
 
     /**
@@ -433,6 +422,20 @@ class NFSeSP
      */
     public function sendRPSBatchTest(array $rangeDate, array $valorTotal, array $rps)
     {
+        $xmlDoc = $this->makeBatchMessage($rangeDate, $valorTotal, $rps);
+        $return = $this->send('TesteEnvioLoteRPS', $xmlDoc);
+        return $return;
+    }
+
+    /**
+     * Makes xml batch message.
+     * @param array $rangeDate
+     * @param array $valorTotal
+     * @param array $rps
+     * @return DOMDocument
+     */
+    private function makeBatchMessage(array $rangeDate, array $valorTotal, array $rps)
+    {
         $xmlDoc = $this->makeXmlHeader('EnvioLoteRPS');
         $header = $xmlDoc->documentElement->getElementsByTagName('Cabecalho')->item(0);
         $header->appendChild($xmlDoc->createElement('transacao', 'false'));
@@ -444,8 +447,7 @@ class NFSeSP
         foreach ($rps as $item) {
             $this->makeRPSXml($item, $xmlDoc);
         }
-        $return = $this->send('TesteEnvioLoteRPS', $xmlDoc);
-        return $return;
+        return $xmlDoc;
     }
 
     /**
@@ -649,7 +651,38 @@ class NFSeSP
         }
         return false;
     }
+    /**
+     * Returns CCM for given CNPJ
+     * Message is based on PedidoConsultaCNPJ.xsd schema and
+     * response is based on RetornoConsultaCNPJ.xsd schema
+     *
+     * @param string $cnpj
+     * @return bool|string Returns the taxpayer register number for given CNPJ
+     */
+    public function queryCPF($cnpj)
+    {
+        $operation = 'ConsultaCNPJ';
+        $xmlDoc = $this->createXMLp1($operation);
+        $root = $xmlDoc->documentElement;
+        $cnpjTaxpayer = $xmlDoc->createElementNS('', 'CNPJContribuinte');
+        $cnpjTaxpayer->appendChild($xmlDoc->createElement('CPF', (string) sprintf('%011s', $cnpj)));
+        $root->appendChild($cnpjTaxpayer);
+        $xmlResponse = $this->send($operation, $xmlDoc);
+        return $this->getIncricaoMunicipal($xmlResponse);
+    }
 
+    private function getIncricaoMunicipal(SimpleXMLElement $xmlResponse)
+    {
+        $isSuccess = ($xmlResponse && (string)$xmlResponse->Cabecalho->Sucesso == 'true');
+
+        if ($isSuccess && (string)$xmlResponse->Detalhe->InscricaoMunicipal != "") {
+            return (string)$xmlResponse->Detalhe->InscricaoMunicipal;
+        }
+        if (!$isSuccess && (string)$xmlResponse->Alerta->Codigo != "") {
+            return (string)$xmlResponse->Alerta->Descricao;
+        }
+        return false;
+    }
     /**
      * Create a line with RPS description for batch file
      *
