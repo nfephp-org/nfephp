@@ -22,11 +22,13 @@ class NFSeSP
     private $passphrase = 'xxxxxxxxxx'; // Cert passphrase
     private $pkcs12  = 'caminho_completo_para_o_seu_certificado.pfx';
     private $certDir = 'diretorio_onde_esta_seu_certificado'; // Dir for .pem certs
-    private $privateKey;
+    private $rpsDirectory = '/patch/for/rps/batch/file';
+    private $privateKey = 'privatekey.pem';
     public $certDaysToExpire=0;
-    private $publicKey;
+    private $ignoreCertExpired = false;
+    private $publicKey = 'publickey.pem';
     private $X509Certificate;
-    private $key;
+    private $key = 'key.pem';
     private $connectionSoap;
     private $urlXsi = 'http://www.w3.org/2001/XMLSchema-instance';
     private $urlXsd = 'http://www.w3.org/2001/XMLSchema';
@@ -39,18 +41,38 @@ class NFSeSP
     private $urlDigestMeth = 'http://www.w3.org/2000/09/xmldsig#sha1';
 
 
-    public function __construct()
+    public function __construct(array $config = array())
     {
-        $this->privateKey = $this->certDir . '/privatekey.pem';
-        $this->publicKey = $this->certDir . '/publickey.pem';
-        $this->key = $this->certDir . '/key.pem';
-        if ($this->loadCert()) {
-            error_log(__METHOD__ . ': Certificado OK!');
-        } else {
+        $this->loadConfiguration($config);
+        $this->privateKey = $this->certDir . DIRECTORY_SEPARATOR . $this->privateKey;
+        $this->publicKey = $this->certDir . DIRECTORY_SEPARATOR . $this->publicKey;
+        $this->key = $this->certDir . DIRECTORY_SEPARATOR . $this->key;
+        if (!$this->loadCert()) {
             error_log(__METHOD__ . ': Certificado não OK!');
         }
     }
 
+    /**
+     * Load given configuration
+     *
+     * @param array $config
+     * @return void
+     */
+    private function loadConfiguration(array $config)
+    {
+        foreach ($config as $property => $value) {
+            if (property_exists($this, $property)) {
+                $this->$property = $value;
+            }
+        }
+    }
+
+    /**
+     * Validate if certificate is expired.
+     *
+     * @param string $cert
+     * @return bool
+     */
     private function validateCert($cert)
     {
         $data = openssl_x509_read($cert);
@@ -59,7 +81,7 @@ class NFSeSP
         $certValidDate = gmmktime(0, 0, 0, substr($certData['validTo'], 2, 2), substr($certData['validTo'], 4, 2), substr($certData['validTo'], 0, 2));
         // obtem o timestamp da data de hoje
         $dHoje = gmmktime(0, 0, 0, date("m"), date("d"), date("Y"));
-        if ($certValidDate < time()) {
+        if (!$this->ignoreCertExpired AND $certValidDate < time()) {
             error_log(__METHOD__ . ': Certificado expirado em ' . date('Y-m-d', $certValidDate));
             return false;
         }
@@ -72,6 +94,11 @@ class NFSeSP
         return true;
     }
 
+    /**
+     * Load certificate from file.
+     *
+     * @return bool
+     */
     private function loadCert()
     {
         $x509CertData = array();
@@ -80,7 +107,7 @@ class NFSeSP
             return false;
         }
         $this->X509Certificate = preg_replace("/[\n]/", '', preg_replace('/\-\-\-\-\-[A-Z]+ CERTIFICATE\-\-\-\-\-/', '', $x509CertData['cert']));
-        if (! self::validateCert($x509CertData['cert'])) {
+        if (! $this->validateCert($x509CertData['cert'])) {
             return false;
         }
         if (! is_dir($this->certDir)) {
@@ -110,6 +137,11 @@ class NFSeSP
         return true;
     }
 
+    /**
+     * Start a connection with webservice.
+     *
+     * @return void
+     */
     public function start()
     {
         //versão do SOAP
@@ -133,14 +165,21 @@ class NFSeSP
             error_log('Exception: ' . $e->getMessage());
             echo "erro de conexão soap. Tente novamente mais tarde !<br>\n";
             echo $e->getMessage();
-            return false;
         }
     }
 
-    private function send($operation, $xmlDoc)
+    /**
+     * Call method from webservice.
+     *
+     * @param string $operation Method's name to call.
+     * @param DOMDocument $xmlDoc Message to be sent.
+     * @return bool|SimpleXMLElement Returns a XML when communication is successful, otherwise false when get error.
+     */
+    private function send($operation, DOMDocument $xmlDoc)
     {
-        self::start();
+        $this->start();
         $this->signXML($xmlDoc);
+        $xmlDoc->formatOutput = true;
         $params = array(
             'VersaoSchema' => 1,
             'MensagemXML' => $xmlDoc->saveXML()
@@ -155,10 +194,16 @@ class NFSeSP
         return new SimpleXMLElement($result->RetornoXML);
     }
 
-    private function createXML($operation)
+    /**
+     * Create a XML Header Message
+     *
+     * @param string $operation Method's name
+     * @return DOMDocument Returns a XML based on $operation.xsd schema
+     */
+    private function makeXmlHeader($operation)
     {
         $xmlDoc = new DOMDocument('1.0', 'UTF-8');
-        $xmlDoc->preservWhiteSpace = false;
+        $xmlDoc->preserveWhiteSpace = false;
         $xmlDoc->formatOutput = false;
         $data = '<?xml version="1.0" encoding="UTF-8"?><Pedido' . $operation . ' xmlns:xsd="' . $this->urlXsd .'" xmlns="' . $this->urlNfe . '" xmlns:xsi="' . $this->urlXsi . '"></Pedido' . $operation . '>';
         $xmlDoc->loadXML(str_replace(array("\r\n", "\n", "\r"), '', $data), LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
@@ -172,10 +217,16 @@ class NFSeSP
         return $xmlDoc;
     }
 
+    /**
+     * Create a XML Header Message
+     *
+     * @param string $operation Method's name
+     * @return DOMDocument Returns a XML based on $operation.xsd schema
+     */
     private function createXMLp1($operation)
     {
         $xmlDoc = new DOMDocument('1.0', 'UTF-8');
-        $xmlDoc->preservWhiteSpace = false;
+        $xmlDoc->preserveWhiteSpace = false;
         $xmlDoc->formatOutput = false;
         $data = '<?xml version="1.0" encoding="UTF-8"?><Pedido'.$operation.' xmlns="' . $this->urlNfe . '" xmlns:xsi="' . $this->urlXsi . '"></Pedido' . $operation . '>';
         $xmlDoc->loadXML(str_replace(array("\r\n", "\n", "\r"), '', $data), LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
@@ -189,7 +240,11 @@ class NFSeSP
         return $xmlDoc;
     }
 
-    private function signXML(&$xmlDoc)
+    /**
+     * Sign XML with certificate.
+     * @param DOMDocument $xmlDoc Returns Signature node based on xmldsig-core-schema.xsd schema
+     */
+    private function signXML(DOMDocument $xmlDoc)
     {
         $root = $xmlDoc->documentElement;
         // DigestValue is a base64 sha1 hash with root tag content without Signature tag
@@ -237,7 +292,12 @@ class NFSeSP
         openssl_free_key($pkeyId);
     }
 
-    private function signRPS(NFeRPS $rps, &$rpsNode)
+    /**
+     * Sign XML with certificate.
+     * @param NFeRPS $rps RPS Document
+     * @param DOMElement $rpsNode Returns Assinatura node based on $operation.xsd schema
+     */
+    private function signRPS(NFeRPS $rps, DOMElement $rpsNode)
     {
         $content = sprintf('%08s', $rps->CCM).
             sprintf('%-5s', $rps->serie).
@@ -259,7 +319,12 @@ class NFSeSP
         $rpsNode->appendChild(new DOMElement('Assinatura', base64_encode($signatureValue)));
     }
 
-    private function insertRPS(NFeRPS $rps, &$xmlDoc)
+    /**
+     * Makes a XML Object based on given RPS.
+     * @param NFeRPS $rps RPS Document
+     * @param DOMDocument $xmlDoc Returns xml based on RetornoEnvioRPS.xsd schema
+     */
+    private function makeRPSXml(NFeRPS $rps, DOMDocument $xmlDoc)
     {
         $rpsNode = $xmlDoc->createElementNS('', 'RPS');
         $xmlDoc->documentElement->appendChild($rpsNode);
@@ -315,33 +380,35 @@ class NFSeSP
         $rpsNode->appendChild($xmlDoc->createElement('Discriminacao', $rps->discriminacao)); // 1-1
     }
 
-   /**
-    * Send a RPS to replace for NF-e
-    *
-    * @param NFeRPS $rps
-    */
+    /**
+     * Send a RPS to replace for NF-e
+     * Message is based on PedidoEnvioRPS.xsd schema
+     *
+     * @param NFeRPS $rps
+     * @return bool|\SimpleXMLElement Returns xml based on RetornoEnvioRPS.xsd schema
+     */
     public function sendRPS(NFeRPS $rps)
     {
         $operation = 'EnvioRPS';
-        $xmlDoc = $this->createXML($operation);
-        $this->insertRPS($rps, $xmlDoc);
+        $xmlDoc = $this->makeXmlHeader($operation);
+        $this->makeRPSXml($rps, $xmlDoc);
         $returnXmlDoc = $this->send($operation, $xmlDoc);
         return $returnXmlDoc;
     }
 
-
-
     /**
      * Send a batch of RPSs to replace for NF-e
+     * Message is based on PedidoEnvioLoteRPS.xsd schema
      *
      * @param array $rangeDate ('start' => start date of RPSs, 'end' => end date of RPSs)
      * @param array $valorTotal ('servicos' => total value of RPSs, 'deducoes' => total deductions on values of RPSs)
      * @param array $rps Collection of NFeRPS
+     * @return bool|\SimpleXMLElement Returns xml based on RetornoEnvioLoteRPS.xsd schema
      */
     public function sendRPSBatch($rangeDate, $valorTotal, $rps)
     {
         $operation = 'EnvioLoteRPS';
-        $xmlDoc = $this->createXML($operation);
+        $xmlDoc = $this->makeXmlHeader($operation);
         $header = $xmlDoc->documentElement->getElementsByTagName('Cabecalho')->item(0);
         $header->appendChild($xmlDoc->createElement('transacao', 'false'));
         $header->appendChild($xmlDoc->createElement('dtInicio', $rangeDate['inicio']));
@@ -350,22 +417,23 @@ class NFSeSP
         $header->appendChild($xmlDoc->createElement('ValorTotalServicos', $valorTotal['servicos']));
         $header->appendChild($xmlDoc->createElement('ValorTotalDeducoes', $valorTotal['deducoes']));
         foreach ($rps as $item) {
-            $this->insertRPS($item, $xmlDoc);
+            $this->makeRPSXml($item, $xmlDoc);
         }
         return $this->send($operation, $xmlDoc);
     }
 
     /**
-     * Send a batch of RPSs to replace for NF-e for test only
+     * Send a batch of RPSs to replace for NF-e for test only.
+     * Message is based on PedidoEnvioLoteRPS.xsd schema
      *
      * @param array $rangeDate ('start' => start date of RPSs, 'end' => end date of RPSs)
      * @param array $valorTotal ('servicos' => total value of RPSs, 'deducoes' => total deductions on values of RPSs)
      * @param array $rps Collection of NFeRPS
+     * @return bool|\SimpleXMLElement Returns xml based on RetornoEnvioLoteRPS.xsd schema
      */
-    public function sendRPSBatchTest($rangeDate, $valorTotal, $rps)
+    public function sendRPSBatchTest(array $rangeDate, array $valorTotal, array $rps)
     {
-        $operation = 'EnvioLoteRPS';
-        $xmlDoc = $this->createXML($operation);
+        $xmlDoc = $this->makeXmlHeader('EnvioLoteRPS');
         $header = $xmlDoc->documentElement->getElementsByTagName('Cabecalho')->item(0);
         $header->appendChild($xmlDoc->createElement('transacao', 'false'));
         $header->appendChild($xmlDoc->createElement('dtInicio', $rangeDate['inicio']));
@@ -374,27 +442,23 @@ class NFSeSP
         $header->appendChild($xmlDoc->createElement('ValorTotalServicos', $valorTotal['servicos']));
         $header->appendChild($xmlDoc->createElement('ValorTotalDeducoes', $valorTotal['deducoes']));
         foreach ($rps as $item) {
-            $this->insertRPS($item, $xmlDoc);
+            $this->makeRPSXml($item, $xmlDoc);
         }
-        //    $docxml = $xmlDoc->saveXML();
-        //    echo "xml gerado[<br>\n";
-        //    print_r($docxml);
-        //    echo "]<br>\n";
-        //    exit();
         $return = $this->send('TesteEnvioLoteRPS', $xmlDoc);
-        $xmlDoc->formatOutput = true;
-        error_log(__METHOD__ . ': ' . $xmlDoc->saveXML());
         return $return;
     }
 
     /**
+     * Has responsible to cancel NFe numbers created from sendRPSBatch method
+     * Message is based on PedidoConsultaNFe.xsd schema
      *
-     * @param array $nfe Array of NFe numbers
+     * @param array $nfeNumbers  Array of NFe numbers
+     * @return bool|\SimpleXMLElement Returns xml based on RetornoCancelamentoNFe.xsd schema
      */
-    public function cancelNFe($nfeNumbers)
+    public function cancelNFe(array $nfeNumbers)
     {
         $operation = 'CancelamentoNFe';
-        $xmlDoc = $this->createXML($operation);
+        $xmlDoc = $this->makeXmlHeader($operation);
         $root = $xmlDoc->documentElement;
         $header = $root->getElementsByTagName('Cabecalho')->item(0);
         $header->appendChild($xmlDoc->createElement('transacao', 'false'));
@@ -408,17 +472,24 @@ class NFSeSP
             $content = sprintf('%08s', $this->ccmPrestador) .
                 sprintf('%012s', $nfeNumber);
             $signatureValue = '';
-            $digestValue = base64_encode(hash('sha1', $content, true));
             $pkeyId = openssl_get_privatekey(file_get_contents($this->privateKey));
-            //      openssl_sign($digestValue, $signatureValue, $pkeyId);
             openssl_sign($content, $signatureValue, $pkeyId, OPENSSL_ALGO_SHA1);
             openssl_free_key($pkeyId);
             $detail->appendChild(new DOMElement('AssinaturaCancelamento', base64_encode($signatureValue)));
         }
-        $docxml = $xmlDoc->saveXML();
         return $this->send($operation, $xmlDoc);
     }
 
+    /**
+     * It will find a NFe document from given number or
+     * RPS document when given $rpsNumber and $rpsSerie
+     * Message is based on PedidoConsultaNFe.xsd schema
+     *
+     * @param string $nfeNumber NFe Number
+     * @param string $rpsNumber RPS Number
+     * @param string $rpsSerie RPS Serie
+     * @return bool|SimpleXMLElement Returns a XML based on RetornoConsulta.xsd schema.
+     */
     public function queryNFe($nfeNumber, $rpsNumber, $rpsSerie)
     {
         $operation = 'ConsultaNFe';
@@ -447,16 +518,19 @@ class NFSeSP
 
     /**
      * queryNFeReceived and queryNFeIssued have the same XML request model
+     * Message is based on PedidoConsultaNFePeriodo.xsd schema
      *
-     * @param string $cnpj
-     * @param string $ccm
+     * @param string $cnpj CNPJ to find
+     * @param string $ccm State Registration
      * @param string $startDate YYYY-MM-DD
      * @param string $endDate YYYY-MM-DD
+     * @param int $pageNumber Number of page to query results, by default the webservice given 50 documents per page
+     * @return \DOMDocument Returns xml based on RetornoConsulta.xsd schema
      */
-    private function queryNFeWithDateRange($cnpj, $ccm, $startDate, $endDate)
+    private function queryNFeWithDateRange($cnpj, $ccm, $startDate, $endDate, $pageNumber = 1)
     {
         $operation = 'ConsultaNFePeriodo';
-        $xmlDoc = $this->createXML($operation);
+        $xmlDoc = $this->makeXmlHeader($operation);
         $header = $xmlDoc->documentElement->getElementsByTagName('Cabecalho')->item(0);
         $cnpjTaxpayer = $xmlDoc->createElement('CPFCNPJ');
         $cnpjTaxpayer->appendChild($xmlDoc->createElement('CNPJ', $cnpj));
@@ -467,60 +541,74 @@ class NFSeSP
         $header->appendChild($startDateNode);
         $endDateNode = $xmlDoc->createElement('dtFim', $endDate);
         $header->appendChild($endDateNode);
-        $pageNumber = $xmlDoc->createElement('NumeroPagina', 1);
+        $pageNumber = $xmlDoc->createElement('NumeroPagina', $pageNumber);
         $header->appendChild($pageNumber);
         return $xmlDoc;
     }
 
     /**
      * Query NF-e's that CNPJ/CCM company received from other companies
+     * Message is based on PedidoConsultaNFePeriodo.xsd schema
      *
-     * @param string $cnpj
-     * @param string $ccm
+     * @param string $cnpj CNPJ to find
+     * @param string $ccm State Registration
      * @param string $startDate YYYY-MM-DD
      * @param string $endDate YYYY-MM-DD
+     * @param int $pageNumber
+     * @return bool|\SimpleXMLElement Returns xml based on RetornoConsulta.xsd schema
      */
-    public function queryNFeReceived($cnpj, $ccm, $startDate, $endDate)
+    public function queryNFeReceived($cnpj, $ccm, $startDate, $endDate, $pageNumber = 1)
     {
         $operation = 'ConsultaNFeRecebidas';
-        $xmlDoc = $this->queryNFeWithDateRange($cnpj, $ccm, $startDate, $endDate);
+        $xmlDoc = $this->queryNFeWithDateRange($cnpj, $ccm, $startDate, $endDate, $pageNumber);
         return $this->send($operation, $xmlDoc);
     }
 
     /**
      * Query NF-e's that CNPJ/CCM company issued to other companies
+     * Message is based on PedidoConsultaNFePeriodo.xsd schema
      *
      * @param string $cnpj
      * @param string $ccm
      * @param string $startDate YYYY-MM-DD
      * @param string $endDate YYYY-MM-DD
+     * @param int $pageNumber
+     * @return bool|\SimpleXMLElement Returns xml based on RetornoConsulta.xsd schema
      */
-    public function queryNFeIssued($cnpj, $ccm, $startDate, $endDate)
+    public function queryNFeIssued($cnpj, $ccm, $startDate, $endDate, $pageNumber = 1)
     {
         $operation = 'ConsultaNFeEmitidas';
-        $xmlDoc = $this->queryNFeWithDateRange($cnpj, $ccm, $startDate, $endDate);
+        $xmlDoc = $this->queryNFeWithDateRange($cnpj, $ccm, $startDate, $endDate, $pageNumber);
         return $this->send($operation, $xmlDoc);
     }
 
+    /**
+     * Get NF-e's with this batch number
+     * Message is based on PedidoConsultaLote.xsd schema
+     *
+     * @param $batchNumber
+     * @return bool|SimpleXMLElement Returns xml based on schema RetornoConsulta.xsd
+     */
     public function queryBatch($batchNumber)
     {
         $operation = 'ConsultaLote';
-        $xmlDoc = $this->createXML($operation);
+        $xmlDoc = $this->makeXmlHeader($operation);
         $header = $xmlDoc->documentElement->getElementsByTagName('Cabecalho')->item(0);
         $header->appendChild($xmlDoc->createElement('NumeroLote', $batchNumber));
         return $this->send($operation, $xmlDoc);
     }
 
-
     /**
      * If $batchNumber param is null, last match info will be returned
+     * Message is based on PedidoInformacoesLote.xsd schema
      *
      * @param integer $batchNumber
+     * @return bool|SimpleXMLElement Returns xml based on schema RetornoInformacoesLote.xsd
      */
     public function queryBatchInfo($batchNumber = null)
     {
         $operation = 'InformacoesLote';
-        $xmlDoc = $this->createXML($operation);
+        $xmlDoc = $this->makeXmlHeader($operation);
         $header = $xmlDoc->documentElement->getElementsByTagName('Cabecalho')->item(0);
         $header->appendChild($xmlDoc->createElement('InscricaoPrestador', $this->ccmPrestador));
         if ($batchNumber) {
@@ -531,8 +619,11 @@ class NFSeSP
 
     /**
      * Returns CCM for given CNPJ
+     * Message is based on PedidoConsultaCNPJ.xsd schema and
+     * response is based on RetornoConsultaCNPJ.xsd schema
      *
      * @param string $cnpj
+     * @return bool|string Returns the taxpayer register number for given CNPJ
      */
     public function queryCNPJ($cnpj)
     {
@@ -546,27 +637,24 @@ class NFSeSP
             $cnpjTaxpayer->appendChild($xmlDoc->createElement('CNPJ', (string) sprintf('%014s', $cnpj)));
         }
         $root->appendChild($cnpjTaxpayer);
-        $docxml = $xmlDoc->saveXML();
-        if ($return = $this->send($operation, $xmlDoc)) {
-            if ($return->Detalhe->InscricaoMunicipal <> "") {
-                return $return->Detalhe->InscricaoMunicipal;
-            } else {
-                if ($return->Alerta->Codigo <> "") {
-                    return $return->Alerta->Descricao;
-                } else {
-                    return false;
-                }
-            }
-        } else {
-            return false;
+        $return = $this->send($operation, $xmlDoc);
+
+        $isSuccess = ($return && (string)$return->Cabecalho->Sucesso == 'true');
+
+        if ($isSuccess && (string)$return->Detalhe->InscricaoMunicipal != "") {
+            return (string)$return->Detalhe->InscricaoMunicipal;
         }
+        if (!$isSuccess && (string)$return->Alerta->Codigo != "") {
+            return (string)$return->Alerta->Descricao;
+        }
+        return false;
     }
 
     /**
      * Create a line with RPS description for batch file
      *
-     * @param unknown_type $rps
-     * @param unknown_type $body
+     * @param NFeRPS $rps
+     * @param string $body
      */
     private function insertTextRPS(NFeRPS $rps, &$body)
     {
@@ -604,13 +692,13 @@ class NFSeSP
     /**
      * Create a batch file with NF-e text layout
      *
-     * @param unknown_type $rangeDate
-     * @param unknown_type $valorTotal
-     * @param unknown_type $rps
+     * @param array $rangeDate
+     * @param array $valorTotal
+     * @param array $rps
+     * @return bool|string
      */
     public function textFile($rangeDate, $valorTotal, $rps)
     {
-        $file = '';
         $header = "1" .
             "001" .
             $this->ccmPrestador .
@@ -626,13 +714,10 @@ class NFSeSP
             sprintf("%015s", str_replace('.', '', sprintf('%.2f', $valorTotal['servicos']))) .
             sprintf("%015s", str_replace('.', '', sprintf('%.2f', $valorTotal['deducoes']))) .
             chr(13) . chr(10);
-        $rpsDir = '/patch/for/rps/batch/file';
         $rpsFileName = date("Y-m-d_Hi") . '.txt';
-        $rpsFullPath = $rpsDir . '/' . $rpsFileName;
-        if (! is_dir($rpsDir)) {
-            if (! mkdir($rpsDir, 0777)) {
-
-            }
+        $rpsFullPath = $this->rpsDirectory . DIRECTORY_SEPARATOR . $rpsFileName;
+        if (! is_dir($this->rpsDirectory )) {
+            mkdir($this->rpsDirectory, 0777, true);
         }
         if (! file_put_contents($rpsFullPath, $header . $body . $footer)) {
             error_log(__METHOD__ . ': Cannot create rps file ' . $rpsFullPath);
