@@ -8,7 +8,7 @@ class NFSeTest_Provider_QueryNFe extends NFSeTest_Provider_SendRps implements NF
 
     public static function response(array $params)
     {
-        $response = self::getQueryResponse($params['MensagemXML']);
+        $response = static::getQueryResponse($params['MensagemXML']);
 
         $return = new stdClass();
         $return->RetornoXML = <<<XML
@@ -26,8 +26,8 @@ XML;
     protected static function getQueryResponse($xmlString)
     {
         $xml = new SimpleXMLElement($xmlString);
-        $response = self::createNFeQuery($xml);
-        $response .= self::createRPSQuery($xml);
+        $response = static::createNFeQuery($xml);
+        $response .= static::createRPSQuery($xml);
         return $response;
     }
 
@@ -35,7 +35,7 @@ XML;
     {
         $keyNFe = '';
         if ($xml->Detalhe->ChaveNFe) {
-            $keyNFe .= parent::createNFeRetorno($xml->Detalhe) . PHP_EOL;
+            $keyNFe .= static::createNFeResponse($xml->Detalhe) . PHP_EOL;
             return <<<XML
 <NFe>
     {$keyNFe}
@@ -51,7 +51,7 @@ XML;
     {
         $keyRPS = '';
         if ($xml->Detalhe->ChaveRPS) {
-            $keyRPS .= parent::createRpsRetorno($xml->Detalhe) . PHP_EOL;
+            $keyRPS .= static::createRpsResponse($xml->Detalhe) . PHP_EOL;
             return <<<XML
 <RPS>
     {$keyRPS}

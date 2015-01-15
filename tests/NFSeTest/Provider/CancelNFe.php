@@ -8,7 +8,7 @@ class NFSeTest_Provider_CancelNFe implements NFSeTest_Provider_ProviderInterface
 
     public static function response(array $params)
     {
-        $response = self::getCancelResponse($params['MensagemXML']);
+        $response = static::getCancelResponse($params['MensagemXML']);
 
         $return = new stdClass();
         $return->RetornoXML = <<<XML
@@ -30,7 +30,7 @@ XML;
     protected static function getCancelResponse($xmlString)
     {
         $xml = new SimpleXMLElement($xmlString);
-        $response = self::createNFeCancelada($xml->Detalhe->ChaveNFe->NumeroNFe);
+        $response = static::createNFeCancelada($xml->Detalhe->ChaveNFe->NumeroNFe);
         return $response;
     }
 

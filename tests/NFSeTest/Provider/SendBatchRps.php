@@ -9,7 +9,7 @@ class NFSeTest_Provider_SendBatchRps extends NFSeTest_Provider_SendRps implement
     public static function response(array $params)
     {
         $return = new stdClass();
-        $response = self::getResponse($params['MensagemXML']);
+        $response = static::getResponse($params['MensagemXML']);
 
         $return->RetornoXML = <<<XML
 <EnvioLoteRPSResponse>
@@ -32,13 +32,13 @@ XML;
 
         if ($xml->NFe) {
             foreach ($xml->NFe as $nfe) {
-                $nfeResponse .= self::createNFeRetorno($nfe) . PHP_EOL;
+                $nfeResponse .= static::createNFeResponse($nfe) . PHP_EOL;
             }
         }
 
         if ($xml->RPS) {
             foreach ($xml->RPS as $rps) {
-                $rpsResponse .= self::createRpsRetorno($rps) . PHP_EOL;
+                $rpsResponse .= static::createRpsResponse($rps) . PHP_EOL;
             }
         }
         return $nfeResponse . $rpsResponse;

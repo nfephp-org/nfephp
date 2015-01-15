@@ -9,7 +9,7 @@ class NFSeTest_Provider_SendRps implements NFSeTest_Provider_ProviderInterface
     public static function response(array $params)
     {
         $return = new stdClass();
-        $response = self::getResponse($params['MensagemXML']);
+        $response = static::getResponse($params['MensagemXML']);
 
         $return->RetornoXML = <<<XML
 <EnvioRPSResponse>
@@ -31,16 +31,16 @@ XML;
         $rpsResponse = null;
 
         if ($xml->NFe) {
-            $nfeResponse = self::createNFeRetorno($xml->NFe);
+            $nfeResponse = static::createNFeResponse($xml->NFe);
         }
 
         if ($xml->RPS) {
-            $rpsResponse = self::createRpsRetorno($xml->RPS);
+            $rpsResponse = static::createRpsResponse($xml->RPS);
         }
         return $nfeResponse . $rpsResponse;
     }
 
-    protected static function createRpsRetorno(SimpleXMLElement $rps)
+    protected static function createRpsResponse(SimpleXMLElement $rps)
     {
         return <<<XML
 <ChaveRPS>
@@ -54,7 +54,7 @@ XML;
 XML;
     }
 
-    protected static function createNFeRetorno(SimpleXMLElement $nfe)
+    protected static function createNFeResponse(SimpleXMLElement $nfe)
     {
         return <<<XML
 <ChaveNFe>
