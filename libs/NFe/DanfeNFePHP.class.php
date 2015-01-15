@@ -2400,7 +2400,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
      * @param float $hmax Altura máxima do campo de itens em mm
      * @return float Posição vertical final
      */
-    protected function pItensDANFE($x, $y, &$nInicio, $hmax, $pag = 0, $totpag = 0)
+    protected function pItensDANFE($x, $y, &$nInicio, $hmax, $pag = 0, &$totpag = 0)
     {
         $oldX = $x;
         $oldY = $y;
@@ -2527,11 +2527,16 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $y += 5;
         //##################################################################################
         // LOOP COM OS DADOS DOS PRODUTOS
+		if ($nInicio > 0)
+            $i = $nInicio;
+        else
+            $i = 0;
+
         $i = 0;
         $hUsado = 4;
         $aFont = array('font'=>$this->fontePadrao, 'size'=>7, 'style'=>'');
         foreach ($this->det as $d) {
-            if ($i >= $nInicio) {
+            if (($i >= $nInicio) && ($i < $this->det->length)) {
                 $thisItem = $this->det->item($i);
                 //carrega as tags do item
                 $prod = $thisItem->getElementsByTagName("prod")->item(0);
@@ -2545,6 +2550,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
                 if ($hUsado >= $hmax && $i < $totItens) {
                     //ultrapassa a capacidade para uma única página
                     //o restante dos dados serão usados nas proximas paginas
+					$totpag++;
                     $nInicio = $i;
                     break;
                 }
