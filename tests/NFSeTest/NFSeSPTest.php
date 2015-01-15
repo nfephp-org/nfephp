@@ -22,12 +22,20 @@ class NFSeSPTest extends PHPUnit_Framework_TestCase
     public function getSoapClientMock()
     {
         $mockBuider = $this->getMockBuilder('SoapClient')->disableOriginalConstructor();
-        $mockBuider->setMethods(array('EnvioRPS', 'EnvioLoteRPS','TesteEnvioLoteRPS', 'CancelamentoNFe'));
+        $mockBuider->setMethods(
+            array(
+                'EnvioRPS', 'EnvioLoteRPS',
+                'TesteEnvioLoteRPS', 'CancelamentoNFe',
+                'ConsultaNFe'
+            )
+        );
+
         $mock = $mockBuider->getMock();
         $mock->expects($this->any())->method('EnvioRPS')->will($this->returnCallback(array('NFSeTest_Provider_SendRps', 'response')));
         $mock->expects($this->any())->method('EnvioLoteRPS')->will($this->returnCallback(array('NFSeTest_Provider_SendBatchRps', 'response')));
         $mock->expects($this->any())->method('TesteEnvioLoteRPS')->will($this->returnCallback(array('NFSeTest_Provider_SendBatchRps', 'response')));
         $mock->expects($this->any())->method('CancelamentoNFe')->will($this->returnCallback(array('NFSeTest_Provider_CancelNFe', 'response')));
+        $mock->expects($this->any())->method('ConsultaNFe')->will($this->returnCallback(array('NFSeTest_Provider_QueryNFe', 'response')));
         return $mock;
     }
 
@@ -128,5 +136,14 @@ class NFSeSPTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf('SimpleXMLElement', $returned);
         $this->assertEquals('true', $returned->Cabecalho->Sucesso);
         $this->assertEquals('123', $returned->NotasCanceladas->Nota->NumeroNota);
+    }
+
+    public function testQueryNFe()
+    {
+        $nfse = $this->getNFSeSPMock();
+        $returned = $nfse->queryNFe(123, null, null);
+        $this->assertInstanceOf('SimpleXMLElement', $returned);
+        $this->assertEquals('123', $returned->NFe->ChaveNFe->NumeroNFe);
+        $this->assertEquals('N', $returned->NFe->StatusNFe);
     }
 }
