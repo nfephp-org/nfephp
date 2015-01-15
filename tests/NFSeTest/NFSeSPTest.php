@@ -27,7 +27,8 @@ class NFSeSPTest extends PHPUnit_Framework_TestCase
                 'EnvioRPS', 'EnvioLoteRPS',
                 'TesteEnvioLoteRPS', 'CancelamentoNFe',
                 'ConsultaNFe', 'ConsultaNFeRecebidas',
-                'ConsultaNFeEmitidas', 'ConsultaLote'
+                'ConsultaNFeEmitidas', 'ConsultaLote',
+                'InformacoesLote'
             )
         );
 
@@ -40,6 +41,7 @@ class NFSeSPTest extends PHPUnit_Framework_TestCase
         $mock->expects($this->any())->method('ConsultaNFeRecebidas')->will($this->returnCallback(array('NFSeTest_Provider_QueryNFePeriod', 'response')));
         $mock->expects($this->any())->method('ConsultaNFeEmitidas')->will($this->returnCallback(array('NFSeTest_Provider_QueryNFePeriod', 'response')));
         $mock->expects($this->any())->method('ConsultaLote')->will($this->returnCallback(array('NFSeTest_Provider_QueryNFePeriod', 'response')));
+        $mock->expects($this->any())->method('InformacoesLote')->will($this->returnCallback(array('NFSeTest_Provider_QueryBatchInfo', 'response')));
         return $mock;
     }
 
@@ -147,6 +149,8 @@ class NFSeSPTest extends PHPUnit_Framework_TestCase
         $nfse = $this->getNFSeSPMock();
         $returned = $nfse->queryNFe(123, null, null);
         $this->assertInstanceOf('SimpleXMLElement', $returned);
+        $this->assertEquals('true', $returned->Cabecalho->Sucesso);
+
         $this->assertEquals('123', $returned->NFe->ChaveNFe->NumeroNFe);
         $this->assertEquals('N', $returned->NFe->StatusNFe);
     }
@@ -156,6 +160,8 @@ class NFSeSPTest extends PHPUnit_Framework_TestCase
         $nfse = $this->getNFSeSPMock();
         $returned = $nfse->queryNFe(null, 123, 1);
         $this->assertInstanceOf('SimpleXMLElement', $returned);
+        $this->assertEquals('true', $returned->Cabecalho->Sucesso);
+
         $this->assertEquals('123', $returned->RPS->ChaveRPS->NumeroRPS);
         $this->assertEquals('1', $returned->RPS->ChaveRPS->SerieRPS);
         $this->assertEquals('N', $returned->RPS->StatusRPS);
@@ -166,6 +172,8 @@ class NFSeSPTest extends PHPUnit_Framework_TestCase
         $nfse = $this->getNFSeSPMock();
         $returned = $nfse->queryNFeReceived(123, 456, date('Y-md H:i:s', strtotime('-1 day')), date('Y-m-d H:i:s'));
         $this->assertInstanceOf('SimpleXMLElement', $returned);
+        $this->assertEquals('true', $returned->Cabecalho->Sucesso);
+
         $this->assertEquals('123', $returned->NFe->ChaveNFe->NumeroNFe);
         $this->assertEquals('N', $returned->NFe->StatusNFe);
 
@@ -179,6 +187,8 @@ class NFSeSPTest extends PHPUnit_Framework_TestCase
         $nfse = $this->getNFSeSPMock();
         $returned = $nfse->queryNFeIssued(123, 456, date('Y-md H:i:s', strtotime('-1 day')), date('Y-m-d H:i:s'));
         $this->assertInstanceOf('SimpleXMLElement', $returned);
+        $this->assertEquals('true', $returned->Cabecalho->Sucesso);
+
         $this->assertEquals('123', $returned->NFe->ChaveNFe->NumeroNFe);
         $this->assertEquals('N', $returned->NFe->StatusNFe);
 
@@ -192,11 +202,24 @@ class NFSeSPTest extends PHPUnit_Framework_TestCase
         $nfse = $this->getNFSeSPMock();
         $returned = $nfse->queryBatch(123);
         $this->assertInstanceOf('SimpleXMLElement', $returned);
+        $this->assertEquals('true', $returned->Cabecalho->Sucesso);
+
         $this->assertEquals('123', $returned->NFe->ChaveNFe->NumeroNFe);
         $this->assertEquals('N', $returned->NFe->StatusNFe);
 
         $this->assertEquals('321', $returned->RPS->ChaveRPS->NumeroRPS);
         $this->assertEquals('1', $returned->RPS->ChaveRPS->SerieRPS);
         $this->assertEquals('N', $returned->RPS->StatusRPS);
+    }
+
+    public function testQueryBatchInfo()
+    {
+        $nfse = $this->getNFSeSPMock();
+        $returned = $nfse->queryBatchInfo(123);
+        $this->assertInstanceOf('SimpleXMLElement', $returned);
+        $this->assertEquals('true', $returned->Cabecalho->Sucesso);
+
+        $this->assertEquals('123', $returned->Cabecalho->InformacoesLote->NumeroLote);
+
     }
 }
