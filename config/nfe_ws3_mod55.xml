@@ -4,6 +4,8 @@ ATENÇÃO! Este é o XML dos endereços dos webservices da NF-e modelo 55 layout
 "3.10", portanto é incompatível com a versão "2.00" do layout da NF-e, prevista
 para ser desativada em 01/12/2014.
 AM Consulta de Cadastro não EXISTE
+
+2015-01-15 Correção do webservice NFeDistribuicaoDFe URL e versão
 -->
 <WS xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <UF>
@@ -30,13 +32,13 @@ AM Consulta de Cadastro não EXISTE
   <UF>
     <sigla>AN</sigla>
     <homologacao>
-      <NFeDistribuicaoDFe method="nfeDistDFeInteresse" operation="NFeDistribuicaoDFe" version="1.01">https://hom.nfe.fazenda.gov.br/NFeDistribuicaoDFe/NFeDistribuicaoDFe.asmx</NFeDistribuicaoDFe>
+      <NFeDistribuicaoDFe method="nfeDistDFeInteresse" operation="NFeDistribuicaoDFe" version="1.00">https://hom.nfe.fazenda.gov.br/NFeDistribuicaoDFe/NFeDistribuicaoDFe.asmx</NFeDistribuicaoDFe>
       <NfeConsultaDest method="nfeConsultaNFDest" operation="NfeConsultaDest" version="1.01">https://hom.nfe.fazenda.gov.br/NFeConsultaDest/NFeConsultaDest.asmx</NfeConsultaDest>
       <NfeDownloadNF method="nfeDownloadNF" operation="NfeDownloadNF" version="1.00">https://hom.nfe.fazenda.gov.br/NfeDownloadNF/NfeDownloadNF.asmx</NfeDownloadNF>
       <RecepcaoEvento method="nfeRecepcaoEvento" operation="RecepcaoEvento" version="1.00">https://hom.nfe.fazenda.gov.br/RecepcaoEvento/RecepcaoEvento.asmx</RecepcaoEvento>
     </homologacao>
     <producao>
-      <NFeDistribuicaoDFe method="nfeDistDFeInteresse" operation="NFeDistribuicaoDFe" version="1.01">https://www.nfe.fazenda.gov.br/NFeDistribuicaoDFe/NFeDistribuicaoDFe.asmx</NFeDistribuicaoDFe>        
+      <NFeDistribuicaoDFe method="nfeDistDFeInteresse" operation="NFeDistribuicaoDFe" version="1.00">https://www1.nfe.fazenda.gov.br/NFeDistribuicaoDFe/NFeDistribuicaoDFe.asmx</NFeDistribuicaoDFe>        
       <NfeConsultaDest method="nfeConsultaNFDest" operation="NfeConsultaDest" version="1.01">https://www.nfe.fazenda.gov.br/NFeConsultaDest/NFeConsultaDest.asmx</NfeConsultaDest>
       <NfeDownloadNF method="nfeDownloadNF" operation="NfeDownloadNF" version="1.00">https://www.nfe.fazenda.gov.br/NfeDownloadNF/NfeDownloadNF.asmx</NfeDownloadNF>
       <RecepcaoEvento method="nfeRecepcaoEvento" operation="RecepcaoEvento" version="1.00">https://www.nfe.fazenda.gov.br/RecepcaoEvento/RecepcaoEvento.asmx</RecepcaoEvento>
