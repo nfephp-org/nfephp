@@ -44,7 +44,7 @@
     },
     "autoload": {
         "psr-0": {
-            "": "libs/"
+            "": ["libs/", "tests/"]
         },
         "classmap": [
             "./libs/CTe/",

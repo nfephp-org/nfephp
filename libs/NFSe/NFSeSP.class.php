@@ -22,11 +22,12 @@ class NFSeSP
     private $passphrase = 'xxxxxxxxxx'; // Cert passphrase
     private $pkcs12  = 'caminho_completo_para_o_seu_certificado.pfx';
     private $certDir = 'diretorio_onde_esta_seu_certificado'; // Dir for .pem certs
-    private $privateKey;
+    private $privateKey = 'privatekey.pem';
     public $certDaysToExpire=0;
-    private $publicKey;
+    private $ignoreCertExpired = false;
+    private $publicKey = 'publickey.pem';
     private $X509Certificate;
-    private $key;
+    private $key = 'key.pem';
     private $connectionSoap;
     private $urlXsi = 'http://www.w3.org/2001/XMLSchema-instance';
     private $urlXsd = 'http://www.w3.org/2001/XMLSchema';
@@ -39,15 +40,23 @@ class NFSeSP
     private $urlDigestMeth = 'http://www.w3.org/2000/09/xmldsig#sha1';
 
 
-    public function __construct()
+    public function __construct(array $config = array())
     {
-        $this->privateKey = $this->certDir . '/privatekey.pem';
-        $this->publicKey = $this->certDir . '/publickey.pem';
-        $this->key = $this->certDir . '/key.pem';
-        if ($this->loadCert()) {
-            error_log(__METHOD__ . ': Certificado OK!');
-        } else {
+        $this->loadConfiguration($config);
+        $this->privateKey = $this->certDir . DIRECTORY_SEPARATOR . $this->privateKey;
+        $this->publicKey = $this->certDir . DIRECTORY_SEPARATOR . $this->publicKey;
+        $this->key = $this->certDir . DIRECTORY_SEPARATOR . $this->key;
+        if (!$this->loadCert()) {
             error_log(__METHOD__ . ': Certificado não OK!');
+        }
+    }
+
+    private function loadConfiguration(array $config)
+    {
+        foreach ($config as $property => $value) {
+            if (property_exists($this, $property)) {
+                $this->$property = $value;
+            }
         }
     }
 
@@ -59,7 +68,8 @@ class NFSeSP
         $certValidDate = gmmktime(0, 0, 0, substr($certData['validTo'], 2, 2), substr($certData['validTo'], 4, 2), substr($certData['validTo'], 0, 2));
         // obtem o timestamp da data de hoje
         $dHoje = gmmktime(0, 0, 0, date("m"), date("d"), date("Y"));
-        if ($certValidDate < time()) {
+        if (!$this->ignoreCertExpired AND $certValidDate < time()) {
+            $date = date('Y-m-d', $certValidDate);
             error_log(__METHOD__ . ': Certificado expirado em ' . date('Y-m-d', $certValidDate));
             return false;
         }
@@ -80,7 +90,7 @@ class NFSeSP
             return false;
         }
         $this->X509Certificate = preg_replace("/[\n]/", '', preg_replace('/\-\-\-\-\-[A-Z]+ CERTIFICATE\-\-\-\-\-/', '', $x509CertData['cert']));
-        if (! self::validateCert($x509CertData['cert'])) {
+        if (! $this->validateCert($x509CertData['cert'])) {
             return false;
         }
         if (! is_dir($this->certDir)) {
@@ -137,10 +147,11 @@ class NFSeSP
         }
     }
 
-    private function send($operation, $xmlDoc)
+    private function send($operation, DOMDocument $xmlDoc)
     {
-        self::start();
+        $this->start();
         $this->signXML($xmlDoc);
+        $xmlDoc->formatOutput = true;
         $params = array(
             'VersaoSchema' => 1,
             'MensagemXML' => $xmlDoc->saveXML()
@@ -189,7 +200,7 @@ class NFSeSP
         return $xmlDoc;
     }
 
-    private function signXML(&$xmlDoc)
+    private function signXML(DOMDocument $xmlDoc)
     {
         $root = $xmlDoc->documentElement;
         // DigestValue is a base64 sha1 hash with root tag content without Signature tag
@@ -237,7 +248,7 @@ class NFSeSP
         openssl_free_key($pkeyId);
     }
 
-    private function signRPS(NFeRPS $rps, &$rpsNode)
+    private function signRPS(NFeRPS $rps, DOMElement $rpsNode)
     {
         $content = sprintf('%08s', $rps->CCM).
             sprintf('%-5s', $rps->serie).
@@ -259,7 +270,7 @@ class NFSeSP
         $rpsNode->appendChild(new DOMElement('Assinatura', base64_encode($signatureValue)));
     }
 
-    private function insertRPS(NFeRPS $rps, &$xmlDoc)
+    private function insertRPS(NFeRPS $rps, DOMDocument $xmlDoc)
     {
         $rpsNode = $xmlDoc->createElementNS('', 'RPS');
         $xmlDoc->documentElement->appendChild($rpsNode);
@@ -361,11 +372,11 @@ class NFSeSP
      * @param array $rangeDate ('start' => start date of RPSs, 'end' => end date of RPSs)
      * @param array $valorTotal ('servicos' => total value of RPSs, 'deducoes' => total deductions on values of RPSs)
      * @param array $rps Collection of NFeRPS
+     * @return bool|\SimpleXMLElement
      */
-    public function sendRPSBatchTest($rangeDate, $valorTotal, $rps)
+    public function sendRPSBatchTest(array $rangeDate, array $valorTotal, array $rps)
     {
-        $operation = 'EnvioLoteRPS';
-        $xmlDoc = $this->createXML($operation);
+        $xmlDoc = $this->createXML('EnvioLoteRPS');
         $header = $xmlDoc->documentElement->getElementsByTagName('Cabecalho')->item(0);
         $header->appendChild($xmlDoc->createElement('transacao', 'false'));
         $header->appendChild($xmlDoc->createElement('dtInicio', $rangeDate['inicio']));
@@ -376,22 +387,16 @@ class NFSeSP
         foreach ($rps as $item) {
             $this->insertRPS($item, $xmlDoc);
         }
-        //    $docxml = $xmlDoc->saveXML();
-        //    echo "xml gerado[<br>\n";
-        //    print_r($docxml);
-        //    echo "]<br>\n";
-        //    exit();
         $return = $this->send('TesteEnvioLoteRPS', $xmlDoc);
-        $xmlDoc->formatOutput = true;
-        error_log(__METHOD__ . ': ' . $xmlDoc->saveXML());
         return $return;
     }
 
     /**
      *
      * @param array $nfe Array of NFe numbers
+     * @return bool|\SimpleXMLElement
      */
-    public function cancelNFe($nfeNumbers)
+    public function cancelNFe(array $nfeNumbers)
     {
         $operation = 'CancelamentoNFe';
         $xmlDoc = $this->createXML($operation);
@@ -604,9 +609,10 @@ class NFSeSP
     /**
      * Create a batch file with NF-e text layout
      *
-     * @param unknown_type $rangeDate
-     * @param unknown_type $valorTotal
-     * @param unknown_type $rps
+     * @param array $rangeDate
+     * @param array $valorTotal
+     * @param array $rps
+     * @return bool|string
      */
     public function textFile($rangeDate, $valorTotal, $rps)
     {
