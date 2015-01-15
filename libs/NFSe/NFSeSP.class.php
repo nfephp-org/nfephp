@@ -461,9 +461,10 @@ class NFSeSP
      * @param string $ccm State Registration
      * @param string $startDate YYYY-MM-DD
      * @param string $endDate YYYY-MM-DD
+     * @param int $pageNumber Number of page to query results, by default the webservice given 50 documents per page
      * @return \DOMDocument
      */
-    private function queryNFeWithDateRange($cnpj, $ccm, $startDate, $endDate)
+    private function queryNFeWithDateRange($cnpj, $ccm, $startDate, $endDate, $pageNumber = 1)
     {
         $operation = 'ConsultaNFePeriodo';
         $xmlDoc = $this->createXML($operation);
@@ -477,7 +478,7 @@ class NFSeSP
         $header->appendChild($startDateNode);
         $endDateNode = $xmlDoc->createElement('dtFim', $endDate);
         $header->appendChild($endDateNode);
-        $pageNumber = $xmlDoc->createElement('NumeroPagina', 1);
+        $pageNumber = $xmlDoc->createElement('NumeroPagina', $pageNumber);
         $header->appendChild($pageNumber);
         return $xmlDoc;
     }
@@ -489,12 +490,13 @@ class NFSeSP
      * @param string $ccm State Registration
      * @param string $startDate YYYY-MM-DD
      * @param string $endDate YYYY-MM-DD
+     * @param int $pageNumber
      * @return bool|\SimpleXMLElement
      */
-    public function queryNFeReceived($cnpj, $ccm, $startDate, $endDate)
+    public function queryNFeReceived($cnpj, $ccm, $startDate, $endDate, $pageNumber = 1)
     {
         $operation = 'ConsultaNFeRecebidas';
-        $xmlDoc = $this->queryNFeWithDateRange($cnpj, $ccm, $startDate, $endDate);
+        $xmlDoc = $this->queryNFeWithDateRange($cnpj, $ccm, $startDate, $endDate, $pageNumber);
         return $this->send($operation, $xmlDoc);
     }
 
@@ -505,12 +507,13 @@ class NFSeSP
      * @param string $ccm
      * @param string $startDate YYYY-MM-DD
      * @param string $endDate YYYY-MM-DD
+     * @param int $pageNumber
      * @return bool|\SimpleXMLElement
      */
-    public function queryNFeIssued($cnpj, $ccm, $startDate, $endDate)
+    public function queryNFeIssued($cnpj, $ccm, $startDate, $endDate, $pageNumber = 1)
     {
         $operation = 'ConsultaNFeEmitidas';
-        $xmlDoc = $this->queryNFeWithDateRange($cnpj, $ccm, $startDate, $endDate);
+        $xmlDoc = $this->queryNFeWithDateRange($cnpj, $ccm, $startDate, $endDate, $pageNumber);
         return $this->send($operation, $xmlDoc);
     }
 

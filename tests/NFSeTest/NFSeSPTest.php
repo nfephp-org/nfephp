@@ -26,7 +26,7 @@ class NFSeSPTest extends PHPUnit_Framework_TestCase
             array(
                 'EnvioRPS', 'EnvioLoteRPS',
                 'TesteEnvioLoteRPS', 'CancelamentoNFe',
-                'ConsultaNFe'
+                'ConsultaNFe', 'ConsultaNFeRecebidas'
             )
         );
 
@@ -36,6 +36,7 @@ class NFSeSPTest extends PHPUnit_Framework_TestCase
         $mock->expects($this->any())->method('TesteEnvioLoteRPS')->will($this->returnCallback(array('NFSeTest_Provider_SendBatchRps', 'response')));
         $mock->expects($this->any())->method('CancelamentoNFe')->will($this->returnCallback(array('NFSeTest_Provider_CancelNFe', 'response')));
         $mock->expects($this->any())->method('ConsultaNFe')->will($this->returnCallback(array('NFSeTest_Provider_QueryNFe', 'response')));
+        $mock->expects($this->any())->method('ConsultaNFeRecebidas')->will($this->returnCallback(array('NFSeTest_Provider_QueryNFeReceived', 'response')));
         return $mock;
     }
 
@@ -155,5 +156,19 @@ class NFSeSPTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('123', $returned->RPS->ChaveRPS->NumeroRPS);
         $this->assertEquals('1', $returned->RPS->ChaveRPS->SerieRPS);
         $this->assertEquals('N', $returned->RPS->StatusRPS);
+    }
+
+    public function testQueryNfesThatCnpjOrCcmCompanyReceivedFromOtherCompanies()
+    {
+        $nfse = $this->getNFSeSPMock();
+        $returned = $nfse->queryNFeReceived(123, 456, date('Y-md H:i:s', strtotime('-1 day')), date('Y-m-d H:i:s'));
+        $this->assertInstanceOf('SimpleXMLElement', $returned);
+        $this->assertEquals('123', $returned->NFe->ChaveNFe->NumeroNFe);
+        $this->assertEquals('N', $returned->NFe->StatusNFe);
+
+        $this->assertEquals('321', $returned->RPS->ChaveRPS->NumeroRPS);
+        $this->assertEquals('1', $returned->RPS->ChaveRPS->SerieRPS);
+        $this->assertEquals('N', $returned->RPS->StatusRPS);
+
     }
 }
