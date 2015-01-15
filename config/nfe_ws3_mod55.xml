@@ -30,7 +30,7 @@ AM Consulta de Cadastro não EXISTE
   <UF>
     <sigla>AN</sigla>
     <homologacao>
-      <NFeDistribuicaoDFe method="nfeDistDFeInteresse" operation="NFeDistribuicaoDFe" version="1.01">https://hom.nfe.fazenda.gov.br/NFeDistribuicaoDFe/NFeDistribuicaoDFe.asmx</NFeDistribuicaoDFe>
+      <NFeDistribuicaoDFe method="nfeDistDFeInteresse" operation="NFeDistribuicaoDFe" version="1.00">https://hom.nfe.fazenda.gov.br/NFeDistribuicaoDFe/NFeDistribuicaoDFe.asmx</NFeDistribuicaoDFe>
       <NfeConsultaDest method="nfeConsultaNFDest" operation="NfeConsultaDest" version="1.01">https://hom.nfe.fazenda.gov.br/NFeConsultaDest/NFeConsultaDest.asmx</NfeConsultaDest>
       <NFeDistribuicaoDFe method="nfeDistDFeInteresse" operation="NFeDistribuicaoDFe" version="1.00">https://hom.nfe.fazenda.gov.br/NFeDistribuicaoDFe/NFeDistribuicaoDFe.asmx</NFeDistribuicaoDFe>
       <NfeDownloadNF method="nfeDownloadNF" operation="NfeDownloadNF" version="1.00">https://hom.nfe.fazenda.gov.br/NfeDownloadNF/NfeDownloadNF.asmx</NfeDownloadNF>
