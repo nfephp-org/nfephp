@@ -651,7 +651,38 @@ class NFSeSP
         }
         return false;
     }
+    /**
+     * Returns CCM for given CNPJ
+     * Message is based on PedidoConsultaCNPJ.xsd schema and
+     * response is based on RetornoConsultaCNPJ.xsd schema
+     *
+     * @param string $cnpj
+     * @return bool|string Returns the taxpayer register number for given CNPJ
+     */
+    public function queryCPF($cnpj)
+    {
+        $operation = 'ConsultaCNPJ';
+        $xmlDoc = $this->createXMLp1($operation);
+        $root = $xmlDoc->documentElement;
+        $cnpjTaxpayer = $xmlDoc->createElementNS('', 'CNPJContribuinte');
+        $cnpjTaxpayer->appendChild($xmlDoc->createElement('CPF', (string) sprintf('%011s', $cnpj)));
+        $root->appendChild($cnpjTaxpayer);
+        $xmlResponse = $this->send($operation, $xmlDoc);
+        return $this->getIncricaoMunicipal($xmlResponse);
+    }
 
+    private function getIncricaoMunicipal(SimpleXMLElement $xmlResponse)
+    {
+        $isSuccess = ($xmlResponse && (string)$xmlResponse->Cabecalho->Sucesso == 'true');
+
+        if ($isSuccess && (string)$xmlResponse->Detalhe->InscricaoMunicipal != "") {
+            return (string)$xmlResponse->Detalhe->InscricaoMunicipal;
+        }
+        if (!$isSuccess && (string)$xmlResponse->Alerta->Codigo != "") {
+            return (string)$xmlResponse->Alerta->Descricao;
+        }
+        return false;
+    }
     /**
      * Create a line with RPS description for batch file
      *
