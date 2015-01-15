@@ -3,7 +3,7 @@
 /**
  * @author Antonio Spinelli <antonio.spinelli@kanui.com.br>
  */
-class NFSeTest_Provider_QueryNFeReceived extends NFSeTest_Provider_QueryNFe implements NFSeTest_Provider_ProviderInterface
+class NFSeTest_Provider_QueryNFePeriod extends NFSeTest_Provider_QueryNFe implements NFSeTest_Provider_ProviderInterface
 {
 
     protected static function getQueryResponse($xmlString)
