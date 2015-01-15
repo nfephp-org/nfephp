@@ -143,6 +143,7 @@ class NFSeSP
     /**
      * Start a connection with webservice.
      *
+     * @throws Exception
      * @return void
      */
     public function start()
@@ -176,6 +177,7 @@ class NFSeSP
      *
      * @param string $operation Method's name to call.
      * @param DOMDocument $xmlDoc Message to be sent.
+     * @throws Exception
      * @return bool|SimpleXMLElement Returns a XML when communication is successful, otherwise false when get error.
      */
     private function send($operation, DOMDocument $xmlDoc)
