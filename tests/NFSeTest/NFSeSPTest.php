@@ -58,6 +58,7 @@ class NFSeSPTest extends PHPUnit_Framework_TestCase
             'passphrase' => 'associacao',
             'pkcs12' => __DIR__ . '/../fixtures/certs/certificado_teste.pfx',
             'certDir' => __DIR__ . '/../fixtures/certs',
+            'rpsDirectory' => __DIR__,
             'privateKey' => '99999090910270_priKEY.pem',
             'publicKey' => '99999090910270_pubKEY.pem',
             'key' => '99999090910270_certKEY.pem',
@@ -237,5 +238,20 @@ class NFSeSPTest extends PHPUnit_Framework_TestCase
         $returned = $nfse->queryCNPJ('11122233344');
         $this->assertTrue(is_string($returned));
         $this->assertEquals('1234567890', $returned);
+    }
+
+    public function testCreateABatchFileWithNfeTextLayout()
+    {
+        $rps = $this->getNFSeRPS();
+        $rps->valorServicos = 100.00;
+        $rps->valorDeducoes = 10.00;
+        $nfse = $this->getNFSeSPMock();
+        $filePath = $nfse->textFile(
+            array('inicio' => strtotime('-1 day'), 'fim' => time()),
+            array('servicos' => 0.0, 'deducoes' => 0.00),
+            array($rps)
+        );
+        $this->assertFileExists($filePath);
+        unlink($filePath);
     }
 }

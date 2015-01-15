@@ -22,6 +22,7 @@ class NFSeSP
     private $passphrase = 'xxxxxxxxxx'; // Cert passphrase
     private $pkcs12  = 'caminho_completo_para_o_seu_certificado.pfx';
     private $certDir = 'diretorio_onde_esta_seu_certificado'; // Dir for .pem certs
+    private $rpsDirectory = '/patch/for/rps/batch/file';
     private $privateKey = 'privatekey.pem';
     public $certDaysToExpire=0;
     private $ignoreCertExpired = false;
@@ -713,13 +714,10 @@ class NFSeSP
             sprintf("%015s", str_replace('.', '', sprintf('%.2f', $valorTotal['servicos']))) .
             sprintf("%015s", str_replace('.', '', sprintf('%.2f', $valorTotal['deducoes']))) .
             chr(13) . chr(10);
-        $rpsDir = '/patch/for/rps/batch/file';
         $rpsFileName = date("Y-m-d_Hi") . '.txt';
-        $rpsFullPath = $rpsDir . '/' . $rpsFileName;
-        if (! is_dir($rpsDir)) {
-            if (! mkdir($rpsDir, 0777)) {
-
-            }
+        $rpsFullPath = $this->rpsDirectory . DIRECTORY_SEPARATOR . $rpsFileName;
+        if (! is_dir($this->rpsDirectory )) {
+            mkdir($this->rpsDirectory, 0777, true);
         }
         if (! file_put_contents($rpsFullPath, $header . $body . $footer)) {
             error_log(__METHOD__ . ': Cannot create rps file ' . $rpsFullPath);
