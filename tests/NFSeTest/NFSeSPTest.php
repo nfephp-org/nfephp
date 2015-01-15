@@ -26,7 +26,8 @@ class NFSeSPTest extends PHPUnit_Framework_TestCase
             array(
                 'EnvioRPS', 'EnvioLoteRPS',
                 'TesteEnvioLoteRPS', 'CancelamentoNFe',
-                'ConsultaNFe', 'ConsultaNFeRecebidas', 'ConsultaNFeEmitidas'
+                'ConsultaNFe', 'ConsultaNFeRecebidas',
+                'ConsultaNFeEmitidas', 'ConsultaLote'
             )
         );
 
@@ -38,6 +39,7 @@ class NFSeSPTest extends PHPUnit_Framework_TestCase
         $mock->expects($this->any())->method('ConsultaNFe')->will($this->returnCallback(array('NFSeTest_Provider_QueryNFe', 'response')));
         $mock->expects($this->any())->method('ConsultaNFeRecebidas')->will($this->returnCallback(array('NFSeTest_Provider_QueryNFePeriod', 'response')));
         $mock->expects($this->any())->method('ConsultaNFeEmitidas')->will($this->returnCallback(array('NFSeTest_Provider_QueryNFePeriod', 'response')));
+        $mock->expects($this->any())->method('ConsultaLote')->will($this->returnCallback(array('NFSeTest_Provider_QueryNFePeriod', 'response')));
         return $mock;
     }
 
@@ -176,6 +178,19 @@ class NFSeSPTest extends PHPUnit_Framework_TestCase
     {
         $nfse = $this->getNFSeSPMock();
         $returned = $nfse->queryNFeIssued(123, 456, date('Y-md H:i:s', strtotime('-1 day')), date('Y-m-d H:i:s'));
+        $this->assertInstanceOf('SimpleXMLElement', $returned);
+        $this->assertEquals('123', $returned->NFe->ChaveNFe->NumeroNFe);
+        $this->assertEquals('N', $returned->NFe->StatusNFe);
+
+        $this->assertEquals('321', $returned->RPS->ChaveRPS->NumeroRPS);
+        $this->assertEquals('1', $returned->RPS->ChaveRPS->SerieRPS);
+        $this->assertEquals('N', $returned->RPS->StatusRPS);
+    }
+
+    public function testQueryBatch()
+    {
+        $nfse = $this->getNFSeSPMock();
+        $returned = $nfse->queryBatch(123);
         $this->assertInstanceOf('SimpleXMLElement', $returned);
         $this->assertEquals('123', $returned->NFe->ChaveNFe->NumeroNFe);
         $this->assertEquals('N', $returned->NFe->StatusNFe);
