@@ -28,7 +28,7 @@ class NFSeSPTest extends PHPUnit_Framework_TestCase
                 'TesteEnvioLoteRPS', 'CancelamentoNFe',
                 'ConsultaNFe', 'ConsultaNFeRecebidas',
                 'ConsultaNFeEmitidas', 'ConsultaLote',
-                'InformacoesLote'
+                'InformacoesLote', 'ConsultaCNPJ'
             )
         );
 
@@ -42,6 +42,7 @@ class NFSeSPTest extends PHPUnit_Framework_TestCase
         $mock->expects($this->any())->method('ConsultaNFeEmitidas')->will($this->returnCallback(array('NFSeTest_Provider_QueryNFePeriod', 'response')));
         $mock->expects($this->any())->method('ConsultaLote')->will($this->returnCallback(array('NFSeTest_Provider_QueryNFePeriod', 'response')));
         $mock->expects($this->any())->method('InformacoesLote')->will($this->returnCallback(array('NFSeTest_Provider_QueryBatchInfo', 'response')));
+        $mock->expects($this->any())->method('ConsultaCNPJ')->will($this->returnCallback(array('NFSeTest_Provider_QueryCnpj', 'response')));
         return $mock;
     }
 
@@ -220,6 +221,21 @@ class NFSeSPTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('true', $returned->Cabecalho->Sucesso);
 
         $this->assertEquals('123', $returned->Cabecalho->InformacoesLote->NumeroLote);
+    }
 
+    public function testQueryCNPJ()
+    {
+        $nfse = $this->getNFSeSPMock();
+        $returned = $nfse->queryCNPJ('00111222000100');
+        $this->assertTrue(is_string($returned));
+        $this->assertEquals('1234567890', $returned);
+    }
+
+    public function testQueryCPF()
+    {
+        $nfse = $this->getNFSeSPMock();
+        $returned = $nfse->queryCNPJ('11122233344');
+        $this->assertTrue(is_string($returned));
+        $this->assertEquals('1234567890', $returned);
     }
 }

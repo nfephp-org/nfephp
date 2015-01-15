@@ -636,19 +636,17 @@ class NFSeSP
             $cnpjTaxpayer->appendChild($xmlDoc->createElement('CNPJ', (string) sprintf('%014s', $cnpj)));
         }
         $root->appendChild($cnpjTaxpayer);
-        if ($return = $this->send($operation, $xmlDoc)) {
-            if ($return->Detalhe->InscricaoMunicipal <> "") {
-                return $return->Detalhe->InscricaoMunicipal;
-            } else {
-                if ($return->Alerta->Codigo <> "") {
-                    return $return->Alerta->Descricao;
-                } else {
-                    return false;
-                }
-            }
-        } else {
-            return false;
+        $return = $this->send($operation, $xmlDoc);
+
+        $isSuccess = ($return && (string)$return->Cabecalho->Sucesso == 'true');
+
+        if ($isSuccess && (string)$return->Detalhe->InscricaoMunicipal != "") {
+            return (string)$return->Detalhe->InscricaoMunicipal;
         }
+        if (!$isSuccess && (string)$return->Alerta->Codigo != "") {
+            return (string)$return->Alerta->Descricao;
+        }
+        return false;
     }
 
     /**
