@@ -47,9 +47,7 @@ class NFSeSP
         $this->privateKey = $this->certDir . DIRECTORY_SEPARATOR . $this->privateKey;
         $this->publicKey = $this->certDir . DIRECTORY_SEPARATOR . $this->publicKey;
         $this->key = $this->certDir . DIRECTORY_SEPARATOR . $this->key;
-        if (!$this->loadCert()) {
-            error_log(__METHOD__ . ': Certificado não OK!');
-        }
+        $this->loadCert();
     }
 
     /**
@@ -71,70 +69,35 @@ class NFSeSP
      * Validate if certificate is expired.
      *
      * @param string $cert
-     * @return bool
+     * @return void
      */
     private function validateCert($cert)
     {
         $data = openssl_x509_read($cert);
         $certData = openssl_x509_parse($data);
 
-        $certValidDate = gmmktime(0, 0, 0, substr($certData['validTo'], 2, 2), substr($certData['validTo'], 4, 2), substr($certData['validTo'], 0, 2));
-        // obtem o timestamp da data de hoje
-        $dHoje = gmmktime(0, 0, 0, date("m"), date("d"), date("Y"));
-        if (!$this->ignoreCertExpired AND $certValidDate < time()) {
-            error_log(__METHOD__ . ': Certificado expirado em ' . date('Y-m-d', $certValidDate));
-            return false;
+        $validTo = \DateTime::createFromFormat('ymd', substr($certData['validTo'], 0,6));
+        $today = new \DateTime('now');
+        if (!$this->ignoreCertExpired AND $validTo < $today) {
+            throw new \Common\Exception\RuntimeException('Certificado expirado em ' . $validTo->format('Y-m-d'));
         }
-        //diferença em segundos entre os timestamp
-        $diferenca = $certValidDate - $dHoje;
-        // convertendo para dias
-        $diferenca = round($diferenca /(60*60*24), 0);
-        //carregando a propriedade
-        $this->certDaysToExpire = $diferenca;
-        return true;
     }
 
     /**
      * Load certificate from file.
      *
-     * @return bool
+     * @return void
      */
     private function loadCert()
     {
         $x509CertData = array();
-        if (! openssl_pkcs12_read(file_get_contents($this->pkcs12), $x509CertData, $this->passphrase)) {
-            error_log(__METHOD__ . ': Certificado não pode ser lido. O arquivo esta corrompido ou em formato invalido.');
-            return false;
+        if (!openssl_pkcs12_read(file_get_contents($this->pkcs12), $x509CertData, $this->passphrase)) {
+            throw new \Common\Exception\IOException(
+                'Certificado não pode ser lido. O arquivo esta corrompido ou em formato invalido.'
+            );
         }
         $this->X509Certificate = preg_replace("/[\n]/", '', preg_replace('/\-\-\-\-\-[A-Z]+ CERTIFICATE\-\-\-\-\-/', '', $x509CertData['cert']));
-        if (! $this->validateCert($x509CertData['cert'])) {
-            return false;
-        }
-        if (! is_dir($this->certDir)) {
-            if (! mkdir($this->certDir, 0777)) {
-                error_log(__METHOD__ . ': Falha ao criar o diretorio ' . $this->certDir);
-                return false;
-            }
-        }
-        if (! file_exists($this->privateKey)) {
-            if (! file_put_contents($this->privateKey, $x509CertData['pkey'])) {
-                error_log(__METHOD__ . ': Falha ao criar o arquivo ' . $this->privateKey);
-                return false;
-            }
-        }
-        if (! file_exists($this->publicKey)) {
-            if (! file_put_contents($this->publicKey, $x509CertData['cert'])) {
-                error_log(__METHOD__ . ': Falha ao criar o arquivo ' . $this->publicKey);
-                return false;
-            }
-        }
-        if (! file_exists($this->key)) {
-            if (! file_put_contents($this->key, $x509CertData['cert'] . $x509CertData['pkey'])) {
-                error_log(__METHOD__ . ': Falha ao criar o arquivo ' . $this->key);
-                return false;
-            }
-        }
-        return true;
+        $this->validateCert($x509CertData['cert']);
     }
 
     /**
@@ -162,9 +125,9 @@ class NFSeSP
         try {
             $this->connectionSoap = new SoapClient($wsdl, $params);
         } catch (SoapFault $e) {
-            error_log('Exception: ' . $e->getMessage());
-            echo "erro de conexão soap. Tente novamente mais tarde !<br>\n";
-            echo $e->getMessage();
+            throw new \Common\Exception\RuntimeException($e->getMessage());
+        } catch(Exception $e){
+            throw new $e;
         }
     }
 
@@ -187,9 +150,9 @@ class NFSeSP
         try {
             $result = $this->connectionSoap->$operation($params);
         } catch (SoapFault $e) {
-            error_log('Exception: ' . $e->getMessage());
-            echo "erro soap ".$e->getMessage();
-            return false;
+            throw new \Common\Exception\RuntimeException($e->getMessage());
+        } catch(Exception $e){
+            throw new $e;
         }
         return new SimpleXMLElement($result->RetornoXML);
     }
@@ -668,19 +631,27 @@ class NFSeSP
         $cnpjTaxpayer->appendChild($xmlDoc->createElement('CPF', (string) sprintf('%011s', $cnpj)));
         $root->appendChild($cnpjTaxpayer);
         $xmlResponse = $this->send($operation, $xmlDoc);
-        return $this->getIncricaoMunicipal($xmlResponse);
+        if ($xmlResponse) {
+            return $this->getIncricaoMunicipal($xmlResponse);
+        }
+        return false;
     }
 
+    /**
+     * Gets Taxpayer register.
+     *
+     * @param SimpleXMLElement $xmlResponse
+     * @return string Returns
+     */
     private function getIncricaoMunicipal(SimpleXMLElement $xmlResponse)
     {
         $isSuccess = ($xmlResponse && (string)$xmlResponse->Cabecalho->Sucesso == 'true');
 
-        if ($isSuccess && (string)$xmlResponse->Detalhe->InscricaoMunicipal != "") {
+        if ($isSuccess) {
             return (string)$xmlResponse->Detalhe->InscricaoMunicipal;
         }
-        if (!$isSuccess && (string)$xmlResponse->Alerta->Codigo != "") {
-            return (string)$xmlResponse->Alerta->Descricao;
-        }
+
+        error_log((string)$xmlResponse->Alerta->Descricao);
         return false;
     }
     /**
