@@ -14,17 +14,57 @@
  * @copyright Copyright (c) 2010, Reinaldo Nolasco Sanches
  * @license   http://www.opensource.org/licenses/mit-license.php MIT License
  */
-
 class NFSeSP
 {
+    /**
+     * Provisional Receipt of Services
+     */
+    const TYPE_RPS = 'RPS';
+    /**
+     * Provisional Receipt of Services from Combined Invoice (mixed)
+     */
+    const TYPE_RPSM = 'RPS-M';
+    /**
+     * Coupon
+     */
+    const TYPE_RPSC = 'RPS-C';
+    /**
+     * Document Ok
+     */
+    const STATUS_NORMAL = 'N';
+    /**
+     * Document is canceled
+     */
+    const STATUS_CANCELED = 'C';
+    /**
+     * Document lost
+     */
+    const STATUS_LOST = 'E';
+    /**
+     * Taxation in Sao Paulo
+     */
+    const TAXATION_IN_SAO_PAULO = 'T';
+    /**
+     * Taxation out of Sao Paulo
+     */
+    const TAXATION_OUT_SAO_PAULO = 'F';
+    /**
+     * Taxation free
+     */
+    const TAXATION_FREE = 'I';
+    /**
+     * Service Tax Suspended for Judicial Decision
+     */
+    const TAXATION_SERVICE_TAX_SUSPENDED = 'J';
+
     private $cnpjPrestador = 'xxxxxxxxxxxxx'; // Your CNPJ
     private $ccmPrestador = 'xxxxxxxxx'; // Your CCM
     private $passphrase = 'xxxxxxxxxx'; // Cert passphrase
-    private $pkcs12  = 'caminho_completo_para_o_seu_certificado.pfx';
+    private $pkcs12 = 'caminho_completo_para_o_seu_certificado.pfx';
     private $certDir = 'diretorio_onde_esta_seu_certificado'; // Dir for .pem certs
     private $rpsDirectory = '/patch/for/rps/batch/file';
     private $privateKey = 'privatekey.pem';
-    public $certDaysToExpire=0;
+    public $certDaysToExpire = 0;
     private $ignoreCertExpired = false;
     private $publicKey = 'publickey.pem';
     private $X509Certificate;
@@ -76,7 +116,7 @@ class NFSeSP
         $data = openssl_x509_read($cert);
         $certData = openssl_x509_parse($data);
 
-        $validTo = \DateTime::createFromFormat('ymd', substr($certData['validTo'], 0,6));
+        $validTo = \DateTime::createFromFormat('ymd', substr($certData['validTo'], 0, 6));
         $today = new \DateTime('now');
         if (!$this->ignoreCertExpired AND $validTo < $today) {
             throw new \Common\Exception\RuntimeException('Certificado expirado em ' . $validTo->format('Y-m-d'));
@@ -115,10 +155,10 @@ class NFSeSP
             'passphrase' => $this->passphrase,
             'connection_timeout' => 300,
             'encoding' => 'UTF-8',
-            'verifypeer'    => false,
-            'verifyhost'    => false,
-            'soap_version'  => $soapver,
-            'trace'         => true,
+            'verifypeer' => false,
+            'verifyhost' => false,
+            'soap_version' => $soapver,
+            'trace' => true,
             'cache_wsdl' => WSDL_CACHE_NONE
         );
 
@@ -126,7 +166,7 @@ class NFSeSP
             $this->connectionSoap = new SoapClient($wsdl, $params);
         } catch (SoapFault $e) {
             throw new \Common\Exception\RuntimeException($e->getMessage());
-        } catch(Exception $e){
+        } catch (Exception $e) {
             throw new $e;
         }
     }
@@ -151,7 +191,7 @@ class NFSeSP
             $result = $this->connectionSoap->$operation($params);
         } catch (SoapFault $e) {
             throw new \Common\Exception\RuntimeException($e->getMessage());
-        } catch(Exception $e){
+        } catch (Exception $e) {
             throw new $e;
         }
         return new SimpleXMLElement($result->RetornoXML);
@@ -168,7 +208,7 @@ class NFSeSP
         $xmlDoc = new DOMDocument('1.0', 'UTF-8');
         $xmlDoc->preserveWhiteSpace = false;
         $xmlDoc->formatOutput = false;
-        $data = '<?xml version="1.0" encoding="UTF-8"?><Pedido' . $operation . ' xmlns:xsd="' . $this->urlXsd .'" xmlns="' . $this->urlNfe . '" xmlns:xsi="' . $this->urlXsi . '"></Pedido' . $operation . '>';
+        $data = '<?xml version="1.0" encoding="UTF-8"?><Pedido' . $operation . ' xmlns:xsd="' . $this->urlXsd . '" xmlns="' . $this->urlNfe . '" xmlns:xsi="' . $this->urlXsi . '"></Pedido' . $operation . '>';
         $xmlDoc->loadXML(str_replace(array("\r\n", "\n", "\r"), '', $data), LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
         $root = $xmlDoc->documentElement;
         $header = $xmlDoc->createElementNS('', 'Cabecalho');
@@ -191,7 +231,7 @@ class NFSeSP
         $xmlDoc = new DOMDocument('1.0', 'UTF-8');
         $xmlDoc->preserveWhiteSpace = false;
         $xmlDoc->formatOutput = false;
-        $data = '<?xml version="1.0" encoding="UTF-8"?><Pedido'.$operation.' xmlns="' . $this->urlNfe . '" xmlns:xsi="' . $this->urlXsi . '"></Pedido' . $operation . '>';
+        $data = '<?xml version="1.0" encoding="UTF-8"?><Pedido' . $operation . ' xmlns="' . $this->urlNfe . '" xmlns:xsi="' . $this->urlXsi . '"></Pedido' . $operation . '>';
         $xmlDoc->loadXML(str_replace(array("\r\n", "\n", "\r"), '', $data), LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
         $root = $xmlDoc->documentElement;
         $header = $xmlDoc->createElementNS('', 'Cabecalho');
@@ -262,15 +302,15 @@ class NFSeSP
      */
     private function signRPS(NFeRPS $rps, DOMElement $rpsNode)
     {
-        $content = sprintf('%08s', $rps->CCM).
-            sprintf('%-5s', $rps->serie).
-            sprintf('%012s', $rps->numero).
-            str_replace("-", "", $rps->dataEmissao).
+        $content = sprintf('%08s', $rps->CCM) .
+            sprintf('%-5s', $rps->serie) .
+            sprintf('%012s', $rps->numero) .
+            str_replace("-", "", $rps->dataEmissao) .
             $rps->tributacao .
             $rps->status .
             (($rps->comISSRetido) ? 'S' : 'N') .
-            sprintf('%015s', str_replace(array('.', ','), '', number_format($rps->valorServicos, 2))).
-            sprintf('%015s', str_replace(array('.', ','), '', number_format($rps->valorDeducoes, 2))).
+            sprintf('%015s', str_replace(array('.', ','), '', number_format($rps->valorServicos, 2))) .
+            sprintf('%015s', str_replace(array('.', ','), '', number_format($rps->valorDeducoes, 2))) .
             sprintf('%05s', $rps->codigoServico) .
             (($rps->contractorRPS->type == 'F') ? '1' : '2') .
             sprintf('%014s', $rps->contractorRPS->cnpjTomador);
@@ -324,7 +364,7 @@ class NFSeSP
         }
         $rpsNode->appendChild($cnpj);
         if ($rps->contractorRPS->ccmTomador <> "") {
-           $rpsNode->appendChild($xmlDoc->createElement('InscricaoMunicipalTomador', $rps->contractorRPS->ccmTomador)); // 0-1
+            $rpsNode->appendChild($xmlDoc->createElement('InscricaoMunicipalTomador', $rps->contractorRPS->ccmTomador)); // 0-1
         }
         $rpsNode->appendChild($xmlDoc->createElement('RazaoSocialTomador', $rps->contractorRPS->name)); // 0-1
         $address = $xmlDoc->createElement('EnderecoTomador'); // 0-1
@@ -417,7 +457,7 @@ class NFSeSP
      * Has responsible to cancel NFe numbers created from sendRPSBatch method
      * Message is based on PedidoConsultaNFe.xsd schema
      *
-     * @param array $nfeNumbers  Array of NFe numbers
+     * @param array $nfeNumbers Array of NFe numbers
      * @return bool|\SimpleXMLElement Returns xml based on RetornoCancelamentoNFe.xsd schema
      */
     public function cancelNFe(array $nfeNumbers)
@@ -597,9 +637,9 @@ class NFSeSP
         $root = $xmlDoc->documentElement;
         $cnpjTaxpayer = $xmlDoc->createElementNS('', 'CNPJContribuinte');
         if (strlen($cnpj) == 11) {
-            $cnpjTaxpayer->appendChild($xmlDoc->createElement('CPF', (string) sprintf('%011s', $cnpj)));
+            $cnpjTaxpayer->appendChild($xmlDoc->createElement('CPF', (string)sprintf('%011s', $cnpj)));
         } else {
-            $cnpjTaxpayer->appendChild($xmlDoc->createElement('CNPJ', (string) sprintf('%014s', $cnpj)));
+            $cnpjTaxpayer->appendChild($xmlDoc->createElement('CNPJ', (string)sprintf('%014s', $cnpj)));
         }
         $root->appendChild($cnpjTaxpayer);
         $return = $this->send($operation, $xmlDoc);
@@ -614,6 +654,7 @@ class NFSeSP
         }
         return false;
     }
+
     /**
      * Returns CCM for given CNPJ
      * Message is based on PedidoConsultaCNPJ.xsd schema and
@@ -628,7 +669,7 @@ class NFSeSP
         $xmlDoc = $this->createXMLp1($operation);
         $root = $xmlDoc->documentElement;
         $cnpjTaxpayer = $xmlDoc->createElementNS('', 'CNPJContribuinte');
-        $cnpjTaxpayer->appendChild($xmlDoc->createElement('CPF', (string) sprintf('%011s', $cnpj)));
+        $cnpjTaxpayer->appendChild($xmlDoc->createElement('CPF', (string)sprintf('%011s', $cnpj)));
         $root->appendChild($cnpjTaxpayer);
         $xmlResponse = $this->send($operation, $xmlDoc);
         if ($xmlResponse) {
@@ -647,20 +688,21 @@ class NFSeSP
     {
         $isSuccess = ($xmlResponse && (string)$xmlResponse->Cabecalho->Sucesso == 'true');
 
-        if ($isSuccess) {
-            return (string)$xmlResponse->Detalhe->InscricaoMunicipal;
+        if (!$isSuccess) {
+            throw new \Common\Exception\RuntimeException($xmlResponse->Alerta->Descricao, $xmlResponse->Alerta->Codigo);
         }
 
-        error_log((string)$xmlResponse->Alerta->Descricao);
-        return false;
+        return (string)$xmlResponse->Detalhe->InscricaoMunicipal;
     }
+
     /**
      * Create a line with RPS description for batch file
      *
      * @param NFeRPS $rps
      * @param string $body
+     * @return string
      */
-    private function insertTextRPS(NFeRPS $rps, &$body)
+    private function insertTextRPS(NFeRPS $rps, $body)
     {
         if ($rps->valorServicos > 0) {
             $line = "2" .
@@ -691,6 +733,7 @@ class NFSeSP
                 str_replace("\n", '|', mb_convert_encoding($rps->discriminacao, 'ISO-8859-1', 'UTF-8'));
             $body .= $line . chr(13) . chr(10);
         }
+        return $body;
     }
 
     /**
@@ -720,12 +763,11 @@ class NFSeSP
             chr(13) . chr(10);
         $rpsFileName = date("Y-m-d_Hi") . '.txt';
         $rpsFullPath = $this->rpsDirectory . DIRECTORY_SEPARATOR . $rpsFileName;
-        if (! is_dir($this->rpsDirectory )) {
+        if (!is_dir($this->rpsDirectory)) {
             mkdir($this->rpsDirectory, 0777, true);
         }
-        if (! file_put_contents($rpsFullPath, $header . $body . $footer)) {
-            error_log(__METHOD__ . ': Cannot create rps file ' . $rpsFullPath);
-            return false;
+        if (!file_put_contents($rpsFullPath, $header . $body . $footer)) {
+            throw new \Common\Exception\IOException(sprintf('Cannot create RPS file (%s)', $rpsFullPath));
         }
         return $rpsFullPath;
     }
