@@ -407,19 +407,8 @@ class NFSeSP
      */
     public function sendRPSBatch($rangeDate, $valorTotal, $rps)
     {
-        $operation = 'EnvioLoteRPS';
-        $xmlDoc = $this->makeXmlHeader($operation);
-        $header = $xmlDoc->documentElement->getElementsByTagName('Cabecalho')->item(0);
-        $header->appendChild($xmlDoc->createElement('transacao', 'false'));
-        $header->appendChild($xmlDoc->createElement('dtInicio', $rangeDate['inicio']));
-        $header->appendChild($xmlDoc->createElement('dtFim', $rangeDate['fim']));
-        $header->appendChild($xmlDoc->createElement('QtdRPS', count($rps)));
-        $header->appendChild($xmlDoc->createElement('ValorTotalServicos', $valorTotal['servicos']));
-        $header->appendChild($xmlDoc->createElement('ValorTotalDeducoes', $valorTotal['deducoes']));
-        foreach ($rps as $item) {
-            $this->makeRPSXml($item, $xmlDoc);
-        }
-        return $this->send($operation, $xmlDoc);
+        $xmlDoc = $this->makeBatchMessage($rangeDate, $valorTotal, $rps);
+        return $this->send('EnvioLoteRPS', $xmlDoc);
     }
 
     /**
@@ -433,6 +422,20 @@ class NFSeSP
      */
     public function sendRPSBatchTest(array $rangeDate, array $valorTotal, array $rps)
     {
+        $xmlDoc = $this->makeBatchMessage($rangeDate, $valorTotal, $rps);
+        $return = $this->send('TesteEnvioLoteRPS', $xmlDoc);
+        return $return;
+    }
+
+    /**
+     * Makes xml batch message.
+     * @param array $rangeDate
+     * @param array $valorTotal
+     * @param array $rps
+     * @return DOMDocument
+     */
+    private function makeBatchMessage(array $rangeDate, array $valorTotal, array $rps)
+    {
         $xmlDoc = $this->makeXmlHeader('EnvioLoteRPS');
         $header = $xmlDoc->documentElement->getElementsByTagName('Cabecalho')->item(0);
         $header->appendChild($xmlDoc->createElement('transacao', 'false'));
@@ -444,8 +447,7 @@ class NFSeSP
         foreach ($rps as $item) {
             $this->makeRPSXml($item, $xmlDoc);
         }
-        $return = $this->send('TesteEnvioLoteRPS', $xmlDoc);
-        return $return;
+        return $xmlDoc;
     }
 
     /**
