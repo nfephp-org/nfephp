@@ -27,18 +27,39 @@ XML;
     {
         $xml = new SimpleXMLElement($xmlString);
         $response = self::createNFeQuery($xml);
+        $response .= self::createRPSQuery($xml);
         return $response;
     }
 
     protected static function createNFeQuery(SimpleXMLElement $xml)
     {
-        $chaveNFe = parent::createNFeRetorno($xml->Detalhe);
-        return <<<XML
+        $keyNFe = '';
+        if ($xml->Detalhe->ChaveNFe) {
+            $keyNFe .= parent::createNFeRetorno($xml->Detalhe) . PHP_EOL;
+            return <<<XML
 <NFe>
-    {$chaveNFe}
+    {$keyNFe}
     <NumeroLote>1</NumeroLote>
     <StatusNFe>N</StatusNFe>
 </NFe>
 XML;
+        }
+        return '';
+    }
+
+    protected static function createRPSQuery($xml)
+    {
+        $keyRPS = '';
+        if ($xml->Detalhe->ChaveRPS) {
+            $keyRPS .= parent::createRpsRetorno($xml->Detalhe) . PHP_EOL;
+            return <<<XML
+<RPS>
+    {$keyRPS}
+    <NumeroLote>1</NumeroLote>
+    <StatusRPS>N</StatusRPS>
+</RPS>
+XML;
+        }
+        return '';
     }
 }

@@ -138,12 +138,22 @@ class NFSeSPTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('123', $returned->NotasCanceladas->Nota->NumeroNota);
     }
 
-    public function testQueryNFe()
+    public function testQueryNfe()
     {
         $nfse = $this->getNFSeSPMock();
         $returned = $nfse->queryNFe(123, null, null);
         $this->assertInstanceOf('SimpleXMLElement', $returned);
         $this->assertEquals('123', $returned->NFe->ChaveNFe->NumeroNFe);
         $this->assertEquals('N', $returned->NFe->StatusNFe);
+    }
+
+    public function testQueryRps()
+    {
+        $nfse = $this->getNFSeSPMock();
+        $returned = $nfse->queryNFe(null, 123, 1);
+        $this->assertInstanceOf('SimpleXMLElement', $returned);
+        $this->assertEquals('123', $returned->RPS->ChaveRPS->NumeroRPS);
+        $this->assertEquals('1', $returned->RPS->ChaveRPS->SerieRPS);
+        $this->assertEquals('N', $returned->RPS->StatusRPS);
     }
 }
