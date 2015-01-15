@@ -23,7 +23,7 @@
  *
  * @package     NFePHP
  * @name        DanfeNFePHP.class.php
- * @version     2.2.5
+ * @version     2.2.6
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2012 &copy; NFePHP
@@ -204,7 +204,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
      * versão
      * @var string 
      */
-    protected $version = '2.2.3';
+    protected $version = '2.2.6';
     /**
      * Texto
      * @var string 
@@ -544,9 +544,9 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         //margens do PDF, em milímetros. Obs.: a margem direita é sempre igual à
         //margem esquerda. A margem inferior *não* existe na FPDF, é definida aqui
         //apenas para controle se necessário ser maior do que a margem superior
-        $margSup = 10;
-        $margEsq = 10;
-        $margInf = 10;
+        $margSup = 2;
+        $margEsq = 2;
+        $margInf = 2;
         // posição inicial do conteúdo, a partir do canto superior esquerdo da página
         $xInic = $margEsq;
         $yInic = $margSup;
@@ -802,7 +802,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         if ($this->orientacao == 'P') {
             $this->pRodape($xInic, $y-1);
         } else {
-            $this->pRodape($xInic, $this->hPrint + 8);
+            $this->pRodape($xInic, $this->hPrint + 1);
         }
         //loop para páginas seguintes
         for ($n = 2; $n <= $totPag; $n++) {
@@ -825,7 +825,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
             if ($this->orientacao == 'P') {
                 $this->pRodape($xInic, $y + 4);
             } else {
-                $this->pRodape($xInic, $this->hPrint + 3);
+                $this->pRodape($xInic, $this->hPrint + 4);
             }
             //se estiver na última página e ainda restar itens para inserir, adiciona mais uma página
             if ($n == $totPag && $this->qtdeItensProc < $qtdeItens) {
@@ -1656,7 +1656,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $aFont = array('font'=>$this->fontePadrao, 'size'=>6, 'style'=>'');
         $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 1, '');
         $texto = ! empty($this->dest->getElementsByTagName("fone")->item(0)->nodeValue) ?
-                $this->pFormat($this->dest->getElementsByTagName("fone")->item(0)->nodeValue, '(##) ####-####') : '';
+                $this->dest->getElementsByTagName("fone")->item(0)->nodeValue : '';
         $aFont = array('font'=>$this->fontePadrao, 'size'=>10, 'style'=>'B');
         $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'B', 'C', 0, '');
         //INSCRIÇÃO ESTADUAL
@@ -2546,7 +2546,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
                 if ($this->orientacao == 'P') {
                     $this->pTextBox($x, $y, $w2, $h, $textoProduto, $aFont, 'T', 'L', 0, '', false);
                 } else {
-                    $this->pTextBox($x, $y, $w2, $h, $textoProduto, $aFont, 'T', 'C', 0, '', false);
+                    $this->pTextBox($x, $y, $w2, $h, $textoProduto, $aFont, 'T', 'L', 0, '', false);
                 }
                 $x += $w2;
                 //NCM
@@ -2574,7 +2574,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
                 if ($this->orientacao == 'P') {
                     $alinhamento = 'R';
                 } else {
-                    $alinhamento = 'C';
+                    $alinhamento = 'R';
                 }
                 // QTDADE
                 $texto = number_format($prod->getElementsByTagName("qCom")->item(0)->nodeValue, 4, ",", ".");
@@ -2825,11 +2825,17 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
      */
     protected function pRodape($x, $y)
     {
+        if ($this->orientacao == 'P') {
+              $w = $this->wPrint;
+        } else {
+              $w = $this->wPrint-$this->wCanhoto;
+              $x = $this->wCanhoto;
+        }
         $aFont = array('font'=>$this->fontePadrao, 'size'=>6, 'style'=>'I');
         $texto = "Impresso em ". date('d/m/Y') . " as " . date('H:i:s');
-        $this->pTextBox($x, $y, $this->wPrint, 0, $texto, $aFont, 'T', 'L', false);
+        $this->pTextBox($x, $y, $w, 0, $texto, $aFont, 'T', 'L', false);
         $texto = "DanfeNFePHP ver. " . $this->version .  "  Powered by NFePHP (GNU/GPLv3 GNU/LGPLv3) © www.nfephp.org";
-        $this->pTextBox($x, $y, $this->wPrint, 0, $texto, $aFont, 'T', 'R', false, 'http://www.nfephp.org');
+        $this->pTextBox($x, $y, $w, 0, $texto, $aFont, 'T', 'R', false, 'http://www.nfephp.org');
     } //fim pRodape
 
     /**
