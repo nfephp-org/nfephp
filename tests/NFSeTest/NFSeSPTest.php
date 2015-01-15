@@ -154,7 +154,7 @@ class NFSeSPTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('true', $returned->Cabecalho->Sucesso);
 
         $this->assertEquals('123', $returned->NFe->ChaveNFe->NumeroNFe);
-        $this->assertEquals('N', $returned->NFe->StatusNFe);
+        $this->assertEquals(NFSeSP::STATUS_NORMAL, $returned->NFe->StatusNFe);
     }
 
     public function testQueryRps()
@@ -166,7 +166,7 @@ class NFSeSPTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals('123', $returned->RPS->ChaveRPS->NumeroRPS);
         $this->assertEquals('1', $returned->RPS->ChaveRPS->SerieRPS);
-        $this->assertEquals('N', $returned->RPS->StatusRPS);
+        $this->assertEquals(NFSeSP::STATUS_NORMAL, $returned->RPS->StatusRPS);
     }
 
     public function testQueryNfesThatCnpjOrCcmCompanyReceivedFromOtherCompanies()
@@ -177,11 +177,11 @@ class NFSeSPTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('true', $returned->Cabecalho->Sucesso);
 
         $this->assertEquals('123', $returned->NFe->ChaveNFe->NumeroNFe);
-        $this->assertEquals('N', $returned->NFe->StatusNFe);
+        $this->assertEquals(NFSeSP::STATUS_NORMAL, $returned->NFe->StatusNFe);
 
         $this->assertEquals('321', $returned->RPS->ChaveRPS->NumeroRPS);
         $this->assertEquals('1', $returned->RPS->ChaveRPS->SerieRPS);
-        $this->assertEquals('N', $returned->RPS->StatusRPS);
+        $this->assertEquals(NFSeSP::STATUS_NORMAL, $returned->RPS->StatusRPS);
     }
 
     public function testQueryNfesThatCnpjOrCcmCompanyIssuedToOtherCompanies()
@@ -192,11 +192,11 @@ class NFSeSPTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('true', $returned->Cabecalho->Sucesso);
 
         $this->assertEquals('123', $returned->NFe->ChaveNFe->NumeroNFe);
-        $this->assertEquals('N', $returned->NFe->StatusNFe);
+        $this->assertEquals(NFSeSP::STATUS_NORMAL, $returned->NFe->StatusNFe);
 
         $this->assertEquals('321', $returned->RPS->ChaveRPS->NumeroRPS);
         $this->assertEquals('1', $returned->RPS->ChaveRPS->SerieRPS);
-        $this->assertEquals('N', $returned->RPS->StatusRPS);
+        $this->assertEquals(NFSeSP::STATUS_NORMAL, $returned->RPS->StatusRPS);
     }
 
     public function testQueryBatch()
@@ -207,11 +207,11 @@ class NFSeSPTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('true', $returned->Cabecalho->Sucesso);
 
         $this->assertEquals('123', $returned->NFe->ChaveNFe->NumeroNFe);
-        $this->assertEquals('N', $returned->NFe->StatusNFe);
+        $this->assertEquals(NFSeSP::STATUS_NORMAL, $returned->NFe->StatusNFe);
 
         $this->assertEquals('321', $returned->RPS->ChaveRPS->NumeroRPS);
         $this->assertEquals('1', $returned->RPS->ChaveRPS->SerieRPS);
-        $this->assertEquals('N', $returned->RPS->StatusRPS);
+        $this->assertEquals(NFSeSP::STATUS_NORMAL, $returned->RPS->StatusRPS);
     }
 
     public function testQueryBatchInfo()
