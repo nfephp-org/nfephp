@@ -362,6 +362,8 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
      */
     protected $debugMode=2;
 
+    private $totalPaginas=1;
+
     /**
      * __construct
      * @name __construct
@@ -563,8 +565,6 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
                 $this->wCanhoto *= $this->qCanhoto;
             }
         }
-        //total inicial de paginas
-        $totPag = 1;
         //largura imprimivel em mm: largura da folha menos as margens esq/direita
         $this->wPrint = $maxW-($margEsq*2);
         //comprimento (altura) imprimivel em mm: altura da folha menos as margens
@@ -757,10 +757,10 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         if ($hUsado > $hDispo1) {
             //serão necessárias mais paginas
             $hOutras = $hUsado - $hDispo1;
-            $totPag = 1 + ceil($hOutras / $hDispo2);
+            $this->totalPaginas = 1 + ceil($hOutras / $hDispo2);
         } else {
             //sera necessaria apenas uma pagina
-            $totPag = 1;
+            $this->totalPaginas = 1;
         }
         //montagem da primeira página
         $pag = 1;
@@ -778,7 +778,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
             }
         }
         //coloca o cabeçalho
-        $y = $this->pCabecalhoDANFE($x, $y, $pag, $totPag);
+        $y = $this->pCabecalhoDANFE($x, $y, $pag);
         //coloca os dados do destinatário
         $y = $this->pDestinatarioDANFE($x, $y+1);
         //coloca os dados das faturas
@@ -789,7 +789,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $y = $this->pTransporteDANFE($x, $y+1);
         //itens da DANFE
         $nInicial = 0;
-        $y = $this->pItensDANFE($x, $y+1, $nInicial, $hDispo1, $pag, $totPag);
+        $y = $this->pItensDANFE($x, $y+1, $nInicial, $hDispo1, $pag);
         //coloca os dados do ISSQN
         if ($linhaISSQN == 1) {
             $y = $this->pIssqnDANFE($x, $y+4);
@@ -805,7 +805,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
             $this->pRodape($xInic, $this->hPrint + 8);
         }
         //loop para páginas seguintes
-        for ($n = 2; $n <= $totPag; $n++) {
+        for ($n = 2; $n <= $this->totalPaginas; $n++) {
             // fixa as margens
             $this->pdf->SetMargins($margEsq, $margSup);
             //adiciona nova página
@@ -818,9 +818,9 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
             $x = $xInic;
             $y = $yInic;
             //coloca o cabeçalho na página adicional
-            $y = $this->pCabecalhoDANFE($x, $y, $n, $totPag);
+            $y = $this->pCabecalhoDANFE($x, $y, $n);
             //coloca os itens na página adicional
-            $y = $this->pItensDANFE($x, $y+1, $nInicial, $hDispo2, $pag, $totPag);
+            $y = $this->pItensDANFE($x, $y+1, $nInicial, $hDispo2, $pag);
             //coloca o rodapé da página
             if ($this->orientacao == 'P') {
                 $this->pRodape($xInic, $y + 4);
@@ -828,8 +828,8 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
                 $this->pRodape($xInic, $this->hPrint + 3);
             }
             //se estiver na última página e ainda restar itens para inserir, adiciona mais uma página
-            if ($n == $totPag && $this->qtdeItensProc < $qtdeItens) {
-                $totPag++;
+            if ($n == $this->totalPaginas && $this->qtdeItensProc < $qtdeItens) {
+                $this->totalPaginas++;
             }
         }
         //retorna o ID na NFe
@@ -1081,10 +1081,9 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
      * @param number $x Posição horizontal inicial, canto esquerdo
      * @param number $y Posição vertical inicial, canto superior
      * @param number $pag Número da Página
-     * @param number$totPag Total de páginas
      * @return number Posição vertical final
      */
-    protected function pCabecalhoDANFE($x = 0, $y = 0, $pag = '1', $totPag = '1')
+    protected function pCabecalhoDANFE($x = 0, $y = 0, $pag = '1')
     {
         $oldX = $x;
         $oldY = $y;
@@ -1238,7 +1237,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         //numero paginas
         $aFont = array('font'=>$this->fontePadrao, 'size'=>8, 'style'=>'I');
         $y1 = $y + 26;
-        $texto = "Folha " . $pag . "/" . $totPag;
+        $texto = "Folha " . $pag . "/" . $this->totalPaginas;
         $this->pTextBox($x, $y1, $w, $h, $texto, $aFont, 'C', 'C', 0, '');
 
         //####################################################################################
@@ -2385,7 +2384,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
      * @param float $hmax Altura máxima do campo de itens em mm
      * @return float Posição vertical final
      */
-    protected function pItensDANFE($x, $y, &$nInicio, $hmax, $pag = 0, $totpag = 0)
+    protected function pItensDANFE($x, $y, &$nInicio, $hmax, $pag = 0)
     {
         $oldX = $x;
         $oldY = $y;
@@ -2512,11 +2511,16 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $y += 5;
         //##################################################################################
         // LOOP COM OS DADOS DOS PRODUTOS
-        $i = 0;
+
+        if ($nInicio > 0)
+            $i = $nInicio;
+        else
+            $i = 0;
+
         $hUsado = 4;
         $aFont = array('font'=>$this->fontePadrao, 'size'=>7, 'style'=>'');
         foreach ($this->det as $d) {
-            if ($i >= $nInicio) {
+            if (($i >= $nInicio) && ($i < $this->det->length)) {
                 $thisItem = $this->det->item($i);
                 //carrega as tags do item
                 $prod = $thisItem->getElementsByTagName("prod")->item(0);
@@ -2530,6 +2534,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
                 if ($hUsado >= $hmax && $i < $totItens) {
                     //ultrapassa a capacidade para uma única página
                     //o restante dos dados serão usados nas proximas paginas
+                    $this->totalPaginas++;
                     $nInicio = $i;
                     break;
                 }
