@@ -668,7 +668,7 @@ class ToolsNFePHPTest extends PHPUnit_Framework_TestCase
         $xmlNFe = file_get_contents(__DIR__ . '/../fixtures/xml/11101284613439000180550010000004881093997017-nfe.xml');
         $retorno = array();
 
-        $tool->autoriza($xmlNFe, '123', $retorno);
+        $tool->autoriza($xmlNFe, '123', $retorno, 1);
 
         $this->assertTrue(is_array($retorno));
 
