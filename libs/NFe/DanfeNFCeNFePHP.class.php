@@ -463,10 +463,10 @@ class DanfeNFCeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         //QR CODE
         $this->html .= "<table width=\"100%\" style=\"border-top: 1px solid black\">\n";
         $this->html .= "<tr>\n";
-        $this->html .= "<td  colspan=\"3\"><b>Consulta via leitor QR Code</b></td>\n";
+        $this->html .= "<td colspan=\"3\"><b>Consulta via leitor QR Code</b></td>\n";
         $this->html .= "</tr>\n";
         $this->html .= "<tr>\n";
-        $this->html .= "<td  colspan=\"3\"><img src=\"./".$this->imgQRCode."\" ></td>\n";
+        $this->html .= "<td colspan=\"3\"><img src=\"".$this->imgQRCode."\"></td>\n";
         $this->html .= "</tr>\n";
         $this->html .= "</table>\n";
 
@@ -690,14 +690,16 @@ class DanfeNFCeNFePHP extends CommonNFePHP implements DocumentoNFePHP
 			if (!empty($impressora)) {
 				$arquivo = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $nome;
 				if (is_file($arquivo)) {
-					unlink ($arquivo);
+					unlink($arquivo);
 				}
 				$this->mpdf->Output($arquivo, 'F');
 				$cmd = "lpr -P $impressora $arquivo;";
 				exec($cmd);
+				if (is_file($arquivo)) {
+					unlink($arquivo);
+				}
 			}
-			
-            $this->mpdf->Output($nome, $destino);
+			$this->mpdf->Output($nome, $destino);
             
         } else {
             echo $this->html;
@@ -788,7 +790,10 @@ class DanfeNFCeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         //remove o Token da mensagem
         $seq = str_replace($Token, '', $seq);
         $imgQrCode = new QRcode($seq, 'M');
-        $filename = $chNFe.date('YmdHis').'.png';
+        $filename = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $chNFe.date('YmdHis').'.png';
+		if (is_file($filename)) {
+			unlink ($filename);
+		}
         $imgQrCode->displayPNG(200, array(255,255,255), array(0,0,0), $filename, 0);
         return $filename;
         
