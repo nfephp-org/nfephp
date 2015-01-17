@@ -670,7 +670,7 @@ class DanfeNFCeNFePHP extends CommonNFePHP implements DocumentoNFePHP
      * @param type $destino
      * @return type
      */
-    public function printDANFE($output = 'pdf', $nome = '', $destino = 'I')
+    public function printDANFE($output = 'pdf', $nome = '', $destino = 'I', $impressora = null)
     {
         
         if ($output == 'pdf') {
@@ -686,6 +686,17 @@ class DanfeNFCeNFePHP extends CommonNFePHP implements DocumentoNFePHP
             if (is_file($this->imgQRCode)) {
                 unlink($this->imgQRCode);
             }
+			
+			if (!empty($impressora)) {
+				$arquivo = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $nome;
+				if (is_file($arquivo)) {
+					unlink ($arquivo);
+				}
+				$this->mpdf->Output($arquivo, 'F');
+				$cmd = "lpr -P $impressora $arquivo;";
+				exec($cmd);
+			}
+			
             $this->mpdf->Output($nome, $destino);
             
         } else {
