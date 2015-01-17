@@ -1,67 +1,110 @@
 <?php
 /**
- * Parâmetros de configuração do sistema
- * Última alteração em 17-01-2015 15:01:45 
- **/
+ * Este arquivo é parte do projeto NFePHP - Nota Fiscal eletrônica em PHP.
+ *
+ * Este programa é um software livre: você pode redistribuir e/ou modificá-lo
+ * sob os termos da Licença Pública Geral GNU (GPL)como é publicada pela Fundação
+ * para o Software Livre, na versão 3 da licença, ou qualquer versão posterior
+ * e/ou sob os termos da Licença Pública Geral Menor GNU (LGPL) como é publicada
+ * pela Fundação para o Software Livre, na versão 3 da licença, ou qualquer
+ * versão posterior.
+ *
+ * Este programa é distribuído na esperança que será útil, mas SEM NENHUMA
+ * GARANTIA; nem mesmo a garantia explícita definida por qualquer VALOR COMERCIAL
+ * ou de ADEQUAÇÃO PARA UM PROPÓSITO EM PARTICULAR, veja a Licença Pública Geral
+ * GNU para mais detalhes.
+ *
+ * Você deve ter recebido uma cópia da Licença Publica GNU e da 
+ * Licença Pública Geral Menor GNU (LGPL) junto com este programa.
+ * Caso contrário consulte <http://www.fsfla.org/svnwiki/trad/GPLv3> ou
+ * <http://www.fsfla.org/svnwiki/trad/LGPLv3>. 
+ *
+ * Está atualizada para:
+ *      PHP 5.3
+ *      Versão 3.10 dos webservices da SEFAZ com comunicação via SOAP 1.2
+ *      e conforme Manual de Integração Versão 5
+ *
+ * @package   NFePHP
+ * @name      config.php
+ * @abstract  Definições dos parâmetros do sistema.
+ * @version   2.50
+ * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
+ * @copyright 2009-2011 &copy; NFePHP
+ * @link      http://www.nfephp.org/
+ * @author    Roberto L. Machado <linux.rlm at gmail dot com>
+ *
+ *        CONTRIBUIDORES (em ordem alfabetica):
+ *              
+ */
+
+// Evita a exibição dos erros iniciais que aparecem ao instalar o sistema.
+// Ao gravar as alterações pela primeira vez,
+// esta linha é suprimida permitindo, então, a exibição dos erros
+error_reporting(0);
 
 //###############################
-//########## GERAL ##############
+//#### CONFIGURAÇÕES GERAIS #####
 //###############################
-// tipo de ambiente esta informação deve ser editada pelo sistema
+// Tipo de ambiente. Esta informação deve ser editada pelo sistema
 // 1-Produção 2-Homologação
-// esta variável será utilizada para direcionar os arquivos e
-// estabelecer o contato com o SEFAZ
+// Esta variável será utilizada para direcionar os arquivos e estabelecer o
+// contato com o SEFAZ.
 $ambiente=2;
-//esta variável contêm o nome do arquivo com todas as url dos webservices do sefaz
-//incluindo a versao dos mesmos, pois alguns estados não estão utilizando as
-//mesmas versões
-$arquivoURLxml="nfe_ws3_mod55.xml";
+
+// Nomes dos arquivos com todas as URLs dos webservices do SEFAZ incluindo a
+// versão dos mesmos, pois alguns estados não estão utilizando as mesmas versões
+// Para NF-e utiliza por padrão o arquivo do modelo "55"
+$arquivoURLxml='nfe_ws3_mod55.xml';
 $arquivoURLxmlCTe="cte_ws1.xml";
-//Diretório onde serão mantidos os arquivos com as NFe em xml
-//a partir deste diretório serão montados todos os subdiretórios do sistema
-//de manipulação e armazenamento das NFe e CTe
-$arquivosDir="/var/www/NFePHP/Arquivos/NFe/101";
-$arquivosDirCTe="/var/www/NFePHP/Arquivos/CTe/101";
-//URL base da API, passa a ser necessária em virtude do uso dos arquivos wsdl
-//para acesso ao ambiente nacional
-$baseurl="http://localhost/NFePHP/101/";
-//Versão em uso dos shemas utilizados para validação dos xmls
-$schemes="PL_008c";
+
+// Diretório onde serão mantidos os arquivos com as NFe em xml
+// a partir deste diretório serão montados todos os subdiretórios do sistema
+// de manipulação e armazenamento das NFe. Não utilizar barra no final.
+$arquivosDir='/var/www/nfe';
+$arquivosDirCTe="/var/www/cte";
+
+// URL base da API, passa a ser necessária em virtude do uso dos arquivos wsdl
+// para acesso ao ambiente nacional. Não utilizar barra no final.
+$baseurl='http://localhost/nfephp';
+
+// Versão em uso dos shemas utilizados para validação dos xmls
+$schemes='PL_008c';
 $schemesCTe="PL_CTE_104";
 
 //###############################
 //###### EMPRESA EMITENTE #######
 //###############################
 //Nome da Empresa
-$empresa="Migliorini e Migliorini Ltda Epp";
+$empresa='Sua Razao Social Aqui (sem acentos ou simbolos)';
 //Sigla da UF
-$UF="MT";
-//Código da UF
-$cUF="51";
+$UF='SP';
 //Número do CNPJ
-$cnpj="04576775000160";
+$cnpj='1234567890001';
 
-//###############################
-//#### CERITIFICADO DIGITAL #####
-//###############################
-//Nome do certificado que deve ser colocado na pasta certs da API
-$certName="2014-03-24-Migliorini.pfx";
+//##############################
+//#### CERTIFICADO DIGITAL #####
+//##############################
+//Pasta dos certificados, deixar vazio para usar automático em "/certs", ou seja,
+//informe apenas se precisar do certificado em outro local da sua preferência
+$certsDir='';
+//Nome do arquivo do certificado digital
+$certName='certificado_teste.pfx';
 //Senha da chave privada
-$keyPass="serasa12";
+$keyPass='associacao';
 //Senha de decriptaçao da chave, normalmente não é necessaria
-$passPhrase="";
+$passPhrase='';
 
 //###############################
 //############ DANFE ############
 //###############################
 //Configuração do DANFE
-$danfeFormato="P"; //P-Retrato L-Paisagem 
-$danfePapel="A4"; //Tipo de papel utilizado 
-$danfeCanhoto=1; //se verdadeiro imprime o canhoto na DANFE 
-$danfeLogo="/var/www/NFePHP/MGPapelariaSeloPretoBranco.jpg"; //passa o caminho para o LOGO da empresa 
-$danfeLogoPos="L"; //define a posição do logo na Danfe L-esquerda, C-dentro e R-direta 
-$danfeFonte="Times"; //define a fonte do Danfe limitada as fontes compiladas no FPDF (Times) 
-$danfePrinter="hpteste"; //define a impressora para impressão da Danfe 
+$danfeFormato='P'; //P-Retrato L-Paisagem
+$danfePapel='A4'; //Tipo de papel utilizado
+$danfeCanhoto=1; //se verdadeiro imprime o canhoto na DANFE
+$danfeLogo='/var/www/nfephp/images/logo.jpg'; //passa o caminho para o LOGO da empresa
+$danfeLogoPos='L'; //define a posição do logo na Danfe L-esquerda, C-dentro e R-direta
+$danfeFonte='Times'; //define a fonte do Danfe limitada as fontes compiladas no FPDF (Times)
+$danfePrinter='hpteste'; //define a impressora para impressão da Danfe
 
 //###############################
 //############ DACTE ############
@@ -70,7 +113,7 @@ $danfePrinter="hpteste"; //define a impressora para impressão da Danfe
 $dacteFormato="P"; //P-Retrato L-Paisagem 
 $dactePapel="A4"; //Tipo de papel utilizado 
 $dacteCanhoto=1; //se verdadeiro imprime o canhoto na DANFE 
-$dacteLogo="/var/www/NFePHP/MGPapelariaSeloPretoBranco.jpg"; //passa o caminho para o LOGO da empresa 
+$dacteLogo="/var/www/nfephp/images/logo.jpg"; //passa o caminho para o LOGO da empresa 
 $dacteLogoPos="L"; //define a posição do logo na Danfe L-esquerda, C-dentro e R-direta 
 $dacteFonte="Times"; //define a fonte do Danfe limitada as fontes compiladas no FPDF (Times) 
 $dactePrinter="hpteste"; //define a impressora para impressão da Dacte 
@@ -79,31 +122,28 @@ $dactePrinter="hpteste"; //define a impressora para impressão da Dacte
 //############ EMAIL ############
 //###############################
 //Configuração do email
-$mailAuth="1"; //ativa ou desativa a obrigatoriedade de autenticação no envio de email, na maioria das vezes ativar 
-$mailFROM="nfe@mgpapelaria.com.br"; //identificação do emitente 
-$mailHOST="smtp.mgpapelaria.com.br"; //endereço do servidor SMTP 
-$mailUSER="nfe@mgpapelaria.com.br"; //username para autenticação, usando quando mailAuth é 1
-$mailPASS="trocar01"; //senha de autenticação do serviço de email
-$mailPROTOCOL=""; //protocolo de email utilizado (classe alternate)
-$mailPORT="25"; //porta utilizada pelo smtp (classe alternate)
-$mailFROMmail="nfe@mgpapelaria.com.br"; //para alteração da identificação do remetente, pode causar problemas com filtros de spam 
-$mailFROMname="NFe"; //para indicar o nome do remetente 
-$mailREPLYTOmail="nfe@mgpapelaria.com.br"; //para indicar o email de resposta
-$mailREPLYTOname="NFe"; //para indicar email de cópia
-$mailIMAPhost="imap.mgpapelaria.com.br"; //url para o servidor IMAP
-$mailIMAPport="143"; //porta do servidor IMAP
-$mailIMAPsecurity="tls"; //esquema de segurança do servidor IMAP
-$mailIMAPnocerts="novalidate-cert"; //desabilita verificação de certificados do Servidor IMAP
-$mailIMAPbox="INBOX"; //caixa postal de entrada do servidor IMAP
-$mailLayoutFile=""; //layout da mensagem do email
+$mailAuth='1';
+$mailFROM='nfe@seudominio.com.br';
+$mailHOST='smtp.seudominio.com.br';
+$mailUSER='nfe@seudominio.com.br';
+$mailPASS='suasenha';
+$mailPROTOCOL='';
+$mailPORT='25';
+$mailFROMmail='nfe@seudominio.com.br';
+$mailFROMname='NFe';
+$mailREPLYTOmail='nfe@seudominio.com.br';
+$mailREPLYTOname='NFe';
+$mailIMAPhost = 'mail.seudominio.com.br';
+$mailIMAPport = '143';
+$mailIMAPsecurity = 'tls';
+$mailIMAPnocerts = 'novalidate-cert';
+$mailIMAPbox = 'INBOX';
 
 //###############################
 //############ PROXY ############
 //###############################
-//Configuração de Proxy
-$proxyIP=""; //ip do servidor proxy, se existir 
-$proxyPORT=""; //numero da porta usada pelo proxy 
-$proxyUSER=""; //nome do usuário, se o proxy exigir autenticação
-$proxyPASS=""; //senha de autenticação do proxy 
-
-?>
+//Configuração de proxy
+$proxyIP='';
+$proxyPORT='';
+$proxyUSER='';
+$proxyPASS='';
