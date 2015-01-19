@@ -666,13 +666,16 @@ class DanfeNFCeNFePHP extends CommonNFePHP implements DocumentoNFePHP
 
     /**
      * 
-     * @param type $nome
-     * @param type $destino
+	 * Gera o arquivo PDF ou Imprime a Danfe
+	 * 
+	 * @param string $output Tipo de Saida (html ou pdf)
+     * @param string $nome Nome do Arquivo
+     * @param string $destino Se passado P, somente imprime, senao repassa para mpdf
+	 * @param string $impressora Se passado imprime na impressora via CUPS (lpr)
      * @return type
      */
     public function printDANFE($output = 'pdf', $nome = '', $destino = 'I', $impressora = null)
     {
-        
         if ($output == 'pdf') {
             //montagem do pdf
             if (is_array($this->papel) && strtolower($this->papel[1])=='one-page') {
@@ -699,7 +702,9 @@ class DanfeNFCeNFePHP extends CommonNFePHP implements DocumentoNFePHP
 					unlink($arquivo);
 				}
 			}
-			$this->mpdf->Output($nome, $destino);
+			if ($destino != 'P') {
+				$this->mpdf->Output($nome, $destino);
+			}
             
         } else {
             echo $this->html;
