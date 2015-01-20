@@ -1,0 +1,352 @@
+<nfeProc versao="2.00" xmlns="http://www.portalfiscal.inf.br/nfe">
+	<NFe xmlns="http://www.portalfiscal.inf.br/nfe">
+		<infNFe versao="2.00" Id="NFe43141084564563456345645610008660511960855863">
+			<ide>
+				<cUF>43</cUF>
+				<cNF>12353586</cNF>
+				<natOp>Venda producao do estabelecimento / Vnd prod.est.opr.c/pr.s</natOp>
+				<indPag>1</indPag>
+				<mod>55</mod>
+				<serie>1</serie>
+				<nNF>866051</nNF>
+				<dEmi>2014-10-01</dEmi>
+				<dSaiEnt>2014-10-01</dSaiEnt>
+				<hSaiEnt>23:42:02</hSaiEnt>
+				<tpNF>1</tpNF>
+				<cMunFG>4318705</cMunFG>
+				<tpImp>2</tpImp>
+				<tpEmis>1</tpEmis>
+				<cDV>3</cDV>
+				<tpAmb>1</tpAmb>
+				<finNFe>1</finNFe>
+				<procEmi>0</procEmi>
+				<verProc>10,0</verProc>
+			</ide>
+			<emit>
+				<CNPJ>12323434322222</CNPJ>
+				<xNome>Square Enix Ltd</xNome>
+				<xFant>Square Enix Ltd</xFant>
+				<enderEmit>
+					<xLgr>Qualquer coisa</xLgr>
+					<nro>21</nro>
+					<xBairro>Distrito Industrial</xBairro>
+					<cMun>1232222</cMun>
+					<xMun>RIO DE JANEIRO</xMun>
+					<UF>RJ</UF>
+					<CEP>12345664</CEP>
+					<xPais>Brasil</xPais>
+					<fone>4567564444</fone>
+				</enderEmit>
+				<IE>4161268777</IE>
+				<IM>415</IM>
+				<CNAE>4565777</CNAE>
+				<CRT>3</CRT>
+			</emit>
+			<dest>
+				<CNPJ>12323434622222</CNPJ>
+				<xNome>Square Enix Ltd</xNome>
+				<enderDest>
+					<xLgr>Qualquer coisa</xLgr>
+					<nro>21</nro>
+					<xBairro>Centro</xBairro>
+					<cMun>1233214</cMun>
+					<xMun>RIO DE JANEIRO</xMun>
+					<UF>RJ</UF>
+					<CEP>45672233</CEP>
+					<cPais>4567</cPais>
+					<xPais>Brasil</xPais>
+					<fone>4654234222</fone>
+				</enderDest>
+				<IE>35833990</IE>
+			</dest>
+			<det nItem="1">
+				<prod>
+					<cProd>11231412300</cProd>
+					<cEAN>795711497644</cEAN>
+					<xProd>Botao do fecho</xProd>
+					<NCM>84679100</NCM>
+					<EXTIPI>00</EXTIPI>
+					<CFOP>6101</CFOP>
+					<uCom>PC</uCom>
+					<qCom>6.0000</qCom>
+					<vUnCom>3.0883333333</vUnCom>
+					<vProd>18.53</vProd>
+					<cEANTrib>795711497644</cEANTrib>
+					<uTrib>PC</uTrib>
+					<qTrib>6.0000</qTrib>
+					<vUnTrib>3.0883333333</vUnTrib>
+					<indTot>1</indTot>
+					<nFCI>C8960F2E-F9CC-428E-93B5-7E2ACDBE26EF</nFCI>
+				</prod>
+				<imposto>
+					<ICMS>
+						<ICMS00>
+							<orig>5</orig>
+							<CST>00</CST>
+							<modBC>3</modBC>
+							<vBC>18.53</vBC>
+							<pICMS>7.00</pICMS>
+							<vICMS>1.30</vICMS>
+						</ICMS00>
+					</ICMS>
+					<IPI>
+						<cEnq>999</cEnq>
+						<IPITrib>
+							<CST>50</CST>
+							<vBC>18.53</vBC>
+							<pIPI>8.00</pIPI>
+							<vIPI>1.48</vIPI>
+						</IPITrib>
+					</IPI>
+					<PIS>
+						<PISAliq>
+							<CST>01</CST>
+							<vBC>18.53</vBC>
+							<pPIS>1.65</pPIS>
+							<vPIS>0.31</vPIS>
+						</PISAliq>
+					</PIS>
+					<COFINS>
+						<COFINSAliq>
+							<CST>01</CST>
+							<vBC>18.53</vBC>
+							<pCOFINS>7.60</pCOFINS>
+							<vCOFINS>1.41</vCOFINS>
+						</COFINSAliq>
+					</COFINS>
+				</imposto>
+				<infAdProd>Saida tributada pelo ICMS. Saida Tributada pelo IPI. Resolucao do Senado Federal no 13/12, Numero da FCI C8960F2E-F9CC-428E-93B5-7E2ACDBE26EF.</infAdProd>
+			</det>
+			<det nItem="2">
+				<prod>
+					<cProd>41161957200</cProd>
+					<cEAN>795711539306</cEAN>
+					<xProd>Peca de engate</xProd>
+					<NCM>84679900</NCM>
+					<EXTIPI>00</EXTIPI>
+					<CFOP>6101</CFOP>
+					<uCom>PC</uCom>
+					<qCom>50.0000</qCom>
+					<vUnCom>0.9052000000</vUnCom>
+					<vProd>45.26</vProd>
+					<cEANTrib>795711539306</cEANTrib>
+					<uTrib>PC</uTrib>
+					<qTrib>50.0000</qTrib>
+					<vUnTrib>0.9052000000</vUnTrib>
+					<indTot>1</indTot>
+					<nFCI>E7619E40-439B-4488-9C02-D9B40F01A83B</nFCI>
+				</prod>
+				<imposto>
+					<ICMS>
+						<ICMS00>
+							<orig>5</orig>
+							<CST>00</CST>
+							<modBC>3</modBC>
+							<vBC>45.26</vBC>
+							<pICMS>7.00</pICMS>
+							<vICMS>3.17</vICMS>
+						</ICMS00>
+					</ICMS>
+					<IPI>
+						<cEnq>999</cEnq>
+						<IPITrib>
+							<CST>50</CST>
+							<vBC>45.26</vBC>
+							<pIPI>8.00</pIPI>
+							<vIPI>3.62</vIPI>
+						</IPITrib>
+					</IPI>
+					<PIS>
+						<PISAliq>
+							<CST>01</CST>
+							<vBC>45.26</vBC>
+							<pPIS>1.65</pPIS>
+							<vPIS>0.75</vPIS>
+						</PISAliq>
+					</PIS>
+					<COFINS>
+						<COFINSAliq>
+							<CST>01</CST>
+							<vBC>45.26</vBC>
+							<pCOFINS>7.60</pCOFINS>
+							<vCOFINS>3.44</vCOFINS>
+						</COFINSAliq>
+					</COFINS>
+				</imposto>
+				<infAdProd>Saida tributada pelo ICMS. Saida Tributada pelo IPI. Resolucao do Senado Federal no 13/12, Numero da FCI E7619E40-439B-4488-9C02-D9B40F01A83B.</infAdProd>
+			</det>
+			<det nItem="3">
+				<prod>
+					<cProd>11191602002</cProd>
+					<cEAN>795711496166</cEAN>
+					<xProd>Embreagem</xProd>
+					<NCM>84836011</NCM>
+					<EXTIPI>11</EXTIPI>
+					<CFOP>6401</CFOP>
+					<uCom>PC</uCom>
+					<qCom>1.0000</qCom>
+					<vUnCom>48.9800000000</vUnCom>
+					<vProd>48.98</vProd>
+					<cEANTrib>795711496166</cEANTrib>
+					<uTrib>PC</uTrib>
+					<qTrib>1.0000</qTrib>
+					<vUnTrib>48.9800000000</vUnTrib>
+					<indTot>1</indTot>
+					<nFCI>A89192F4-A592-46CE-85E7-1CFBFF8DD7CD</nFCI>
+				</prod>
+				<imposto>
+					<ICMS>
+						<ICMS00>
+							<orig>5</orig>
+							<CST>00</CST>
+							<modBC>3</modBC>
+							<vBC>48.98</vBC>
+							<pICMS>7.00</pICMS>
+							<vICMS>3.43</vICMS>
+						</ICMS00>
+					</ICMS>
+					<IPI>
+						<cEnq>999</cEnq>
+						<IPITrib>
+							<CST>50</CST>
+							<vBC>48.98</vBC>
+							<pIPI>0.00</pIPI>
+							<vIPI>0.00</vIPI>
+						</IPITrib>
+					</IPI>
+					<PIS>
+						<PISAliq>
+							<CST>01</CST>
+							<vBC>48.98</vBC>
+							<pPIS>1.65</pPIS>
+							<vPIS>0.81</vPIS>
+						</PISAliq>
+					</PIS>
+					<COFINS>
+						<COFINSAliq>
+							<CST>01</CST>
+							<vBC>48.98</vBC>
+							<pCOFINS>7.60</pCOFINS>
+							<vCOFINS>3.72</vCOFINS>
+						</COFINSAliq>
+					</COFINS>
+				</imposto>
+				<infAdProd>Saida tributada pelo ICMS. Saida Tributada pelo IPI. Resolucao do Senado Federal no 13/12, Numero da FCI A89192F4-A592-46CE-85E7-1CFBFF8DD7CD.</infAdProd>
+			</det>
+			<total>
+				<ICMSTot>
+					<vBC>112.77</vBC>
+					<vICMS>7.90</vICMS>
+					<vBCST>0.00</vBCST>
+					<vST>0.00</vST>
+					<vProd>112.77</vProd>
+					<vFrete>0.00</vFrete>
+					<vSeg>0.00</vSeg>
+					<vDesc>0.00</vDesc>
+					<vII>0.00</vII>
+					<vIPI>5.10</vIPI>
+					<vPIS>1.87</vPIS>
+					<vCOFINS>8.57</vCOFINS>
+					<vOutro>0.00</vOutro>
+					<vNF>117.87</vNF>
+				</ICMSTot>
+			</total>
+			<transp>
+				<modFrete>0</modFrete>
+				<transporta>
+					<xNome>CORREIO CENTROZSDREC 105 SET 14</xNome>
+				</transporta>
+				<vol>
+					<qVol>1</qVol>
+					<esp>Volume(s)</esp>
+					<pesoL>0.348</pesoL>
+					<pesoB>0.358</pesoB>
+				</vol>
+			</transp>
+			<cobr>
+				<fat>
+					<nFat>0000866051</nFat>
+				</fat>
+				<dup>
+					<nDup>0000866051</nDup>
+					<dVenc>2014-12-30</dVenc>
+					<vDup>117.87</vDup>
+				</dup>
+			</cobr>
+			<infAdic>
+				<infCpl>Mercadorias destinadas ao uso nao automotivo. Numeros de Serie constam no corpo da Nota Fiscal Saida tributada pelo ICMS. Saida Tributada pelo IPI. Fornecimentos:0081497045 NF emitida func.:BRODRIGF IBAMA:00005975 SUFRAMA:000000000</infCpl>
+			</infAdic>
+		</infNFe>
+		<Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
+			<SignedInfo>
+				<CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315" />
+				<SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1" />
+				<Reference URI="#NFe43141087234234234232550010008660511960855863">
+					<Transforms>
+						<Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" />
+						<Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315" />
+					</Transforms>
+					<DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+					<DigestValue>U8La/8yim1+f/ilVHIx0TuhyCY0=</DigestValue>
+				</Reference>
+			</SignedInfo>
+			<SignatureValue>dTUohfPyViqWchT6svtnUVEIGcW3+czR8YAVHKFUa5abJArkasq5ZxTmrjKp5eoOioPvMFyh+Vrb
+yQ8mU58JxLCDemoFtwSHMCvMBEgXyLdAJiIxiyQYstxx2c7+gZLN5iv45a9QdhWbH2591xvvzaXk
+RH/Ur8tL34XKVN9pF1WDq+Lt0JHJMa7ceIFKvregt4354treswretAPjfCQvwMhS19kfpK48LBq5
+UTxbKSJZSPDb2miyCM0+y+aGlJ6L1jEMp8o+DIj1ZOso4sWVbXgMZGFsNkRRfH6x6gN/3WCYuX0b
+E1ptUg8ZBb8XK3zrIy+79GSQ7ypFV4ji6URrTw==</SignatureValue>
+			<KeyInfo>
+				<X509Data>
+					<X509Certificate>MIIH/TCCBeWgAwIBAgIIOGd9mUDAkGgwDQYJKoZIhvcNAQELBQAwdTELMAkGA1UEBhMCQlIxEzAR
+BgNVBAoTCklDUC1CcmFzaWwxNjA0BgNVBAsTLVNlY3JlrgergWEgZGEgUmVjZWl0YSBGZWRlcmFs
+IGRvIEJyYXNpbCAtIFJGQjEZMBcGA1UEAxMQQUMgU0VSQVNBIFJGQiB2MjAeFw0xMzEwMjUxMTMz
+MDBaFw0xNDEwMjUxMTMzMDBaMIHnMQswCQYDVQQG234343gtfger345ECBMCUlMxFTATBgNVBAcT
+DFNBTyBMRU9QT0xETzETMBEGA1UEChMKSUNQLUJyYXNpbDE2MDQGA1UECxMtU2VjcmV0YXJpYSBk
+YSBSZWNlaXRhIEZlZGVyYWwgZG8gQnJhc2lsIC0gUkZCMRYwFAYDVQQLEw1SRkIgZS1DTlBKIEEx
+MRMwEQYDVQQLEwpBUiBTQUZFV0VCMTowOAYDVQQDEzFTVElITCBGRVJSQU1FTlRBUyBNT1RPUkla
+QURBUyBMVERBOjg3MjM1MTcyMDAwMTIyMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA
+t72Alk01M9+YpsaLwkwvWJmy8HrkJOQ5Bd/LNPUCLsBdP4PvMkZuh2iyLD5NRA784jct6EXvAoLg
+xOQv98bzrYvShSoJXRdEQRYATq8H4rI/xYdI0pTpTQfRMCtmLtk1JQV1Q7Hhv812Z2BnY1TXzhwU
+L+hvVEerCRaA2ao9Yd9lken/QXcety/YqB+kuZvNkYJDtJNorp8rpWHdxCU2wU8XhAPj5fym12HA
+pLYkH1ECtfc992bj2/VwzfMH1lpGmXSaJqMzRz6AASCvwOs82vI+/+bCM66dPfp3AqNOapSuvAVa
+o8xpVIjjDyMTvuDQX8ZFH4b6ow6emWR3yJ8+gQIDAQABo4IDHDCCAxgwgZkGCCsGAQUFBwEBBIGM
+MIGJMEgGCCsGAQUFBzAChjxodHRwOi8vd3d3LmNlcnRpZmljYWRvZGlnaXRhbC5jb20uYnIvY2Fk
+ZWlhcy9zZXJhc2FyZmJ2Mi5wN2IwPQYIKwYBBQUHMAGGMWh0dHA6Ly9vY3NwLmNlcnRpZmljYWRv
+ZGlnaXRhbC5jb20uYnIvc2VyYXNhcmZidjIwCQYDVR0TBAIwADAfBgNVHSMEGDAWgBSyoMQ9Rp58
+yIVsCB4QMpRlRnBBczBxBgNVHSAEajBoMGYGBmBMAQIBDTBcMFoGCCsGAQUFBwIBFk5odHRwOi8v
+cHVibGljYWNhby5jZXJ0aWZpY2Fkb2RpZ2l0YWwuY29tLmJyL3JlcG9zaXRvcmlvL2RwYy9kZWNs
+YXJhY2FvLXJmYi5wZGYwgfMGA1UdHwSB6zCB6DBKoEigRoZEaHR0cDovL3d3dy5jZXJ0aWZpY2Fk
+b2RpZ2l0YWwuY29tLmJyL3JlcG9zaXRvcmlvL2xjci9zZXJhc2FyZmJ2Mi5jcmwwRKBCoECGPmh0
+dHA6Ly9sY3IuY2VydGlmaWNhZG9zLmNvbS5ici9yZXBvc2l0b3Jpby9sY3Ivc2VyYXNhcmZidjIu
+Y3JsMFSgUqBQhk5odHRwOi8vcmVwb3NpdG9yaW8uaWNwYnJhc2lsLmdvdi5ici9sY3IvU2VyYXNh
+L3JlcG9zaXRvcmlvL2xjci9zZXJhc2FyZmJ2Mi5jcmwwDgYDVR0PAQH/BAQDAgXgMB0GA1UdJQQW
+MBQGCCsGAQUFBwMCBggrBgEFBQcDBDCBtQYDVR0RBIGtMIGqgR1DTEFVRElPLkdVRU5USEVSQFNU
+SUhMLkNPTS5CUqAbBgVgTAEDAqASExBDTEFVRElPIEdVRU5USEVSoBkGBWBMAQMDoBATDjg3MjM1
+MTcyMDAwMTIyoDgGBWBMAQMEoC8TLTMxMTAxOTY0NDc5Njc1MzY5OTEwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMKAXBgVgTAEDB6AOEwwwMDAwMDAwMDAwMDAwDQYJKoZIhvcNAQELBQADggIBAGM/
+KrXhELWCSNvCapRKS9SG6ntUspitHhc6K61Qt8cKyednR8oY5+riHBrd3mBEQqMPhNwIc5E+y+11
+2S5z0CmnWNhxlDTipBd5jz+K+o8Bna4XM/vR4VXcQjN3jzPUW98xTgwRP+JUbVhCOwekRqYpzqPI
+45yHiSH2uKK56MHh5UMjGOZvpvRz+qlZ+a+LWmJKEbRHpb/Q2keFZlbwgJJc3iuRuPeyU3KUUx5Y
+k/DCst4uiOkh3qQggPJUKZD7D83mcCaWWRYyXKv6MmLyz8T1XdMs4phhmwi5vPZYQvNMOFCCst4z
+qNchOiZw+C2MrA2RfMBwvRHvNm0wnH4fT6nPAlO8BNof8HKDnafsXMTio5UzEaXp2PaVF8ncEFuq
+M2uqzEW00rylPwjf4hGapFjGlF4CHdbrsfz+tERMe/olXTe6852u7HWs5i+Ka+NR8ZXfCMeOh5Tz
+rVoBYV0pPj9CcPm0GPVFce2CKRUYS9wkjbN68K2OXxnekHAlM01jSe4ZPfbuC7bZKISTBH4Y6q4c
+W2yAD4k0EV+/57VdnwdZ1N0jvU/WDxap91yHV0EwKK9oNxFNrIuganosZqJHF8r6SADc1r+C0Dce
+EHFlanUWfGUOFKC/z88oh/zTLP6HVqU14cGGGI9XLqGcqYxZFa7UW57p5s7BC9Ky4EcessZz</X509Certificate>
+				</X509Data>
+			</KeyInfo>
+		</Signature>
+	</NFe>
+	<protNFe versao="2.00" xmlns="http://www.portalfiscal.inf.br/nfe">
+		<infProt Id="ID143134534552193">
+			<tpAmb>1</tpAmb>
+			<verAplic>RS20142344334143</verAplic>
+			<chNFe>34875283475724635198273562378456192347564544</chNFe>
+			<dhRecbto>2014-10-01T23:43:10</dhRecbto>
+			<nProt>143140167232193</nProt>
+			<digVal>U4Lc/8ykm1+f/ilVHIx0TuhyCY0=</digVal>
+			<cStat>100</cStat>
+			<xMotivo>Autorizado o uso da NF-e</xMotivo>
+		</infProt>
+	</protNFe>
+</nfeProc>
