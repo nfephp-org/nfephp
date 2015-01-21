@@ -16,6 +16,8 @@
  */
 class NFSeSP
 {
+    const DOCUMENT_CNPJ = 'CNPJ';
+    const DOCUMENT_CPF = 'CPF';
     /**
      * Provisional Receipt of Services
      */
@@ -143,6 +145,7 @@ class NFSeSP
     /**
      * Start a connection with webservice.
      *
+     * @throws Exception
      * @return void
      */
     public function start()
@@ -167,7 +170,7 @@ class NFSeSP
         } catch (SoapFault $e) {
             throw new \Common\Exception\RuntimeException($e->getMessage());
         } catch (Exception $e) {
-            throw new $e;
+            throw $e;
         }
     }
 
@@ -176,6 +179,7 @@ class NFSeSP
      *
      * @param string $operation Method's name to call.
      * @param DOMDocument $xmlDoc Message to be sent.
+     * @throws Exception
      * @return bool|SimpleXMLElement Returns a XML when communication is successful, otherwise false when get error.
      */
     private function send($operation, DOMDocument $xmlDoc)
@@ -192,7 +196,7 @@ class NFSeSP
         } catch (SoapFault $e) {
             throw new \Common\Exception\RuntimeException($e->getMessage());
         } catch (Exception $e) {
-            throw new $e;
+            throw $e;
         }
         return new SimpleXMLElement($result->RetornoXML);
     }
@@ -486,38 +490,46 @@ class NFSeSP
     }
 
     /**
-     * It will find a NFe document from given number or
-     * RPS document when given $rpsNumber and $rpsSerie
+     * It will find a NFe document from given number.
      * Message is based on PedidoConsultaNFe.xsd schema
      *
      * @param string $nfeNumber NFe Number
-     * @param string $rpsNumber RPS Number
-     * @param string $rpsSerie RPS Serie
      * @return bool|SimpleXMLElement Returns a XML based on RetornoConsulta.xsd schema.
      */
-    public function queryNFe($nfeNumber, $rpsNumber, $rpsSerie)
+    public function queryNFe($nfeNumber)
     {
         $operation = 'ConsultaNFe';
         $xmlDoc = $this->createXMLp1($operation);
         $root = $xmlDoc->documentElement;
-        if ($nfeNumber > 0) {
-            $detailNfe = $xmlDoc->createElementNS('', 'Detalhe');
-            $root->appendChild($detailNfe);
-            $nfeKey = $xmlDoc->createElement('ChaveNFe'); // 1-1
-            $nfeKey->appendChild($xmlDoc->createElement('InscricaoPrestador', $this->ccmPrestador)); // 1-1
-            $nfeKey->appendChild($xmlDoc->createElement('NumeroNFe', $nfeNumber)); // 1-1
-            $detailNfe->appendChild($nfeKey);
-        }
-        if ($rpsNumber > 0) {
-            //$detailRps = $xmlDoc->createElement('Detalhe');
-            $detailRps = $xmlDoc->createElementNS('', 'Detalhe');
-            $root->appendChild($detailRps);
-            $rpsKey = $xmlDoc->createElement('ChaveRPS'); // 1-1
-            $rpsKey->appendChild($xmlDoc->createElement('InscricaoPrestador', $this->ccmPrestador)); // 1-1
-            $rpsKey->appendChild($xmlDoc->createElement('SerieRPS', $rpsSerie)); // 1-1 DHC AAAAA / alog AAAAB
-            $rpsKey->appendChild($xmlDoc->createElement('NumeroRPS', $rpsNumber)); // 1-1
-            $detailRps->appendChild($rpsKey);
-        }
+        $detailNfe = $xmlDoc->createElementNS('', 'Detalhe');
+        $root->appendChild($detailNfe);
+        $nfeKey = $xmlDoc->createElement('ChaveNFe'); // 1-1
+        $nfeKey->appendChild($xmlDoc->createElement('InscricaoPrestador', $this->ccmPrestador)); // 1-1
+        $nfeKey->appendChild($xmlDoc->createElement('NumeroNFe', $nfeNumber)); // 1-1
+        $detailNfe->appendChild($nfeKey);
+        return $this->send($operation, $xmlDoc);
+    }
+
+    /**
+     * It will find a RPS document from given number.
+     * Message is based on PedidoConsultaNFe.xsd schema
+     *
+     * @param string $rpsNumber RPS Number
+     * @param string $rpsSerie RPS Serie
+     * @return bool|SimpleXMLElement Returns a XML based on RetornoConsulta.xsd schema.
+     */
+    public function queryRPS($rpsNumber, $rpsSerie)
+    {
+        $operation = 'ConsultaNFe';
+        $xmlDoc = $this->createXMLp1($operation);
+        $root = $xmlDoc->documentElement;
+        $detailRps = $xmlDoc->createElementNS('', 'Detalhe');
+        $root->appendChild($detailRps);
+        $rpsKey = $xmlDoc->createElement('ChaveRPS'); // 1-1
+        $rpsKey->appendChild($xmlDoc->createElement('InscricaoPrestador', $this->ccmPrestador)); // 1-1
+        $rpsKey->appendChild($xmlDoc->createElement('SerieRPS', $rpsSerie)); // 1-1 DHC AAAAA / alog AAAAB
+        $rpsKey->appendChild($xmlDoc->createElement('NumeroRPS', $rpsNumber)); // 1-1
+        $detailRps->appendChild($rpsKey);
         return $this->send($operation, $xmlDoc);
     }
 
@@ -559,14 +571,13 @@ class NFSeSP
      * @param string $ccm State Registration
      * @param string $startDate YYYY-MM-DD
      * @param string $endDate YYYY-MM-DD
-     * @param int $pageNumber
+     * @param int $pageNumber [optional]
      * @return bool|\SimpleXMLElement Returns xml based on RetornoConsulta.xsd schema
      */
     public function queryNFeReceived($cnpj, $ccm, $startDate, $endDate, $pageNumber = 1)
     {
-        $operation = 'ConsultaNFeRecebidas';
         $xmlDoc = $this->queryNFeWithDateRange($cnpj, $ccm, $startDate, $endDate, $pageNumber);
-        return $this->send($operation, $xmlDoc);
+        return $this->send('ConsultaNFeRecebidas', $xmlDoc);
     }
 
     /**
@@ -577,14 +588,13 @@ class NFSeSP
      * @param string $ccm
      * @param string $startDate YYYY-MM-DD
      * @param string $endDate YYYY-MM-DD
-     * @param int $pageNumber
+     * @param int $pageNumber [optional]
      * @return bool|\SimpleXMLElement Returns xml based on RetornoConsulta.xsd schema
      */
     public function queryNFeIssued($cnpj, $ccm, $startDate, $endDate, $pageNumber = 1)
     {
-        $operation = 'ConsultaNFeEmitidas';
         $xmlDoc = $this->queryNFeWithDateRange($cnpj, $ccm, $startDate, $endDate, $pageNumber);
-        return $this->send($operation, $xmlDoc);
+        return $this->send('ConsultaNFeEmitidas', $xmlDoc);
     }
 
     /**
@@ -632,50 +642,43 @@ class NFSeSP
      */
     public function queryCNPJ($cnpj)
     {
-        $operation = 'ConsultaCNPJ';
-        $xmlDoc = $this->createXMLp1($operation);
-        $root = $xmlDoc->documentElement;
-        $cnpjTaxpayer = $xmlDoc->createElementNS('', 'CNPJContribuinte');
-        if (strlen($cnpj) == 11) {
-            $cnpjTaxpayer->appendChild($xmlDoc->createElement('CPF', (string)sprintf('%011s', $cnpj)));
-        } else {
-            $cnpjTaxpayer->appendChild($xmlDoc->createElement('CNPJ', (string)sprintf('%014s', $cnpj)));
-        }
-        $root->appendChild($cnpjTaxpayer);
-        $return = $this->send($operation, $xmlDoc);
-
-        $isSuccess = ($return && (string)$return->Cabecalho->Sucesso == 'true');
-
-        if ($isSuccess && (string)$return->Detalhe->InscricaoMunicipal != "") {
-            return (string)$return->Detalhe->InscricaoMunicipal;
-        }
-        if (!$isSuccess && (string)$return->Alerta->Codigo != "") {
-            return (string)$return->Alerta->Descricao;
-        }
-        return false;
+        $cnpj = preg_replace('/[^\d]/', '', $cnpj);
+        return $this->queryCnpjOrCpf(sprintf('%014s', $cnpj), self::DOCUMENT_CNPJ);
     }
 
     /**
-     * Returns CCM for given CNPJ
+     * Returns CCM for given CPF
      * Message is based on PedidoConsultaCNPJ.xsd schema and
      * response is based on RetornoConsultaCNPJ.xsd schema
      *
-     * @param string $cnpj
+     * @param string $cpf
      * @return bool|string Returns the taxpayer register number for given CNPJ
      */
-    public function queryCPF($cnpj)
+    public function queryCPF($cpf)
+    {
+        $cpf = preg_replace('/[^\d]/', '', $cpf);
+        return $this->queryCnpjOrCpf(sprintf('%011s', $cpf), self::DOCUMENT_CPF);
+    }
+
+    /**
+     * Returns CCM for given CNPJ or CPF
+     * Message is based on PedidoConsultaCNPJ.xsd schema and
+     * response is based on RetornoConsultaCNPJ.xsd schema
+     *
+     * @param string $number
+     * @param string $type [optional] By default is CNPJ, if
+     * @return bool|string Returns the taxpayer register number for given CNPJ or CPF
+     */
+    private function queryCnpjOrCpf($number, $type = self::DOCUMENT_CNPJ)
     {
         $operation = 'ConsultaCNPJ';
         $xmlDoc = $this->createXMLp1($operation);
         $root = $xmlDoc->documentElement;
-        $cnpjTaxpayer = $xmlDoc->createElementNS('', 'CNPJContribuinte');
-        $cnpjTaxpayer->appendChild($xmlDoc->createElement('CPF', (string)sprintf('%011s', $cnpj)));
-        $root->appendChild($cnpjTaxpayer);
+        $numberTaxpayer = $xmlDoc->createElementNS('', 'CNPJContribuinte');
+        $numberTaxpayer->appendChild($xmlDoc->createElement($type, (string)$number));
+        $root->appendChild($numberTaxpayer);
         $xmlResponse = $this->send($operation, $xmlDoc);
-        if ($xmlResponse) {
-            return $this->getIncricaoMunicipal($xmlResponse);
-        }
-        return false;
+        return $this->getInscricaoMunicipal($xmlResponse);
     }
 
     /**
@@ -684,7 +687,7 @@ class NFSeSP
      * @param SimpleXMLElement $xmlResponse
      * @return string Returns
      */
-    private function getIncricaoMunicipal(SimpleXMLElement $xmlResponse)
+    private function getInscricaoMunicipal(SimpleXMLElement $xmlResponse)
     {
         $isSuccess = ($xmlResponse && (string)$xmlResponse->Cabecalho->Sucesso == 'true');
 
@@ -763,9 +766,6 @@ class NFSeSP
             chr(13) . chr(10);
         $rpsFileName = date("Y-m-d_Hi") . '.txt';
         $rpsFullPath = $this->rpsDirectory . DIRECTORY_SEPARATOR . $rpsFileName;
-        if (!is_dir($this->rpsDirectory)) {
-            mkdir($this->rpsDirectory, 0777, true);
-        }
         if (!file_put_contents($rpsFullPath, $header . $body . $footer)) {
             throw new \Common\Exception\IOException(sprintf('Cannot create RPS file (%s)', $rpsFullPath));
         }
