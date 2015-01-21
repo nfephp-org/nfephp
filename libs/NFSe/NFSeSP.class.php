@@ -676,12 +676,13 @@ class NFSeSP
         $operation = 'ConsultaCNPJ';
         $xmlDoc = $this->createXMLp1($operation);
         $root = $xmlDoc->documentElement;
-        $cpfTaxpayer = $xmlDoc->createElementNS('', 'CNPJContribuinte');
-        $cpfTaxpayer->appendChild($xmlDoc->createElement($type, (string) $number));
-        $root->appendChild($cpfTaxpayer);
+        $numberTaxpayer = $xmlDoc->createElementNS('', 'CNPJContribuinte');
+        $numberTaxpayer->appendChild($xmlDoc->createElement($type, (string)$number));
+        $root->appendChild($numberTaxpayer);
         $xmlResponse = $this->send($operation, $xmlDoc);
         return $this->getIncricaoMunicipal($xmlResponse);
     }
+
     /**
      * Gets Taxpayer register.
      *
