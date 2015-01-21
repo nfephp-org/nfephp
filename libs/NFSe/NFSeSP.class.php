@@ -571,14 +571,13 @@ class NFSeSP
      * @param string $ccm State Registration
      * @param string $startDate YYYY-MM-DD
      * @param string $endDate YYYY-MM-DD
-     * @param int $pageNumber
+     * @param int $pageNumber [optional]
      * @return bool|\SimpleXMLElement Returns xml based on RetornoConsulta.xsd schema
      */
     public function queryNFeReceived($cnpj, $ccm, $startDate, $endDate, $pageNumber = 1)
     {
-        $operation = 'ConsultaNFeRecebidas';
         $xmlDoc = $this->queryNFeWithDateRange($cnpj, $ccm, $startDate, $endDate, $pageNumber);
-        return $this->send($operation, $xmlDoc);
+        return $this->send('ConsultaNFeRecebidas', $xmlDoc);
     }
 
     /**
@@ -589,14 +588,13 @@ class NFSeSP
      * @param string $ccm
      * @param string $startDate YYYY-MM-DD
      * @param string $endDate YYYY-MM-DD
-     * @param int $pageNumber
+     * @param int $pageNumber [optional]
      * @return bool|\SimpleXMLElement Returns xml based on RetornoConsulta.xsd schema
      */
     public function queryNFeIssued($cnpj, $ccm, $startDate, $endDate, $pageNumber = 1)
     {
-        $operation = 'ConsultaNFeEmitidas';
         $xmlDoc = $this->queryNFeWithDateRange($cnpj, $ccm, $startDate, $endDate, $pageNumber);
-        return $this->send($operation, $xmlDoc);
+        return $this->send('ConsultaNFeEmitidas', $xmlDoc);
     }
 
     /**
@@ -671,7 +669,7 @@ class NFSeSP
      * @param string $type [optional] By default is CNPJ, if
      * @return bool|string Returns the taxpayer register number for given CNPJ or CPF
      */
-    protected function queryCnpjOrCpf($number, $type = self::DOCUMENT_CNPJ)
+    private function queryCnpjOrCpf($number, $type = self::DOCUMENT_CNPJ)
     {
         $operation = 'ConsultaCNPJ';
         $xmlDoc = $this->createXMLp1($operation);
@@ -680,7 +678,7 @@ class NFSeSP
         $numberTaxpayer->appendChild($xmlDoc->createElement($type, (string)$number));
         $root->appendChild($numberTaxpayer);
         $xmlResponse = $this->send($operation, $xmlDoc);
-        return $this->getIncricaoMunicipal($xmlResponse);
+        return $this->getInscricaoMunicipal($xmlResponse);
     }
 
     /**
@@ -689,7 +687,7 @@ class NFSeSP
      * @param SimpleXMLElement $xmlResponse
      * @return string Returns
      */
-    private function getIncricaoMunicipal(SimpleXMLElement $xmlResponse)
+    private function getInscricaoMunicipal(SimpleXMLElement $xmlResponse)
     {
         $isSuccess = ($xmlResponse && (string)$xmlResponse->Cabecalho->Sucesso == 'true');
 
