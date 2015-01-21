@@ -16,6 +16,8 @@
  */
 class NFSeSP
 {
+    const DOCUMENT_CNPJ = 'CNPJ';
+    const DOCUMENT_CPF = 'CPF';
     /**
      * Provisional Receipt of Services
      */
@@ -642,18 +644,12 @@ class NFSeSP
      */
     public function queryCNPJ($cnpj)
     {
-        $operation = 'ConsultaCNPJ';
-        $xmlDoc = $this->createXMLp1($operation);
-        $root = $xmlDoc->documentElement;
-        $cnpjTaxpayer = $xmlDoc->createElementNS('', 'CNPJContribuinte');
-        $cnpjTaxpayer->appendChild($xmlDoc->createElement('CNPJ', (string) sprintf('%014s', $cnpj)));
-        $root->appendChild($cnpjTaxpayer);
-        $xmlResponse = $this->send($operation, $xmlDoc);
-        return $this->getIncricaoMunicipal($xmlResponse);
+        $cnpj = preg_replace('/[^\d]/', '', $cnpj);
+        return $this->queryCnpjOrCpf(sprintf('%014s', $cnpj), self::DOCUMENT_CNPJ);
     }
 
     /**
-     * Returns CCM for given CNPJ
+     * Returns CCM for given CPF
      * Message is based on PedidoConsultaCNPJ.xsd schema and
      * response is based on RetornoConsultaCNPJ.xsd schema
      *
@@ -662,16 +658,30 @@ class NFSeSP
      */
     public function queryCPF($cpf)
     {
+        $cpf = preg_replace('/[^\d]/', '', $cpf);
+        return $this->queryCnpjOrCpf(sprintf('%011s', $cpf), self::DOCUMENT_CPF);
+    }
+
+    /**
+     * Returns CCM for given CNPJ or CPF
+     * Message is based on PedidoConsultaCNPJ.xsd schema and
+     * response is based on RetornoConsultaCNPJ.xsd schema
+     *
+     * @param string $number
+     * @param string $type [optional] By default is CNPJ, if
+     * @return bool|string Returns the taxpayer register number for given CNPJ or CPF
+     */
+    protected function queryCnpjOrCpf($number, $type = self::DOCUMENT_CNPJ)
+    {
         $operation = 'ConsultaCNPJ';
         $xmlDoc = $this->createXMLp1($operation);
         $root = $xmlDoc->documentElement;
         $cpfTaxpayer = $xmlDoc->createElementNS('', 'CNPJContribuinte');
-        $cpfTaxpayer->appendChild($xmlDoc->createElement('CPF', (string) sprintf('%011s', $cpf)));
+        $cpfTaxpayer->appendChild($xmlDoc->createElement($type, (string) $number));
         $root->appendChild($cpfTaxpayer);
         $xmlResponse = $this->send($operation, $xmlDoc);
         return $this->getIncricaoMunicipal($xmlResponse);
     }
-
     /**
      * Gets Taxpayer register.
      *
