@@ -1757,7 +1757,7 @@ class ToolsNFePHP extends CommonNFePHP
             }
             return false;
         }
-        return $retorno;
+        return $aRetorno;
     }
 
     /**
