@@ -465,10 +465,7 @@ class ToolsNFePHPTest extends PHPUnit_Framework_TestCase
 
         $xmlStatus = $tool->statusServico('SP', 2);
 
-        $dom = new DOMDocument('1.0', 'UTF-8');
-        $dom->loadXML($xmlStatus);
-
-        $this->assertEquals('107', $dom->getElementsByTagName('cStat')->item(0)->nodeValue);
+        $this->assertEquals('107', $xmlStatus['cStat']);
     }
 
     public function testStatusServicoParalisdoSemPrvisao()
@@ -498,10 +495,7 @@ class ToolsNFePHPTest extends PHPUnit_Framework_TestCase
 
         $xmlStatus = $tool->statusServico('SP', 2);
 
-        $dom = new DOMDocument('1.0', 'UTF-8');
-        $dom->loadXML($xmlStatus);
-
-        $this->assertEquals('109', $dom->getElementsByTagName('cStat')->item(0)->nodeValue);
+        $this->assertEquals('109', $xmlStatus['cStat']);
     }
 
     /**
