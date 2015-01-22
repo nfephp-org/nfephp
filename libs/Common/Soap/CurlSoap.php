@@ -257,8 +257,10 @@ class CurlSoap
         curl_close($oCurl);
         //coloca as informações em uma variável
         $txtInfo ="";
-        foreach (info as $key => $content) {
-            $txtInfo .= strtoupper($key).'='.$content."\n";
+        foreach ($info as $key => $content) {
+            if (is_string($content)) {
+                $txtInfo .= strtoupper($key).'='.$content."\n";
+            }
         }
         //carrega a variavel debug
         $this->soapDebug = $data."\n\n".$txtInfo."\n".$resposta;
