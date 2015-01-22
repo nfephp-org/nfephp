@@ -16,6 +16,66 @@ use Common\Exception;
 
 class FilesFolders
 {
+    
+    protected $ambientes = array('homologacao','producao');
+    protected $subdirs = array(
+        'entradas',
+        'assinadas',
+        'validadas',
+        'rejeitadas',
+        'enviadas',
+        'enviadas/aprovadas',
+        'enviadas/denegadas',
+        'enviadas/rejeitadas',
+        'enviadas/encerradas',
+        'canceladas',
+        'inutilizadas',
+        'cartacorrecao',
+        'eventos',
+        'dpec',
+        'temporarias',
+        'recebidas',
+        'consultadas',
+        'pdf'
+    );
+    
+    /**
+     * getAmbiente
+     * @param string $tpAmb
+     * @return string
+     */
+    public static function getAmbiente($tpAmb = '2')
+    {
+        if ($tpAmb == '2') {
+            return 'homologacao';
+        }
+        return 'producao';
+    }
+    
+    /**
+     * getFilePath
+     * @param string $tpAmb
+     * @param string $dirbase
+     * @param string $subdir
+     * @return string
+     * @throws Exception\RuntimeException
+     */
+    public static function getFilePath($tpAmb = '2', $dirbase = '', $subdir = '')
+    {
+        $path = $dirbase
+            . DIRECTORY_SEPARATOR
+            . self::getAmbiente($tpAmb)
+            . DIRECTORY_SEPARATOR
+            . $subdir
+            . DIRECTORY_SEPARATOR;
+        
+        if (! is_dir($path)) {
+            $msg = "Não existe o diretorio $path !";
+            throw new Exception\RuntimeException($msg);
+        }
+        return $path;
+    }
+    
     /**
      * createFolders
      * Cria a estrutura de diretorios para a guarda dos arquivos 
@@ -25,28 +85,6 @@ class FilesFolders
      */
     public function createFolders($dirPath = '')
     {
-        $ambientes = array('homologacao','producao');
-        $subdirs = array(
-            'entradas',
-            'assinadas',
-            'validadas',
-            'rejeitadas',
-            'enviadas',
-            'enviadas/aprovadas',
-            'enviadas/denegadas',
-            'enviadas/rejeitadas',
-            'enviadas/encerradas',
-            'canceladas',
-            'inutilizadas',
-            'cartacorrecao',
-            'eventos',
-            'dpec',
-            'temporarias',
-            'recebidas',
-            'consultadas',
-            'pdf'
-        );
-        
         //monta a arvore de diretórios necessária e estabelece permissões de acesso
         if (! is_dir($dirPath)) {
             if (! mkdir($dirPath, 0777)) {
@@ -55,7 +93,7 @@ class FilesFolders
                 );
             }
         }
-        foreach ($ambientes as $ambiente) {
+        foreach ($this->ambientes as $ambiente) {
             $folder = $dirPath.DIRECTORY_SEPARATOR.$ambiente;
             if (!is_dir($folder)) {
                 if (! mkdir($folder, 0777)) {
@@ -64,7 +102,7 @@ class FilesFolders
                     );
                 }
             }
-            foreach ($subdirs as $subdir) {
+            foreach ($this->subdirs as $subdir) {
                 $folder = $dirPath.DIRECTORY_SEPARATOR.$ambiente.DIRECTORY_SEPARATOR.$subdir;
                 if (!is_dir($folder)) {
                     mkdir($folder, 0777);
