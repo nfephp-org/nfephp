@@ -230,7 +230,21 @@ class CurlSoap
         $resposta = curl_exec($oCurl);
         //obtem as informações da conexão
         $info = curl_getinfo($oCurl);
-        
+        //carrega as informações de debug
+        $this->zDebug($info);
+        $this->errorCurl = curl_error($oCurl);
+        //fecha a conexão
+        curl_close($oCurl);
+        //retorna
+        return $resposta;
+    }
+    
+    /**
+     * zDebug
+     * @param array $info
+     */
+    private function zDebug($info = array())
+    {
         $this->infoCurl["url"] = $info["url"];
         $this->infoCurl["content_type"] = $info["content_type"];
         $this->infoCurl["http_code"] = $info["http_code"];
@@ -251,10 +265,6 @@ class CurlSoap
         $this->infoCurl["upload_content_length"] = $info["upload_content_length"];
         $this->infoCurl["starttransfer_time"] = $info["starttransfer_time"];
         $this->infoCurl["redirect_time"] = $info["redirect_time"];
-        $this->infoCurl["certinfo"] = $info["certinfo"];
-        $this->errorCurl = curl_error($oCurl);
-        //fecha a conexão
-        curl_close($oCurl);
         //coloca as informações em uma variável
         $txtInfo ="";
         foreach ($info as $key => $content) {
@@ -264,8 +274,6 @@ class CurlSoap
         }
         //carrega a variavel debug
         $this->soapDebug = $data."\n\n".$txtInfo."\n".$resposta;
-        //retorna
-        return $resposta;
     }
     
     /**
