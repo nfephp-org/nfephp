@@ -4,15 +4,13 @@ ATENÇÃO! Este é o XML dos endereços dos webservices da NF-e modelo 55 layout
 "3.10", portanto é incompatível com a versão "2.00" do layout da NF-e, prevista
 para ser desativada em 01/12/2014.
 AM Consulta de Cadastro não EXISTE
-
-2015-01-15 Correção do webservice NFeDistribuicaoDFe URL e versão
 -->
 <WS xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <UF>
     <sigla>AM</sigla>
     <homologacao>
       <NfeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10">https://homnfe.sefaz.am.gov.br/services2/services/NfeAutorizacao</NfeAutorizacao>
-      <NfeConsultaCadastro method="consultaCadastro2" operation="NfeConsultaCadastro" version="3.10">https://homnfe.sefaz.am.gov.br/services2/services/CadConsultaCadastro2</NfeConsultaCadastro>
+      <NfeConsultaCadastro method="consultaCadastro2" operation="CadConsultaCadastro2" version="2.00">https://homnfe.sefaz.am.gov.br/services2/services/CadConsultaCadastro2</NfeConsultaCadastro>
       <NfeConsultaProtocolo method="nfeConsultaNF2" operation="NfeConsulta2" version="3.10">https://homnfe.sefaz.am.gov.br/services2/services/NfeConsulta2</NfeConsultaProtocolo>
       <NfeInutilizacao method="nfeInutilizacaoNF2" operation="NfeInutilizacao2" version="1.00">https://homnfe.sefaz.am.gov.br/services2/services/NfeInutilizacao2</NfeInutilizacao>
       <NFeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NFeRetAutorizacao" version="3.10">https://homnfe.sefaz.am.gov.br/services2/services/NfeRetAutorizacao</NFeRetAutorizacao>
@@ -21,7 +19,7 @@ AM Consulta de Cadastro não EXISTE
     </homologacao>
     <producao>
       <NfeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10">https://nfe.sefaz.am.gov.br/services2/services/NfeAutorizacao</NfeAutorizacao>
-      <NfeConsultaCadastro method="consultaCadastro2" operation="NfeConsultaCadastro" version="3.10">https://nfe.sefaz.am.gov.br/services2/services/CadConsultaCadastro2</NfeConsultaCadastro>
+      <NfeConsultaCadastro method="consultaCadastro2" operation="CadConsultaCadastro2" version="2.00">https://nfe.sefaz.am.gov.br/services2/services/CadConsultaCadastro2</NfeConsultaCadastro>
       <NfeConsultaProtocolo method="nfeConsultaNF2" operation="NfeConsulta2" version="3.10">https://nfe.sefaz.am.gov.br/services2/services/NfeConsulta2</NfeConsultaProtocolo>
       <NfeInutilizacao method="nfeInutilizacaoNF2" operation="NfeInutilizacao2" version="1.00">https://nfe.sefaz.am.gov.br/services2/services/NfeInutilizacao2</NfeInutilizacao>
       <NfeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10">https://nfe.sefaz.am.gov.br/services2/services/NfeRetAutorizacao</NfeRetAutorizacao>
@@ -48,7 +46,7 @@ AM Consulta de Cadastro não EXISTE
     <sigla>BA</sigla>
     <homologacao>
       <NfeAutorizacao method="NfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10">https://hnfe.sefaz.ba.gov.br/webservices/NfeAutorizacao/NfeAutorizacao.asmx</NfeAutorizacao>
-      <NfeConsultaCadastro method="consultaCadastro2" operation="NfeConsultaCadastro" version="3.10">https://hnfe.sefaz.ba.gov.br/webservices/nfenw/CadConsultaCadastro2.asmx</NfeConsultaCadastro>
+      <NfeConsultaCadastro method="consultaCadastro2" operation="CadConsultaCadastro2" version="2.00">https://hnfe.sefaz.ba.gov.br/webservices/nfenw/CadConsultaCadastro2.asmx</NfeConsultaCadastro>
       <NfeConsultaProtocolo method="nfeConsultaNF2" operation="NfeConsulta" version="3.10">https://hnfe.sefaz.ba.gov.br/webservices/NfeConsulta/NfeConsulta.asmx</NfeConsultaProtocolo>
       <NfeInutilizacao method="nfeInutilizacaoNF2" operation="NfeInutilizacao2" version="3.10">https://hnfe.sefaz.ba.gov.br/webservices/nfenw/nfeinutilizacao2.asmx</NfeInutilizacao>
       <NfeRetAutorizacao method="NfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10">https://hnfe.sefaz.ba.gov.br/webservices/NfeRetAutorizacao/NfeRetAutorizacao.asmx</NfeRetAutorizacao>
@@ -57,7 +55,7 @@ AM Consulta de Cadastro não EXISTE
     </homologacao>
     <producao>
       <NfeAutorizacao method="NfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10">https://nfe.sefaz.ba.gov.br/webservices/NfeAutorizacao/NfeAutorizacao.asmx</NfeAutorizacao>
-      <NfeConsultaCadastro method="consultaCadastro2" operation="NfeConsultaCadastro" version="3.10">https://nfe.sefaz.ba.gov.br/webservices/nfenw/CadConsultaCadastro2.asmx</NfeConsultaCadastro>
+      <NfeConsultaCadastro method="consultaCadastro2" operation="CadConsultaCadastro2" version="2.00">https://nfe.sefaz.ba.gov.br/webservices/nfenw/CadConsultaCadastro2.asmx</NfeConsultaCadastro>
       <NfeConsultaProtocolo method="nfeConsultaNF2" operation="NfeConsulta" version="3.10">https://nfe.sefaz.ba.gov.br/webservices/NfeConsulta/NfeConsulta.asmx</NfeConsultaProtocolo>
       <NfeInutilizacao method="nfeInutilizacaoNF2" operation="NfeInutilizacao2" version="3.10">https://nfe.sefaz.ba.gov.br/webservices/nfenw/nfeinutilizacao2.asmx</NfeInutilizacao>
       <NfeRetAutorizacao method="NfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10">https://nfe.sefaz.ba.gov.br/webservices/NfeRetAutorizacao/NfeRetAutorizacao.asmx</NfeRetAutorizacao>
@@ -71,7 +69,7 @@ AM Consulta de Cadastro não EXISTE
       <NfeAutorizacao method="NfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10">https://nfeh.sefaz.ce.gov.br/nfe2/services/NfeAutorizacao</NfeAutorizacao>
       <NfeRetAutorizacao method="NfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10">https://nfeh.sefaz.ce.gov.br/nfe2/services/NfeRetAutorizacao</NfeRetAutorizacao>
       <NfeDownloadNF method="nfeDownloadNF" operation="NfeDownloadNF" version="3.10">https://nfeh.sefaz.ce.gov.br/nfe2/services/NfeDownloadNF</NfeDownloadNF>
-      <NfeConsultaCadastro method="consultaCadastro2" operation="NfeConsultaCadastro" version="3.10">https://nfeh.sefaz.ce.gov.br/nfe2/services/CadConsultaCadastro2</NfeConsultaCadastro>
+      <NfeConsultaCadastro method="consultaCadastro2" operation="CadConsultaCadastro2" version="2.00">https://nfeh.sefaz.ce.gov.br/nfe2/services/CadConsultaCadastro2</NfeConsultaCadastro>
       <NfeConsultaProtocolo method="nfeConsultaNF2" operation="NfeConsulta2" version="3.10">https://nfeh.sefaz.ce.gov.br/nfe2/services/NfeConsulta2</NfeConsultaProtocolo>
       <NfeInutilizacao method="nfeInutilizacaoNF2" operation="NfeInutilizacao2" version="3.10">https://nfeh.sefaz.ce.gov.br/nfe2/services/NfeInutilizacao2</NfeInutilizacao>
       <NfeStatusServico method="nfeStatusServicoNF2" operation="NfeStatusServico2" version="3.10">https://nfeh.sefaz.ce.gov.br/nfe2/services/NfeStatusServico2</NfeStatusServico>
@@ -81,7 +79,7 @@ AM Consulta de Cadastro não EXISTE
       <NfeAutorizacao method="NfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10">https://nfe.sefaz.ce.gov.br/nfe2/services/NfeAutorizacao</NfeAutorizacao>
       <NfeRetAutorizacao method="NfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10">https://nfe.sefaz.ce.gov.br/nfe2/services/NfeRetAutorizacao</NfeRetAutorizacao>
       <NfeDownloadNF method="nfeDownloadNF" operation="NfeDownloadNF" version="3.10">https://nfe.sefaz.ce.gov.br/nfe2/services/NfeDownloadNF</NfeDownloadNF>
-      <NfeConsultaCadastro method="consultaCadastro2" operation="NfeConsultaCadastro" version="3.10">https://nfe.sefaz.ce.gov.br/nfe2/services/CadConsultaCadastro2</NfeConsultaCadastro>
+      <NfeConsultaCadastro method="consultaCadastro2" operation="CadConsultaCadastro2" version="2.00">https://nfe.sefaz.ce.gov.br/nfe2/services/CadConsultaCadastro2</NfeConsultaCadastro>
       <NfeConsultaProtocolo method="nfeConsultaNF2" operation="NfeConsulta2" version="3.10">https://nfe.sefaz.ce.gov.br/nfe2/services/NfeConsulta2</NfeConsultaProtocolo>
       <NfeInutilizacao method="nfeInutilizacaoNF2" operation="NfeInutilizacao2" version="3.10">https://nfe.sefaz.ce.gov.br/nfe2/services/NfeInutilizacao2</NfeInutilizacao>
       <NfeStatusServico method="nfeStatusServicoNF2" operation="NfeStatusServico2" version="3.10">https://nfe.sefaz.ce.gov.br/nfe2/services/NfeStatusServico2</NfeStatusServico>
@@ -92,7 +90,7 @@ AM Consulta de Cadastro não EXISTE
     <sigla>GO</sigla>
     <homologacao>
       <NfeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10">https://homolog.sefaz.go.gov.br/nfe/services/v2/NfeAutorizacao</NfeAutorizacao>
-      <NfeConsultaCadastro method="cadConsultaCadastro2" operation="NfeConsultaCadastro" version="3.10">https://homolog.sefaz.go.gov.br/nfe/services/v2/CadConsultaCadastro2</NfeConsultaCadastro>
+      <NfeConsultaCadastro method="cadConsultaCadastro2" operation="CadConsultaCadastro2" version="2.00">https://homolog.sefaz.go.gov.br/nfe/services/v2/CadConsultaCadastro2</NfeConsultaCadastro>
       <NfeConsultaProtocolo method="nfeConsultaNF2" operation="NfeConsulta2" version="3.10">https://homolog.sefaz.go.gov.br/nfe/services/v2/NfeConsulta2</NfeConsultaProtocolo>
       <NfeInutilizacao method="nfeInutilizacaoNF2" operation="NfeInutilizacao2" version="3.10">https://homolog.sefaz.go.gov.br/nfe/services/v2/NfeInutilizacao2</NfeInutilizacao>
       <NfeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10">https://homolog.sefaz.go.gov.br/nfe/services/v2/NfeRetAutorizacao</NfeRetAutorizacao>
@@ -101,7 +99,7 @@ AM Consulta de Cadastro não EXISTE
     </homologacao>
     <producao>
       <NfeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10">https://nfe.sefaz.go.gov.br/nfe/services/v2/NfeAutorizacao</NfeAutorizacao>
-      <NfeConsultaCadastro method="cadConsultaCadastro2" operation="NfeConsultaCadastro" version="3.10">https://nfe.sefaz.go.gov.br/nfe/services/v2/CadConsultaCadastro2</NfeConsultaCadastro>
+      <NfeConsultaCadastro method="cadConsultaCadastro2" operation="CadConsultaCadastro2" version="2.00">https://nfe.sefaz.go.gov.br/nfe/services/v2/CadConsultaCadastro2</NfeConsultaCadastro>
       <NfeConsultaProtocolo method="nfeConsultaNF2" operation="NfeConsulta2" version="3.10">https://nfe.sefaz.go.gov.br/nfe/services/v2/NfeConsulta2</NfeConsultaProtocolo>
       <NfeInutilizacao method="nfeInutilizacaoNF2" operation="NfeInutilizacao2" version="3.10">https://nfe.sefaz.go.gov.br/nfe/services/v2/NfeInutilizacao2</NfeInutilizacao>
       <NfeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10">https://nfe.sefaz.go.gov.br/nfe/services/v2/NfeRetAutorizacao</NfeRetAutorizacao>
@@ -113,7 +111,7 @@ AM Consulta de Cadastro não EXISTE
     <sigla>MG</sigla>
     <homologacao>
       <NfeAutorizacao method="NfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10">https://hnfe.fazenda.mg.gov.br/nfe2/services/NfeAutorizacao</NfeAutorizacao>
-      <NfeConsultaCadastro method="consultaCadastro2" operation="NfeConsultaCadastro" version="3.10">https://hnfe.fazenda.mg.gov.br/nfe2/services/cadconsultacadastro2</NfeConsultaCadastro>
+      <NfeConsultaCadastro method="consultaCadastro2" operation="CadConsultaCadastro2" version="2.00">https://hnfe.fazenda.mg.gov.br/nfe2/services/cadconsultacadastro2</NfeConsultaCadastro>
       <NfeConsultaProtocolo method="nfeConsultaNF2" operation="NfeConsulta2" version="3.10">https://hnfe.fazenda.mg.gov.br/nfe2/services/NfeConsulta2</NfeConsultaProtocolo>
       <NfeInutilizacao method="nfeInutilizacaoNF2" operation="NfeInutilizacao2" version="3.10">https://hnfe.fazenda.mg.gov.br/nfe2/services/NfeInutilizacao2</NfeInutilizacao>
       <NfeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10">https://hnfe.fazenda.mg.gov.br/nfe2/services/NfeRetAutorizacao</NfeRetAutorizacao>
@@ -122,8 +120,8 @@ AM Consulta de Cadastro não EXISTE
     </homologacao>
     <producao>
       <NfeAutorizacao method="NfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10">https://nfe.fazenda.mg.gov.br/nfe2/services/NfeAutorizacao</NfeAutorizacao>
-      <NfeConsultaCadastro method="consultaCadastro2" operation="NfeConsultaCadastro" version="2.00">https://nfe.fazenda.mg.gov.br/nfe2/services/cadconsultacadastro2</NfeConsultaCadastro>
-      <NfeConsultaProtocolo method="nfeConsultaNF2" operation="NfeConsulta2" version="2.00">https://nfe.fazenda.mg.gov.br/nfe2/services/NfeConsulta2</NfeConsultaProtocolo>
+      <NfeConsultaCadastro method="consultaCadastro2" operation="CadConsultaCadastro2" version="2.00">https://nfe.fazenda.mg.gov.br/nfe2/services/cadconsultacadastro2</NfeConsultaCadastro>
+      <NfeConsultaProtocolo method="nfeConsultaNF2" operation="NfeConsulta2" version="2.01">https://nfe.fazenda.mg.gov.br/nfe2/services/NfeConsulta2</NfeConsultaProtocolo>
       <NfeInutilizacao method="nfeInutilizacaoNF2" operation="NfeInutilizacao2" version="2.00">https://nfe.fazenda.mg.gov.br/nfe2/services/NfeInutilizacao2</NfeInutilizacao>
       <NfeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10">https://nfe.fazenda.mg.gov.br/nfe2/services/NfeRetAutorizacao</NfeRetAutorizacao>
       <NfeStatusServico method="nfeStatusServicoNF2" operation="NfeStatusServico2" version="2.00">https://nfe.fazenda.mg.gov.br/nfe2/services/NfeStatus2</NfeStatusServico>
@@ -134,7 +132,7 @@ AM Consulta de Cadastro não EXISTE
     <sigla>MS</sigla>
     <homologacao>
       <NfeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10">https://homologacao.nfe.ms.gov.br/homologacao/services2/NfeAutorizacao</NfeAutorizacao>
-      <NfeConsultaCadastro method="consultaCadastro2" operation="NfeConsultaCadastro" version="2.00">https://homologacao.nfe.ms.gov.br/homologacao/services2/CadConsultaCadastro2</NfeConsultaCadastro>
+      <NfeConsultaCadastro method="consultaCadastro2" operation="CadConsultaCadastro2" version="2.00">https://homologacao.nfe.ms.gov.br/homologacao/services2/CadConsultaCadastro2</NfeConsultaCadastro>
       <NfeConsultaProtocolo method="nfeConsultaNF2" operation="NfeConsulta2" version="3.10">https://homologacao.nfe.ms.gov.br/homologacao/services2/NfeConsulta2</NfeConsultaProtocolo>
       <NfeInutilizacao method="nfeInutilizacaoNF2" operation="NfeInutilizacao2" version="3.10">https://homologacao.nfe.ms.gov.br/homologacao/services2/NfeInutilizacao2</NfeInutilizacao>
       <NfeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10">https://homologacao.nfe.ms.gov.br/homologacao/services2/NfeRetAutorizacao</NfeRetAutorizacao>
@@ -143,7 +141,7 @@ AM Consulta de Cadastro não EXISTE
     </homologacao>
     <producao>
       <NfeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10">https://nfe.fazenda.ms.gov.br/producao/services2/NfeAutorizacao</NfeAutorizacao>
-      <NfeConsultaCadastro method="consultaCadastro2" operation="NfeConsultaCadastro" version="2.00">https://nfe.fazenda.ms.gov.br/producao/services2/CadConsultaCadastro2</NfeConsultaCadastro>
+      <NfeConsultaCadastro method="consultaCadastro2" operation="CadConsultaCadastro2" version="2.00">https://nfe.fazenda.ms.gov.br/producao/services2/CadConsultaCadastro2</NfeConsultaCadastro>
       <NfeConsultaProtocolo method="nfeConsultaNF2" operation="NfeConsulta2" version="3.10">https://nfe.fazenda.ms.gov.br/producao/services2/NfeConsulta2</NfeConsultaProtocolo>
       <NfeInutilizacao method="nfeInutilizacaoNF2" operation="NfeInutilizacao2" version="3.10">https://nfe.fazenda.ms.gov.br/producao/services2/NfeInutilizacao2</NfeInutilizacao>
       <NfeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10">https://nfe.fazenda.ms.gov.br/producao/services2/NfeRetAutorizacao</NfeRetAutorizacao>
@@ -156,7 +154,7 @@ AM Consulta de Cadastro não EXISTE
     <homologacao>
       <NfeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10">https://homologacao.sefaz.mt.gov.br/nfews/v2/services/NfeAutorizacao</NfeAutorizacao>
       <NfeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10">https://homologacao.sefaz.mt.gov.br/nfews/v2/services/NfeRetAutorizacao</NfeRetAutorizacao>
-      <NfeConsultaCadastro method="consultaCadastro2" operation="NfeConsultaCadastro" version="3.10">https://homologacao.sefaz.mt.gov.br/nfews/v2/services/CadConsultaCadastro2</NfeConsultaCadastro>
+      <NfeConsultaCadastro method="consultaCadastro2" operation="CadConsultaCadastro2" version="2.00">https://homologacao.sefaz.mt.gov.br/nfews/v2/services/CadConsultaCadastro2</NfeConsultaCadastro>
       <NfeConsultaProtocolo method="nfeConsultaNF2" operation="NfeConsulta2" version="2.00">https://homologacao.sefaz.mt.gov.br/nfews/v2/services/NfeConsulta2</NfeConsultaProtocolo>
       <NfeInutilizacao method="nfeInutilizacaoNF2" operation="NfeInutilizacao2" version="2.00">https://homologacao.sefaz.mt.gov.br/nfews/v2/services/NfeInutilizacao2</NfeInutilizacao>
       <NfeStatusServico method="nfeStatusServicoNF2" operation="NfeStatusServico2" version="2.00">https://homologacao.sefaz.mt.gov.br/nfews/v2/services/NfeStatusServico2</NfeStatusServico>
@@ -165,7 +163,7 @@ AM Consulta de Cadastro não EXISTE
     <producao>
       <NfeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10">https://nfe.sefaz.mt.gov.br/nfews/v2/services/NfeAutorizacao</NfeAutorizacao>
       <NfeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10">https://nfe.sefaz.mt.gov.br/nfews/v2/services/NfeRetAutorizacao</NfeRetAutorizacao>
-      <NfeConsultaCadastro method="consultaCadastro2" operation="NfeConsultaCadastro" version="3.10">https://nfe.sefaz.mt.gov.br/nfews/v2/services/CadConsultaCadastro2</NfeConsultaCadastro>
+      <NfeConsultaCadastro method="consultaCadastro2" operation="CadConsultaCadastro2" version="2.00">https://nfe.sefaz.mt.gov.br/nfews/v2/services/CadConsultaCadastro2</NfeConsultaCadastro>
       <NfeConsultaProtocolo method="nfeConsultaNF2" operation="NfeConsulta2" version="3.10">https://nfe.sefaz.mt.gov.br/nfews/v2/services/NfeConsulta2</NfeConsultaProtocolo>
       <NfeInutilizacao method="nfeInutilizacaoNF2" operation="NfeInutilizacao2" version="3.10">https://nfe.sefaz.mt.gov.br/nfews/v2/services/NfeInutilizacao2</NfeInutilizacao>
       <NfeStatusServico method="nfeStatusServicoNF2" operation="NfeStatusServico2" version="3.10">https://nfe.sefaz.mt.gov.br/nfews/v2/services/NfeStatusServico2</NfeStatusServico>
@@ -175,16 +173,17 @@ AM Consulta de Cadastro não EXISTE
   <UF>
     <sigla>PB</sigla>
     <homologacao>
-      <NfeConsultaCadastro method="consultaCadastro2" operation="NfeConsultaCadastro" version="2.00">https://svp-ws.sefazvirtual.rs.gov.br/ws/CadConsultaCadastro/CadConsultaCadastro2.asmx</NfeConsultaCadastro>
+      <NfeConsultaCadastro method="consultaCadastro2" operation="CadConsultaCadastro2" version="2.00">https://svp-ws.sefazvirtual.rs.gov.br/ws/CadConsultaCadastro/CadConsultaCadastro2.asmx</NfeConsultaCadastro>
     </homologacao>
     <producao>
-      <NfeConsultaCadastro method="consultaCadastro2" operation="NfeConsultaCadastro" version="2.00">https://svp-ws.sefazvirtual.rs.gov.br/ws/CadConsultaCadastro/CadConsultaCadastro2.asmx</NfeConsultaCadastro>
+      <NfeConsultaCadastro method="consultaCadastro2" operation="CadConsultaCadastro2" version="2.00">https://svp-ws.sefazvirtual.rs.gov.br/ws/CadConsultaCadastro/CadConsultaCadastro2.asmx</NfeConsultaCadastro>
     </producao>
   </UF>
   <UF>
     <sigla>PE</sigla>
     <homologacao>
       <NfeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10">https://nfehomolog.sefaz.pe.gov.br/nfe-service/services/NfeAutorizacao</NfeAutorizacao>
+      <NfeConsultaCadastro method="consultaCadastro2" operation="CadConsultaCadastro2" version="2.00">https://nfehomolog.sefaz.pe.gov.br/nfe-service/services/CadConsultaCadastro2</NfeConsultaCadastro>
       <NfeConsultaProtocolo method="nfeConsultaNF2" operation="NfeConsulta2" version="3.10">https://nfehomolog.sefaz.pe.gov.br/nfe-service/services/NfeConsulta2</NfeConsultaProtocolo>
       <NfeInutilizacao method="nfeInutilizacaoNF2" operation="NfeInutilizacao2" version="3.10">https://nfehomolog.sefaz.pe.gov.br/nfe-service/services/NfeInutilizacao2</NfeInutilizacao>
       <NfeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10">https://nfehomolog.sefaz.pe.gov.br/nfe-service/services/NfeRetAutorizacao</NfeRetAutorizacao>
@@ -193,7 +192,7 @@ AM Consulta de Cadastro não EXISTE
     </homologacao>
     <producao>
       <NfeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10">https://nfe.sefaz.pe.gov.br/nfe-service/services/NfeAutorizacao</NfeAutorizacao>
-      <NfeConsultaCadastro method="consultaCadastro2" operation="NfeConsultaCadastro" version="3.10">https://nfe.sefaz.pe.gov.br/nfe-service/services/CadConsultaCadastro2</NfeConsultaCadastro>
+      <NfeConsultaCadastro method="consultaCadastro2" operation="CadConsultaCadastro2" version="2.00">https://nfe.sefaz.pe.gov.br/nfe-service/services/CadConsultaCadastro2</NfeConsultaCadastro>
       <NfeConsultaProtocolo method="nfeConsultaNF2" operation="NfeConsulta2" version="3.10">https://nfe.sefaz.pe.gov.br/nfe-service/services/NfeConsulta2</NfeConsultaProtocolo>
       <NfeInutilizacao method="nfeInutilizacaoNF2" operation="NfeInutilizacao2" version="3.10">https://nfe.sefaz.pe.gov.br/nfe-service/services/NfeInutilizacao2</NfeInutilizacao>
       <NfeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10">https://nfe.sefaz.pe.gov.br/nfe-service/services/NfeRetAutorizacao</NfeRetAutorizacao>
@@ -205,7 +204,7 @@ AM Consulta de Cadastro não EXISTE
     <sigla>PR</sigla>
     <homologacao>
       <NfeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10">https://homologacao.nfe.fazenda.pr.gov.br/nfe/NFeAutorizacao3</NfeAutorizacao>
-      <NfeConsultaCadastro method="consultaCadastro2" operation="NfeConsultaCadastro" version="3.10">https://homologacao.nfe.fazenda.pr.gov.br/nfe/CadConsultaCadastro2</NfeConsultaCadastro>
+      <NfeConsultaCadastro method="consultaCadastro2" operation="CadConsultaCadastro2" version="2.00">https://homologacao.nfe.fazenda.pr.gov.br/nfe/CadConsultaCadastro2</NfeConsultaCadastro>
       <NfeConsultaProtocolo method="nfeConsultaNF" operation="NfeConsulta2" version="3.10">https://homologacao.nfe.fazenda.pr.gov.br/nfe/NFeConsulta3</NfeConsultaProtocolo>
       <NfeInutilizacao method="nfeInutilizacaoNF" operation="NfeInutilizacao2" version="3.10">https://homologacao.nfe.fazenda.pr.gov.br/nfe/NFeInutilizacao3</NfeInutilizacao>
       <NfeRetAutorizacao method="nfeRetAutorizacao" operation="NfeRetAutorizacao" version="3.10">https://homologacao.nfe.fazenda.pr.gov.br/nfe/NFeRetAutorizacao3</NfeRetAutorizacao>
@@ -214,7 +213,7 @@ AM Consulta de Cadastro não EXISTE
     </homologacao>
     <producao>
       <NfeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10">https://nfe.fazenda.pr.gov.br/nfe/NFeRetAutorizacao3</NfeAutorizacao>
-      <NfeConsultaCadastro method="consultaCadastro2" operation="NfeConsultaCadastro" version="3.10">https://nfe.fazenda.pr.gov.br/nfe/CadConsultaCadastro2</NfeConsultaCadastro>
+      <NfeConsultaCadastro method="consultaCadastro2" operation="CadConsultaCadastro2" version="2.00">https://nfe.fazenda.pr.gov.br/nfe/CadConsultaCadastro2</NfeConsultaCadastro>
       <NfeConsultaProtocolo method="nfeConsultaNF2" operation="NfeConsulta2" version="3.10">https://nfe.fazenda.pr.gov.br/nfe/NFeConsulta3</NfeConsultaProtocolo>
       <NfeInutilizacao method="nfeInutilizacaoNF3" operation="NfeInutilizacao2" version="3.10">https://nfe.fazenda.pr.gov.br/nfe/NFeInutilizacao3</NfeInutilizacao>
       <NfeRetAutorizacao method="nfeRetAutorizacao" operation="NfeRetAutorizacao" version="3.10">https://nfe.fazenda.pr.gov.br/nfe/NFeRetAutorizacao3</NfeRetAutorizacao>
@@ -225,18 +224,18 @@ AM Consulta de Cadastro não EXISTE
   <UF>
     <sigla>RN</sigla>
     <homologacao>
-      <NfeConsultaCadastro method="consultaCadastro2" operation="NfeConsultaCadastro" version="2.00">https://svp-ws.sefazvirtual.rs.gov.br/ws/CadConsultaCadastro/CadConsultaCadastro2.asmx</NfeConsultaCadastro>
+      <NfeConsultaCadastro method="consultaCadastro2" operation="CadConsultaCadastro2" version="2.00">https://svp-ws.sefazvirtual.rs.gov.br/ws/CadConsultaCadastro/CadConsultaCadastro2.asmx</NfeConsultaCadastro>
     </homologacao>
     <producao>
-      <NfeConsultaCadastro method="consultaCadastro2" operation="NfeConsultaCadastro" version="2.00">https://svp-ws.sefazvirtual.rs.gov.br/ws/CadConsultaCadastro/CadConsultaCadastro2.asmx</NfeConsultaCadastro>
+      <NfeConsultaCadastro method="consultaCadastro2" operation="CadConsultaCadastro2" version="2.00">https://svp-ws.sefazvirtual.rs.gov.br/ws/CadConsultaCadastro/CadConsultaCadastro2.asmx</NfeConsultaCadastro>
     </producao>
   </UF>
   <UF>
     <sigla>RS</sigla>
     <homologacao>
       <NfeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10">https://homologacao.nfe.sefaz.rs.gov.br/ws/NfeAutorizacao/NFeAutorizacao.asmx</NfeAutorizacao>
-      <NfeConsultaCadastro method="consultaCadastro2" operation="NfeConsultaCadastro" version="2.00">https://sef.sefaz.rs.gov.br/ws/cadconsultacadastro/cadconsultacadastro2.asmx</NfeConsultaCadastro>
-      <NfeConsultaDest method="nfeConsultaNFDest" operation="NfeConsultaDest" version="2.00">https://homologacao.nfe.sefaz.rs.gov.br/ws/nfeConsultaDest/nfeConsultaDest.asmx</NfeConsultaDest>
+      <NfeConsultaCadastro method="consultaCadastro2" operation="CadConsultaCadastro2" version="2.00">https://sef.sefaz.rs.gov.br/ws/cadconsultacadastro/cadconsultacadastro2.asmx</NfeConsultaCadastro>
+      <NfeConsultaDest method="nfeConsultaNFDest" operation="NfeConsultaDest" version="1.01">https://homologacao.nfe.sefaz.rs.gov.br/ws/nfeConsultaDest/nfeConsultaDest.asmx</NfeConsultaDest>
       <NfeConsultaProtocolo method="nfeConsultaNF2" operation="NfeConsulta2" version="3.10">https://homologacao.nfe.sefaz.rs.gov.br/ws/NfeConsulta/NfeConsulta2.asmx</NfeConsultaProtocolo>
       <NfeDownloadNF method="nfeDownloadNF" operation="NfeDownloadNF" version="2.00">https://homologacao.nfe.sefaz.rs.gov.br/ws/nfeDownloadNF/nfeDownloadNF.asmx</NfeDownloadNF>
       <NfeInutilizacao method="nfeInutilizacaoNF2" operation="NfeInutilizacao2" version="3.10">https://homologacao.nfe.sefaz.rs.gov.br/ws/nfeinutilizacao/nfeinutilizacao2.asmx</NfeInutilizacao>
@@ -246,8 +245,8 @@ AM Consulta de Cadastro não EXISTE
     </homologacao>
     <producao>
       <NfeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10">https://nfe.sefaz.rs.gov.br/ws/NfeAutorizacao/NFeAutorizacao.asmx</NfeAutorizacao>
-      <NfeConsultaCadastro method="consultaCadastro2" operation="NfeConsultaCadastro" version="2.00">https://sef.sefaz.rs.gov.br/ws/cadconsultacadastro/cadconsultacadastro2.asmx</NfeConsultaCadastro>
-      <NfeConsultaDest method="nfeConsultaNFDest" operation="NfeConsultaDest" version="2.00">https://nfe.sefaz.rs.gov.br/ws/nfeConsultaDest/nfeConsultaDest.asmx</NfeConsultaDest>
+      <NfeConsultaCadastro method="consultaCadastro2" operation="CadConsultaCadastro2" version="2.00">https://sef.sefaz.rs.gov.br/ws/cadconsultacadastro/cadconsultacadastro2.asmx</NfeConsultaCadastro>
+      <NfeConsultaDest method="nfeConsultaNFDest" operation="NfeConsultaDest" version="1.01">https://nfe.sefaz.rs.gov.br/ws/nfeConsultaDest/nfeConsultaDest.asmx</NfeConsultaDest>
       <NfeConsultaProtocolo method="nfeConsultaNF2" operation="NfeConsulta2" version="3.10">https://nfe.sefaz.rs.gov.br/ws/NfeConsulta/NfeConsulta2.asmx</NfeConsultaProtocolo>
       <NfeDownloadNF method="nfeDownloadNF" operation="NfeDownloadNF" version="2.00">https://nfe.sefaz.rs.gov.br/ws/nfeDownloadNF/nfeDownloadNF.asmx</NfeDownloadNF>
       <NfeInutilizacao method="nfeInutilizacaoNF2" operation="NfeInutilizacao2" version="3.10">https://nfe.sefaz.rs.gov.br/ws/NfeInutilizacao/NfeInutilizacao2.asmx</NfeInutilizacao>
@@ -259,17 +258,17 @@ AM Consulta de Cadastro não EXISTE
   <UF>
     <sigla>SC</sigla>
     <homologacao>
-      <NfeConsultaCadastro method="consultaCadastro2" operation="NfeConsultaCadastro" version="2.00">https://svp-ws.sefazvirtual.rs.gov.br/ws/CadConsultaCadastro/CadConsultaCadastro2.asmx</NfeConsultaCadastro>
+      <NfeConsultaCadastro method="consultaCadastro2" operation="CadConsultaCadastro2" version="2.00">https://svp-ws.sefazvirtual.rs.gov.br/ws/CadConsultaCadastro/CadConsultaCadastro2.asmx</NfeConsultaCadastro>
     </homologacao>
     <producao>
-      <NfeConsultaCadastro method="consultaCadastro2" operation="NfeConsultaCadastro" version="2.00">https://svp-ws.sefazvirtual.rs.gov.br/ws/CadConsultaCadastro/CadConsultaCadastro2.asmx</NfeConsultaCadastro>
+      <NfeConsultaCadastro method="consultaCadastro2" operation="CadConsultaCadastro2" version="2.00">https://svp-ws.sefazvirtual.rs.gov.br/ws/CadConsultaCadastro/CadConsultaCadastro2.asmx</NfeConsultaCadastro>
     </producao>
   </UF>
   <UF>
     <sigla>SP</sigla>
     <homologacao>
       <NfeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10">https://homologacao.nfe.fazenda.sp.gov.br/ws/nfeautorizacao.asmx</NfeAutorizacao>
-      <NfeConsultaCadastro method="consultaCadastro2" operation="NfeConsultaCadastro" version="3.10">https://homologacao.nfe.fazenda.sp.gov.br/ws/cadconsultacadastro2.asmx</NfeConsultaCadastro>
+      <NfeConsultaCadastro method="consultaCadastro2" operation="CadConsultaCadastro2" version="2.00">https://homologacao.nfe.fazenda.sp.gov.br/ws/cadconsultacadastro2.asmx</NfeConsultaCadastro>
       <NfeConsultaProtocolo method="nfeConsultaNF2" operation="NfeConsulta2" version="3.10">https://homologacao.nfe.fazenda.sp.gov.br/ws/nfeconsulta2.asmx</NfeConsultaProtocolo>
       <NfeInutilizacao method="nfeInutilizacaoNF2" operation="NfeInutilizacao2" version="3.10">https://homologacao.nfe.fazenda.sp.gov.br/ws/nfeinutilizacao2.asmx</NfeInutilizacao>
       <NfeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10">https://homologacao.nfe.fazenda.sp.gov.br/ws/nferetautorizacao.asmx</NfeRetAutorizacao>
@@ -278,7 +277,7 @@ AM Consulta de Cadastro não EXISTE
     </homologacao>
     <producao>
       <NfeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10">https://nfe.fazenda.sp.gov.br/ws/nfeautorizacao.asmx</NfeAutorizacao>
-      <NfeConsultaCadastro method="consultaCadastro2" operation="NfeConsultaCadastro" version="3.10">https://nfe.fazenda.sp.gov.br/ws/cadconsultacadastro2.asmx</NfeConsultaCadastro>
+      <NfeConsultaCadastro method="consultaCadastro2" operation="CadConsultaCadastro2" version="2.00">https://nfe.fazenda.sp.gov.br/ws/cadconsultacadastro2.asmx</NfeConsultaCadastro>
       <NfeConsultaProtocolo method="nfeConsultaNF2" operation="NfeConsulta2" version="3.10">https://nfe.fazenda.sp.gov.br/ws/nfeconsulta2.asmx</NfeConsultaProtocolo>
       <NfeInutilizacao method="nfeInutilizacaoNF2" operation="NfeInutilizacao2" version="3.10">https://nfe.fazenda.sp.gov.br/ws/nfeinutilizacao2.asmx</NfeInutilizacao>
       <NfeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10">https://nfe.fazenda.sp.gov.br/ws/nferetautorizacao.asmx</NfeRetAutorizacao>
@@ -311,7 +310,7 @@ AM Consulta de Cadastro não EXISTE
     <sigla>SVRS</sigla>
     <homologacao>
         <NfeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10">https://homologacao.nfe.sefazvirtual.rs.gov.br/ws/NfeAutorizacao/NFeAutorizacao.asmx</NfeAutorizacao>
-        <NfeConsultaCadastro method="consultaCadastro2" operation="NfeConsultaCadastro" version="2.00">https://svp-ws.sefazvirtual.rs.gov.br/ws/CadConsultaCadastro/CadConsultaCadastro2.asmx</NfeConsultaCadastro>        
+        <NfeConsultaCadastro method="consultaCadastro2" operation="CadConsultaCadastro2" version="2.00">https://svp-ws.sefazvirtual.rs.gov.br/ws/CadConsultaCadastro/CadConsultaCadastro2.asmx</NfeConsultaCadastro>        
         <NfeConsultaProtocolo method="nfeConsultaNF2" operation="NfeConsulta2" version="3.10">https://homologacao.nfe.sefazvirtual.rs.gov.br/ws/NfeConsulta/NfeConsulta2.asmx</NfeConsultaProtocolo>
         <NfeInutilizacao method="nfeInutilizacaoNF2" operation="NfeInutilizacao2" version="3.10">https://homologacao.nfe.sefazvirtual.rs.gov.br/ws/nfeinutilizacao/nfeinutilizacao2.asmx</NfeInutilizacao>
         <NfeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10">https://homologacao.nfe.sefazvirtual.rs.gov.br/ws/NfeRetAutorizacao/NFeRetAutorizacao.asmx</NfeRetAutorizacao>
@@ -320,7 +319,7 @@ AM Consulta de Cadastro não EXISTE
     </homologacao>
     <producao>
         <NfeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10">https://nfe.sefazvirtual.rs.gov.br/ws/NfeAutorizacao/NFeAutorizacao.asmx</NfeAutorizacao>
-        <NfeConsultaCadastro method="consultaCadastro2" operation="NfeConsultaCadastro" version="2.00">https://svp-ws.sefazvirtual.rs.gov.br/ws/CadConsultaCadastro/CadConsultaCadastro2.asmx</NfeConsultaCadastro>
+        <NfeConsultaCadastro method="consultaCadastro2" operation="CadConsultaCadastro2" version="2.00">https://svp-ws.sefazvirtual.rs.gov.br/ws/CadConsultaCadastro/CadConsultaCadastro2.asmx</NfeConsultaCadastro>
         <NfeConsultaProtocolo method="nfeConsultaNF2" operation="NfeConsulta2" version="3.10">https://nfe.sefazvirtual.rs.gov.br/ws/NfeConsulta/NfeConsulta2.asmx</NfeConsultaProtocolo>
         <NfeInutilizacao method="nfeInutilizacaoNF2" operation="NfeInutilizacao2" version="3.10">https://nfe.sefazvirtual.rs.gov.br/ws/nfeinutilizacao/nfeinutilizacao2.asmx</NfeInutilizacao>
         <NfeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10">https://nfe.sefazvirtual.rs.gov.br/ws/NfeRetAutorizacao/NFeRetAutorizacao.asmx</NfeRetAutorizacao>
