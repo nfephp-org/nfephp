@@ -31,17 +31,19 @@ class CurlSoapTest extends PHPUnit_Framework_TestCase
         $resp = $soap->getProxy();
         $this->assertEquals($resp, $aProxy);
     }
-
-    /**
-     * @expectedException InvalidArgumentException
-     */
+    
     public function testExceptionAoPassarCertificados()
     {
         $priKey = dirname(dirname(dirname(__FILE__))) . '/fixtures/certs/99999090910270_priKEY.pem';
         $pubKey = dirname(dirname(dirname(__FILE__))) . '/fixtures/certs/0000_pubKEY.pem';
         $certKey = dirname(dirname(dirname(__FILE__))) . '/fixtures/certs/99999090910270_certKEY.pem';
         $timeout = '10';
-        $soap = new CurlSoap($priKey, $pubKey, $certKey, $timeout);
+        try {
+            $soap = new CurlSoap($priKey, $pubKey, $certKey, $timeout);
+        } catch (InvalidArgumentException $expected) {
+            return;
+        }
+        $this->fail('Teste dos certificados - A excessão esperada não foi disparada.');
     }
     
     public function testGetWsdl()
@@ -95,11 +97,12 @@ class CurlSoapTest extends PHPUnit_Framework_TestCase
         $header = '<nfeCabecMsg xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeStatusServico2"><cUF>35</cUF><versaoDados>3.10</versaoDados></nfeCabecMsg>';
         $method = "nfeStatusServicoNF2";
         $body = '<nfeDadosMsg xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeStatusServico2"><consStatServ xmlns="http://www.portalfiscal.inf.br/nfe" versao="3.10"><tpAmb>2</tpAmb><cUF>35</cUF><xServ>STATUS</xServ></consStatServ></nfeDadosMsg>';
-        $resp = $soap->send($urlservice, $namespace, $header, $body, $method);
-        $erro = $soap->error;
-        //testes
-        $this->assertFalse($resp);
-        $this->assertEquals($erro, 'HTTP/1.1 403 Forbidden');
+        try {
+            $resp = $soap->send($urlservice, $namespace, $header, $body, $method);
+        } catch (RuntimeException $expected) {
+            return;
+        }
+        $this->fail('HTTP/1.1 403 Forbidden');
     }
 
     public function testSendSuccess()
@@ -125,11 +128,8 @@ class CurlSoapTest extends PHPUnit_Framework_TestCase
         $header = '<nfeCabecMsg xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeStatusServico2"><cUF>35</cUF><versaoDados>3.10</versaoDados></nfeCabecMsg>';
         $method = "nfeStatusServicoNF2";
         $body = '<nfeDadosMsg xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeStatusServico2"><consStatServ xmlns="http://www.portalfiscal.inf.br/nfe" versao="3.10"><tpAmb>2</tpAmb><cUF>35</cUF><xServ>STATUS</xServ></consStatServ></nfeDadosMsg>';
-        $resp = $soap->send($urlservice, $namespace, $header, $body, $method);
         $respStd = '<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><soap:Header><nfeCabecMsg xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeStatusServico2"><cUF>35</cUF><versaoDados>3.10</versaoDados></nfeCabecMsg></soap:Header><soap:Body><nfeStatusServicoNF2Result xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeStatusServico2"><retConsStatServ versao="3.10" xmlns="http://www.portalfiscal.inf.br/nfe"><tpAmb>2</tpAmb><verAplic>SP_NFE_PL_008d</verAplic><cStat>107</cStat><xMotivo>Serviço em Operação</xMotivo><cUF>35</cUF><dhRecbto>2014-12-01T15:28:29-02:00</dhRecbto><tMed>1</tMed></retConsStatServ></nfeStatusServicoNF2Result></soap:Body></soap:Envelope>';
-        $erro = $soap->error;
-        //testes
-        $this->assertEquals($erro, '');
+        $resp = $soap->send($urlservice, $namespace, $header, $body, $method);
         $this->assertEquals($resp, $respStd);
     }
 }

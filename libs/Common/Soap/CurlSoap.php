@@ -6,7 +6,7 @@ namespace Common\Soap;
  * Classe auxiliar para envio das mensagens SOAP usando cURL
  * @category   NFePHP
  * @package    NFePHP\Common\Soap
- * @copyright  Copyright (c) 2008-2014
+ * @copyright  Copyright (c) 2008-2015
  * @license    http://www.gnu.org/licenses/lesser.html LGPL v3
  * @author     Roberto L. Machado <linux dot rlm at gmail dot com>
  * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
@@ -21,24 +21,60 @@ class CurlSoap
      */
     public $soapDebug = '';
     /**
-     * error
-     * @var string
-     */
-    public $error = '';
-    /**
      * soapTimeout
      * @var integer
      */
     public $soapTimeout = 10;
-    
+    /**
+     * lastMsg
+     * @var string
+     */
+    public $lastMsg = '';
+
+    /**
+     * errorCurl
+     * @var string
+     */
     private $errorCurl = '';
+    /**
+     * infoCurl
+     * @var array
+     */
     private $infoCurl = array();
+    /**
+     * pubKeyPath
+     * @var string 
+     */
     private $pubKeyPath = '';
+    /**
+     * priKeyPath
+     * @var string
+     */
     private $priKeyPath = '';
+    /**
+     * certKeyPath
+     * @var string
+     */
     private $certKeyPath = '';
+    /**
+     * proxyIP
+     * @var string
+     */
     private $proxyIP = '';
+    /**
+     * proxyPORT
+     * @var string
+     */
     private $proxyPORT = '';
+    /**
+     * proxyUSER
+     * @var string
+     */
     private $proxyUSER = '';
+    /**
+     * proxyPASS
+     * @var string 
+     */
     private $proxyPASS = '';
     
     /**
@@ -58,14 +94,13 @@ class CurlSoap
         if (! is_file($priKeyPath) || ! is_file($pubKeyPath) || ! is_file($certKeyPath) || ! is_numeric($timeout)) {
             throw new Exception\InvalidArgumentException(
                 "Somente o path dos certificado devem ser passados."
-                . " Alguns dos certificados não foram encontrados ou o timeout não é numérico."
+                . " Alguns dos certificados não foram encontrados ou o timeout pode não ser numérico."
             );
         }
     }
     
     /**
      * setProxy
-     * 
      * Seta o uso do proxy
      * @param string $ipNumber numero IP do proxy server
      * @param string $port numero da porta usada pelo proxy
@@ -97,7 +132,6 @@ class CurlSoap
     
     /**
      * Envia mensagem ao webservice
-     * 
      * @param string $urlsevice
      * @param string $namespace
      * @param string $header
@@ -116,6 +150,7 @@ class CurlSoap
         $data .= '<soap12:Body>'.$body.'</soap12:Body>';
         $data .= '</soap12:Envelope>';
         $data = $this->zLimpaMsg($data);
+        $this->lastMsg = $data;
         //tamanho da mensagem
         $tamanho = strlen($data);
         //estabelecimento dos parametros da mensagem
@@ -125,10 +160,9 @@ class CurlSoap
             "Content-length: $tamanho");
         //solicita comunicação via cURL
         $resposta = $this->zCommCurl($urlservice, $data, $parametros);
-        
         if (empty($resposta)) {
-            $this->error = 'Não houve retorno do Curl.';
-            return false;
+            $msg = "Não houve retorno do Curl.\n $this->errorCurl";
+            throw new Exception\RuntimeException($msg);
         }
         //obtem a primeira linha da resposta
         $xPos = stripos($resposta, "\n");
@@ -136,10 +170,9 @@ class CurlSoap
         $aResp = explode(' ', $primeiraLinha);
         if (trim($aResp[1]) != '200') {
             //se não é igual a 200 houve erro
-            $this->error = $primeiraLinha;
-            return false;
+            $msg = $primeiraLinha;
+            throw new Exception\RuntimeException($msg);
         }
-        
         //obtem o tamanho do xml
         $num = strlen($resposta);
         //localiza a primeira marca de tag
@@ -151,15 +184,14 @@ class CurlSoap
             $xml = '';
         }
         if ($xml == '') {
-            $this->error = 'Não houve retorno de um xml verifique soapDebug.'.$this->soapDebug;
-            return false;
+            $msg = "Não houve retorno de um xml verifique soapDebug!!";
+            throw new Exception\RuntimeException($msg);
         }
         return $xml;
     } //fim send
 
     /**
      * getWsdl
-     * 
      * Baixa o arquivo wsdl do webservice
      * @param string $urlsefaz
      * @return boolean|string
@@ -182,11 +214,10 @@ class CurlSoap
         }
         $wsdl = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n".trim(substr($resposta, $nPos));
         return $wsdl;
-    }//fim getWsdl
+    }
 
     /**
      * zCommCurl
-     * 
      * Realiza da comunicação via cURL
      * @param string $url
      * @param string $data
@@ -195,17 +226,16 @@ class CurlSoap
      */
     protected function zCommCurl($url, $data = '', $parametros = array())
     {
-        $this->error = '';
         //incializa cURL
         $oCurl = curl_init();
         //setting da seção soap
         if ($this->proxyIP != '') {
             curl_setopt($oCurl, CURLOPT_HTTPPROXYTUNNEL, 1);
-            curl_setopt($oCurl, CURLOPT_PROXYTYPE, "CURLPROXY_HTTP");
+            curl_setopt($oCurl, CURLOPT_PROXYTYPE, CURLPROXY_HTTP);
             curl_setopt($oCurl, CURLOPT_PROXY, $this->proxyIP.':'.$this->proxyPORT);
             if ($this->proxyPASS != '') {
                 curl_setopt($oCurl, CURLOPT_PROXYUSERPWD, $this->proxyUSER.':'.$this->proxyPASS);
-                curl_setopt($oCurl, CURLOPT_PROXYAUTH, "CURLAUTH_BASIC");
+                curl_setopt($oCurl, CURLOPT_PROXYAUTH, CURLAUTH_BASIC);
             } //fim if senha proxy
         }//fim if aProxy
         curl_setopt($oCurl, CURLOPT_CONNECTTIMEOUT, $this->soapTimeout);
@@ -230,8 +260,8 @@ class CurlSoap
         $resposta = curl_exec($oCurl);
         //obtem as informações da conexão
         $info = curl_getinfo($oCurl);
-        //carrega as informações de debug
-        $this->zDebug($info);
+        //carrega os dados para debug
+        $this->zDebug($info, $data, $resposta);
         $this->errorCurl = curl_error($oCurl);
         //fecha a conexão
         curl_close($oCurl);
@@ -242,8 +272,10 @@ class CurlSoap
     /**
      * zDebug
      * @param array $info
+     * @param string $data
+     * @param string $resposta
      */
-    private function zDebug($info = array())
+    private function zDebug($info = array(), $data = '', $resposta = '')
     {
         $this->infoCurl["url"] = $info["url"];
         $this->infoCurl["content_type"] = $info["content_type"];
