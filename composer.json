@@ -47,18 +47,18 @@
             "": ["libs/", "tests/"]
         },
         "classmap": [
-            "./libs/CTe/",
             "./libs/Common/",
             "./libs/Common/Certificate/",
+            "./libs/Common/DateTime/",
             "./libs/Common/Exception/",
-            "./libs/External/FPDF/fpdf.php",
-            "./libs/External/PHPMailer/class.phpmailer.php",
-            "./libs/External/PHPMailer/class.pop3.php",
-            "./libs/External/PHPMailer/class.smtp.php",
-            "./libs/External/mpdf/mpdf.php",
+            "./libs/Common/Files/",
+            "./libs/Common/Modules/",
+            "./libs/Common/Soap/",
+            "./libs/Common/Strings/",
+            "./libs/NFe/",
+            "./libs/CTe/",
             "./libs/MDFe/",
-            "./libs/NFSe/",
-            "./libs/NFe/"
+            "./libs/NFSe/"
         ]
     },
     "minimum-stability": "dev",
