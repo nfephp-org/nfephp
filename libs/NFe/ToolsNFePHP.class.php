@@ -4561,11 +4561,11 @@ class ToolsNFePHP extends CommonNFePHP
             $oCurl = curl_init();
             if (is_array($this->aProxy)) {
                 curl_setopt($oCurl, CURLOPT_HTTPPROXYTUNNEL, 1);
-                curl_setopt($oCurl, CURLOPT_PROXYTYPE, "CURLPROXY_HTTP");
+                curl_setopt($oCurl, CURLOPT_PROXYTYPE, CURLPROXY_HTTP);
                 curl_setopt($oCurl, CURLOPT_PROXY, $this->aProxy['IP'].':'.$this->aProxy['PORT']);
                 if ($this->aProxy['PASS'] != '') {
                     curl_setopt($oCurl, CURLOPT_PROXYUSERPWD, $this->aProxy['USER'].':'.$this->aProxy['PASS']);
-                    curl_setopt($oCurl, CURLOPT_PROXYAUTH, "CURLAUTH_BASIC");
+                    curl_setopt($oCurl, CURLOPT_PROXYAUTH, CURLAUTH_BASIC);
                 } //fim if senha proxy
             }//fim if aProxy
             curl_setopt($oCurl, CURLOPT_CONNECTTIMEOUT, $this->soapTimeout);
