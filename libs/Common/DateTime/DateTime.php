@@ -17,7 +17,6 @@ class DateTime
         if ($siglaUF == '') {
             return '';
         }
-        
         $tzUFlist = array(
             'AC'=>'America/Rio_Branco',
             'AL'=>'America/Maceio',
@@ -50,7 +49,6 @@ class DateTime
         if (! isset($tzUFlist[$siglaUF])) {
             return '';
         }
-
         //seta a zona de tempo
         date_default_timezone_set($tzUFlist[$siglaUF]);
         return (string) date('P');
@@ -63,7 +61,7 @@ class DateTime
      * @param string $DH Informação de data e tempo extraida da NFe
      * @return timestamp UNIX Para uso com a funçao date do php
      */
-    public static function convertSefazTimeToTimestamp(string $dataHora = '')
+    public static function convertSefazTimeToTimestamp($dataHora = '')
     {
         if ($dataHora == '') {
             return '';
@@ -83,7 +81,7 @@ class DateTime
      * @param int $timestamp
      * @return string
      */
-    public static function convertTimestampToSefazTime(int $timestamp = 0)
+    public static function convertTimestampToSefazTime($timestamp = 0)
     {
         if ($timestamp == 0) {
             return (string) str_replace(' ', 'T', date('Y-m-d H:i:sP'));
