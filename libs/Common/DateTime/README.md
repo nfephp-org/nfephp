@@ -49,3 +49,14 @@ Parâmetros
 <b>timestamp</b>
 
 integer timestamp UNIX para ser convertido ao padrão usado pela SEFAZ. Caso nenhum parametro seja passado será retornado a data e hora atual no dito padrão, , incluindo o Time Zone default, portanto antes de usar essa função é recomendável que a primeira função "tzdBR" seja usada ou que o Time Zone Default esteja configurado corretamente.
+
+geraNumLote
+--------
+```php
+string DateTime::geraNumLote(int $numdigits)
+```
+Esta função estática retorna uma string com o número de dígitos indicado no parâmetro e pode representar um numero único pois está baseado em tempo microtime. Caso não seja passado nenhum parâmetro serão retornados 15 dígitos por padrão.
+Parâmetros
+--------
+<b>numdigits</b>
+

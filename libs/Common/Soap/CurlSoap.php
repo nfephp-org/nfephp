@@ -161,7 +161,7 @@ class CurlSoap
         //solicita comunicação via cURL
         $resposta = $this->zCommCurl($urlservice, $data, $parametros);
         if (empty($resposta)) {
-            $msg = "Não houve retorno do Curl.\n $this->errorCurl \n $this->soapDebug";
+            $msg = "Não houve retorno do Curl.\n $this->errorCurl";
             throw new Exception\RuntimeException($msg);
         }
         //obtem a primeira linha da resposta
@@ -170,7 +170,7 @@ class CurlSoap
         $aResp = explode(' ', $primeiraLinha);
         if (trim($aResp[1]) != '200') {
             //se não é igual a 200 houve erro
-            $msg = "$primeiraLinha \n $this->errorCurl \n $this->soapDebug";
+            $msg = $primeiraLinha;
             throw new Exception\RuntimeException($msg);
         }
         //obtem o tamanho do xml
@@ -184,7 +184,7 @@ class CurlSoap
             $xml = '';
         }
         if ($xml == '') {
-            $msg = "Não houve retorno de um xml verifique soapDebug.\n $this->errorCurl\n $this->soapDebug";
+            $msg = "Não houve retorno de um xml verifique soapDebug!!";
             throw new Exception\RuntimeException($msg);
         }
         return $xml;
