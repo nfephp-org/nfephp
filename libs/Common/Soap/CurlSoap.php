@@ -6,7 +6,7 @@ namespace Common\Soap;
  * Classe auxiliar para envio das mensagens SOAP usando cURL
  * @category   NFePHP
  * @package    NFePHP\Common\Soap
- * @copyright  Copyright (c) 2008-2014
+ * @copyright  Copyright (c) 2008-2015
  * @license    http://www.gnu.org/licenses/lesser.html LGPL v3
  * @author     Roberto L. Machado <linux dot rlm at gmail dot com>
  * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
@@ -21,15 +21,16 @@ class CurlSoap
      */
     public $soapDebug = '';
     /**
-     * error
-     * @var string
-     */
-    public $error = '';
-    /**
      * soapTimeout
      * @var integer
      */
     public $soapTimeout = 10;
+    /**
+     * lastMsg
+     * @var string
+     */
+    public $lastMsg = '';
+
     /**
      * errorCurl
      * @var string
@@ -136,10 +137,9 @@ class CurlSoap
      * @param string $header
      * @param string $body
      * @param string $method
-     * @param string $data Variavel passada como referencia para retorna a mensagem enviada
      * @return boolean|string
      */
-    public function send($urlservice, $namespace, $header, $body, $method, &$data = '')
+    public function send($urlservice, $namespace, $header, $body, $method)
     {
         //monta a mensagem ao webservice
         $data = '<?xml version="1.0" encoding="utf-8"?>'.'<soap12:Envelope ';
@@ -150,6 +150,7 @@ class CurlSoap
         $data .= '<soap12:Body>'.$body.'</soap12:Body>';
         $data .= '</soap12:Envelope>';
         $data = $this->zLimpaMsg($data);
+        $this->lastMsg = $data;
         //tamanho da mensagem
         $tamanho = strlen($data);
         //estabelecimento dos parametros da mensagem
@@ -160,8 +161,8 @@ class CurlSoap
         //solicita comunicação via cURL
         $resposta = $this->zCommCurl($urlservice, $data, $parametros);
         if (empty($resposta)) {
-            $this->error = 'Não houve retorno do Curl.';
-            return false;
+            $msg = "Não houve retorno do Curl.\n $this->errorCurl \n $this->soapDebug";
+            throw new Exception\RuntimeException($msg);
         }
         //obtem a primeira linha da resposta
         $xPos = stripos($resposta, "\n");
@@ -169,8 +170,8 @@ class CurlSoap
         $aResp = explode(' ', $primeiraLinha);
         if (trim($aResp[1]) != '200') {
             //se não é igual a 200 houve erro
-            $this->error = $primeiraLinha;
-            return false;
+            $msg = "$primeiraLinha \n $this->errorCurl \n $this->soapDebug";
+            throw new Exception\RuntimeException($msg);
         }
         //obtem o tamanho do xml
         $num = strlen($resposta);
@@ -183,8 +184,8 @@ class CurlSoap
             $xml = '';
         }
         if ($xml == '') {
-            $this->error = "Não houve retorno de um xml verifique soapDebug.\n $this->errorCurl\n $this->soapDebug";
-            return false;
+            $msg = "Não houve retorno de um xml verifique soapDebug.\n $this->errorCurl\n $this->soapDebug";
+            throw new Exception\RuntimeException($msg);
         }
         return $xml;
     } //fim send
@@ -225,7 +226,6 @@ class CurlSoap
      */
     protected function zCommCurl($url, $data = '', $parametros = array())
     {
-        $this->error = '';
         //incializa cURL
         $oCurl = curl_init();
         //setting da seção soap
