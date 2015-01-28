@@ -34,9 +34,9 @@
  *              Roberto Spadim <roberto at spadim dot com dot br>
  */
 //define o caminho base da instalação do sistema
-if (!defined('PATH_ROOT')) {
-   define('PATH_ROOT', dirname(dirname( __FILE__ )) . DIRECTORY_SEPARATOR);
-}
+#if (!defined('PATH_ROOT')) {
+#   define('PATH_ROOT', dirname(dirname( __FILE__ )) . DIRECTORY_SEPARATOR);
+#}
 //ajuste do tempo limite de resposta do processo
 set_time_limit(1800);
 //definição do caminho para o diretorio com as fontes do FDPF
@@ -50,11 +50,11 @@ if(!defined('NFEPHP_SITUACAO_EXTERNA_CANCELADA')){
 	define('NFEPHP_SITUACAO_EXTERNA_NONE'		,0);
 }
 //classe extendida da classe FPDF para montagem do arquivo pdf
-require_once('../Common/PdfNFePHP.class.php');
+require_once(dirname(dirname(__FILE__)).'/Common/PdfNFePHP.class.php');
 //classe com as funções communs entre DANFE e DACTE
-require_once('../Common/CommonNFePHP.class.php');
+require_once(dirname(dirname(__FILE__)).'/Common/CommonNFePHP.class.php');
 //interface 
-require_once('../Common/DocumentoNFePHP.interface.php');
+require_once(dirname(dirname(__FILE__)).'/Common/DocumentoNFePHP.interface.php');
 
 class DaCanccteNFePHP extends CommonNFePHP implements DocumentoNFePHP {
     

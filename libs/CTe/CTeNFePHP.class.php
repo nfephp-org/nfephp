@@ -48,11 +48,11 @@
  */
 
 // Define o caminho base da instalação do sistema
-if (!defined('PATH_ROOT')) {
-    define('PATH_ROOT', dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR);
-}
+#if (!defined('PATH_ROOT')) {
+#    define('PATH_ROOT', dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR);
+#}
 
-require_once(PATH_ROOT.'libs/Common/ExceptionNFePHP.class.php');
+require_once(dirname(dirname(__FILE__)).'/Common/ExceptionNFePHP.class.php');
 
 class CTeNFePHP
 {

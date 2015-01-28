@@ -58,9 +58,9 @@
 //namespace NFePHP;
 
 //define o caminho base da instalação do sistema
-if (!defined('PATH_ROOT')) {
-    define('PATH_ROOT', dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR);
-}
+#if (!defined('PATH_ROOT')) {
+#    define('PATH_ROOT', dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR);
+#}
 //ajuste do tempo limite de resposta do processo
 set_time_limit(1800);
 //definição do caminho para o diretorio com as fontes do FDPF
@@ -75,15 +75,15 @@ if (!defined('NFEPHP_SITUACAO_EXTERNA_CANCELADA')) {
     define('NFEPHP_SITUACAO_EXTERNA_NONE', 0);
 }
 //classe das Excecoes
-require_once PATH_ROOT.'libs/Common/ExceptionNFePHP.class.php';
+require_once dirname(dirname(__FILE__)).'/Common/ExceptionNFePHP.class.php';
 //classe extendida da classe FPDF para montagem do arquivo pdf
-require_once PATH_ROOT.'libs/Common/PdfNFePHP.class.php';
+require_once dirname(dirname(__FILE__)).'/Common/PdfNFePHP.class.php';
 //classe com as funções communs entre DANFE e DACTE
-require_once PATH_ROOT.'libs/Common/CommonNFePHP.class.php';
+require_once dirname(dirname(__FILE__)).'/Common/CommonNFePHP.class.php';
 //interface
-require_once PATH_ROOT.'libs/Common/DocumentoNFePHP.interface.php';
+require_once dirname(dirname(__FILE__)).'/Common/DocumentoNFePHP.interface.php';
 //classe com as funções DOM
-require_once PATH_ROOT.'libs/Common/DomDocumentNFePHP.class.php';
+require_once dirname(dirname(__FILE__)).'/Common/DomDocumentNFePHP.class.php';
 //classe principal
 class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
 {
