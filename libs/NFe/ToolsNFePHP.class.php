@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.10.07-beta
+ * @version   3.10.08-beta
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -5243,5 +5243,56 @@ class ToolsNFePHP extends CommonNFePHP
         $retXml = str_replace("\s", '', $retXml);
         $retXml = str_replace("\t", '', $retXml);
         return $retXml;
+    }
+    
+    /**
+     * pLoadServico
+     * Monta o namespace e o cabecalho da comunicação SOAP
+     * @param string $servico Identificação do Servico
+     * @param array $aURL Dados das Urls do SEFAZ
+     * @return void
+     */
+    private function pLoadServico(
+        $servico,
+        $siglaUF,
+        $tpAmb,
+        &$cUF,
+        &$urlservico,
+        &$namespace,
+        &$cabec,
+        &$metodo,
+        &$versao
+    ) {
+        $cUF = $this->cUFlist[$siglaUF];
+        //verifica se alguma contingência está habilitada,
+        //neste caso precisa recarregar os webservices
+        if ($this->enableSVCAN) {
+            $aURL = $this->pLoadSEFAZ($tpAmb, self::CONTINGENCIA_SVCAN);
+        } elseif ($this->enableSVCRS) {
+            $aURL = $this->pLoadSEFAZ($tpAmb, self::CONTINGENCIA_SVCRS);
+        } else {
+            if ($siglaUF !== $this->siglaUF) {
+                $aURL = $this->pLoadSEFAZ($tpAmb, $siglaUF);
+            } else {
+                $aURL = $this->aURL;
+            }
+        }
+        //recuperação da versão
+        $versao = $aURL[$servico]['version'];
+        //recuperação da url do serviço
+        $urlservico = $aURL[$servico]['URL'];
+        //recuperação do método
+        $metodo = $aURL[$servico]['method'];
+        //montagem do namespace do serviço
+        $operation = $aURL[$servico]['operation'];
+        $namespace = sprintf("%s/wsdl/%s", $this->URLPortal, $operation);
+        //montagem do cabeçalho da comunicação SOAP
+        $cabec = sprintf(
+            '<nfeCabecMsg xmlns="%s"><cUF>%s</cUF>'
+            . '<versaoDados>%s</versaoDados></nfeCabecMsg>',
+            $namespace,
+            $cUF,
+            $versao
+        );
     }
 }
