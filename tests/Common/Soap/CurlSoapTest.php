@@ -32,18 +32,17 @@ class CurlSoapTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($resp, $aProxy);
     }
     
+    /**
+     * @expectedException Common\Exception\InvalidArgumentException
+     * @expectedExceptionMessage Alguns dos certificados não foram encontrados ou o timeout pode não ser numérico.
+     */
     public function testExceptionAoPassarCertificados()
     {
         $priKey = dirname(dirname(dirname(__FILE__))) . '/fixtures/certs/99999090910270_priKEY.pem';
         $pubKey = dirname(dirname(dirname(__FILE__))) . '/fixtures/certs/0000_pubKEY.pem';
         $certKey = dirname(dirname(dirname(__FILE__))) . '/fixtures/certs/99999090910270_certKEY.pem';
         $timeout = '10';
-        try {
-            $soap = new CurlSoap($priKey, $pubKey, $certKey, $timeout);
-        } catch (InvalidArgumentException $expected) {
-            return;
-        }
-        $this->fail('Teste dos certificados - A excessão esperada não foi disparada.');
+        $soap = new CurlSoap($priKey, $pubKey, $certKey, $timeout);
     }
     
     public function testGetWsdl()
@@ -74,6 +73,10 @@ class CurlSoapTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($wsdl, $wsdlstd);
     }
     
+    /**
+     * @expectedException Common\Exception\RuntimeException
+     * @expectedExceptionMessage HTTP/1.1 403 Forbidden
+     */
     public function testSendForbidden()
     {
         $priKey = dirname(dirname(dirname(__FILE__))) . '/fixtures/certs/99999090910270_priKEY.pem';
@@ -86,6 +89,11 @@ class CurlSoapTest extends PHPUnit_Framework_TestCase
             ->setConstructorArgs($args)
             ->setMethods(array('zCommCurl'))
             ->getMock();
+        $valor = array('http_code' => '403');
+        $oReflection = new ReflectionClass($soap);
+        $oProperty = $oReflection->getProperty('infoCurl');
+        $oProperty->setAccessible(true);
+        $oProperty->setValue($soap, $valor);
         //estabelece retorno da chamada curl FAJUTA como se fosse uma resposta real
         $fileretornosefaz = dirname(dirname(dirname(__FILE__))) .
             '/fixtures/xml/forbidden.xml';
@@ -97,12 +105,7 @@ class CurlSoapTest extends PHPUnit_Framework_TestCase
         $header = '<nfeCabecMsg xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeStatusServico2"><cUF>35</cUF><versaoDados>3.10</versaoDados></nfeCabecMsg>';
         $method = "nfeStatusServicoNF2";
         $body = '<nfeDadosMsg xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeStatusServico2"><consStatServ xmlns="http://www.portalfiscal.inf.br/nfe" versao="3.10"><tpAmb>2</tpAmb><cUF>35</cUF><xServ>STATUS</xServ></consStatServ></nfeDadosMsg>';
-        try {
-            $resp = $soap->send($urlservice, $namespace, $header, $body, $method);
-        } catch (RuntimeException $expected) {
-            return;
-        }
-        $this->fail('HTTP/1.1 403 Forbidden');
+        $resp = $soap->send($urlservice, $namespace, $header, $body, $method);
     }
 
     public function testSendSuccess()
@@ -117,6 +120,11 @@ class CurlSoapTest extends PHPUnit_Framework_TestCase
             ->setConstructorArgs($args)
             ->setMethods(array('zCommCurl'))
             ->getMock();
+        $valor = array('http_code' => '200');
+        $oReflection = new ReflectionClass($soap);
+        $oProperty = $oReflection->getProperty('infoCurl');
+        $oProperty->setAccessible(true);
+        $oProperty->setValue($soap, $valor);
         //estabelece retorno da chamada curl FAJUTA como se fosse uma resposta real
         $fileretornosefaz = dirname(dirname(dirname(__FILE__))) .
             '/fixtures/xml/retornoSefaz_success_statusservico.xml';

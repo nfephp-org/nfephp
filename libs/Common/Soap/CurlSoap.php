@@ -40,7 +40,7 @@ class CurlSoap
      * infoCurl
      * @var array
      */
-    private $infoCurl = array();
+    protected $infoCurl = array();
     /**
      * pubKeyPath
      * @var string 
@@ -92,10 +92,8 @@ class CurlSoap
         $this->certKeyPath = $certKeyPath;
         $this->soapTimeout = $timeout;
         if (! is_file($priKeyPath) || ! is_file($pubKeyPath) || ! is_file($certKeyPath) || ! is_numeric($timeout)) {
-            throw new Exception\InvalidArgumentException(
-                "Somente o path dos certificado devem ser passados."
-                . " Alguns dos certificados não foram encontrados ou o timeout pode não ser numérico."
-            );
+            $msg = "Alguns dos certificados não foram encontrados ou o timeout pode não ser numérico.";
+            throw new Exception\InvalidArgumentException($msg);
         }
     }
     
@@ -164,13 +162,12 @@ class CurlSoap
             $msg = "Não houve retorno do Curl.\n $this->errorCurl";
             throw new Exception\RuntimeException($msg);
         }
-        //obtem a primeira linha da resposta
-        $xPos = stripos($resposta, "\n");
-        $primeiraLinha = substr($resposta, 0, $xPos);
-        $aResp = explode(' ', $primeiraLinha);
-        if (trim($aResp[1]) != '200') {
+        //obtem o bloco html da resposta
+        $xPos = stripos($resposta, "<");
+        $blocoHtml = substr($resposta, 0, $xPos);
+        if ($this->infoCurl["http_code"] != '200') {
             //se não é igual a 200 houve erro
-            $msg = $primeiraLinha;
+            $msg = $blocoHtml;
             throw new Exception\RuntimeException($msg);
         }
         //obtem o tamanho do xml
@@ -319,7 +316,7 @@ class CurlSoap
         $nmsg = str_replace(array("\n","\r","\t"), array('','',''), $msg);
         $nnmsg = str_replace('> ', '>', $nmsg);
         if (strpos($nnmsg, '> ')) {
-            $this->limpaMsg((string) $nnmsg);
+            $this->zLimpaMsg((string) $nnmsg);
         }
         return $nnmsg;
     }
