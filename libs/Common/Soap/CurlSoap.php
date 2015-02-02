@@ -164,13 +164,12 @@ class CurlSoap
             $msg = "Não houve retorno do Curl.\n $this->errorCurl";
             throw new Exception\RuntimeException($msg);
         }
-        //obtem a primeira linha da resposta
-        $xPos = stripos($resposta, "\n");
-        $primeiraLinha = substr($resposta, 0, $xPos);
-        $aResp = explode(' ', $primeiraLinha);
-        if (trim($aResp[1]) != '200') {
+        //obtem o bloco html da resposta
+        $xPos = stripos($resposta, "<");
+        $blocoHtml = substr($resposta, 0, $xPos);
+        if ($this->infoCurl["http_code"] != '200') {
             //se não é igual a 200 houve erro
-            $msg = $primeiraLinha;
+            $msg = $blocoHtml;
             throw new Exception\RuntimeException($msg);
         }
         //obtem o tamanho do xml
@@ -319,7 +318,7 @@ class CurlSoap
         $nmsg = str_replace(array("\n","\r","\t"), array('','',''), $msg);
         $nnmsg = str_replace('> ', '>', $nmsg);
         if (strpos($nnmsg, '> ')) {
-            $this->limpaMsg((string) $nnmsg);
+            $this->zLimpaMsg((string) $nnmsg);
         }
         return $nnmsg;
     }

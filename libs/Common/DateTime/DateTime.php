@@ -2,6 +2,15 @@
 
 namespace Common\DateTime;
 
+/**
+ * Classe auxiliar para tratamento de datas e horas
+ * @category   NFePHP
+ * @package    NFePHP\Common\DateTime
+ * @copyright  Copyright (c) 2008-2015
+ * @license    http://www.gnu.org/licenses/lesser.html LGPL v3
+ * @author     Roberto L. Machado <linux dot rlm at gmail dot com>
+ * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
+ */
 class DateTime
 {
     /**
