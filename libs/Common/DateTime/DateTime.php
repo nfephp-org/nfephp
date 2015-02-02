@@ -2,16 +2,6 @@
 
 namespace Common\DateTime;
 
-/**
- * Classe auxiliar para o tratamento de datas
- * @category   NFePHP
- * @package    NFePHP\Common\DateTime
- * @copyright  Copyright (c) 2008-2015
- * @license    http://www.gnu.org/licenses/lesser.html LGPL v3
- * @author     Roberto L. Machado <linux dot rlm at gmail dot com>
- * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
- */
-
 class DateTime
 {
     /**
@@ -107,6 +97,6 @@ class DateTime
      */
     public static function geraNumLote($numdigits = 15)
     {
-        return (string) substr(str_replace(',', '', number_format(microtime(true)*1000000, 0)), 0, $numdigits);
+        return substr(str_replace(',', '', number_format(microtime(true)*1000000, 0)), 0, $numdigits);
     }
 }
