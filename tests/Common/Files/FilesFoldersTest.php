@@ -18,7 +18,7 @@ class FilesFoldersTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($resp);
     }
 
-    /**
+     /**
      * @expectedException PHPUnit_Framework_Error_Warning
      * @expectedExceptionMessage mkdir(): Permission denied
      */
@@ -39,18 +39,21 @@ class FilesFoldersTest extends PHPUnit_Framework_TestCase
         );
         $folderBase = dirname(dirname(dirname(__FILE__))) . '/fixtures/certs/';
         $folders = new FilesFolders();
-        $aList = $folders->listDir($folderBase, '*.pem', 'false');
+        $aList = $folders->listDir($folderBase, '*.pem', true);
         $this->assertEquals($aList, $files);
     }
-
+    
     /**
-     * @expectedException \Common\Exception\RuntimeException
+     * @expectedException Common\Exception\InvalidArgumentException
+     * @expectedExceptionMessage O diretório não existe!!!
      */
     public function testListDirFail()
     {
-        $folderBase = '/etc';
+        $aList = array();
+        $folderBase = '/qualquercoisa';
         $folders = new FilesFolders();
-        $folders->listDir($folderBase, '*.*', 'false');
+        $files = $folders->listDir($folderBase, '*.*', false);
+        $this->assertEquals($aList, $files);
     }
             
     public function testWriteTest()
