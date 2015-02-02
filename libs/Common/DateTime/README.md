@@ -55,8 +55,9 @@ geraNumLote
 ```php
 string DateTime::geraNumLote(int $numdigits)
 ```
-Esta função estática retorna uma string com o número de dígitos indicado no parâmetro e pode representar um numero único pois está baseado em tempo microtime. Caso não seja passado nenhum parâmetro serão retornados 15 dígitos por padrão.
+Esta função estática retorna um número baseado em microtime para ser usado como número de lote nas classes. O número default de dígitos é 15.
 Parâmetros
 --------
 <b>numdigits</b>
 
+integer que estabelece o numero de dígitos no retorno. Default 15.
