@@ -15,7 +15,7 @@ namespace Common\Certificate;
 
 use Common\Certificate\Asn;
 use Common\Exception;
-use \DOMDocument;
+use Common\Dom\Dom;
 
 class Pkcs12
 {
@@ -124,12 +124,6 @@ class Pkcs12
         $ignoreValidCert = false
     ) {
         $ncnpj = preg_replace('/[^0-9]/', '', $cnpj);
-        if (strlen(trim($ncnpj))!= 14) {
-            throw new Exception\InvalidArgumentException(
-                "Um CNPJ válido deve ser passado e são permitidos apenas números. "
-                . "Valor passado [$cnpj]."
-            );
-        }
         if (empty($pathCerts)) {
             //estabelecer diretorio default
             $pathCerts = dirname(dirname(dirname(dirname(__FILE__)))).DIRECTORY_SEPARATOR.'certs'.DIRECTORY_SEPARATOR;
@@ -385,10 +379,8 @@ class Pkcs12
         //remove sujeiras do xml
         $order = array("\r\n", "\n", "\r", "\t");
         $xml = str_replace($order, '', $xml);
-        $xmldoc = new DOMDocument('1.0', 'utf-8');// carrega o documento no DOM
-        $xmldoc->preserveWhiteSpace = false; //elimina espaços em branco
-        $xmldoc->formatOutput = false;
-        $xmldoc->loadXML($xml, LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
+        $xmldoc = new Dom();
+        $xmldoc->loadXMLString($xml);
         //coloca o node raiz em uma variável
         $root = $xmldoc->documentElement;
         //extrair a tag com os dados a serem assinados
@@ -543,7 +535,6 @@ class Pkcs12
     
     /**
      * verifySignature
-     * 
      * Verifica a validade da assinatura digital contida no xml
      * @param string $docxml conteudo do xml a ser verificado ou o path completo
      * @param string $tagid tag que foi assinada no documento xml
@@ -553,11 +544,11 @@ class Pkcs12
      */
     public function verifySignature($docxml = '', $tagid = '')
     {
-        if ($docxml=='') {
+        if ($docxml == '') {
             $msg = "Não foi passado um xml para a verificação.";
             throw new Exception\InvalidArgumentException($msg);
         }
-        if ($tagid=='') {
+        if ($tagid == '') {
             $msg = "Não foi indicada a TAG a ser verificada.";
             throw new Exception\InvalidArgumentException($msg);
         }
@@ -565,44 +556,30 @@ class Pkcs12
         if (is_file($docxml)) {
             $xml = file_get_contents($docxml);
         }
-        $dom = new DOMDocument('1.0', 'utf-8');
-        $dom->preserveWhiteSpace = false;
-        $dom->formatOutput = false;
-        $dom->loadXML($xml, LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
-        $node = $dom->getElementsByTagName($tagid)->item(0);
-        if (! $this->zSignatureExists($dom)) {
-            $msg = "O xml não contêm nenhuma assinatura para ser verificada.";
-            throw new Exception\InvalidArgumentException($msg);
-        }
-        if (! isset($node)) {
-            throw new Exception\RuntimeException(
-                "A tag < $tagid > não existe no XML!!"
-            );
-        }
-        //carregar o node em sua forma canonica
-        $tagInf = $node->C14N(false, false, null, null);
-        //calcular o hash sha1
-        $hashValue = hash('sha1', $tagInf, true);
-        //converter o hash para base64 para obter o digest do node
-        $digestCalculado = base64_encode($hashValue);
-        //pegar o digest informado no xml
-        $digestInformado = $dom->getElementsByTagName('DigestValue')->item(0)->nodeValue;
-        //compara os digests calculados e informados
-        if ($digestCalculado != $digestInformado) {
-            $msg = "O conteúdo do XML não confere com o Digest Value.\n
-                Digest calculado [{$digestCalculado}], digest informado no XML [{$digestInformado}].\n
-                O arquivo pode estar corrompido ou ter sido adulterado.";
-            throw new Exception\RuntimeException($msg);
-        }
+        $dom = new Dom();
+        $dom->loadXMLString($xml);
+        $flag = $this->zDigCheck($dom, $tagid);
+        $flag = $this->zSignCheck($dom);
+        return $flag;
+    }
+    
+    /**
+     * zSignCheck
+     * @param DOMDocument $dom
+     * @return boolean
+     * @throws Exception\RuntimeException
+     */
+    private function zSignCheck($dom)
+    {
         // Obter e remontar a chave publica do xml
-        $x509Certificate = $dom->getElementsByTagName('X509Certificate')->item(0)->nodeValue;
+        $x509Certificate = $dom->getNodeValue('X509Certificate');
         $x509Certificate =  "-----BEGIN CERTIFICATE-----\n"
             . $this->zSplitLines($x509Certificate)
             . "\n-----END CERTIFICATE-----\n";
         //carregar a chave publica remontada
         $objSSLPubKey = openssl_pkey_get_public($x509Certificate);
         if ($objSSLPubKey === false) {
-            $msg = "Ocorreram problemas ao remontar a chave pública. Certificado incorreto ou corrompido!!";
+            $msg = "Ocorreram problemas ao carregar a chave pública. Certificado incorreto ou corrompido!!";
             while ($erro = openssl_error_string()) {
                 $msg .= $erro . "\n";
             }
@@ -619,6 +596,43 @@ class Pkcs12
             while ($erro = openssl_error_string()) {
                 $msg .= $erro . "\n";
             }
+            throw new Exception\RuntimeException($msg);
+        }
+        return true;
+    }
+    
+    /**
+     * zDigCheck
+     * @param DOMDocument $dom
+     * @param string $tagid
+     * @return boolean
+     * @throws Exception\RuntimeException
+     */
+    private function zDigCheck($dom, $tagid = '')
+    {
+        $node = $dom->getNode($tagid, 0);
+        if (empty($node)) {
+            throw new Exception\RuntimeException(
+                "A tag < $tagid > não existe no XML!!"
+            );
+        }
+        if (! $this->zSignatureExists($dom)) {
+            $msg = "O xml não contêm nenhuma assinatura para ser verificada.";
+            throw new Exception\RuntimeException($msg);
+        }
+        //carregar o node em sua forma canonica
+        $tagInf = $node->C14N(false, false, null, null);
+        //calcular o hash sha1
+        $hashValue = hash('sha1', $tagInf, true);
+        //converter o hash para base64 para obter o digest do node
+        $digestCalculado = base64_encode($hashValue);
+        //pegar o digest informado no xml
+        $digestInformado = $dom->getNodeValue('DigestValue');
+        //compara os digests calculados e informados
+        if ($digestCalculado != $digestInformado) {
+            $msg = "O conteúdo do XML não confere com o Digest Value.\n
+                Digest calculado [{$digestCalculado}], digest informado no XML [{$digestInformado}].\n
+                O arquivo pode estar corrompido ou ter sido adulterado.";
             throw new Exception\RuntimeException($msg);
         }
         return true;
