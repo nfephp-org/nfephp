@@ -11,6 +11,7 @@ namespace Common\Soap;
  * @author     Roberto L. Machado <linux dot rlm at gmail dot com>
  * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
  */
+
 use Common\Exception;
 
 class CurlSoap

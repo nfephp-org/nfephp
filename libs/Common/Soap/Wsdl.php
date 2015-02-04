@@ -7,9 +7,11 @@ use Common\Exception;
 use \DOMDocument;
 
 /**
- * @category   SpedPHP
- * @package    SpedPHP\Common\Soap
- * @copyright  Copyright (c) 2008-2014
+ * Classe usada para obter os arquivos WSDL, que são as especificações 
+ * da comunicação SOAP com os webservices da SEFAZ e das Prefeituras;
+ * @category   NFePHP
+ * @package    NFePHP\Common\Soap
+ * @copyright  Copyright (c) 2008-2015
  * @license    http://www.gnu.org/licenses/lesser.html LGPL v3
  * @author     Roberto L. Machado <linux.rlm@gamil.com>
  * @link       http://github.com/nfephp-org/spedphp for the canonical source repository
@@ -34,8 +36,6 @@ class Wsdl
      */
     public function updateWsdl($wsdlDir = '', $wsFile = '', $priKeyPath = '', $pubKeyPath = '', $certKeyPath = '')
     {
-        
-        
         $contagem = 1;
         $msg = '';
         //pega o conteúdo do xml com os endereços dos webservices
@@ -57,12 +57,13 @@ class Wsdl
     
     /**
      * downloadWsdl
-     * 
      * Baixa o arquivos wsdl necessário para a comunicação usando 
      * SOAP nativo
      * @param string $url
-     * 
-     * @return type
+     * @param string $priKeyPath
+     * @param string $pubKeyPath
+     * @param string $certKeyPath
+     * @return string
      */
     public function downLoadWsdl($url, $priKeyPath, $pubKeyPath, $certKeyPath)
     {
@@ -70,8 +71,8 @@ class Wsdl
         $resposta = $soap->getWsdl($url);
         if (!$resposta) {
             $this->soapDebug = $soap->soapDebug;
-            return false;
+            return '';
         }
         return $resposta;
-    }//fim downLoadWsdl
+    }
 }//fim WSDL

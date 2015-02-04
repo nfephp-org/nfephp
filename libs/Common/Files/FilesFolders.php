@@ -225,10 +225,34 @@ class FilesFolders
             }
         }
         if (! rmdir($dirPath)) {
-            throw new Exception\RuntimeException(
-                "Falha! sem permissão de exclusão do diretório $dirPath"
-            );
+            $msg = "Falha! sem permissão de exclusão do diretório $dirPath";
+            throw new Exception\RuntimeException($msg);
         }
         return true;
+    }
+    
+    /**
+     * readFile
+     * @param string $pathFile
+     * @return string
+     * @throws Exception\InvalidArgumentException
+     * @throws Exception\RuntimeException
+     */
+    public static function readFile($pathFile = '')
+    {
+        $data = '';
+        if ($pathFile == '') {
+            $msg = "Um caminho para o arquivo deve ser passado!!";
+            throw new Exception\InvalidArgumentException($msg);
+        }
+        if (! is_file($pathFile)) {
+            $msg = "O arquivo indicado não foi localizado!!";
+            throw new Exception\InvalidArgumentException($msg);
+        }
+        if (! $data = file_get_contents($pathFile)) {
+            $msg = "O arquivo indicado não pode ser lido. Permissões!!";
+            throw new Exception\RuntimeException($msg);
+        }
+        return $data;
     }
 }

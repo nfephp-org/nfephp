@@ -210,6 +210,16 @@ class FilesZip
     }
     
     /**
+     * descompacta uma string usando Gzip
+     * @param string $data
+     * @return string
+     */
+    public static function unGZipString($data = '')
+    {
+        return gzdecode($data);
+    }
+    
+    /**
      * compacta uma string usando ZLIB
      * @param string $data
      * @return string
