@@ -883,7 +883,7 @@ class CTeNFePHP
             $node = $dom->getElementsByTagName('infCte')->item(0);
             //obtem a versão do layout da NFe
             $ver = trim($node->getAttribute("versao"));
-            $aFile = $this->listDir($this->xsdDir.$this->schemeVer.DIRECTORY_SEPARATOR, 'cte_v*.xsd', true);
+            $aFile = $this->listDir($this->xsdDir.$this->cteSchemeVer.DIRECTORY_SEPARATOR, 'cte_v*.xsd', true);
             if (!$aFile[0]) {
                 $msg = "Erro na localização do schema xsd.\n";
                 $this->zSetError($msg);

@@ -6,15 +6,17 @@
         <MDFeRecepcao method='mdfeRecepcaoLote' version = '1.00'>https://mdfe-hml.sefaz.rs.gov.br/ws/MDFerecepcao/MDFeRecepcao.asmx</MDFeRecepcao>
         <MDFeRetRecepcao method='mdfeRetRecepcao' version = '1.00'>https://mdfe-hml.sefaz.rs.gov.br/ws/MDFeRetRecepcao/MDFeRetRecepcao.asmx</MDFeRetRecepcao>
         <MDFeRecepcaoEvento method='mdfeRecepcaoEvento' version = '1.00'>https://mdfe-hml.sefaz.rs.gov.br/ws/MDFeRecepcaoEvento/MDFeRecepcaoEvento.asmx</MDFeRecepcaoEvento>
-        <MDFeConsultaSituacao method='mdfeConsultaMDF' version = '1.00'>https://mdfe-hml.sefaz.rs.gov.br/ws/MDFeConsultaSit/MDFeConsultaSit.asmx</MDFeConsultaSituacao>
+        <MDFeConsulta method='mdfeConsultaMDF' version = '1.00'>https://mdfe-hml.sefaz.rs.gov.br/ws/MDFeConsulta/MDFeConsulta.asmx</MDFeConsulta>
         <MDFeStatusServico method='mdfeStatusServicoMDF' version = '1.00'>https://mdfe-hml.sefaz.rs.gov.br/ws/MDFeStatusServico/MDFeStatusServico.asmx</MDFeStatusServico>
+        <MDFeConsNaoEnc method='mdfeConsNaoEnc' version = '1.00'>https://mdfe-hml.sefaz.rs.gov.br/ws/MDFeConsNaoEnc/MDFeConsNaoEnc.asmx</MDFeConsNaoEnc>
     </homologacao>
     <producao>
         <MDFeRecepcao method='mdfeRecepcaoLote' version='1.00'>https://mdfe.sefaz.rs.gov.br/ws/MDFerecepcao/MDFeRecepcao.asmx</MDFeRecepcao>
         <MDFeRetRecepcao method='mdfeRetRecepcao' version='1.00'>https://mdfe.sefaz.rs.gov.br/ws/MDFeRetRecepcao/MDFeRetRecepcao.asmx</MDFeRetRecepcao>
         <MDFeRecepcaoEvento method='mdfeRecepcaoEvento' version='1.00'>https://mdfe.sefaz.rs.gov.br/ws/MDFeRecepcaoEvento/MDFeRecepcaoEvento.asmx</MDFeRecepcaoEvento>
-        <MDFeConsultaSituacao method='mdfeConsultaMDF' version='1.00'>https://mdfe.sefaz.rs.gov.br/ws/MDFeConsultaSit/MDFeConsultaSit.asmx</MDFeConsultaSituacao>
+        <MDFeConsulta method='mdfeConsultaMDF' version='1.00'>https://mdfe.sefaz.rs.gov.br/ws/MDFeConsulta/MDFeConsulta.asmx </MDFeConsulta>
         <MDFeStatusServico method='mdfeStatusServicoMDF' version='1.00'>https://mdfe.sefaz.rs.gov.br/ws/MDFeStatusServico/MDFeStatusServico.asmx</MDFeStatusServico>
+        <MDFeConsNaoEnc method='mdfeConsNaoEnc' version = '1.00'>https://mdfe.sefaz.rs.gov.br/ws/MDFeConsNaoEnc/MDFeConsNaoEnc.asmx</MDFeConsNaoEnc>
     </producao>
 </UF>
 </WS>
