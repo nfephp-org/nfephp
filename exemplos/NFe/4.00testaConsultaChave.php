@@ -6,10 +6,8 @@ include_once '../../bootstrap.php';
 use NFe\ToolsNFe;
 
 $nfe = new ToolsNFe('../../config/config.json');
+$nfe->setModelo('55');
 
-//$chave = '35150158716523000119550000000340851645226073';
-//$chave = '42150111703922000181550020000295141002241738';
-//$chave = '35141258716523000119550000000337571254185445';
 $chave = '35150158716523000119550010000000071000000076';
 $tpAmb = '2';
 $aResposta = array();

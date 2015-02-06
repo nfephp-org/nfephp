@@ -6,16 +6,15 @@ include_once '../../bootstrap.php';
 use NFe\ToolsNFe;
 
 $nfe = new ToolsNFe('../../config/config.json');
+$nfe->setModelo('55');
 
-$modelo = '55';
+$aResposta = array();
 $nSerie = 1;
 $nIni = 8;
 $nFin = 8;
 $xJust = 'teste de inutilização de notas fiscais em homologacao';
 $tpAmb = '2';
-$aResposta = array();
-
-$xml = $nfe->sefazInutiliza($modelo, $nSerie, $nIni, $nFin, $xJust, $tpAmb, $aResposta);
+$xml = $nfe->sefazInutiliza($nSerie, $nIni, $nFin, $xJust, $tpAmb, $aResposta);
 echo '<br><br><PRE>';
 echo htmlspecialchars($nfe->soapDebug);
 echo '</PRE><BR>';

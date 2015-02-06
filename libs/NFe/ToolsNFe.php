@@ -690,7 +690,6 @@ class ToolsNFe extends BaseTools
      * @throws Exception\RuntimeException
      */
     public function sefazInutiliza(
-        $modelo = '55',
         $nSerie = 1,
         $nIni = 0,
         $nFin = 0,
@@ -705,9 +704,6 @@ class ToolsNFe extends BaseTools
         $this->zValidParamInut($xJust, $nSerie, $nIni, $nFin);
         if ($tpAmb == '') {
             $tpAmb = $this->aConfig['tpAmb'];
-        }
-        if ($modelo != '65') {
-            $modelo = '55';
         }
         //monta serviço
         $siglaUF = $this->aConfig['siglaUF'];
@@ -728,7 +724,7 @@ class ToolsNFe extends BaseTools
         $sSerie = str_pad($nSerie, 3, '0', STR_PAD_LEFT);
         $sInicio = str_pad($nIni, 9, '0', STR_PAD_LEFT);
         $sFinal = str_pad($nFin, 9, '0', STR_PAD_LEFT);
-        $idInut = "ID".$this->urlcUF.$sAno.$cnpj.$modelo.$sSerie.$sInicio.$sFinal;
+        $idInut = "ID".$this->urlcUF.$sAno.$cnpj.$this->modelo.$sSerie.$sInicio.$sFinal;
         //limpa os caracteres indesejados da justificativa
         $xJust = Strings::cleanString($xJust);
         //montagem do corpo da mensagem
@@ -739,7 +735,7 @@ class ToolsNFe extends BaseTools
                 . "<cUF>$this->urlcUF</cUF>"
                 . "<ano>$sAno</ano>"
                 . "<CNPJ>$cnpj</CNPJ>"
-                . "<mod>$modelo</mod>"
+                . "<mod>$this->modelo</mod>"
                 . "<serie>$nSerie</serie>"
                 . "<nNFIni>$nIni</nNFIni>"
                 . "<nNFFin>$nFin</nNFFin>"
@@ -765,9 +761,9 @@ class ToolsNFe extends BaseTools
         $lastMsg = $this->oSoap->lastMsg;
         $this->soapDebug = $this->oSoap->soapDebug;
         //salva mensagens
-        $filename = "$sAno-$modelo-$sSerie-".$sInicio."_".$sFinal."-inutNFe.xml";
+        $filename = "$sAno-$this->modelo-$sSerie-".$sInicio."_".$sFinal."-inutNFe.xml";
         $this->zGravaFile('nfe', $tpAmb, $filename, $lastMsg);
-        $filename = "$sAno-$modelo-$sSerie-".$sInicio."_".$sFinal."-retInutNFe.xml";
+        $filename = "$sAno-$this->modelo-$sSerie-".$sInicio."_".$sFinal."-retInutNFe.xml";
         $this->zGravaFile('nfe', $tpAmb, $filename, $retorno);
         //tratar dados de retorno
         $aRetorno = self::zReadReturnSefaz($this->urlMethod, $retorno);
