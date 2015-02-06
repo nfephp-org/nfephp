@@ -5,20 +5,20 @@
  * Este programa é um software livre: você pode redistribuir e/ou modificá-lo
  * sob os termos da Licença Pública Geral GNU (GPL)como é publicada pela Fundação
  * para o Software Livre, na versão 3 da licença, ou qualquer versão posterior
- * e/ou 
+ * e/ou
  * sob os termos da Licença Pública Geral Menor GNU (LGPL) como é publicada pela Fundação
  * para o Software Livre, na versão 3 da licença, ou qualquer versão posterior.
- *  
+ *
  *
  * Este programa é distribuído na esperança que será útil, mas SEM NENHUMA
  * GARANTIA; nem mesmo a garantia explícita definida por qualquer VALOR COMERCIAL
  * ou de ADEQUAÇÃO PARA UM PROPÓSITO EM PARTICULAR,
  * veja a Licença Pública Geral GNU para mais detalhes.
  *
- * Você deve ter recebido uma cópia da Licença Publica GNU e da 
+ * Você deve ter recebido uma cópia da Licença Publica GNU e da
  * Licença Pública Geral Menor GNU (LGPL) junto com este programa.
  * Caso contrário consulte <http://www.fsfla.org/svnwiki/trad/GPLv3> ou
- * <http://www.fsfla.org/svnwiki/trad/LGPLv3>. 
+ * <http://www.fsfla.org/svnwiki/trad/LGPLv3>.
  *
  *
  * @package   NFePHP
@@ -36,7 +36,7 @@
  * 		Leandro C. Lopez <leandro dot castoldi at gmail dot com>
  *              João Eduardo Silva Corrêa <jscorrea2 at gmail dot com>
  *              Rodrigo W Cardoso <rodrigogepem at gmail dot com>
- * 
+ *
  * Esta classe presume que será usada a mesma conta de email para o envio e recebimento das NFe
  */
 //define o caminho base da instalação do sistema
@@ -44,7 +44,7 @@ if (!defined('PATH_ROOT')) {
     define('PATH_ROOT', dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR);
 }
 //carrega as classes do PHPMailer
-require_once('../External/PHPMailer/class.phpmailer.php');
+require_once PATH_ROOT.'libs/External/PHPMailer/class.phpmailer.php';
 
 class MailNFePHP
 {
@@ -70,24 +70,24 @@ class MailNFePHP
     public $temporariasDir='';
     public $canceladasDir='';
     public $CNPJ='';
-    
+
     protected $debugMode = 0;
     /**
      * "Layout Template" do corpo do email em html
      * Os dados variáveis da mensagem html são :
      * {numero}{serie}{emitente}{valor}{status}
-     * esses campos serão substituidos durante o envio do email   
-     * @var string 
+     * esses campos serão substituidos durante o envio do email
+     * @var string
      */
     protected $layouthtml = '';
-    
+
     /**
      * __contruct
      * Construtor da classe MailNFePHP
      * @param array $aConfig Matriz com os dados de configuração
      * @param number $mododebug (Optional) 1-SIM ou 0-NÃO (0 default)
      * @package NFePHP
-     * @author  Roberto L. Machado <linux dot rlm at gmail dot com> 
+     * @author  Roberto L. Machado <linux dot rlm at gmail dot com>
      */
     public function __construct($aConfig = '', $mododebug = 0)
     {
@@ -171,9 +171,9 @@ class MailNFePHP
             }
         }
     } // end__construct
-    
+
     /**
-     * enviaMail 
+     * enviaMail
      * Função de envio de emails da NFe a partir dos endereços de email inclusos no próprio xml
      *
      * @name    enviaMail
@@ -264,7 +264,7 @@ class MailNFePHP
         }//if cStat
         return $retorno;
     }//fim enviaMail
-    
+
     /**
      * sendNFe
      * Função para envio da NF-e por email usando PHPMailer
@@ -429,13 +429,13 @@ class MailNFePHP
         return $result; //retorno da função
     } //fim da função sendNFe
 
-    
+
     /**
      * __sendM
      * Função de envio do email
-     * 
+     *
      * @name sendM
-     * @param string $to            endereço de email do destinatário 
+     * @param string $to            endereço de email do destinatário
      * @param string $contato       Nome do contato - empresa
      * @param string $subject       Assunto
      * @param string $txt           Corpo do email em txt
@@ -493,17 +493,17 @@ class MailNFePHP
         }
         return $result;
     } //fim sendM
-    
+
     /**
      * validEmailAdd
      * Função de validação dos endereços de email
-     * 
+     *
      * @name validEmailAdd
      * @version 1.02
      * @author  Douglas Lovell <http://www.linuxjournal.com/article/9585>
-     * @param string $email Endereço de email a ser testado, podem ser passados vários 
+     * @param string $email Endereço de email a ser testado, podem ser passados vários
      *                      endereços separados por virgula
-     * @return boolean True se endereço é verdadeiro ou false caso haja algum erro 
+     * @return boolean True se endereço é verdadeiro ou false caso haja algum erro
      */
     public function validEmailAdd($email)
     {
@@ -562,22 +562,22 @@ class MailNFePHP
         }
         return $isValid;
     } //fim função validEmailAdd
-    
-    
+
+
     /**
      * buscaEmail
      * Método que recupera o XML da NFe do email e o coloca na pasta "recebidas"
      * para posterior validação e aceitação via registro de evento na SEFAZ
-     * 1 - caso na caixa postal tenha email com xml de NFe, esse anexo será 
+     * 1 - caso na caixa postal tenha email com xml de NFe, esse anexo será
      *     baixado e colocado na pasta "recebidas", e o email será movido para
      *     uma subpasta denominada pelo ANOMES da NFe;
-     * 2 - caso na caixa postal tenha email sem anexos, ou os anexos não 
+     * 2 - caso na caixa postal tenha email sem anexos, ou os anexos não
      *     sejam NFe (em xml) o email será simplesmente deletado;
-     * 3 - caso na caixa postal tenha email com xml de NFe e não seja possivel 
-     *     salvar o xml na pasta do sistema o email não será movido nem deletado    
-     *       
+     * 3 - caso na caixa postal tenha email com xml de NFe e não seja possivel
+     *     salvar o xml na pasta do sistema o email não será movido nem deletado
+     *
      * @name buscaEmail
-     * @return boolean True se verdadeiro ou false caso haja algum erro 
+     * @return boolean True se verdadeiro ou false caso haja algum erro
      */
     public function buscaEmail()
     {
@@ -694,7 +694,7 @@ class MailNFePHP
                                         ' enviada por ' . $result[0]->from .
                                         ' em ' .$result[0]->date . ' Assunto ' .
                                         $result[0]->subject .
-                                        ". Foi movida para a caixa postal [ $anomes ] e o 
+                                        ". Foi movida para a caixa postal [ $anomes ] e o
                                             anexo foi salvo na pasta recebidas \n";
                             } else {
                                 $this->mailERROR .= 'A mensagem não foi movida para a pasta IMAP ANOMES '.
@@ -714,7 +714,7 @@ class MailNFePHP
                                     $result[0]->from . ' em ' .
                                     $result[0]->date . ' Assunto ' .
                                     $result[0]->subject .
-                                    ". Foi movida para a caixa postal [ $anomes ] e o 
+                                    ". Foi movida para a caixa postal [ $anomes ] e o
                                         anexo foi salvo na pasta recebidas \n";
                         } else {
                             $this->mailERROR .= 'A mensagem não foi movida para a pasta IMAP ANOMES '.
@@ -761,11 +761,11 @@ class MailNFePHP
      * getAnexosXML
      * Método que extrai os anexos xml do email e os retorna para posterior
      * processamento e arquivo
-     * 
+     *
      * @name getAnexosXML
      * @param object $connection Objeto da conexão IMAP
      * @param integer $message_number Numero de ordem da mensagem na pasta IMAP
-     * @return mixed vazio ou array 
+     * @return mixed vazio ou array
      */
     private function getAnexosXML($connection, $message_number)
     {
@@ -834,9 +834,9 @@ class MailNFePHP
         Anexos interiores de uma mensagem com conteudo escrito,
         Seus anexos ficavam escondidos atrás de parts->parts->parts,
         Seus conteudos dentro do fetchbody se escondiam em subpartes da mensagem,
-        Sendo assim, caso o sistema não encontre nenhum anexos ele checa se os anexos 
-        estão nessa situação. 
-        Rodrigo W Cardoso <rodrigogepem at gmail dot com> 
+        Sendo assim, caso o sistema não encontre nenhum anexos ele checa se os anexos
+        estão nessa situação.
+        Rodrigo W Cardoso <rodrigogepem at gmail dot com>
         */
         if (empty($anexos[0])) {
             $a = 1;
@@ -876,7 +876,7 @@ class MailNFePHP
         }//fim if anexos empty
         return $anexos;
     }//fim getAnexosXML
-    
+
     /**
      * html2txt
      * Remove as tags html para deixar em texto puro
