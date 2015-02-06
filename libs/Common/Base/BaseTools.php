@@ -107,6 +107,12 @@ class BaseTools
      * @var string 
      */
     protected $urlHeader = '';
+    /**
+     * modelo da NFe 55 ou 65
+     * @var string
+     */
+    protected $modelo = '55';
+    
     
     /**
      * __construct
@@ -234,12 +240,19 @@ class BaseTools
         $this->urlcUF = self::zGetcUF($siglaUF);
         if ($tipo == 'nfe') {
             $path = $this->aConfig['pathXmlUrlFileNFe'];
+            if ($this->modelo == '65') {
+                $path = str_replace('55', '65', $path);
+            } else {
+                $path = str_replace('65', '55', $path);
+            }
         } elseif ($tipo == 'cte') {
             $path = $this->aConfig['pathXmlUrlFileCTe'];
         } elseif ($tipo == 'mdfe') {
             $path = $this->aConfig['pathXmlUrlFileMDFe'];
+        } elseif ($tipo == 'cle') {
+            $path = $this->aConfig['pathXmlUrlFileCLe'];
         }
-            
+             
         $pathXmlUrlFile = NFEPHP_ROOT
                 . DIRECTORY_SEPARATOR
                 . 'config'
