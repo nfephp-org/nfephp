@@ -47,18 +47,21 @@
             "": ["libs/", "tests/"]
         },
         "classmap": [
-            "./libs/Common/",
-            "./libs/Common/Certificate/",
-            "./libs/Common/DateTime/",
-            "./libs/Common/Exception/",
-            "./libs/Common/Files/",
-            "./libs/Common/Modules/",
-            "./libs/Common/Soap/",
-            "./libs/Common/Strings/",
             "./libs/NFe/",
             "./libs/CTe/",
             "./libs/MDFe/",
-            "./libs/NFSe/"
+            "./libs/NFSe/",
+            "./libs/Common/",
+            "./libs/Common/Base/",
+            "./libs/Common/Certificate/",
+            "./libs/Common/DateTime/",
+            "./libs/Common/Dom/",
+            "./libs/Common/Exception/",
+            "./libs/Common/Files/",
+            "./libs/Common/LotNumber/",
+            "./libs/Common/Modules/",
+            "./libs/Common/Soap/",
+            "./libs/Common/Strings/"
         ]
     },
     "minimum-stability": "dev",
