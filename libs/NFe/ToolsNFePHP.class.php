@@ -2402,14 +2402,14 @@ class ToolsNFePHP extends CommonNFePHP
             $cons = '<distDFeInt xmlns="'.$this->URLPortal.'" versao="'.$versao.'">';
             $cons .= "<tpAmb>$tpAmb</tpAmb><cUFAutor>$cUFAutor</cUFAutor>";
             $cons .= ($cnpj ? "<CNPJ>$cnpj</CNPJ>" : "<CPF>$cpf</CPF>");
-            $cons .= ($ultNSU ? "<distNSU><ultNSU>$ultNSU</ultNSU></distNSU>" : "<consNSU><NSU>$NSU</NSU></consNSU>");
+            $cons .= ($ultNSU ? "<distNSU><ultNSU>$ultNSU</ultNSU></distNSU>" : "<consNSU><NSU>$numNSU</NSU></consNSU>");
             $cons .= '</distDFeInt>';
             //montagem dos dados da mensagem SOAP
             $dados = '<nfeDistDFeInteresse xmlns="'.$namespace.'">';
             $dados .= "<nfeDadosMsg>$cons</nfeDadosMsg>";
             $dados .= '</nfeDistDFeInteresse>';
             //grava solicitação em temp
-            $tipoNSU = $ultNSU ? $ultNSU : $NSU;
+            $tipoNSU = $ultNSU ? $ultNSU : $numNSU;
             $datahora = date('Ymd_His');
             if (! file_put_contents($this->temDir."-$tipoNSU-$datahora-consDFe.xml", $cons)) {
                 throw new nfephpException("Falha na gravacao do arquivo DFe de entrada!");
