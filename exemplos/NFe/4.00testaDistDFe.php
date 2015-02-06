@@ -6,6 +6,7 @@ include_once '../../bootstrap.php';
 use NFe\ToolsNFe;
 
 $nfe = new ToolsNFe('../../config/config.json');
+$nfe->setModelo('55');
 
 $ultNSU = 0;
 $numNSU = 165;

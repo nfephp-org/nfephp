@@ -6,14 +6,13 @@ include_once '../../bootstrap.php';
 use NFe\ToolsNFe;
 
 $nfe = new ToolsNFe('../../config/config.json');
-
-$chave = '35150158716523000119550010000000071000000076';
+$nfe->setModelo('55');
 
 //210200 – Confirmação da Operação
 //210210 – Ciência da Operação
 //210220 – Desconhecimento da Operação
 //210240 – Operação não Realizada ===> é obritatoria uma justificativa para esse caso
-
+$chave = '35150158716523000119550010000000071000000076';
 $tpAmb = '2';
 $xJust = '';
 $tpEvento = '210210'; //ciencia da operação

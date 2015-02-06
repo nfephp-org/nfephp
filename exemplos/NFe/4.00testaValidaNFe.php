@@ -6,6 +6,8 @@ include_once '../../bootstrap.php';
 use NFe\ToolsNFe;
 
 $nfe = new ToolsNFe('../../config/config.json');
+$nfe->setModelo('55');
+
 $aResposta = array();
 $pathXmlFile = '/var/www/nfephpdev/exemplos/xml/35150258716523000119550000000344861511504837-nfe.xml';
 if (! $nfe->verificaValidade($pathXmlFile, $aResposta)) {

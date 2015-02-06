@@ -6,6 +6,8 @@ include_once '../../bootstrap.php';
 use NFe\ToolsNFe;
 
 $nfe = new ToolsNFe('../../config/config.json');
+$nfe->setModelo('55');
+
 $aResposta = array();
 $chNFe = '35150258716523000119550010000000091000000090';
 $tpAmb = '2';
