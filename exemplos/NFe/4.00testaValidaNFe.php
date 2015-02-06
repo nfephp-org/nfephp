@@ -3,9 +3,9 @@ error_reporting(E_ALL);
 ini_set('display_errors', 'On');
 include_once '../../bootstrap.php';
 
-use NFe\Tools;
+use NFe\ToolsNFe;
 
-$nfe = new Tools('../../config/config.json');
+$nfe = new ToolsNFe('../../config/config.json');
 $aResposta = array();
 $pathXmlFile = '/var/www/nfephpdev/exemplos/xml/35150258716523000119550000000344861511504837-nfe.xml';
 if (! $nfe->verificaValidade($pathXmlFile, $aResposta)) {
