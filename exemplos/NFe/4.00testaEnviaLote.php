@@ -15,7 +15,7 @@ $aXml = file_get_contents("/var/www/nfe/homologacao/assinadas/$chave-nfe.xml");
 $idLote = '';
 $indSinc = '0';
 $flagZip = false;
-$retorno = $nfe->sefazAutoriza($aXml, $tpAmb, $idLote, $aResposta, $indSinc, $flagZip);
+$retorno = $nfe->sefazEnviaLote($aXml, $tpAmb, $idLote, $aResposta, $indSinc, $flagZip);
 echo '<br><br><PRE>';
 echo htmlspecialchars($nfe->soapDebug);
 echo '</PRE><BR>';
