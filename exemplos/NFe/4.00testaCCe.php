@@ -3,9 +3,9 @@ error_reporting(E_ALL);
 ini_set('display_errors', 'On');
 include_once '../../bootstrap.php';
 
-use NFe\Tools;
+use NFe\ToolsNFe;
 
-$nfe = new Tools('../../config/config.json');
+$nfe = new ToolsNFe('../../config/config.json');
 $aResposta = array();
 $chNFe = '35150258716523000119550010000000091000000090';
 $tpAmb = '2';
