@@ -16,11 +16,56 @@ use \DOMDocument;
 class ReturnNFe
 {
     /**
+     * readReturnSefaz
+     * Trata o retorno da SEFAZ devolvendo o resultado em um array
+     * @param string $method
+     * @param string $xmlResp
+     * @param mixed $parametro
+     * @return array
+     */
+    public static function readReturnSefaz($method, $xmlResp, $parametro = false)
+    {
+        $dom = new DOMDocument('1.0', 'utf-8');
+        $dom->formatOutput = false;
+        $dom->preserveWhiteSpace = false;
+        $dom->loadXML($xmlResp);
+        //para cada $method tem um formato de retorno especifico
+        switch ($method) {
+            case 'nfeAutorizacaoLote':
+                return self::zReadAutorizacaoLote($dom);
+                break;
+            case 'nfeRetAutorizacaoLote':
+                return self::zReadRetAutorizacaoLote($dom);
+                break;
+            case 'consultaCadastro2':
+                return self::zReadConsultaCadastro2($dom);
+                break;
+            case 'nfeConsultaNF2':
+                return self::zReadConsultaNF2($dom);
+                break;
+            case 'nfeInutilizacaoNF2':
+                return self::zReadInutilizacaoNF2($dom);
+                break;
+            case 'nfeStatusServicoNF2':
+                //NOTA: irá ser desativado
+                return self::zReadStatusServico($dom);
+                break;
+            case 'nfeRecepcaoEvento':
+                return self::zReadRecepcaoEvento($dom);
+                break;
+            case 'nfeDistDFeInteresse':
+                return self::zReadDistDFeInteresse($dom, $parametro);
+                break;
+        }
+        return array();
+    }
+    
+    /**
      * zReadAutorizacaoLote
      * @param DOMDocument $dom
      * @return array
      */
-    public static function zReadAutorizacaoLote($dom)
+    protected static function zReadAutorizacaoLote($dom)
     {
         //retorno da funçao
         $aResposta = array(
@@ -65,7 +110,7 @@ class ReturnNFe
      * @param DOMDocument $dom
      * @return array
      */
-    public static function zReadRetAutorizacaoLote($dom)
+    protected static function zReadRetAutorizacaoLote($dom)
     {
         //retorno da funçao
         $aResposta = array(
@@ -110,7 +155,7 @@ class ReturnNFe
      * @param DOMDocument $dom
      * @return array
      */
-    public static function zReadConsultaCadastro2($dom)
+    protected static function zReadConsultaCadastro2($dom)
     {
         $aResposta = array(
             'bStat' => false,
@@ -180,7 +225,7 @@ class ReturnNFe
      * @param DOMDocument $dom
      * @return array
      */
-    public static function zReadConsultaNF2($dom)
+    protected static function zReadConsultaNF2($dom)
     {
         //retorno da funçao
         $aResposta = array(
@@ -262,7 +307,7 @@ class ReturnNFe
      * @param DOMDocument $dom
      * @return array
      */
-    public static function zReadInutilizacaoNF2($dom)
+    protected static function zReadInutilizacaoNF2($dom)
     {
         $aResposta = array(
             'bStat' => false,
@@ -311,7 +356,7 @@ class ReturnNFe
      * @param DOMDocument $dom
      * @return array
      */
-    public static function zReadStatusServico($dom)
+    protected static function zReadStatusServico($dom)
     {
         //retorno da funçao
         $aResposta = array(
@@ -346,7 +391,7 @@ class ReturnNFe
      * @param DOMDocument $dom
      * @return array
      */
-    public static function zReadRecepcaoEvento($dom)
+    protected static function zReadRecepcaoEvento($dom)
     {
         //retorno da funçao
         $aResposta = array(
@@ -403,7 +448,7 @@ class ReturnNFe
      * @param boolean $descompactar
      * @return array
      */
-    public static function zReadDistDFeInteresse($dom, $descompactar = false)
+    protected static function zReadDistDFeInteresse($dom, $descompactar = false)
     {
         $aResposta = array(
             'bStat' => false,
