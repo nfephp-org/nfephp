@@ -138,7 +138,7 @@ class MakeNFe
      * @param bool $formatOutput
      * @param bool $preserveWhiteSpace
      */
-    public function __construct($formatOutput = true, $preserveWhiteSpace = false)
+    public function __construct($formatOutput = false, $preserveWhiteSpace = false)
     {
         $this->timeZone = DateTime::tzdBR($this->aConfig['siglaUF']);
         $this->dom = new DOMDocument('1.0', 'UTF-8');

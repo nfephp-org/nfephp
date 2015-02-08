@@ -243,7 +243,6 @@ class ToolsNFe extends BaseTools
      * @param string $pathProtfile
      * @param boolean $saveFile
      * @return string
-     * @throws Exception\InvalidArgumentException
      * @throws Exception\RuntimeException
      */
     public function addProtocolo($pathNFefile = '', $pathProtfile = '', $saveFile = false)
@@ -344,6 +343,7 @@ class ToolsNFe extends BaseTools
      * @param string $pathCancfile
      * @param bool $saveFile
      * @return string
+     * @throws Exception\RuntimeException
      */
     public function addCancelamento($pathNFefile = '', $pathCancfile = '', $saveFile = false)
     {
@@ -544,7 +544,7 @@ class ToolsNFe extends BaseTools
         $filename = "$idLote-retEnviNFe.xml";
         $this->zGravaFile('nfe', $tpAmb, $filename, $retorno);
         //tratar dados de retorno
-        $aRetorno = self::zReadReturnSefaz($this->urlMethod, $retorno);
+        $aRetorno = ReturnNFe::readReturnSefaz($this->urlMethod, $retorno);
         return (string) $retorno;
     }
     
@@ -605,7 +605,7 @@ class ToolsNFe extends BaseTools
         $filename = "$recibo-retConsReciNFe.xml";
         $this->zGravaFile('nfe', $tpAmb, $filename, $retorno);
         //tratar dados de retorno
-        $aRetorno = self::zReadReturnSefaz($this->urlMethod, $retorno);
+        $aRetorno = ReturnNFe::readReturnSefaz($this->urlMethod, $retorno);
         return (string) $retorno;
     }
     
@@ -670,7 +670,7 @@ class ToolsNFe extends BaseTools
         $filename = "$chNFe-retConsSitNFe.xml";
         $this->zGravaFile('nfe', $tpAmb, $filename, $retorno);
         //tratar dados de retorno
-        $aRetorno = self::zReadReturnSefaz($this->urlMethod, $retorno);
+        $aRetorno = ReturnNFe::readReturnSefaz($this->urlMethod, $retorno);
         return (string) $retorno;
     }
     
@@ -686,7 +686,6 @@ class ToolsNFe extends BaseTools
      * @param string $tpAmb
      * @param array $aRetorno
      * @return string
-     * @throws Exception\InvalidArgumentException
      * @throws Exception\RuntimeException
      */
     public function sefazInutiliza(
@@ -766,7 +765,7 @@ class ToolsNFe extends BaseTools
         $filename = "$sAno-$this->modelo-$sSerie-".$sInicio."_".$sFinal."-retInutNFe.xml";
         $this->zGravaFile('nfe', $tpAmb, $filename, $retorno);
         //tratar dados de retorno
-        $aRetorno = self::zReadReturnSefaz($this->urlMethod, $retorno);
+        $aRetorno = ReturnNFe::readReturnSefaz($this->urlMethod, $retorno);
         return (string) $retorno;
     }
     
@@ -780,25 +779,20 @@ class ToolsNFe extends BaseTools
      */
     private function zValidParamInut($xJust, $nSerie, $nIni, $nFin)
     {
+        $msg = '';
         //valida dos dados de entrada
         if (strlen($xJust) < 15 || strlen($xJust) > 255) {
             $msg = "A justificativa deve ter entre 15 e 255 digitos!!";
-            throw new Exception\InvalidArgumentException($msg);
-        }
-        if ($nSerie < 0 || $nSerie > 999) {
+        } elseif ($nSerie < 0 || $nSerie > 999) {
             $msg = "O campo serie está errado: $nSerie!!";
-            throw new Exception\InvalidArgumentException($msg);
-        }
-        if ($nIni < 1 || $nIni > 1000000000) {
+        } elseif ($nIni < 1 || $nIni > 1000000000) {
             $msg = "O campo numero inicial está errado: $nIni!!";
-            throw new Exception\InvalidArgumentException($msg);
-        }
-        if ($nFin < 1 || $nFin > 1000000000) {
+        } elseif ($nFin < 1 || $nFin > 1000000000) {
             $msg = "O campo numero final está errado: $nFin!!";
-            throw new Exception\InvalidArgumentException($msg);
-        }
-        if ($this->enableSVCRS || $this->enableSVCAN) {
+        } elseif ($this->enableSVCRS || $this->enableSVCAN) {
             $msg = "A inutilização não pode ser feita em contingência!!";
+        }
+        if ($msg != '') {
             throw new Exception\InvalidArgumentException($msg);
         }
     }
@@ -814,6 +808,8 @@ class ToolsNFe extends BaseTools
      * @param string $cpf CPF da pessoa física a ser consultada
      * @param array $aRetorno aRetorno retorno da resposta da SEFAZ em array
      * @return string XML de retorno do SEFAZ
+     * @throws Exception\RuntimeException
+     * @throws Exception\InvalidArgumentException
      */
     public function sefazCadastro($siglaUF = '', $tpAmb = '2', $cnpj = '', $iest = '', $cpf = '', &$aRetorno = array())
     {
@@ -881,7 +877,7 @@ class ToolsNFe extends BaseTools
         $filename = "$txtFile-retConsCad.xml";
         $this->zGravaFile('nfe', $tpAmb, $filename, $retorno);
         //tratar dados de retorno
-        $aRetorno = self::zReadReturnSefaz($this->urlMethod, $retorno);
+        $aRetorno = ReturnNFe::readReturnSefaz($this->urlMethod, $retorno);
         return (string) $retorno;
     }
 
@@ -894,6 +890,7 @@ class ToolsNFe extends BaseTools
      * @param string $tpAmb tipo de ambiente 1-produção e 2-homologação
      * @param  array $aRetorno parametro passado por referencia contendo a resposta da consulta em um array
      * @return mixed string XML do retorno do webservice, ou false se ocorreu algum erro
+     * @throws Exception\RuntimeException
      */
     public function sefazStatus($siglaUF = '', $tpAmb = '2', &$aRetorno = array())
     {
@@ -940,7 +937,7 @@ class ToolsNFe extends BaseTools
         $filename = $siglaUF."_"."$datahora-retConsStatServ.xml";
         $this->zGravaFile('nfe', $tpAmb, $filename, $retorno);
         //tratar dados de retorno
-        $aRetorno = self::zReadReturnSefaz($this->urlMethod, $retorno);
+        $aRetorno = ReturnNFe::readReturnSefaz($this->urlMethod, $retorno);
         return (string) $retorno;
     }
 
@@ -958,6 +955,7 @@ class ToolsNFe extends BaseTools
      * @param boolean $descompactar se true irá descompactar os dados retornados,
      *        se não os dados serão retornados da forma que foram recebidos
      * @return string contento o xml retornado pela SEFAZ
+     * @throws Exception\InvalidArgumentException
      * @throws Exception\RuntimeException
      */
     public function sefazDistDFe(
@@ -969,10 +967,6 @@ class ToolsNFe extends BaseTools
         &$aRetorno = array(),
         $descompactar = false
     ) {
-        if ($fonte != 'AN' && $fonte != 'RS') {
-            $msg = "Somente os autorizadores AN e RS dispoem desse serviço!!";
-            throw new Exception\InvalidArgumentException($msg);
-        }
         if ($tpAmb == '') {
             $tpAmb = $this->aConfig['tpAmb'];
         }
@@ -1031,7 +1025,7 @@ class ToolsNFe extends BaseTools
         $filename = "$tipoNSU-$datahora-retDistDFeInt.xml";
         $this->zGravaFile('nfe', $tpAmb, $filename, $retorno);
         //tratar dados de retorno
-        $aRetorno = self::zReadReturnSefaz($this->urlMethod, $retorno, $descompactar);
+        $aRetorno = ReturnNFe::readReturnSefaz($this->urlMethod, $retorno, $descompactar);
         return (string) $retorno;
     }
 
@@ -1186,43 +1180,6 @@ class ToolsNFe extends BaseTools
         $nSeqEvento = '1',
         $tagAdic = ''
     ) {
-        //montagem dos dados da mensagem SOAP
-        switch ($tpEvento) {
-            case '110111':
-                //cancelamento
-                $aliasEvento = 'CancNFe';
-                $descEvento = 'Cancelamento';
-                break;
-            case '110110':
-                //CCe
-                $aliasEvento = 'CCe';
-                $descEvento = 'Carta de Correcao';
-                break;
-            case '210200':
-                //Confirmacao da Operacao
-                $aliasEvento = 'EvConfirma';
-                $descEvento = 'Confirmacao da Operacao';
-                break;
-            case '210210':
-                //Ciencia da Operacao
-                $aliasEvento = 'EvCiencia';
-                $descEvento = 'Ciencia da Operacao';
-                break;
-            case '210220':
-                //Desconhecimento da Operacao
-                $aliasEvento = 'EvDesconh';
-                $descEvento = 'Desconhecimento da Operacao';
-                break;
-            case '210240':
-                //Operacao não Realizada
-                $aliasEvento = 'EvNaoRealizada';
-                $descEvento = 'Operacao não Realizada';
-                break;
-            default:
-                $msg = "O código do tipo de evento informado não corresponde a "
-                   . "nenhum evento estabelecido.";
-                throw new Exception\RuntimeException($msg);
-        }
         if ($tpAmb == '') {
             $tpAmb = $this->aConfig['tpAmb'];
         }
@@ -1237,6 +1194,9 @@ class ToolsNFe extends BaseTools
             $msg = "A recepção de eventos não está disponível na SEFAZ $siglaUF!!!";
             throw new Exception\RuntimeException($msg);
         }
+        $aRet = $this->zTpEv($tpEvento);
+        $aliasEvento = $aRet['alias'];
+        $descEvento = $aRet['desc'];
         $cnpj = $this->aConfig['cnpj'];
         $dhEvento = (string) str_replace(' ', 'T', date('Y-m-d H:i:sP'));
         $sSeqEvento = str_pad($nSeqEvento, 2, "0", STR_PAD_LEFT);
@@ -1293,50 +1253,55 @@ class ToolsNFe extends BaseTools
         $filename = "$chNFe-$aliasEvento-retEnvEvento.xml";
         $this->zGravaFile('nfe', $tpAmb, $filename, $retorno);
         //tratar dados de retorno
-        $this->aLastRetEvent = self::zReadReturnSefaz($this->urlMethod, $retorno);
+        $this->aLastRetEvent = ReturnNFe::readReturnSefaz($this->urlMethod, $retorno);
         return (string) $retorno;
     }
     
     /**
-     * zReadReturnSefaz
-     * Trata o retorno da SEFAZ devolvendo o resultado em um array
-     * @param string $method
-     * @param string $xmlResp
-     * @param mixed $parametro
+     * zTpEv
+     * @param string $tpEvento
      * @return array
+     * @throws Exception\RuntimeException
      */
-    private static function zReadReturnSefaz($method, $xmlResp, $parametro = false)
+    private function zTpEv($tpEvento = '')
     {
-        $dom = new Dom();
-        $dom->loadXMLString($xmlResp);
-        //para cada $method tem um formato de retorno especifico
-        switch ($method) {
-            case 'nfeAutorizacaoLote':
-                return ReturnNFe::zReadAutorizacaoLote($dom);
+        //montagem dos dados da mensagem SOAP
+        switch ($tpEvento) {
+            case '110111':
+                //cancelamento
+                $aliasEvento = 'CancNFe';
+                $descEvento = 'Cancelamento';
                 break;
-            case 'nfeRetAutorizacaoLote':
-                return ReturnNFe::zReadRetAutorizacaoLote($dom);
+            case '110110':
+                //CCe
+                $aliasEvento = 'CCe';
+                $descEvento = 'Carta de Correcao';
                 break;
-            case 'consultaCadastro2':
-                return ReturnNFe::zReadConsultaCadastro2($dom);
+            case '210200':
+                //Confirmacao da Operacao
+                $aliasEvento = 'EvConfirma';
+                $descEvento = 'Confirmacao da Operacao';
                 break;
-            case 'nfeConsultaNF2':
-                return ReturnNFe::zReadConsultaNF2($dom);
+            case '210210':
+                //Ciencia da Operacao
+                $aliasEvento = 'EvCiencia';
+                $descEvento = 'Ciencia da Operacao';
                 break;
-            case 'nfeInutilizacaoNF2':
-                return ReturnNFe::zReadInutilizacaoNF2($dom);
+            case '210220':
+                //Desconhecimento da Operacao
+                $aliasEvento = 'EvDesconh';
+                $descEvento = 'Desconhecimento da Operacao';
                 break;
-            case 'nfeStatusServicoNF2':
-                //NOTA: irá ser desativado
-                return ReturnNFe::zReadStatusServico($dom);
+            case '210240':
+                //Operacao não Realizada
+                $aliasEvento = 'EvNaoRealizada';
+                $descEvento = 'Operacao não Realizada';
                 break;
-            case 'nfeRecepcaoEvento':
-                return ReturnNFe::zReadRecepcaoEvento($dom);
-                break;
-            case 'nfeDistDFeInteresse':
-                return ReturnNFe::zReadDistDFeInteresse($dom, $parametro);
-                break;
+            default:
+                $msg = "O código do tipo de evento informado não corresponde a "
+                   . "nenhum evento estabelecido.";
+                throw new Exception\RuntimeException($msg);
         }
-        return array();
+        return array('alias' => $aliasEvento, 'desc' => $descEvento);
     }
 }
