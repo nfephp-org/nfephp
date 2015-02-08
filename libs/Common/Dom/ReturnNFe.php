@@ -20,7 +20,7 @@ class ReturnNFe
      * @param DOMDocument $dom
      * @return array
      */
-    protected static function zReadAutorizacaoLote($dom)
+    public static function zReadAutorizacaoLote($dom)
     {
         //retorno da funçao
         $aResposta = array(
@@ -43,18 +43,7 @@ class ReturnNFe
         $dhRecbto = $tag->getElementsByTagName('dhRecbto')->item(0)->nodeValue;
         $nRec = $tag->getElementsByTagName('nRec')->item(0)->nodeValue;
         $tMed = $tag->getElementsByTagName('tMed')->item(0)->nodeValue;
-        $aProt = array();
-        $infProt = $tag->getElementsByTagName('infProt')->item(0);
-        if (! empty($infProt)) {
-            $aProt[] = array(
-                'chNFe' => $infProt->getElementsByTagName('chNFe')->item(0)->nodeValue,
-                'dhRecbto' => $infProt->getElementsByTagName('dhRecbto')->item(0)->nodeValue,
-                'nProt' => $infProt->getElementsByTagName('nProt')->item(0)->nodeValue,
-                'digVal' => $infProt->getElementsByTagName('digVal')->item(0)->nodeValue,
-                'cStat' => $infProt->getElementsByTagName('cStat')->item(0)->nodeValue,
-                'xMotivo' => $infProt->getElementsByTagName('xMotivo')->item(0)->nodeValue
-            );
-        }
+        $aProt[] = self::zProt($tag);
         $aResposta = array(
             'bStat' => true,
             'versao' => $tag->getAttribute('versao'),
@@ -76,7 +65,7 @@ class ReturnNFe
      * @param DOMDocument $dom
      * @return array
      */
-    protected static function zReadRetAutorizacaoLote($dom)
+    public static function zReadRetAutorizacaoLote($dom)
     {
         //retorno da funçao
         $aResposta = array(
@@ -99,15 +88,7 @@ class ReturnNFe
         $dhRecbto = $tag->getElementsByTagName('dhRecbto')->item(0)->nodeValue;
         $tagProt = $tag->getElementsByTagName('protNFe');
         foreach ($tagProt as $protocol) {
-            $infProt = $protocol->getElementsByTagName('infProt')->item(0);
-            $aProt[] = array(
-                'chNFe' => $infProt->getElementsByTagName('chNFe')->item(0)->nodeValue,
-                'dhRecbto' => $infProt->getElementsByTagName('dhRecbto')->item(0)->nodeValue,
-                'nProt' => $infProt->getElementsByTagName('nProt')->item(0)->nodeValue,
-                'digVal' => $infProt->getElementsByTagName('digVal')->item(0)->nodeValue,
-                'cStat' => $infProt->getElementsByTagName('cStat')->item(0)->nodeValue,
-                'xMotivo' => $infProt->getElementsByTagName('xMotivo')->item(0)->nodeValue
-            );
+            $aProt[] = self::zProt($protocol);
         }
         $aResposta = array(
             'bStat'=>true,
@@ -129,7 +110,7 @@ class ReturnNFe
      * @param DOMDocument $dom
      * @return array
      */
-    protected static function zReadConsultaCadastro2($dom)
+    public static function zReadConsultaCadastro2($dom)
     {
         $aResposta = array(
             'bStat' => false,
@@ -199,7 +180,7 @@ class ReturnNFe
      * @param DOMDocument $dom
      * @return array
      */
-    protected static function zReadConsultaNF2($dom)
+    public static function zReadConsultaNF2($dom)
     {
         //retorno da funçao
         $aResposta = array(
@@ -281,7 +262,7 @@ class ReturnNFe
      * @param DOMDocument $dom
      * @return array
      */
-    protected static function zReadInutilizacaoNF2($dom)
+    public static function zReadInutilizacaoNF2($dom)
     {
         $aResposta = array(
             'bStat' => false,
@@ -330,7 +311,7 @@ class ReturnNFe
      * @param DOMDocument $dom
      * @return array
      */
-    protected static function zReadStatusServico($dom)
+    public static function zReadStatusServico($dom)
     {
         //retorno da funçao
         $aResposta = array(
@@ -365,7 +346,7 @@ class ReturnNFe
      * @param DOMDocument $dom
      * @return array
      */
-    protected static function zReadRecepcaoEvento($dom)
+    public static function zReadRecepcaoEvento($dom)
     {
         //retorno da funçao
         $aResposta = array(
@@ -422,7 +403,7 @@ class ReturnNFe
      * @param boolean $descompactar
      * @return array
      */
-    protected static function zReadDistDFeInteresse($dom, $descompactar = false)
+    public static function zReadDistDFeInteresse($dom, $descompactar = false)
     {
         $aResposta = array(
             'bStat' => false,
@@ -462,5 +443,22 @@ class ReturnNFe
             'docZip' => $aDocZip
         );
         return $aResposta;
+    }
+    
+    protected static function zProt($tag)
+    {   
+        $aProt = array();
+        $infProt = $tag->getElementsByTagName('infProt')->item(0);
+        if (! empty($infProt)) {
+            $aProt = array(
+                'chNFe' => $infProt->getElementsByTagName('chNFe')->item(0)->nodeValue,
+                'dhRecbto' => $infProt->getElementsByTagName('dhRecbto')->item(0)->nodeValue,
+                'nProt' => $infProt->getElementsByTagName('nProt')->item(0)->nodeValue,
+                'digVal' => $infProt->getElementsByTagName('digVal')->item(0)->nodeValue,
+                'cStat' => $infProt->getElementsByTagName('cStat')->item(0)->nodeValue,
+                'xMotivo' => $infProt->getElementsByTagName('xMotivo')->item(0)->nodeValue
+            );
+        }
+        return $aProt;
     }
 }
