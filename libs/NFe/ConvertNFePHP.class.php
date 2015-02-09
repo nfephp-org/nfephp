@@ -27,10 +27,10 @@
  *
  * @package     NFePHP
  * @name        ConvertNFePHP
- * @version     3.10.18
+ * @version     3.10.19
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
- * @copyright   2009-2011 &copy; NFePHP
+ * @copyright   2009-2015 &copy; NFePHP
  * @link        http://www.nfephp.org/
  * @author      Roberto L. Machado <linux.rlm at gmail dot com>
  * @author      Daniel Batista Lemes <dlemes at gmail dot com>
@@ -1820,9 +1820,9 @@ class ConvertNFePHP
                     // todos esses campos sao obrigatorios
                     //R02|vBC|pPIS|
                     $vBC = $dom->createElement("vBC", $dados[1]);
-                    $PISST->appendChild($vBC);
+                    $PISST->insertBefore($vBC, $vPIS);
                     $pPIS = $dom->createElement("pPIS", $dados[2]);
-                    $PISST->appendChild($pPIS);
+                    $PISST->insertBefore($pPIS, $vPIS);
                     break;
                 case "R04":
                     //Quantidade Vendida e Alíquota do PIS (em reais) 0 ou 1 [PISST]
