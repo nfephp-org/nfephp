@@ -65,7 +65,9 @@ class ToolsNFe extends BaseTools
   
     /**
      * setModelo
+     *
      * Ajusta o modelo da NFe 55 ou 65
+     *
      * @param string $modelo
      */
     public function setModelo($modelo = '55')
@@ -473,6 +475,7 @@ class ToolsNFe extends BaseTools
      * @return string
      * @throws Exception\InvalidArgumentException
      * @throws Exception\RuntimeException
+     * @internal function zLoadServico (Common\Base\BaseTools)
      */
     public function sefazEnviaLote(
         $aXml,
@@ -512,7 +515,7 @@ class ToolsNFe extends BaseTools
             $tpAmb
         );
         if ($this->urlService == '') {
-            $msg = "A consulta de NFe não está disponível na SEFAZ $siglaUF!!!";
+            $msg = "O envio de lote não está disponível na SEFAZ $siglaUF!!!";
             throw new Exception\RuntimeException($msg);
         }
         //montagem dos dados da mensagem SOAP
@@ -556,6 +559,7 @@ class ToolsNFe extends BaseTools
      * @return string
      * @throws Exception\InvalidArgumentException
      * @throws Exception\RuntimeException
+     * @internal function zLoadServico (Common\Base\BaseTools)
      */
     public function sefazConsultaRecibo($recibo = '', $tpAmb = '2', &$aRetorno = array())
     {
@@ -612,16 +616,17 @@ class ToolsNFe extends BaseTools
     /**
      * sefazConsultaChave
      * Consulta o status da NFe pela chave de 44 digitos
-     * @param string $chNFe
+     * @param string $chave
      * @param string $tpAmb
      * @param array $aRetorno
      * @return string
      * @throws Exception\InvalidArgumentException
      * @throws Exception\RuntimeException
+     * @internal function zLoadServico (Common\Base\BaseTools)
      */
-    public function sefazConsultaChave($chNFe = '', $tpAmb = '2', &$aRetorno = array())
+    public function sefazConsultaChave($chave = '', $tpAmb = '2', &$aRetorno = array())
     {
-        $chNFe = preg_replace('/[^0-9]/', '', $chNFe);
+        $chNFe = preg_replace('/[^0-9]/', '', $chave);
         if (strlen($chNFe) != 44) {
             $msg = "Uma chave de 44 dígitos da NFe deve ser passada.";
             throw new Exception\InvalidArgumentException($msg);
@@ -673,12 +678,11 @@ class ToolsNFe extends BaseTools
         $aRetorno = ReturnNFe::readReturnSefaz($this->urlMethod, $retorno);
         return (string) $retorno;
     }
-    
+
     /**
      * sefazInutiliza
      * Solicita a inutilização de uma ou uma sequencia de NFe
      * de uma determinada série
-     * @param string $modelo
      * @param integer $nSerie
      * @param integer $nIni
      * @param integer $nFin
@@ -686,7 +690,8 @@ class ToolsNFe extends BaseTools
      * @param string $tpAmb
      * @param array $aRetorno
      * @return string
-     * @throws Exception\RuntimeException
+     * @internal param string $modelo
+     * @internal function zLoadServico (Common\Base\BaseTools)
      */
     public function sefazInutiliza(
         $nSerie = 1,
@@ -810,6 +815,7 @@ class ToolsNFe extends BaseTools
      * @return string XML de retorno do SEFAZ
      * @throws Exception\RuntimeException
      * @throws Exception\InvalidArgumentException
+     * @internal function zLoadServico (Common\Base\BaseTools)
      */
     public function sefazCadastro($siglaUF = '', $tpAmb = '2', $cnpj = '', $iest = '', $cpf = '', &$aRetorno = array())
     {
@@ -891,6 +897,7 @@ class ToolsNFe extends BaseTools
      * @param  array $aRetorno parametro passado por referencia contendo a resposta da consulta em um array
      * @return mixed string XML do retorno do webservice, ou false se ocorreu algum erro
      * @throws Exception\RuntimeException
+     * @internal function zLoadServico (Common\Base\BaseTools)
      */
     public function sefazStatus($siglaUF = '', $tpAmb = '2', &$aRetorno = array())
     {
@@ -943,20 +950,20 @@ class ToolsNFe extends BaseTools
 
     /**
      * sefazDistDFe
-     * Serviço destinado à distribuição de informações 
+     * Serviço destinado à distribuição de informações
      * resumidas e documentos fiscais eletrônicos de interesse de um
      * ator, seja este pessoa física ou jurídica.
-     * @param string $fonte sigla da fonte dos dados 'AN' 
+     * @param string $fonte sigla da fonte dos dados 'AN'
      *                      e para alguns casos pode ser 'RS'
      * @param string $tpAmb tiupo de ambiente
+     * @param string $cnpj
      * @param integer $ultNSU ultimo numero NSU que foi consultado
      * @param integer $numNSU numero de NSU que se quer consultar
      * @param array $aRetorno array com os dados do retorno
      * @param boolean $descompactar se true irá descompactar os dados retornados,
      *        se não os dados serão retornados da forma que foram recebidos
      * @return string contento o xml retornado pela SEFAZ
-     * @throws Exception\InvalidArgumentException
-     * @throws Exception\RuntimeException
+     * @internal function zLoadServico (Common\Base\BaseTools)
      */
     public function sefazDistDFe(
         $fonte = 'AN',
@@ -1007,7 +1014,7 @@ class ToolsNFe extends BaseTools
             . "<nfeDadosMsg xmlns=\"$this->urlNamespace\">$cons</nfeDadosMsg>"
             . "</nfeDistDFeInteresse>";
         //envia dados via SOAP e verifica o retorno este webservice não requer cabeçalho
-        $this->header = "";
+        $this->urlHeader = '';
         $retorno = $this->oSoap->send(
             $this->urlService,
             $this->urlNamespace,
@@ -1131,6 +1138,7 @@ class ToolsNFe extends BaseTools
     {
         $chNFe = preg_replace('/[^0-9]/', '', $chNFe);
         $tpEvento = preg_replace('/[^0-9]/', '', $tpEvento);
+        $tagAdic = '';
         switch ($tpEvento) {
             case '210200':
                 //210200 – Confirmação da Operação
@@ -1171,6 +1179,7 @@ class ToolsNFe extends BaseTools
      * @param string $tagAdic
      * @return string
      * @throws Exception\RuntimeException
+     * @internal function zLoadServico (Common\Base\BaseTools)
      */
     protected function zSefazEvento(
         $siglaUF = '',
