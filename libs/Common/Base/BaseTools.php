@@ -563,7 +563,7 @@ class BaseTools
      * @param string $siglaUF
      * @return string numero cUF
      */
-    private static function zGetcUF($siglaUF = '')
+    protected static function zGetcUF($siglaUF = '')
     {
         $cUFlist = array(
             'AC'=>'12',
