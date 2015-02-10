@@ -889,7 +889,8 @@ class MakeNFe
             $this->retirada,
             "nro",
             $nro,
-            true, $identificador . "Número do Endereco do Cliente da Retirada"
+            true,
+            $identificador . "Número do Endereco do Cliente da Retirada"
         );
         $this->zAddChild(
             $this->retirada,
