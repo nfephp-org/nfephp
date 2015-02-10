@@ -77,8 +77,8 @@ class NFSeSPTest extends PHPUnit_Framework_TestCase
 
     private function getNFSeRPS()
     {
-        $rps = new NFSeRPS();
-        $rps->contractorRPS = new ContractorRPS();
+        $rps = new NFSe\NFSeRPS();
+        $rps->contractorRPS = new NFSe\ContractorRPS();
         return $rps;
     }
 

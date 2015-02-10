@@ -159,13 +159,13 @@ class ToolsNFe extends BaseTools
     }
     
     /**
-     * printNFe
+     * imprime
      * @param string $pathXml
      * @param string $pathDestino
      * @param string $printer
      * @return string
      */
-    public function printNFe($pathXml = '', $pathDestino = '', $printer = '')
+    public function imprime($pathXml = '', $pathDestino = '', $printer = '')
     {
         //TODO : falta implementar esse método
         return "$pathXml $pathDestino $printer";
@@ -177,7 +177,7 @@ class ToolsNFe extends BaseTools
      * @param array $aMails
      * @return boolean
      */
-    public function mailNFe($pathXml = '', $aMails = array())
+    public function enviaMail($pathXml = '', $aMails = array())
     {
         //TODO : falta implementar esse método
         $flag = false;
