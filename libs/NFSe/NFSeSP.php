@@ -1,5 +1,7 @@
 <?php
 
+namespace NFSe;
+
 /**
  * Creates XMLs and Webservices communication
  *
@@ -120,7 +122,7 @@ class NFSeSP
 
         $validTo = \DateTime::createFromFormat('ymd', substr($certData['validTo'], 0, 6));
         $today = new \DateTime('now');
-        if (!$this->ignoreCertExpired AND $validTo < $today) {
+        if (!$this->ignoreCertExpired and $validTo < $today) {
             throw new \Common\Exception\RuntimeException('Certificado expirado em ' . $validTo->format('Y-m-d'));
         }
     }
@@ -138,7 +140,15 @@ class NFSeSP
                 'Certificado não pode ser lido. O arquivo esta corrompido ou em formato invalido.'
             );
         }
-        $this->X509Certificate = preg_replace("/[\n]/", '', preg_replace('/\-\-\-\-\-[A-Z]+ CERTIFICATE\-\-\-\-\-/', '', $x509CertData['cert']));
+        $this->X509Certificate = preg_replace(
+            "/[\n]/",
+            '',
+            preg_replace(
+                '/\-\-\-\-\-[A-Z]+ CERTIFICATE\-\-\-\-\-/',
+                '',
+                $x509CertData['cert']
+            )
+        );
         $this->validateCert($x509CertData['cert']);
     }
 
@@ -212,7 +222,17 @@ class NFSeSP
         $xmlDoc = new DOMDocument('1.0', 'UTF-8');
         $xmlDoc->preserveWhiteSpace = false;
         $xmlDoc->formatOutput = false;
-        $data = '<?xml version="1.0" encoding="UTF-8"?><Pedido' . $operation . ' xmlns:xsd="' . $this->urlXsd . '" xmlns="' . $this->urlNfe . '" xmlns:xsi="' . $this->urlXsi . '"></Pedido' . $operation . '>';
+        $data = '<?xml version="1.0" encoding="UTF-8"?><Pedido'
+            . $operation
+            . ' xmlns:xsd="'
+            . $this->urlXsd
+            . '" xmlns="'
+            . $this->urlNfe
+            . '" xmlns:xsi="'
+            . $this->urlXsi
+            . '"></Pedido'
+            . $operation
+            . '>';
         $xmlDoc->loadXML(str_replace(array("\r\n", "\n", "\r"), '', $data), LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
         $root = $xmlDoc->documentElement;
         $header = $xmlDoc->createElementNS('', 'Cabecalho');
@@ -235,7 +255,15 @@ class NFSeSP
         $xmlDoc = new DOMDocument('1.0', 'UTF-8');
         $xmlDoc->preserveWhiteSpace = false;
         $xmlDoc->formatOutput = false;
-        $data = '<?xml version="1.0" encoding="UTF-8"?><Pedido' . $operation . ' xmlns="' . $this->urlNfe . '" xmlns:xsi="' . $this->urlXsi . '"></Pedido' . $operation . '>';
+        $data = '<?xml version="1.0" encoding="UTF-8"?><Pedido'
+            . $operation
+            . ' xmlns="'
+            . $this->urlNfe
+            . '" xmlns:xsi="'
+            . $this->urlXsi
+            . '"></Pedido'
+            . $operation
+            . '>';
         $xmlDoc->loadXML(str_replace(array("\r\n", "\n", "\r"), '', $data), LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
         $root = $xmlDoc->documentElement;
         $header = $xmlDoc->createElementNS('', 'Cabecalho');
@@ -318,7 +346,6 @@ class NFSeSP
             sprintf('%05s', $rps->codigoServico) .
             (($rps->contractorRPS->type == 'F') ? '1' : '2') .
             sprintf('%014s', $rps->contractorRPS->cnpjTomador);
-
         $signatureValue = '';
         $pkeyId = openssl_get_privatekey(file_get_contents($this->privateKey));
         openssl_sign($content, $signatureValue, $pkeyId, OPENSSL_ALGO_SHA1);
@@ -368,7 +395,9 @@ class NFSeSP
         }
         $rpsNode->appendChild($cnpj);
         if ($rps->contractorRPS->ccmTomador <> "") {
-            $rpsNode->appendChild($xmlDoc->createElement('InscricaoMunicipalTomador', $rps->contractorRPS->ccmTomador)); // 0-1
+            $rpsNode->appendChild(
+                $xmlDoc->createElement('InscricaoMunicipalTomador', $rps->contractorRPS->ccmTomador)
+            );
         }
         $rpsNode->appendChild($xmlDoc->createElement('RazaoSocialTomador', $rps->contractorRPS->name)); // 0-1
         $address = $xmlDoc->createElement('EnderecoTomador'); // 0-1
