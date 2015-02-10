@@ -124,6 +124,38 @@ class BaseTools
      * @var string
      */
     protected $modelo = '55';
+
+    protected $cUFlist = array(
+        'AC'=>'12',
+        'AL'=>'27',
+        'AM'=>'13',
+        'AN'=>'91',
+        'AP'=>'16',
+        'BA'=>'29',
+        'CE'=>'23',
+        'DF'=>'53',
+        'ES'=>'32',
+        'GO'=>'52',
+        'MA'=>'21',
+        'MG'=>'31',
+        'MS'=>'50',
+        'MT'=>'51',
+        'PA'=>'15',
+        'PB'=>'25',
+        'PE'=>'26',
+        'PI'=>'22',
+        'PR'=>'41',
+        'RJ'=>'33',
+        'RN'=>'24',
+        'RO'=>'11',
+        'RR'=>'14',
+        'RS'=>'43',
+        'SC'=>'42',
+        'SE'=>'28',
+        'SP'=>'35',
+        'TO'=>'17',
+        'SVAN' => '91'
+    );
     
     /**
      * __construct
@@ -257,30 +289,17 @@ class BaseTools
         $siglaUF,
         $tpAmb
     ) {
-        if (! isset($service) || ! isset($siglaUF)) {
+        if (empty($tipo) || empty($service) || empty($siglaUF)) {
+            $this->urlVersion = '';
+            $this->urlService = '';
+            $this->urlMethod = '';
+            $this->urlOperation = '';
+            $this->urlNamespace = '';
+            $this->urlHeader = '';
             return false;
         }
         $this->urlcUF = self::zGetcUF($siglaUF);
-        if ($tipo == 'nfe') {
-            $path = $this->aConfig['pathXmlUrlFileNFe'];
-            if ($this->modelo == '65') {
-                $path = str_replace('55', '65', $path);
-            } else {
-                $path = str_replace('65', '55', $path);
-            }
-        } elseif ($tipo == 'cte') {
-            $path = $this->aConfig['pathXmlUrlFileCTe'];
-        } elseif ($tipo == 'mdfe') {
-            $path = $this->aConfig['pathXmlUrlFileMDFe'];
-        } elseif ($tipo == 'cle') {
-            $path = $this->aConfig['pathXmlUrlFileCLe'];
-        }
-             
-        $pathXmlUrlFile = NFEPHP_ROOT
-                . DIRECTORY_SEPARATOR
-                . 'config'
-                . DIRECTORY_SEPARATOR
-                . $path;
+        $pathXmlUrlFile = self::zGetXmlUrlPath($tipo);
         
         if ($this->enableSVCAN) {
             $aURL = self::zLoadSEFAZ($pathXmlUrlFile, $tpAmb, 'SVCAN');
@@ -301,6 +320,38 @@ class BaseTools
         //montagem do cabeçalho da comunicação SOAP
         $this->urlHeader = $this->zMountHeader($tipo, $this->urlNamespace, $this->urlcUF, $this->urlVersion);
         return true;
+    }
+    
+    /**
+     * zGetXmlUrlPath
+     * @param string $tipo
+     * @return string
+     */
+    private static function zGetXmlUrlPath($tipo)
+    {
+        $path = '';
+        if ($tipo == 'nfe') {
+            $path = $this->aConfig['pathXmlUrlFileNFe'];
+            if ($this->modelo == '65') {
+                $path = str_replace('55', '65', $path);
+            } else {
+                $path = str_replace('65', '55', $path);
+            }
+        } elseif ($tipo == 'cte') {
+            $path = $this->aConfig['pathXmlUrlFileCTe'];
+        } elseif ($tipo == 'mdfe') {
+            $path = $this->aConfig['pathXmlUrlFileMDFe'];
+        } elseif ($tipo == 'cle') {
+            $path = $this->aConfig['pathXmlUrlFileCLe'];
+        }
+        
+        $pathXmlUrlFile = NFEPHP_ROOT
+            . DIRECTORY_SEPARATOR
+            . 'config'
+            . DIRECTORY_SEPARATOR
+            . $path;
+        
+        return $pathXmlUrlFile;
     }
     
     /**
@@ -592,37 +643,7 @@ class BaseTools
      */
     protected static function zGetcUF($siglaUF = '')
     {
-        $cUFlist = array(
-            'AC'=>'12',
-            'AL'=>'27',
-            'AM'=>'13',
-            'AN'=>'91',
-            'AP'=>'16',
-            'BA'=>'29',
-            'CE'=>'23',
-            'DF'=>'53',
-            'ES'=>'32',
-            'GO'=>'52',
-            'MA'=>'21',
-            'MG'=>'31',
-            'MS'=>'50',
-            'MT'=>'51',
-            'PA'=>'15',
-            'PB'=>'25',
-            'PE'=>'26',
-            'PI'=>'22',
-            'PR'=>'41',
-            'RJ'=>'33',
-            'RN'=>'24',
-            'RO'=>'11',
-            'RR'=>'14',
-            'RS'=>'43',
-            'SC'=>'42',
-            'SE'=>'28',
-            'SP'=>'35',
-            'TO'=>'17'
-        );
-        return $cUFlist[$siglaUF];
+        return $this->cUFlist[$siglaUF];
     }
     
     /**
@@ -632,36 +653,6 @@ class BaseTools
      */
     protected static function zGetSigla($cUF = '')
     {
-        $aUFList = array(
-            '11'=>'RO',
-            '12'=>'AC',
-            '13'=>'AM',
-            '14'=>'RR',
-            '15'=>'PA',
-            '16'=>'AP',
-            '17'=>'TO',
-            '21'=>'MA',
-            '22'=>'PI',
-            '23'=>'CE',
-            '24'=>'RN',
-            '25'=>'PB',
-            '26'=>'PE',
-            '27'=>'AL',
-            '28'=>'SE',
-            '29'=>'BA',
-            '31'=>'MG',
-            '32'=>'ES',
-            '33'=>'RJ',
-            '35'=>'SP',
-            '41'=>'PR',
-            '42'=>'SC',
-            '43'=>'RS',
-            '50'=>'MS',
-            '51'=>'MT',
-            '52'=>'GO',
-            '53'=>'DF',
-            '91'=>'SVAN'
-        );
-        return $aUFList[$cUF];
+        return array_search($cUF, $this->cUFlist);
     }
 }
