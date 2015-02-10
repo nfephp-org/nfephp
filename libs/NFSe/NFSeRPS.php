@@ -10,7 +10,7 @@ namespace NFSe;
  * @license   http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
-class NFeRPS
+class NFSeRPS
 {
     /**
      * CCM do prestador
