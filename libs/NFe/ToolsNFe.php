@@ -94,7 +94,7 @@ class ToolsNFe extends BaseTools
             return true;
         }
         $this->motivoContingencia = $motivo;
-        $this->tsContingencia = time();
+        $this->tsContingencia = mktime();
         $ctgList = array(
             'AC'=>'SVCAN',
             'AL'=>'SVCAN',
@@ -154,7 +154,7 @@ class ToolsNFe extends BaseTools
         $this->enableSVCRS = false;
         $this->tsContingencia = 0;
         $this->motivoContingencia = '';
-        unlink(NFEPHP_ROOT.DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'contingencia.json');       
+        unlink(NFEPHP_ROOT.DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'contingencia.json');
         return true;
     }
     

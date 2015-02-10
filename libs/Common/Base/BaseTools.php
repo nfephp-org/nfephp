@@ -43,7 +43,7 @@ class BaseTools
     public $motivoContingencia = '';
     /**
      * tsContingencia
-     * Timestamp da hora de entrada em contingência
+     * Timestamp UNIX da data e hora de entrada em contingência
      * @var int
      */
     public $tsContingencia = '';
