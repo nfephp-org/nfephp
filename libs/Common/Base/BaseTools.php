@@ -35,6 +35,18 @@ class BaseTools
      * @var boolean
      */
     public $enableSVCAN = false;
+    /**
+     * motivoContingencia
+     * Motivo por ter entrado em Contingencia
+     * @var string 
+     */
+    public $motivoContingencia = '';
+    /**
+     * tsContingencia
+     * Timestamp da hora de entrada em contingência
+     * @var int
+     */
+    public $tsContingencia = '';
     
     /**
      * oCertificate
@@ -113,7 +125,6 @@ class BaseTools
      */
     protected $modelo = '55';
     
-    
     /**
      * __construct
      * @param string $configJson
@@ -141,6 +152,18 @@ class BaseTools
             throw new Exception\RuntimeException($msg);
         }
         $this->zLoadSoapClass();
+        //verifica se a contingência está ativada
+        $pathContingencia = NFEPHP_ROOT.DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'contingencia.json';
+        if (is_file($pathContingencia)) {
+            $contJson = file_get_contents($pathContingencia);
+            if (! empty($contJson)) {
+                 $aCont = (array) json_decode($contJson);
+                 $this->motivoContingencia = $aCont['motivo'];
+                 $this->tsContingencia = $aCont['ts'];
+                 $this->enableSVCAN = $aCont['SVCAN'];
+                 $this->enableSVCRS = $aCont['SVCRS'];
+            }
+        }
     }
     
     /**
