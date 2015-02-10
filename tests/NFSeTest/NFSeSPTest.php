@@ -77,7 +77,7 @@ class NFSeSPTest extends PHPUnit_Framework_TestCase
 
     private function getNFSeRPS()
     {
-        $rps = new NFeRPS();
+        $rps = new NFSeRPS();
         $rps->contractorRPS = new ContractorRPS();
         return $rps;
     }
@@ -96,7 +96,7 @@ class NFSeSPTest extends PHPUnit_Framework_TestCase
         $returned = $nfse->sendRPS($rps);
         $this->assertInstanceOf('SimpleXMLElement', $returned);
         $this->assertEquals('true', $returned->Cabecalho->Sucesso);
-        $this->assertEquals("123", $returned->ChaveNFeRPS->ChaveRPS->NumeroRPS);
+        $this->assertEquals("123", $returned->ChaveNFSeRPS->ChaveRPS->NumeroRPS);
     }
 
     public function testSendABatchOfRpsToReplaceForNfe()
