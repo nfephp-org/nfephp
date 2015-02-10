@@ -264,7 +264,7 @@ class BaseTools
         } elseif ($this->enableSVCRS) {
             $aURL = self::zLoadSEFAZ($pathXmlUrlFile, $tpAmb, 'SVCRS');
         } else {
-            $aURL = self::zLoadSEFAZ($pathXmlUrlFile, $tpAmb, $siglaUF);
+            $aURL = self::zLoadSEFAZ($pathXmlUrlFile, $tpAmb, $siglaUF, $tipo);
         }
         //recuperação da versão
         $this->urlVersion = $aURL[$service]['version'];
@@ -425,11 +425,12 @@ class BaseTools
      * @param string $pathXmlUrlFile
      * @param  string $tpAmb Pode ser "2-homologacao" ou "1-producao"
      * @param string $siglaUF
+     * @param strign $tipo nfe, mdfe ou cte
      * @return mixed false se houve erro ou array com os dados dos URLs da SEFAZ
      * @internal param string $sUF Sigla da Unidade da Federação (ex. SP, RS, SVRS, etc..)
      * @see /config/nfe_ws3_modXX.xml
      */
-    protected function zLoadSEFAZ($pathXmlUrlFile = '', $tpAmb = '2', $siglaUF = 'SP')
+    protected function zLoadSEFAZ($pathXmlUrlFile = '', $tpAmb = '2', $siglaUF = 'SP', $tipo = 'nfe')
     {
         //verifica se o arquivo xml pode ser encontrado no caminho indicado
         if (! file_exists($pathXmlUrlFile)) {
@@ -485,6 +486,9 @@ class BaseTools
             $sAmbiente = 'producao';
         }
         $alias = $autorizadores[$siglaUF];
+        if ($tipo == 'mdfe') {
+            $alias = 'RS';
+        }
         //estabelece a expressão xpath de busca
         $xpathExpression = "/WS/UF[sigla='$alias']/$sAmbiente";
         $aUrl = $this->zExtractUrl($xmlWS, $aUrl, $xpathExpression);
