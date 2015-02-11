@@ -41,11 +41,22 @@ class Strings
      */
     public static function clearXml($xml = '', $remEnc = false)
     {
-        $aFind = array('xmlns:default="http://www.w3.org/2000/09/xmldsig#"', 'default:', ':default', "\n", "\r", "\s", "\t", );
+        $aFind = array(
+            'xmlns:default="http://www.w3.org/2000/09/xmldsig#"',
+            'default:',
+            ':default',
+            ' standalone="no"',
+            "\n",
+            "\r",
+            "\s",
+            "\t"
+        );
         if ($remEnc) {
             $aFind[] = '<?xml version="1.0"?>';
             $aFind[] = '<?xml version="1.0" encoding="utf-8"?>';
             $aFind[] = '<?xml version="1.0" encoding="UTF-8"?>';
+            $aFind[] = '<?xml version="1.0" encoding="utf-8" standalone="no"?>';
+            $aFind[] = '<?xml version="1.0" encoding="UTF-8" standalone="no"?>';
         }
         $retXml = str_replace($aFind, "", $xml);
         return $retXml;
