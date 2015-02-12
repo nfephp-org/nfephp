@@ -179,19 +179,11 @@ class BaseTools
             $this->aConfig['pathCertsFiles'],
             $this->aConfig['cnpj']
         );
-        
-        if ($this->oCertificate->priKey == '') {
-            //as chaves ainda não foram carregadas tentar carregar
-            $certpfx = $this->aConfig['pathCertsFiles'] . $this->aConfig['certPfxName'];
-            $senha = $this->aConfig['certPassword'];
-            $this->atualizaCertificado($certpfx, $senha);
-        } else {
-            if ($this->oCertificate->expireTimestamp == 0) {
-                $msg = 'Não existe certificado válido disponível. Atualize o Certificado.';
-                throw new Exception\RuntimeException($msg);
-            }
-            $this->zLoadSoapClass();
+        if ($this->oCertificate->expireTimestamp == 0) {
+            $msg = 'Não existe certificado válido disponível. Atualize o Certificado.';
+            throw new Exception\RuntimeException($msg);
         }
+        $this->zLoadSoapClass();
         //verifica se a contingência está ativada
         $pathContingencia = NFEPHP_ROOT.DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'contingencia.json';
         if (is_file($pathContingencia)) {
@@ -306,8 +298,8 @@ class BaseTools
             $this->urlHeader = '';
             return false;
         }
-        $this->urlcUF = self::zGetcUF($siglaUF);
-        $pathXmlUrlFile = self::zGetXmlUrlPath($tipo);
+        $this->urlcUF = $this->zGetcUF($siglaUF);
+        $pathXmlUrlFile = $this->zGetXmlUrlPath($tipo);
         
         if ($this->enableSVCAN) {
             $aURL = self::zLoadSEFAZ($pathXmlUrlFile, $tpAmb, 'SVCAN');
@@ -335,7 +327,7 @@ class BaseTools
      * @param string $tipo
      * @return string
      */
-    private static function zGetXmlUrlPath($tipo)
+    private function zGetXmlUrlPath($tipo)
     {
         $path = '';
         if ($tipo == 'nfe') {
@@ -649,7 +641,7 @@ class BaseTools
      * @param string $siglaUF
      * @return string numero cUF
      */
-    protected static function zGetcUF($siglaUF = '')
+    protected function zGetcUF($siglaUF = '')
     {
         return $this->cUFlist[$siglaUF];
     }
@@ -659,7 +651,7 @@ class BaseTools
      * @param string $cUF
      * @return string
      */
-    protected static function zGetSigla($cUF = '')
+    protected function zGetSigla($cUF = '')
     {
         return array_search($cUF, $this->cUFlist);
     }

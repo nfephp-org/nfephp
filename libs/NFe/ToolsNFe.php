@@ -635,7 +635,7 @@ class ToolsNFe extends BaseTools
             $tpAmb = $this->aConfig['tpAmb'];
         }
         $cUF = substr($chNFe, 0, 2);
-        $siglaUF = self::zGetSigla($cUF);
+        $siglaUF = $this->zGetSigla($cUF);
         //carrega serviço
         $this->zLoadServico(
             'nfe',
@@ -1067,7 +1067,7 @@ class ToolsNFe extends BaseTools
         if ($tpAmb == '') {
             $tpAmb = $this->aConfig['tpAmb'];
         }
-        $siglaUF = self::zGetSigla(substr($chNFe, 0, 2));
+        $siglaUF = $this->zGetSigla(substr($chNFe, 0, 2));
         $tpEvento = '110110';
         $xCondUso = "A Carta de Correcao e disciplinada pelo paragrafo "
                 . "1o-A do art. 7o do Convenio S/N, de 15 de dezembro de 1970 "
@@ -1113,7 +1113,7 @@ class ToolsNFe extends BaseTools
             $msg = "A justificativa deve ter pelo menos 15 digitos e no máximo 255!!";
             throw new Exception\InvalidArgumentException($msg);
         }
-        $siglaUF = self::zGetSigla(substr($chNFe, 0, 2));
+        $siglaUF = $this->zGetSigla(substr($chNFe, 0, 2));
         //estabelece o codigo do tipo de evento CANCELAMENTO
         $tpEvento = '110111';
         $nSeqEvento = 1;
