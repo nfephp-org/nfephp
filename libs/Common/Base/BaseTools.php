@@ -179,11 +179,19 @@ class BaseTools
             $this->aConfig['pathCertsFiles'],
             $this->aConfig['cnpj']
         );
-        if ($this->oCertificate->expireTimestamp == 0) {
-            $msg = 'Não existe certificado válido disponível. Atualize o Certificado.';
-            throw new Exception\RuntimeException($msg);
+        
+        if ($this->oCertificate->priKey == '') {
+            //as chaves ainda não foram carregadas tentar carregar
+            $certpfx = $this->aConfig['pathCertsFiles'] . $this->aConfig['certPfxName'];
+            $senha = $this->aConfig['certPassword'];
+            $this->atualizaCertificado($certpfx, $senha);
+        } else {
+            if ($this->oCertificate->expireTimestamp == 0) {
+                $msg = 'Não existe certificado válido disponível. Atualize o Certificado.';
+                throw new Exception\RuntimeException($msg);
+            }
+            $this->zLoadSoapClass();
         }
-        $this->zLoadSoapClass();
         //verifica se a contingência está ativada
         $pathContingencia = NFEPHP_ROOT.DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'contingencia.json';
         if (is_file($pathContingencia)) {
