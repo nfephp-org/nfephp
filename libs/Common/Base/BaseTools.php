@@ -35,6 +35,18 @@ class BaseTools
      * @var boolean
      */
     public $enableSVCAN = false;
+    /**
+     * motivoContingencia
+     * Motivo por ter entrado em Contingencia
+     * @var string 
+     */
+    public $motivoContingencia = '';
+    /**
+     * tsContingencia
+     * Timestamp UNIX da data e hora de entrada em contingência
+     * @var int
+     */
+    public $tsContingencia = '';
     
     /**
      * oCertificate
@@ -112,7 +124,38 @@ class BaseTools
      * @var string
      */
     protected $modelo = '55';
-    
+
+    protected $cUFlist = array(
+        'AC'=>'12',
+        'AL'=>'27',
+        'AM'=>'13',
+        'AN'=>'91',
+        'AP'=>'16',
+        'BA'=>'29',
+        'CE'=>'23',
+        'DF'=>'53',
+        'ES'=>'32',
+        'GO'=>'52',
+        'MA'=>'21',
+        'MG'=>'31',
+        'MS'=>'50',
+        'MT'=>'51',
+        'PA'=>'15',
+        'PB'=>'25',
+        'PE'=>'26',
+        'PI'=>'22',
+        'PR'=>'41',
+        'RJ'=>'33',
+        'RN'=>'24',
+        'RO'=>'11',
+        'RR'=>'14',
+        'RS'=>'43',
+        'SC'=>'42',
+        'SE'=>'28',
+        'SP'=>'35',
+        'TO'=>'17',
+        'SVAN' => '91'
+    );
     
     /**
      * __construct
@@ -141,6 +184,18 @@ class BaseTools
             throw new Exception\RuntimeException($msg);
         }
         $this->zLoadSoapClass();
+        //verifica se a contingência está ativada
+        $pathContingencia = NFEPHP_ROOT.DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'contingencia.json';
+        if (is_file($pathContingencia)) {
+            $contJson = file_get_contents($pathContingencia);
+            if (! empty($contJson)) {
+                 $aCont = (array) json_decode($contJson);
+                 $this->motivoContingencia = $aCont['motivo'];
+                 $this->tsContingencia = $aCont['ts'];
+                 $this->enableSVCAN = $aCont['SVCAN'];
+                 $this->enableSVCRS = $aCont['SVCRS'];
+            }
+        }
     }
     
     /**
@@ -234,10 +289,47 @@ class BaseTools
         $siglaUF,
         $tpAmb
     ) {
-        if (! isset($service) || ! isset($siglaUF)) {
+        if (empty($tipo) || empty($service) || empty($siglaUF)) {
+            $this->urlVersion = '';
+            $this->urlService = '';
+            $this->urlMethod = '';
+            $this->urlOperation = '';
+            $this->urlNamespace = '';
+            $this->urlHeader = '';
             return false;
         }
         $this->urlcUF = self::zGetcUF($siglaUF);
+        $pathXmlUrlFile = self::zGetXmlUrlPath($tipo);
+        
+        if ($this->enableSVCAN) {
+            $aURL = self::zLoadSEFAZ($pathXmlUrlFile, $tpAmb, 'SVCAN');
+        } elseif ($this->enableSVCRS) {
+            $aURL = self::zLoadSEFAZ($pathXmlUrlFile, $tpAmb, 'SVCRS');
+        } else {
+            $aURL = self::zLoadSEFAZ($pathXmlUrlFile, $tpAmb, $siglaUF, $tipo);
+        }
+        //recuperação da versão
+        $this->urlVersion = $aURL[$service]['version'];
+        //recuperação da url do serviço
+        $this->urlService = $aURL[$service]['URL'];
+        //recuperação do método
+        $this->urlMethod = $aURL[$service]['method'];
+        //montagem do namespace do serviço
+        $this->urlOperation = $aURL[$service]['operation'];
+        $this->urlNamespace = sprintf("%s/wsdl/%s", $this->urlPortal, $this->urlOperation);
+        //montagem do cabeçalho da comunicação SOAP
+        $this->urlHeader = $this->zMountHeader($tipo, $this->urlNamespace, $this->urlcUF, $this->urlVersion);
+        return true;
+    }
+    
+    /**
+     * zGetXmlUrlPath
+     * @param string $tipo
+     * @return string
+     */
+    private static function zGetXmlUrlPath($tipo)
+    {
+        $path = '';
         if ($tipo == 'nfe') {
             $path = $this->aConfig['pathXmlUrlFileNFe'];
             if ($this->modelo == '65') {
@@ -252,32 +344,14 @@ class BaseTools
         } elseif ($tipo == 'cle') {
             $path = $this->aConfig['pathXmlUrlFileCLe'];
         }
-             
-        $pathXmlUrlFile = NFEPHP_ROOT
-                . DIRECTORY_SEPARATOR
-                . 'config'
-                . DIRECTORY_SEPARATOR
-                . $path;
         
-        if ($this->enableSVCAN) {
-            $aURL = self::zLoadSEFAZ($pathXmlUrlFile, $tpAmb, 'SVCAN');
-        } elseif ($this->enableSVCRS) {
-            $aURL = self::zLoadSEFAZ($pathXmlUrlFile, $tpAmb, 'SVCRS');
-        } else {
-            $aURL = self::zLoadSEFAZ($pathXmlUrlFile, $tpAmb, $siglaUF);
-        }
-        //recuperação da versão
-        $this->urlVersion = $aURL[$service]['version'];
-        //recuperação da url do serviço
-        $this->urlService = $aURL[$service]['URL'];
-        //recuperação do método
-        $this->urlMethod = $aURL[$service]['method'];
-        //montagem do namespace do serviço
-        $this->urlOperation = $aURL[$service]['operation'];
-        $this->urlNamespace = sprintf("%s/wsdl/%s", $this->urlPortal, $this->urlOperation);
-        //montagem do cabeçalho da comunicação SOAP
-        $this->urlHeader = $this->zMountHeader($tipo, $this->urlNamespace, $this->urlcUF, $this->urlVersion);
-        return true;
+        $pathXmlUrlFile = NFEPHP_ROOT
+            . DIRECTORY_SEPARATOR
+            . 'config'
+            . DIRECTORY_SEPARATOR
+            . $path;
+        
+        return $pathXmlUrlFile;
     }
     
     /**
@@ -425,11 +499,12 @@ class BaseTools
      * @param string $pathXmlUrlFile
      * @param  string $tpAmb Pode ser "2-homologacao" ou "1-producao"
      * @param string $siglaUF
+     * @param strign $tipo nfe, mdfe ou cte
      * @return mixed false se houve erro ou array com os dados dos URLs da SEFAZ
      * @internal param string $sUF Sigla da Unidade da Federação (ex. SP, RS, SVRS, etc..)
      * @see /config/nfe_ws3_modXX.xml
      */
-    protected function zLoadSEFAZ($pathXmlUrlFile = '', $tpAmb = '2', $siglaUF = 'SP')
+    protected function zLoadSEFAZ($pathXmlUrlFile = '', $tpAmb = '2', $siglaUF = 'SP', $tipo = 'nfe')
     {
         //verifica se o arquivo xml pode ser encontrado no caminho indicado
         if (! file_exists($pathXmlUrlFile)) {
@@ -485,6 +560,9 @@ class BaseTools
             $sAmbiente = 'producao';
         }
         $alias = $autorizadores[$siglaUF];
+        if ($tipo == 'mdfe') {
+            $alias = 'RS';
+        }
         //estabelece a expressão xpath de busca
         $xpathExpression = "/WS/UF[sigla='$alias']/$sAmbiente";
         $aUrl = $this->zExtractUrl($xmlWS, $aUrl, $xpathExpression);
@@ -565,37 +643,7 @@ class BaseTools
      */
     protected static function zGetcUF($siglaUF = '')
     {
-        $cUFlist = array(
-            'AC'=>'12',
-            'AL'=>'27',
-            'AM'=>'13',
-            'AN'=>'91',
-            'AP'=>'16',
-            'BA'=>'29',
-            'CE'=>'23',
-            'DF'=>'53',
-            'ES'=>'32',
-            'GO'=>'52',
-            'MA'=>'21',
-            'MG'=>'31',
-            'MS'=>'50',
-            'MT'=>'51',
-            'PA'=>'15',
-            'PB'=>'25',
-            'PE'=>'26',
-            'PI'=>'22',
-            'PR'=>'41',
-            'RJ'=>'33',
-            'RN'=>'24',
-            'RO'=>'11',
-            'RR'=>'14',
-            'RS'=>'43',
-            'SC'=>'42',
-            'SE'=>'28',
-            'SP'=>'35',
-            'TO'=>'17'
-        );
-        return $cUFlist[$siglaUF];
+        return $this->cUFlist[$siglaUF];
     }
     
     /**
@@ -605,36 +653,6 @@ class BaseTools
      */
     protected static function zGetSigla($cUF = '')
     {
-        $aUFList = array(
-            '11'=>'RO',
-            '12'=>'AC',
-            '13'=>'AM',
-            '14'=>'RR',
-            '15'=>'PA',
-            '16'=>'AP',
-            '17'=>'TO',
-            '21'=>'MA',
-            '22'=>'PI',
-            '23'=>'CE',
-            '24'=>'RN',
-            '25'=>'PB',
-            '26'=>'PE',
-            '27'=>'AL',
-            '28'=>'SE',
-            '29'=>'BA',
-            '31'=>'MG',
-            '32'=>'ES',
-            '33'=>'RJ',
-            '35'=>'SP',
-            '41'=>'PR',
-            '42'=>'SC',
-            '43'=>'RS',
-            '50'=>'MS',
-            '51'=>'MT',
-            '52'=>'GO',
-            '53'=>'DF',
-            '91'=>'SVAN'
-        );
-        return $aUFList[$cUF];
+        return array_search($cUF, $this->cUFlist);
     }
 }

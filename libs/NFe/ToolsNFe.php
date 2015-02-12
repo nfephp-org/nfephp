@@ -29,18 +29,6 @@ if (!defined('NFEPHP_ROOT')) {
 class ToolsNFe extends BaseTools
 {
     /**
-     * motivoContingencia
-     * Motivo por ter entrado em Contingencia
-     * @var string 
-     */
-    public $motivoContingencia = '';
-    /**
-     * tsContingencia
-     * Timestamp da hora de entrada em contingência
-     * @var int
-     */
-    public $tsContingencia = '';
-    /**
      * errror
      * @var string
      */
@@ -102,8 +90,11 @@ class ToolsNFe extends BaseTools
         if ($siglaUF == '' || $motivo == '') {
             return false;
         }
+        if ($this->enableSVCAN || $this->enableSVCRS) {
+            return true;
+        }
         $this->motivoContingencia = $motivo;
-        $this->tsContingencia = time();
+        $this->tsContingencia = mktime();
         $ctgList = array(
             'AC'=>'SVCAN',
             'AL'=>'SVCAN',
@@ -141,6 +132,14 @@ class ToolsNFe extends BaseTools
             $this->enableSVCAN = false;
             $this->enableSVCRS = true;
         }
+        $aCont = array(
+            'motivo' => $this->motivoContingencia,
+            'ts' => $this->tsContingencia,
+            'SVCAN' => $this->enableSVCAN,
+            'SCVRS' => $this->enableSVCRS
+        );
+        $strJson = json_encode($aCont);
+        file_put_contents(NFEPHP_ROOT.DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'contingencia.json', $strJson);
         return true;
     }
     
@@ -155,17 +154,18 @@ class ToolsNFe extends BaseTools
         $this->enableSVCRS = false;
         $this->tsContingencia = 0;
         $this->motivoContingencia = '';
+        unlink(NFEPHP_ROOT.DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'contingencia.json');
         return true;
     }
     
     /**
-     * printNFe
+     * imprime
      * @param string $pathXml
      * @param string $pathDestino
      * @param string $printer
      * @return string
      */
-    public function printNFe($pathXml = '', $pathDestino = '', $printer = '')
+    public function imprime($pathXml = '', $pathDestino = '', $printer = '')
     {
         //TODO : falta implementar esse método
         return "$pathXml $pathDestino $printer";
@@ -177,7 +177,7 @@ class ToolsNFe extends BaseTools
      * @param array $aMails
      * @return boolean
      */
-    public function mailNFe($pathXml = '', $aMails = array())
+    public function enviaMail($pathXml = '', $aMails = array())
     {
         //TODO : falta implementar esse método
         $flag = false;
