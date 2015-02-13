@@ -56,8 +56,77 @@ class ReturnNFe
             case 'nfeDistDFeInteresse':
                 return self::zReadDistDFeInteresse($dom, $parametro);
                 break;
+            case 'nfeDownloadNF':
+                return self::zReadDownloadNF($dom);
+                break;
         }
         return array();
+    }
+    
+    /**
+     * zReadDownloadNF
+     * @param DOMDocument $dom
+     * @param boolean $parametro
+     * @return array
+     */
+    protected static function zReadDownloadNF($dom)
+    {
+        //retorno da funçao
+        $aResposta = array(
+            'bStat' => false,
+            'versao' => '',
+            'verAplic' => '',
+            'tpAmb' => '',
+            'cStat' => '',
+            'xMotivo' => '',
+            'dhResp' => '',
+            'aRetNFe' => array()
+        );
+        $tag = $dom->getElementsByTagName('retDownloadNFe')->item(0);
+        if (! isset($tag)) {
+            return $aResposta;
+        }
+        $retNFe = isset($tag->getElementsByTagName('retNFe')->item(0))
+                ? $tag->getElementsByTagName('retNFe')->item(0)
+                : '';
+        if (! empty($retNFe)) {
+            $aRetNFe['cStat'] = $retNFe->getElementsByTagName('cStat')->item(0)->nodeValue;
+            $aRetNFe['xMotivo'] = $retNFe->getElementsByTagName('xMotivo')->item(0)->nodeValue;
+            $aRetNFe['chNFe'] = $retNFe->getElementsByTagName('chNFe')->item(0)->nodeValue;
+            $nfeProc = isset($retNFe->getElementsByTagName('nfeProc')->item(0))
+                ? $retNFe->getElementsByTagName('nfeProc')->item(0)
+                : '';
+            if (! empty($nfeProc)) {
+                $aRetNFe['nfeProc'] = $dom->saveXML($nfeProc);
+            }
+        }
+        $procNFeZip = isset($tag->getElementsByTagName('procNFeZip')->item(0)->nodeValue)
+            ? $tag->getElementsByTagName('procNFeZip')->item(0)->nodeValue
+            : '';
+        if (! empty($procNFeZip)) {
+            $aRetNFe['procZip'] = gzdecode(base64_decode($procNFeZip));
+        }
+        $nfeZip = isset($tag->getElementsByTagName('NFeZip')->item(0)->nodeValue)
+            ? $tag->getElementsByTagName('NFeZip')->item(0)->nodeValue
+            : '';
+        if (! empty($nfeZip)) {
+            $aRetNFe['nfeZip'] = gzdecode(base64_decode($nfeZip));
+        }
+        $protZip = isset($tag->getElementsByTagName('protNFeZip')->item(0)->nodeValue)
+            ? $tag->getElementsByTagName('protNFeZip')->item(0)->nodeValue
+            : '';
+        if (! empty($protZip)) {
+            $aRetNFe['protZip'] = gzdecode(base64_decode($protZip));
+        }
+        $aResposta['bStat'] = true;
+        $aResposta['versao'] = $tag->getAttribute('versao');
+        $aResposta['tpAmb'] = $tag->getElementsByTagName('tpAmb')->item(0)->nodeValue;
+        $aResposta['verAplic'] = $tag->getElementsByTagName('verAplic')->item(0)->nodeValue;
+        $aResposta['cStat'] = $tag->getElementsByTagName('cStat')->item(0)->nodeValue;
+        $aResposta['xMotivo'] = $tag->getElementsByTagName('xMotivo')->item(0)->nodeValue;
+        $aResposta['dhResp'] = $tag->getElementsByTagName('dhResp')->item(0)->nodeValue;
+        $aResposta['aRetNFe'] = $aRetNFe;
+        return $aResposta;
     }
     
     /**
@@ -397,7 +466,7 @@ class ReturnNFe
      * @param boolean $descompactar
      * @return array
      */
-    protected static function zReadDistDFeInteresse($dom, $descompactar = false)
+    protected static function zReadDistDFeInteresse($dom)
     {
         $aResposta = array(
             'bStat' => false,
@@ -407,7 +476,7 @@ class ReturnNFe
             'dhResp' => '',
             'ultNSU' => 0,
             'maxNSU' => 0,
-            'docZip' => array()
+            'aDoc' => array()
         );
         $tag = $dom->getElementsByTagName('retDistDFeInt')->item(0);
         if (! isset($tag)) {
@@ -416,14 +485,11 @@ class ReturnNFe
         $aDocZip = array();
         $docs = $tag->getElementsByTagName('docZip');
         foreach ($docs as $doc) {
-            $xml = $doc->nodeValue;
-            if ($descompactar) {
-                $xml = gzdecode(base64_decode($xml));
-            }
+            $xml = gzdecode(base64_decode($xml));
             $aDocZip[] = array(
               'NSU' => $doc->getAttribute('NSU'),
               'schema' => $doc->getAttribute('schema'),
-              'docZip' => $xml
+              'doc' => $xml
             );
         }
         $aResposta = array(
@@ -434,7 +500,7 @@ class ReturnNFe
             'dhResp' => $tag->getElementsByTagName('dhResp')->item(0)->nodeValue,
             'ultNSU' => $tag->getElementsByTagName('ultNSU')->item(0)->nodeValue,
             'maxNSU' => $tag->getElementsByTagName('maxNSU')->item(0)->nodeValue,
-            'docZip' => $aDocZip
+            'aDoc' => $aDocZip
         );
         return $aResposta;
     }
