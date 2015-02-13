@@ -42,8 +42,9 @@ DANFE
 DANFCE
 DACCE
 O método pode retornar uma string com o pdf gerado ou nada
+
 Parâmetros
-----
+
 (string) $pathXml - Caminho completo ao documento xml
 (string) $pathDestino - o destino pode ser um diretório ou vazio
 (string) $printer - nome da impressora, se o ambiente estiver adequadamente configurado o pdf será enviado a impressora
@@ -56,8 +57,9 @@ Envia email com o arquivo xml anexado.
 Para os endereços contidos no array $aMails ou no caso de uma NFe,
 para os endereços de emails contidos na propria NFe.
 Retorna true se sucesso ou false se houve falha
+
 Parâmetros
-----
+
 (string) $pathXml - Caminho completo ao documento xml a ser enviado
 (array) $aMails - Matriz com os email de destino
 
@@ -66,8 +68,9 @@ Parâmetros
 ```
 Adiciona a tag de comunicação B2B ao arquivo da NFe.
 Esse tipo de recurso foi criado pela ANFAVEA para simplificar os processos de EDI entre as empresas do setor.
+
 Parâmetros
-----
+
 (string) $pathNFefile - Caminho completo ao arquivo da NFe (já protocolado) 
 (string) $pathB2Bfile - Caminho completo ao arquivo xml com a estrutura B2B
 (string) $tagB2B - Tag a ser inclusa
@@ -78,8 +81,9 @@ Parâmetros
 ```
 Adiciona o protocolo de autorização ao xml da NFe. A NFe somente está válida com o protocolo anexado.
 Este método retorna uma string com o xml da NFe já protocolado.
+
 Parâmetros
-----
+
 (string) $pathNFefile - Caminho completo ao arquivo da NFe sem o protocolo
 (string) $pathProtfile - Caminho completo ao arquivo com o protocolo de autorização da NFe
 (bool) $saveFile - true salva a NFe na pasta aprovadas
@@ -90,8 +94,9 @@ Parâmetros
 Adiciona o protocolo de cancelamento a NFe. Esse método retorna o xml modificado com o cancelamento,
 não existe exigência legal para isso mas é uma forma de idnetificar as NFe que foram canceladas
 apenas pelo próprio xml.
+
 Parâmetros
-----
+
 (string) $pathNFefile - Caminho completo ao arquivo da NFe a ser marcada como cancelada
 (string) $pathCancfile - Caminho completo ao protocolo de cancelamento
 (bool) $saveFile - true salva a NFe cancelada sobre a original
@@ -101,8 +106,9 @@ Parâmetros
 ```
 Verifica a validade de uma NFe recebida de terceiros.
 Este método retorna verdadeiro ou falso
+
 Parâmetros
-----
+
 (string) $pathXmlFile - Caminho completo ao arquivo da NFe a ser validada
 (array) $aRetorno - Array passado como referência e retorna com os dados de retorno da SEFAZ
 
@@ -112,8 +118,9 @@ Parâmetros
 ```
 Assina uma NFe.
 Este método retorna o xml da NFe assinada com o certificado digital.
+
 Parâmetros
-----
+
 (string) $xml - xml da NFe
 (bool) $saveFile - salva a NFe na pasta assinadas
 
@@ -124,8 +131,9 @@ Solicita a validação de um lote de NFe.
 Esse método retorna o XML de resposta da SEFAZ.
 Pode enviar de 1 até 50 NFe (assíncrono) ou caso a autorizadora permita enviar uma única NFe pelo método síncono.
 O envio síncrono não está ativado como padrão e em geral são as autorizadoras do NFCe (modelo 65) que permitem seu uso.
+
 Parâmetros
-----
+
 (string | array) $aXml - String com NFe ou um array com várias NFe's
 (string) $tpAmb - tipo de ambiente 1-produção ou 2-homologação
 (string) $idLote - Número de identificação do lote, será criado se não for passado nada.
@@ -139,8 +147,9 @@ Parâmetros
 Solicita a situação de um lote enviado, pelo número do recibo.
 É complementar a ao método anterior sefazEnviaLote(), caso o envia seja assíncrono.
 Esse método retorna o XML de resposta da SEFAZ.
+
 Parâmetros
-----
+
 (string) $recibo - Número do recibo retornado pelo método sefazEnviaLote()
 (string) $tpAmb - tipo de ambiente 1-produção ou 2-homologação
 (array) $aRetorno - Array passado como referência e retorna com os dados de retorno da SEFAZ
@@ -151,8 +160,9 @@ Parâmetros
 ```
 Solicita a situação da NFe identificada por sua chave.
 Esse método retorna o XML de resposta da SEFAZ.
+
 Parâmetros
-----
+
 (string) $chNFe - chave da NFe (com 44 dígitos numéricos)
 (string) $tpAmb - tipo de ambiente 1-produção ou 2-homologação
 (array) $aRetorno - Array passado como referência e retorna com os dados de retorno da SEFAZ
@@ -163,8 +173,9 @@ Parâmetros
 ```
 Solicita a inutilização de faixa de numeros de NFe.
 Esse método retorna o XML de resposta da SEFAZ.
+
 Parâmetros
-----
+
 (int) $nSerie - Número da série de NFe
 (int) $nIni - Número inicial
 (int) $nFin - Número final
@@ -177,8 +188,9 @@ Parâmetros
 ```
 Solicita os dados cadastrais da empresa identificada.
 Esse método retorna o XML de resposta da SEFAZ.
+
 Parâmetros
-----
+
 (string) $siglaUF - Sigla da unidade da federação
 (string) $tpAmb - tipo de ambiente 1-produção ou 2-homologação
 (string) $cnpj - Número do CNPJ a ser pesquisado (esse é prioritário, se for diferente de vazio será usado)
@@ -193,8 +205,9 @@ Parâmetros
 Solicita o status dos serviços da SEFAZ.
 Esse método retorna o XML de resposta da SEFAZ.
 ATENÇÃO - Já foi informado que esse serviço irá deixar de funcionar.
+
 Parâmetros
-----
+
 (string) $siglaUF - Sigla da unidade da federação
 (string) $tpAmb - tipo de ambiente 1-produção ou 2-homologação
 (array) $aRetorno - Array passado como referência e retorna com os dados de retorno da SEFAZ
@@ -208,8 +221,9 @@ Ou pelo numero de NSU (se for diferente de zero) onde será retornado apenas o d
 Os documentos são retornados compactados em gzip e pode ser descompatados ao serem retornados.
 CUIDADO no uso não faça solicitições muito frequentes pois a SEFAZ vai bloquear.
 Esse método retorna o XML de resposta da SEFAZ.
+
 Parâmetros
-----
+
 (string) $fonte - Usualmente 'AN', mas pode ser para alguns casos 'RS'
 (string) $tpAmb - tipo de ambiente 1-produção ou 2-homologação
 (string) $cnpj - Número do CNPJ a ser pesquisado (isso esta atrelado ao certificado)
@@ -222,8 +236,9 @@ Parâmetros
 (string) public function sefazCCe($chNFe, $tpAmb, $xCorrecao, $nSeqEvento, $aRetorno)
 ```
  Solicita uma carta de correção para uma NFe.Esse método retorna o XML de resposta da SEFAZ.
+
 Parâmetros
-----
+
 (string) $chNFe - chave da NFe (com 44 dígitos numéricos)
 (string) $tpAmb - tipo de ambiente 1-produção ou 2-homologação
 (string) $xCorrecao - Qual é a correção a ser feita na NFe
@@ -234,8 +249,9 @@ Parâmetros
 (string) public function sefazCancela($chNFe, $tpAmb, $xJust, $nProt, $aRetorno)
 ```
 Realiza a soliciatação de cancelamento da NFe. Esse método retorna o XML de resposta da SEFAZ.
+
 Parâmetros
-----
+
 (string) $chNFe - chave da NFe (com 44 dígitos numéricos)
 (string) $tpAmb - tipo de ambiente 1-produção ou 2-homologação
 (string) $xJust - Justificativa para o cancelamento da NFe
@@ -245,15 +261,29 @@ Parâmetros
 ```php
 (string) public function sefazManifesta($chNFe, $tpAmb, $xJust, $tpEvento, $aRetorno)
 ```
-Realiza a soliticação de manifestação do destinatário. Esse método retorna o XML de resposta da SEFAZ.
+Realiza a solicitação de manifestação do destinatário. Esse método retorna o XML de resposta da SEFAZ.
    210200 – Confirmação da Operação
    210210 – Ciência da Operação
    210220 – Desconhecimento da Operação
    210240 – Operação não Realizada, apenas nesse caso xJust é obrigatório. 
+
 Parâmetros
-----
+
 (string) $chNFe - chave da NFe (com 44 dígitos numéricos)
 (string) $tpAmb - tipo de ambiente 1-produção ou 2-homologação
 (string) $xJust - Justificativa para "210240 – Operação não Realizada"
 (string) $tpEvento - Código do tipo de evento
+(array) $aRetorno - Array passado como referência e retorna com os dados de retorno da SEFAZ
+
+```php
+(string) public function sefazDownload($chNFe, $tpAmb, $cnpj, $aRetorno)
+```
+Realiza a solicitação de download de NFe já manifestada
+
+Parâmetros
+
+(string) $chNFe - chave da NFe (com 44 dígitos numéricos)
+(string) $tpAmb - tipo de ambiente 1-produção ou 2-homologação
+(string) $cnpj - Número do CNPJ do destinatário ou interessado autorizado a fazer o download
+                 caso não seja passado nenhum valor o CNPJ da configuração será usado
 (array) $aRetorno - Array passado como referência e retorna com os dados de retorno da SEFAZ
