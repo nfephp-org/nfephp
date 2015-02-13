@@ -54,7 +54,7 @@ class ReturnNFe
                 return self::zReadRecepcaoEvento($dom);
                 break;
             case 'nfeDistDFeInteresse':
-                return self::zReadDistDFeInteresse($dom, $parametro);
+                return self::zReadDistDFeInteresse($dom);
                 break;
             case 'nfeDownloadNF':
                 return self::zReadDownloadNF($dom);
@@ -86,33 +86,33 @@ class ReturnNFe
         if (! isset($tag)) {
             return $aResposta;
         }
-        $retNFe = isset($tag->getElementsByTagName('retNFe')->item(0))
+        $retNFe = ! empty($tag->getElementsByTagName('retNFe')->item(0))
                 ? $tag->getElementsByTagName('retNFe')->item(0)
                 : '';
         if (! empty($retNFe)) {
             $aRetNFe['cStat'] = $retNFe->getElementsByTagName('cStat')->item(0)->nodeValue;
             $aRetNFe['xMotivo'] = $retNFe->getElementsByTagName('xMotivo')->item(0)->nodeValue;
             $aRetNFe['chNFe'] = $retNFe->getElementsByTagName('chNFe')->item(0)->nodeValue;
-            $nfeProc = isset($retNFe->getElementsByTagName('nfeProc')->item(0))
+            $nfeProc = ! empty($retNFe->getElementsByTagName('nfeProc')->item(0))
                 ? $retNFe->getElementsByTagName('nfeProc')->item(0)
                 : '';
             if (! empty($nfeProc)) {
                 $aRetNFe['nfeProc'] = $dom->saveXML($nfeProc);
             }
         }
-        $procNFeZip = isset($tag->getElementsByTagName('procNFeZip')->item(0)->nodeValue)
+        $procNFeZip = !empty($tag->getElementsByTagName('procNFeZip')->item(0)->nodeValue)
             ? $tag->getElementsByTagName('procNFeZip')->item(0)->nodeValue
             : '';
         if (! empty($procNFeZip)) {
             $aRetNFe['procZip'] = gzdecode(base64_decode($procNFeZip));
         }
-        $nfeZip = isset($tag->getElementsByTagName('NFeZip')->item(0)->nodeValue)
+        $nfeZip = !empty($tag->getElementsByTagName('NFeZip')->item(0)->nodeValue)
             ? $tag->getElementsByTagName('NFeZip')->item(0)->nodeValue
             : '';
         if (! empty($nfeZip)) {
             $aRetNFe['nfeZip'] = gzdecode(base64_decode($nfeZip));
         }
-        $protZip = isset($tag->getElementsByTagName('protNFeZip')->item(0)->nodeValue)
+        $protZip = !empty($tag->getElementsByTagName('protNFeZip')->item(0)->nodeValue)
             ? $tag->getElementsByTagName('protNFeZip')->item(0)->nodeValue
             : '';
         if (! empty($protZip)) {
@@ -485,7 +485,7 @@ class ReturnNFe
         $aDocZip = array();
         $docs = $tag->getElementsByTagName('docZip');
         foreach ($docs as $doc) {
-            $xml = gzdecode(base64_decode($xml));
+            $xml = gzdecode(base64_decode($doc->nodeValue));
             $aDocZip[] = array(
               'NSU' => $doc->getAttribute('NSU'),
               'schema' => $doc->getAttribute('schema'),
