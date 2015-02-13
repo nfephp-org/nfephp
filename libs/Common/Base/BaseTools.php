@@ -179,9 +179,16 @@ class BaseTools
             $this->aConfig['pathCertsFiles'],
             $this->aConfig['cnpj']
         );
-        if ($this->oCertificate->expireTimestamp == 0) {
-            $msg = 'Não existe certificado válido disponível. Atualize o Certificado.';
-            throw new Exception\RuntimeException($msg);
+        if ($this->oCertificate->priKey == '') {
+            //tentar carregar novo certificado
+            $this->atualizaCertificado(
+                $this->aConfig['pathCertsFiles'].$this->aConfig['certPfxName'],
+                $this->aConfig['certPassword']
+            );
+            if ($this->oCertificate->expireTimestamp == 0) {
+                $msg = 'Não existe certificado válido disponível. Atualize o Certificado.';
+                throw new Exception\RuntimeException($msg);
+            }
         }
         $this->zLoadSoapClass();
         //verifica se a contingência está ativada
