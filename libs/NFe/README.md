@@ -6,16 +6,23 @@ Classe principal para a comunicação com a SEFAZ
 
 Métodos
 =====
+
+setModelo
+----
 ```php
 (void) public function setModelo($modelo)
 ```
 Seta o modelo a ser usado pela classe. Default é '55' e para NFCe deve ser alterado para '65'
 
+getModelo
+----
 ```php
 (string) public function getModelo()
 ```
 Retorna o modelo setado para a classe.
 
+ativaContingencia
+----
 ```php
 (bool) public function ativaContingencia($siglaUF, $motivo)
 ```
@@ -29,12 +36,15 @@ $tools->motivoContingencia;
 $tools->tsContingencia;
 ```
 
+desativaContingencia
+----
 ```php
 (void) public function desativaContingencia()
 ```
 Desativa o sistema de contingencia SVC e volta a operação normal
 
-
+imprime
+----
 ```php
 (void|string) public function imprime($pathXml, $pathDestino, $printer)
 ```
@@ -52,7 +62,8 @@ Parâmetros
 * (string) $pathDestino - o destino pode ser um diretório ou vazio
 * (string) $printer - nome da impressora, se o ambiente estiver adequadamente configurado o pdf será enviado a impressora
 
-
+enviaMail
+----
 ```php
 (bool) public function enviaMail($pathXml, $aMails)
 ```
@@ -66,6 +77,8 @@ Parâmetros
 * (string) $pathXml - Caminho completo ao documento xml a ser enviado
 * (array) $aMails - Matriz com os email de destino
 
+addB2B
+----
 ```php
 (string) public function addB2B($pathNFefile, $pathB2Bfile, $tagB2B)
 ```
@@ -78,7 +91,8 @@ Parâmetros
 * (string) $pathB2Bfile - Caminho completo ao arquivo xml com a estrutura B2B
 * (string) $tagB2B - Tag a ser inclusa
 
-
+addProtocolo
+----
 ```php
 (string) public function addProtocolo($pathNFefile, $pathProtfile, $saveFile)
 ```
@@ -91,6 +105,8 @@ Parâmetros
 * (string) $pathProtfile - Caminho completo ao arquivo com o protocolo de autorização da NFe
 * (bool) $saveFile - true salva a NFe na pasta aprovadas
 
+addCancelamento
+----
 ```php
 (string) public function addCancelamento($pathNFefile, $pathCancfile, $saveFile)
 ```
@@ -104,6 +120,8 @@ Parâmetros
 * (string) $pathCancfile - Caminho completo ao protocolo de cancelamento
 * (bool) $saveFile - true salva a NFe cancelada sobre a original
 
+verificaValidade
+----
 ```php
 (bool) public function verificaValidade($pathXmlFile, $aRetorno)
 ```
@@ -115,7 +133,8 @@ Parâmetros
 * (string) $pathXmlFile - Caminho completo ao arquivo da NFe a ser validada
 * (array) $aRetorno - Array passado como referência e retorna com os dados de retorno da SEFAZ
 
-
+assina
+----
 ```php
 (string) public function assina($xml [, $saveFile])
 ```
@@ -127,6 +146,8 @@ Parâmetros
 * (string) $xml - xml da NFe
 * (bool) $saveFile - salva a NFe na pasta assinadas
 
+sefazEnviaLote
+----
 ```php
 (string) public function sefazEnviaLote($aXml, $tpAmb, $idLote, $aRetorno [, $indSinc, $compactarZip])
 ```
@@ -144,6 +165,8 @@ Parâmetros
 * (int) $indSinc - 1-Ativa envio síncrono 0-defaul modo assíncrono
 * (bool) $compactarZip
 
+sefazConsultaRecibo
+----
 ```php
 (string) public function sefazConsultaRecibo($recibo, $tpAmb, $aRetorno)
 ```
@@ -157,6 +180,8 @@ Parâmetros
 * (string) $tpAmb - tipo de ambiente 1-produção ou 2-homologação
 * (array) $aRetorno - Array passado como referência e retorna com os dados de retorno da SEFAZ
 
+sefazConsultaChave
+----
 ```php
 (string) public function sefazConsultaChave($chave, $tpAmb, $aRetorno)
 ```
@@ -169,6 +194,8 @@ Parâmetros
 * (string) $tpAmb - tipo de ambiente 1-produção ou 2-homologação
 * (array) $aRetorno - Array passado como referência e retorna com os dados de retorno da SEFAZ
 
+sefazInutiliza
+----
 ```php
 (string) public function sefazInutiliza($nSerie, $nIni, $nFin, $xJust, $tpAmb, $aRetorno)
 ```
@@ -184,6 +211,8 @@ Parâmetros
 * (string) $tpAmb - tipo de ambiente 1-produção ou 2-homologação
 * (array) $aRetorno - Array passado como referência e retorna com os dados de retorno da SEFAZ
 
+sefazCadastro
+----
 ```php
 (string) public function sefazCadastro($siglaUF, $tpAmb, $cnpj, $iest, $cpf, $aRetorno)
 ```
@@ -199,7 +228,8 @@ Parâmetros
 * (string) $cpf - Número do CPF a ser pesquisado 
 * (array) $aRetorno - Array passado como referência e retorna com os dados de retorno da SEFAZ
 
-
+sefazStatus
+----
 ```php
 (string) public function sefazStatus($siglaUF, $tpAmb, $aRetorno)
 ```
@@ -213,7 +243,8 @@ Parâmetros
 * (string) $tpAmb - tipo de ambiente 1-produção ou 2-homologação
 * (array) $aRetorno - Array passado como referência e retorna com os dados de retorno da SEFAZ
 
-
+sefazDistDFe
+----
 ```php
 (string) public function sefazDistDFe($fonte, $tpAmb, $cnpj, $ultNSU, $numNSU, $aRetorno)
 ```
@@ -232,7 +263,8 @@ Parâmetros
 * (int) $numNSU - Número do NSU que se deseja (deixe zero para perquisar pelo ultNSU)
 * (array) $aRetorno - Array passado como referência e retorna com os dados de retorno da SEFAZ
 
-
+sefazCCe
+----
 ```php
 (string) public function sefazCCe($chNFe, $tpAmb, $xCorrecao, $nSeqEvento, $aRetorno)
 ```
@@ -247,6 +279,8 @@ Parâmetros
 * (int) $nSeqEvento - Número sequencial de eventos dessa NFe
 * (array) $aRetorno - Array passado como referência e retorna com os dados de retorno da SEFAZ
 
+sefazCancela
+----
 ```php
 (string) public function sefazCancela($chNFe, $tpAmb, $xJust, $nProt, $aRetorno)
 ```
@@ -261,6 +295,8 @@ Parâmetros
 * (string) $nProt - Número do protocolo de autorização da NFe
 * (array) $aRetorno - Array passado como referência e retorna com os dados de retorno da SEFAZ
 
+sefazManifesta
+----
 ```php
 (string) public function sefazManifesta($chNFe, $tpAmb, $xJust, $tpEvento, $aRetorno)
 ```
@@ -279,6 +315,8 @@ Parâmetros
 * (string) $tpEvento - Código do tipo de evento
 * (array) $aRetorno - Array passado como referência e retorna com os dados de retorno da SEFAZ
 
+sefazDownload
+----
 ```php
 (string) public function sefazDownload($chNFe, $tpAmb, $cnpj, $aRetorno)
 ```
