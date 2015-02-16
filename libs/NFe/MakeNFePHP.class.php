@@ -871,7 +871,7 @@ class MakeNFe
                 foreach ($aDI as $child) {
                     $node = $prod->getElementsByTagName("xPed")->item(0);
                     if (! empty($node)) {
-                        $prod->insertBefore($$child, $node);
+                        $prod->insertBefore($child, $node);
                     } else {
                         $this->zAppChild($prod, $child, "Inclusão do node DI");
                     }
