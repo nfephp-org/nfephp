@@ -869,7 +869,12 @@ class MakeNFe
             foreach ($this->aDI as $nItem => $aDI) {
                 $prod = $this->aProd[$nItem];
                 foreach ($aDI as $child) {
-                    $this->zAppChild($prod, $child, "Inclusão do node DI");
+                    $node = $prod->getElementsByTagName("xPed")->item(0);
+                    if (! empty($node)) {
+                        $prod->insertBefore($$child, $node);
+                    } else {
+                        $this->zAppChild($prod, $child, "Inclusão do node DI");
+                    }
                 }
                 $this->aProd[$nItem] = $prod;
             }
