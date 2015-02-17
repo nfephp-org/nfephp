@@ -92,4 +92,54 @@ class Dom extends DOMDocument
         }
         return '';
     }
+    
+    /**
+     * addChild
+     * Adiciona um elemento ao node xml passado como referencia
+     * Serão inclusos erros na array $erros[] sempre que a tag for obrigatória e
+     * nenhum parâmetro for passado na variável $content e $force for false
+     * @param DOMElement $parent
+     * @param string $name
+     * @param string $content
+     * @param boolean $obrigatorio
+     * @param string $descricao
+     * @param boolean $force força a criação do elemento mesmo sem dados e não considera como erro
+     * @return void
+     */
+    public function addChild(&$parent, $name, $content = '', $obrigatorio = false, $descricao = "", $force = false)
+    {
+        if ($obrigatorio && $content === '' && !$force) {
+            $this->erros[] = array(
+                "tag" => $name,
+                "desc" => $descricao,
+                "erro" => "Preenchimento Obrigatório!"
+            );
+        }
+        if ($obrigatorio || $content !== '') {
+            $content = trim($content);
+            $temp = $this->createElement($name, $content);
+            $parent->appendChild($temp);
+        }
+    }
+    
+    /**
+     * appChild
+     * Acrescenta DOMElement a pai DOMElement
+     * Caso o pai esteja vazio retorna uma exception com a mensagem
+     * O parametro "child" pode ser vazio
+     * @param DOMElement $parent
+     * @param DOMElement $child
+     * @param string $msg
+     * @return void
+     * @throws Exception\RuntimeException
+     */
+    public function appChild(&$parent, $child, $msg = '')
+    {
+        if (empty($parent)) {
+            throw new Exception\RuntimeException($msg);
+        }
+        if (!empty($child)) {
+            $parent->appendChild($child);
+        }
+    }
 }
