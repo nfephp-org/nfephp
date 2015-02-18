@@ -1,5 +1,5 @@
 <?php
-namespace Common\Dom;
+namespace MDFe;
 
 /**
  * Classe auxiliar com funções de DOM extendidas
