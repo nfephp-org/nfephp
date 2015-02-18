@@ -1,5 +1,5 @@
 <?php
-namespace Common\Dom;
+namespace NFe;
 
 /**
  * Classe auxiliar com funções de DOM extendidas

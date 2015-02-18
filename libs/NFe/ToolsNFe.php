@@ -19,8 +19,8 @@ use Common\Strings\Strings;
 use Common\Files;
 use Common\Exception;
 use Common\Dom\Dom;
-use Common\Dom\ReturnNFe;
 use DOMDocument;
+use NFe\ReturnNFe;
 
 if (!defined('NFEPHP_ROOT')) {
     define('NFEPHP_ROOT', dirname(dirname(dirname(__FILE__))));

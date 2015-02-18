@@ -1,5 +1,5 @@
 <?php
-namespace Common\Dom;
+namespace CTe;
 
 /**
  * Classe auxiliar com funções de DOM extendidas

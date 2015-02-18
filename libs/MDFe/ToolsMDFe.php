@@ -12,16 +12,14 @@ namespace MDFe;
  */
 
 use Common\Base\BaseTools;
-use Common\Certificate\Pkcs12;
 use Common\DateTime\DateTime;
 use Common\LotNumber\LotNumber;
-use Common\Soap\CurlSoap;
 use Common\Strings\Strings;
 use Common\Files;
 use Common\Exception;
 use Common\Dom\Dom;
-use Common\Dom\ReturnMDFe;
 use DOMDocument;
+use MDFe\ReturnMDFe;
 
 if (!defined('NFEPHP_ROOT')) {
     define('NFEPHP_ROOT', dirname(dirname(dirname(__FILE__))));

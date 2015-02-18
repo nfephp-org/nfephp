@@ -12,14 +12,14 @@ namespace CTe;
  */
 
 use Common\Base\BaseTools;
-use Common\Certificate\Pkcs12;
 use Common\DateTime\DateTime;
 use Common\LotNumber\LotNumber;
-use Common\Soap\CurlSoap;
 use Common\Strings\Strings;
 use Common\Files;
 use Common\Exception;
 use Common\Dom\Dom;
+use DOMDocument;
+use CTe\ReturnCTe;
 
 if (!defined('NFEPHP_ROOT')) {
     define('NFEPHP_ROOT', dirname(dirname(dirname(__FILE__))));
