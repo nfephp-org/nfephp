@@ -131,12 +131,12 @@ class Dom extends DOMDocument
      * @param DOMElement $child
      * @param string $msg
      * @return void
-     * @throws Exception\RuntimeException
+     * @throws Exception\InvalidArgumentException
      */
     public function appChild(&$parent, $child, $msg = '')
     {
         if (empty($parent)) {
-            throw new Exception\RuntimeException($msg);
+            throw new Exception\InvalidArgumentException($msg);
         }
         if (!empty($child)) {
             $parent->appendChild($child);
