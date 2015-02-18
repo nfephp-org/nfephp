@@ -433,7 +433,13 @@ class MakeNFe
             false,
             $identificador . "Informar o CNPJ do emitente da NF de produtor"
         );
-        $this->zAddChild($refNFP, "CPF", $cpf, true, $identificador . "Informar o CPF do emitente da NF de produtor");
+        $this->zAddChild(
+            $refNFP,
+            "CPF",
+            $cpf,
+            false,
+            $identificador . "Informar o CPF do emitente da NF de produtor"
+        );
         $this->zAddChild(
             $refNFP,
             "IE",
