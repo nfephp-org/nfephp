@@ -576,14 +576,14 @@ class MakeNFe
             $refNFP,
             "CNPJ",
             $cnpj,
-            true,
+            false,
             $identificador . "Informar o CNPJ do emitente da NF de produtor"
         );
         $this->dom->addChild(
             $refNFP,
             "CPF",
             $cpf,
-            true,
+            false,
             $identificador . "Informar o CPF do emitente da NF de produtor"
         );
         $this->dom->addChild(
