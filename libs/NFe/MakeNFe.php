@@ -3752,7 +3752,7 @@ class MakeNFe
         $this->dom->addChild($confinsoutr, "pCOFINS", $pCOFINS, false, "Alíquota da COFINS (em percentual)");
         $this->dom->addChild($confinsoutr, "qBCProd", $qBCProd, false, "Quantidade Vendida");
         $this->dom->addChild($confinsoutr, "vAliqProd", $vAliqProd, false, "Alíquota da COFINS (em reais)");
-        $this->dom->addChild($confinsoutr, "vCOFINS", $vCOFINS, true, "Valor da COFINS");
+        $this->dom->addChild($confinsoutr, "vCOFINS", $vCOFINS, false, "Valor da COFINS");
         return $confinsoutr;
     }
     
