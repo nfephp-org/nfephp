@@ -48,6 +48,10 @@ if (!defined('FPDF_FONTPATH')) {
 require_once PATH_ROOT.'libs/Common/PdfNFePHP.class.php';
 //classe com as funções communs entre DANFE e DACTE
 require_once PATH_ROOT.'libs/Common/CommonNFePHP.class.php';
+//classe com as funções DOM
+require_once PATH_ROOT.'libs/Common/DomDocumentNFePHP.class.php';
+//classe das Excecoes
+require_once PATH_ROOT.'libs/Common/ExceptionNFePHP.class.php';
 
 class DacceNFePHP extends CommonNFePHP {
 
@@ -139,8 +143,9 @@ class DacceNFePHP extends CommonNFePHP {
         }
         //se for passado o xml
         if (! empty($this->xml)) {
+            $docxml = file_get_contents($this->xml);
             $this->dom = new DomDocumentNFePHP();
-            $this->dom->loadXML($this->xml);
+            $this->dom->loadXML($docxml);
             $this->procEventoNFe = $this->dom->getElementsByTagName("procEventoNFe")->item(0);
             $this->evento        = $this->procEventoNFe->getElementsByTagName("evento")->item(0);
             $this->retEvento     = $this->procEventoNFe->getElementsByTagName("retEvento")->item(0);
