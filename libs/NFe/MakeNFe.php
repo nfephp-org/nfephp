@@ -3778,7 +3778,10 @@ class MakeNFe
             foreach ($this->aNVE as $nItem => $nve) {
                 $prod = $this->aProd[$nItem];
                 foreach ($nve as $child) {
-                    $node = $prod->getElementsByTagName("CFOP")->item(0);
+                    $node = $prod->getElementsByTagName("EXTIPI")->item(0);
+                    if (empty($node)) {
+                        $node = $prod->getElementsByTagName("CFOP")->item(0);
+                    }
                     $prod->insertBefore($child, $node);
                 }
             }
