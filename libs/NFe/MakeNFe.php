@@ -118,6 +118,7 @@ class MakeNFe
     private $aAutXML = array(); //array de DOMNodes
     private $aDet = array(); //array de DOMNodes
     private $aProd = array(); //array de DOMNodes
+    private $aNVE = array(); //array de DOMNodes
     private $aDetExport = array(); //array de DOMNodes
     private $aDI = array(); //array de DOMNodes
     private $aAdi = array(); //array de DOMNodes
@@ -1249,7 +1250,6 @@ class MakeNFe
      * @param string $cEAN
      * @param string $xProd
      * @param string $NCM
-     * @param string $NVE
      * @param string $EXTIPI
      * @param string $CFOP
      * @param string $uCom
@@ -1277,7 +1277,6 @@ class MakeNFe
         $cEAN = '',
         $xProd = '',
         $NCM = '',
-        $NVE = '',
         $EXTIPI = '',
         $CFOP = '',
         $uCom = '',
@@ -1329,13 +1328,6 @@ class MakeNFe
             $NCM,
             true,
             $identificador . "[item $nItem] Código NCM com 8 dígitos ou 2 dígitos (gênero)"
-        );
-        $this->dom->addChild(
-            $prod,
-            "NVE",
-            $NVE,
-            false,
-            $identificador . "[item $nItem] Codificação NVE - Nomenclatura de Valor Aduaneiro e Estatística"
         );
         $this->dom->addChild(
             $prod,
@@ -1477,11 +1469,27 @@ class MakeNFe
     }
     
     /**
+     * tagNVE
+     * NVE NOMENCLATURA DE VALOR ADUANEIRO E ESTATÍSTICA
+     * Podem ser até 8 NVE's por item
+     * @param string $nItem
+     * @param string $texto
+     * @return DOMElement
+     */
+    public function tagNVE($nItem = '', $texto = '')
+    {
+        $nve = $this->dom->createElement("NVE", $texto);
+        $this->aNVE[$nItem][] = $nve;
+        return $nve;
+    }
+    
+    /**
      * taginfAdProd
      * Informações adicionais do produto 
      * tag NFe/infNFe/det[]/infAdProd
-     * @param type $nItem
-     * @param type $texto
+     * @param string $nItem
+     * @param string $texto
+     * @return DOMElement
      */
     public function taginfAdProd($nItem = '', $texto = '')
     {
@@ -3752,7 +3760,7 @@ class MakeNFe
         $this->dom->addChild($confinsoutr, "pCOFINS", $pCOFINS, false, "Alíquota da COFINS (em percentual)");
         $this->dom->addChild($confinsoutr, "qBCProd", $qBCProd, false, "Quantidade Vendida");
         $this->dom->addChild($confinsoutr, "vAliqProd", $vAliqProd, false, "Alíquota da COFINS (em reais)");
-        $this->dom->addChild($confinsoutr, "vCOFINS", $vCOFINS, false, "Valor da COFINS");
+        $this->dom->addChild($confinsoutr, "vCOFINS", $vCOFINS, true, "Valor da COFINS");
         return $confinsoutr;
     }
     
@@ -3764,6 +3772,16 @@ class MakeNFe
     {
         if (empty($this->aProd)) {
             return '';
+        }
+        //insere NVE
+        if (! empty($this->aNVE)) {
+            foreach ($this->aNVE as $nItem => $nve) {
+                $prod = $this->aProd[$nItem];
+                foreach ($nve as $child) {
+                    $node = $prod->getElementsByTagName("CFOP")->item(0);
+                    $prod->insertBefore($child, $node);
+                }
+            }
         }
         //insere DI
         if (!empty($this->aDI)) {
