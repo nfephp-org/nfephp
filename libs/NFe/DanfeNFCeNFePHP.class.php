@@ -259,7 +259,7 @@ class DanfeNFCeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $nNF = $this->pSimpleGetValue($this->ide, 'nNF');
         $serieNF = str_pad($this->pSimpleGetValue($this->ide, "serie"), 3, "0", STR_PAD_LEFT);
         $dhEmi = $this->pSimpleGetValue($this->ide, "dhEmi");
-        $vTotTrib = $this->pSimpleGetValue($this->imposto, "vTotTrib");
+        $vTotTrib = $this->pSimpleGetValue($this->ICMSTot, "vTotTrib");
         $vProd = $this->pSimpleGetValue($this->ICMSTot, "vProd");
         $vNF = $this->pSimpleGetValue($this->ICMSTot, "vNF");
         $vDesc  = $this->pSimpleGetValue($this->ICMSTot, "vDesc");
