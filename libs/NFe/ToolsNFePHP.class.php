@@ -3120,7 +3120,7 @@ class ToolsNFePHP extends CommonNFePHP
                 . "<cUF>$this->cUF</cUF>"
                 . "<ano>$nAno</ano>"
                 . "<CNPJ>$this->cnpj</CNPJ>"
-                . "<mod>". $this->modelo ."</mod>"
+                . "<mod>$this->modelo</mod>"
                 . "<serie>$nSerie</serie>"
                 . "<nNFIni>$nIni</nNFIni>"
                 . "<nNFFin>$nFin</nNFFin>"
