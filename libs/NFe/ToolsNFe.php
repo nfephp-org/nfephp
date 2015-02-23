@@ -19,7 +19,6 @@ use Common\Strings\Strings;
 use Common\Files;
 use Common\Exception;
 use Common\Dom\Dom;
-use DOMDocument;
 use NFe\ReturnNFe;
 
 if (!defined('NFEPHP_ROOT')) {
@@ -230,16 +229,16 @@ class ToolsNFe extends BaseTools
         $nfeProcB2B = $procb2b->createElement('nfeProcB2B');
         $procb2b->appendChild($nfeProcB2B);
         //inclui a tag NFe
-        $node = $procb2b->importNode($nodenfe, true);
-        $nfeProcB2B->appendChild($node);
+        $node1 = $procb2b->importNode($nodenfe, true);
+        $nfeProcB2B->appendChild($node1);
         //inclui a tag NFeB2BFin
-        $node = $procb2b->importNode($nodeb2b, true);
-        $nfeProcB2B->appendChild($node);
+        $node2 = $procb2b->importNode($nodeb2b, true);
+        $nfeProcB2B->appendChild($node2);
         //salva o xml como string em uma variável
         $nfeb2bXML = $procb2b->saveXML();
         //remove as informações indesejadas
-        $nfeb2bXML = str_replace(array("\n","\r","\s"), '', $nfeb2bXML);
-        return (string) $nfeb2bXML;
+        $nfeb2bXMLString = str_replace(array("\n","\r","\s"), '', $nfeb2bXML);
+        return (string) $nfeb2bXMLString;
     }
     
     /**
@@ -327,19 +326,17 @@ class ToolsNFe extends BaseTools
         //salva o xml como string em uma variável
         $procXML = $procnfe->saveXML();
         //remove as informações indesejadas
-        $procXML = str_replace(
-            array('default:',':default',"\n","\r","\s"),
-            '',
-            $procXML
-        );
-        $procXML = str_replace(
-            'NFe xmlns="http://www.portalfiscal.inf.br/nfe" xmlns="http://www.w3.org/2000/09/xmldsig#"',
-            'NFe xmlns="http://www.portalfiscal.inf.br/nfe"',
-            $procXML
-        );
+        $procXML = Strings::clearProt($procXML);
         if ($saveFile) {
             $filename = "$chaveNFe-protNFe.xml";
-            $this->zGravaFile('nfe', $tpAmb, $filename, $procXML, 'enviadas'.DIRECTORY_SEPARATOR.'aprovadas', $anomes);
+            $this->zGravaFile(
+                'nfe',
+                $tpAmb,
+                $filename,
+                $procXML,
+                'enviadas'.DIRECTORY_SEPARATOR.'aprovadas',
+                $anomes
+            );
         }
         return $procXML;
     }
@@ -403,16 +400,7 @@ class ToolsNFe extends BaseTools
                 $proNFe->getElementsByTagName('xMotivo')->item(0)->nodeValue = 'Cancelamento de NF-e homologado';
                 $procXML = $docnfe->saveXML();
                 //remove as informações indesejadas
-                $procXML = str_replace(
-                    array('default:',':default',"\n","\r","\s"),
-                    '',
-                    $procXML
-                );
-                $procXML = str_replace(
-                    'NFe xmlns="http://www.portalfiscal.inf.br/nfe" xmlns="http://www.w3.org/2000/09/xmldsig#"',
-                    'NFe xmlns="http://www.portalfiscal.inf.br/nfe"',
-                    $procXML
-                );
+                $procXML = Strings::clearProt($procXML);
                 if ($saveFile) {
                     $filename = "$chaveNFe-protNFe.xml";
                     $this->zGravaFile(
