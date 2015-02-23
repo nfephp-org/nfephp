@@ -5,7 +5,7 @@ namespace NFe;
 /**
  * Classe principal para a comunicação com a SEFAZ
  * @category   NFePHP
- * @package    NFePHP\NFe\Tools
+ * @package    NFePHP\NFe\ToolsNFe
  * @copyright  Copyright (c) 2008-2015
  * @license    http://www.gnu.org/licenses/lesser.html LGPL v3
  * @author     Roberto L. Machado <linux.rlm at gmail dot com>
