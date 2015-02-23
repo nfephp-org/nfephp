@@ -119,6 +119,7 @@ class MakeNFe
     private $aDet = array(); //array de DOMNodes
     private $aProd = array(); //array de DOMNodes
     private $aNVE = array(); //array de DOMNodes
+    private $aRECOPI = array(); //array de DOMNodes
     private $aDetExport = array(); //array de DOMNodes
     private $aDI = array(); //array de DOMNodes
     private $aAdi = array(); //array de DOMNodes
@@ -222,7 +223,9 @@ class MakeNFe
         $this->dom->appChild($this->NFe, $this->infNFe, 'Falta tag "NFe"');
         //[0] tag NFe
         $this->dom->appChild($this->dom, $this->NFe, 'Falta DOMDocument');
+        // testa da chave
         $this->zTestaChaveXML($this->dom);
+        //convert DOMDocument para string
         $this->xml = $this->dom->saveXML();
         return true;
     }
@@ -1294,8 +1297,7 @@ class MakeNFe
         $indTot = '',
         $xPed = '',
         $nItemPed = '',
-        $nFCI = '',
-        $nRECOPI = ''
+        $nFCI = ''
     ) {
         $identificador = 'I01 <prod> - ';
         $prod = $this->dom->createElement("prod");
@@ -1457,13 +1459,6 @@ class MakeNFe
             false,
             $identificador . "[item $nItem] Número de controle da FCI - Ficha de Conteúdo de Importação"
         );
-        $this->dom->addChild(
-            $prod,
-            "nRECOPI",
-            $nRECOPI,
-            false,
-            $identificador . "[item $nItem] Número do RECOPI"
-        );
         $this->aProd[$nItem] = $prod;
         return $prod;
     }
@@ -1481,6 +1476,19 @@ class MakeNFe
         $nve = $this->dom->createElement("NVE", $texto);
         $this->aNVE[$nItem][] = $nve;
         return $nve;
+    }
+    
+    /**
+     * tagRECOPI
+     * @param string $nItem
+     * @param string $texto
+     * @return DOMElement
+     */
+    public function tagRECOPI($nItem = '', $texto = '')
+    {
+        $recopi = $this->dom->createElement("RECOPI", $texto);
+        $this->aRECOPI[$nItem] = $recopi;
+        return $recopi;
     }
     
     /**
@@ -1623,7 +1631,6 @@ class MakeNFe
     public function tagdetExport(
         $nItem = '',
         $nDraw = '',
-        $exportInd = '',
         $nRE = '',
         $chNFe = '',
         $qExport = ''
@@ -1631,10 +1638,11 @@ class MakeNFe
         $identificador = 'I50 <detExport> - ';
         $detExport = $this->dom->createElement("detExport");
         $this->dom->addChild($detExport, "nDraw", $nDraw, false, $identificador . "[item $nItem] Número do ato concessório de Drawback");
-        $this->dom->addChild($detExport, "exportInd", $exportInd, false, $identificador . "[item $nItem] Grupo sobre exportação indireta");
-        $this->dom->addChild($detExport, "nRE", $nRE, true, $identificador . "[item $nItem] Número do Registro de Exportação");
-        $this->dom->addChild($detExport, "chNFe", $chNFe, true, $identificador . "[item $nItem] Chave de Acesso da NF-e recebida para exportação");
-        $this->dom->addChild($detExport, "qExport", $qExport, true, $identificador . "[item $nItem] Quantidade do item realmente exportado");
+        $exportInd = $this->dom->createElement("exportInd");
+        $this->dom->addChild($exportInd, "nRE", $nRE, true, $identificador . "[item $nItem] Número do Registro de Exportação");
+        $this->dom->addChild($exportInd, "chNFe", $chNFe, true, $identificador . "[item $nItem] Chave de Acesso da NF-e recebida para exportação");
+        $this->dom->addChild($exportInd, "qExport", $qExport, true, $identificador . "[item $nItem] Quantidade do item realmente exportado");
+        $detExport->appendChild($exportInd);
         $this->aDetExport[$nItem] = $detExport;
         return $detExport;
     }
@@ -3841,6 +3849,14 @@ class MakeNFe
                 $this->aProd[$nItem] = $prod;
             }
         }
+        //insere RECOPI
+        if (! empty($this->aRECOPI)) {
+            foreach ($this->aRECOPI as $nItem => $child) {
+                $prod = $this->aProd[$nItem];
+                $this->dom->appChild($prod, $child, "Inclusão do node RECOPI");
+                $this->aProd[$nItem] = $prod;
+            }
+        }
         //montagem da tag imposto[]
         $this->zTagImp();
         //montagem da tag det[]
@@ -4013,7 +4029,9 @@ class MakeNFe
         $somaPonderada = 0;
         while ($iCount >= 0) {
             for ($mCount = 0; $mCount < count($multiplicadores) && $iCount >= 0; $mCount++) {
-                $somaPonderada+= $chave43[$iCount] * $multiplicadores[$mCount];
+                $num = (int) substr($chave43, $iCount, 1);
+                $peso = (int) $multiplicadores[$mCount];
+                $somaPonderada += $num * $peso;
                 $iCount--;
             }
         }
