@@ -4,7 +4,7 @@ namespace MDFe;
 /**
  * Classe principal para a comunicação com a SEFAZ
  * @category   NFePHP
- * @package    NFePHP\MDFe\Tools
+ * @package    NFePHP\MDFe\ToolsMDFe
  * @copyright  Copyright (c) 2008-2015
  * @license    http://www.gnu.org/licenses/lesser.html LGPL v3
  * @author     Roberto L. Machado <linux.rlm at gmail dot com>
