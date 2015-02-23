@@ -19,9 +19,8 @@ use NFe\MakeNFe;
 
 class ConvertNFe
 {
-    
-    public $limparString = true;
-  
+    //parametros protegidos da classe
+    protected $limparString = true;
     protected $version = '3.10';
     protected $make;
     protected $linhaBA10 = array(); //refNFP
@@ -43,7 +42,6 @@ class ConvertNFe
     protected $volId = -1;
     protected $linhaZC = array();
     protected $aLacres = array();
-
 
     /**
      * contruct
@@ -91,104 +89,13 @@ class ConvertNFe
     }
     
     /**
-     * zSliceNotas
-     * Separa as notas em um array 
-     * @param array $array
-     * @return array
-     */
-    protected function zSliceNotas($array)
-    {
-        $iCount = 0;
-        $xCount = 0;
-        $resp = array();
-        foreach ($array as $linha) {
-            if (substr($linha, 0, 4) == 'NOTA') {
-                $resp[$xCount]['init'] = $iCount;
-                if ($xCount > 0) {
-                    $resp[$xCount -1]['fim'] = $iCount;
-                }
-                $xCount += 1;
-            }
-            $iCount += 1;
-        }
-        $resp[$xCount-1]['fim'] = $iCount;
-        foreach ($resp as $marc) {
-            $length = $marc['fim']-$marc['init'];
-            $aNotas[] = array_slice($array, $marc['init'], $length, false);
-        }
-        return $aNotas;
-    }
-    
-    /**
-     * zArray2xml
-     * Converte uma Nota Fiscal em um array de txt em um xml
-     * @param array $aDados
-     * @return string
-     * @throws Exception\RuntimeException
-     */
-    protected function zArray2xml($aDados = array())
-    {
-        foreach ($aDados as $dado) {
-            $aCampos = $this->zClean(explode("|", $dado));
-            $metodo = strtolower(str_replace(' ', '', $aCampos[0])).'Entity';
-            if (! method_exists($this, $metodo)) {
-                $msg = "O txt tem um metodo não definido!! $dado";
-                throw new Exception\RuntimeException($msg);
-            }
-            $this->$metodo($aCampos);
-        }
-    }
-    
-    /**
-     * zClean
-     * Efetua limpeza dos campos
-     * @param array $aCampos
-     * @return array
-     */
-    protected function zClean($aCampos = array())
-    {
-        foreach ($aCampos as $campo) {
-            $campo = trim(preg_replace('/\s+/', ' ', $campo));
-            if ($this->limparString) {
-                $campo = Strings::cleanString($campo);
-            }
-        }
-        return $aCampos;
-    }
-    
-    protected function clearParam()
-    {
-        $this->make = null;
-        $this->linhaBA10 = array(); //refNFP
-        $this->linhaC = array(); //emit
-        $this->linhaE = array(); //dest
-        $this->linhaF = array();
-        $this->linhaG = array();
-        $this->nItem = 0; //numero do item da NFe
-        $this->nDI = '0'; //numero da DI
-        $this->linhaI50 = array(); //dados de exportação
-        $this->linhaLA = array();
-        $this->linhaO = array();
-        $this->linhaQ = array();
-        $this->linhaR = array();
-        $this->linhaS = array();
-        $this->linhaT = array();
-        $this->linhaX = array();
-        $this->linhaX26 = array();
-        $this->volId = -1;
-        $this->aLacres = array();
-        $this->linhaZC = array();
-    }
-
-
-    /**
      * notafiscalEntity
      * Cria a entidade nota fiscal
      * @param array $aCampos
      */
     protected function notafiscalEntity($aCampos)
     {
-        $this->clearParam();
+        $this->zClearParam();
         $this->make = new MakeNFe();
         $aCampos = array();
     }
@@ -296,25 +203,38 @@ class ConvertNFe
     protected function ba10Entity($aCampos)
     {
         //BA10|cUF|AAMM|IE|mod|serie|nNF|
-        $this->linhaBA10 = $aCampos;
+        $this->linhaBA10[0] = $aCampos[0];
+        $this->linhaBA10[1] = $aCampos[1];
+        $this->linhaBA10[2] = $aCampos[2];
+        $this->linhaBA10[3] = $aCampos[3];
+        $this->linhaBA10[4] = $aCampos[4];
+        $this->linhaBA10[5] = $aCampos[5];
+        $this->linhaBA10[6] = $aCampos[6];
+        $this->linhaBA10[7] = '';
+        $this->linhaBA10[8] = '';
     }
     
+    /**
+     * ba13Entity
+     * @param array $aCampos
+     */
     protected function ba13Entity($aCampos)
     {
         //BA13|CNPJ|
-        $this->linhaBA10[] = $aCampos[1];
-        $this->linhaBA10[] = '';
-        $this->zLinhaBA10Entity($this->linhaBA10);
-    }
-
-    protected function ba14Entity($aCampos)
-    {
-        //BA14|CPF|
-        $this->linhaBA10[] = '';
-        $this->linhaBA10[] = $aCampos[1];
+        $this->linhaBA10[7] = $aCampos[1];
         $this->zLinhaBA10Entity($this->linhaBA10);
     }
     
+    /**
+     * ba14Entity
+     * @param array $aCampos
+     */
+    protected function ba14Entity($aCampos)
+    {
+        //BA14|CPF|
+        $this->linhaBA10[8] = $aCampos[1];
+        $this->zLinhaBA10Entity($this->linhaBA10);
+    }
     
     /**
      * zLinhaB10Entity
@@ -473,7 +393,7 @@ class ConvertNFe
     protected function e02Entity($aCampos)
     {
         //CNPJ [dest]
-        $this->linhaE[7] = $aCampos[1]; //CNPJ
+        $this->linhaE[7] = $aCampos[1];
         $this->zLinhaEEntity($this->linhaE);
     }
     
@@ -484,7 +404,7 @@ class ConvertNFe
     protected function e03Entity($aCampos)
     {
         //CPF [dest]
-        $this->linhaE[8] = $aCampos[1]; //CPF
+        $this->linhaE[8] = $aCampos[1];
         $this->zLinhaEEntity($this->linhaE);
     }
     
@@ -495,7 +415,7 @@ class ConvertNFe
     protected function e03aEntity($aCampos)
     {
         //idEstrangeiro [dest]
-        $this->linhaE[9] = $aCampos[1];  //idExtrangeiro
+        $this->linhaE[9] = $aCampos[1];
         $this->zLinhaEEntity($this->linhaE);
     }
     
@@ -568,7 +488,7 @@ class ConvertNFe
      */
     protected function f02Entity($aCampos)
     {
-        //CNPJ [retirada]
+        //F02|CNPJ| [retirada]
         $this->linhaF[8] = $aCampos[1];
         $this->zLinhaFEntity($this->linhaF);
     }
@@ -579,7 +499,7 @@ class ConvertNFe
      */
     protected function f02aEntity($aCampos)
     {
-        //CPF [retirada]
+        //F02a|CPF
         $this->linhaF[9] = $aCampos[1];
         $this->zLinhaFEntity($this->linhaF);
     }
@@ -667,6 +587,10 @@ class ConvertNFe
         );
     }
     
+    /**
+     * gaEntity
+     * @param array $aCampos
+     */
     protected function gaEntity($aCampos)
     {
         //GA02
@@ -1757,7 +1681,6 @@ class ConvertNFe
         $this->linhaQ[4] = ''; //vPIS
         $this->linhaQ[5] = ''; //qBCProd
         $this->linhaQ[6] = ''; //vAliqProd
-
     }
     
     /**
@@ -2324,7 +2247,7 @@ class ConvertNFe
     }
     
     /**
-     * 
+     * x26Entity
      * @param array $aCampos
      */
     protected function x26Entity($aCampos)
@@ -2341,7 +2264,7 @@ class ConvertNFe
     }
     
     /**
-     * 
+     * x33Entity
      * @param array $aCampos
      */
     protected function x33Entity($aCampos)
@@ -2497,6 +2420,7 @@ class ConvertNFe
     
     /**
      * zaEntity
+     * Cria a tag exporta
      * @param array $aCampos
      */
     protected function zaEntity($aCampos)
@@ -2576,5 +2500,99 @@ class ConvertNFe
             $this->linhaZC[5], //$vTotDed
             $this->linhaZC[6] //$vLiqFor
         );
+    }
+    
+    /**
+     * zClearParam
+     * Limpar os parametros da classe para a conversão de nova NFe
+     */
+    protected function zClearParam()
+    {
+        $this->make = null;
+        $this->linhaBA10 = array(); //refNFP
+        $this->linhaC = array(); //emit
+        $this->linhaE = array(); //dest
+        $this->linhaF = array();
+        $this->linhaG = array();
+        $this->nItem = 0; //numero do item da NFe
+        $this->nDI = '0'; //numero da DI
+        $this->linhaI50 = array(); //dados de exportação
+        $this->linhaLA = array();
+        $this->linhaO = array();
+        $this->linhaQ = array();
+        $this->linhaR = array();
+        $this->linhaS = array();
+        $this->linhaT = array();
+        $this->linhaX = array();
+        $this->linhaX26 = array();
+        $this->volId = -1;
+        $this->aLacres = array();
+        $this->linhaZC = array();
+    }
+    
+    /**
+     * zSliceNotas
+     * Separa as notas em um array 
+     * @param array $array
+     * @return array
+     */
+    protected function zSliceNotas($array)
+    {
+        $iCount = 0;
+        $xCount = 0;
+        $resp = array();
+        foreach ($array as $linha) {
+            if (substr($linha, 0, 4) == 'NOTA') {
+                $resp[$xCount]['init'] = $iCount;
+                if ($xCount > 0) {
+                    $resp[$xCount -1]['fim'] = $iCount;
+                }
+                $xCount += 1;
+            }
+            $iCount += 1;
+        }
+        $resp[$xCount-1]['fim'] = $iCount;
+        foreach ($resp as $marc) {
+            $length = $marc['fim']-$marc['init'];
+            $aNotas[] = array_slice($array, $marc['init'], $length, false);
+        }
+        return $aNotas;
+    }
+    
+    /**
+     * zArray2xml
+     * Converte uma Nota Fiscal em um array de txt em um xml
+     * @param array $aDados
+     * @return string
+     * @throws Exception\RuntimeException
+     */
+    protected function zArray2xml($aDados = array())
+    {
+        foreach ($aDados as $dado) {
+            $aCampos = $this->zClean(explode("|", $dado));
+            $metodo = strtolower(str_replace(' ', '', $aCampos[0])).'Entity';
+            if (! method_exists($this, $metodo)) {
+                $msg = "O txt tem um metodo não definido!! $dado";
+                throw new Exception\RuntimeException($msg);
+            }
+            $this->$metodo($aCampos);
+        }
+    }
+    
+    /**
+     * zClean
+     * Efetua limpeza dos campos
+     * @param array $aCampos
+     * @return array
+     */
+    protected function zClean($aCampos = array())
+    {
+        foreach ($aCampos as $campo) {
+            $campo = trim(preg_replace('/\s+/', ' ', $campo));
+            if ($this->limparString) {
+                $campo = Strings::cleanString($campo);
+            }
+        }
+        return $aCampos;
     }
 }
