@@ -28,4 +28,13 @@ class StringsTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($xmlLimpo1, $resp1);
         $this->assertEquals($xmlLimpo2, $resp2);
     }
+    
+    public function testClearProt()
+    {
+        $str = new Common\Strings\Strings();
+        $xmlSujo = '';
+        $xmlLimpo = '';
+        $resp1 = $str->clearProt($xmlSujo);
+        $this->assertEquals($xmlLimpo, $resp1);
+    }
 }

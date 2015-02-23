@@ -61,4 +61,25 @@ class Strings
         $retXml = str_replace($aFind, "", $xml);
         return $retXml;
     }
+    
+    /**
+     * clearProt
+     * Limpa o xml após adição do protocolo
+     * @param string $procXML
+     * @return string
+     */
+    public static function clearProt($procXML = '')
+    {
+        $procXML1 = str_replace(
+            array('default:',':default',"\n","\r","\s"),
+            '',
+            $procXML
+        );
+        $procXML2 = str_replace(
+            'NFe xmlns="http://www.portalfiscal.inf.br/nfe" xmlns="http://www.w3.org/2000/09/xmldsig#"',
+            'NFe xmlns="http://www.portalfiscal.inf.br/nfe"',
+            $procXML1
+        );
+        return $procXML2;
+    }
 }
