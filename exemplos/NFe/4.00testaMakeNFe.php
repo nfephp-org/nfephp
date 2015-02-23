@@ -193,7 +193,6 @@ $aP[] = array(
         'cEAN' => '97899072659522',
         'xProd' => 'DELFOS 80 MESCLA TINTO C/ AMAC. S.T 1,78M',
         'NCM' => '60063300',
-        'NVE' => '',
         'EXTIPI' => '',
         'CFOP' => '6101',
         'uCom' => 'KG',
@@ -219,7 +218,6 @@ foreach ($aP as $prod) {
     $cEAN = $prod['cEAN'];
     $xProd = $prod['xProd'];
     $NCM = $prod['NCM'];
-    $NVE = $prod['NVE'];
     $EXTIPI = $prod['EXTIPI'];
     $CFOP = $prod['CFOP'];
     $uCom = $prod['uCom'];
@@ -238,7 +236,7 @@ foreach ($aP as $prod) {
     $xPed = $prod['xPed'];
     $nItemPed = $prod['nItemPed'];
     $nFCI = $prod['nFCI'];
-    $resp = $nfe->tagprod($nItem, $cProd, $cEAN, $xProd, $NCM, $NVE, $EXTIPI, $CFOP, $uCom, $qCom, $vUnCom, $vProd, $cEANTrib, $uTrib, $qTrib, $vUnTrib, $vFrete, $vSeg, $vDesc, $vOutro, $indTot, $xPed, $nItemPed, $nFCI);
+    $resp = $nfe->tagprod($nItem, $cProd, $cEAN, $xProd, $NCM, $EXTIPI, $CFOP, $uCom, $qCom, $vUnCom, $vProd, $cEANTrib, $uTrib, $qTrib, $vUnTrib, $vFrete, $vSeg, $vDesc, $vOutro, $indTot, $xPed, $nItemPed, $nFCI);
 }
 
 $nItem = 1;
@@ -246,29 +244,29 @@ $vDesc = 'BRANCO_FIT F01516 ped. 14972 lote: 7755214/C,7772214/B,7772214/C';
 $resp = $nfe->taginfAdProd($nItem, $vDesc);
 
 //DI
-//$nItem = '1';
-//$nDI = '234556786';
-//$dDI = '22/12/2013';
-//$xLocDesemb = 'SANTOS';
-//$UFDesemb = 'SP';
-//$dDesemb = '22/12/2013';
-//$tpViaTransp = '1';
-//$vAFRMM = '1.00';
-//$tpIntermedio = '0';
-//$CNPJ = '';
-//$UFTerceiro = '';
-//$cExportador = '111';
-//$resp = $nfe->tagDI($nItem, $nDI, $dDI, $xLocDesemb, $UFDesemb, $dDesemb, $tpViaTransp, $vAFRMM, $tpIntermedio, $CNPJ, $UFTerceiro, $cExportador);
+$nItem = '1';
+$nDI = '234556786';
+$dDI = '22/12/2013';
+$xLocDesemb = 'SANTOS';
+$UFDesemb = 'SP';
+$dDesemb = '22/12/2013';
+$tpViaTransp = '1';
+$vAFRMM = '1.00';
+$tpIntermedio = '0';
+$CNPJ = '';
+$UFTerceiro = '';
+$cExportador = '111';
+$resp = $nfe->tagDI($nItem, $nDI, $dDI, $xLocDesemb, $UFDesemb, $dDesemb, $tpViaTransp, $vAFRMM, $tpIntermedio, $CNPJ, $UFTerceiro, $cExportador);
 
 //adi
-//$nItem = '1';
-//$nDI = '234556786';
-//$nAdicao = '1';
-//$nSeqAdicC = '1111';
-//$cFabricante = 'seila';
-//$vDescDI = '0.00';
-//$nDraw = '9393939';
-//$resp = $nfe->tagadi($nItem, $nDI, $nAdicao, $nSeqAdicC, $cFabricante, $vDescDI, $nDraw);
+$nItem = '1';
+$nDI = '234556786';
+$nAdicao = '1';
+$nSeqAdicC = '1111';
+$cFabricante = 'seila';
+$vDescDI = '0.00';
+$nDraw = '9393939';
+$resp = $nfe->tagadi($nItem, $nDI, $nAdicao, $nSeqAdicC, $cFabricante, $vDescDI, $nDraw);
 
 //detExport
 //$nItem = '2';
