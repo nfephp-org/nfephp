@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Class Pkcs12Test
+ * Class StringsTest
  * @author Roberto L. Machado <linux dot rlm at gmail dot com>
  */
 
