@@ -3,9 +3,10 @@
 namespace NFe;
 
 /**
- * Classe principal para a comunicação com a SEFAZ
+ * Classe para a conversão de notas fiscais do formato TXT conforme padrão
+ * SEFAZ SP Manual_de_layout_TXT-NF-e_v3.1.0.pdf para o formato XML.
  * @category   NFePHP
- * @package    NFePHP\NFe\Convert
+ * @package    NFePHP\NFe\ConvertNFe
  * @copyright  Copyright (c) 2008-2015
  * @license    http://www.gnu.org/licenses/lesser.html LGPL v3
  * @author     Roberto L. Machado <linux.rlm at gmail dot com>
@@ -13,7 +14,7 @@ namespace NFe;
  */
 
 use Common\Strings\Strings;
-use Common\Exception\RuntimeException;
+use Common\Exception;
 use NFe\MakeNFe;
 
 class ConvertNFe
@@ -21,15 +22,29 @@ class ConvertNFe
     
     public $limparString = true;
   
-    private $version = '3.10';
-    private $make;
-    private $linhaB20a = array();
-    private $linhaC = array();
-    private $linhaE = array();
-    private $linhaF = array();
-    private $linhaG = array();
-    
-            
+    protected $version = '3.10';
+    protected $make;
+    protected $linhaBA10 = array(); //refNFP
+    protected $linhaC = array(); //emit
+    protected $linhaE = array(); //dest
+    protected $linhaF = array();
+    protected $linhaG = array();
+    protected $nItem = 0; //numero do item da NFe
+    protected $nDI = '0'; //numero da DI
+    protected $linhaI50 = array(); //dados de exportação
+    protected $linhaLA = array(); //dados de combustiveis
+    protected $linhaO = array(); //dados de IPI
+    protected $linhaQ = array(); //dados do PIS
+    protected $linhaR = array(); //dados do PISST
+    protected $linhaS = array(); //dados do COFINS
+    protected $linhaT = array();
+    protected $linhaX = array();
+    protected $linhaX26 = array();
+    protected $volId = -1;
+    protected $linhaZC = array();
+    protected $aLacres = array();
+
+
     /**
      * contruct
      * Método contrutor da classe
@@ -45,7 +60,7 @@ class ConvertNFe
      * txt2xml
      * Converte uma ou multiplas NF em formato txt em xml
      * @param mixed $txt Path para txt, txt ou array de txt
-     * @return string
+     * @return array
      */
     public function txt2xml($txt)
     {
@@ -81,7 +96,7 @@ class ConvertNFe
      * @param array $array
      * @return array
      */
-    private function zSliceNotas($array)
+    protected function zSliceNotas($array)
     {
         $iCount = 0;
         $xCount = 0;
@@ -130,7 +145,7 @@ class ConvertNFe
      * @param array $aCampos
      * @return array
      */
-    private function zClean($aCampos = array())
+    protected function zClean($aCampos = array())
     {
         foreach ($aCampos as $campo) {
             $campo = trim(preg_replace('/\s+/', ' ', $campo));
@@ -141,15 +156,41 @@ class ConvertNFe
         return $aCampos;
     }
     
+    protected function clearParam()
+    {
+        $this->make = null;
+        $this->linhaBA10 = array(); //refNFP
+        $this->linhaC = array(); //emit
+        $this->linhaE = array(); //dest
+        $this->linhaF = array();
+        $this->linhaG = array();
+        $this->nItem = 0; //numero do item da NFe
+        $this->nDI = '0'; //numero da DI
+        $this->linhaI50 = array(); //dados de exportação
+        $this->linhaLA = array();
+        $this->linhaO = array();
+        $this->linhaQ = array();
+        $this->linhaR = array();
+        $this->linhaS = array();
+        $this->linhaT = array();
+        $this->linhaX = array();
+        $this->linhaX26 = array();
+        $this->volId = -1;
+        $this->aLacres = array();
+        $this->linhaZC = array();
+    }
+
+
     /**
      * notafiscalEntity
      * Cria a entidade nota fiscal
      * @param array $aCampos
      */
-    private function notafiscalEntity($aCampos)
+    protected function notafiscalEntity($aCampos)
     {
-        $this->make = null;
+        $this->clearParam();
         $this->make = new MakeNFe();
+        $aCampos = array();
     }
     
     /**
@@ -158,7 +199,7 @@ class ConvertNFe
      * @param array $aCampos
      * @throws Exception\RuntimeException
      */
-    private function aEntity($aCampos)
+    protected function aEntity($aCampos)
     {
         //A|versao|Id|pk_nItem|
         if ($aCampos[1] != $this->version) {
@@ -174,7 +215,7 @@ class ConvertNFe
      * Cria a tag ide
      * @param array $aCampos
      */
-    private function bEntity($aCampos)
+    protected function bEntity($aCampos)
     {
         //B|cUF|cNF|natOp|indPag|mod|serie|nNF|dhEmi
         // |dhSaiEnt|tpNF|idDest|cMunFG|tpImp|tpEmis
@@ -208,11 +249,22 @@ class ConvertNFe
     }
     
     /**
+     * baEntity
+     * @param array $aCampos
+     */
+    protected function baEntity($aCampos)
+    {
+        //BA|
+        //fake não faz nada
+        $aCampos = array();
+    }
+
+    /**
      * ba02Entity
      * Cria a tag refNFe
      * @param array $aCampos
      */
-    private function ba02Entity($aCampos)
+    protected function ba02Entity($aCampos)
     {
         //BA02|refNFe|
         $this->make->tagrefNFe($aCampos[1]);
@@ -223,9 +275,9 @@ class ConvertNFe
      * Cria a tag refNF
      * @param array $aCampos
      */
-    private function ba03Entity($aCampos)
+    protected function ba03Entity($aCampos)
     {
-        //BA10|cUF|AAMM|IE|mod|serie|nNF|refCTe
+        //BA03|cUF|AAMM|CNPJ|mod|serie|nNF|
         $this->make->tagrefNF(
             $aCampos[1], //cUF
             $aCampos[2], //aamm
@@ -236,57 +288,40 @@ class ConvertNFe
         );
     }
     
-    private function ba13Entity($aCampos)
-    {
-        //BA13|CNPJ|
-    }
-
-    private function ba14Entity($aCampos)
-    {
-        //BA14|CPF|
-    }
-
-    
     /**
-     * b20aEntity
-     * @param array $aCampos
-     */
-    private function b20aEntity($aCampos)
-    {
-        //B20a|cUF|AAMM|IE|mod|serie|nNF
-        $this->linhaB20a = $aCampos;
-    }
-    
-    /**
-     * b20dEntity
-     * @param array $aCampos
-     */
-    private function b20dEntity($aCampos)
-    {
-        //B20d|CNPJ|
-        $this->linhaB20a[] = $aCampos[1]; //CNPJ
-        $this->linhaB20a[] = ''; //CPF
-        $this->zLinhaB20aEntity($this->linhaB20a);
-    }
-    
-    /**
-     * b20eEntity
-     * @param array $aCampos
-     */
-    private function b20eEntity($aCampos)
-    {
-        //B20d|CPF|
-        $this->linhaB20a[] = ''; //CNPJ
-        $this->linhaB20a[] = $aCampos[1]; //CPF
-        $this->zLinhaB20aEntity($this->linhaB20a);
-    }
-    
-    /**
-     * zLinhaB20aEntity
+     * ba10Entity
      * Cria a tag refNFP
      * @param array $aCampos
      */
-    private function zLinhaB20aEntity($aCampos)
+    protected function ba10Entity($aCampos)
+    {
+        //BA10|cUF|AAMM|IE|mod|serie|nNF|
+        $this->linhaBA10 = $aCampos;
+    }
+    
+    protected function ba13Entity($aCampos)
+    {
+        //BA13|CNPJ|
+        $this->linhaBA10[] = $aCampos[1];
+        $this->linhaBA10[] = '';
+        $this->zLinhaBA10Entity($this->linhaBA10);
+    }
+
+    protected function ba14Entity($aCampos)
+    {
+        //BA14|CPF|
+        $this->linhaBA10[] = '';
+        $this->linhaBA10[] = $aCampos[1];
+        $this->zLinhaBA10Entity($this->linhaBA10);
+    }
+    
+    
+    /**
+     * zLinhaB10Entity
+     * Cria a tag refNFP
+     * @param array $aCampos
+     */
+    protected function zLinhaBA10Entity($aCampos)
     {
         //B20a|cUF|AAMM|IE|mod|serie|nNF|CNPJ|CPF
         $this->make->tagrefNFP(
@@ -302,11 +337,11 @@ class ConvertNFe
     }
     
     /**
-     * b20iEntity
+     * ba19Entity
      * Cria a tag refCTe
      * @param array $aCampos
      */
-    private function b20iEntity($aCampos)
+    protected function ba19Entity($aCampos)
     {
         //B20i|refCTe|
         $this->make->tagrefCTe($aCampos[1]);
@@ -317,7 +352,7 @@ class ConvertNFe
      * Cria a tag refECF
      * @param array $aCampos
      */
-    private function b20Entity($aCampos)
+    protected function ba20Entity($aCampos)
     {
         //BA20|mod|nECF|nCOO|
         $this->make->tagrefECF(
@@ -331,21 +366,29 @@ class ConvertNFe
      * cEntity
      * @param array $aCampos
      */
-    private function cEntity($aCampos)
+    protected function cEntity($aCampos)
     {
         //C|XNome|XFant|IE|IEST|IM|CNAE|CRT|
-        $this->linhaC = $aCampos;
+        $this->linhaC[0] = $aCampos[0];
+        $this->linhaC[1] = $aCampos[1];
+        $this->linhaC[2] = $aCampos[2];
+        $this->linhaC[3] = $aCampos[3];
+        $this->linhaC[4] = $aCampos[4];
+        $this->linhaC[5] = $aCampos[5];
+        $this->linhaC[6] = $aCampos[6];
+        $this->linhaC[7] = $aCampos[7];
+        $this->linhaC[8] = ''; //CNPJ
+        $this->linhaC[9] = ''; //CPF
     }
     
     /**
      * c02Entity
      * @param array $aCampos
      */
-    private function c02Entity($aCampos)
+    protected function c02Entity($aCampos)
     {
         //C02|cnpj|
-        $this->linhaC[] = $aCampos[1]; //CNPJ
-        $this->linhaC[] = '';//CPF
+        $this->linhaC[8] = $aCampos[1]; //CNPJ
         $this->zLinhaCEntity($this->linhaC);
     }
     
@@ -353,11 +396,10 @@ class ConvertNFe
      * c02aEntity
      * @param array $aCampos
      */
-    private function c02aEntity($aCampos)
+    protected function c02aEntity($aCampos)
     {
         //C02a|cpf|
-        $this->linhaC[] = ''; //CNPJ
-        $this->linhaC[] = $aCampos[1];//CPF
+        $this->linhaC[9] = $aCampos[1];//CPF
         $this->linhaCEntity($this->linhaC);
     }
     
@@ -366,7 +408,7 @@ class ConvertNFe
      * Cria a tag emit
      * @param array $aCampos
      */
-    private function zLinhaCEntity($aCampos)
+    protected function zLinhaCEntity($aCampos)
     {
         //C|XNome|XFant|IE|IEST|IM|CNAE|CRT|CNPJ|CPF|
         $this->make->tagemit(
@@ -387,7 +429,7 @@ class ConvertNFe
      * Cria a tag enderEmit
      * @param array $aCampos
      */
-    private function c05Entity($aCampos)
+    protected function c05Entity($aCampos)
     {
         //C05|XLgr|Nro|Cpl|Bairro|CMun|XMun|UF|CEP|cPais|xPais|fone|
         $this->make->tagenderEmit(
@@ -409,22 +451,29 @@ class ConvertNFe
      * eEntity
      * @param array $aCampos
      */
-    private function eEntity($aCampos)
+    protected function eEntity($aCampos)
     {
         //E|xNome|indIEDest|IE|ISUF|IM|email|
-        $this->linhaE = $aCampos;
+        $this->linhaE[0] = $aCampos[0];
+        $this->linhaE[1] = $aCampos[1];
+        $this->linhaE[2] = $aCampos[2];
+        $this->linhaE[3] = $aCampos[3];
+        $this->linhaE[4] = $aCampos[4];
+        $this->linhaE[5] = $aCampos[5];
+        $this->linhaE[6] = $aCampos[6];
+        $this->linhaE[7] = '';
+        $this->linhaE[8] = '';
+        $this->linhaE[9] = '';
     }
     
     /**
      * e02Entity
      * @param array $aCampos
      */
-    private function e02Entity($aCampos)
+    protected function e02Entity($aCampos)
     {
         //CNPJ [dest]
-        $this->linhaE[] = $aCampos[1]; //CNPJ
-        $this->linhaE[] = ''; //CPF
-        $this->linhaE[] = ''; //idExtrangeiro
+        $this->linhaE[7] = $aCampos[1]; //CNPJ
         $this->zLinhaEEntity($this->linhaE);
     }
     
@@ -432,12 +481,10 @@ class ConvertNFe
      * e03Entity
      * @param array $aCampos
      */
-    private function e03Entity($aCampos)
+    protected function e03Entity($aCampos)
     {
         //CPF [dest]
-        $this->linhaE[] = ''; //CNPJ
-        $this->linhaE[] = $aCampos[1]; //CPF
-        $this->linhaE[] = ''; //idExtrangeiro
+        $this->linhaE[8] = $aCampos[1]; //CPF
         $this->zLinhaEEntity($this->linhaE);
     }
     
@@ -445,12 +492,10 @@ class ConvertNFe
      * e03aEntity
      * @param array $aCampos
      */
-    private function e03aEntity($aCampos)
+    protected function e03aEntity($aCampos)
     {
         //idEstrangeiro [dest]
-        $this->linhaE[] = ''; //CNPJ
-        $this->linhaE[] = ''; //CPF
-        $this->linhaE[] = $aCampos[1];  //idExtrangeiro
+        $this->linhaE[9] = $aCampos[1];  //idExtrangeiro
         $this->zLinhaEEntity($this->linhaE);
     }
     
@@ -459,7 +504,7 @@ class ConvertNFe
      * Cria a tag dest
      * @param array $aCampos
      */
-    private function zLinhaEEntity($aCampos)
+    protected function zLinhaEEntity($aCampos)
     {
         //E|xNome|indIEDest|IE|ISUF|IM|email|CNPJ/CPF/idExtrangeiro
         $this->make->tagdest(
@@ -480,7 +525,7 @@ class ConvertNFe
      * Cria a tag enderDest
      * @param array $aCampos
      */
-    private function e05Entity($aCampos)
+    protected function e05Entity($aCampos)
     {
         //E05|xLgr|nro|xCpl|xBairro|cMun|xMun|UF|CEP|cPais|xPais|fone|
         $this->make->tagenderDest(
@@ -502,42 +547,49 @@ class ConvertNFe
      * fEntity
      * @param array $aCampos
      */
-    private function fEntity($aCampos)
+    protected function fEntity($aCampos)
     {
         //F|xLgr|nro|xCpl|xBairro|cMun|xMun|UF|
-        $this->linhaF = $aCampos;
+        $this->linhaF[0] = $aCampos[0];
+        $this->linhaF[1] = $aCampos[1];
+        $this->linhaF[2] = $aCampos[2];
+        $this->linhaF[3] = $aCampos[3];
+        $this->linhaF[4] = $aCampos[4];
+        $this->linhaF[5] = $aCampos[5];
+        $this->linhaF[6] = $aCampos[6];
+        $this->linhaF[7] = $aCampos[7];
+        $this->linhaF[8] = '';
+        $this->linhaF[9] = '';
     }
     
     /**
      * f02Entity
      * @param array $aCampos
      */
-    private function f02Entity($aCampos)
+    protected function f02Entity($aCampos)
     {
         //CNPJ [retirada]
-        $this->linhaF[] = $aCampos[1];
-        $this->linhaF[] = '';
-        $this->zLinhaF($this->linhaF);
+        $this->linhaF[8] = $aCampos[1];
+        $this->zLinhaFEntity($this->linhaF);
     }
     
     /**
      * f02aEntity
      * @param array $aCampos
      */
-    private function f02aEntity($aCampos)
+    protected function f02aEntity($aCampos)
     {
         //CPF [retirada]
-        $this->linhaF[] = '';
-        $this->linhaF[] = $aCampos[1];
-        $this->zLinhaF($this->linhaF);
+        $this->linhaF[9] = $aCampos[1];
+        $this->zLinhaFEntity($this->linhaF);
     }
     
     /**
-     * zLinhaF
+     * zLinhaFEntity
      * Cria a tag retirada
      * @param array $aCampos
      */
-    private function zLinhaF($aCampos)
+    protected function zLinhaFEntity($aCampos)
     {
         //F|xLgr|nro|xCpl|xBairro|cMun|xMun|UF|CNPJ|CPF
         $this->make->tagretirada(
@@ -557,42 +609,49 @@ class ConvertNFe
      * gEntity
      * @param array $aCampos
      */
-    private function gEntity($aCampos)
+    protected function gEntity($aCampos)
     {
         //G|xLgr|nro|xCpl|xBairro|cMun|xMun|UF|
-        $this->linhaG = $aCampos;
+        $this->linhaG[0] = $aCampos[0];
+        $this->linhaG[1] = $aCampos[1];
+        $this->linhaG[2] = $aCampos[2];
+        $this->linhaG[3] = $aCampos[3];
+        $this->linhaG[4] = $aCampos[4];
+        $this->linhaG[5] = $aCampos[5];
+        $this->linhaG[6] = $aCampos[6];
+        $this->linhaG[7] = $aCampos[7];
+        $this->linhaG[8] = '';
+        $this->linhaG[9] = '';
     }
         
     /**
      * g02Entity
      * @param array $aCampos
      */
-    private function g02Entity($aCampos)
+    protected function g02Entity($aCampos)
     {
         //G02|CNPJ
-        $this->linhaG[] = $aCampos[1];
-        $this->linhaG[] = '';
-        $this->zLinhaG($this->linhaG);
+        $this->linhaG[8] = $aCampos[1];
+        $this->zLinhaGEntity($this->linhaG);
     }
     
     /**
      * g02aEntity
      * @param array $aCampos
      */
-    private function g02aEntity($aCampos)
+    protected function g02aEntity($aCampos)
     {
         //G02a|CPF
-        $this->linhaG[] = '';
-        $this->linhaG[] = $aCampos[1];
-        $this->zLinhaG($this->linhaG);
+        $this->linhaG[9] = $aCampos[1];
+        $this->zLinhaGEntity($this->linhaG);
     }
     
     /**
-     * zLinhaG
+     * zLinhaGEntity
      * Cria tag entrega
      * @param array $aCampos
      */
-    private function zLinhaG($aCampos)
+    protected function zLinhaGEntity($aCampos)
     {
         //G|xLgr|nro|xCpl|xBairro|cMun|xMun|UF|CNPJ|CPF
         $this->make->tagentrega(
@@ -608,374 +667,1914 @@ class ConvertNFe
         );
     }
     
-    private function gaEntity($aCampos)
+    protected function gaEntity($aCampos)
     {
         //GA02
         //fake não faz nada
+        $aCampos = array();
     }
-    
-    private function ga02Entity($aCampos)
+
+    /**
+     * ga02Entity
+     * Cria a tag autXML com CNPJ
+     * @param array $aCampos
+     */
+    protected function ga02Entity($aCampos)
     {
         //GA02|CNPJ|
         $this->make->tagautXML($aCampos[1], '');
     }
-        
-    private function ga03Entity($aCampos)
+    
+    /**
+     * ga03Entity
+     * Cria a tag autXML com CPF
+     * @param array $aCampos
+     */
+    protected function ga03Entity($aCampos)
     {
         //GA02|CPF|
         $this->make->tagautXML('', $aCampos[1]);
     }
     
-    private function hEntity($aCampos)
+    /**
+     * hEntity
+     * Cria tag infAdProd
+     * @param array $aCampos
+     */
+    protected function hEntity($aCampos)
     {
         //H|item|infAdProd
-        
+        $this->make->taginfAdProd($aCampos[1], $aCampos[2]);
+        $this->nItem = (integer) $aCampos[1];
     }
-        
-    private function iEntity($aCampos)
+    
+    /**
+     * iEntity
+     * Cria tag prod
+     * @param array $aCampos
+     */
+    protected function iEntity($aCampos)
     {
         //I|cProd|cEAN|xProd|NCM|EXTIPI|CFOP|uCom|qCom|vUnCom
         // |vProd|cEANTrib|uTrib|qTrib|vUnTrib
         // |vFrete|vSeg|vDesc|vOutro|indTot|xPed|nItemPed|nFCI|
-        
+        $this->make->tagprod(
+            $this->nItem, //nItem
+            $aCampos[1], //cProd
+            $aCampos[2], //cEAN
+            $aCampos[3], //xProd
+            $aCampos[4], //NCM
+            $aCampos[5], //EXTIPI
+            $aCampos[6], //CFOP
+            $aCampos[7], //uCom
+            $aCampos[8], //qCom
+            $aCampos[9], //vUnCom
+            $aCampos[10], //vProd
+            $aCampos[11], //cEANTrib
+            $aCampos[12], //uTrib
+            $aCampos[13], //qTrib
+            $aCampos[14], //vUnTrib
+            $aCampos[15], //vFrete
+            $aCampos[16], //vSeg
+            $aCampos[17], //vDesc
+            $aCampos[18], //vOutro
+            $aCampos[19], //indTot
+            $aCampos[20], //xPed
+            $aCampos[21], //nItemPed
+            $aCampos[22] //nFCI
+        );
     }
-        
-    private function i18Entity($aCampos)
+    
+    /**
+     * i05aEntity
+     * Cria a tag NVE
+     * @param array $aCampos
+     */
+    protected function i05aEntity($aCampos)
     {
-        //I18|nDI|dDI|xLocDesemb|UFDesemb|dDesemb|tpViaTransp|vAFRMM|tpIntermedio|CNPJ|UFTerceiro|cExportador|
+        $this->make->tagNVE($this->nItem, $aCampos[1]);
     }
-        
-    private function i25Entity($aCampos)
+    
+    /**
+     * i18Entity
+     * Cria a tag DI
+     * @param array $aCampos
+     */
+    protected function i18Entity($aCampos)
+    {
+        //I18|nDI|dDI|xLocDesemb|UFDesemb|dDesemb|tpViaTransp
+        //   |vAFRMM|tpIntermedio|CNPJ|UFTerceiro|cExportador|
+        $this->make->tagDI(
+            $this->nItem,
+            $aCampos[1], //nDI
+            $aCampos[2], //dDI
+            $aCampos[3], //xLocDesemb
+            $aCampos[4], //UFDesemb
+            $aCampos[5], //dDesemb
+            $aCampos[6], //tpViaTransp
+            $aCampos[7], //vAFRMM
+            $aCampos[8], //tpIntermedio
+            $aCampos[9], //CNPJ
+            $aCampos[10], //UFTerceiro
+            $aCampos[11] //cExportador
+        );
+        $this->nDI = $aCampos[1];
+    }
+    
+    /**
+     * i25Entity
+     * Cria tag adi
+     * @param array $aCampos
+     */
+    protected function i25Entity($aCampos)
     {
         //I25|nAdicao|nSeqAdicC|cFabricante|vDescDI|nDraw|
+        $this->make->tagadi(
+            $this->nItem,
+            $this->nDI,
+            $aCampos[1], //nAdicao
+            $aCampos[2], //nSeqAdicC
+            $aCampos[3], //cFabricante
+            $aCampos[4], //vDescDI
+            $aCampos[5] //nDraw
+        );
     }
-        
-    private function i50Entity($aCampos)
+    
+    /**
+     * i50Entity
+     * @param array $aCampos
+     */
+    protected function i50Entity($aCampos)
     {
         //I50|nDraw|
+        $this->linhaI50[0] = $aCampos[1];
+        $this->linhaI50[1] = '';
+        $this->linhaI50[2] = '';
+        $this->linhaI50[3] = '';
+        $this->zLinhaI50Entity($this->linhaI50);
+
     }
-        
-    private function i52Entity($aCampos)
+    
+    /**
+     * i52Entity
+     * @param array $aCampos
+     */
+    protected function i52Entity($aCampos)
     {
         //I52|nRE|chNFe|qExport|
-    }
-        
-    private function jEntity($aCampos)
-    {
-        //J|TpOp|Chassi|CCor|XCor|Pot|cilin|pesoL|pesoB|NSerie|TpComb|NMotor|CMT|Dist|anoMod
-        // |anoFab|tpPint|tpVeic|espVeic|VIN|condVeic|cMod|cCorDENATRAN|lota|tpRest|
-    }
-        
-    private function kEntity($aCampos)
-    {
-        //K|NLote|QLote|DFab|DVal|VPMC|
-    }
-        
-    private function lEntity($aCampos)
-    {
-    }
-        
-    private function laEntity($aCampos)
-    {
-    }
-        
-    private function la07Entity($aCampos)
-    {
-    }
-        
-    private function lbEntity($aCampos)
-    {
-    }
-        
-    private function mEntity($aCampos)
-    {
-    }
-        
-    private function nEntity($aCampos)
-    {
-    }
-        
-    private function n02Entity($aCampos)
-    {
-    }
-        
-    private function n03Entity($aCampos)
-    {
-    }
-        
-    private function n04Entity($aCampos)
-    {
-    }
-        
-    private function n05Entity($aCampos)
-    {
-    }
-        
-    private function n06Entity($aCampos)
-    {
-    }
-        
-    private function n07Entity($aCampos)
-    {
-    }
-        
-    private function n08Entity($aCampos)
-    {
-    }
-        
-    private function n09Entity($aCampos)
-    {
-    }
-        
-    private function n10Entity($aCampos)
-    {
-    }
-        
-    private function n10aEntity($aCampos)
-    {
-    }
-        
-    private function n10bEntity($aCampos)
-    {
-    }
-        
-    private function n10cEntity($aCampos)
-    {
-    }
-        
-    private function n10dEntity($aCampos)
-    {
-    }
-        
-    private function n10eEntity($aCampos)
-    {
-    }
-        
-    private function n10fEntity($aCampos)
-    {
-    }
-        
-    private function n10gEntity($aCampos)
-    {
-    }
-        
-    private function n10hEntity($aCampos)
-    {
-    }
-        
-    private function oEntity($aCampos)
-    {
-    }
-        
-    private function o07Entity($aCampos)
-    {
-    }
-        
-    private function o10Entity($aCampos)
-    {
-    }
-        
-    private function o11Entity($aCampos)
-    {
-    }
-        
-    private function o08Entity($aCampos)
-    {
-    }
-        
-    private function pEntity($aCampos)
-    {
-    }
-         
-    private function qEntity($aCampos)
-    {
-    }
-        
-    private function q02Entity($aCampos)
-    {
-    }
-        
-    private function q03Entity($aCampos)
-    {
-    }
-        
-    private function q04Entity($aCampos)
-    {
-    }
-        
-    private function q05Entity($aCampos)
-    {
-    }
-        
-    private function q07Entity($aCampos)
-    {
-    }
-        
-    private function q10Entity($aCampos)
-    {
-    }
-        
-    private function rEntity($aCampos)
-    {
-    }
-        
-    private function r02Entity($aCampos)
-    {
-    }
-        
-    private function r04Entity($aCampos)
-    {
-    }
-        
-    private function sEntity($aCampos)
-    {
-    }
-        
-    private function s02Entity($aCampos)
-    {
-    }
-        
-    private function s03Entity($aCampos)
-    {
-    }
-        
-    private function s04Entity($aCampos)
-    {
-    }
-        
-    private function s05Entity($aCampos)
-    {
-    }
-        
-    private function s07Entity($aCampos)
-    {
-    }
-        
-    private function s09Entity($aCampos)
-    {
-    }
-        
-    private function tEntity($aCampos)
-    {
-    }
-         
-    private function t02Entity($aCampos)
-    {
-    }
-        
-    private function t04Entity($aCampos)
-    {
-    }
-        
-    private function uEntity($aCampos)
-    {
-    }
-        
-    private function uaEntity($aCampos)
-    {
-    }
-        
-    private function wEntity($aCampos)
-    {
-    }
-        
-    private function w02Entity($aCampos)
-    {
-    }
-        
-    private function w17Entity($aCampos)
-    {
-    }
-        
-    private function w23Entity($aCampos)
-    {
-    }
-        
-    private function xEntity($aCampos)
-    {
-    }
-        
-    private function x03Entity($aCampos)
-    {
-    }
-        
-    private function x04Entity($aCampos)
-    {
-    }
-        
-    private function x05Entity($aCampos)
-    {
-    }
-        
-    private function x11Entity($aCampos)
-    {
-    }
-        
-    private function x18Entity($aCampos)
-    {
-    }
-        
-    private function x22Entity($aCampos)
-    {
-    }
-        
-    private function x26Entity($aCampos)
-    {
-    }
-        
-    private function x33Entity($aCampos)
-    {
-    }
-        
-    private function yEntity($aCampos)
-    {
-    }
-        
-    private function y02Entity($aCampos)
-    {
-    }
-        
-    private function y07Entity($aCampos)
-    {
-    }
-        
-    private function yaEntity($aCampos)
-    {
-    }
-        
-    private function zEntity($aCampos)
-    {
-    }
-        
-    private function z04Entity($aCampos)
-    {
-    }
-        
-    private function z07Entity($aCampos)
-    {
-    }
-        
-    private function z10Entity($aCampos)
-    {
-    }
-        
-    private function zaEntity($aCampos)
-    {
-    }
-        
-    private function zbEntity($aCampos)
-    {
-    }
-        
-    private function zc01Entity($aCampos)
-    {
-    }
-        
-    private function zc04Entity($aCampos)
-    {
-    }
-        
-    private function zc10Entity($aCampos)
-    {
+        $this->linhaI50[1] = $aCampos[1];
+        $this->linhaI50[2] = $aCampos[2];
+        $this->linhaI50[3] = $aCampos[3];
+        $this->zLinhaI50Entity($this->linhaI50);
+    }
+    
+    /**
+     * zLinhaI50Entity
+     * Cria a tag detExport
+     * @param array $aCampos
+     */
+    protected function zLinhaI50Entity($aCampos)
+    {
+        $this->make->tagdetExport(
+            $this->nItem,
+            $aCampos[1], //nDraw
+            $aCampos[2], //nRE
+            $aCampos[3], //chNFe
+            $aCampos[4] //qExport
+        );
+    }
+
+    /**
+     * jaEntity
+     * Cria tag veicProd
+     * @param array $aCampos
+     */
+    protected function jaEntity($aCampos)
+    {
+        //JA|tpOp|chassi|cCor|xCor|pot|cilin|pesoL|pesoB|nSerie
+        //  |tpComb|nMotor|CMT|dist|anoMod|anoFab|tpPint|tpVeic
+        //  |espVeic|VIN|condVeic|cMod|cCorDENATRAN|lota|tpRest|
+        $this->make->tagveicProd(
+            $this->nItem,
+            $aCampos[1], //tpOp
+            $aCampos[2], //chassi
+            $aCampos[3], //cCor
+            $aCampos[4], //xCor
+            $aCampos[5], //pot
+            $aCampos[6], //cilin
+            $aCampos[7], //pesoL
+            $aCampos[8], //pesoB
+            $aCampos[9], //nSerie
+            $aCampos[10], //tpComb
+            $aCampos[11], //nMotor
+            $aCampos[12], //cmt
+            $aCampos[13], //dist
+            $aCampos[14], //anoMod
+            $aCampos[15], //anoFab
+            $aCampos[16], //tpPint
+            $aCampos[17], //tpVeic
+            $aCampos[18], //espVeic
+            $aCampos[19], //vIn
+            $aCampos[20], //condVeic
+            $aCampos[21], //cMod
+            $aCampos[22], //cCorDENATRAN
+            $aCampos[23], //lota
+            $aCampos[24] //tpRest
+        );
+    }
+        
+    /**
+     * kEntity
+     * Cria tag med
+     * @param array $aCampos
+     */
+    protected function kEntity($aCampos)
+    {
+        //K|nLote|qLote|dFab|dVal|vPMC|
+        $this->make->tagmed(
+            $this->nItem,
+            $aCampos[1], //nLote
+            $aCampos[2], //qLote
+            $aCampos[3], //dFab
+            $aCampos[4], //dVal
+            $aCampos[5] //vPMC
+        );
+    }
+    
+    /**
+     * lEntity
+     * Cria a tag arma
+     * @param array $aCampos
+     */
+    protected function lEntity($aCampos)
+    {
+        //L|tpArma|nSerie|nCano|descr|
+        $this->make->tagarma(
+            $this->nItem,
+            $aCampos[1], //tpArma
+            $aCampos[2], //nSerie
+            $aCampos[3], //nCano
+            $aCampos[4] //descr
+        );
+        
+    }
+    
+    /**
+     * laEntity
+     * @param arry $aCampos
+     */
+    protected function laEntity($aCampos)
+    {
+        //LA|cProdANP|pMixGN|CODIF|qTemp|UFCons|
+        $this->LinhaLA = $aCampos;
+        $this->LinhaLA[6] = '';
+        $this->LinhaLA[7] = '';
+        $this->LinhaLA[8] = '';
+        $this->zLinhaLAEntity($this->LinhaLA);
+    }
+        
+    /**
+     * la07Entity
+     * @param array $aCampos
+     */
+    protected function la07Entity($aCampos)
+    {
+        //LA07|qBCProd|vAliqProd|vCIDE|
+        $this->LinhaLA[6] = $aCampos[1];
+        $this->LinhaLA[7] = $aCampos[2];
+        $this->LinhaLA[8] = $aCampos[3];
+        $this->zLinhaLAEntity($this->LinhaLA);
+    }
+    
+    /**
+     * zLinhaLAEntity
+     * Cria a tag comb
+     * @param type $aCampos
+     */
+    protected function zLinhaLAEntity($aCampos)
+    {
+        $this->make->tagcomb(
+            $this->nItem,
+            $aCampos[1], //cProdANP
+            $aCampos[2], //pMixGN
+            $aCampos[3], //codif
+            $aCampos[4], //qTemp
+            $aCampos[5], //ufCons
+            $aCampos[6], //qBCProd
+            $aCampos[7], //vAliqProd
+            $aCampos[8] //vCIDE
+        );
+    }
+    
+    /**
+     * lbEntity
+     * Cria a tag RECOPI
+     * @param array $aCampos
+     */
+    protected function lbEntity($aCampos)
+    {
+        //LB|nRECOPI|
+        $this->make->tagRECOPI($this->nItem, $aCampos[1]);
+    }
+    
+    /**
+     * mEntity
+     * Cria a tag imposto
+     * @param array $aCampos
+     */
+    protected function mEntity($aCampos)
+    {
+        //M|vTotTrib|
+        $this->make->tagimposto($this->nItem, $aCampos[1]);
+    }
+    
+    /**
+     * nEntity
+     * @param array $aCampos
+     */
+    protected function nEntity($aCampos)
+    {
+        //fake não faz nada
+        $aCampos = array();
+    }
+    
+    /**
+     * n02Entity
+     * @param array $aCampos
+     */
+    protected function n02Entity($aCampos)
+    {
+        //     1    2    3    4    5     6
+        //N02|orig|CST|modBC|vBC|pICMS|vICMS|
+        //Nxx|orig|cst|modBC|pRedBC|vBC|pICMS|vICMS|vICMSDeson|motDesICMS|modBCST
+        //   |pMVAST|pRedBCST|vBCST|pICMSST|vICMSST|pDif|vICMSDif|vICMSOp
+        //   |BCSTRet|vICMSSTRet|
+        $aFields = array(
+            $this->nItem,
+            $aCampos[1], //orig
+            $aCampos[2], //cst
+            $aCampos[3], //modBC
+            '', //pRedBC
+            $aCampos[4], //vBC
+            $aCampos[5], //pICMS
+            $aCampos[6], //vICMS
+            '', //vICMSDeson
+            '', //motDesICMS
+            '', //modBCST
+            '', //pMVAST
+            '', //pRedBCST
+            '', //vBCST
+            '', //pICMSST
+            '', //vICMSST
+            '', //pDif
+            '', //vICMSDif
+            '', //vICMSOp
+            '', //vBCSTRet
+            '' //vICMSSTRet
+        );
+        $this->zLinhaNEntity($aFields);
+    }
+    
+    /**
+     * n03Entity
+     * @param array $aCampos
+     */
+    protected function n03Entity($aCampos)
+    {
+        //      1   2    3    4    5     6     7       8      9       10     11      12
+        //N03|orig|CST|modBC|vBC|pICMS|vICMS|modBCST|pMVAST|pRedBCST|vBCST|pICMSST|vICMSST|
+        //Nxx|orig|cst|modBC|pRedBC|vBC|pICMS|vICMS|vICMSDeson|motDesICMS|modBCST
+        //   |pMVAST|pRedBCST|vBCST|pICMSST|vICMSST|pDif|vICMSDif|vICMSOp
+        //   |BCSTRet|vICMSSTRet|
+        $aFields = array(
+            $this->nItem,
+            $aCampos[1], //orig
+            $aCampos[2], //cst
+            $aCampos[3], //modBC
+            '', //pRedBC
+            $aCampos[4], //vBC
+            $aCampos[5], //pICMS
+            $aCampos[6], //vICMS
+            '', //vICMSDeson
+            '', //motDesICMS
+            $aCampos[7], //modBCST
+            $aCampos[8], //pMVAST
+            $aCampos[9], //pRedBCST
+            $aCampos[10], //vBCST
+            $aCampos[11], //pICMSST
+            $aCampos[12], //vICMSST
+            '', //pDif
+            '', //vICMSDif
+            '', //vICMSOp
+            '', //vBCSTRet
+            '' //vICMSSTRet
+        );
+        $this->zLinhaNEntity($aFields);
+    }
+    
+    /**
+     * n04Entity
+     * @param array $aCampos
+     */
+    protected function n04Entity($aCampos)
+    {
+        //     1    2   3       4    5    6    7        8         9
+        //N04|orig|CST|modBC|pRedBC|vBC|pICMS|vICMS|vICMSDeson|motDesICMS|
+        //Nxx|orig|cst|modBC|pRedBC|vBC|pICMS|vICMS|vICMSDeson|motDesICMS|modBCST
+        //   |pMVAST|pRedBCST|vBCST|pICMSST|vICMSST|pDif|vICMSDif|vICMSOp
+        //   |BCSTRet|vICMSSTRet|
+        $aFields = array(
+            $this->nItem,
+            $aCampos[1], //orig
+            $aCampos[2], //cst
+            $aCampos[3], //modBC
+            $aCampos[4], //pRedBC
+            $aCampos[5], //vBC
+            $aCampos[6], //pICMS
+            $aCampos[7], //vICMS
+            $aCampos[8], //vICMSDeson
+            $aCampos[9], //motDesICMS
+            '', //modBCST
+            '', //pMVAST
+            '', //pRedBCST
+            '', //vBCST
+            '', //pICMSST
+            '', //vICMSST
+            '', //pDif
+            '', //vICMSDif
+            '', //vICMSOp
+            '', //vBCSTRet
+            '' //vICMSSTRet
+        );
+        $this->zLinhaNEntity($aFields);
+    }
+    
+    /**
+     * n05Entity
+     * @param array $aCampos
+     */
+    protected function n05Entity($aCampos)
+    {
+        //     1    2     3      4      5       6      7       8         9         10
+        //N05|orig|CST|modBCST|pMVAST|pRedBCST|vBCST|pICMSST|vICMSST|vICMSDeson|motDesICMS|
+        //Nxx|orig|CST|modBC|pRedBC|vBC|pICMS|vICMS|vICMSDeson|motDesICMS|modBCST
+        //   |pMVAST|pRedBCST|vBCST|pICMSST|vICMSST|pDif|vICMSDif|vICMSOp
+        //   |BCSTRet|vICMSSTRet|
+        $aFields = array(
+            $this->nItem,
+            $aCampos[1], //orig
+            $aCampos[2], //cst
+            '', //modBC
+            '', //pRedBC
+            '', //vBC
+            '', //pICMS
+            '', //vICMS
+            $aCampos[9], //vICMSDeson
+            $aCampos[10], //motDesICMS
+            $aCampos[3], //modBCST
+            $aCampos[4], //pMVAST
+            $aCampos[5], //pRedBCST
+            $aCampos[6], //vBCST
+            $aCampos[7], //pICMSST
+            $aCampos[8], //vICMSST
+            '', //pDif
+            '', //vICMSDif
+            '', //vICMSOp
+            '', //vBCSTRet
+            '' //vICMSSTRet
+        );
+        $this->zLinhaNEntity($aFields);
+    }
+    
+    /**
+     * n06Entity
+     * @param array $aCampos
+     */
+    protected function n06Entity($aCampos)
+    {
+        //      1   2      3         4
+        //N06|orig|CST|vICMSDeson|motDesICMS|
+        //Nxx|orig|CST|modBC|pRedBC|vBC|pICMS|vICMS|vICMSDeson|motDesICMS|modBCST
+        //   |pMVAST|pRedBCST|vBCST|pICMSST|vICMSST|pDif|vICMSDif|vICMSOp
+        //   |BCSTRet|vICMSSTRet|
+        $aFields = array(
+            $this->nItem,
+            $aCampos[1], //orig
+            $aCampos[2], //cst
+            '', //modBC
+            '', //pRedBC
+            '', //vBC
+            '', //pICMS
+            '', //vICMS
+            $aCampos[3], //vICMSDeson
+            $aCampos[4], //motDesICMS
+            '', //modBCST
+            '', //pMVAST
+            '', //pRedBCST
+            '', //vBCST
+            '', //pICMSST
+            '', //vICMSST
+            '', //pDif
+            '', //vICMSDif
+            '', //vICMSOp
+            '', //vBCSTRet
+            '' //vICMSSTRet
+        );
+        $this->zLinhaNEntity($aFields);
+    }
+    
+    /**
+     * n07Entity
+     * @param array $aCampos
+     */
+    protected function n07Entity($aCampos)
+    {
+        //     1    2    3     4     5    6     7      8     9       10
+        //N07|orig|CST|modBC|pRedBC|vBC|pICMS|vICMSOp|pDif|vICMSDif|vICMS|
+        //Nxx|orig|CST|modBC|pRedBC|vBC|pICMS|vICMS|vICMSDeson|motDesICMS|modBCST
+        //   |pMVAST|pRedBCST|vBCST|pICMSST|vICMSST|pDif|vICMSDif|vICMSOp
+        //   |BCSTRet|vICMSSTRet|
+        $aFields = array(
+            $this->nItem,
+            $aCampos[1], //orig
+            $aCampos[2], //cst
+            $aCampos[3], //modBC
+            $aCampos[4], //pRedBC
+            $aCampos[5], //vBC
+            $aCampos[6], //pICMS
+            $aCampos[10], //vICMS
+            '', //vICMSDeson
+            '', //motDesICMS
+            '', //modBCST
+            '', //pMVAST
+            '', //pRedBCST
+            '', //vBCST
+            '', //pICMSST
+            '', //vICMSST
+            $aCampos[8], //pDif
+            $aCampos[9], //vICMSDif
+            $aCampos[7], //vICMSOp
+            '', //vBCSTRet
+            '' //vICMSSTRet
+        );
+        $this->zLinhaNEntity($aFields);
+    }
+    
+    /**
+     * n08Entity
+     * @param array $aCampos
+     */
+    protected function n08Entity($aCampos)
+    {
+        //     1    2     3        4
+        //N08|orig|CST|vBCSTRet|vICMSSTRet|
+        //Nxx|orig|CST|modBC|pRedBC|vBC|pICMS|vICMS|vICMSDeson|motDesICMS|modBCST
+        //   |pMVAST|pRedBCST|vBCST|pICMSST|vICMSST|pDif|vICMSDif|vICMSOp
+        //   |BCSTRet|vICMSSTRet|
+        $aFields = array(
+            $this->nItem,
+            $aCampos[1], //orig
+            $aCampos[2], //cst
+            '', //modBC
+            '', //pRedBC
+            '', //vBC
+            '', //pICMS
+            '', //vICMS
+            '', //vICMSDeson
+            '', //motDesICMS
+            '', //modBCST
+            '', //pMVAST
+            '', //pRedBCST
+            '', //vBCST
+            '', //pICMSST
+            '', //vICMSST
+            '', //pDif
+            '', //vICMSDif
+            '', //vICMSOp
+            $aCampos[3], //vBCSTRet
+            $aCampos[4] //vICMSSTRet
+        );
+        $this->zLinhaNEntity($aFields);
+    }
+    
+    /**
+     * n09Entity
+     * @param array $aCampos
+     */
+    protected function n09Entity($aCampos)
+    {
+        //     1    2   3     4      5   6     7      8       9      10      11    12       13      14          15
+        //N09|orig|CST|modBC|pRedBC|vBC|pICMS|vICMS|modBCST|pMVAST|pRedBCST|vBCST|pICMSST|vICMSST|vICMSDeson|motDesICMS|
+        //Nxx|orig|CST|modBC|pRedBC|vBC|pICMS|vICMS|vICMSDeson|motDesICMS|modBCST
+        //   |pMVAST|pRedBCST|vBCST|pICMSST|vICMSST|pDif|vICMSDif|vICMSOp
+        //   |BCSTRet|vICMSSTRet|
+        $aFields = array(
+            $this->nItem,
+            $aCampos[1], //orig
+            $aCampos[2], //cst
+            $aCampos[3], //modBC
+            $aCampos[4], //pRedBC
+            $aCampos[5], //vBC
+            $aCampos[6], //pICMS
+            $aCampos[7], //vICMS
+            $aCampos[14], //vICMSDeson
+            $aCampos[15], //motDesICMS
+            $aCampos[8], //modBCST
+            $aCampos[9], //pMVAST
+            $aCampos[10], //pRedBCST
+            $aCampos[11], //vBCST
+            $aCampos[12], //pICMSST
+            $aCampos[13], //vICMSST
+            '', //pDif
+            '', //vICMSDif
+            '', //vICMSOp
+            '', //vBCSTRet
+            '' //vICMSSTRet
+        );
+        $this->zLinhaNEntity($aFields);
+    }
+    
+    /**
+     * n10Entity
+     * @param array $aCampos
+     */
+    protected function n10Entity($aCampos)
+    {
+        //     1    2    3    4    5     6      7     8       9       10     11     12     13       14           15
+        //N10|orig|CST|modBC|vBC|pRedBC|pICMS|vICMS|modBCST|pMVAST|pRedBCST|vBCST|pICMSST|vICMSST|vICMSDeson|motDesICMS|
+        //Nxx|orig|CST|modBC|pRedBC|vBC|pICMS|vICMS|vICMSDeson|motDesICMS|modBCST
+        //   |pMVAST|pRedBCST|vBCST|pICMSST|vICMSST|pDif|vICMSDif|vICMSOp
+        //   |BCSTRet|vICMSSTRet|
+        $aFields = array(
+            $this->nItem,
+            $aCampos[1], //orig
+            $aCampos[2], //cst
+            $aCampos[3], //modBC
+            $aCampos[5], //pRedBC
+            $aCampos[4], //vBC
+            $aCampos[6], //pICMS
+            $aCampos[7], //vICMS
+            $aCampos[14], //vICMSDeson
+            $aCampos[15], //motDesICMS
+            $aCampos[8], //modBCST
+            $aCampos[9], //pMVAST
+            $aCampos[10], //pRedBCST
+            $aCampos[11], //vBCST
+            $aCampos[12], //pICMSST
+            $aCampos[13], //vICMSST
+            '', //pDif
+            '', //vICMSDif
+            '', //vICMSOp
+            '', //vBCSTRet
+            '' //vICMSSTRet
+        );
+        $this->zLinhaNEntity($aFields);
+    }
+    
+    /**
+     * n10aEntity
+     * Cria a tag ICMSPart
+     * @param array $aCampos
+     */
+    protected function n10aEntity($aCampos)
+    {
+        //N10a|orig|CST|modBC|vBC|pRedBC|pICMS|vICMS|modBCST|pMVAST|pRedBCST|vBCST|pICMSST|vICMSST|pBCOp|UFST|
+        $this->make->tagICMSPart(
+            $this->nItem,
+            $aCampos[1], //orig = '',
+            $aCampos[2], //cst = '',
+            $aCampos[3], //modBC = '',
+            $aCampos[4], //vBC = '',
+            $aCampos[5], //pRedBC = '',
+            $aCampos[6], //pICMS = '',
+            $aCampos[7], //vICMS = '',
+            $aCampos[8], //modBCST = '',
+            $aCampos[9], //pMVAST = '',
+            $aCampos[10], //pRedBCST = '',
+            $aCampos[11], //vBCST = '',
+            $aCampos[12], //pICMSST = '',
+            $aCampos[13], //vICMSST = '',
+            $aCampos[14], //pBCOp = '',
+            $aCampos[15] //ufST = ''
+        );
+    }
+
+    /**
+     * n10bEntity
+     * Cria tag ICMSST 
+     * @param array $aCampos
+     */
+    protected function n10bEntity($aCampos)
+    {
+        //N10b|orig|CST|vBCSTRet|vICMSSTRet|vBCSTDest|vICMSSTDest|
+        $this->make->tagICMSST(
+            $this->nItem,
+            $aCampos[1], //orig = '',
+            $aCampos[2], //cst = '',
+            $aCampos[3], //vBCSTRet = '',
+            $aCampos[4], //vICMSSTRet = '',
+            $aCampos[5], //vBCSTDest = '',
+            $aCampos[6] //vICMSSTDest = ''
+        );
+    }
+    
+    /**
+     * n10cEntity
+     * @param type $aCampos
+     */
+    protected function n10cEntity($aCampos)
+    {
+        //      1     2     3       4
+        //N10c|orig|CSOSN|pCredSN|vCredICMSSN|
+        $aFields = array(
+            $this->nItem,
+            $aCampos[1], //orig
+            $aCampos[2], //csosn
+            '', //modBC
+            '', //vBC
+            '', //pRedBC
+            '', //pICMS
+            '', //vICMS
+            $aCampos[3], //pCredSN
+            $aCampos[4], //vCredICMSSN
+            '', //modBCST
+            '', //pMVAST
+            '', //pRedBCST
+            '', //vBCST
+            '', //pICMSST
+            '', //vICMSST
+            '', //vBCSTRet
+            '' //vICMSSTRet
+        );
+        $this->zLinhaNSNEntity($aFields);
+    }
+    
+    /**
+     * n10dEntity
+     * @param array $aCampos
+     */
+    protected function n10dEntity($aCampos)
+    {
+        //N10d|orig|CSOSN|
+        $aFields = array(
+            $this->nItem,
+            $aCampos[1], //orig
+            $aCampos[2], //csosn
+            '', //modBC
+            '', //vBC
+            '', //pRedBC
+            '', //pICMS
+            '', //vICMS
+            '', //pCredSN
+            '', //vCredICMSSN
+            '', //modBCST
+            '', //pMVAST
+            '', //pRedBCST
+            '', //vBCST
+            '', //pICMSST
+            '', //vICMSST
+            '', //vBCSTRet
+            '' //vICMSSTRet
+        );
+        $this->zLinhaNSNEntity($aFields);
+    }
+    
+    /**
+     * n10eEntity
+     * @param array $aCampos
+     */
+    protected function n10eEntity($aCampos)
+    {
+        //      1     2      3      4       5       6     7       8       9       10
+        //N10e|orig|CSOSN|modBCST|pMVAST|pRedBCST|vBCST|pICMSST|vICMSST|pCredSN|vCredICMSSN|
+        $aFields = array(
+            $this->nItem,
+            $aCampos[1], //orig
+            $aCampos[2], //csosn
+            '', //modBC
+            '', //vBC
+            '', //pRedBC
+            '', //pICMS
+            '', //vICMS
+            $aCampos[9], //pCredSN
+            $aCampos[10], //vCredICMSSN
+            $aCampos[3], //modBCST
+            $aCampos[4], //pMVAST
+            $aCampos[5], //pRedBCST
+            $aCampos[6], //vBCST
+            $aCampos[7], //pICMSST
+            $aCampos[8], //vICMSST
+            '', //vBCSTRet
+            '' //vICMSSTRet
+        );
+        $this->zLinhaNSNEntity($aFields);
+    }
+    
+    /**
+     * n10fEntity
+     * @param array $aCampos
+     */
+    protected function n10fEntity($aCampos)
+    {
+        //      1     2     3       4      5       6       7      8
+        //N10f|orig|CSOSN|modBCST|pMVAST|pRedBCST|vBCST|pICMSST|vICMSST|
+        $aFields = array(
+            $this->nItem,
+            $aCampos[1], //orig
+            $aCampos[2], //csosn
+            '', //modBC
+            '', //vBC
+            '', //pRedBC
+            '', //pICMS
+            '', //vICMS
+            '', //pCredSN
+            '', //vCredICMSSN
+            $aCampos[3], //modBCST
+            $aCampos[4], //pMVAST
+            $aCampos[5], //pRedBCST
+            $aCampos[6], //vBCST
+            $aCampos[7], //pICMSST
+            $aCampos[8], //vICMSST
+            '', //vBCSTRet
+            '' //vICMSSTRet
+        );
+        $this->zLinhaNSNEntity($aFields);
+    }
+    
+    /**
+     * n10gEntity
+     * @param array $aCampos
+     */
+    protected function n10gEntity($aCampos)
+    {
+        //       1    2     3         4
+        //N10g|orig|CSOSN|vBCSTRet|vICMSSTRet|
+        $aFields = array(
+            $this->nItem,
+            $aCampos[1], //orig
+            $aCampos[2], //csosn
+            '', //modBC
+            '', //vBC
+            '', //pRedBC
+            '', //pICMS
+            '', //vICMS
+            '', //pCredSN
+            '', //vCredICMSSN
+            '', //modBCST
+            '', //pMVAST
+            '', //pRedBCST
+            '', //vBCST
+            '', //pICMSST
+            '', //vICMSST
+            $aCampos[3], //vBCSTRet
+            $aCampos[4] //vICMSSTRet
+        );
+        $this->zLinhaNSNEntity($aFields);
+    }
+    
+    /**
+     * n10hEntity
+     * @param array $aCampos
+     */
+    protected function n10hEntity($aCampos)
+    {
+        //       1    2    3     4    5     6     7      8      9      10
+        //N10h|orig|CSOSN|modBC|vBC|pRedBC|pICMS|vICMS|modBCST|pMVAST|pRedBCST
+        //      11     12      13      14      15
+        //    |vBCST|pICMSST|vICMSST|pCredSN|vCredICMSSN|
+        $aFields = array(
+            $this->nItem,
+            $aCampos[1], //orig
+            $aCampos[2], //csosn
+            $aCampos[3], //modBC
+            $aCampos[4], //vBC
+            $aCampos[5], //pRedBC
+            $aCampos[6], //pICMS
+            $aCampos[7], //vICMS
+            $aCampos[14], //pCredSN
+            $aCampos[15], //vCredICMSSN
+            $aCampos[8], //modBCST
+            $aCampos[9], //pMVAST
+            $aCampos[10], //pRedBCST
+            $aCampos[11], //vBCST
+            $aCampos[12], //pICMSST
+            $aCampos[13], //vICMSST
+            '', //vBCSTRet
+            '' //vICMSSTRet
+        );
+        $this->zLinhaNSNEntity($aFields);
+    }
+    
+    /**
+     * zLinhaNEntity
+     * Cria a tag ICMS
+     * @param array $aCampos
+     */
+    protected function zLinhaNEntity($aCampos)
+    {
+        //Nxx|orig|cst|modBC|pRedBC|vBC|pICMS|vICMS|vICMSDeson|motDesICMS|modBCST
+        //   |pMVAST|pRedBCST|vBCST|pICMSST|vICMSST|pDif|vICMSDif|vICMSOp
+        //   |BCSTRet|vICMSSTRet|
+        $this->make->tagICMS(
+            $this->nItem,
+            $aCampos[1], //orig
+            $aCampos[2], //cst
+            $aCampos[3], //modBC
+            $aCampos[4], //pRedBC
+            $aCampos[5], //vBC
+            $aCampos[6], //pICMS
+            $aCampos[7], //vICMS
+            $aCampos[8], //vICMSDeson
+            $aCampos[9], //motDesICMS
+            $aCampos[10], //modBCST
+            $aCampos[11], //pMVAST
+            $aCampos[12], //pRedBCST
+            $aCampos[13], //vBCST
+            $aCampos[14], //pICMSST
+            $aCampos[15], //vICMSST
+            $aCampos[16], //pDif
+            $aCampos[17], //vICMSDif
+            $aCampos[18], //vICMSOp
+            $aCampos[19], //vBCSTRet
+            $aCampos[20] //vICMSSTRet
+        );
+    }
+    
+    /**
+     * zLinhaNSNEntity
+     * Cria a tag ICMSSN
+     * @param array $aCampos
+     */
+    protected function zLinhaNSNEntity($aCampos)
+    {
+        //Nsn|orig|csosn|modBC|vBC|pRedBC|pICMS|vICMS|pCredSN
+        //   |vCredICMSSN|modBCST|pMVAST|pRedBCST|vBCST|pICMSST
+        //   |vICMSST|vBCSTRet|vICMSSTRet|
+        $this->make->tagICMSSN(
+            $this->nItem,
+            $aCampos[1], //orig
+            $aCampos[2], //csosn
+            $aCampos[3], //modBC
+            $aCampos[4], //vBC
+            $aCampos[5], //pRedBC
+            $aCampos[6], //pICMS
+            $aCampos[7], //vICMS
+            $aCampos[8], //pCredSN
+            $aCampos[9], //vCredICMSSN
+            $aCampos[10], //modBCST
+            $aCampos[11], //pMVAST
+            $aCampos[12], //pRedBCST
+            $aCampos[13], //vBCST
+            $aCampos[14], //pICMSST
+            $aCampos[15], //vICMSST
+            $aCampos[16], //vBCSTRet
+            $aCampos[17] //vICMSSTRet
+        );
+    }
+    
+    /**
+     * oEntity
+     * @param array $aCampos
+     */
+    protected function oEntity($aCampos)
+    {
+        //    1     2        3    4     5
+        //O|clEnq|CNPJProd|cSelo|qSelo|cEnq|
+        $this->linhaO[0] = $this->nItem;
+        $this->linhaO[1] = ''; //cst
+        $this->linhaO[2] = $aCampos[1]; //clEnq
+        $this->linhaO[3] = $aCampos[2]; //cnpjProd
+        $this->linhaO[4] = $aCampos[3]; //cSelo
+        $this->linhaO[5] = $aCampos[4]; //qSelo
+        $this->linhaO[6] = $aCampos[5]; //cEnq
+        $this->linhaO[7] = ''; //vBC
+        $this->linhaO[8] = ''; //pIPI
+        $this->linhaO[9] = ''; //qUnid
+        $this->linhaO[10] = ''; //vUnid
+        $this->linhaO[11] = ''; //vIPI
+    }
+    
+    /**
+     * o07Entity
+     * @param array $aCampos
+     */
+    protected function o07Entity($aCampos)
+    {
+        //O07|CST|
+        $this->linhaO[1] = $aCampos[1];
+    }
+    
+    /**
+     * o10Entity
+     * @param array $aCampos
+     */
+    protected function o10Entity($aCampos)
+    {
+        //O10|vBC|pIPI|
+        $this->linhaO[7] = $aCampos[1]; //vBC
+        $this->linhaO[8] = $aCampos[2]; //pIPI
+        $this->zLinhaOEntity($this->linhaO);
+    }
+    
+    /**
+     * o11Entity
+     * @param array $aCampos
+     */
+    protected function o11Entity($aCampos)
+    {
+        //O11|qUnid|vUnid|vIPI|
+        $this->linhaO[9] = $aCampos[1]; //qUnid
+        $this->linhaO[10] = $aCampos[2]; //vUnid
+        $this->linhaO[11] = $aCampos[3]; //vIPI
+        $this->zLinhaOEntity($this->linhaO);
+    }
+    
+    /**
+     * o08Entity
+     * @param array $aCampos
+     */
+    protected function o08Entity($aCampos)
+    {
+        //O08|CST|
+        $this->linhaO[1] = $aCampos[1];
+        $this->zLinhaOEntity($this->linhaO);
+    }
+    
+    /**
+     * zLinhaOEntity
+     * Cria a tag IPI
+     * @param array $aCampos
+     */
+    protected function zLinhaOEntity($aCampos)
+    {
+        //O|cst|clEnq|cnpjProd|cSelo|qSelo|cEnq|vBC|pIPI|qUnid|vUnid|vIPI|
+        $this->make->tagIPI(
+            $this->nItem,
+            $aCampos[1], //cst
+            $aCampos[2], //clEnq
+            $aCampos[3], //cnpjProd
+            $aCampos[4], //cSelo
+            $aCampos[5], //qSelo
+            $aCampos[6], //cEnq
+            $aCampos[7], //vBC
+            $aCampos[8], //pIPI
+            $aCampos[9], //qUnid
+            $aCampos[10], //vUnid
+            $aCampos[11] //vIPI
+        );
+    }
+
+    /**
+     * pEntity
+     * Cria a tag II
+     * @param array $aCampos
+     */
+    protected function pEntity($aCampos)
+    {
+        //P|vBC|vDespAdu|vII|vIOF|
+        $this->make->tagII(
+            $this->nItem,
+            $aCampos[1], //vBC
+            $aCampos[2], //vDespAdu
+            $aCampos[3], //vII
+            $aCampos[4] //vIOF
+        );
+    }
+    
+    /**
+     * qEntity
+     * @param array $aCampos
+     */
+    protected function qEntity($aCampos)
+    {
+        //Q|
+        //fake não faz nada
+        $aCampos = array();
+        $this->linhaQ[0] = $this->nItem;
+        $this->linhaQ[1] = ''; //cst
+        $this->linhaQ[2] = ''; //vBC
+        $this->linhaQ[3] = ''; //pPIS
+        $this->linhaQ[4] = ''; //vPIS
+        $this->linhaQ[5] = ''; //qBCProd
+        $this->linhaQ[6] = ''; //vAliqProd
+
+    }
+    
+    /**
+     * q02Entity
+     * @param array $aCampos
+     */
+    protected function q02Entity($aCampos)
+    {
+        //Q02|CST|vBC|pPIS|vPIS|
+        $this->linhaQ[1] = $aCampos[1]; //cst
+        $this->linhaQ[2] = $aCampos[2]; //vBC
+        $this->linhaQ[3] = $aCampos[3]; //pPIS
+        $this->linhaQ[4] = $aCampos[4]; //vPIS
+        $this->zLinhaQEntity($this->linhaQ);
+    }
+    
+    /**
+     * q03Entity
+     * @param array $aCampos
+     */
+    protected function q03Entity($aCampos)
+    {
+        //Q03|CST|qBCProd|vAliqProd|vPIS|
+        $this->linhaQ[1] = $aCampos[1]; //cst
+        $this->linhaQ[4] = $aCampos[4]; //vPIS
+        $this->linhaQ[5] = $aCampos[2]; //qBCProd
+        $this->linhaQ[6] = $aCampos[3]; //vAliqProd
+        $this->zLinhaQEntity($this->linhaQ);
+    }
+    
+    /**
+     * q04Entity
+     * @param array $aCampos
+     */
+    protected function q04Entity($aCampos)
+    {
+        //Q04|CST|
+        $this->linhaQ[1] = $aCampos[1]; //cst
+        $this->zLinhaQEntity($this->linhaQ);
+    }
+    
+    /**
+     * q05Entity
+     * @param array $aCampos
+     */
+    protected function q05Entity($aCampos)
+    {
+        //Q05|CST|
+        $this->linhaQ[1] = $aCampos[1]; //cst
+        $this->linhaQ[2] = ''; //vBC
+        $this->linhaQ[3] = ''; //pPIS
+        $this->linhaQ[4] = ''; //vPIS
+        $this->linhaQ[5] = ''; //qBCProd
+        $this->linhaQ[6] = ''; //vAliqProd
+        $this->zLinhaQEntity($this->linhaQ);
+    }
+    
+    /**
+     * q07Entity
+     * @param array $aCampos
+     */
+    protected function q07Entity($aCampos)
+    {
+        //Q07|vBC|pPIS|vPIS|
+        $this->linhaQ[2] = $aCampos[1]; //vBC
+        $this->linhaQ[3] = $aCampos[2]; //pPIS
+        $this->linhaQ[4] = $aCampos[3]; //vPIS
+        $this->zLinhaQEntity($this->linhaQ);
+    }
+    
+    /**
+     * q10Entity
+     * @param array $aCampos
+     */
+    protected function q10Entity($aCampos)
+    {
+        //Q10|qBCProd|vAliqProd|
+        $this->linhaQ[5] = $aCampos[1]; //qBCProd
+        $this->linhaQ[6] = $aCampos[2]; //vAliqProd
+        $this->zLinhaQEntity($this->linhaQ);
+    }
+    
+    /**
+     * zLinhaQEntity
+     * Cria a tag PIS
+     * @param array $aCampos
+     */
+    protected function zLinhaQEntity($aCampos)
+    {
+        $this->make->tagPIS(
+            $this->nItem,
+            $aCampos[1], //cst
+            $aCampos[2], //vBC
+            $aCampos[3], //pPIS
+            $aCampos[4], //vPIS
+            $aCampos[5], //qBCProd
+            $aCampos[6] //vAliqProd
+        );
+    }
+    
+    /**
+     * rEntity
+     * @param array $aCampos
+     */
+    protected function rEntity($aCampos)
+    {
+        //R|vPIS|
+        $this->linhaR[0] = $this->nItem;
+        $this->linhaR[1] = ''; //vBC
+        $this->linhaR[2] = ''; //pPIS
+        $this->linhaR[3] = ''; //qBCProd
+        $this->linhaR[4] = ''; //vAliqProd
+        $this->linhaR[5] = $aCampos[1]; //vPIS
+    }
+    
+    /**
+     * r02Entity
+     * @param array $aCampos
+     */
+    protected function r02Entity($aCampos)
+    {
+        //R02|vBC|pPIS|
+        $this->linhaR[1] = $aCampos[1]; //vBC
+        $this->linhaR[2] = $aCampos[1]; //pPIS
+        $this->zLinhaREntity($this->linhaR);
+    }
+    
+    /**
+     * r04Entity
+     * @param array $aCampos
+     */
+    protected function r04Entity($aCampos)
+    {
+        //R04|qBCProd|vAliqProd|vPIS|
+        $this->linhaR[3] = $aCampos[1]; //qBCProd
+        $this->linhaR[4] = $aCampos[2]; //vAliqProd
+        $this->linhaR[5] = $aCampos[3]; //vPIS
+        $this->zLinhaREntity($this->linhaR);
+    }
+    
+    /**
+     * zLinhaREntity
+     * Cria a tag PISST
+     * @param array $aCampos
+     */
+    protected function zLinhaREntity($aCampos)
+    {
+        $this->make->tagPISST(
+            $this->nItem,
+            $aCampos[1], //vBC
+            $aCampos[2], //pPIS
+            $aCampos[3], //qBCProd
+            $aCampos[4], //vAliqProd
+            $aCampos[5] //vPIS
+        );
+    }
+
+    /**
+     * sEntity
+     * @param array $aCampos
+     */
+    protected function sEntity($aCampos)
+    {
+        //S|
+        //fake não faz nada
+        $aCampos = array();
+    }
+    
+    /**
+     * s02Entity
+     * @param array $aCampos
+     */
+    protected function s02Entity($aCampos)
+    {
+        //S02|CST|vBC|pCOFINS|vCOFINS|
+        $this->linhaS[0] = $this->nItem;
+        $this->linhaS[1] = $aCampos[1]; //cst
+        $this->linhaS[2] = $aCampos[2]; //vBC
+        $this->linhaS[3] = $aCampos[3]; //pCOFINS
+        $this->linhaS[4] = $aCampos[4]; //vCOFINS
+        $this->linhaS[5] = ''; //qBCProd
+        $this->linhaS[6] = ''; //vAliqProd
+        $this->zLinhaSEntity($this->linhaS);
+    }
+        
+    /**
+     * s03Entity
+     * @param array $aCampos
+     */
+    protected function s03Entity($aCampos)
+    {
+        //S03|CST|qBCProd|vAliqProd|vCOFINS|
+        $this->linhaS[1] = $aCampos[1]; //cst
+        $this->linhaS[4] = $aCampos[4]; //vCOFINS
+        $this->linhaS[5] = $aCampos[2]; //qBCProd
+        $this->linhaS[6] = $aCampos[3]; //vAliqProd
+        $this->zLinhaSEntity($this->linhaS);
+    }
+    
+    /**
+     * s04Entity
+     * @param array $aCampos
+     */
+    protected function s04Entity($aCampos)
+    {
+        //S04|CST|
+        $this->linhaS[1] = $aCampos[1]; //cst
+        $this->zLinhaSEntity($this->linhaS);
+    }
+    
+    /**
+     * s05Entity
+     * @param array $aCampos
+     */
+    protected function s05Entity($aCampos)
+    {
+        //S05|CST|vCOFINS|
+        $this->linhaS[1] = $aCampos[1]; //cst
+        $this->linhaS[4] = $aCampos[2]; //vCOFINS
+    }
+    
+    /**
+     * s07Entity
+     * @param array $aCampos
+     */
+    protected function s07Entity($aCampos)
+    {
+        //S07|vBC|pCOFINS|
+        $this->linhaS[2] = $aCampos[1]; //vBC
+        $this->linhaS[3] = $aCampos[2]; //pCOFINS
+        $this->zLinhaSEntity($this->linhaS);
+    }
+    
+    /**
+     * s09Entity
+     * @param array $aCampos
+     */
+    protected function s09Entity($aCampos)
+    {
+        //S09|qBCProd|vAliqProd|
+        $this->linhaS[5] = $aCampos[1]; //qBCProd
+        $this->linhaS[6] = $aCampos[2]; //vAliqProd
+        $this->zLinhaSEntity($this->linhaS);
+    }
+    
+    /**
+     * zLinhaSEntity
+     * Cria a tag COFINS
+     * @param array $aCampos
+     */
+    protected function zLinhaSEntity($aCampos)
+    {
+        $this->make->tagCOFINS(
+            $this->nItem,
+            $aCampos[1], //cst
+            $aCampos[2], //vBC
+            $aCampos[3], //pCOFINS
+            $aCampos[4], //vCOFINS
+            $aCampos[5], //qBCProd
+            $aCampos[6] //vAliqProd
+        );
+    }
+
+    /**
+     * tEntity
+     * @param array $aCampos
+     */
+    protected function tEntity($aCampos)
+    {
+        //T|vCOFINS|
+        $this->linhaT[0] = $this->nItem;
+        $this->linhaT[1] = ''; //$vBC
+        $this->linhaT[2] = ''; //$pCOFINS
+        $this->linhaT[3] = ''; //$qBCProd
+        $this->linhaT[4] = ''; //$vAliqProd
+        $this->linhaT[5] = $aCampos[1]; //$vCOFINS
+    }
+    
+    /**
+     * t02Entity
+     * @param array $aCampos
+     */
+    protected function t02Entity($aCampos)
+    {
+        //T02|vBC|pCOFINS|
+        $this->linhaT[1] = $aCampos[1]; //$vBC
+        $this->linhaT[2] = $aCampos[2]; //$pCOFINS
+        $this->zLinhaTEntity($this->linhaT);
+    }
+    
+    /**
+     * t04Entity
+     * @param array $aCampos
+     */
+    protected function t04Entity($aCampos)
+    {
+        //T04|qBCProd|vAliqProd|
+        $this->linhaT[3] = $aCampos[1]; //$qBCProd
+        $this->linhaT[4] = $aCampos[2]; //$vAliqProd
+        $this->zLinhaTEntity($this->linhaT);
+    }
+    
+    /**
+     * zLinhaTEntity
+     * Cria a tag COFINSST
+     * @param array $aCampos
+     */
+    protected function zLinhaTEntity($aCampos)
+    {
+        $this->make->tagCOFINSST(
+            $this->nItem,
+            $aCampos[1], //$vBC
+            $aCampos[2], //$pCOFINS
+            $aCampos[3], //$qBCProd
+            $aCampos[4], //$vAliqProd
+            $aCampos[5] //$vCOFINS
+        );
+    }
+
+    /**
+     * uEntity
+     * Cria a tag ISSQN
+     * @param array $aCampos
+     */
+    protected function uEntity($aCampos)
+    {
+        //U|vBC|vAliq|vISSQN|cMunFG|cListServ|vDeducao|vOutro|vDescIncond
+        // |vDescCond|vISSRet|indISS|cServico|cMun|cPais|nProcesso|indIncentivo|
+        $this->make->tagISSQN(
+            $this->nItem,
+            $aCampos[1], //$vBC
+            $aCampos[2], //$vAliq
+            $aCampos[3], //$vISSQN
+            $aCampos[4], //$cMunFG
+            $aCampos[5], //$cListServ
+            $aCampos[6], //$vDeducao
+            $aCampos[7], //$vOutro
+            $aCampos[8], //$vDescIncond
+            $aCampos[9], //$vDescCond
+            $aCampos[10], //$vISSRet
+            $aCampos[11], //$indISS
+            $aCampos[12], //$cServico
+            $aCampos[13], //$cMun
+            $aCampos[14], //$cPais
+            $aCampos[15], //$nProcesso
+            $aCampos[16] //$indIncentivo
+        );
+    }
+    
+    /**
+     * uaEntity
+     * Cria a tag tagimpostoDevol
+     * @param array $aCampos
+     */
+    protected function uaEntity($aCampos)
+    {
+        //UA|pDevol|vIPIDevol|
+        $this->make->tagimpostoDevol(
+            $this->nItem,
+            $aCampos[1], //pDevol
+            $aCampos[2] //vIPIDevol
+        );
+        
+    }
+    
+    /**
+     * wEntity
+     * @param array $aCampos
+     */
+    protected function wEntity($aCampos)
+    {
+        //W|
+        //fake não faz nada
+        $aCampos = array();
+    }
+    
+    /**
+     * w02Entity
+     * Cria tag ICMSTot
+     * @param array $aCampos
+     */
+    protected function w02Entity($aCampos)
+    {
+        //W02|vBC|vICMS|vICMSDeson|vBCST|vST|vProd|vFrete|vSeg|vDesc|vII|vIPI|vPIS|vCOFINS|vOutro|vNF|vTotTrib|
+        $this->make->tagICMSTot(
+            $aCampos[1], //$vBC
+            $aCampos[2], //$vICMS
+            $aCampos[3], //$vICMSDeson
+            $aCampos[4], //$vBCST
+            $aCampos[5], //$vST
+            $aCampos[6], //$vProd
+            $aCampos[7], //$vFrete
+            $aCampos[8], //$vSeg
+            $aCampos[9], //$vDesc
+            $aCampos[10], //$vII
+            $aCampos[11], //$vIPI
+            $aCampos[12], //$vPIS
+            $aCampos[13], //$vCOFINS
+            $aCampos[14], //$vOutro
+            $aCampos[15], //$vNF
+            $aCampos[16] //$vTotTrib
+        );
+    }
+    
+    /**
+     * w17Entity
+     * Cria a tag ISSQNTot
+     * @param array $aCampos
+     */
+    protected function w17Entity($aCampos)
+    {
+        //W17|vServ|vBC|vISS|vPIS|vCOFINS|dCompet|vDeducao|vOutro|vDescIncond|vDescCond|vISSRet|cRegTrib|
+        $this->make->tagISSQNTot(
+            $aCampos[1], //$vServ
+            $aCampos[2], //$vBC
+            $aCampos[3], //$vISS
+            $aCampos[4], //$vPIS
+            $aCampos[5], //$vCOFINS
+            $aCampos[6], //$dCompet
+            $aCampos[7], //$vDeducao
+            $aCampos[8], //$vOutro
+            $aCampos[9], //$vDescIncond
+            $aCampos[10], //$vDescCond
+            $aCampos[11], //$vISSRet
+            $aCampos[12] //$cRegTrib
+        );
+        
+    }
+    
+    /**
+     * w23Entity
+     * Cria a tag retTrib
+     * @param type $aCampos
+     */
+    protected function w23Entity($aCampos)
+    {
+        //W23|vRetPIS|vRetCOFINS|vRetCSLL|vBCIRRF|vIRRF|vBCRetPrev|vRetPrev|
+        $this->make->tagretTrib(
+            $aCampos[1], //$vRetPIS
+            $aCampos[2], //$vRetCOFINS
+            $aCampos[3], //$vRetCSLL
+            $aCampos[4], //$vBCIRRF
+            $aCampos[5], //$vIRRF
+            $aCampos[6], //$vBCRetPrev
+            $aCampos[7] //$vRetPrev
+        );
+    }
+    
+    /**
+     * xEntity
+     * Cria a tag transp
+     * @param array $aCampos
+     */
+    protected function xEntity($aCampos)
+    {
+        //X|modFrete|
+        $this->make->tagtransp($aCampos[1]);
+        
+    }
+    
+    /**
+     * x03Entity
+     * @param array $aCampos
+     */
+    protected function x03Entity($aCampos)
+    {
+        //X03|xNome|IE|xEnder|xMun|UF|
+        $this->linhaX[0] = '';
+        $this->linhaX[1] = ''; //$numCNPJ
+        $this->linhaX[2] = ''; //$numCPF
+        $this->linhaX[3] = $aCampos[1]; //$xNome
+        $this->linhaX[4] = $aCampos[2]; //$numIE
+        $this->linhaX[5] = $aCampos[3]; //$xEnder
+        $this->linhaX[6] = $aCampos[4]; //$xMun
+        $this->linhaX[7] = $aCampos[5]; //$siglaUF
+    }
+    /**
+     * x04Entity
+     * @param array $aCampos
+     */
+    protected function x04Entity($aCampos)
+    {
+        //X04|CNPJ|
+        $this->linhaX[1] = $aCampos[1]; //$numCNPJ
+        $this->zLinhaXEntity($this->linhaX);
+    }
+    
+    /**
+     * x05Entity
+     * @param array $aCampos
+     */
+    protected function x05Entity($aCampos)
+    {
+        //X05|CPF|
+        $this->linhaX[2] = $aCampos[1]; //$numCPF
+        $this->zLinhaXEntity($this->linhaX);
+    }
+    
+    /**
+     * zLinhaXEntity
+     * Cria a tag transporta
+     * @param array $aCampos
+     */
+    protected function zLinhaXEntity($aCampos)
+    {
+        $this->make->tagtransporta(
+            $aCampos[1], //$numCNPJ
+            $aCampos[2], //$numCPF
+            $aCampos[3], //$xNome
+            $aCampos[4], //$numIE
+            $aCampos[5], //$xEnder
+            $aCampos[6], //$xMun
+            $aCampos[7] //$siglaUF
+        );
+    }
+    
+    /**
+     * x11Entity
+     * @param array $aCampos
+     */
+    protected function x11Entity($aCampos)
+    {
+        //X11|vServ|vBCRet|pICMSRet|vICMSRet|CFOP|cMunFG|
+        $this->make->tagretTransp(
+            $aCampos[1], //$vServ
+            $aCampos[2], //$vBCRet
+            $aCampos[3], //$pICMSRet
+            $aCampos[4], //$vICMSRet
+            $aCampos[5], //$cfop
+            $aCampos[6] //$cMunFG
+        );
+    }
+    
+    /**
+     * x18Entity
+     * Cria a tag veicTransp
+     * @param array $aCampos
+     */
+    protected function x18Entity($aCampos)
+    {
+        //X18|placa|UF|RNTC|
+        $this->make->tagveicTransp(
+            $aCampos[1], //$placa
+            $aCampos[2], //$siglaUF
+            $aCampos[3] //$rntc
+        );
+    }
+
+    /**
+     * x22Entity
+     * Cria a tag reboque
+     * @param array $aCampos
+     */
+    protected function x22Entity($aCampos)
+    {
+        //X22|placa|UF|RNTC|vagao|balsa|
+        $this->make->tagreboque(
+            $aCampos[1], //$placa
+            $aCampos[3], //$siglaUF
+            $aCampos[4], //$rntc
+            $aCampos[5], //$vagao
+            $aCampos[6] //$balsa
+        );
+    }
+    
+    /**
+     * 
+     * @param array $aCampos
+     */
+    protected function x26Entity($aCampos)
+    {
+        //X26|qVol|esp|marca|nVol|pesoL|pesoB|
+        $this->volId += 1;
+        $this->linhaX26[$this->volId][0] = $this->volId;
+        $this->linhaX26[$this->volId][1] = $aCampos[1]; //$qVol = '',
+        $this->linhaX26[$this->volId][2] = $aCampos[2]; //$esp = '',
+        $this->linhaX26[$this->volId][3] = $aCampos[3]; //$marca = '',
+        $this->linhaX26[$this->volId][4] = $aCampos[4]; //$nVol = '',
+        $this->linhaX26[$this->volId][5] = $aCampos[5]; //$pesoL = '',
+        $this->linhaX26[$this->volId][6] = $aCampos[6]; //$pesoB = '',
+    }
+    
+    /**
+     * 
+     * @param array $aCampos
+     */
+    protected function x33Entity($aCampos)
+    {
+        //X33|nLacre|
+        $this->aLacres[$this->volId][] = $aCampos[1];
+    }
+    
+    /**
+     * zLinhaXVolEntity
+     * Cria a tag vol
+     * @param array $aCampos
+     */
+    protected function zLinhaXVolEntity($aCampos)
+    {
+        $lacres = '';
+        if ($this->volId > -1 && ! empty($this->aLacres)) {
+            $lacres = $this->aLacres[$aCampos[0]];
+        }
+        $this->make->tagvol(
+            $aCampos[1], //$qVol = '',
+            $aCampos[2], //$esp = '',
+            $aCampos[3], //$marca = '',
+            $aCampos[4], //$nVol = '',
+            $aCampos[5], //$pesoL = '',
+            $aCampos[6], //$pesoB = '',
+            $lacres
+        );
+    }
+    
+    /**
+     * yEntity
+     * Carrega os volumes
+     * @param array $aCampos
+     */
+    protected function yEntity($aCampos)
+    {
+        //Y|
+        $aCampos = array();
+        //carrega os volumes
+        foreach ($this->linhaX26 as $vol) {
+            $this->zLinhaXVolEntity($vol);
+        }
+    }
+    
+    /**
+     * y02Entity
+     * Cria a tag fat
+     * @param array $aCampos
+     */
+    protected function y02Entity($aCampos)
+    {
+        //Y02|nFat|vOrig|vDesc|vLiq|
+        $this->make->tagfat(
+            $aCampos[1], //$nFat
+            $aCampos[2], //$vOrig
+            $aCampos[3], //$vDesc
+            $aCampos[4] //$vLiq
+        );
+    }
+    
+    /**
+     * y07Entity
+     * Cria a tag dup
+     * @param array $aCampos
+     */
+    protected function y07Entity($aCampos)
+    {
+        //Y07|nDup|dVenc|vDup|
+        $this->make->tagdup(
+            $aCampos[1], //$nDup
+            $aCampos[2], //$dVenc
+            $aCampos[3] //$vDup
+        );
+    }
+    
+    /**
+     * yaEntity
+     * Cria as tags pag e card
+     * @param array $aCampos
+     */
+    protected function yaEntity($aCampos)
+    {
+        //YA|tPag|vPag|CNPJ|tBand|cAut|
+        $this->make->tagpag(
+            $aCampos[1], //$tPag
+            $aCampos[2] //$vPag
+        );
+        if ($aCampos[4] != '') {
+            $this->make->tagcard(
+                $aCampos[3], //$cnpj
+                $aCampos[4], //$tBand
+                $aCampos[5] //$cAut
+            );
+        }
+    }
+    
+    /**
+     * zEntity
+     * Cria a a tag infAdic
+     * @param array $aCampos
+     */
+    protected function zEntity($aCampos)
+    {
+        //Z|infAdFisco|infCpl|
+        $this->make->taginfAdic(
+            $aCampos[1], //$infAdFisco
+            $aCampos[2] //$infCpl
+        );
+    }
+    
+    /**
+     * z04Entity
+     * Cria a tag obsCont
+     * @param array $aCampos
+     */
+    protected function z04Entity($aCampos)
+    {
+        //Z04|xCampo|xTexto|
+        $this->make->tagobsCont(
+            $aCampos[1], //$xCampo
+            $aCampos[2] //$xTexto
+        );
+    }
+    
+    /**
+     * z07Entity
+     * Cria a tag obsFisco
+     * @param array $aCampos
+     */
+    protected function z07Entity($aCampos)
+    {
+        //Z07|xCampo|xTexto|
+        $this->make->tagobsFisco(
+            $aCampos[1], //$xCampo
+            $aCampos[2] //$xTexto
+        );
+    }
+    
+    /**
+     * z10Entity
+     * Cria a tag prcRef
+     * @param array $aCampos
+     */
+    protected function z10Entity($aCampos)
+    {
+        //Z10|nProc|indProc|
+        $this->make->tagprocRef(
+            $aCampos[1], //$nProc
+            $aCampos[2] //$indProc
+        );
+    }
+    
+    /**
+     * zaEntity
+     * @param array $aCampos
+     */
+    protected function zaEntity($aCampos)
+    {
+        //ZA|UFSaidaPais|xLocExporta|xLocDespacho|
+        $this->make->tagexporta(
+            $aCampos[1], //$ufSaidaPais
+            $aCampos[2], //$xLocExporta
+            $aCampos[3] //$xLocDespacho
+        );
+    }
+    
+    /**
+     * zbEntity
+     * Cria a tag compra
+     * @param array $aCampos
+     */
+    protected function zbEntity($aCampos)
+    {
+        //ZB|xNEmp|xPed|xCont|
+        $this->make->tagcompra(
+            $aCampos[1], //$xNEmp
+            $aCampos[2], //$xPed
+            $aCampos[3] //$xCont
+        );
+    }
+    
+    /**
+     * zc01Entity
+     * Cria a tag cana
+     * @param array $aCampos
+     */
+    protected function zc01Entity($aCampos)
+    {
+        //ZC|safra|ref|qTotMes|qTotAnt|qTotGer|vFor|vTotDed|vLiqFor|
+        $this->make->tagcana(
+            $aCampos[1], //$safra
+            $aCampos[2] //$ref
+        );
+        $this->linhaZC[1] = $aCampos[3]; //qTotMes
+        $this->linhaZC[2] = $aCampos[4]; //qTotAnt
+        $this->linhaZC[3] = $aCampos[5]; //qTotGer
+        $this->linhaZC[4] = $aCampos[6]; //vFor
+        $this->linhaZC[5] = $aCampos[7]; //vTotDed
+        $this->linhaZC[6] = $aCampos[8]; //vLiqFor
+    }
+    
+    /**
+     * zc04Entity
+     * Cria a tag forDia
+     * @param array $aCampos
+     */
+    protected function zc04Entity($aCampos)
+    {
+        //ZC04|dia|qtde|
+        $this->make->tagforDia(
+            $aCampos[1], //$dia
+            $aCampos[2], //$qtde
+            $this->linhaZC[1], //$qTotMes
+            $this->linhaZC[2], //$qTotAnt
+            $this->linhaZC[3] //$qTotGer
+        );
+    }
+    
+    /**
+     * zc10Entity
+     * Cria a tag deduc
+     * @param array $aCampos
+     */
+    protected function zc10Entity($aCampos)
+    {
+        //ZC10|xDed|vDed|
+        $this->make->tagdeduc(
+            $aCampos[1], //$xDed
+            $aCampos[2], //$vDed
+            $this->linhaZC[4], //$vFor
+            $this->linhaZC[5], //$vTotDed
+            $this->linhaZC[6] //$vLiqFor
+        );
     }
 }
