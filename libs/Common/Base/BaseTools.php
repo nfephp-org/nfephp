@@ -13,6 +13,7 @@ namespace Common\Base;
 
 use Common\Certificate\Pkcs12;
 use Common\DateTime\DateTime;
+use Common\Dom\Dom;
 use Common\Soap\CurlSoap;
 use Common\Files;
 use Common\Exception;
