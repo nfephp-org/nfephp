@@ -212,7 +212,7 @@ AM Consulta de Cadastro não EXISTE
       <RecepcaoEvento method="nfeRecepcaoEvento" operation="RecepcaoEvento" version="1.00">https://homologacao.nfe.fazenda.pr.gov.br/nfe/NFeRecepcaoEvento</RecepcaoEvento>
     </homologacao>
     <producao>
-      <NfeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10">https://nfe.fazenda.pr.gov.br/nfe/NFeRetAutorizacao3</NfeAutorizacao>
+      <NfeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10">https://nfe.fazenda.pr.gov.br/nfe/NFeAutorizacao3</NfeAutorizacao>
       <NfeConsultaCadastro method="consultaCadastro2" operation="CadConsultaCadastro2" version="2.00">https://nfe.fazenda.pr.gov.br/nfe/CadConsultaCadastro2</NfeConsultaCadastro>
       <NfeConsultaProtocolo method="nfeConsultaNF2" operation="NfeConsulta2" version="3.10">https://nfe.fazenda.pr.gov.br/nfe/NFeConsulta3</NfeConsultaProtocolo>
       <NfeInutilizacao method="nfeInutilizacaoNF3" operation="NfeInutilizacao2" version="3.10">https://nfe.fazenda.pr.gov.br/nfe/NFeInutilizacao3</NfeInutilizacao>
