@@ -155,9 +155,13 @@ class ReturnNFe
             return $aResposta;
         }
         $dhRecbto = $tag->getElementsByTagName('dhRecbto')->item(0)->nodeValue;
-        $nRec = $tag->getElementsByTagName('nRec')->item(0)->nodeValue;
-        $tMed = $tag->getElementsByTagName('tMed')->item(0)->nodeValue;
-        $aProt[] = self::zProt($tag);
+        $nRec = !empty($tag->getElementsByTagName('nRec')->item(0))
+            ? $tag->getElementsByTagName('nRec')->item(0)->nodeValue
+            : '';
+        $tMed = !empty($tag->getElementsByTagName('tMed')->item(0))
+            ? $tag->getElementsByTagName('tMed')->item(0)->nodeValue
+            : '';
+        $aProt[] = self::zGetProt($tag);
         $aResposta = array(
             'bStat' => true,
             'versao' => $tag->getAttribute('versao'),
@@ -202,7 +206,7 @@ class ReturnNFe
         $dhRecbto = $tag->getElementsByTagName('dhRecbto')->item(0)->nodeValue;
         $tagProt = $tag->getElementsByTagName('protNFe');
         foreach ($tagProt as $protocol) {
-            $aProt[] = self::zProt($protocol);
+            $aProt[] = self::zGetProt($protocol);
         }
         $aResposta = array(
             'bStat'=>true,
