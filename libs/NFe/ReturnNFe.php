@@ -519,10 +519,14 @@ class ReturnNFe
         $aProt = array();
         $infProt = $tag->getElementsByTagName('infProt')->item(0);
         if (! empty($infProt)) {
+            $nProt = $infProt->getElementsByTagName('nProt')->item(0)
+                ? $infProt->getElementsByTagName('nProt')->item(0)->nodeValue
+                : '';
+
             $aProt = array(
                 'chNFe' => $infProt->getElementsByTagName('chNFe')->item(0)->nodeValue,
                 'dhRecbto' => $infProt->getElementsByTagName('dhRecbto')->item(0)->nodeValue,
-                'nProt' => $infProt->getElementsByTagName('nProt')->item(0)->nodeValue,
+                'nProt' => $nProt,
                 'digVal' => $infProt->getElementsByTagName('digVal')->item(0)->nodeValue,
                 'cStat' => $infProt->getElementsByTagName('cStat')->item(0)->nodeValue,
                 'xMotivo' => $infProt->getElementsByTagName('xMotivo')->item(0)->nodeValue

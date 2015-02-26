@@ -243,7 +243,7 @@ class ToolsNFe extends BaseTools
     
     /**
      * addProtocolo
-     * Adiciona o protocolo de autorização de usoda NFe
+     * Adiciona o protocolo de autorização de uso da NFe
      * NOTA: exigência da SEFAZ, a nota somente é válida com o seu respectivo protocolo
      * @param string $pathNFefile
      * @param string $pathProtfile
