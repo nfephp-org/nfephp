@@ -3074,7 +3074,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $formaNfpRef = "\r\nNFP Ref.: série:%d número:%d emit:%s em %s modelo: %d IE:%s";
         $saida='';
         $nfRefs = $this->ide->getElementsByTagName('NFref');
-        if (empty($nfRefs)) {
+        if (0 === $nfRefs->length) {
             return $saida;
         }
         foreach ($nfRefs as $nfRef) {
