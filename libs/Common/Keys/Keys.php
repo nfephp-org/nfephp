@@ -17,6 +17,8 @@ class Keys
 {
     /**
      * buildKey
+     * Monta as chaves de 44 digitos para NFe, NFCe, CTe e MDFe
+     * 
      * @param string $cUF
      * @param string $ano
      * @param string $mes
@@ -51,7 +53,8 @@ class Keys
     
     /**
      * testaChave
-     * Teta a chave com o digito verificador no final
+     * Testa a chave com o digito verificador no final
+     * 
      * @param string $chave
      * @return boolean
      */

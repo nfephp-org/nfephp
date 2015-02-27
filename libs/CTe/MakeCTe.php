@@ -39,35 +39,30 @@ namespace CTe;
  * 
  */
 
-use Common\Dom\Dom;
 use Common\DateTime\DateTime;
+use Common\Base\BaseMake;
 use \DOMDocument;
 use \DOMElement;
 
-class MakeCTe
+class MakeCTe extends BaseMake
 {
-
-    protected $dom;
-    
     /**
-     * __contruct
-     * Função construtora cria um objeto DOMDocument
-     * que será carregado com a CTe
+     * versao
+     * numero da versão do xml da CTe
+     * @var double
      */
-    public function __construct()
-    {
-        $this->dom = new Dom();
-    }
-    
-    public function getXML()
-    {
-        
-    }
-    
-    public function montaChave()
-    {
-        
-    }
+    public $versao = 2.00;
+    /**
+     * mod
+     * modelo da CTe 57
+     * @var integer
+     */
+    public $mod = 57;
+    /**
+     * chave da MDFe
+     * @var string
+     */
+    public $chCTe = '';
     
     public function montaCTe()
     {

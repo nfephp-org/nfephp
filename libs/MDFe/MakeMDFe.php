@@ -39,52 +39,27 @@ namespace MDFe;
  * 
  */
 
-use Common\Dom\Dom;
 use Common\DateTime\DateTime;
+use Common\Base\BaseMake;
 use \DOMDocument;
 use \DOMElement;
 
-class MakeMDFe
+class MakeMDFe extends BaseMake
 {
-   /**
-     * erros
-     * Matriz contendo os erros reportados pelas tags obrigatórias
-     * e sem conteúdo
-     * @var array
-     */
-    public $erros = array();
     /**
      * versao
-     * numero da versão do xml da NFe
+     * numero da versão do xml da MDFe
      * @var double
      */
     public $versao = 1.00;
     /**
      * mod
-     * modelo da mdfe
+     * modelo da MDFe 58
      * @var integer
      */
     public $mod = 58;
     /**
-     * xml
-     * String com o xml da NFe montado
-     * @var string
-     */
-    public $xml = '';
-    /**
-     * dom
-     * Variável onde será montado o xml da NFe
-     * @var DOMDocument
-     */
-    public $dom;
-    /**
-     * tpAmb
-     * tipo de ambiente 
-     * @var string
-     */
-    public $tpAmb = '2';
-    /**
-     * chave da NFe
+     * chave da MDFe
      * @var string
      */
     public $chMDFe = '';
@@ -122,26 +97,6 @@ class MakeMDFe
     private $aInfTermCarreg = array(); //array de DOMNode
     private $aInfTermDescarreg = array(); //array de DOMNode
     private $aInfEmbComb = array(); //array de DOMNode
-    
-    /**
-     * __contruct
-     * Função construtora cria um objeto DOMDocument
-     * que será carregado com a MDFe
-     */
-    public function __construct()
-    {
-        $this->dom = new Dom();
-    }
-    
-    public function getXML()
-    {
-        
-    }
-    
-    public function montaChave()
-    {
-        
-    }
     
     public function montaMDFe()
     {
