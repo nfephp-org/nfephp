@@ -2,7 +2,9 @@
 namespace Common\Base;
 
 /**
- * Classe principal para a comunicação com a SEFAZ
+ * Classe base para a criação das classes construtoras dos XML
+ * tanto para NFe, NFCe, CTe e MDFe
+ *  
  * @category   NFePHP
  * @package    NFePHP\Common\Base\BaseMake
  * @copyright  Copyright (c) 2008-2015

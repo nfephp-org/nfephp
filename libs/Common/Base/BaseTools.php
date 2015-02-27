@@ -2,7 +2,8 @@
 namespace Common\Base;
 
 /**
- * Classe principal para a comunicação com a SEFAZ
+ * Classe base das classes principais para a comunicação com a SEFAZ
+ * 
  * @category   NFePHP
  * @package    NFePHP\Common\Base
  * @copyright  Copyright (c) 2008-2015
