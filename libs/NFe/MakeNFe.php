@@ -26,7 +26,7 @@
  * 
  * @package     NFePHP
  * @name        MakeNFe
- * @version     0.2.0
+ * @version     0.2.1
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright   2009-2014 &copy; NFePHP
  * @link        http://www.nfephp.org/
@@ -42,21 +42,13 @@
 
 namespace NFe;
 
-use Common\Dom\Dom;
 use Common\DateTime\DateTime;
-use Common\Keys\Keys;
+use Common\Base\BaseMake;
 use \DOMDocument;
 use \DOMElement;
 
-class MakeNFe
+class MakeNFe extends BaseMake
 {
-    /**
-     * erros
-     * Matriz contendo os erros reportados pelas tags obrigatórias
-     * e sem conteúdo
-     * @var array
-     */
-    public $erros = array();
     /**
      * versao
      * numero da versão do xml da NFe
@@ -69,24 +61,6 @@ class MakeNFe
      * @var integer
      */
     public $mod = 55;
-    /**
-     * xml
-     * String com o xml da NFe montado
-     * @var string
-     */
-    public $xml = '';
-    /**
-     * dom
-     * Variável onde será montado o xml da NFe
-     * @var DOMDocument
-     */
-    public $dom;
-    /**
-     * tpAmb
-     * tipo de ambiente 
-     * @var string
-     */
-    public $tpAmb = '2';
     /**
      * chave da NFe
      * @var string
@@ -144,27 +118,7 @@ class MakeNFe
     private $aProcRef = array(); //array de DOMNodes
     private $aForDia = array(); //array de DOMNodes
     private $aDeduc = array(); //array de DOMNodes
-
-    /**
-     * __contruct
-     * Função construtora cria um objeto DOMDocument
-     * que será carregado com a NFe
-     */
-    public function __construct()
-    {
-        $this->dom = new Dom();
-    }
-    
-    /**
-     * getXML
-     * retorna o xml da NFe que foi montado
-     * @return string
-     */
-    public function getXML()
-    {
-        return $this->xml;
-    }
-    
+  
     /**
      * montaNFe
      * Método de montagem do xml da NFe 
@@ -230,25 +184,6 @@ class MakeNFe
         $this->xml = $this->dom->saveXML();
         return true;
     }
-
-    /**
-     * montaChave
-     * @param string $cUF
-     * @param string $ano
-     * @param string $mes
-     * @param string $cnpj
-     * @param string $mod
-     * @param string $serie
-     * @param string $nNF
-     * @param string $tpEmis
-     * @param string $cNF
-     * @return string
-     */
-    public function montaChave($cUF, $ano, $mes, $cnpj, $mod, $serie, $nNF, $tpEmis, $cNF)
-    {
-        return Keys::buildKey($cUF, $ano, $mes, $cnpj, $mod, $serie, $nNF, $tpEmis, $cNF);
-    }
-    
     
     /**
      * taginfNFe
@@ -896,7 +831,7 @@ class MakeNFe
                 $identificador . "Indicador da IE do Destinatário"
             );
         }
-        if ($indIEDest != '9' && $indIEDest != '2' && $this->tpAmb == '1') {
+        if ($indIEDest != '9') {
             $this->dom->addChild(
                 $this->dest,
                 "IE",
@@ -3963,7 +3898,7 @@ class MakeNFe
         $cNF = $ide->getElementsByTagName('cNF')->item(0)->nodeValue;
         $chave = str_replace('NFe', '', $infNFe->getAttribute("Id"));
         $tempData = explode("-", $dhEmi);
-        $chaveMontada = Keys::buildKey(
+        $chaveMontada = $this->montaChave(
             $cUF,
             $tempData[0] - 2000,
             $tempData[1],
