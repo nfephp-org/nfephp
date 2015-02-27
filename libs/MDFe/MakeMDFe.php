@@ -46,8 +46,82 @@ use \DOMElement;
 
 class MakeMDFe
 {
-
-    protected $dom;
+   /**
+     * erros
+     * Matriz contendo os erros reportados pelas tags obrigatórias
+     * e sem conteúdo
+     * @var array
+     */
+    public $erros = array();
+    /**
+     * versao
+     * numero da versão do xml da NFe
+     * @var double
+     */
+    public $versao = 1.00;
+    /**
+     * mod
+     * modelo da mdfe
+     * @var integer
+     */
+    public $mod = 58;
+    /**
+     * xml
+     * String com o xml da NFe montado
+     * @var string
+     */
+    public $xml = '';
+    /**
+     * dom
+     * Variável onde será montado o xml da NFe
+     * @var DOMDocument
+     */
+    public $dom;
+    /**
+     * tpAmb
+     * tipo de ambiente 
+     * @var string
+     */
+    public $tpAmb = '2';
+    /**
+     * chave da NFe
+     * @var string
+     */
+    public $chMDFe = '';
+    
+    //propriedades privadas utilizadas internamente pela classe
+    private $MDFe = ''; //DOMNode
+    private $infMDFe = ''; //DOMNode
+    private $ide = ''; //DOMNode
+    private $emit = ''; //DOMNode
+    private $enderEmit = ''; //DOMNode
+    private $infModal = ''; //DOMNode
+    private $infDoc = ''; //DOMNode
+    private $tot = ''; //DOMNode
+    private $infAdic = ''; //DOMNode
+    private $rodo = ''; //DOMNode
+    private $veicPrincipal = ''; //DOMNode
+    private $valePed = ''; //DOMNode
+    private $aereo = ''; //DOMNode
+    private $ferrov = ''; //DOMNode
+    private $aqua = ''; //DOMNode
+    
+    // Arrays
+    private $aInfMunCarrega = array(); //array de DOMNode
+    private $aInfPercurso = array(); //array de DOMNode
+    private $aInfMunDescarga = array(); //array de DOMNode
+    private $aInfCTe = array(); //array de DOMNode
+    private $aInfCT = array(); //array de DOMNode
+    private $aInfNFe = array(); //array de DOMNode
+    private $aInfNF = array(); //array de DOMNode
+    private $aLacres = array(); //array de DOMNode
+    private $aCondutor = array(); //array de DOMNode
+    private $aVeicReboque = array(); //array de DOMNode
+    private $aDisp = array(); //array de DOMNode
+    private $aVag = array(); //array de DOMNode
+    private $aInfTermCarreg = array(); //array de DOMNode
+    private $aInfTermDescarreg = array(); //array de DOMNode
+    private $aInfEmbComb = array(); //array de DOMNode
     
     /**
      * __contruct
@@ -72,5 +146,5 @@ class MakeMDFe
     public function montaMDFe()
     {
         
-    }    
+    }
 }
