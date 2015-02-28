@@ -11,6 +11,12 @@ namespace MDFe;
  * @license    http://www.gnu.org/licenses/lesser.html LGPL v3
  * @author     Roberto L. Machado <linux.rlm at gmail dot com>
  * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
+ * 
+ * NOTA: O emissor gratuito de MDFe não importa nem gera arquivos TXT e portanto 
+ * não existe um formato geral estabelecido para essa função. 
+ * Dito isso, o formato que está estabelecido e contido 
+ * nessa classe não se aplica a nenhum outro sistema além desse e pode não estar 
+ * adequado a todas as possibilidades.
  */
 
 use Common\Strings\Strings;
