@@ -51,13 +51,13 @@ class MakeMDFe extends BaseMake
      * numero da versão do xml da MDFe
      * @var double
      */
-    public $versao = 1.00;
+    public $versao = '1.00';
     /**
      * mod
      * modelo da MDFe 58
      * @var integer
      */
-    public $mod = 58;
+    public $mod = '58';
     /**
      * chave da MDFe
      * @var string
@@ -71,14 +71,11 @@ class MakeMDFe extends BaseMake
     private $emit = ''; //DOMNode
     private $enderEmit = ''; //DOMNode
     private $infModal = ''; //DOMNode
-    //private $infDoc = ''; //DOMNode
     private $tot = ''; //DOMNode
     private $infAdic = ''; //DOMNode
     private $rodo = ''; //DOMNode
     private $veicPrincipal = ''; //DOMNode
-    //private $valePed = ''; //DOMNode
     private $aereo = ''; //DOMNode
-    //private $ferrov = ''; //DOMNode
     private $trem = ''; //DOMNode
     private $aqua = ''; //DOMNode
     
@@ -98,7 +95,12 @@ class MakeMDFe extends BaseMake
     private $aInfTermCarreg = array(); //array de DOMNode
     private $aInfTermDescarreg = array(); //array de DOMNode
     private $aInfEmbComb = array(); //array de DOMNode
+    private $aCountDoc = array(); //contador de documentos fiscais
     
+    /**
+     * 
+     * @return boolean
+     */
     public function montaMDFe()
     {
         if (count($this->erros) > 0) {
@@ -115,10 +117,27 @@ class MakeMDFe extends BaseMake
         //tag emit [25]
         $this->dom->appChild($this->infMDFe, $this->emit, 'Falta tag "infMDFe"');
         //tag infModal [41]
-        
+        $this->zTagRodo();
+        $this->zTagAereo();
+        $this->zTagFerrov();
+        $this->zTagAqua();
+        $this->dom->appChild($this->infMDFe, $this->infModal, 'Falta tag "infMDFe"');
+        //tag indDoc [44]
+        $this->zTagInfDoc();
         //tag tot [68]
+        $this->dom->appChild($this->infMDFe, $this->tot, 'Falta tag "infMDFe"');
+        //tag lacres [76]
+        $this->zTagLacres();
+        //tag infAdic [78]
+        $this->dom->appChild($this->infMDFe, $this->infAdic, 'Falta tag "infMDFe"');
+        // testa da chave
+        $this->zTestaChaveXML($this->dom);
+        //convert DOMDocument para string
+        $this->xml = $this->dom->saveXML();
+        return true;
     }
     
+
     /**
      * taginfMDFe
      * Informações da MDFe 1 pai MDFe
@@ -1396,14 +1415,193 @@ class MakeMDFe extends BaseMake
     protected function zTagIde()
     {
         if (! empty($this->aInfMunCarrega)) {
-            foreach($this->aInfMunCarrega as $node) {
+            foreach ($this->aInfMunCarrega as $node) {
                 $this->appChild($this->ide, $node, 'Falha não existe a tag ide');
             }
         }
         if (! empty($this->aInfPercurso)) {
-            foreach($this->aInfPercurso as $node) {
+            foreach ($this->aInfPercurso as $node) {
                 $this->appChild($this->ide, $node, 'Falha não existe a tag ide');
             }
         }
     }
+    
+    /**
+     * Processa lacres
+     */
+    protected function zTagLacres()
+    {
+        if (! empty($this->aLacres)) {
+            foreach ($this->aLacres as $node) {
+                $this->dom->appChild($this->infMDFe, $node, 'Falta tag "infMDFe"');
+            }
+        }
+    }
+
+    /**
+     * Proecessa documentos fiscais
+     */
+    protected function zTagInfDoc()
+    {
+        $this->aCountDoc = array('CTe'=>0, 'CT'=>0, 'NFe'=>0, 'NF'=>0);
+        if (! empty($this->aInfMunDescarga)) {
+            $infDoc = $this->dom->createElement("infDoc");
+            foreach ($this->aInfMunDescarga as $nItem => $node) {
+                if (! empty($this->aInfCTe[$nItem])) {
+                    foreach ($this->aInfCTe[$nItem] as $cte) {
+                        $this->dom->appChild($node, $cte, '');
+                        $this->aCountDoc['CTe']++;
+                    }
+                }
+                if (! empty($this->aInfCT[$nItem])) {
+                    foreach ($this->aInfCT[$nItem] as $ctdoc) {
+                        $this->dom->appChild($node, $ctdoc, '');
+                        $this->aCountDoc['CT']++;
+                    }
+                }
+                if (! empty($this->aInfNFe[$nItem])) {
+                    foreach ($this->aInfNFe[$nItem] as $nfe) {
+                        $this->dom->appChild($node, $nfe, '');
+                        $this->aCountDoc['NFe']++;
+                    }
+                }
+                if (! empty($this->aInfNF[$nItem])) {
+                    foreach ($this->aInfNF[$nItem] as $nfdoc) {
+                        $this->dom->appChild($node, $nfdoc, '');
+                        $this->aCountDoc['NF']++;
+                    }
+                }
+                $this->dom->appChild($infDoc, $node, '');
+            }
+            $this->dom->appChild($this->infMDFe, $infDoc, 'Falta tag "infModal"');
+        }
+        //ajusta quantidades em tot
+        $this->tot->getElementsByTagName('qCTe')->item(0)->nodeValue = $this->aCountDoc['CTe'];
+        $this->tot->getElementsByTagName('qCT')->item(0)->nodeValue = $this->aCountDoc['CT'];
+        $this->tot->getElementsByTagName('qNFe')->item(0)->nodeValue = $this->aCountDoc['NFe'];
+        $this->tot->getElementsByTagName('qNF')->item(0)->nodeValue = $this->aCountDoc['NF'];
+    }
+
+    /**
+     * Processa modal rodoviario
+     */
+    protected function zTagRodo()
+    {
+        if (! empty($this->rodo)) {
+            if (! empty($this->aCondutor)) {
+                foreach ($this->aCondutor as $node) {
+                    $this->dom->appChild($this->veicPrincipal, $node, '');
+                }
+            }
+            $this->dom->appChild($this->rodo, $this->veicPrincipal, 'Falta tag "rodo"');
+            if (! empty($this->aReboque)) {
+                foreach ($this->aReboque as $node) {
+                    $this->dom->appChild($this->rodo, $node, '');
+                }
+            }
+            if (! empty($this->aDisp)) {
+                $valePed = $this->dom->createElement("valePed");
+                foreach ($this->aDisp as $node) {
+                    $this->dom->appChild($valePed, $node, '');
+                }
+                $this->dom->appChild($this->rodo, $valePed, '');
+            }
+            $this->dom->appChild($this->infModal, $this->rodo, 'Falta tag "infModal"');
+        }
+    }
+
+    /**
+     * Proecessa modal ferroviario
+     */
+    protected function zTagFerrov()
+    {
+        if (! empty($this->trem)) {
+            if (! empty($this->aVag)) {
+                foreach ($this->aVag as $node) {
+                    $this->dom->appChild($this->trem, $node, 'Falta tag "trem"');
+                }
+            }
+            $ferrov = $this->dom->createElement("ferrov");
+            $this->dom->appChild($ferrov, $this->trem, '');
+            $this->dom->appChild($this->infModal, $ferrov, 'Falta tag "infModal"');
+        }
+    }
+    
+    /**
+     * Processa modal aereo
+     */
+    protected function zTagAereo()
+    {
+        if (! empty($this->aereo)) {
+            $this->dom->appChild($this->infModal, $this->aereo, 'Falta tag "infModal"');
+        }
+    }
+    
+    /**
+     * Processa modal aquaviário
+     */
+    protected function zTagAqua()
+    {
+        if (! empty($this->aqua)) {
+            if (! empty($this->aInfTermCarreg)) {
+                foreach ($this->aInfTermCarreg as $node) {
+                    $this->dom->appChild($this->aqua, $node, 'Falta tag "Aqua"');
+                }
+            }
+            if (! empty($this->aInfTermDescarreg)) {
+                foreach ($this->aInfTermDescarreg as $node) {
+                    $this->dom->appChild($this->aqua, $node, 'Falta tag "Aqua"');
+                }
+            }
+            if (! empty($this->aInfEmbComb)) {
+                foreach ($this->aInfEmbComb as $node) {
+                    $this->dom->appChild($this->aqua, $node, 'Falta tag "Aqua"');
+                }
+            }
+            $this->dom->appChild($this->infModal, $this->aqua, 'Falta tag "infModal"');
+        }
+    }
+    
+    /**
+     * zTestaChaveXML
+     * Remonta a chave da NFe de 44 digitos com base em seus dados
+     * Isso é útil no caso da chave informada estar errada
+     * se a chave estiver errada a mesma é substituida
+     * @param object $dom
+     */
+    private function zTestaChaveXML($dom)
+    {
+        $infMDFe= $dom->getElementsByTagName("infNFe")->item(0);
+        $ide = $dom->getElementsByTagName("ide")->item(0);
+        $emit = $dom->getElementsByTagName("emit")->item(0);
+        $cUF = $ide->getElementsByTagName('cUF')->item(0)->nodeValue;
+        $dhEmi = $ide->getElementsByTagName('dhEmi')->item(0)->nodeValue;
+        $cnpj = $emit->getElementsByTagName('CNPJ')->item(0)->nodeValue;
+        $mod = $ide->getElementsByTagName('mod')->item(0)->nodeValue;
+        $serie = $ide->getElementsByTagName('serie')->item(0)->nodeValue;
+        $nNF = $ide->getElementsByTagName('nMDF')->item(0)->nodeValue;
+        $tpEmis = $ide->getElementsByTagName('tpEmis')->item(0)->nodeValue;
+        $cNF = $ide->getElementsByTagName('cMDF')->item(0)->nodeValue;
+        $chave = str_replace('MDFe', '', $infMDFe->getAttribute("Id"));
+        $tempData = explode("-", $dhEmi);
+        $chaveMontada = $this->montaChave(
+            $cUF,
+            $tempData[0] - 2000,
+            $tempData[1],
+            $cnpj,
+            $mod,
+            $serie,
+            $nNF,
+            $tpEmis,
+            $cNF
+        );
+        //caso a chave contida na NFe esteja errada
+        //substituir a chave
+        if ($chaveMontada != $chave) {
+            $ide->getElementsByTagName('cDV')->item(0)->nodeValue = substr($chaveMontada, -1);
+            $infMDFe = $dom->getElementsByTagName("infMDFe")->item(0);
+            $infMDFe->setAttribute("Id", "MDFe" . $chaveMontada);
+            $this->chMDFe = $chaveMontada;
+        }
+    }    
 }
