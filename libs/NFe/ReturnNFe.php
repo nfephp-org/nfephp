@@ -378,9 +378,9 @@ class ReturnNFe
         $aResposta['cStat'] = $tag->getElementsByTagName('cStat')->item(0)->nodeValue;
         $aResposta['xMotivo'] = $tag->getElementsByTagName('xMotivo')->item(0)->nodeValue;
         $aResposta['cUF'] = $tag->getElementsByTagName('cUF')->item(0)->nodeValue;
+        $aResposta['dhRecbto'] = $tag->getElementsByTagName('dhRecbto')->item(0)->nodeValue;
         $infInut = $tag->getElementsByTagName('infInut')->item(0);
-        if (! empty($infInut)) {
-            $aResposta['dhRecbto'] = $infInut->getElementsByTagName('dhRecbto')->item(0)->nodeValue;
+        if (! empty($infInut) && 'ID' !== $infInut->getAttribute('Id')) {
             $aResposta['ano'] = $infInut->getElementsByTagName('ano')->item(0)->nodeValue;
             $aResposta['CNPJ'] = $infInut->getElementsByTagName('CNPJ')->item(0)->nodeValue;
             $aResposta['mod'] = $infInut->getElementsByTagName('mod')->item(0)->nodeValue;
