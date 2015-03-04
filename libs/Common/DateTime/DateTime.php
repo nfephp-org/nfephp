@@ -78,8 +78,11 @@ class DateTime
         }
         $aDH = explode('T', $dataHora);
         $adDH = explode('-', $aDH[0]);
-        $inter = explode('-', $aDH[1]);
-        $atDH = explode(':', $inter[0]);
+        $atDH = array('0','0','0');
+        if (count($aDH) == 2) {
+            $inter = explode('-', $aDH[1]);
+            $atDH = explode(':', $inter[0]);
+        }
         $timestamp = mktime($atDH[0], $atDH[1], $atDH[2], $adDH[1], $adDH[2], $adDH[0]);
         return $timestamp;
     }
