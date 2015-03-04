@@ -49,10 +49,12 @@ if (!defined('PATH_ROOT')) {
 set_time_limit(1800);
 
 //classes utilizadas
-require_once '../../libs/External/mpdf/mpdf.php';
-require_once '../../libs/External/qrcode/qrcode.class.php';
-require_once '../../libs/Common/CommonNFePHP.class.php';
-require_once '../../libs/Common/DocumentoNFePHP.interface.php';
+require_once PATH_ROOT.'External/mpdf/mpdf.php';
+require_once PATH_ROOT.'External/qrcode/qrcode.class.php';
+require_once PATH_ROOT.'Common/CommonNFePHP.class.php';
+require_once PATH_ROOT.'Common/DocumentoNFePHP.interface.php';
+
+
 
 /**
  * Classe DanfceNFePHP
@@ -87,54 +89,32 @@ class DanfeNFCeNFePHP extends CommonNFePHP implements DocumentoNFePHP
     protected $imgQRCode;
     protected $urlConsulta = array(
         '1'=> array(
-            '12'=> array(
-                'chave'=>'',
-                'QR'=>'http://www.sefaznet.ac.gov.br/nfe/NFe.jsp?opc=3'),
+            '12'=> array('chave'=>'','QR'=>'http://www.sefaznet.ac.gov.br/nfe/NFe.jsp?opc=3'),
             '13'=> array(
                 'chave'=>'http://sistemas.sefaz.am.gov.br/nfceweb/formConsulta.do',
                 'QR'=>'http://sistemas.sefaz.am.gov.br/nfceweb/consultarNFCe.jsp'),
-            '21'=> array(
-                'chave'=>'',
-                'QR'=>'http://www.nfe.ma.gov.br/portal/consultarNFCe.jsp'),
-            '51'=> array(
-                'chave'=>'',
-                'QR'=>'http://www.nfe.sefaz.mt.gov.br/portal/consultarNFCe.jsp'),
-            '24'=> array(
-                'chave'=>'',
-                'QR'=>'http://www.nfe.rn.gov.br/portal/consultarNFCe.jsp'),
-            '43'=> array(
-                'chave'=>'',
-                'QR'=>'https://www.sefaz.rs.gov.br/NFCE/NFCE-COM.aspx'),
-            '28'=> array(
-                'chave'=>'',
-                'QR'=>'http://www.nfe.se.gov.br/portal/consultarNFCe.jsp')
+            '21'=> array('chave'=>'','QR'=>'http://www.nfe.ma.gov.br/portal/consultarNFCe.jsp'),
+            //'51'=> array('chave'=>'','QR'=>'http://www.nfe.sefaz.mt.gov.br/portal/consultarNFCe.jsp'),
+            '51'=> array('chave'=>'','QR'=>'http://www.sefaz.mt.gov.br/nfce/consultanfce'),
+            '24'=> array('chave'=>'','QR'=>'http://www.nfe.rn.gov.br/portal/consultarNFCe.jsp'),
+            '43'=> array('chave'=>'','QR'=>'https://www.sefaz.rs.gov.br/NFCE/NFCE-COM.aspx'),
+            '28'=> array('chave'=>'','QR'=>'http://www.nfe.se.gov.br/portal/consultarNFCe.jsp')
         ),
         '2' => array(
-            '12'=> array(
-                'chave'=>'',
-                'QR'=>'http://hml.sefaznet.ac.gov.br'),
+            '12'=> array('chave'=>'','QR'=>'http://hml.sefaznet.ac.gov.br'),
             '13'=> array(
                 'chave'=>'http://sistemas.sefaz.am.gov.br/nfceweb/formConsulta.do',
                 'QR'=>'http://homnfe.sefaz.am.gov.br/nfceweb/consultarNFCe.jsp'),
-            '21'=> array(
-                'chave'=>'',
-                'QR'=>'http://www.hom.nfe.ma.gov.br/portal/consultarNFCe.jsp'),
-            '51'=> array(
-                'chave'=>'',
-                'QR'=>'http://www.hom.nfe.sefaz.mt.gov.br/portal/consultarNFCe.jsp'),
-            '24'=> array(
-                'chave'=>'',
-                'QR'=>'http://www.hom.nfe.rn.gov.br/portal/consultarNFCe.jsp'),
-            '43'=> array(
-                'chave'=>'',
-                'QR'=>'https://www.sefaz.rs.gov.br/NFCE/NFCE-COM.aspx'),
-            '28'=> array(
-                'chave'=>'',
-                'QR'=>'http://www.hom.nfe.se.gov.br/portal/consultarNFCe.jsp')
+            '21'=> array('chave'=>'','QR'=>'http://www.hom.nfe.ma.gov.br/portal/consultarNFCe.jsp'),
+            //'51'=> array('chave'=>'','QR'=>'http://www.hom.nfe.sefaz.mt.gov.br/portal/consultarNFCe.jsp'),
+            '51'=> array('chave'=>'','QR'=>'http://homologacao.sefaz.mt.gov.br/nfce/consultanfce'),
+            '24'=> array('chave'=>'','QR'=>'http://www.hom.nfe.rn.gov.br/portal/consultarNFCe.jsp'),
+            '43'=> array('chave'=>'','QR'=>'https://www.sefaz.rs.gov.br/NFCE/NFCE-COM.aspx'),
+            '28'=> array('chave'=>'','QR'=>'http://www.hom.nfe.se.gov.br/portal/consultarNFCe.jsp')
         ));
 
     /**
-     * __contruct
+     * 
      * @param type $docXML
      * @param type $sPathLogo
      * @param type $mododebug
@@ -155,7 +135,7 @@ class DanfeNFCeNFePHP extends CommonNFePHP implements DocumentoNFePHP
             error_reporting(0);
             ini_set('display_errors', 'Off');
         }
-        $this->papel = array(80, 'one-page');
+        $this->papel = array(80, 297);
         $this->xml          = $docXML;
         $this->logomarca    = $sPathLogo;
         if (!empty($this->xml)) {
@@ -217,7 +197,7 @@ class DanfeNFCeNFePHP extends CommonNFePHP implements DocumentoNFePHP
     } //fim simpleConsistencyCheck
     
     /**
-     * monta
+     * 
      * @param type $orientacao
      * @param type $papel
      * @param type $logoAlign
@@ -229,7 +209,7 @@ class DanfeNFCeNFePHP extends CommonNFePHP implements DocumentoNFePHP
     }//fim monta
     
     /**
-     * printDocument
+     * 
      * @param type $nome
      * @param type $destino
      * @param type $printer
@@ -248,10 +228,8 @@ class DanfeNFCeNFePHP extends CommonNFePHP implements DocumentoNFePHP
     public function montaDANFE($detalhes = false)
     {
         //DADOS DA NF
-        if (isset($this->nfeProc)) {
-            $nProt = $this->pSimpleGetValue($this->nfeProc, "nProt");
-            $dhRecbto  = $this->pSimpleGetValue($this->nfeProc, "dhRecbto");
-        }
+        $nProt = $this->pSimpleGetValue($this->nfeProc, "nProt");
+        $dhRecbto  = $this->pSimpleGetValue($this->nfeProc, "dhRecbto");
         $digVal = $this->pSimpleGetValue($this->nfe, "DigestValue");
         $chNFe = str_replace('NFe', '', $this->infNFe->getAttribute("Id"));
         $tpAmb = $this->pSimpleGetValue($this->ide, 'tpAmb');
@@ -267,6 +245,7 @@ class DanfeNFCeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $qtdItens = $this->det->length;
         $urlChave = $this->urlConsulta[$tpAmb][$cUF]['chave'];
         $urlQR = $this->urlConsulta[$tpAmb][$cUF]['QR'];
+        
         //DADOS DO EMITENTE
         $emitRazao  = $this->pSimpleGetValue($this->emit, "xNome");
         $emitCnpj   = $this->pSimpleGetValue($this->emit, "CNPJ");
@@ -293,22 +272,6 @@ class DanfeNFCeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $tPagNome = '';
         $pagHtml = $this->pagamento($this->pag, $tPagNome);
         
-        //IMPOSTOS
-        $impHtml = "<table width=\"100%\">\n";
-        $impHtml .= "<tr>\n";
-        $impHtml .= "<td align=\"left\">".htmlspecialchars('VALOR PRODUTOS/SERVIÇOS')."</td>\n";
-        $impHtml .= "<td align=\"right\">".number_format($vProd, 2, ',', '.')."</td>\n";
-        $impHtml .= "</tr>\n";
-        $impHtml .= "<tr>\n";
-        $impHtml .= "<td align=\"left\">DESCONTOS</td>\n";
-        $impHtml .= "<td align=\"right\">".number_format($vDesc, 2, ',', '.')."</td>\n";
-        $impHtml .= "</tr>\n";
-        $impHtml .= "<tr>\n";
-        $impHtml .= "<td align='left'>VALOR TOTAL</td>\n";
-        $impHtml .= "<td align='right'>".number_format($vNF, 2, ',', '.')."</td>\n";
-        $impHtml .= "</tr>\n";
-        $impHtml .= "</table>\n";
-        
         //necessário para QRCode
         $cDest  = '';
         if (isset($this->dest)) {
@@ -324,9 +287,7 @@ class DanfeNFCeNFePHP extends CommonNFePHP implements DocumentoNFePHP
             $cDest = $consCPF.$consCNPJ.$considEstrangeiro; //documentos do consumidor
         }
         
-        //DADOS PARA QRCODE
-        $idToken = '';
-        $Token = '';
+        //Monta QRCODE
         $this->imgQRCode = $this->makeQRCode(
             $chNFe,
             $urlQR,
@@ -336,12 +297,12 @@ class DanfeNFCeNFePHP extends CommonNFePHP implements DocumentoNFePHP
             $vNF,
             $vICMS,
             $digVal,
-            $idToken,
-            $Token
+            $this->idToken,
+            $this->emitToken
         );
 
         //FORMATAÇÃO DOS CAMPOS
-        $numNF = "NFCe nº ".$this->pFormat($nNF, "###.###.###");
+        $numNF = $this->pFormat($nNF, "###.###.###");
         $tsHora = $this->pConvertTime($dhEmi);
         $tsProt = $this->pConvertTime($dhRecbto);
         $valorProdutos = number_format($vProd, 2, ",", ".");
@@ -354,7 +315,7 @@ class DanfeNFCeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $this->html .= "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">";
         $this->html .= "<style>";
         $this->html .= "body {";
-        $this->html .= "    font-family: Times New Roman;";
+        $this->html .= "    font-family: DejaVuSansCondensed;";
         $this->html .= "    font-size: 8pt;";
         $this->html .= "    background: transparent url(\'bgbarcode.png\') repeat-y scroll left top;";
         $this->html .= "}";
@@ -393,91 +354,123 @@ class DanfeNFCeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $this->html .= "</style>\n";
         $this->html .= "</head>\n";
         $this->html .= "<body>\n";
-        $this->html .= "<table width=\"100%\">\n";
+        $this->html .= "<table width=\"100%\" cellspacing=0 cellpadding=0>\n";
         $this->html .= "<tr>\n";
-        $this->html .= "<td><h2><i>NFC-e</i></h2><br><img src=\"$this->logomarca\" width=\"82\" ></td>\n";
-        $this->html .= "<td colspan=\"2\">".htmlspecialchars($emitRazao)."<br>CNPJ:$emitCnpj I.E.:$emitIE<br>".
-                htmlspecialchars($emitLgr . ", " . $emitNro). "<br>".
-                htmlspecialchars($emitCpl) . "<br>".
-                htmlspecialchars($emitBairro . ", " . $emitMun . ", " . $emitUF) . "<br>CEP: $emitCEP $emitFone</td>\n";
+        $this->html .= "<td valign=\"middle\"><img src=\"$this->logomarca\" width=\"100\" ></td>\n";
+        $this->html .= "<td colspan=\"2\" valign=\"middle\"><b>".htmlspecialchars($emitRazao)."</b><br>CNPJ: $emitCnpj<BR>IE: $emitIE<br>".
+                htmlspecialchars($emitLgr . ", " . $emitNro). " - ".
+                (empty($emitCpl)?'':htmlspecialchars($emitCpl) . " - ").
+                htmlspecialchars($emitBairro) . "<br>" . htmlspecialchars($emitMun . "/" . $emitUF) . " - $emitCEP <br> Fone $emitFone</td>\n";
         $this->html .= "</tr>\n";
         $this->html .= "<tr>\n";
-        $this->html .= "<td colspan=\"3\" class=\"menor\">".
-                htmlspecialchars("DANFE NFC-E Nota Fiscal Eletrônica para Consumidor Final")."</td>\n";
+        $this->html .= "<td colspan=\"3\" class=\"menor\" style=\"border-top: 1px solid black\">".
+                htmlspecialchars("DANFE NFC-E - Documento Auxiliar da ") . "<br>" . htmlspecialchars(" Nota Fiscal de Consumidor Eletrônica")."</td>\n";
         $this->html .= "</tr>\n";
+		$this->html .= "<tr>\n";
         if ($tpAmb == 1) {
-            $this->html .= "<tr>\n";
             $this->html .= "<td colspan=\"3\" class=\"menor\"><b>".
-                    htmlspecialchars("NFC-e não permite aproveitamento de crédito de ICMS")."<b></td>\n";
-            $this->html .= "</tr>\n";
+                    htmlspecialchars("Não permite aproveitamento de crédito de ICMS")."<b></td>\n";
         } else {
-            $this->html .= "<tr>\n";
-            $this->html .= "<td colspan=\"3\" class=\"menor\">NFC-e Emitida em Ambiente de Testes</td>\n";
-            $this->html .= "</tr>\n";
-            $this->html .= "<tr>\n";
-            $this->html .= "<td colspan=\"3\" ><b>SEM VALOR FISCAL</b></td>\n";
-            $this->html .= "</tr>\n";
+            $this->html .= "<td colspan=\"3\" class=\"menor\">NFC-e Emitida em Ambiente de Testes<br><b>SEM VALOR FISCAL</b></td>\n";
         }
+		$this->html .= "</tr>\n";
         $this->html .= "</table>\n";
-        //DADOS DA NOTA
-        $this->html .= "<table width=\"100%\">\n";
-        $this->html .= "<tr>\n";
-        $this->html .= "<td>".htmlspecialchars($numNF)."</td>\n";
-        $this->html .= "<td>Série: $serieNF</td>\n";
-        $this->html .= "<td>".date('d/m/Y H:i:s', $tsHora)."</td>\n";
-        $this->html .= "</tr>\n";
-        $this->html .= "</table>\n";
-        //CHAVE DE ACESSO
-        $this->html .= "<table width=\"100%\">\n";
-        $this->html .= "<tr>\n";
-        $this->html .= "<td  colspan=\"3\">Consulte pela Chave de Acesso em <a href=\"$urlChave\" >".
-            "$urlChave</a></td>\n";
-        $this->html .= "</tr>\n";
-        $this->html .= "<tr>\n";
-        $this->html .= "<td  colspan=\"3\">Chave de Acesso<br>$chNFe</td>\n";
-        $this->html .= "</tr>\n";
-        $this->html .= "<tr>\n";
-        $this->html .= "<td  colspan=\"3\"><b>Consulta via leitor QR Code</b></td>\n";
-        $this->html .= "</tr>\n";
-        $this->html .= "<tr>\n";
-        $this->html .= "<td  colspan=\"3\"><img src=\"./".$this->imgQRCode."\" ></td>\n";
-        $this->html .= "</tr>\n";
-        $this->html .= "</table>\n";
+		
+        //BLOCO DE DETALHES
+        if ($detalhes) {
+            //ITENS
+            $this->html .= $this->itens($this->det);
+		}
+		
         //TOTAIS DA NF
-        $this->html .= "<table width=\"100%\">\n";
+        $this->html .= "<table width=\"100%\" style='border-top: 1px solid black'>\n";
         $this->html .= "<tr>\n";
         $this->html .= "<td align=\"left\">QTDADE TOTAL DE ITENS</td>\n";
         $this->html .= "<td align=\"right\">$qtdItens</td>\n";
         $this->html .= "</tr>\n";
+		if ($vDesc>0)
+		{
+			$this->html .= "<tr>\n";
+			$this->html .= "<td align=\"left\">".htmlspecialchars('VALOR PRODUTOS/SERVIÇOS')."</td>\n";
+			$this->html .= "<td align=\"right\">".number_format($vProd, 2, ',', '.')."</td>\n";
+			$this->html .= "</tr>\n";
+			$this->html .= "<tr>\n";
+			$this->html .= "<td align=\"left\">DESCONTOS</td>\n";
+			$this->html .= "<td align=\"right\">".number_format($vDesc, 2, ',', '.')."</td>\n";
+			$this->html .= "</tr>\n";
+		}
         $this->html .= "<tr>\n";
         $this->html .= "<td align=\"left\">VALOR TOTAL R$</td>\n";
-        $this->html .= "<td align=\"right\">".number_format($vNF, 2, ',', '.')."</td>\n";
+        $this->html .= "<td align=\"right\"><b>".number_format($vNF, 2, ',', '.')."</b></td>\n";
         $this->html .= "</tr>\n";
         $this->html .= "<tr>\n";
         $this->html .= "<td align=\"left\">FORMA DE PAGAMENTO</td>\n";
         $this->html .= "<td align=\"right\">VALOR PAGO</td>\n";
         $this->html .= "</tr>\n";
-        $this->html .= "<tr>\n";
-        $this->html .= "<td align=\"left\">$tPagNome</td>\n";
-        $this->html .= "<td align=\"right\">".number_format($vNF, 2, ',', '.')."</td>\n";
-        $this->html .= "</tr>\n";
+        //$this->html .= "<tr>\n";
+        //$this->html .= "<td align=\"left\">$tPagNome</td>\n";
+        //$this->html .= "<td align=\"right\">".number_format($vNF, 2, ',', '.')."</td>\n";
+        //$this->html .= "</tr>\n";
+        $this->html .= "</table>\n";
+		$this->html .= $pagHtml;
+		
+        $this->html .= "<table width=\"100%\" style='border-top: 1px solid black'>\n";
         $this->html .= "<tr>\n";
         $this->html .= "<td align=\"left\">Informação dos Tributos Incidentes<br>(Lei Federal 12.741/2012) </td>\n";
         $this->html .= "<td align=\"right\">".number_format($vTotTrib, 2, ',', '.')."</td>\n";
         $this->html .= "</tr>\n";
         $this->html .= "</table>\n";
 
-        //BLOCO DE DETALHES
-        if ($detalhes) {
-            //ITENS
-            $this->html .= $this->itens($this->det);
-            //IMPOSTOS
-            $this->html .= $impHtml;
-            //PAGAMENTOS
-            $this->html .= $pagHtml;
-            //CONSUMIDOR
+		//$infCpl = 'teste';
+		/*
+		*/
+		
+		//INFORMACOES COMPLEMENTARES
+		$infCpl = $this->pSimpleGetValue($this->dom->getElementsByTagName("infAdic")->item(0), "infCpl");
+        $this->html .= "<table width=\"100%\" style='border-top: 1px solid black'>\n";
+        $this->html .= "<tr>\n";
+        $this->html .= "<td align=\"center\"><b>ÁREA DE MENSAGEM DE INTERESSE DO CONTRIBUINTE</b></td>\n";
+        $this->html .= "</tr>\n";
+        $this->html .= "<tr>\n";
+        $this->html .= "<td align=\"left\">" . htmlspecialchars($infCpl) . "</td>\n";
+        $this->html .= "</tr>\n";
+        $this->html .= "</table>\n";
+		
+		
+        //DADOS DA NOTA
+        $this->html .= "<table width=\"100%\" style=\"border-top: 1px solid black\">\n";
+        $this->html .= "<tr>\n";
+        $this->html .= "<td align=\"center\"><b>ÁREA DE MENSAGEM FISCAL</b></td>\n";
+        $this->html .= "</tr>\n";
+        $this->html .= "<tr>\n";
+        $this->html .= "<td>NFCe <b>".htmlspecialchars($numNF) . "</b>";
+        $this->html .= " - Série: $serieNF";
+        $this->html .= " - Emissão: <b>".date('d/m/Y H:i:s', $tsHora)."</b></td>\n";
+        $this->html .= "</tr>\n";
+        $this->html .= "<tr>\n";
+        $this->html .= "<td  colspan=\"3\">Consulte pela Chave de Acesso em $urlQR</td>\n";
+        $this->html .= "</tr>\n";
+        $this->html .= "<tr>\n";
+        $this->html .= "<td  colspan=\"3\">Chave de Acesso<br>" . $this->pFormat($chNFe, "#### #### #### #### #### #### #### #### #### #### ####") . "</td>\n";
+        $this->html .= "</tr>\n";
+        $this->html .= "</table>\n";
+		
+		//CLIENTE
+		//if ($detalhes) {
             $this->html .= $this->consumidor($this->dest);
-        }
+        //}
+		
+        //QR CODE
+        $this->html .= "<table width=\"100%\" style=\"border-top: 1px solid black\">\n";
+        $this->html .= "<tr>\n";
+        $this->html .= "<td colspan=\"3\"><b>Consulta via leitor QR Code</b></td>\n";
+        $this->html .= "</tr>\n";
+        $this->html .= "<tr>\n";
+        $this->html .= "<td colspan=\"3\"><img src=\"".$this->imgQRCode."\"></td>\n";
+        $this->html .= "</tr>\n";
+        $this->html .= "</table>\n";
+
+		//PROTOCOLO
         $this->html .= "<table width=\"100%\">\n";
         $this->html .= "<tr>\n";
         $this->html .= "<td>Prot. Autorização: $nProt - ".date('d/m/Y H:i:s', $tsProt)."</td>\n";
@@ -496,8 +489,8 @@ class DanfeNFCeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $oldtBand = '';
         $oldtPag = '';
         $pagHtml = "<table width=\"100%\">\n<tr>";
-        $pagHtml .= "<td align=\"left\">PAGAMENTOS</td>\n";
-        $pagHtml .= "<td></td></tr>\n";
+        //$pagHtml .= "<td align=\"left\">PAGAMENTOS</td>\n";
+        //$pagHtml .= "<td></td></tr>\n";
         foreach ($pag as $pagI) {
             $tPag = $this->pSimpleGetValue($pagI, "tPag");
             $tPagNome = $this->tipoPag($tPag);
@@ -593,15 +586,15 @@ class DanfeNFCeNFePHP extends CommonNFePHP implements DocumentoNFePHP
             return '';
         }
         //ITENS
-        $itensHtml = "<table width='100%'>\n";
+        $itensHtml = "<table width='100%' style='border-top: 1px solid black'>\n";
         $itensHtml .= "<tr>\n";
-        $itensHtml .= "<td>#</td>\n";
-        $itensHtml .= "<td>".htmlspecialchars('CÓDIGO')."</td>\n";
-        $itensHtml .= "<td>".htmlspecialchars('DESCRIÇÃO')."</td>\n";
-        $itensHtml .= "<td>QUANT.</td>\n";
-        $itensHtml .= "<td>UN.</td>\n";
-        $itensHtml .= "<td>VL.UNIT.</td>\n";
-        $itensHtml .= "<td>VL.TOTAL</td>\n";
+        $itensHtml .= "<td style='border-bottom: 1px dotted black'>#</td>\n";
+        $itensHtml .= "<td style='border-bottom: 1px dotted black'>".htmlspecialchars('CÓDIGO')."</td>\n";
+        $itensHtml .= "<td style='border-bottom: 1px dotted black'>".htmlspecialchars('DESCRIÇÃO')."</td>\n";
+        $itensHtml .= "<td style='border-bottom: 1px dotted black'>QUANT.</td>\n";
+        $itensHtml .= "<td style='border-bottom: 1px dotted black'>UN.</td>\n";
+        $itensHtml .= "<td style='border-bottom: 1px dotted black'>VL.UNIT.</td>\n";
+        $itensHtml .= "<td style='border-bottom: 1px dotted black'>VL.TOTAL</td>\n";
         $itensHtml .= "</tr>\n";
         foreach ($det as $detI) {
             $thisItem   = $detI;
@@ -609,18 +602,18 @@ class DanfeNFCeNFePHP extends CommonNFePHP implements DocumentoNFePHP
             $nitem      = $thisItem->getAttribute("nItem");
             $cProd      = $this->pSimpleGetValue($prod, "cProd");
             $xProd      = $this->pSimpleGetValue($prod, "xProd");
-            $qCom       = number_format($this->pSimpleGetValue($prod, "qCom"), 2, ",", ".");
+            $qCom       = number_format($this->pSimpleGetValue($prod, "qCom"), 3, ",", ".");
             $uCom       = $this->pSimpleGetValue($prod, "uCom");
             $vUnCom     = number_format($this->pSimpleGetValue($prod, "vUnCom"), 2, ",", ".");
             $vProd      = number_format($this->pSimpleGetValue($prod, "vProd"), 2, ",", ".");
             $itensHtml .=  "<tr>\n";
-            $itensHtml .=  "<td align=\"left\">".htmlspecialchars($nitem)."</td>\n";
+            $itensHtml .=  "<td align=\"right\">".htmlspecialchars($nitem)."</td>\n";
             $itensHtml .=  "<td align=\"left\">".htmlspecialchars($cProd)."</td>\n";
-            $itensHtml .=  "<td align=\"left\">".htmlspecialchars($xProd)."</td>\n";
-            $itensHtml .=  "<td align=\"right\">$qCom</td>\n";
+            $itensHtml .=  "<td align=\"left\"><b>".htmlspecialchars($xProd)."</b></td>\n";
+            $itensHtml .=  "<td align=\"right\"><b>$qCom</b></td>\n";
             $itensHtml .=  "<td>$uCom</td>\n";
             $itensHtml .=  "<td align=\"right\">".htmlspecialchars($vUnCom)."</td>\n";
-            $itensHtml .=  "<td align=\"right\">$vProd</td>\n";
+            $itensHtml .=  "<td align=\"right\"><b>$vProd</b></td>\n";
             $itensHtml .=  "</tr>\n";
         }
         $itensHtml .= "</table>\n";
@@ -629,12 +622,13 @@ class DanfeNFCeNFePHP extends CommonNFePHP implements DocumentoNFePHP
 
     protected function consumidor($dest)
     {
+		
         //DADOS DO CONSUMIDOR
         if (!isset($dest)) {
             return '';
         }
         $enderDest = $dest->getElementsByTagName("enderDest")->item(0);
-        $consNome = $this->pSimpleGetValue($enderDest, "xNome");
+        $consNome = $this->pSimpleGetValue($dest, "xNome");
         $consFone = $this->pSimpleGetValue($enderDest, "fone");
         $foneLen = strlen($consFone);
         if ($foneLen > 0) {
@@ -657,14 +651,14 @@ class DanfeNFCeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $consDoc = $consCPF.$consCNPJ.$considEstrangeiro; //documentos do consumidor
         
         $consHtml = '';
-        $consHtml .= "<table width='100%'>\n";
-        $consHtml .= "<tr>\n<td>CONSUMIDOR</td>\n</tr>\n";
+        $consHtml .= "<table width='100%' style='border-top: 1px solid black'>\n";
+        $consHtml .= "<tr>\n<td><b>CONSUMIDOR</b></td>\n</tr>\n";
         $consHtml .= "<tr>\n<td>CNPJ/CPF/ID Estrangeiro : ".htmlspecialchars($consDoc)."</td>\n</tr>\n";
-        $consHtml .= "<tr>\n<td>".htmlspecialchars($consNome)."</td>\n</tr>\n";
+        $consHtml .= "<tr>\n<td><b>".htmlspecialchars($consNome)."</b></td>\n</tr>\n";
         $consHtml .= "<tr>\n";
-        $consHtml .= "<td>".htmlspecialchars($consLgr.", ".$consNro.$consCpl)."<BR>\n".
-                htmlspecialchars($consBairro." - ".$consCEP)."<BR>\n".
-                htmlspecialchars($consMun." - ".$consUF." "."Fone/Fax: ".$consFone)."</td>\n";
+        $consHtml .= "<td>".htmlspecialchars($consLgr.", ".$consNro.$consCpl)." - ".
+                htmlspecialchars($consBairro." - ".$consCEP)." - ".
+                htmlspecialchars($consMun."/".$consUF." "."Fone: ".$consFone)."</td>\n";
         $consHtml .= "</tr>\n";
         $consHtml .= "</table>\n";
         return $consHtml;
@@ -672,27 +666,45 @@ class DanfeNFCeNFePHP extends CommonNFePHP implements DocumentoNFePHP
 
     /**
      * 
-     * @param type $nome
-     * @param type $destino
+	 * Gera o arquivo PDF ou Imprime a Danfe
+	 * 
+	 * @param string $output Tipo de Saida (html ou pdf)
+     * @param string $nome Nome do Arquivo
+     * @param string $destino Se passado P, somente imprime, senao repassa para mpdf
+	 * @param string $impressora Se passado imprime na impressora via CUPS (lpr)
      * @return type
      */
-    public function printDANFE($output = 'pdf', $nome = '', $destino = 'I')
+    public function printDANFE($output = 'pdf', $nome = '', $destino = 'I', $impressora = null)
     {
-        
         if ($output == 'pdf') {
             //montagem do pdf
             if (is_array($this->papel) && strtolower($this->papel[1])=='one-page') {
-                $mpdf=new mPDF('', array($this->papel[0], 841.89), 0, '', 0, 0, 0, 0, 0, 'P');
+                $mpdf=new mPDF('', array($this->papel[0], 841.89), 0, '', 0, 4, 0, 0, 0, 'P');
                 $mpdf->useCoreFontsOnly = true;
                 $mpdf->WriteHTML($this->html, 0, true, false);
                 $this->papel=array($this->papel[0], $mpdf->y);
             }
-            $this->mpdf=new mPDF('', $this->papel, 0, '', 0, 0, 0, 0, 0, 'P');
+            $this->mpdf=new mPDF('', $this->papel, 0, '', 0, 4, 0, 0, 0, 'P');
             $this->mpdf->WriteHTML($this->html);
             if (is_file($this->imgQRCode)) {
                 unlink($this->imgQRCode);
             }
-            $this->mpdf->Output($nome, $destino);
+			
+			if (!empty($impressora)) {
+				$arquivo = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $nome;
+				if (is_file($arquivo)) {
+					unlink($arquivo);
+				}
+				$this->mpdf->Output($arquivo, 'F');
+				$cmd = "lpr -P $impressora $arquivo;";
+				exec($cmd);
+				if (is_file($arquivo)) {
+					unlink($arquivo);
+				}
+			}
+			if ($destino != 'P') {
+				$this->mpdf->Output($nome, $destino);
+			}
             
         } else {
             echo $this->html;
@@ -783,7 +795,10 @@ class DanfeNFCeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         //remove o Token da mensagem
         $seq = str_replace($Token, '', $seq);
         $imgQrCode = new QRcode($seq, 'M');
-        $filename = $chNFe.date('YmdHis').'.png';
+        $filename = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $chNFe.date('YmdHis').'.png';
+		if (is_file($filename)) {
+			unlink ($filename);
+		}
         $imgQrCode->displayPNG(200, array(255,255,255), array(0,0,0), $filename, 0);
         return $filename;
         
