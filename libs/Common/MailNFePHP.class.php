@@ -33,7 +33,7 @@
  *
  *              Cristiano Soares <soares dot cr at gmail dot com>
  *              Elton Nagai <eltaum at gmail dot com>
- * 		Leandro C. Lopez <leandro dot castoldi at gmail dot com>
+ *              Leandro C. Lopez <leandro dot castoldi at gmail dot com>
  *              João Eduardo Silva Corrêa <jscorrea2 at gmail dot com>
  *              Rodrigo W Cardoso <rodrigogepem at gmail dot com>
  *
@@ -41,14 +41,13 @@
  */
 //define o caminho base da instalação do sistema
 if (!defined('PATH_ROOT')) {
-    define('PATH_ROOT', dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR);
+    define('PATH_ROOT', dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR);
 }
 //carrega as classes do PHPMailer
 require_once PATH_ROOT.'libs/External/PHPMailer/class.phpmailer.php';
 
 class MailNFePHP
 {
-
     public $mailAuth='1';
     public $mailFROM='';
     public $mailHOST='';
