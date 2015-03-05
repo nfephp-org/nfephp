@@ -21,6 +21,8 @@ use Common\Exception;
 use Common\Dom\Dom;
 use NFe\ReturnNFe;
 use NFe\MailNFe;
+use NFe\IdentifyNFe;
+use Common\Dom\ValidXsd;
 
 if (!defined('NFEPHP_ROOT')) {
     define('NFEPHP_ROOT', dirname(dirname(dirname(__FILE__))));
@@ -1234,6 +1236,39 @@ class ToolsNFe extends BaseTools
         $aRetorno = ReturnNFe::readReturnSefaz($this->urlMethod, $retorno);
         return (string) $retorno;
     }
+    
+    /**
+     * validarXml
+     * Valida qualquer xml do sistema NFe com seu xsd
+     * NOTA: caso não exista um arquivo xsd apropriado retorna false
+     * @param string $xml path ou conteudo do xml
+     * @return boolean
+     */
+    public function validarXml($xml = '')
+    {
+        $aResp = array();
+        $schem = IdentifyNFe::identificar($xml, $aResp);
+        if ($schem == '') {
+            return true;
+        }
+        $xsdFile = $aResp['Id'].'_v'.$aResp['versao'].'.xsd';
+        $xsdPath = NFEPHP_ROOT.DIRECTORY_SEPARATOR .
+            'schemes' .
+            DIRECTORY_SEPARATOR .
+            $this->aConfig['schemesNFe'] .
+            DIRECTORY_SEPARATOR .
+            $xsdFile;
+        if (! is_file($xsdPath)) {
+            $this->error = "O arquivo XSD $xsdFile não foi localizado.";
+            return false;
+        }
+        if (! ValidXsd::validar($aResp['xml'], $xsdPath)) {
+            $this->error = ValidXsd::$errors;
+            return false;
+        }
+        return true;
+    }
+
     
     /**
      * zSefazEvento
