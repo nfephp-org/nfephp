@@ -58,7 +58,6 @@ class Identify
         if ($schId == '') {
             return '';
         }
-        $node = $dom->getElementsByTagName($key)->item(0);
         $aResp['Id'] =  $schId;
         $aResp['tag'] =  $key;
         $aResp['dom'] = $dom;
@@ -73,7 +72,8 @@ class Identify
     protected static function zSearchNode($dom, &$key)
     {
         foreach (self::$schemesId as $key => $schId) {
-            if (! empty($dom->getElementsByTagName($key)->item(0))) {
+            $node = $dom->getElementsByTagName($key)->item(0);
+            if (! empty($node)) {
                 return $schId;
             }
         }
