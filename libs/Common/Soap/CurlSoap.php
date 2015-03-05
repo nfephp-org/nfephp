@@ -12,6 +12,7 @@ namespace Common\Soap;
  * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
  */
 
+use Common\Strings\Strings;
 use Common\Exception;
 
 class CurlSoap
@@ -77,6 +78,11 @@ class CurlSoap
      * @var string 
      */
     private $proxyPASS = '';
+    /**
+     * sslProtocol
+     * @var integer 
+     */
+    private $sslProtocol = 0;
     
     /**
      * __construct
@@ -85,13 +91,19 @@ class CurlSoap
      * @param string $pubKeyPath path para a chave publica
      * @param string $certKeyPath path para o certificado
      * @param string $timeout tempo de espera da resposta do webservice
+     * @param integer $sslProtocol 
      */
-    public function __construct($priKeyPath = '', $pubKeyPath = '', $certKeyPath = '', $timeout = 10)
+    public function __construct($priKeyPath = '', $pubKeyPath = '', $certKeyPath = '', $timeout = 10, $sslProtocol = 0)
     {
         $this->priKeyPath = $priKeyPath;
         $this->pubKeyPath = $pubKeyPath;
         $this->certKeyPath = $certKeyPath;
         $this->soapTimeout = $timeout;
+        if ($sslProtocol < 0 || $sslProtocol > 6) {
+            $msg = "O protocolo SSL pode estar entre 0 e seis, inclusive, mas não além desses números.";
+            throw new Exception\InvalidArgumentException($msg);
+        }
+        $this->sslProtocol = $sslProtocol;
         if (! is_file($priKeyPath) || ! is_file($pubKeyPath) || ! is_file($certKeyPath) || ! is_numeric($timeout)) {
             $msg = "Alguns dos certificados não foram encontrados ou o timeout pode não ser numérico.";
             throw new Exception\InvalidArgumentException($msg);
@@ -148,7 +160,7 @@ class CurlSoap
         $data .= '<soap12:Header>'.$header.'</soap12:Header>';
         $data .= '<soap12:Body>'.$body.'</soap12:Body>';
         $data .= '</soap12:Envelope>';
-        $data = $this->zLimpaMsg($data);
+        $data = Strings::clearMsg($data);
         $this->lastMsg = $data;
         //tamanho da mensagem
         $tamanho = strlen($data);
@@ -241,7 +253,23 @@ class CurlSoap
         curl_setopt($oCurl, CURLOPT_PORT, 443);
         curl_setopt($oCurl, CURLOPT_VERBOSE, 1);
         curl_setopt($oCurl, CURLOPT_HEADER, 1);
-        curl_setopt($oCurl, CURLOPT_SSLVERSION, 3);
+        //caso não seja setado o protpcolo SSL o php deverá determinar
+        //o protocolo correto durante o handshake.
+        //NOTA : poderão haver alguns problemas no futuro se algum serividor não
+        //estiver bem configurado e não passar o protocolo correto durante o handshake
+        //nesse caso será necessário setar manualmente o protocolo correto
+        //curl_setopt($oCurl, CURLOPT_SSLVERSION, 0); //default
+        //curl_setopt($oCurl, CURLOPT_SSLVERSION, 1); //TLSv1
+        //curl_setopt($oCurl, CURLOPT_SSLVERSION, 2); //SSLv2
+        //curl_setopt($oCurl, CURLOPT_SSLVERSION, 3); //SSLv3
+        //curl_setopt($oCurl, CURLOPT_SSLVERSION, 4); //TLSv1.0
+        //curl_setopt($oCurl, CURLOPT_SSLVERSION, 5); //TLSv1.1
+        //curl_setopt($oCurl, CURLOPT_SSLVERSION, 6); //TLSv1.2
+        //se for passado um padrão diferente de zero (default) como protocolo ssl
+        //esse novo padrão deverá se usado
+        if ($this->sslProtocol !== 0) {
+            curl_setopt($oCurl, CURLOPT_SSLVERSION, $this->sslProtocol);
+        }
         curl_setopt($oCurl, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, 0);
         curl_setopt($oCurl, CURLOPT_SSLCERT, $this->certKeyPath);
@@ -304,21 +332,5 @@ class CurlSoap
         }
         //carrega a variavel debug
         $this->soapDebug = $data."\n\n".$txtInfo."\n".$resposta;
-    }
-    
-    /**
-     * zLimpaMsg
-     * 
-     * @param string $msg
-     * @return string
-     */
-    private function zLimpaMsg($msg)
-    {
-        $nmsg = str_replace(array("\n","\r","\t"), array('','',''), $msg);
-        $nnmsg = str_replace('> ', '>', $nmsg);
-        if (strpos($nnmsg, '> ')) {
-            $this->zLimpaMsg((string) $nnmsg);
-        }
-        return $nnmsg;
     }
 }//fim da classe CurlSoap

@@ -41,15 +41,9 @@ class Strings
      */
     public static function clearXml($xml = '', $remEnc = false)
     {
+        $xml = self::clearMsg($xml);
         $aFind = array(
-            'xmlns:default="http://www.w3.org/2000/09/xmldsig#"',
-            'default:',
-            ':default',
-            ' standalone="no"',
-            "\n",
-            "\r",
-            "\s",
-            "\t"
+            'xmlns:default="http://www.w3.org/2000/09/xmldsig#"'
         );
         if ($remEnc) {
             $aFind[] = '<?xml version="1.0"?>';
@@ -70,16 +64,27 @@ class Strings
      */
     public static function clearProt($procXML = '')
     {
-        $procXML1 = str_replace(
-            array('default:',':default',"\n","\r","\s"),
-            '',
-            $procXML
-        );
+        $procXML1 = self::clearMsg($procXML);
         $procXML2 = str_replace(
             'NFe xmlns="http://www.portalfiscal.inf.br/nfe" xmlns="http://www.w3.org/2000/09/xmldsig#"',
             'NFe xmlns="http://www.portalfiscal.inf.br/nfe"',
             $procXML1
         );
         return $procXML2;
+    }
+    
+    /**
+     * clearMsg
+     * @param string $msg
+     * @return string
+     */
+    public static function clearMsg($msg)
+    {
+        $nmsg = str_replace(array(' standalone="no"','default:',':default',"\n","\r","\t"), '', $msg);
+        $nnmsg = str_replace('> ', '>', $nmsg);
+        if (strpos($nnmsg, '> ')) {
+            $this->clearMsg((string) $nnmsg);
+        }
+        return $nnmsg;
     }
 }
