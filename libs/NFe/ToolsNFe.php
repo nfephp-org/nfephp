@@ -20,6 +20,7 @@ use Common\Files;
 use Common\Exception;
 use Common\Dom\Dom;
 use NFe\ReturnNFe;
+use NFe\MailNFe;
 
 if (!defined('NFEPHP_ROOT')) {
     define('NFEPHP_ROOT', dirname(dirname(dirname(__FILE__))));
@@ -167,25 +168,29 @@ class ToolsNFe extends BaseTools
      */
     public function imprime($pathXml = '', $pathDestino = '', $printer = '')
     {
-        //TODO : falta implementar esse método
+        //TODO : falta implementar esse método para isso é necessária a classe
+        //PrintNFe
         return "$pathXml $pathDestino $printer";
     }
     
     /**
      * mailNFe
      * Envia a NFe por email aos destinatários
+     * Caso $aMails esteja vazio serão obtidos os email do destinatário  e 
+     * os emails que estiverem registrados nos campos obsCont do xml
      * @param string $pathXml
      * @param array $aMails
+     * @param string $templateFile path completo ao arquivo template html do corpo do email
+     * @param boolean $comPdf se true o sistema irá renderizar o DANFE e anexa-lo a mensagem
      * @return boolean
      */
-    public function enviaMail($pathXml = '', $aMails = array())
+    public function enviaMail($pathXml = '', $aMails = array(), $templateFile = '', $comPdf = false)
     {
-        //TODO : falta implementar esse método
-        $flag = false;
-        if ($pathXml == '' && is_array($aMails)) {
-            $flag = true;
+        $mail = new MailNFe($this->aMailConf);
+        if ($templateFile != '') {
+            $mail->setTemplate($templateFile);
         }
-        return $flag;
+        return $mail->envia($pathXml, $aMails, $comPdf);
     }
     
     /**
