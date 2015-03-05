@@ -41,9 +41,15 @@ class Strings
      */
     public static function clearXml($xml = '', $remEnc = false)
     {
-        $xml = self::clearMsg($xml);
+        //$xml = self::clearMsg($xml);
         $aFind = array(
-            'xmlns:default="http://www.w3.org/2000/09/xmldsig#"'
+            'xmlns:default="http://www.w3.org/2000/09/xmldsig#"',
+            ' standalone="no"',
+            'default:',
+            ':default',
+            "\n",
+            "\r",
+            "\t"
         );
         if ($remEnc) {
             $aFind[] = '<?xml version="1.0"?>';
@@ -83,7 +89,7 @@ class Strings
         $nmsg = str_replace(array(' standalone="no"','default:',':default',"\n","\r","\t"), '', $msg);
         $nnmsg = str_replace('> ', '>', $nmsg);
         if (strpos($nnmsg, '> ')) {
-            $this->clearMsg((string) $nnmsg);
+            $nnmsg = self::clearMsg((string) $nnmsg);
         }
         return $nnmsg;
     }
