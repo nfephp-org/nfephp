@@ -1543,25 +1543,27 @@ class MakeMDFe extends BaseMake
     protected function zTagAqua()
     {
         if (! empty($this->aqua)) {
-            if (! empty($this->aInfTermCarreg)) {
-                foreach ($this->aInfTermCarreg as $node) {
-                    $this->dom->appChild($this->aqua, $node, 'Falta tag "Aqua"');
-                }
-            }
-            if (! empty($this->aInfTermDescarreg)) {
-                foreach ($this->aInfTermDescarreg as $node) {
-                    $this->dom->appChild($this->aqua, $node, 'Falta tag "Aqua"');
-                }
-            }
-            if (! empty($this->aInfEmbComb)) {
-                foreach ($this->aInfEmbComb as $node) {
-                    $this->dom->appChild($this->aqua, $node, 'Falta tag "Aqua"');
-                }
-            }
+            $this->zAddTagAqua($this->aInfTermCarreg);
+            $this->zAddTagAqua($this->aInfTermDescarreg);
+            $this->zAddTagAqua($this->aInfEmbComb);
             $this->dom->appChild($this->infModal, $this->aqua, 'Falta tag "infModal"');
         }
     }
     
+    /**
+     * zAddTagAqua
+     * @param array $arr
+     */
+    protected function zAddTagAqua($arr = array())
+    {
+        if (! empty($arr)) {
+            foreach ($arr as $node) {
+                $this->dom->appChild($this->aqua, $node, 'Falta tag "Aqua"');
+            }
+        }
+    }
+
+
     /**
      * zTestaChaveXML
      * Remonta a chave da NFe de 44 digitos com base em seus dados
