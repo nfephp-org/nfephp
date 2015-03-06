@@ -142,4 +142,23 @@ class Dom extends DOMDocument
             $parent->appendChild($child);
         }
     }
+    
+    /**
+     * addArrayChild
+     * Adiciona a um DOMNode parent, outros elementos passados em um array de DOMElements
+     * @param DOMElement $parent
+     * @param array $arr
+     * @return int
+     */
+    public function addArrayChild(&$parent, $arr)
+    {
+        $num = 0;
+        if (! empty($arr) && ! empty($parent)) {
+            foreach ($arr as $node) {
+                $this->appChild($parent, $node, '');
+                $num++;
+            }
+        }
+        return $num;
+    }
 }
