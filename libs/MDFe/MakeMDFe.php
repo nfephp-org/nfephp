@@ -1414,16 +1414,8 @@ class MakeMDFe extends BaseMake
      */
     protected function zTagIde()
     {
-        if (! empty($this->aInfMunCarrega)) {
-            foreach ($this->aInfMunCarrega as $node) {
-                $this->appChild($this->ide, $node, 'Falha não existe a tag ide');
-            }
-        }
-        if (! empty($this->aInfPercurso)) {
-            foreach ($this->aInfPercurso as $node) {
-                $this->appChild($this->ide, $node, 'Falha não existe a tag ide');
-            }
-        }
+        $this->dom->addArrayChild($this->ide, $this->aInfMunCarrega);
+        $this->dom->addArrayChild($this->ide, $this->aInfPercurso);
     }
     
     /**
@@ -1431,11 +1423,7 @@ class MakeMDFe extends BaseMake
      */
     protected function zTagLacres()
     {
-        if (! empty($this->aLacres)) {
-            foreach ($this->aLacres as $node) {
-                $this->dom->appChild($this->infMDFe, $node, 'Falta tag "infMDFe"');
-            }
-        }
+        $this->dom->addArrayChild($this->infMDFe, $this->aLacres);
     }
 
     /**
@@ -1447,30 +1435,10 @@ class MakeMDFe extends BaseMake
         if (! empty($this->aInfMunDescarga)) {
             $infDoc = $this->dom->createElement("infDoc");
             foreach ($this->aInfMunDescarga as $nItem => $node) {
-                if (! empty($this->aInfCTe[$nItem])) {
-                    foreach ($this->aInfCTe[$nItem] as $cte) {
-                        $this->dom->appChild($node, $cte, '');
-                        $this->aCountDoc['CTe']++;
-                    }
-                }
-                if (! empty($this->aInfCT[$nItem])) {
-                    foreach ($this->aInfCT[$nItem] as $ctdoc) {
-                        $this->dom->appChild($node, $ctdoc, '');
-                        $this->aCountDoc['CT']++;
-                    }
-                }
-                if (! empty($this->aInfNFe[$nItem])) {
-                    foreach ($this->aInfNFe[$nItem] as $nfe) {
-                        $this->dom->appChild($node, $nfe, '');
-                        $this->aCountDoc['NFe']++;
-                    }
-                }
-                if (! empty($this->aInfNF[$nItem])) {
-                    foreach ($this->aInfNF[$nItem] as $nfdoc) {
-                        $this->dom->appChild($node, $nfdoc, '');
-                        $this->aCountDoc['NF']++;
-                    }
-                }
+                $this->aCountDoc['CTe'] = $this->dom->addArrayChild($node, $this->aInfCTe[$nItem]);
+                $this->aCountDoc['CT'] = $this->dom->addArrayChild($node, $this->aInfCT[$nItem]);
+                $this->aCountDoc['NFe'] = $this->dom->addArrayChild($node, $this->aInfNFe[$nItem]);
+                $this->aCountDoc['NF'] = $this->dom->addArrayChild($node, $this->aInfNF[$nItem]);
                 $this->dom->appChild($infDoc, $node, '');
             }
             $this->dom->appChild($this->infMDFe, $infDoc, 'Falta tag "infModal"');
@@ -1488,17 +1456,9 @@ class MakeMDFe extends BaseMake
     protected function zTagRodo()
     {
         if (! empty($this->rodo)) {
-            if (! empty($this->aCondutor)) {
-                foreach ($this->aCondutor as $node) {
-                    $this->dom->appChild($this->veicPrincipal, $node, '');
-                }
-            }
+            $this->dom->addArrayChild($this->veicPrincipal, $this->aCondutor);
             $this->dom->appChild($this->rodo, $this->veicPrincipal, 'Falta tag "rodo"');
-            if (! empty($this->aReboque)) {
-                foreach ($this->aReboque as $node) {
-                    $this->dom->appChild($this->rodo, $node, '');
-                }
-            }
+            $this->dom->addArrayChild($this->rodo, $this->aReboque);
             if (! empty($this->aDisp)) {
                 $valePed = $this->dom->createElement("valePed");
                 foreach ($this->aDisp as $node) {
@@ -1516,11 +1476,7 @@ class MakeMDFe extends BaseMake
     protected function zTagFerrov()
     {
         if (! empty($this->trem)) {
-            if (! empty($this->aVag)) {
-                foreach ($this->aVag as $node) {
-                    $this->dom->appChild($this->trem, $node, 'Falta tag "trem"');
-                }
-            }
+            $this->dom->addArrayChild($this->trem, $this->aVag);
             $ferrov = $this->dom->createElement("ferrov");
             $this->dom->appChild($ferrov, $this->trem, '');
             $this->dom->appChild($this->infModal, $ferrov, 'Falta tag "infModal"');
@@ -1543,27 +1499,13 @@ class MakeMDFe extends BaseMake
     protected function zTagAqua()
     {
         if (! empty($this->aqua)) {
-            $this->zAddTagAqua($this->aInfTermCarreg);
-            $this->zAddTagAqua($this->aInfTermDescarreg);
-            $this->zAddTagAqua($this->aInfEmbComb);
+            $this->dom->addArrayChild($this->aqua, $this->aInfTermCarreg);
+            $this->dom->addArrayChild($this->aqua, $this->aInfTermDescarreg);
+            $this->dom->addArrayChild($this->aqua, $this->aInfEmbComb);
             $this->dom->appChild($this->infModal, $this->aqua, 'Falta tag "infModal"');
         }
     }
     
-    /**
-     * zAddTagAqua
-     * @param array $arr
-     */
-    protected function zAddTagAqua($arr = array())
-    {
-        if (! empty($arr)) {
-            foreach ($arr as $node) {
-                $this->dom->appChild($this->aqua, $node, 'Falta tag "Aqua"');
-            }
-        }
-    }
-
-
     /**
      * zTestaChaveXML
      * Remonta a chave da NFe de 44 digitos com base em seus dados
@@ -1605,5 +1547,5 @@ class MakeMDFe extends BaseMake
             $infMDFe->setAttribute("Id", "MDFe" . $chaveMontada);
             $this->chMDFe = $chaveMontada;
         }
-    }    
+    }
 }
