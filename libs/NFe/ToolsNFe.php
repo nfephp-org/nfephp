@@ -530,7 +530,8 @@ class ToolsNFe extends BaseTools
                 . "$sxml"
                 . "</enviNFe>";
         //valida a mensagem com o xsd
-        //if (! $this->zValidMessage($cons, 'nfe', 'enviNFe', $version)) {
+        //validar mensagem com xsd
+        //if (! $this->validarXml($cons)) {
         //    $msg = 'Falha na validação. '.$this->error;
         //    throw new Exception\RuntimeException($msg);
         //}
@@ -592,8 +593,8 @@ class ToolsNFe extends BaseTools
             . "<tpAmb>$tpAmb</tpAmb>"
             . "<nRec>$recibo</nRec>"
             . "</consReciNFe>";
-        //valida a mensagem com o xsd
-        //if (! $this->zValidMessage($cons, 'nfe', 'consReciNFe', $version)) {
+        //validar mensagem com xsd
+        //if (! $this->validarXml($cons)) {
         //    $msg = 'Falha na validação. '.$this->error;
         //    throw new Exception\RuntimeException($msg);
         //}
@@ -658,8 +659,8 @@ class ToolsNFe extends BaseTools
                 . "<xServ>CONSULTAR</xServ>"
                 . "<chNFe>$chNFe</chNFe>"
                 . "</consSitNFe>";
-        //valida a mensagem com o xsd
-        //if (! $this->zValidMessage($cons, 'nfe', 'consSitNFe', $version)) {
+        //validar mensagem com xsd
+        //if (! $this->validarXml($cons)) {
         //    $msg = 'Falha na validação. '.$this->error;
         //    throw new Exception\RuntimeException($msg);
         //}
@@ -865,9 +866,8 @@ class ToolsNFe extends BaseTools
             . "<xServ>CONS-CAD</xServ>"
             . "<UF>$siglaUF</UF>"
             . "$filtro</infCons></ConsCad>";
-        //valida a mensagem com o xsd
-        //não tem validação estavel para esse xml
-        //if (! $this->zValidMessage($cons, 'nfe', 'ConsCad', $version)) {
+        //validar mensagem com xsd
+        //if (! $this->validarXml($cons)) {
         //    $msg = 'Falha na validação. '.$this->error;
         //    throw new Exception\RuntimeException($msg);
         //}
@@ -928,7 +928,8 @@ class ToolsNFe extends BaseTools
             . "<tpAmb>$tpAmb</tpAmb><cUF>$this->urlcUF</cUF>"
             . "<xServ>STATUS</xServ></consStatServ>";
         //valida mensagem com xsd
-        //if (! $this->zValidMessage($cons, 'nfe', 'consStatServ', $version)) {
+        //validar mensagem com xsd
+        //if (! $this->validarXml($cons)) {
         //    $msg = 'Falha na validação. '.$this->error;
         //    throw new Exception\RuntimeException($msg);
         //}
@@ -1008,8 +1009,8 @@ class ToolsNFe extends BaseTools
             . "<tpAmb>$tpAmb</tpAmb>"
             . "<cUFAutor>$cUF</cUFAutor>"
             . "<CNPJ>$cnpj</CNPJ>$tagNSU</distDFeInt>";
-        //valida a mensagem com o xsd
-        //if (! $this->zValidMessage($cons, 'nfe', 'distDFeInt', $version)) {
+        //validar mensagem com xsd
+        //if (! $this->validarXml($cons)) {
         //    $msg = 'Falha na validação. '.$this->error;
         //    throw new Exception\RuntimeException($msg);
         //}
@@ -1211,8 +1212,8 @@ class ToolsNFe extends BaseTools
                 . "<CNPJ>$cnpj</CNPJ>"
                 . "<chNFe>$chNFe</chNFe>"
                 . "</downloadNFe>";
-        //valida mensagem com xsd
-        //if (! $this->zValidMessage($cons, 'nfe', 'downloadNFe', $version)) {
+        //validar mensagem com xsd
+        //if (! $this->validarXml($cons)) {
         //    $msg = 'Falha na validação. '.$this->error;
         //    throw new Exception\RuntimeException($msg);
         //}
