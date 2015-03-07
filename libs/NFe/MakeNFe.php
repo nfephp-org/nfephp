@@ -1,36 +1,15 @@
 <?php
+
+namespace NFe;
+
 /**
- * Este arquivo é parte do projeto NFePHP - Nota Fiscal eletrônica em PHP.
- *
- * Este programa é um software livre: você pode redistribuir e/ou modificá-lo
- * sob os termos da Licença Pública Geral GNU (GPL)como é publicada pela Fundação
- * para o Software Livre, na versão 3 da licença, ou qualquer versão posterior
- * e/ou
- * sob os termos da Licença Pública Geral Menor GNU (LGPL) como é publicada pela Fundação
- * para o Software Livre, na versão 3 da licença, ou qualquer versão posterior.
- *
- *
- * Este programa é distribuído na esperança que será útil, mas SEM NENHUMA
- * GARANTIA; nem mesmo a garantia explícita definida por qualquer VALOR COMERCIAL
- * ou de ADEQUAÇÃO PARA UM PROPÓSITO EM PARTICULAR,
- * veja a Licença Pública Geral GNU para mais detalhes.
- *
- * Você deve ter recebido uma cópia da Licença Publica GNU e da
- * Licença Pública Geral Menor GNU (LGPL) junto com este programa.
- * Caso contrário consulte <http://www.fsfla.org/svnwiki/trad/GPLv3> ou
- * <http://www.fsfla.org/svnwiki/trad/LGPLv3>.
- *
- * Estrutura baseada nas notas técnicas:
- *          NT2013.005 versão 1.02 Dezembro de 2013
- *          
- * 
- * @package     NFePHP
- * @name        MakeNFe
- * @version     0.2.1
- * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
- * @copyright   2009-2014 &copy; NFePHP
- * @link        http://www.nfephp.org/
- * @author      Roberto L. Machado <linux.rlm at gmail dot com>
+ * Classe a construção do xml da NFe modelo 55 e modelo 65
+ * @category   NFePHP
+ * @package    NFePHP\NFe\MakeNFe
+ * @copyright  Copyright (c) 2008-2015
+ * @license    http://www.gnu.org/licenses/lesser.html LGPL v3
+ * @author     Roberto L. Machado <linux.rlm at gmail dot com>
+ * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
  * 
  *        CONTRIBUIDORES (em ordem alfabetica):
  *
@@ -38,9 +17,11 @@
  *              Elias Müller <elias at oxigennio dot com dot br>
  *              Marcos Vinicios Balbi <marcusbalbi at hotmail dot com>
  * 
+ * NOTA: Esta classe atende os padrões estabelecidos pela 
+ * NOTA TÉCNICA 2013.005 Versão 1.21 de Novembro 2014
  */
 
-namespace NFe;
+
 
 use Common\DateTime\DateTime;
 use Common\Base\BaseMake;
