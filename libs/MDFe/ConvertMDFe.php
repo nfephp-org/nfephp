@@ -14,8 +14,8 @@ namespace MDFe;
  * 
  * NOTA: O emissor gratuito de MDFe não importa nem gera arquivos TXT e portanto 
  * não existe um formato geral estabelecido para essa função. 
- * Dito isso, o formato que está estabelecido e contido 
- * nessa classe não se aplica a nenhum outro sistema além desse e pode não estar 
+ * Dito isso, o formato que está estabelecido e contido nessa classe
+ * não se aplica a nenhum outro sistema além desse e pode não estar 
  * adequado a todas as possibilidades.
  */
 
