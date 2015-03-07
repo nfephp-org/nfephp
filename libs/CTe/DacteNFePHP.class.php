@@ -353,9 +353,9 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
      * durante sua construção.
      * A definição de margens e posições iniciais para a impressão são estabelecidas no
      * pelo conteúdo da funçao e podem ser modificados.
-     * 
+     *
      * TODO: Orientação LANDSCAPE
-     * 
+     *
      * @param  string $orientacao (Opcional) Estabelece a orientação da
      *                impressão (ex. P-retrato), se nada for fornecido será
      *                usado o padrão da NFe
@@ -1031,7 +1031,11 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
 
         } else {
             $texto = $this->pSimpleGetValue($this->protCTe, "nProt") . " - ";
-            $texto .= date('d/m/Y   H:i:s', $this->pConvertTime($this->pSimpleGetValue($this->protCTe, "dhRecbto")));
+
+            // empty($volume->getElementsByTagName("qVol")->item(0)->nodeValue)
+            if( !empty($this->protCTe) &&  !empty($this->protCTe->getElementsByTagName("dhRecbto")->item(0)->nodeValue) ){
+                $texto .= date('d/m/Y   H:i:s', $this->pConvertTime($this->pSimpleGetValue($this->protCTe, "dhRecbto")));
+            }
             $texto = $this->pSimpleGetValue($this->protCTe, "nProt") == '' ? '' : $texto;
         }
         $aFont = $this->formatNegrito;
@@ -1230,7 +1234,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
      * @param number $xInic  Posição horizontal canto esquerdo
      * @param number $yFinal Posição vertical final para impressão
      */
-    private function zRodape($x, $y)
+    protected function zRodape($x, $y)
     {
         $texto = "Impresso em  " . date('d/m/Y   H:i:s');
         $w = $this->wPrint - 4;
@@ -2087,7 +2091,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
 
     /**
      * zGeraChaveAdicCont
-     *   
+     *
      * @return string chave
      */
     protected function zGeraChaveAdicCont()
@@ -2264,10 +2268,10 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
     /**
      * zDocCompl
      * Monta o campo com os dados do remetente na DACTE.
-     * 
+     *
      * @param number $x Posição horizontal canto esquerdo
      * @param number $y Posição vertical canto superior
-     * @return number Posição vertical final 
+     * @return number Posição vertical final
      */
     protected function zDocCompl($x = 0, $y = 0)
     {

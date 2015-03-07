@@ -32,7 +32,7 @@
  *
  *        CONTRIBUIDORES (por ordem alfabetica):
  *          Fernando Mertins <fernando dot mertins at gmail dot com>
- *          Roberto L. Machado <linux dot rlm at gmail dot com> 
+ *          Roberto L. Machado <linux dot rlm at gmail dot com>
  *
  * Esta classe depende de PdfNFePHP.class.php e deve ser utilizada pelas classes DanfeNFePHP e DacteNFePHP
  */
@@ -80,7 +80,7 @@ class CommonNFePHP
             return;
         }
     }
-    
+
     /**
      * pSimpleGetValue
      * Extrai o valor do node DOM
@@ -179,8 +179,8 @@ class CommonNFePHP
 
     /**
      * pConvertTime
-     * Converte a imformação de data e tempo contida na NFe
-     * 
+     * Converte a informação de data e tempo contida na NFe
+     *
      * @param string $DH Informação de data e tempo extraida da NFe
      * @return timestamp UNIX Para uso com a funçao date do php
      */
@@ -191,9 +191,13 @@ class CommonNFePHP
         }
         $aDH = explode('T', $DH);
         $adDH = explode('-', $aDH[0]);
-        $inter = explode('-', $aDH[1]);
-        $atDH = explode(':', $inter[0]);
-        $timestampDH = mktime($atDH[0], $atDH[1], $atDH[2], $adDH[1], $adDH[2], $adDH[0]);
+        if( count($aDH) > 1 ){
+            $inter = explode('-', $aDH[1]);
+            $atDH = explode(':', $inter[0]);
+            $timestampDH = mktime($atDH[0], $atDH[1], $atDH[2], $adDH[1], $adDH[2], $adDH[0]);
+        }else{
+            $timestampDH = mktime($month = $adDH[1], $day =  $adDH[2], $year = $adDH[0]);
+        }
         return $timestampDH;
     }
 
@@ -289,7 +293,7 @@ class CommonNFePHP
     /**
      * pGetNumLines
      * Obtem o numero de linhas usadas pelo texto usando a fonte especifidada
-     * 
+     *
      * @param string $text
      * @param number $width
      * @param array $aFont
@@ -322,8 +326,8 @@ class CommonNFePHP
      * @param string $hAlign Alinhamento horizontal do texto, L-esquerda, C-centro, R-direita
      * @param boolean $border TRUE ou 1 desenha a borda, FALSE ou 0 Sem borda
      * @param string $link Insere um hiperlink
-     * @param boolean $force Se for true força a caixa com uma unica linha 
-     * e para isso atera o tamanho do fonte até caber no espaço, 
+     * @param boolean $force Se for true força a caixa com uma unica linha
+     * e para isso atera o tamanho do fonte até caber no espaço,
      * se falso mantem o tamanho do fonte e usa quantas linhas forem necessárias
      * @param number $hmax
      * @param number $vOffSet incremento forçado na na posição Y
@@ -456,8 +460,8 @@ class CommonNFePHP
      * @param string $hAlign Alinhamento horizontal do texto, L-esquerda, C-centro, R-direita
      * @param boolean $border TRUE ou 1 desenha a borda, FALSE ou 0 Sem borda
      * @param string $link Insere um hiperlink
-     * @param boolean $force Se for true força a caixa com uma unica 
-     * linha e para isso atera o tamanho do fonte até caber no espaço, 
+     * @param boolean $force Se for true força a caixa com uma unica
+     * linha e para isso atera o tamanho do fonte até caber no espaço,
      * se falso mantem o tamanho do fonte e usa quantas linhas forem necessárias
      * @param number $hmax
      * @param number $vOffSet incremento forçado na na posição Y
