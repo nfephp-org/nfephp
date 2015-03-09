@@ -243,10 +243,10 @@ class BaseTools
         $dom = new Dom();
         $dom->loadXMLString($sxml);
         $versao = $dom->getElementsByTagName($tag)->item(0)->getAttribute('versao');
-        if (! $this->zValidMessage($sxml, $tipo, $versao)) {
-            $msg = "Falha na validação do $tipo. ".$this->error;
-            throw new Exception\RuntimeException($msg);
-        }
+//        if (! $this->zValidMessage($sxml, $tipo, $versao)) {
+//            $msg = "Falha na validação do $tipo. ".$this->error;
+//            throw new Exception\RuntimeException($msg);
+//        }
         if ($saveFile) {
             $dom = new Dom();
             $dom->loadXMLString($sxml);
