@@ -243,7 +243,7 @@ class ConvertNFe
      */
     protected function zLinhaBA10Entity($aCampos)
     {
-        //B20a|cUF|AAMM|IE|mod|serie|nNF|CNPJ|CPF
+        //BA10xx|cUF|AAMM|IE|mod|serie|nNF|CNPJ|CPF
         $this->make->tagrefNFP(
             $aCampos[1], //cUF
             $aCampos[2], //aamm
@@ -263,7 +263,7 @@ class ConvertNFe
      */
     protected function ba19Entity($aCampos)
     {
-        //B20i|refCTe|
+        //B19|refCTe|
         $this->make->tagrefCTe($aCampos[1]);
     }
     
@@ -330,7 +330,7 @@ class ConvertNFe
      */
     protected function zLinhaCEntity($aCampos)
     {
-        //C|XNome|XFant|IE|IEST|IM|CNAE|CRT|CNPJ|CPF|
+        //Cxx|XNome|XFant|IE|IEST|IM|CNAE|CRT|CNPJ|CPF|
         $this->make->tagemit(
             $aCampos[8], //cnpj
             $aCampos[9], //cpf
@@ -392,7 +392,7 @@ class ConvertNFe
      */
     protected function e02Entity($aCampos)
     {
-        //CNPJ [dest]
+        //E02|CNPJ| [dest]
         $this->linhaE[7] = $aCampos[1];
         $this->zLinhaEEntity($this->linhaE);
     }
@@ -403,7 +403,7 @@ class ConvertNFe
      */
     protected function e03Entity($aCampos)
     {
-        //CPF [dest]
+        //E03|CPF| [dest]
         $this->linhaE[8] = $aCampos[1];
         $this->zLinhaEEntity($this->linhaE);
     }
@@ -414,7 +414,7 @@ class ConvertNFe
      */
     protected function e03aEntity($aCampos)
     {
-        //idEstrangeiro [dest]
+        //E03a|idEstrangeiro| [dest]
         $this->linhaE[9] = $aCampos[1];
         $this->zLinhaEEntity($this->linhaE);
     }
@@ -426,7 +426,7 @@ class ConvertNFe
      */
     protected function zLinhaEEntity($aCampos)
     {
-        //E|xNome|indIEDest|IE|ISUF|IM|email|CNPJ/CPF/idExtrangeiro
+        //Exx|xNome|indIEDest|IE|ISUF|IM|email|CNPJ/CPF/idExtrangeiro
         $this->make->tagdest(
             $aCampos[7], //cnpj
             $aCampos[8], //cpf
@@ -511,7 +511,7 @@ class ConvertNFe
      */
     protected function zLinhaFEntity($aCampos)
     {
-        //F|xLgr|nro|xCpl|xBairro|cMun|xMun|UF|CNPJ|CPF
+        //Fxx|xLgr|nro|xCpl|xBairro|cMun|xMun|UF|CNPJ|CPF
         $this->make->tagretirada(
             $aCampos[8], //cnpj
             $aCampos[9], //cpf
@@ -573,7 +573,7 @@ class ConvertNFe
      */
     protected function zLinhaGEntity($aCampos)
     {
-        //G|xLgr|nro|xCpl|xBairro|cMun|xMun|UF|CNPJ|CPF
+        //Gxx|xLgr|nro|xCpl|xBairro|cMun|xMun|UF|CNPJ|CPF
         $this->make->tagentrega(
             $aCampos[8], //cnpj
             $aCampos[9], //cpf
@@ -616,7 +616,7 @@ class ConvertNFe
      */
     protected function ga03Entity($aCampos)
     {
-        //GA02|CPF|
+        //GA03|CPF|
         $this->make->tagautXML('', $aCampos[1]);
     }
     
@@ -676,6 +676,7 @@ class ConvertNFe
      */
     protected function i05aEntity($aCampos)
     {
+        //I05A|
         $this->make->tagNVE($this->nItem, $aCampos[1]);
     }
     
@@ -759,6 +760,7 @@ class ConvertNFe
      */
     protected function zLinhaI50Entity($aCampos)
     {
+        //I50xx|nDraw|nRE|chNFe|qExport|
         $this->make->tagdetExport(
             $this->nItem,
             $aCampos[1], //nDraw
@@ -877,6 +879,7 @@ class ConvertNFe
      */
     protected function zLinhaLAEntity($aCampos)
     {
+        //LAxx|cProdANP|pMixGN|CODIF|qTemp|UFCons|qBCProd|vAliqProd|vCIDE|
         $this->make->tagcomb(
             $this->nItem,
             $aCampos[1], //cProdANP
@@ -918,6 +921,7 @@ class ConvertNFe
      */
     protected function nEntity($aCampos)
     {
+        //N|
         //fake não faz nada
         $aCampos = array();
     }
@@ -1308,7 +1312,6 @@ class ConvertNFe
      */
     protected function n10cEntity($aCampos)
     {
-        //      1     2     3       4
         //N10c|orig|CSOSN|pCredSN|vCredICMSSN|
         $aFields = array(
             $this->nItem,
@@ -1369,7 +1372,6 @@ class ConvertNFe
      */
     protected function n10eEntity($aCampos)
     {
-        //      1     2      3      4       5       6     7       8       9       10
         //N10e|orig|CSOSN|modBCST|pMVAST|pRedBCST|vBCST|pICMSST|vICMSST|pCredSN|vCredICMSSN|
         $aFields = array(
             $this->nItem,
@@ -1400,7 +1402,6 @@ class ConvertNFe
      */
     protected function n10fEntity($aCampos)
     {
-        //      1     2     3       4      5       6       7      8
         //N10f|orig|CSOSN|modBCST|pMVAST|pRedBCST|vBCST|pICMSST|vICMSST|
         $aFields = array(
             $this->nItem,
@@ -1431,7 +1432,6 @@ class ConvertNFe
      */
     protected function n10gEntity($aCampos)
     {
-        //       1    2     3         4
         //N10g|orig|CSOSN|vBCSTRet|vICMSSTRet|
         $aFields = array(
             $this->nItem,
@@ -1462,9 +1462,7 @@ class ConvertNFe
      */
     protected function n10hEntity($aCampos)
     {
-        //       1    2    3     4    5     6     7      8      9      10
         //N10h|orig|CSOSN|modBC|vBC|pRedBC|pICMS|vICMS|modBCST|pMVAST|pRedBCST
-        //      11     12      13      14      15
         //    |vBCST|pICMSST|vICMSST|pCredSN|vCredICMSSN|
         $aFields = array(
             $this->nItem,
@@ -1562,7 +1560,6 @@ class ConvertNFe
      */
     protected function oEntity($aCampos)
     {
-        //    1     2        3    4     5
         //O|clEnq|CNPJProd|cSelo|qSelo|cEnq|
         $this->linhaO[0] = $this->nItem;
         $this->linhaO[1] = ''; //cst
@@ -1631,7 +1628,7 @@ class ConvertNFe
      */
     protected function zLinhaOEntity($aCampos)
     {
-        //O|cst|clEnq|cnpjProd|cSelo|qSelo|cEnq|vBC|pIPI|qUnid|vUnid|vIPI|
+        //Oxx|cst|clEnq|cnpjProd|cSelo|qSelo|cEnq|vBC|pIPI|qUnid|vUnid|vIPI|
         $this->make->tagIPI(
             $this->nItem,
             $aCampos[1], //cst
@@ -1770,6 +1767,7 @@ class ConvertNFe
      */
     protected function zLinhaQEntity($aCampos)
     {
+        //Qxx|CST|vBC|pPIS|vPIS|qBCProd|vAliqProd|
         $this->make->tagPIS(
             $this->nItem,
             $aCampos[1], //cst
@@ -1828,6 +1826,7 @@ class ConvertNFe
      */
     protected function zLinhaREntity($aCampos)
     {
+        //Rxx|vBC|pPIS|qBCProd|vAliqProd|vPIS|
         $this->make->tagPISST(
             $this->nItem,
             $aCampos[1], //vBC
@@ -1933,6 +1932,7 @@ class ConvertNFe
      */
     protected function zLinhaSEntity($aCampos)
     {
+        //Sxx|CST|vBC|pCOFINS|vCOFINS|qBCProd|vAliqProd|
         $this->make->tagCOFINS(
             $this->nItem,
             $aCampos[1], //cst
@@ -1990,6 +1990,7 @@ class ConvertNFe
      */
     protected function zLinhaTEntity($aCampos)
     {
+        //Txx|vBC|pCOFINS|qBCProd|vAliqProd|vCOFINS|
         $this->make->tagCOFINSST(
             $this->nItem,
             $aCampos[1], //$vBC
@@ -2064,7 +2065,8 @@ class ConvertNFe
      */
     protected function w02Entity($aCampos)
     {
-        //W02|vBC|vICMS|vICMSDeson|vBCST|vST|vProd|vFrete|vSeg|vDesc|vII|vIPI|vPIS|vCOFINS|vOutro|vNF|vTotTrib|
+        //W02|vBC|vICMS|vICMSDeson|vBCST|vST|vProd|vFrete|vSeg|vDesc|vII|vIPI
+        //   |vPIS|vCOFINS|vOutro|vNF|vTotTrib|
         $this->make->tagICMSTot(
             $aCampos[1], //$vBC
             $aCampos[2], //$vICMS
@@ -2092,7 +2094,8 @@ class ConvertNFe
      */
     protected function w17Entity($aCampos)
     {
-        //W17|vServ|vBC|vISS|vPIS|vCOFINS|dCompet|vDeducao|vOutro|vDescIncond|vDescCond|vISSRet|cRegTrib|
+        //W17|vServ|vBC|vISS|vPIS|vCOFINS|dCompet|vDeducao|vOutro|vDescIncond
+        //   |vDescCond|vISSRet|cRegTrib|
         $this->make->tagISSQNTot(
             $aCampos[1], //$vServ
             $aCampos[2], //$vBC
@@ -2186,6 +2189,7 @@ class ConvertNFe
      */
     protected function zLinhaXEntity($aCampos)
     {
+        //Xnn|CNPJ|CPF|xNome|IE|xEnder|xMun|UF|
         $this->make->tagtransporta(
             $aCampos[1], //$numCNPJ
             $aCampos[2], //$numCPF
