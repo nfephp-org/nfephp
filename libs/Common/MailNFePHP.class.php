@@ -23,7 +23,7 @@
  *
  * @package   NFePHP
  * @name      MailNFePHP
- * @version   2.2.14
+ * @version   2.2.15
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -34,6 +34,7 @@
  *              Cristiano Soares <soares dot cr at gmail dot com>
  *              Elton Nagai <eltaum at gmail dot com>
  *              Leandro C. Lopez <leandro dot castoldi at gmail dot com>
+ *              Lucas Vaccaro <lucas-vaccaro at outlook dot com>
  *              João Eduardo Silva Corrêa <jscorrea2 at gmail dot com>
  *              Rodrigo W Cardoso <rodrigogepem at gmail dot com>
  *
@@ -332,9 +333,8 @@ class MailNFePHP
             $filePDF = '';
         }
         if ($cStat == '101' || $cStat == '135' || $cStat == '136') {
-            $anomes = '20'.substr($nomeXML, 2, 4);
             $chave = substr($nomeXML, 0, 44);
-            $extra = $this->canceladasDir.$anomes.DIRECTORY_SEPARATOR.'110111-'.$chave.'-1-procEventoNfe.xml';
+            $extra = $this->canceladasDir . $chave . '-1-procCanc.xml';
             //mensagem no corpo do email em html
             if ($this->layoutCanchtml != '') {
                 $msg = $this->layoutCanchtml;
@@ -359,13 +359,9 @@ class MailNFePHP
                 $msg .= "<br /><p>Atenciosamente,<p>{emitente}</p>";
             }
             // assunto email
-            $subject = utf8_decode("CANCELAMENTO de NF-e Nota Fiscal Eletrônica - N.$numero - $emitente");
-            $msg = str_replace('{status}', ' CANCELAMENTO ', $msg);
-            //substitui os campos variáveis {emitente}
-            $msg = str_replace('{contato}', $contato, $msg);
-            $msg = str_replace('{emitente}', $emitente, $msg);
-            $msg = str_replace('{numero}', $numero, $msg);
-            $msg = str_replace('{serie}', $serie, $msg);
+            $subject = utf8_decode("Cancelamento de NF-e Nota Fiscal Eletrônica - N.$numero - $emitente");
+            // substitui campos variáveis
+            $msg = str_replace('{status}', ' Cancelamento ', $msg);
         } else {
             $extra = '';
             //mensagem no corpo do email em html
@@ -400,14 +396,15 @@ class MailNFePHP
             }
             // assunto email
             $subject = utf8_decode("NF-e Nota Fiscal Eletrônica - N.$numero - $emitente");
+            // substitui campos variáveis
             $msg = str_replace('{status}', 'Autorização', $msg);
-            //substitui os campos variáveis {emitente}
-            $msg = str_replace('{contato}', $contato, $msg);
-            $msg = str_replace('{emitente}', $emitente, $msg);
-            $msg = str_replace('{numero}', $numero, $msg);
-            $msg = str_replace('{serie}', $serie, $msg);
             $msg = str_replace('{valor}', $valor, $msg);
         }
+        // substitui campos variáveis
+        $msg = str_replace('{contato}', $contato, $msg);
+        $msg = str_replace('{emitente}', $emitente, $msg);
+        $msg = str_replace('{numero}', $numero, $msg);
+        $msg = str_replace('{serie}', $serie, $msg);
         //corrige de utf8 para iso
         $msg = utf8_decode($msg);
         $txt = $this->html2txt($msg);
@@ -416,7 +413,7 @@ class MailNFePHP
         //enviar o email
         if (!$result = $this->sendM($to, $contato, $subject, $txt, $htmlMessage, $fileXML, $filePDF, $auth, $extra)) {
             //houve falha no envio reportar
-            $this->mailERROR = 'Houve erro no envio do email, DEBUGAR!! ' .$this->mailERROR;
+            $this->mailERROR = 'Falha no envio do email: ' . $this->mailERROR;
         }
         //apagar os arquivos salvos temporariamente
         if (is_file($fileXML)) {
