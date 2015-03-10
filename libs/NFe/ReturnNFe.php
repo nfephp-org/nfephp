@@ -545,6 +545,16 @@ class ReturnNFe
         $aEvent = array();
         $infEvento = $tag->getElementsByTagName('infEvento')->item(0);
         if (! empty($infEvento)) {
+            $cnpjDest = !empty($infEvento->getElementsByTagName('CNPJDest')->item(0))
+                ? $infEvento->getElementsByTagName('CNPJDest')->item(0)->nodeValue
+                : '';
+            $emailDest = !empty($infEvento->getElementsByTagName('emailDest')->item(0))
+                ? $infEvento->getElementsByTagName('emailDest')->item(0)->nodeValue
+                : '';
+            $nProt = !empty($infEvento->getElementsByTagName('nProt')->item(0))
+                ? $infEvento->getElementsByTagName('nProt')->item(0)->nodeValue
+                : '';
+
             $aEvent = array(
                 'tpAmb' => $infEvento->getElementsByTagName('tpAmb')->item(0)->nodeValue,
                 'verAplic' => $infEvento->getElementsByTagName('verAplic')->item(0)->nodeValue,
@@ -555,10 +565,10 @@ class ReturnNFe
                 'tpEvento' => $infEvento->getElementsByTagName('tpEvento')->item(0)->nodeValue,
                 'xEvento' => $infEvento->getElementsByTagName('xEvento')->item(0)->nodeValue,
                 'nSeqEvento' => $infEvento->getElementsByTagName('nSeqEvento')->item(0)->nodeValue,
-                'CNPJDest' => $infEvento->getElementsByTagName('CNPJDest')->item(0)->nodeValue,
-                'emailDest' => $infEvento->getElementsByTagName('emailDest')->item(0)->nodeValue,
-                'dhRegEvento' => $infEvento->getElementsByTagName('dhRegEvento')->item(0)->nodeValue,
-                'nProt' => $infEvento->getElementsByTagName('nProt')->item(0)->nodeValue
+                'dhRegEvento' => $infEvento->getElementsByTagName('dhRegEvento')->item(0)->nodeValue,                
+                'CNPJDest' => $cnpjDest,
+                'emailDest' => $emailDest,
+                'nProt' => $nProt
             );
         }
         return $aEvent;
