@@ -82,7 +82,7 @@ class MailNFe extends BaseMail
                     $this->aMail[] = $obsCont->getElementsByTagName('xTexto')->item(0)->nodeValue;
                 }
             }
-        }        
+        }
         $this->msgHtml = $this->zRenderTemplate($xNome, $data, $nNF, $serie, $vNF, $razao);
         $this->msgTxt = utf8_encode(Html2Text::convert(utf8_decode($this->msgHtml)));
         return "NFe n. $nNF - $razao";
