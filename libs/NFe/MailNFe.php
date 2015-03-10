@@ -75,12 +75,14 @@ class MailNFe extends BaseMail
         $this->aMail[] = $dest->getElementsByTagName('email')->item(0)->nodeValue;
         //peagar os emails que existirem em obsCont
         $infAdic = $infNFe->getElementsByTagName('infAdic')->item(0);
-        $obsConts = $infAdic->getElementsByTagName('obsCont');
-        foreach ($obsConts as $obsCont) {
-            if (strtoupper($obsCont->getAttribute('xCampo')) === 'EMAIL') {
-                $this->aMail[] = $obsCont->getElementsByTagName('xTexto')->item(0)->nodeValue;
+        if (!empty($infAdic)) {
+            $obsConts = $infAdic->getElementsByTagName('obsCont');
+            foreach ($obsConts as $obsCont) {
+                if (strtoupper($obsCont->getAttribute('xCampo')) === 'EMAIL') {
+                    $this->aMail[] = $obsCont->getElementsByTagName('xTexto')->item(0)->nodeValue;
+                }
             }
-        }
+        }        
         $this->msgHtml = $this->zRenderTemplate($xNome, $data, $nNF, $serie, $vNF, $razao);
         $this->msgTxt = utf8_encode(Html2Text::convert(utf8_decode($this->msgHtml)));
         return "NFe n. $nNF - $razao";
