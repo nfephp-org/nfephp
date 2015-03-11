@@ -29,7 +29,7 @@
  *
  * @package   NFePHP
  * @name      ToolsNFePHP
- * @version   3.10.08-beta
+ * @version   3.10.09-beta
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2012 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -4649,7 +4649,7 @@ class ToolsNFePHP extends CommonNFePHP
             curl_setopt($oCurl, CURLOPT_PORT, 443);
             curl_setopt($oCurl, CURLOPT_VERBOSE, 1);
             curl_setopt($oCurl, CURLOPT_HEADER, 1); //retorna o cabeçalho de resposta
-            curl_setopt($oCurl, CURLOPT_SSLVERSION, 3);
+            //curl_setopt($oCurl, CURLOPT_SSLVERSION, 3);
             curl_setopt($oCurl, CURLOPT_SSL_VERIFYHOST, 2); // verifica o host evita MITM
             curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, 0);
             curl_setopt($oCurl, CURLOPT_SSLCERT, $this->certKEY);
@@ -4693,7 +4693,7 @@ class ToolsNFePHP extends CommonNFePHP
             if ($xml === false || $posX === false) {
                 //não houve retorno
                 $msg = curl_error($oCurl);
-                if (isset($info['http_code'])) {
+                if ($info['http_code'] >= 100) {
                     $msg .= $info['http_code'].$cCode[$info['http_code']];
                 }
                 throw new nfephpException($msg);
