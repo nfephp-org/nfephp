@@ -249,6 +249,12 @@ class ReturnNFe
             return $aResposta;
         }
         $infCons = $tag->getElementsByTagName('infCons')->item(0);
+        $iest = !empty($infCons->getElementsByTagName('IE')->item(0)->nodeValue) ?
+                $infCons->getElementsByTagName('IE')->item(0)->nodeValue : '';
+        $cnpj = !empty($infCons->getElementsByTagName('CNPJ')->item(0)->nodeValue) ?
+                $infCons->getElementsByTagName('CNPJ')->item(0)->nodeValue : '';
+        $cpf =  !empty($infCons->getElementsByTagName('CPF')->item(0)->nodeValue) ?
+                $infCons->getElementsByTagName('CPF')->item(0)->nodeValue : '';
         $aResposta = array(
             'bStat' => true,
             'version' => $tag->getAttribute('versao'),
@@ -256,13 +262,14 @@ class ReturnNFe
             'verAplic' => $infCons->getElementsByTagName('verAplic')->item(0)->nodeValue,
             'xMotivo' => $infCons->getElementsByTagName('xMotivo')->item(0)->nodeValue,
             'UF' => $infCons->getElementsByTagName('UF')->item(0)->nodeValue,
-            'IE' => $infCons->getElementsByTagName('IE')->item(0)->nodeValue,
-            'CNPJ' => $infCons->getElementsByTagName('CNPJ')->item(0)->nodeValue,
-            'CPF' => $infCons->getElementsByTagName('CPF')->item(0)->nodeValue,
+            'IE' => $iest,
+            'CNPJ' => $cnpj,
+            'CPF' => $cpf,
             'dhCons' => $infCons->getElementsByTagName('dhCons')->item(0)->nodeValue,
             'cUF' => $infCons->getElementsByTagName('cUF')->item(0)->nodeValue,
             'aCad' => array()
         );
+        $aCad = array();
         $infCad = $tag->getElementsByTagName('infCad');
         if (isset($infCad)) {
             foreach ($infCad as $cad) {
