@@ -21,7 +21,10 @@
 				</xs:element>
 				<xs:element name="nProt" type="TProt">
 					<xs:annotation>
-						<xs:documentation>Número do Protocolo de Status do MDF-e. 1 posição tipo de autorizador (1 – Secretaria de Fazenda Estadual; 7 - SEFAZ Nacional ); 2 posições ano; 10 seqüencial no ano.</xs:documentation>
+						<xs:documentation>Número do Protocolo de Status do MDF-e. 
+1 posição tipo de autorizador (9 - SEFAZ Nacional ); 
+2 posições ano;
+10 seqüencial no ano.</xs:documentation>
 					</xs:annotation>
 				</xs:element>
 				<xs:element name="dtEnc" type="TData">

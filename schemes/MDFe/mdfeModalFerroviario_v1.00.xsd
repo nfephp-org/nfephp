@@ -82,9 +82,8 @@
 									<xs:documentation>Serie de Identificação do vagão</xs:documentation>
 								</xs:annotation>
 								<xs:simpleType>
-									<xs:restriction base="xs:string">
-										<xs:whiteSpace value="preserve"/>
-										<xs:pattern value="[0-9]{3}"/>
+									<xs:restriction base="TString">
+										<xs:length value="3"/>
 									</xs:restriction>
 								</xs:simpleType>
 							</xs:element>
@@ -112,17 +111,11 @@
 									</xs:restriction>
 								</xs:simpleType>
 							</xs:element>
-							<xs:element name="TU">
+							<xs:element name="TU" type="TDec_0303">
 								<xs:annotation>
 									<xs:documentation>Tonelada Útil</xs:documentation>
 									<xs:documentation>Unidade de peso referente à carga útil (apenas o peso da carga transportada), expressa em toneladas.</xs:documentation>
 								</xs:annotation>
-								<xs:simpleType>
-									<xs:restriction base="xs:string">
-										<xs:whiteSpace value="preserve"/>
-										<xs:pattern value="([1-9]{1}[0-9]{0,2}|0)(\.[0-9]{1,3})?"/>
-									</xs:restriction>
-								</xs:simpleType>
 							</xs:element>
 						</xs:sequence>
 					</xs:complexType>
