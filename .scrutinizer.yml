@@ -1,12 +1,12 @@
 filter:
-    excluded_paths: [vendor/*, tests/*, libs/External/*]
+    excluded_paths: [vendor/*, exemplos/*, tests/*, libs/External/*]
     paths: [libs/*]
 
-before_commands:
-    - "composer install --no-interaction --prefer-source --no-dev"
-
 tools:
-    php_analyzer: true
+    php_code_coverage:
+        enabled: true
+        test_command: phpunit --colors --verbose
+    php_analyzer: false
     php_changetracking: true
     php_code_sniffer:
         config:
@@ -14,3 +14,17 @@ tools:
     php_mess_detector: true
     php_pdepend: true
     php_sim: true
+
+build:
+    dependencies:
+        before:
+            - "sudo composer self-update"
+        override:
+            - "composer install --no-interaction --prefer-source"
+    tests:
+        override:
+            -
+                command: 'phpunit --coverage-clover=clover.xml'
+                coverage:
+                    file: 'clover.xml'
+                    format: 'php-clover'

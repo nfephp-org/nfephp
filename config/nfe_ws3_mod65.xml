@@ -22,7 +22,7 @@ UF/ambiente.
       <RecepcaoEvento method="nfeRecepcaoEvento" operation="RecepcaoEvento" version="1.00">https://homnfce.sefaz.am.gov.br/nfce-services/services/RecepcaoEvento</RecepcaoEvento>
     </homologacao>
     <producao>
-      <NfeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" operation="" version="3.10">https://nfce.sefaz.am.gov.br/nfce-services/services/NfeAutorizacao</NfeAutorizacao>
+      <NfeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10">https://nfce.sefaz.am.gov.br/nfce-services/services/NfeAutorizacao</NfeAutorizacao>
       <NfeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10">https://nfe.sefaz.am.gov.br/services2/services/NfeRetAutorizacao</NfeRetAutorizacao>
       <NfeConsultaCadastro method="consultaCadastro2" operation="NfeConsultaCadastro" version="2.00"></NfeConsultaCadastro>
       <NfeConsultaProtocolo method="nfeConsultaNF2" operation="NfeConsulta2" version="2.01">https://nfce.sefaz.am.gov.br/nfce-services/services/NfeConsulta2</NfeConsultaProtocolo>
