@@ -12,7 +12,7 @@
 					<xs:sequence>
 						<xs:element name="cOrgao" type="TCOrgaoIBGE">
 							<xs:annotation>
-								<xs:documentation>Código do órgão de recepção do Evento. Utilizar a Tabela do IBGE extendida, utilizar 90 para identificar SUFRAMA, 91 para RFB e 92 para BackOffice BRId</xs:documentation>
+								<xs:documentation>Código do órgão de recepção do Evento. Utilizar a Tabela do IBGE extendida, utilizar 90 para identificar SUFRAMA, 91 para RFB, 92 para BackOffice BRId e 93 para ONE</xs:documentation>
 							</xs:annotation>
 						</xs:element>
 						<xs:element name="tpAmb" type="TAmb">
@@ -127,7 +127,7 @@ Insira neste local o XML específico do tipo de evento (cancelamento, encerramen
 						</xs:element>
 						<xs:element name="cOrgao" type="TCOrgaoIBGE">
 							<xs:annotation>
-								<xs:documentation>Código do órgão de recepção do Evento. Utilizar a Tabela do IBGE extendida, utilizar 90 para identificar SUFRAMA</xs:documentation>
+								<xs:documentation>Código do órgão de recepção do Evento. Utilizar a Tabela do IBGE extendida, utilizar 90 para identificar SUFRAMA, 91 RFB, 92 BackOffice BRId e 93 ONE</xs:documentation>
 							</xs:annotation>
 						</xs:element>
 						<xs:element name="cStat" type="TStat">

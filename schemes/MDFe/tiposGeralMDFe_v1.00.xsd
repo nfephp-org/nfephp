@@ -80,6 +80,7 @@
 			<xs:enumeration value="90"/>
 			<xs:enumeration value="91"/>
 			<xs:enumeration value="92"/>
+			<xs:enumeration value="93"/>
 		</xs:restriction>
 	</xs:simpleType>
 	<xs:simpleType name="TChCTe">
