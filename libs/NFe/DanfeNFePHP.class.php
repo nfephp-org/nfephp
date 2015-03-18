@@ -2253,9 +2253,11 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $texto = 'QUANTIDADE';
         $aFont = array('font'=>$this->fontePadrao, 'size'=>6, 'style'=>'');
         $this->pTextBox($x, $y, $w1, $h, $texto, $aFont, 'T', 'L', 1, '');
-        $texto = $quantidade;
-        $aFont = array('font'=>$this->fontePadrao, 'size'=>10, 'style'=>'B');
-        $this->pTextBox($x, $y, $w1, $h, $texto, $aFont, 'B', 'C', 0, '');
+        if(!empty($quantidade)){
+            $texto = $quantidade;
+            $aFont = array('font'=>$this->fontePadrao, 'size'=>10, 'style'=>'B');
+            $this->pTextBox($x, $y, $w1, $h, $texto, $aFont, 'B', 'C', 0, '');
+        }
         //ESPÉCIE
         $x += $w1;
         $w2 = round($maxW*0.17, 0);
