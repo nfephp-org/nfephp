@@ -1415,4 +1415,14 @@ class ToolsNFe extends BaseTools
         }
         return array('alias' => $aliasEvento, 'desc' => $descEvento);
     }
+    
+    /**
+    * getTimestampCert
+    * Retorna o timestamp para a data de vencimento do Certificado
+    * @return int
+    */
+    public function getTimestampCert(){
+      return $this->oCertificate->expireTimestamp;
+    }
+    
 }
