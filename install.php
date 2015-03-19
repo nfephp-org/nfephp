@@ -40,8 +40,52 @@ if (!defined('PATH_NFEPHP')) {
 error_reporting(E_ALL);
 ini_set('display_errors', 'On');
 
-require_once('config/config.php');
-require_once('libs/NFe/ToolsNFePHP.class.php');
+require_once('bootstrap.php');
+
+$pathConfig =  PATH_NFEPHP .'/config/config.json';
+$configJson = Common\Files\FilesFolders::readFile($pathConfig);
+
+$installConfig = json_decode($configJson);
+
+$arquivoURLxml = $installConfig->pathXmlUrlFileNFe;
+$arquivoURLxmlCTe = $installConfig->pathXmlUrlFileCTe;
+$empresa = $installConfig->razaosocial;
+$cnpj = $installConfig->cnpj;
+$certName = $installConfig->certPfxName;
+$keyPass = $installConfig->certPhrase;
+$passPhrase = $installConfig->certPassword;
+$baseurl = $installConfig->siteUrl;
+$schemes = $installConfig->schemesNFe;
+$schemesCTe = $installConfig->schemesCTe;
+$danfePapel = $installConfig->aDocFormat->paper;
+$danfePrinter = $installConfig->aDocFormat->printer;
+$danfeLogo = $installConfig->aDocFormat->pathLogoFile;
+
+$dactePapel = $installConfig->aDocFormat->paper;
+$dactePrinter = $installConfig->aDocFormat->printer;
+$dacteLogo = $installConfig->aDocFormat->pathLogoFile;
+
+$mailFROM = $installConfig->aMailConf->mailFrom;
+$mailHOST = $installConfig->aMailConf->mailImapHost;
+$mailUSER = $installConfig->aMailConf->mailUser;
+$mailPASS = $installConfig->aMailConf->mailPass;
+$mailPORT = $installConfig->aMailConf->mailPort;
+$mailFROMmail = $installConfig->aMailConf->mailFromMail;
+$mailFROMname = $installConfig->aMailConf->mailFromName;
+
+$mailREPLYTOmail = $installConfig->aMailConf->mailReplayToMail;
+$mailREPLYTOname = $installConfig->aMailConf->mailReplayToName;
+$mailIMAPhost = $installConfig->aMailConf->mailImapHost;
+$mailIMAPport = $installConfig->aMailConf->mailImapPort;
+$mailIMAPsecurity = $installConfig->aMailConf->mailImapSecurity;
+$mailIMAPnocerts = $installConfig->aMailConf->mailImapNocerts;
+$mailIMAPbox = $installConfig->aMailConf->mailImapBox;
+$mailLayoutFile = '';
+$proxyIP = $installConfig->aProxyConf->proxyIp;
+$proxyPort = $installConfig->aProxyConf->proxyPort;
+$proxyUSER = $installConfig->aProxyConf->proxyUser;
+$proxyPASS = $installConfig->aProxyConf->proxyPass;
+
 
 $installVer = '1.3.7';
 //cores
@@ -208,7 +252,9 @@ if (file_exists($filen)) {
     }
 }
 
+
 //Teste do diretorio de arquivo dos xml NFe
+$arquivosDir = $installConfig->pathNFeFiles;
 $cDir = $cRed;
 $wdDir = 'FALHA';
 if (is_dir($arquivosDir)) {
@@ -227,6 +273,7 @@ if (is_dir($arquivosDir)) {
 }
 
 //Teste do diretorio de arquivo dos xml CTe
+$arquivosDirCTe = $installConfig->pathCTeFiles;
 $ccteDir = $cRed;
 $wctedDir = 'FALHA';
 if (isset($arquivosDirCTe)) {
@@ -248,20 +295,19 @@ if (isset($arquivosDirCTe)) {
     $obscteDir= " Diretório CTe n&atilde;o especificado !!";
 }
 
-//Verificação da validade do certificado
-$nfe = new ToolsNFePHP('', 0);
-if ($nfe->certDaysToExpire > 0) {
-    if ($nfe->certDaysToExpire>365) {
-        $dias = round($nfe->certDaysToExpire/10, 0);
-    } else {
-        $dias = $nfe->certDaysToExpire;
-    }
-    $certVal = "Certificado v&aacute;lido (+" . $dias . ' dias)';
+$nfe = new NFe\ToolsNFe($pathConfig);
+
+
+$certificate = new Common\Certificate\Pkcs12($installConfig->pathCertsFiles, $installConfig->cnpj);
+  
+if ($certificate->expireTimestamp > 0) {
+    $certVal = "Certificado v&aacute;lido";
 } else {
     $certVal = "Certificado INV&Aacute;LIDO !!!";
 }
 
 //Tipo de ambiente
+$ambiente = $installConfig->tpAmb;
 if ($ambiente == 1) {
     $selAmb2 = '';
     $selAmb1 = 'selected';
@@ -271,6 +317,7 @@ if ($ambiente == 1) {
 }
 
 //Unidade da federação
+$UF = $installConfig->siglaUF;
 $aEstados = explode('.', 'AC.AL.AM.AP.BA.CE.DF.ES.GO.MA.MG.MS.MT.PA.PB.PE.PI.PR.RJ.RN.RO.RR.RS.SC.SE.SP.TO');
 foreach ($aEstados as $ufAux) {
     if ($UF == $ufAux) {
@@ -282,19 +329,24 @@ foreach ($aEstados as $ufAux) {
 }
 
 //Fontes básicas compiladas no FPDF
+$danfeFonte = $installConfig->aDocFormat->font;
 $aFontes = explode('.', 'Times.Helvetica.Corrier');
 $i = 0;
 foreach ($aFontes as $f) {
     if ($danfeFonte == $f) {
         $dfont = "\$selFont{$i} = \"".'selected=\"selected\"'."\";";
+        $cfont = "\$selcteFont{$i} = \"".'selected=\"selected\"'."\";";
     } else {
         $dfont = "\$selFont{$i} = '';";
+        $cfont = "\$selcteFont{$i} = '';";
     }
     eval($dfont);
+    eval($cfont);
     $i++;
 }
 
 //Danfe formato
+$danfeFormato = $installConfig->aDocFormat->format;
 if ($danfeFormato=='P') {
     $selFormP = 'selected';
     $selFormL = '';
@@ -304,6 +356,7 @@ if ($danfeFormato=='P') {
 }
 
 //Danfe canhoto
+$danfeCanhoto = '';
 if ($danfeCanhoto) {
     $selCanh1 = 'selected';
     $selCanh0 = '';
@@ -313,6 +366,7 @@ if ($danfeCanhoto) {
 }
 
 //Danfe posicao logo
+$danfeLogoPos = $installConfig->aDocFormat->logoPosition;
 if ($danfeLogoPos == 'L') {
     $seldposL = 'selected';
     $seldposC = '';
@@ -330,6 +384,7 @@ if ($danfeLogoPos == 'R') {
 }
 
 //Dacte formato
+$dacteFormato = $installConfig->aDocFormat->logoPosition;
 if ($dacteFormato=='P') {
     $selcteFormP = 'selected';
     $selcteFormL = '';
@@ -339,6 +394,7 @@ if ($dacteFormato=='P') {
 }
 
 //Dacte canhoto
+$dacteCanhoto ='';
 if ($dacteCanhoto) {
     $selcteCanh1 = 'selected';
     $selcteCanh0 = '';
@@ -348,6 +404,7 @@ if ($dacteCanhoto) {
 }
 
 //Dacte posicao logo
+$dacteLogoPos = $installConfig->aDocFormat->logoPosition;
 if ($dacteLogoPos == 'L') {
     $selctedposL = 'selected';
     $selctedposC = '';
@@ -365,6 +422,7 @@ if ($dacteLogoPos == 'R') {
 }
 
 //Autenticação obrigatória para email
+$mailAuth = $installConfig->aMailConf->mailAuth;
 if ($mailAuth == 1) {
     $selMAuthS = 'selected';
     $selMAuthN = '';
@@ -372,6 +430,7 @@ if ($mailAuth == 1) {
     $selMAuthN = 'selected';
     $selMAuthS = '';
 }
+$mailPROTOCOL = $installConfig->aMailConf->mailProtocol;
 if ($mailPROTOCOL == 'ssl') {
     $selMprotS = 'selected';
     $selMprotT = '';
@@ -463,7 +522,7 @@ class moduleCheck
     {
         // check if module is loaded before continuing
         if ($this->isLoaded($moduleName)==false) {
-            return 'Modulo não carregado';
+            return 'Modulo n&atilde;o carregado';
         }
         if ($this->Modules[$moduleName][$setting]) {
             return $this->Modules[$moduleName][$setting];
