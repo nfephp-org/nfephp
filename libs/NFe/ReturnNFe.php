@@ -271,32 +271,33 @@ class ReturnNFe
         );
         $aCad = array();
         $infCad = $tag->getElementsByTagName('infCad');
-        if (isset($infCad)) {
-            foreach ($infCad as $cad) {
-                $ender = $cad->getElementsByTagName('ender')->item(0);
-                $aCad[] = array(
-                    'IE' => $cad->getElementsByTagName('IE')->item(0)->nodeValue,
-                    'CNPJ' => $cad->getElementsByTagName('CNPJ')->item(0)->nodeValue,
-                    'UF' => $cad->getElementsByTagName('UF')->item(0)->nodeValue,
-                    'cSit' => $cad->getElementsByTagName('cSit')->item(0)->nodeValue,
-                    'indCredNFe' => $cad->getElementsByTagName('indCredNFe')->item(0)->nodeValue,
-                    'indCredCTe' => $cad->getElementsByTagName('indCredCTe')->item(0)->nodeValue,
-                    'xNome' => $cad->getElementsByTagName('xNome')->item(0)->nodeValue,
-                    'xRegApur' => $cad->getElementsByTagName('xRegApur')->item(0)->nodeValue,
-                    'CNAE' => $cad->getElementsByTagName('CNAE')->item(0)->nodeValue,
-                    'dIniAtiv' => $cad->getElementsByTagName('dIniAtiv')->item(0)->nodeValue,
-                    'dUltSit' => $cad->getElementsByTagName('dUltSit')->item(0)->nodeValue,
-                    'xLgr' => $ender->getElementsByTagName('xLgr')->item(0)->nodeValue,
-                    'nro' => $ender->getElementsByTagName('nro')->item(0)->nodeValue,
-                    'xCpl' => $ender->getElementsByTagName('xCpl')->item(0)->nodeValue,
-                    'xBairro' => $ender->getElementsByTagName('xBairro')->item(0)->nodeValue,
-                    'cMun' => $ender->getElementsByTagName('cMun')->item(0)->nodeValue,
-                    'xMun' => $ender->getElementsByTagName('xMun')->item(0)->nodeValue,
-                    'CEP' => $ender->getElementsByTagName('CEP')->item(0)->nodeValue
-                );
-            }
-            $aResposta['aCad'] = $aCad;
+        if (! isset($infCad)) {
+            return $aResposta;
         }
+        foreach ($infCad as $cad) {
+            $ender = $cad->getElementsByTagName('ender')->item(0);
+            $aCad[] = array(
+                'IE' => $cad->getElementsByTagName('IE')->item(0)->nodeValue,
+                'CNPJ' => $cad->getElementsByTagName('CNPJ')->item(0)->nodeValue,
+                'UF' => $cad->getElementsByTagName('UF')->item(0)->nodeValue,
+                'cSit' => $cad->getElementsByTagName('cSit')->item(0)->nodeValue,
+                'indCredNFe' => $cad->getElementsByTagName('indCredNFe')->item(0)->nodeValue,
+                'indCredCTe' => $cad->getElementsByTagName('indCredCTe')->item(0)->nodeValue,
+                'xNome' => $cad->getElementsByTagName('xNome')->item(0)->nodeValue,
+                'xRegApur' => $cad->getElementsByTagName('xRegApur')->item(0)->nodeValue,
+                'CNAE' => $cad->getElementsByTagName('CNAE')->item(0)->nodeValue,
+                'dIniAtiv' => $cad->getElementsByTagName('dIniAtiv')->item(0)->nodeValue,
+                'dUltSit' => $cad->getElementsByTagName('dUltSit')->item(0)->nodeValue,
+                'xLgr' => $ender->getElementsByTagName('xLgr')->item(0)->nodeValue,
+                'nro' => $ender->getElementsByTagName('nro')->item(0)->nodeValue,
+                'xCpl' => $ender->getElementsByTagName('xCpl')->item(0)->nodeValue,
+                'xBairro' => $ender->getElementsByTagName('xBairro')->item(0)->nodeValue,
+                'cMun' => $ender->getElementsByTagName('cMun')->item(0)->nodeValue,
+                'xMun' => $ender->getElementsByTagName('xMun')->item(0)->nodeValue,
+                'CEP' => $ender->getElementsByTagName('CEP')->item(0)->nodeValue
+            );
+        }
+        $aResposta['aCad'] = $aCad;
         return $aResposta;
     }
 
@@ -421,6 +422,8 @@ class ReturnNFe
         if (! isset($tag)) {
             return $aResposta;
         }
+        $tMed = ! empty($tag->getElementsByTagName('tMed')->item(0)->nodeValue) ?
+                $tag->getElementsByTagName('tMed')->item(0)->nodeValue : '';
         $aResposta = array(
             'bStat' => true,
             'versao' => $tag->getAttribute('versao'),
@@ -428,7 +431,7 @@ class ReturnNFe
             'verAplic' => $tag->getElementsByTagName('verAplic')->item(0)->nodeValue,
             'xMotivo' => $tag->getElementsByTagName('xMotivo')->item(0)->nodeValue,
             'dhRecbto' => $tag->getElementsByTagName('dhRecbto')->item(0)->nodeValue,
-            'tMed' => $tag->getElementsByTagName('tMed')->item(0)->nodeValue,
+            'tMed' => $tMed,
             'cUF' => $tag->getElementsByTagName('cUF')->item(0)->nodeValue
         );
         return $aResposta;
@@ -572,7 +575,7 @@ class ReturnNFe
                 'tpEvento' => $infEvento->getElementsByTagName('tpEvento')->item(0)->nodeValue,
                 'xEvento' => $infEvento->getElementsByTagName('xEvento')->item(0)->nodeValue,
                 'nSeqEvento' => $infEvento->getElementsByTagName('nSeqEvento')->item(0)->nodeValue,
-                'dhRegEvento' => $infEvento->getElementsByTagName('dhRegEvento')->item(0)->nodeValue,                
+                'dhRegEvento' => $infEvento->getElementsByTagName('dhRegEvento')->item(0)->nodeValue,
                 'CNPJDest' => $cnpjDest,
                 'emailDest' => $emailDest,
                 'nProt' => $nProt
