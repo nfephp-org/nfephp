@@ -2376,9 +2376,9 @@ class ConvertNFePHP
                     $procRef = $dom->createElement("procRef");
                     $nProc = $dom->createElement("nProc", $dados[1]);
                     $procRef->appendChild($nProc);
-                    $procRef = $dom->createElement("indProc", $dados[2]);
+                    $indProc = $dom->createElement("indProc", $dados[2]);
                     $procRef->appendChild($indProc);
-                    $infAdic->appendChild($proRef);
+                    $infAdic->appendChild($procRef);
                     break;
                 case "ZA":
                     //Grupo de Exportação 0 ou 1 [infNFe]
