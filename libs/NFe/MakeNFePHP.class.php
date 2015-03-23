@@ -1287,7 +1287,7 @@ class MakeNFe
         $this->zAddChild($veicProd, "pesoL", $pesoL, true, "$identificador [item $nItem] Peso Líquido do veículo");
         $this->zAddChild($veicProd, "pesoB", $pesoB, true, "$identificador [item $nItem] Peso Bruto do veículo");
         $this->zAddChild($veicProd, "nSerie", $nSerie, true, "$identificador [item $nItem] Serial (série) do veículo");
-        $this->zAddChild($veicProd, "tpCpmb", $tpComb, true, "$identificador [item $nItem] Tipo de combustível do veículo");
+        $this->zAddChild($veicProd, "tpComb", $tpComb, true, "$identificador [item $nItem] Tipo de combustível do veículo");
         $this->zAddChild($veicProd, "nMotor", $nMotor, true, "$identificador [item $nItem] Número de Motor do veículo");
         $this->zAddChild($veicProd, "CMT", $cmt, true, "$identificador [item $nItem] Capacidade Máxima de Tração do veículo");
         $this->zAddChild($veicProd, "dist", $dist, true, "$identificador [item $nItem] Distância entre eixos do veículo");
