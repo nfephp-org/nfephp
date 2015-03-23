@@ -1703,8 +1703,10 @@ class ToolsNFePHP extends CommonNFePHP
             $urlservico = $aURL[$servico]['URL'];
             //recuperação do método
             $metodo = $aURL[$servico]['method'];
+            //recuperação da operação
+            $operation = $aURL[$servico]['operation'];
             //montagem do namespace do serviço
-            $namespace = $this->URLPortal.'/wsdl/'.$servico.'2';
+            $namespace = $this->URLPortal.'/wsdl/'.$operation;
             //montagem do cabeçalho da comunicação SOAP
             $cabec = "<nfeCabecMsg xmlns=\"$namespace\">"
                     . "<cUF>$cUF</cUF>"
