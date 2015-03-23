@@ -336,7 +336,7 @@ class DacceNFePHP extends CommonNFePHP implements DocumentoNFePHP
                 $y1 = round($h / 3 + $y, 0);
                 $tw = round(2 * $w / 3, 0);
             }
-            $this->pdf->Image($this->logomarca, $xImg, $yImg, $nImgW, $nImgH, 'jpeg');
+            $this->pdf->Image($this->logomarca, $xImg, $yImg, $nImgW, $nImgH);
         } else {
             $x1 = $x;
             $y1 = round($h / 3 + $y, 0);
@@ -549,7 +549,7 @@ class DacceNFePHP extends CommonNFePHP implements DocumentoNFePHP
      * @param number $x
      * @param number $y
      */
-    private function pFooter($x, $y)
+    protected function pFooter($x, $y)
     {
         $w = $this->wPrint;
         $texto = "Este documento é uma representação gráfica da CC-e e foi impresso apenas para sua informação e não possue validade fiscal.\n A CC-e deve ser recebida e mantida em arquivo eletrônico XML e pode ser consultada através dos Portais das SEFAZ.";
