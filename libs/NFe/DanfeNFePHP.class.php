@@ -1612,7 +1612,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         //DATA DA SAÍDA
         $x += $w;
         $w = $wx;
-        $texto = 'DATA DA SAÍDA';
+        $texto = 'DATA DA SAÍDA/ENTRADA';
         $aFont = array('font'=>$this->fontePadrao, 'size'=>6, 'style'=>'');
         $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 1, '');
         $dSaiEnt = ! empty($this->ide->getElementsByTagName("dSaiEnt")->item(0)->nodeValue) ?
@@ -1672,7 +1672,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         //HORA DA SAÍDA
         $x += $w;
         $w = $wx;
-        $texto = 'HORA DA SAÍDA';
+        $texto = 'HORA DA SAÍDA/ENTRADA';
         $aFont = array('font'=>$this->fontePadrao, 'size'=>6, 'style'=>'');
         $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 1, '');
         $hSaiEnt = ! empty($this->ide->getElementsByTagName("hSaiEnt")->item(0)->nodeValue) ?
