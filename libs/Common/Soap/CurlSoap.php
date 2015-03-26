@@ -183,14 +183,20 @@ class CurlSoap
             $msg = $blocoHtml;
             throw new Exception\RuntimeException($msg);
         }
-        //obtem o tamanho do xml
-        $num = strlen($resposta);
+        //obtem o tamanho da resposta
+        $lenresp = strlen($resposta);
         //localiza a primeira marca de tag
         $xPos = stripos($resposta, "<");
-        //se não exixtir não é um xml
+        //se não existir não é um xml nem um html
         if ($xPos !== false) {
-            $xml = substr($resposta, $xPos, $num-$xPos);
+            $xml = substr($resposta, $xPos, $lenresp-$xPos);
         } else {
+            $xml = '';
+        }
+        //testa para saber se é um xml mesmo ou é um html
+        $result = simplexml_load_string($xml, 'SimpleXmlElement', LIBXML_NOERROR+LIBXML_ERR_FATAL+LIBXML_ERR_NONE);
+        if ($result === false) {
+            //não é um xml então pode limpar
             $xml = '';
         }
         if ($xml == '') {
@@ -291,8 +297,8 @@ class CurlSoap
         $this->errorCurl = curl_error($oCurl);
         //fecha a conexão
         curl_close($oCurl);
-        //retorna
-        return $resposta;
+        //retorna resposta tendo o cuidado de decodificar caso esteja codificado
+        return htmlspecialchars_decode($resposta);
     }
     
     /**
