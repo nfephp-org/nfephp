@@ -254,6 +254,11 @@ class CurlSoap
                 curl_setopt($oCurl, CURLOPT_PROXYAUTH, CURLAUTH_BASIC);
             } //fim if senha proxy
         }//fim if aProxy
+        //força a resolução de nomes com IPV4 e não com IPV6, isso
+        //pode acelerar temporáriamente as falhas ou demoras decorrentes de
+        //ambiente mal preparados como os da SEFAZ GO, porém pode causar
+        //problemas no futuro quando os endereços IPV4 deixarem de ser usados
+        curl_setopt($oCurl, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
         curl_setopt($oCurl, CURLOPT_CONNECTTIMEOUT, $this->soapTimeout);
         curl_setopt($oCurl, CURLOPT_URL, $url);
         curl_setopt($oCurl, CURLOPT_PORT, 443);
