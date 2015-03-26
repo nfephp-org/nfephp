@@ -6,7 +6,7 @@ namespace Common\Files;
  * Classe auxiliar para criar, listar e testar os diretórios utilizados pela API
  * @category   NFePHP
  * @package    NFePHP\Common\Files
- * @copyright  Copyright (c) 2008-2014
+ * @copyright  Copyright (c) 2008-2015
  * @license    http://www.gnu.org/licenses/lesser.html LGPL v3
  * @author     Roberto L. Machado <linux.rlm at gmail dot com>
  * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
@@ -16,6 +16,65 @@ use Common\Exception;
 
 class FilesFolders
 {
+    
+    protected $ambientes = array('homologacao','producao');
+    protected $subdirs = array(
+        'entradas',
+        'assinadas',
+        'validadas',
+        'rejeitadas',
+        'enviadas',
+        'enviadas/aprovadas',
+        'enviadas/denegadas',
+        'enviadas/rejeitadas',
+        'enviadas/encerradas',
+        'canceladas',
+        'inutilizadas',
+        'cartacorrecao',
+        'eventos',
+        'dpec',
+        'temporarias',
+        'recebidas',
+        'consultadas',
+        'pdf'
+    );
+    
+    /**
+     * getAmbiente
+     * @param string $tpAmb
+     * @return string
+     */
+    public static function getAmbiente($tpAmb = '2')
+    {
+        if ($tpAmb == '2') {
+            return 'homologacao';
+        }
+        return 'producao';
+    }
+    
+    /**
+     * getFilePath
+     * @param string $tpAmb
+     * @param string $dirbase
+     * @param string $subdir
+     * @return string
+     * @throws Exception\RuntimeException
+     */
+    public static function getFilePath($tpAmb = '2', $dirbase = '', $subdir = '')
+    {
+        $path = $dirbase
+            . DIRECTORY_SEPARATOR
+            . self::getAmbiente($tpAmb)
+            . DIRECTORY_SEPARATOR
+            . $subdir;
+        
+        if (! is_dir($path)) {
+            $msg = "Não existe o diretorio $path !";
+            throw new Exception\RuntimeException($msg);
+        }
+        return $path;
+    }
+    
     /**
      * createFolders
      * Cria a estrutura de diretorios para a guarda dos arquivos 
@@ -25,51 +84,51 @@ class FilesFolders
      */
     public function createFolders($dirPath = '')
     {
-        $ambientes = array('homologacao','producao');
-        $subdirs = array(
-            'entradas',
-            'assinadas',
-            'validadas',
-            'rejeitadas',
-            'enviadas',
-            'enviadas/aprovadas',
-            'enviadas/denegadas',
-            'enviadas/rejeitadas',
-            'enviadas/encerradas',
-            'canceladas',
-            'inutilizadas',
-            'cartacorrecao',
-            'eventos',
-            'dpec',
-            'temporarias',
-            'recebidas',
-            'consultadas',
-            'pdf'
-        );
-        
         //monta a arvore de diretórios necessária e estabelece permissões de acesso
-        if (! is_dir($dirPath)) {
-            if (! mkdir($dirPath, 0777)) {
+        self::createFolder($dirPath);
+        foreach ($this->ambientes as $ambiente) {
+            $folder = $dirPath.DIRECTORY_SEPARATOR.$ambiente;
+            self::createFolder($folder);
+            foreach ($this->subdirs as $subdir) {
+                $folder = $dirPath.DIRECTORY_SEPARATOR.$ambiente.DIRECTORY_SEPARATOR.$subdir;
+                self::createFolder($folder);
+            }
+        }
+        return true;
+    }
+    
+    /**
+     * createFolder
+     * @param string $folder
+     * @throws Exception\RuntimeException
+     */
+    public static function createFolder($folder = '')
+    {
+        if (! is_dir($folder)) {
+            if (! mkdir($folder, 0777)) {
                 throw new Exception\RuntimeException(
-                    "Não foi possivel criar o diretorio. Verifique as permissões"
+                    "Não foi possivel criar o diretorio $folder. Verifique as permissões"
                 );
             }
         }
-        foreach ($ambientes as $ambiente) {
-            $folder = $dirPath.DIRECTORY_SEPARATOR.$ambiente;
-            if (!is_dir($folder)) {
-                if (! mkdir($folder, 0777)) {
-                    throw new Exception\RuntimeException(
-                        "Não foi possivel criar o diretorio. Verifique as permissões"
-                    );
-                }
-            }
-            foreach ($subdirs as $subdir) {
-                $folder = $dirPath.DIRECTORY_SEPARATOR.$ambiente.DIRECTORY_SEPARATOR.$subdir;
-                if (!is_dir($folder)) {
-                    mkdir($folder, 0777);
-                }
-            }
+    }
+    
+    /**
+     * saveFile
+     * @param string $path
+     * @param string $filename
+     * @param string $content
+     * @return boolean
+     */
+    public static function saveFile($path = '', $filename = '', $content = '')
+    {
+        self::createFolder($path);
+        $filePath = $path.DIRECTORY_SEPARATOR.$filename;
+        if (! file_put_contents($filePath, $content)) {
+            return false;
+        }
+        if (! chmod($filePath, 0777)) {
+            return false;
         }
         return true;
     }
@@ -80,58 +139,36 @@ class FilesFolders
      * @param string $dir Diretorio a ser pesquisado
      * @param string $fileMatch Critério de seleção pode ser usados coringas como *-nfe.xml
      * @param boolean $retpath se true retorna o path completo dos arquivos se false so retorna o nome dos arquivos
-     * @return mixed Matriz com os nome dos arquivos que atendem ao critério estabelecido ou false
-     * @throws Exception\RuntimeException
+     * @return array com os nome dos arquivos que atendem ao critério estabelecido ou false
+     * @throws Exception\InvalidArgumentException
      */
-    public function listDir($dir, $fileMatch = '*-nfe.xml', $retpath = false)
+    public function listDir($folder, $fileMatch = '*-nfe.xml', $retpath = false)
     {
-        if (trim($fileMatch) != '' && trim($dir) != '') {
-            //passar o padrão para minúsculas
-            $fileMatch = strtolower($fileMatch);
-            //cria um array limpo
-            $aName = array();
-            //guarda o diretorio atual
-            $oldDir = getcwd().DIRECTORY_SEPARATOR;
-            //verifica se o parametro $dir define um diretorio real
-            if (is_dir($dir)) {
-                //mude para o novo diretorio
-                @chdir($dir);
-                //pegue o diretorio
-                $diretorio = getcwd().DIRECTORY_SEPARATOR;
-                if (strtolower($dir) != strtolower($diretorio)) {
-                    throw new Exception\RuntimeException(
-                        "Falha! sem permissão de leitura no diretorio escolhido."
-                    );
-                }
-                //abra o diretório
-                $ponteiro  = opendir($diretorio);
-                $numX = 0;
-                // monta os vetores com os itens encontrados na pasta
-                while (false !== ($file = readdir($ponteiro))) {
-                    //procure se não for diretorio
-                    if ($file != "." && $file != "..") {
-                        if (! is_dir($file)) {
-                            $tfile = strtolower($file);
-                            //é um arquivo então
-                            //verifique se combina com o $fileMatch
-                            if (fnmatch($fileMatch, $tfile)) {
-                                if ($retpath) {
-                                    $aName[$numX] = $dir.$file;
-                                } else {
-                                    $aName[$numX] = $file;
-                                }
-                                $numX++;
-                            }
-                        }
-                    }
-                }
-                closedir($ponteiro);
-                //volte para o diretorio anterior
-                chdir($oldDir);
+        if ($folder == '' || $fileMatch == '') {
+            throw new Exception\InvalidArgumentException(
+                "É necessário passar os parametros diretório e filtro!!!"
+            );
+        }
+        if (! is_dir($folder)) {
+            throw new Exception\InvalidArgumentException(
+                "O diretório não existe!!!"
+            );
+        }
+        $aList = array();
+        $search = $folder;
+        if (substr($folder, -1) == DIRECTORY_SEPARATOR) {
+            $search = substr($folder, 0, strlen($folder)-1);
+        }
+        $searchmatch = $search.DIRECTORY_SEPARATOR.$fileMatch;
+        $aGlob = glob($searchmatch);
+        $aList = $aGlob;
+        if (! $retpath && ! empty($aGlob)) {
+            $aList = array();
+            foreach ($aGlob as $pathFile) {
+                $aList[] = str_replace($search.DIRECTORY_SEPARATOR, '', $pathFile);
             }
         }
-        sort($aName);
-        return $aName;
+        return $aList;
     }
     
     /**
@@ -188,10 +225,34 @@ class FilesFolders
             }
         }
         if (! rmdir($dirPath)) {
-            throw new Exception\RuntimeException(
-                "Falha! sem permissão de exclusão do diretório $dirPath"
-            );
+            $msg = "Falha! sem permissão de exclusão do diretório $dirPath";
+            throw new Exception\RuntimeException($msg);
         }
         return true;
+    }
+    
+    /**
+     * readFile
+     * @param string $pathFile
+     * @return string
+     * @throws Exception\InvalidArgumentException
+     * @throws Exception\RuntimeException
+     */
+    public static function readFile($pathFile = '')
+    {
+        $data = '';
+        if ($pathFile == '') {
+            $msg = "Um caminho para o arquivo deve ser passado!!";
+            throw new Exception\InvalidArgumentException($msg);
+        }
+        if (! is_file($pathFile)) {
+            $msg = "O arquivo indicado não foi localizado!!";
+            throw new Exception\InvalidArgumentException($msg);
+        }
+        if (! $data = file_get_contents($pathFile)) {
+            $msg = "O arquivo indicado não pode ser lido. Permissões!!";
+            throw new Exception\RuntimeException($msg);
+        }
+        return $data;
     }
 }

@@ -64,16 +64,11 @@ class FilesZip
     /**
      * unGZip
      * Descompacta dados compactados GZIP via PHP
-     * @param string $data Dados compactados com gzip ou path ao arquivo
+     * @param string $data Dados compactados com gzip em uma string
      * @return mixed
      */
-    public static function unGZip($datazip = '')
+    public static function unGZip($data = '')
     {
-        if (is_file($datazip)) {
-            $data = file_get_contents($datazip);
-        } else {
-            $data = $datazip;
-        }
         $len = strlen($data);
         if ($len < 18 || strcmp(substr($data, 0, 2), "\x1f\x8b")) {
             throw new Exception\RuntimeException(
@@ -202,5 +197,35 @@ class FilesZip
             );
         }
         return $data;
+    }
+    
+    /**
+     * compacta uma string usando Gzip
+     * @param string $data
+     * @return string
+     */
+    public static function gZipString($data = '')
+    {
+        return gzencode($data, 9, FORCE_GZIP);
+    }
+    
+    /**
+     * descompacta uma string usando Gzip
+     * @param string $data
+     * @return string
+     */
+    public static function unGZipString($data = '')
+    {
+        return gzdecode($data);
+    }
+    
+    /**
+     * compacta uma string usando ZLIB
+     * @param string $data
+     * @return string
+     */
+    public static function zipString($data = '')
+    {
+        return gzcompress($data, 9);
     }
 }

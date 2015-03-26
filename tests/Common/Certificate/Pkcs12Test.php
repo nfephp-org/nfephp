@@ -222,20 +222,23 @@ VURh6kJDAMVhhB5URXSnHhuGrKGi
         $resp = $pkcs->loadPfxFile($arquivopfx, $keyPass, $createFiles, $ignoreValidity, $ignoreOwner);
         $this->assertTrue($resp);
     }
-    
+
+    /**
+     * @expectedException \Common\Exception\RuntimeException
+     * @expectedExceptionMessage Data de validade vencida! [Valido até 02/10/10]
+     */
     public function testValidadeCertificado()
     {
         $cnpj = '99999090910270';
         $pathCerts = '';
         $ignoreValidCert = false;
-        try {
-            $pkcs = new Pkcs12($pathCerts, $cnpj, $this->pubPem, $this->priPem, '', $ignoreValidCert);
-        } catch (\Exception $e) {
-            $result[0] = $e->getMessage();
-        }
-        $this->assertEquals($result[0], 'Data de validade vencida! [Valido até 02/10/10]');
+        new Pkcs12($pathCerts, $cnpj, $this->pubPem, $this->priPem, '', $ignoreValidCert);
     }
-    
+
+    /**
+     * @expectedException \Common\Exception\InvalidArgumentException
+     * @expectedExceptionMessage O Certificado fornecido pertence a outro CNPJ!!
+     */
     public function testProprietarioCertificado()
     {
         $pathCerts = '';
@@ -250,13 +253,7 @@ VURh6kJDAMVhhB5URXSnHhuGrKGi
         $createFiles = false;
         $ignoreValidity = true;
         $ignoreOwner = false;
-        $result = '';
-        try {
-            $resp = $pkcs->loadPfx($pfxContent, $keyPass, $createFiles, $ignoreValidity, $ignoreOwner);
-        } catch (\Exception $e) {
-            $result = $e->getMessage();
-        }
-        $this->assertEquals($result, 'O Certificado fornecido pertence a outro CNPJ!!');
+        $pkcs->loadPfx($pfxContent, $keyPass, $createFiles, $ignoreValidity, $ignoreOwner);
     }
     
     public function testAssinarXml()

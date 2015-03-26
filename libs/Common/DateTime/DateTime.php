@@ -2,6 +2,16 @@
 
 namespace Common\DateTime;
 
+/**
+ * Classe auxiliar para tratar datas
+ * @category   NFePHP
+ * @package    NFePHP\Common\DateTime
+ * @copyright  Copyright (c) 2008-2015
+ * @license    http://www.gnu.org/licenses/lesser.html LGPL v3
+ * @author     Roberto L. Machado <linux.rlm at gmail dot com>
+ * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
+ */
+
 class DateTime
 {
     /**
@@ -17,7 +27,6 @@ class DateTime
         if ($siglaUF == '') {
             return '';
         }
-        
         $tzUFlist = array(
             'AC'=>'America/Rio_Branco',
             'AL'=>'America/Maceio',
@@ -50,7 +59,6 @@ class DateTime
         if (! isset($tzUFlist[$siglaUF])) {
             return '';
         }
-
         //seta a zona de tempo
         date_default_timezone_set($tzUFlist[$siglaUF]);
         return (string) date('P');
@@ -63,15 +71,18 @@ class DateTime
      * @param string $DH Informação de data e tempo extraida da NFe
      * @return timestamp UNIX Para uso com a funçao date do php
      */
-    public static function convertSefazTimeToTimestamp(string $dataHora = '')
+    public static function convertSefazTimeToTimestamp($dataHora = '')
     {
         if ($dataHora == '') {
             return '';
         }
         $aDH = explode('T', $dataHora);
         $adDH = explode('-', $aDH[0]);
-        $inter = explode('-', $aDH[1]);
-        $atDH = explode(':', $inter[0]);
+        $atDH = array('0','0','0');
+        if (count($aDH) == 2) {
+            $inter = explode('-', $aDH[1]);
+            $atDH = explode(':', $inter[0]);
+        }
         $timestamp = mktime($atDH[0], $atDH[1], $atDH[2], $adDH[1], $adDH[2], $adDH[0]);
         return $timestamp;
     }
@@ -83,7 +94,7 @@ class DateTime
      * @param int $timestamp
      * @return string
      */
-    public static function convertTimestampToSefazTime(int $timestamp = 0)
+    public static function convertTimestampToSefazTime($timestamp = 0)
     {
         if ($timestamp == 0) {
             return (string) str_replace(' ', 'T', date('Y-m-d H:i:sP'));

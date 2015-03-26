@@ -2,9 +2,6 @@ filter:
     excluded_paths: [vendor/*, exemplos/*, tests/*, libs/External/*]
     paths: [libs/*]
 
-before_commands:
-    - "composer install --no-interaction --prefer-source --no-dev"
-
 tools:
     php_code_coverage:
         enabled: true
@@ -19,6 +16,11 @@ tools:
     php_sim: true
 
 build:
+    dependencies:
+        before:
+            - "sudo composer self-update"
+        override:
+            - "composer install --no-interaction --prefer-source"
     tests:
         override:
             -

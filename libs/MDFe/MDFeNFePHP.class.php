@@ -2218,9 +2218,155 @@ class MDFeNFePHP {
         return $retorno;
     } //fim manifDest
 
-
-
-
+    /**
+     * MDFeConsNaoEnc
+     * Serviço destinado à consulta de MDFes não encerrados de acordo com o CNPJ fornecido.
+     * Processo: síncrono.
+     *
+     * @name MDFeConsNaoEnc
+     * @version 1.0
+     * @package NFePHP
+     * @author Pedro A. Saraiva Jr. <pedroantoniosaraivajr at gmail dot com>
+     * @param integer 1 usa o __sendSOAP e 2 usa o __sendSOAP2
+     * @returnmixed false ou array conforme exemplo abaixo:
+     * [tpAmb] => 2
+     * [verAplic] => RS20150102093257
+     * [cUF] => 33
+     * [cStat] => 111
+     * [xMotivo] => Consulta não encerrados localizou MDF-e nessa situação
+     * [MDFe] => Array
+     *     (
+     *         [0] => Array
+     *             (
+     *                 [chMDFe] => 33150258818022000496580000000000561000003539
+     *                 [nProt] => 933150000001439
+     *             )
+     *        [1] => Array
+     *            (
+     *                [chMDFe] => 33150258818022000496580000000000571000003544
+     *                [nProt] => 933150000001440
+     *           )
+     *           ...
+     */
+    public function MDFeConsNaoEnc($modSOAP = '2')
+    {
+        // Identificação do serviço.
+        $servico = 'MDFeConsNaoEnc';
+        // Recuperação da versão.
+        $versao = $this->aURL[$servico]['version'];
+        // Recuperação da url do serviço.
+        $urlservico = $this->aURL[$servico]['URL'];
+        // Recuperação do método.
+        $metodo = $this->aURL[$servico]['method'];
+        // Montagem do namespace do serviço.
+        $namespace = $this->URLPortal . '/wsdl/' . $servico;
+        // Montagem do cabeçalho da comunicação SOAP.
+        $dom = new DOMDocument("1.0", "UTF-8");
+        $dom->preserveWhiteSpace = false;
+        $dom->formatOutput = false;
+        // Monta o elemento Raiz <mdfeDadosMsg>.
+        $mdfeCabecMsgXML = $dom->createElement("mdfeCabecMsg");
+        // Seta o atributo "xmlns" no element <mdfeDadosMsg>.
+        $mdfeCabecMsgXML->setAttribute("xmlns", $namespace);
+        // Monta o elemento <cUF>.
+        $cUFXML = $dom->createElement("cUF", $this->cUF);
+        // Anexa o elemento <cUF> no elemento <mdfeCabecMsg>.
+        $mdfeCabecMsgXML->appendChild($cUFXML);
+        // Monta o element <versaoDados>.
+        $versaoDadosXML = $dom->createElement("versaoDados", "1.00");
+        // Anexa o elemento <versaoDados> no elemento <mdfeCabecMsg>.
+        $mdfeCabecMsgXML->appendChild($versaoDadosXML);
+        // Anexa o elemento <mdfeDadosMsg> no xml principal.
+        $dom->appendChild($mdfeCabecMsgXML);
+        // Salva o documento XML.
+        $mdfeCabecMsgSave = $dom->saveXML();
+        // Retira a tag inicial 'xml version="1.0" encoding="UTF-8"' e limpa os espacos desnecessarios.
+        $cabecalho = trim(substr($mdfeCabecMsgSave, 39));
+        // Montagem dos dados da mensagem SOAP.
+        $dom = new DOMDocument("1.0", "UTF-8");
+        $dom->preserveWhiteSpace = false ;
+        $dom->formatOutput = false ;
+        // Monta o elemento <mdfeDadosMsg>.
+        $mdfeDadosMsg = $dom->createElement("mdfeDadosMsg");
+        // Seta o atributo "xmlns" no elemento <mdfeDadosMsg>.
+        $mdfeDadosMsg->setAttribute("xmlns", $namespace);
+        // Monta o elemento <consMDFeNaoEnc>.
+        $consMDFeNaoEnc = $dom->createElement('consMDFeNaoEnc');
+        // Seta o atributo "xmlns" no elemento <consMDFeNaoEnc>.
+        $consMDFeNaoEnc->setAttribute("xmlns", $this->URLPortal);
+        // Seta o atributo "versao" no elemento <consMDFeNaoEnc>.
+        $consMDFeNaoEnc->setAttribute("versao", "1.00");
+        // Monta o elemento <tpAmb>.
+        $tpAmbXML = $dom->createElement("tpAmb", $this->tpAmb);
+        // Anexa o elemento <tpAmb> no elemento <consMDFeNaoEnc>.
+        $consMDFeNaoEnc->appendChild($tpAmbXML);
+        // Monta o elemento <xServ>.
+        $xServ = $dom->createElement("xServ", "CONSULTAR NÃO ENCERRADOS");
+        // Anexa o elemento <xServ> no elemento <consMDFeNaoEnc>.
+        $consMDFeNaoEnc->appendChild($xServ);
+        // Monta o elemento <CNPJ>.
+        $cnpj = $dom->createElement("CNPJ", $this->cnpj);
+        // Anexa o elemento <CNPJ> no elemento <consMDFeNaoEnc>.
+        $consMDFeNaoEnc->appendChild($cnpj);
+        // Anexa o elemento <mdfeConsNaoEnc> no elemento <mdfeDadosMsg>.
+        $mdfeDadosMsg->appendChild($consMDFeNaoEnc);
+        // Anexa o elemento <mdfeDadosMsg> no xml principal.
+        $dom->appendChild($mdfeDadosMsg);
+        // Salva o documento XML.
+        $consultaMDFeSave = $dom->saveXML();
+        // remove tag <?xml
+        $dados = trim(substr($consultaMDFeSave, 39));
+        
+        $retorno = $this->typeSendSOAP($urlservico, $namespace, $cabecalho, $dados, $metodo, $modSOAP);
+        
+        if (!$retorno) {
+            $this->errStatus = true;
+            $this->errMsg = sprintf("Não houve retorno para '%s'", $servico);
+            return false;
+        }
+        
+        // Tratar dados de retorno.
+        $doc = new DOMDocument();
+        $doc->formatOutput = false;
+        $doc->preserveWhiteSpace = false;
+        $doc->loadXML($retorno, LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
+        
+        $cStat = null;
+        if (!empty($doc->getElementsByTagName('cStat')->item(0)->nodeValue)) {
+            $cStat = $doc->getElementsByTagName('cStat')->item(0)->nodeValue;
+        }
+        
+        // Certifica que existe o elemento "cStat" no XML de retortno da SEFAZ.
+        if (empty($cStat)) {
+            $this->errStatus = true;
+            $this->errMsg = 'Nao existe o elemento "cStat" no XML de retorno da SEFAZ, erro!';
+            return false;
+        }
+        
+        // Tipo de ambiente.
+        $aRetorno['tpAmb'] = $doc->getElementsByTagName('tpAmb')->item(0)->nodeValue;
+        // Versão do aplicativo da SEFAZ.
+        $aRetorno['verAplic'] = $doc->getElementsByTagName('verAplic')->item(0)->nodeValue;
+        // Código da UF que registrou o Evento.
+        $aRetorno['cUF'] = $doc->getElementsByTagName('cUF')->item(0)->nodeValue;
+        // Status do serviço.
+        $aRetorno['cStat'] = $doc->getElementsByTagName('cStat')->item(0)->nodeValue;
+        // Motivo da resposta.
+        $aRetorno['xMotivo'] = $doc->getElementsByTagName('xMotivo')->item(0)->nodeValue;
+        
+        if ($cStat == 111) {
+            $aRetorno['MDFe'] = array();
+            foreach ($doc->getElementsByTagName('infMDFe') as $node) {
+                $aRetorno['MDFe'][] = array (
+                    'chMDFe' => $node->getElementsByTagName('chMDFe')->item(0)->nodeValue,
+                    'nProt' => $node->getElementsByTagName('nProt')->item(0)->nodeValue
+                );
+            }
+        }
+        
+        return $aRetorno;
+    }
+ 
     /**
      * __splitLines
      * Divide a string do certificado publico em linhas com 76 caracteres (padrão original)
@@ -2330,6 +2476,7 @@ class MDFeNFePHP {
      *   $this->passKey
      *
      * @name __loadCerts
+     * @param   none
      * @return    boolean true se o certificado foi carregado e false se nao
      **/
     protected function __loadCerts() {
@@ -2573,7 +2720,7 @@ class MDFeNFePHP {
      * @param string $cabecalho
      * @param string $dados
      * @param string $metodo
-     * @param int $ambiente  tipo de ambiente 1 - produção e 2 - homologação
+     * @param numeric $ambiente  tipo de ambiente 1 - produção e 2 - homologação
      * @param string $UF unidade da federação, necessário para diferenciar AM, MT e PR
      * @return mixed false se houve falha ou o retorno em xml do SEFAZ
      */
@@ -2676,7 +2823,7 @@ class MDFeNFePHP {
      * @param string $cabecalho
      * @param string $dados
      * @param string $metodo
-     * @param int $ambiente
+     * @param numeric $ambiente
      * @param string $UF sem uso mantido apenas para compatibilidade com __sendSOAP
      * @return mixed false se houve falha ou o retorno em xml do SEFAZ
      */
@@ -2851,7 +2998,7 @@ class MDFeNFePHP {
     *
     * @name __convertTime
     * @param    string   $DH
-    * @return   int
+    * @return   timestamp
     * @access   private
     **/
     protected function __convertTime($DH) {
@@ -2869,7 +3016,8 @@ class MDFeNFePHP {
      * Obtêm o numero do último lote de envio
      *
      * @name __getNumLot
-     * @return int Numero do Lote
+     * @param none
+     * @return numeric Numero do Lote
      */
     protected function __getNumLot() {
          $lotfile = $this->raizDir . 'config/numloteMDFE.xml';
@@ -2889,7 +3037,7 @@ class MDFeNFePHP {
      * Grava o numero do lote de envio usado
      *
      * @name __putNumLot
-     * @param int $num Inteiro com o numero do lote enviado
+     * @param numeric $num Inteiro com o numero do lote enviado
      * @return boolean true sucesso ou FALSO erro
      */
     protected function __putNumLot($num) {
@@ -2911,7 +3059,7 @@ class MDFeNFePHP {
      *
      * @name __setError
      * @param   string $msg Descrição do erro
-     * @return  void
+     * @return  none
      */
     private function __setError($msg) {
         $this->errMsg .= "$msg\n";

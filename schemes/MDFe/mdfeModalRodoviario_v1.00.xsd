@@ -11,15 +11,6 @@
 			<xs:pattern value="[0-9]{8}"/>
 		</xs:restriction>
 	</xs:simpleType>
-	<xs:simpleType name="TPlaca">
-		<xs:annotation>
-			<xs:documentation>Tipo Placa </xs:documentation>
-		</xs:annotation>
-		<xs:restriction base="xs:string">
-			<xs:whiteSpace value="preserve"/>
-			<xs:pattern value="[A-Z]{3}(([1-9]\d{3})|(0[1-9]\d{2})|(00[1-9]\d)|(000[1-9]))"/>
-		</xs:restriction>
-	</xs:simpleType>
 	<xs:simpleType name="TCIOT">
 		<xs:annotation>
 			<xs:documentation>Tipo CIOT - Código Identificador da Operação de Transporte</xs:documentation>
@@ -42,7 +33,7 @@
 						</xs:documentation>
 					</xs:annotation>
 				</xs:element>
-				<xs:element name="CIOT" minOccurs="0">
+				<xs:element name="CIOT" minOccurs="0" maxOccurs="unbounded">
 					<xs:annotation>
 						<xs:documentation>Código Identificador da Operação de Transporte</xs:documentation>
 						<xs:documentation>Também Conhecido como conta frete</xs:documentation>
@@ -51,7 +42,7 @@
 						<xs:restriction base="TCIOT"/>
 					</xs:simpleType>
 				</xs:element>
-				<xs:element name="veicPrincipal">
+				<xs:element name="veicTracao">
 					<xs:annotation>
 						<xs:documentation>Dados do Veículo com a Tração</xs:documentation>
 					</xs:annotation>
@@ -74,6 +65,17 @@
 								</xs:annotation>
 								<xs:simpleType>
 									<xs:restriction base="TPlaca"/>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="RENAVAM" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>RENAVAM do veículo </xs:documentation>
+								</xs:annotation>
+								<xs:simpleType>
+									<xs:restriction base="TString">
+										<xs:minLength value="9"/>
+										<xs:maxLength value="11"/>
+									</xs:restriction>
 								</xs:simpleType>
 							</xs:element>
 							<xs:element name="tara">
@@ -111,15 +113,73 @@
 							</xs:element>
 							<xs:element name="prop" minOccurs="0">
 								<xs:annotation>
-									<xs:documentation>Proprietários do Veículo.		Só preenchido quando o veículo não pertencer à empresa emitente do MDF-e</xs:documentation>
+									<xs:documentation>Proprietários do Veículo.
+Só preenchido quando o veículo não pertencer à empresa emitente do MDF-e</xs:documentation>
 								</xs:annotation>
 								<xs:complexType>
 									<xs:sequence>
+										<xs:choice>
+											<xs:element name="CPF" type="TCpf">
+												<xs:annotation>
+													<xs:documentation>Número do CPF</xs:documentation>
+													<xs:documentation>Informar os zeros não significativos.</xs:documentation>
+												</xs:annotation>
+											</xs:element>
+											<xs:element name="CNPJ" type="TCnpjOpc">
+												<xs:annotation>
+													<xs:documentation>Número do CNPJ</xs:documentation>
+													<xs:documentation>Informar os zeros não significativos.</xs:documentation>
+												</xs:annotation>
+											</xs:element>
+										</xs:choice>
 										<xs:element name="RNTRC" type="TRNTRC">
 											<xs:annotation>
 												<xs:documentation>Registro Nacional dos Transportadores Rodoviários de Carga</xs:documentation>
 												<xs:documentation>Registro obrigatório do proprietário, co-proprietário ou arrendatário do veículo junto à ANTT para exercer a atividade de transportador rodoviário de cargas por conta de terceiros e mediante remuneração.</xs:documentation>
 											</xs:annotation>
+										</xs:element>
+										<xs:element name="xNome">
+											<xs:annotation>
+												<xs:documentation>Razão Social ou Nome do proprietário</xs:documentation>
+											</xs:annotation>
+											<xs:simpleType>
+												<xs:restriction base="TString">
+													<xs:maxLength value="60"/>
+													<xs:minLength value="2"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:sequence minOccurs="0">
+											<xs:element name="IE">
+												<xs:annotation>
+													<xs:documentation>Inscrição Estadual</xs:documentation>
+												</xs:annotation>
+												<xs:simpleType>
+													<xs:restriction base="TIeDest"/>
+												</xs:simpleType>
+											</xs:element>
+											<xs:element name="UF" type="TUf">
+												<xs:annotation>
+													<xs:documentation>UF</xs:documentation>
+												</xs:annotation>
+											</xs:element>
+										</xs:sequence>
+										<xs:element name="tpProp">
+											<xs:annotation>
+												<xs:documentation>Tipo Proprietário</xs:documentation>
+												<xs:documentation>Preencher com:
+												0-TAC – Agregado;
+												1-TAC Independente; ou 
+												2 – Outros.</xs:documentation>
+											</xs:annotation>
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:whiteSpace value="preserve"/>
+													<xs:enumeration value="0"/>
+													<xs:enumeration value="1"/>
+													<xs:enumeration value="2"/>
+												</xs:restriction>
+											</xs:simpleType>
 										</xs:element>
 									</xs:sequence>
 								</xs:complexType>
@@ -137,7 +197,7 @@
 											<xs:simpleType>
 												<xs:restriction base="TString">
 													<xs:maxLength value="60"/>
-													<xs:minLength value="1"/>
+													<xs:minLength value="2"/>
 												</xs:restriction>
 											</xs:simpleType>
 										</xs:element>
@@ -148,6 +208,58 @@
 										</xs:element>
 									</xs:sequence>
 								</xs:complexType>
+							</xs:element>
+							<xs:element name="tpRod">
+								<xs:annotation>
+									<xs:documentation>Tipo de Rodado</xs:documentation>
+									<xs:documentation>Preencher com:
+									01 - Truck;
+									02 - Toco;
+									03 - Cavalo Mecânico;
+									04 - VAN;
+									05 - Utilitário;
+									06 - Outros.</xs:documentation>
+								</xs:annotation>
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:whiteSpace value="preserve"/>
+										<xs:enumeration value="01"/>
+										<xs:enumeration value="02"/>
+										<xs:enumeration value="03"/>
+										<xs:enumeration value="04"/>
+										<xs:enumeration value="05"/>
+										<xs:enumeration value="06"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="tpCar">
+								<xs:annotation>
+									<xs:documentation>Tipo de Carroceria</xs:documentation>
+									<xs:documentation>Preencher com:
+									00 - não aplicável;
+									01 - Aberta;
+									02 - Fechada/Baú;
+									03 - Granelera;
+									04 - Porta Container;
+									05 - Sider</xs:documentation>
+								</xs:annotation>
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:whiteSpace value="preserve"/>
+										<xs:enumeration value="00"/>
+										<xs:enumeration value="01"/>
+										<xs:enumeration value="02"/>
+										<xs:enumeration value="03"/>
+										<xs:enumeration value="04"/>
+										<xs:enumeration value="05"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="UF" type="TUf">
+								<xs:annotation>
+									<xs:documentation>UF em que veículo está licenciado</xs:documentation>
+									<xs:documentation>Sigla da UF de licenciamento do veículo.</xs:documentation>
+								</xs:annotation>
 							</xs:element>
 						</xs:sequence>
 					</xs:complexType>
@@ -176,6 +288,17 @@
 								</xs:annotation>
 								<xs:simpleType>
 									<xs:restriction base="TPlaca"/>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="RENAVAM" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>RENAVAM do veículo </xs:documentation>
+								</xs:annotation>
+								<xs:simpleType>
+									<xs:restriction base="TString">
+										<xs:minLength value="9"/>
+										<xs:maxLength value="11"/>
+									</xs:restriction>
 								</xs:simpleType>
 							</xs:element>
 							<xs:element name="tara">
@@ -213,18 +336,105 @@
 							</xs:element>
 							<xs:element name="prop" minOccurs="0">
 								<xs:annotation>
-									<xs:documentation>Proprietários do Reboque.		Só preenchido quando o reboque não pertencer à empresa emitente do MDF-e</xs:documentation>
+									<xs:documentation>Proprietários do Veículo.
+Só preenchido quando o veículo não pertencer à empresa emitente do MDF-e</xs:documentation>
 								</xs:annotation>
 								<xs:complexType>
 									<xs:sequence>
+										<xs:choice>
+											<xs:element name="CPF" type="TCpf">
+												<xs:annotation>
+													<xs:documentation>Número do CPF</xs:documentation>
+													<xs:documentation>Informar os zeros não significativos.</xs:documentation>
+												</xs:annotation>
+											</xs:element>
+											<xs:element name="CNPJ" type="TCnpjOpc">
+												<xs:annotation>
+													<xs:documentation>Número do CNPJ</xs:documentation>
+													<xs:documentation>Informar os zeros não significativos.</xs:documentation>
+												</xs:annotation>
+											</xs:element>
+										</xs:choice>
 										<xs:element name="RNTRC" type="TRNTRC">
 											<xs:annotation>
 												<xs:documentation>Registro Nacional dos Transportadores Rodoviários de Carga</xs:documentation>
 												<xs:documentation>Registro obrigatório do proprietário, co-proprietário ou arrendatário do veículo junto à ANTT para exercer a atividade de transportador rodoviário de cargas por conta de terceiros e mediante remuneração.</xs:documentation>
 											</xs:annotation>
 										</xs:element>
+										<xs:element name="xNome">
+											<xs:annotation>
+												<xs:documentation>Razão Social ou Nome do proprietário</xs:documentation>
+											</xs:annotation>
+											<xs:simpleType>
+												<xs:restriction base="TString">
+													<xs:maxLength value="60"/>
+													<xs:minLength value="1"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:sequence minOccurs="0">
+											<xs:element name="IE">
+												<xs:annotation>
+													<xs:documentation>Inscrição Estadual</xs:documentation>
+												</xs:annotation>
+												<xs:simpleType>
+													<xs:restriction base="TIeDest"/>
+												</xs:simpleType>
+											</xs:element>
+											<xs:element name="UF" type="TUf">
+												<xs:annotation>
+													<xs:documentation>UF</xs:documentation>
+												</xs:annotation>
+											</xs:element>
+										</xs:sequence>
+										<xs:element name="tpProp">
+											<xs:annotation>
+												<xs:documentation>Tipo Proprietário</xs:documentation>
+												<xs:documentation>Preencher com:
+												0-TAC – Agregado;
+												1-TAC Independente; ou 
+												2 – Outros.</xs:documentation>
+											</xs:annotation>
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:whiteSpace value="preserve"/>
+													<xs:enumeration value="0"/>
+													<xs:enumeration value="1"/>
+													<xs:enumeration value="2"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
 									</xs:sequence>
 								</xs:complexType>
+							</xs:element>
+							<xs:element name="tpCar">
+								<xs:annotation>
+									<xs:documentation>Tipo de Carroceria</xs:documentation>
+									<xs:documentation>Preencher com:
+									00 - não aplicável;
+									01 - Aberta;
+									02 - Fechada/Baú;
+									03 - Granelera;
+									04 - Porta Container;
+									05 - Sider</xs:documentation>
+								</xs:annotation>
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:whiteSpace value="preserve"/>
+										<xs:enumeration value="00"/>
+										<xs:enumeration value="01"/>
+										<xs:enumeration value="02"/>
+										<xs:enumeration value="03"/>
+										<xs:enumeration value="04"/>
+										<xs:enumeration value="05"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="UF" type="TUf">
+								<xs:annotation>
+									<xs:documentation>UF em que veículo está licenciado</xs:documentation>
+									<xs:documentation>Sigla da UF de licenciamento do veículo.</xs:documentation>
+								</xs:annotation>
 							</xs:element>
 						</xs:sequence>
 					</xs:complexType>
@@ -275,6 +485,17 @@
 							</xs:element>
 						</xs:sequence>
 					</xs:complexType>
+				</xs:element>
+				<xs:element name="codAgPorto" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>Código de Agendamento no porto</xs:documentation>
+					</xs:annotation>
+					<xs:simpleType>
+						<xs:restriction base="TString">
+							<xs:minLength value="0"/>
+							<xs:maxLength value="16"/>
+						</xs:restriction>
+					</xs:simpleType>
 				</xs:element>
 			</xs:sequence>
 		</xs:complexType>

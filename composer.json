@@ -37,28 +37,35 @@
         "ext-zlib": "*",
         "ext-fileinfo": "*",
         "ext-iconv": "*",
-        "ext-mbstring": "*"
+        "ext-mbstring": "*",
+        "zendframework/zendpdf": "2.0.*",
+        "zendframework/zend-barcode": "2.3.4",
+        "zendframework/zend-mail": "2.3.*@dev",
+        "soundasleep/html2text": "~0.2"
     },
     "require-dev": {
         "phpunit/phpunit": "~4.0"
     },
     "autoload": {
         "psr-0": {
-            "": "libs/"
+            "": ["libs/", "tests/"]
         },
         "classmap": [
+            "./libs/NFe/",
             "./libs/CTe/",
-            "./libs/Common/",
-            "./libs/Common/Certificate/",
-            "./libs/Common/Exception/",
-            "./libs/External/FPDF/fpdf.php",
-            "./libs/External/PHPMailer/class.phpmailer.php",
-            "./libs/External/PHPMailer/class.pop3.php",
-            "./libs/External/PHPMailer/class.smtp.php",
-            "./libs/External/mpdf/mpdf.php",
             "./libs/MDFe/",
             "./libs/NFSe/",
-            "./libs/NFe/"
+            "./libs/Common/",
+            "./libs/Common/Base/",
+            "./libs/Common/Certificate/",
+            "./libs/Common/DateTime/",
+            "./libs/Common/Dom/",
+            "./libs/Common/Exception/",
+            "./libs/Common/Files/",
+            "./libs/Common/LotNumber/",
+            "./libs/Common/Modules/",
+            "./libs/Common/Soap/",
+            "./libs/Common/Strings/"
         ]
     },
     "minimum-stability": "dev",

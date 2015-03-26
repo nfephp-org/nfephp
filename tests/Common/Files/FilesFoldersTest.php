@@ -17,17 +17,16 @@ class FilesFoldersTest extends PHPUnit_Framework_TestCase
         $resp = $folders->removeFolder($folderBase);
         $this->assertTrue($resp);
     }
-    
+
+     /**
+     * @expectedException PHPUnit_Framework_Error_Warning
+     * @expectedExceptionMessage mkdir(): Permission denied
+     */
     public function testCreateFoldersFail()
     {
         $folderBase = '/root';
         $folders = new FilesFolders();
-        try {
-            $resp = $folders->createFolders($folderBase);
-        } catch (RuntimeException $expected) {
-            return;
-        }
-        $this->fail('Teste de Criação de Diretório - A excessão esperada não foi disparada.');
+        $folders->createFolders($folderBase);
     }
     
     public function testListDirSuccess()
@@ -40,20 +39,21 @@ class FilesFoldersTest extends PHPUnit_Framework_TestCase
         );
         $folderBase = dirname(dirname(dirname(__FILE__))) . '/fixtures/certs/';
         $folders = new FilesFolders();
-        $aList = $folders->listDir($folderBase, '*.pem', 'false');
+        $aList = $folders->listDir($folderBase, '*.pem', true);
         $this->assertEquals($aList, $files);
     }
     
+    /**
+     * @expectedException Common\Exception\InvalidArgumentException
+     * @expectedExceptionMessage O diretório não existe!!!
+     */
     public function testListDirFail()
     {
-        $folderBase = '/root';
+        $aList = array();
+        $folderBase = '/qualquercoisa';
         $folders = new FilesFolders();
-        try {
-            $aList = $folders->listDir($folderBase, '*.*', 'false');
-        } catch (RuntimeException $expected) {
-            return;
-        }
-        $this->fail('Teste da Listagem do Diretório - A excessão esperada não foi disparada.');
+        $files = $folders->listDir($folderBase, '*.*', false);
+        $this->assertEquals($aList, $files);
     }
             
     public function testWriteTest()
