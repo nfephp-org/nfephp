@@ -31,32 +31,32 @@ class ReturnNFe
         $dom->loadXML($xmlResp);
         //para cada $method tem um formato de retorno especifico
         switch ($method) {
-            case 'nfeAutorizacaoLote':
+            case 'NfeAutorizacao':
                 return self::zReadAutorizacaoLote($dom);
                 break;
-            case 'nfeRetAutorizacaoLote':
+            case 'NfeRetAutorizacao':
                 return self::zReadRetAutorizacaoLote($dom);
                 break;
-            case 'consultaCadastro2':
+            case 'NfeConsultaCadastro':
                 return self::zReadConsultaCadastro2($dom);
                 break;
-            case 'nfeConsultaNF2':
+            case 'NfeConsultaProtocolo':
                 return self::zReadConsultaNF2($dom);
                 break;
-            case 'nfeInutilizacaoNF2':
+            case 'NfeInutilizacao':
                 return self::zReadInutilizacaoNF2($dom);
                 break;
-            case 'nfeStatusServicoNF2':
+            case 'NfeStatusServico':
                 //NOTA: irá ser desativado
                 return self::zReadStatusServico($dom);
                 break;
-            case 'nfeRecepcaoEvento':
+            case 'RecepcaoEvento':
                 return self::zReadRecepcaoEvento($dom);
                 break;
-            case 'nfeDistDFeInteresse':
+            case 'NFeDistribuicaoDFe':
                 return self::zReadDistDFeInteresse($dom);
                 break;
-            case 'nfeDownloadNF':
+            case 'NfeDownloadNF':
                 return self::zReadDownloadNF($dom);
                 break;
         }
@@ -388,14 +388,21 @@ class ReturnNFe
         $aResposta['cUF'] = $tag->getElementsByTagName('cUF')->item(0)->nodeValue;
         $aResposta['dhRecbto'] = $tag->getElementsByTagName('dhRecbto')->item(0)->nodeValue;
         $infInut = $tag->getElementsByTagName('infInut')->item(0);
-        if (! empty($infInut) && 'ID' !== $infInut->getAttribute('Id')) {
-            $aResposta['ano'] = $infInut->getElementsByTagName('ano')->item(0)->nodeValue;
-            $aResposta['CNPJ'] = $infInut->getElementsByTagName('CNPJ')->item(0)->nodeValue;
-            $aResposta['mod'] = $infInut->getElementsByTagName('mod')->item(0)->nodeValue;
-            $aResposta['serie'] = $infInut->getElementsByTagName('serie')->item(0)->nodeValue;
-            $aResposta['nNFIni'] = $infInut->getElementsByTagName('nNFIni')->item(0)->nodeValue;
-            $aResposta['nNFFin'] = $infInut->getElementsByTagName('nNFFin')->item(0)->nodeValue;
-            $aResposta['nProt'] = $infInut->getElementsByTagName('nProt')->item(0)->nodeValue;
+        if (! empty($infInut) && 'ID' !== $infInut->getAttribute('Id') && $aResposta['cStat'] == '102') {
+            $aResposta['ano'] = ! empty($infInut->getElementsByTagName('ano')->item(0)->nodeValue) ?
+                $infInut->getElementsByTagName('ano')->item(0)->nodeValue : '';
+            $aResposta['CNPJ'] = ! empty($infInut->getElementsByTagName('CNPJ')->item(0)->nodeValue) ?
+                $infInut->getElementsByTagName('CNPJ')->item(0)->nodeValue : '';
+            $aResposta['mod'] = ! empty($infInut->getElementsByTagName('mod')->item(0)->nodeValue) ?
+                $infInut->getElementsByTagName('mod')->item(0)->nodeValue : '';
+            $aResposta['serie'] = ! empty($infInut->getElementsByTagName('serie')->item(0)->nodeValue) ?
+                $infInut->getElementsByTagName('serie')->item(0)->nodeValue : '';
+            $aResposta['nNFIni'] = ! empty($infInut->getElementsByTagName('nNFIni')->item(0)->nodeValue) ?
+                $infInut->getElementsByTagName('nNFIni')->item(0)->nodeValue : '';
+            $aResposta['nNFFin'] = ! empty($infInut->getElementsByTagName('nNFFin')->item(0)->nodeValue) ?
+                $infInut->getElementsByTagName('nNFFin')->item(0)->nodeValue : '';
+            $aResposta['nProt'] = ! empty($infInut->getElementsByTagName('nProt')->item(0)->nodeValue) ?
+                $infInut->getElementsByTagName('nProt')->item(0)->nodeValue : '';
         }
         return $aResposta;
     }

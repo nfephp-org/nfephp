@@ -375,7 +375,7 @@ class ToolsNFe extends BaseTools
             throw new Exception\RuntimeException($msg);
         }
         $chaveNFe = $proNFe->getElementsByTagName('chNFe')->item(0)->nodeValue;
-        $nProtNFe = $proNFe->getElementsByTagName('nProt')->item(0)->nodeValue;
+        //$nProtNFe = $proNFe->getElementsByTagName('nProt')->item(0)->nodeValue;
         $tpAmb = $docnfe->getNodeValue('tpAmb');
         $anomes = date(
             'Ym',
@@ -512,9 +512,10 @@ class ToolsNFe extends BaseTools
             $idLote = LotNumber::geraNumLote(15);
         }
         //carrega serviço
+        $servico = 'NfeAutorizacao';
         $this->zLoadServico(
             'nfe',
-            'NfeAutorizacao',
+            $servico,
             $siglaUF,
             $tpAmb
         );
@@ -552,7 +553,7 @@ class ToolsNFe extends BaseTools
         $filename = "$idLote-retEnviNFe.xml";
         $this->zGravaFile('nfe', $tpAmb, $filename, $retorno);
         //tratar dados de retorno
-        $aRetorno = ReturnNFe::readReturnSefaz($this->urlMethod, $retorno);
+        $aRetorno = ReturnNFe::readReturnSefaz($servico, $retorno);
         return (string) $retorno;
     }
     
@@ -578,9 +579,10 @@ class ToolsNFe extends BaseTools
         }
         $siglaUF = $this->aConfig['siglaUF'];
         //carrega serviço
+        $servico = 'NfeRetAutorizacao';
         $this->zLoadServico(
             'nfe',
-            'NfeRetAutorizacao',
+            $servico,
             $siglaUF,
             $tpAmb
         );
@@ -615,7 +617,7 @@ class ToolsNFe extends BaseTools
         $filename = "$recibo-retConsReciNFe.xml";
         $this->zGravaFile('nfe', $tpAmb, $filename, $retorno);
         //tratar dados de retorno
-        $aRetorno = ReturnNFe::readReturnSefaz($this->urlMethod, $retorno);
+        $aRetorno = ReturnNFe::readReturnSefaz($servico, $retorno);
         return (string) $retorno;
     }
     
@@ -643,9 +645,10 @@ class ToolsNFe extends BaseTools
         $cUF = substr($chNFe, 0, 2);
         $siglaUF = $this->zGetSigla($cUF);
         //carrega serviço
+        $servico = 'NfeConsultaProtocolo';
         $this->zLoadServico(
             'nfe',
-            'NfeConsultaProtocolo',
+            $servico,
             $siglaUF,
             $tpAmb
         );
@@ -681,7 +684,7 @@ class ToolsNFe extends BaseTools
         $filename = "$chNFe-retConsSitNFe.xml";
         $this->zGravaFile('nfe', $tpAmb, $filename, $retorno);
         //tratar dados de retorno
-        $aRetorno = ReturnNFe::readReturnSefaz($this->urlMethod, $retorno);
+        $aRetorno = ReturnNFe::readReturnSefaz($servico, $retorno);
         return (string) $retorno;
     }
 
@@ -718,9 +721,10 @@ class ToolsNFe extends BaseTools
         //monta serviço
         $siglaUF = $this->aConfig['siglaUF'];
         //carrega serviço
+        $servico = 'NfeInutilizacao';
         $this->zLoadServico(
             'nfe',
-            'NfeInutilizacao',
+            $servico,
             $siglaUF,
             $tpAmb
         );
@@ -776,8 +780,59 @@ class ToolsNFe extends BaseTools
         $filename = "$sAno-$this->modelo-$sSerie-".$sInicio."_".$sFinal."-retInutNFe.xml";
         $this->zGravaFile('nfe', $tpAmb, $filename, $retorno);
         //tratar dados de retorno
-        $aRetorno = ReturnNFe::readReturnSefaz($this->urlMethod, $retorno);
+        $aRetorno = ReturnNFe::readReturnSefaz($servico, $retorno);
+        if ($aRetorno['cStat'] == '102') {
+            $retorno = $this->zAddProtMsg('ProcInutNFe', 'inutNFe', $signedMsg, 'retInutNFe', $retorno);
+            $filename = "$sAno-$this->modelo-$sSerie-".$sInicio."_".$sFinal."-procInutNFe.xml";
+            $this->zGravaFile('nfe', $tpAmb, $filename, $retorno, 'inutilizadas');
+        }
         return (string) $retorno;
+    }
+    
+    /**
+     * zAddProtMsg
+     * @param string $tagproc
+     * @param string $tagmsg
+     * @param string $xmlmsg
+     * @param string $tagretorno
+     * @param string $xmlretorno
+     * @return string
+     */
+    protected function zAddProtMsg($tagproc, $tagmsg, $xmlmsg, $tagretorno, $xmlretorno)
+    {
+        $doc = new Dom();
+        $doc->loadXMLString($xmlmsg);
+        $nodedoc = $doc->getNode($tagmsg, 0);
+        $procver = $nodedoc->getAttribute("versao");
+        $procns = $nodedoc->getAttribute("xmlns");
+        
+        $doc1 = new Dom();
+        $doc1->loadXMLString($xmlretorno);
+        $nodedoc1 = $doc1->getNode($tagretorno, 0);
+        
+        $proc = new \DOMDocument('1.0', 'utf-8');
+        $proc->formatOutput = false;
+        $proc->preserveWhiteSpace = false;
+        //cria a tag nfeProc
+        $procNode = $proc->createElement($tagproc);
+        $proc->appendChild($procNode);
+        //estabele o atributo de versão
+        $procNodeAtt1 = $procNode->appendChild($proc->createAttribute('versao'));
+        $procNodeAtt1->appendChild($proc->createTextNode($procver));
+        //estabelece o atributo xmlns
+        $procNodeAtt2 = $procNode->appendChild($proc->createAttribute('xmlns'));
+        $procNodeAtt2->appendChild($proc->createTextNode($procns));
+        //inclui a tag inutNFe
+        $node = $proc->importNode($nodedoc, true);
+        $procNode->appendChild($node);
+        //inclui a tag retInutNFe
+        $node = $proc->importNode($nodedoc1, true);
+        $procNode->appendChild($node);
+        //salva o xml como string em uma variável
+        $procXML = $proc->saveXML();
+        //remove as informações indesejadas
+        $procXML = Strings::clearProt($procXML);
+        return $procXML;
     }
     
     /**
@@ -850,9 +905,10 @@ class ToolsNFe extends BaseTools
             $txtFile = "CPF_$cpf";
         }
         //carrega serviço
+        $servico = 'NfeConsultaCadastro';
         $this->zLoadServico(
             'nfe',
-            'NfeConsultaCadastro',
+            $servico,
             $siglaUF,
             $tpAmb
         );
@@ -888,7 +944,7 @@ class ToolsNFe extends BaseTools
         $filename = "$txtFile-retConsCad.xml";
         $this->zGravaFile('nfe', $tpAmb, $filename, $retorno);
         //tratar dados de retorno
-        $aRetorno = ReturnNFe::readReturnSefaz($this->urlMethod, $retorno);
+        $aRetorno = ReturnNFe::readReturnSefaz($servico, $retorno);
         return (string) $retorno;
     }
 
@@ -913,9 +969,10 @@ class ToolsNFe extends BaseTools
             $siglaUF = $this->aConfig['siglaUF'];
         }
         //carrega serviço
+        $servico = 'NfeStatusServico';
         $this->zLoadServico(
             'nfe',
-            'NfeStatusServico',
+            $servico,
             $siglaUF,
             $tpAmb
         );
@@ -950,7 +1007,7 @@ class ToolsNFe extends BaseTools
         $filename = $siglaUF."_"."$datahora-retConsStatServ.xml";
         $this->zGravaFile('nfe', $tpAmb, $filename, $retorno);
         //tratar dados de retorno
-        $aRetorno = ReturnNFe::readReturnSefaz($this->urlMethod, $retorno);
+        $aRetorno = ReturnNFe::readReturnSefaz($servico, $retorno);
         return (string) $retorno;
     }
 
@@ -986,9 +1043,10 @@ class ToolsNFe extends BaseTools
             $cnpj = $this->aConfig['cnpj'];
         }
         //carrega serviço
+        $servico = 'NFeDistribuicaoDFe';
         $this->zLoadServico(
             'nfe',
-            'NFeDistribuicaoDFe',
+            $servico,
             $fonte,
             $tpAmb
         );
@@ -1036,7 +1094,7 @@ class ToolsNFe extends BaseTools
         $filename = "$tipoNSU-$datahora-retDistDFeInt.xml";
         $this->zGravaFile('nfe', $tpAmb, $filename, $retorno);
         //tratar dados de retorno
-        $aRetorno = ReturnNFe::readReturnSefaz($this->urlMethod, $retorno);
+        $aRetorno = ReturnNFe::readReturnSefaz($servico, $retorno);
         return (string) $retorno;
     }
 
@@ -1195,9 +1253,10 @@ class ToolsNFe extends BaseTools
             $cnpj = $this->aConfig['cnpj'];
         }
         //carrega serviço
+        $servico = 'NfeDownloadNF';
         $this->zLoadServico(
             'nfe',
-            'NfeDownloadNF',
+            $servico,
             'AN',
             $tpAmb
         );
@@ -1233,7 +1292,7 @@ class ToolsNFe extends BaseTools
         $filename = "$chNFe-retDownnfe.xml";
         $this->zGravaFile('nfe', $tpAmb, $filename, $retorno);
         //tratar dados de retorno
-        $aRetorno = ReturnNFe::readReturnSefaz($this->urlMethod, $retorno);
+        $aRetorno = ReturnNFe::readReturnSefaz($servico, $retorno);
         return (string) $retorno;
     }
     
@@ -1268,7 +1327,6 @@ class ToolsNFe extends BaseTools
         }
         return true;
     }
-
     
     /**
      * zSefazEvento
@@ -1294,9 +1352,10 @@ class ToolsNFe extends BaseTools
             $tpAmb = $this->aConfig['tpAmb'];
         }
         //carrega serviço
+        $servico = 'RecepcaoEvento';
         $this->zLoadServico(
             'nfe',
-            'RecepcaoEvento',
+            $servico,
             $siglaUF,
             $tpAmb
         );
@@ -1363,7 +1422,14 @@ class ToolsNFe extends BaseTools
         $filename = "$chNFe-$aliasEvento-retEnvEvento.xml";
         $this->zGravaFile('nfe', $tpAmb, $filename, $retorno);
         //tratar dados de retorno
-        $this->aLastRetEvent = ReturnNFe::readReturnSefaz($this->urlMethod, $retorno);
+        $this->aLastRetEvent = ReturnNFe::readReturnSefaz($servico, $retorno);
+        if ($this->aLastRetEvent['cStat'] == '128') {
+            if ($this->aLastRetEvent['evento']['cStat'] == '135' || $this->aLastRetEvent['evento']['cStat'] == '136') {
+                $retorno = $this->zAddProtMsg('procEventoNFe', 'evento', $signedMsg, 'retEvento', $retorno);
+                $filename = "$chNFe-$aliasEvento-procEvento.xml";
+                $this->zGravaFile('nfe', $tpAmb, $filename, $retorno, 'eventos');
+            }
+        }
         return (string) $retorno;
     }
     
@@ -1420,8 +1486,8 @@ class ToolsNFe extends BaseTools
     * Retorna o timestamp para a data de vencimento do Certificado
     * @return int
     */
-    public function getTimestampCert(){
+    public function getTimestampCert()
+    {
       return $this->oCertificate->expireTimestamp;
     }
-    
 }
