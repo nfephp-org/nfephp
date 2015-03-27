@@ -628,7 +628,9 @@ class ConvertNFe
     protected function hEntity($aCampos)
     {
         //H|item|infAdProd
-        $this->make->taginfAdProd($aCampos[1], $aCampos[2]);
+        if (! empty($aCampos[2])) {
+            $this->make->taginfAdProd($aCampos[1], $aCampos[2]);
+        }
         $this->nItem = (integer) $aCampos[1];
     }
     
