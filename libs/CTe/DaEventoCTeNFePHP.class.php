@@ -166,9 +166,9 @@ class DaEventoCTeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $this->dom = new DomDocument;
         $this->dom->loadXML($docXML);
         $this->procEventoCTe    = $this->dom->getElementsByTagName("procEventoCTe")->item(0);
-        $this->evento           = $this->dom->getElementsByTagName("evento")->item(0);
+        $this->evento           = $this->dom->getElementsByTagName("eventoCTe")->item(0);
         $this->infEvento        = $this->evento->getElementsByTagName("infEvento")->item(0);
-        $this->retEvento        = $this->dom->getElementsByTagName("retEvento")->item(0);
+        $this->retEvento        = $this->dom->getElementsByTagName("retEventoCTe")->item(0);
         $this->rinfEvento       = $this->retEvento->getElementsByTagName("infEvento")->item(0);
         $this->tpEvento         = $this->infEvento->getElementsByTagName("tpEvento")->item(0)->nodeValue;
         if (!in_array($this->tpEvento, array('110110', '110111'))) {
@@ -277,7 +277,7 @@ class DaEventoCTeNFePHP extends CommonNFePHP implements DocumentoNFePHP
             $orientacao = 'P';
         }
         $this->orientacao = $orientacao;
-        $this->__adicionaLogoPeloCnpj();
+        $this->pAdicionaLogoPeloCnpj();
         $this->papel = $papel;
         $this->logoAlign = $logoAlign;
         if ($CLASSE_PDF!==false) {
@@ -375,9 +375,9 @@ class DaEventoCTeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $w1 = $w;
         $h=32;
         $oldY += $h;
-        $this->__textBox($x, $y, $w, $h);
+        $this->pTextBox($x, $y, $w, $h);
         $texto = 'IDENTIFICAÇÃO DO EMITENTE';
-        $this->__textBox($x, $y, $w, 5, $texto, $aFont, 'T', 'C', 0, '');
+        $this->pTextBox($x, $y, $w, 5, $texto, $aFont, 'T', 'C', 0, '');
         if (is_file($this->logomarca)) {
             $logoInfo = getimagesize($this->logomarca);
             //largura da imagem em mm
@@ -421,7 +421,7 @@ class DaEventoCTeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         //Nome emitente
         $aFont = array('font'=>$this->fontePadrao, 'size'=>12, 'style'=>'B');
         $texto = (isset($this->aEnd['razao'])?$this->aEnd['razao']:'');
-        $this->__textBox($x1, $y1, $tw, 8, $texto, $aFont, 'T', 'C', 0, '');
+        $this->pTextBox($x1, $y1, $tw, 8, $texto, $aFont, 'T', 'C', 0, '');
         //endereço
         $y1 = $y1+6;
         $aFont = array('font'=>$this->fontePadrao, 'size'=>8, 'style'=>'');
@@ -430,7 +430,7 @@ class DaEventoCTeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $cpl = (isset($this->aEnd['complemento'])?$this->aEnd['complemento']:'');
         $bairro = (isset($this->aEnd['bairro'])?$this->aEnd['bairro']:'');
         $CEP = (isset($this->aEnd['CEP'])?$this->aEnd['CEP']:'');
-        $CEP = $this->__format($CEP, "#####-###");
+        $CEP = $this->pFormat($CEP, "#####-###");
         $mun = (isset($this->aEnd['municipio'])?$this->aEnd['municipio']:'');
         $UF = (isset($this->aEnd['UF'])?$this->aEnd['UF']:'');
         $fone = (isset($this->aEnd['telefone'])?$this->aEnd['telefone']:'');
@@ -458,11 +458,11 @@ class DaEventoCTeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $texto .= ($texto!='' && $tmp_txt!=''?"\n":'').$tmp_txt;
         $tmp_txt = $email;
         $texto .= ($texto!='' && $tmp_txt!=''?"\n":'').$tmp_txt;
-        $this->__textBox($x1, $y1-2, $tw, 8, $texto, $aFont, 'T', 'C', 0, '');
+        $this->pTextBox($x1, $y1-2, $tw, 8, $texto, $aFont, 'T', 'C', 0, '');
         //##################################################
         $w2 = round($maxW - $w, 0);
         $x += $w;
-        $this->__textBox($x, $y, $w2, $h);
+        $this->pTextBox($x, $y, $w2, $h);
         $y1 = $y + $h;
         $aFont = array('font'=>$this->fontePadrao, 'size'=>16, 'style'=>'B');
         if ($this->tpEvento=='110110') {
@@ -470,57 +470,57 @@ class DaEventoCTeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         } else {
             $texto='Representação Gráfica de Evento';
         }
-        $this->__textBox($x, $y+2, $w2, 8, $texto, $aFont, 'T', 'C', 0, '');
+        $this->pTextBox($x, $y+2, $w2, 8, $texto, $aFont, 'T', 'C', 0, '');
         $aFont = array('font'=>$this->fontePadrao, 'size'=>12, 'style'=>'I');
         if ($this->tpEvento=='110110') {
             $texto='(Carta de Correção Eletrônica)';
         } elseif ($this->tpEvento=='110111') {
             $texto='(Cancelamento de CTe)';
         }
-        $this->__textBox($x, $y+7, $w2, 8, $texto, $aFont, 'T', 'C', 0, '');
+        $this->pTextBox($x, $y+7, $w2, 8, $texto, $aFont, 'T', 'C', 0, '');
         $texto = 'ID do Evento: '.$this->id;
         $aFont = array('font'=>$this->fontePadrao, 'size'=>10, 'style'=>'');
-        $this->__textBox($x, $y+15, $w2, 8, $texto, $aFont, 'T', 'L', 0, '');
-        $tsHora = $this->__convertTime($this->dhEvento);
+        $this->pTextBox($x, $y+15, $w2, 8, $texto, $aFont, 'T', 'L', 0, '');
+        $tsHora = $this->pConvertTime($this->dhEvento);
         $texto = 'Criado em : '. date('d/m/Y   H:i:s', $tsHora);
-        $this->__textBox($x, $y+20, $w2, 8, $texto, $aFont, 'T', 'L', 0, '');
-        $tsHora = $this->__convertTime($this->dhRegEvento);
+        $this->pTextBox($x, $y+20, $w2, 8, $texto, $aFont, 'T', 'L', 0, '');
+        $tsHora = $this->pConvertTime($this->dhRegEvento);
         $texto = 'Prococolo: '.$this->nProt.'  -  Registrado na SEFAZ em: '.date('d/m/Y   H:i:s', $tsHora);
-        $this->__textBox($x, $y+25, $w2, 8, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y+25, $w2, 8, $texto, $aFont, 'T', 'L', 0, '');
         //####################################################
         $x = $oldX;
-        $this->__textBox($x, $y1, $maxW, 40);
+        $this->pTextBox($x, $y1, $maxW, 40);
         $sY = $y1+40;
         if ($this->tpEvento=='110110') {
             $texto = 'De acordo com as determinações legais vigentes, vimos por meio '
-                    . 'desta comunicar-lhe que a Nota Fiscal, abaixo referenciada, '
+                    . 'desta comunicar-lhe que o Conhecimento de Transporte, abaixo referenciado, '
                     . 'contêm irregularidades que estão destacadas e suas respectivas '
                     . 'correções, solicitamos que sejam aplicadas essas correções ao '
                     . 'executar seus lançamentos fiscais.';
         } elseif ($this->tpEvento=='110111') {
             $texto = 'De acordo com as determinações legais vigentes, vimos por meio '
-                    . 'desta comunicar-lhe que a Nota Fiscal, abaixo referenciada, esta '
-                    . 'cancelada, solicitamos que sejam aplicadas essas correções ao '
+                    . 'desta comunicar-lhe que o  Conhecimento de Transporte, abaixo referenciado, está '
+                    . 'cancelado, solicitamos que sejam aplicadas essas correções ao '
                     . 'executar seus lançamentos fiscais.';
         }
         $aFont = array('font'=>$this->fontePadrao, 'size'=>10, 'style'=>'');
-        $this->__textBox($x+5, $y1, $maxW-5, 20, $texto, $aFont, 'T', 'L', 0, '', false);
+        $this->pTextBox($x+5, $y1, $maxW-5, 20, $texto, $aFont, 'T', 'L', 0, '', false);
         //############################################
         $x = $oldX;
         $y = $y1;
-        if ($this->CNPJDest != '') {
-            $texto = 'CNPJ do Destinatário: '.$this->__format($this->CNPJDest, "##.###.###/####-##");
-        }
-        if ($this->CPFDest != '') {
-            $texto = 'CPF do Destinatário: '.$this->__format($this->CPFDest, "###.###.###-##");
-        }
+        // if ($this->CNPJDest != '') {
+        //     $texto = 'CNPJ do Destinatário: '.$this->pFormat($this->CNPJDest, "##.###.###/####-##");
+        // }
+        // if ($this->CPFDest != '') {
+        //     $texto = 'CPF do Destinatário: '.$this->pFormat($this->CPFDest, "###.###.###-##");
+        // }
         $aFont = array('font'=>$this->fontePadrao, 'size'=>12, 'style'=>'B');
-        $this->__textBox($x+2, $y+13, $w2, 8, $texto, $aFont, 'T', 'L', 0, '');
+        // $this->pTextBox($x+2, $y+13, $w2, 8, $texto, $aFont, 'T', 'L', 0, '');
         $numNF = substr($this->chCTe, 25, 9);
         $serie = substr($this->chCTe, 22, 3);
-        $numNF = $this->__format($numNF, "###.###.###");
+        $numNF = $this->pFormat($numNF, "###.###.###");
         $texto = "Conhecimento: " . $numNF .'  -   Série: '.$serie;
-        $this->__textBox($x+2, $y+19, $w2, 8, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x+2, $y+19, $w2, 8, $texto, $aFont, 'T', 'L', 0, '');
         $bW = 87;
         $bH = 15;
         $x = 55;
@@ -531,15 +531,15 @@ class DaEventoCTeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $this->pdf->SetFillColor(255, 255, 255);
         $y1 = $y+2+$bH;
         $aFont = array('font'=>$this->fontePadrao, 'size'=>10, 'style'=>'');
-        $texto = $this->__format($this->chCTe, $this->formatoChave);
-        $this->__textBox($x, $y1, $w-2, $h, $texto, $aFont, 'T', 'C', 0, '');
+        $texto = $this->pFormat($this->chCTe, $this->formatoChave);
+        $this->pTextBox($x, $y1, $w-2, $h, $texto, $aFont, 'T', 'C', 0, '');
         $RETURN_VALUE = $sY+2;
         if ($this->tpEvento=='110110') {
             $x = $oldX;
-            $this->__textBox($x, $sY, $maxW, 15);
+            $this->pTextBox($x, $sY, $maxW, 15);
             $texto = $this->xCondUso;
             $aFont = array('font'=>$this->fontePadrao, 'size'=>8, 'style'=>'I');
-            $this->__textBox($x+2, $sY+2, $maxW-2, 15, $texto, $aFont, 'T', 'L', 0, '', false);
+            $this->pTextBox($x+2, $sY+2, $maxW-2, 15, $texto, $aFont, 'T', 'L', 0, '', false);
             $RETURN_VALUE = $sY+2;
         }
         if ($this->tpAmb != 1) {
@@ -554,10 +554,10 @@ class DaEventoCTeNFePHP extends CommonNFePHP implements DocumentoNFePHP
             $this->pdf->SetTextColor(90, 90, 90);
             $texto = "SEM VALOR FISCAL";
             $aFont = array('font'=>$this->fontePadrao, 'size'=>48, 'style'=>'B');
-            $this->__textBox($x, $y, $w, $h, $texto, $aFont, 'C', 'C', 0, '');
+            $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'C', 'C', 0, '');
             $aFont = array('font'=>$this->fontePadrao, 'size'=>30, 'style'=>'B');
             $texto = "AMBIENTE DE HOMOLOGAÇÃO";
-            $this->__textBox($x, $y+14, $w, $h, $texto, $aFont, 'C', 'C', 0, '');
+            $this->pTextBox($x, $y+14, $w, $h, $texto, $aFont, 'C', 'C', 0, '');
             $this->pdf->SetTextColor(0, 0, 0);
         }
         return $RETURN_VALUE;
@@ -577,16 +577,16 @@ class DaEventoCTeNFePHP extends CommonNFePHP implements DocumentoNFePHP
             $texto = 'JUSTIFICATIVA DO CANCELAMENTO';
         }
         $aFont = array('font'=>$this->fontePadrao, 'size'=>10, 'style'=>'B');
-        $this->__textBox($x, $y, $maxW, 5, $texto, $aFont, 'T', 'L', 0, '', false);
+        $this->pTextBox($x, $y, $maxW, 5, $texto, $aFont, 'T', 'L', 0, '', false);
         $y += 5;
-        $this->__textBox($x, $y, $maxW, 190);
+        $this->pTextBox($x, $y, $maxW, 190);
         if ($this->tpEvento=='110110') {
             $texto = $this->xCorrecao;
         } elseif ($this->tpEvento=='110111') {
             $texto = $this->xJust;
         }
         $aFont = array('font'=>$this->fontePadrao, 'size'=>12, 'style'=>'B');
-        $this->__textBox($x+2, $y+2, $maxW-2, 150, $texto, $aFont, 'T', 'L', 0, '', false);
+        $this->pTextBox($x+2, $y+2, $maxW-2, 150, $texto, $aFont, 'T', 'L', 0, '', false);
     }//fim __bodyCCe
     
     /**
@@ -609,16 +609,16 @@ class DaEventoCTeNFePHP extends CommonNFePHP implements DocumentoNFePHP
                     . "pode ser consultada através dos Portais das SEFAZ.";
         }
         $aFont = array('font'=>$this->fontePadrao, 'size'=>10, 'style'=>'I');
-        $this->__textBox($x, $y, $w, 20, $texto, $aFont, 'T', 'C', 0, '', false);
+        $this->pTextBox($x, $y, $w, 20, $texto, $aFont, 'T', 'C', 0, '', false);
         $y = $this->hPrint -4;
         $texto = "Impresso em  ". date('d/m/Y   H:i:s');
         $w = $this->wPrint-4;
         $aFont = array('font'=>$this->fontePadrao, 'size'=>6, 'style'=>'I');
-        $this->__textBox($x, $y, $w, 4, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x, $y, $w, 4, $texto, $aFont, 'T', 'L', 0, '');
         $texto = "DAEventoCTeNFePHP ver. " . $this->version
                 .  "  Powered by NFePHP (GNU/GPLv3 GNU/LGPLv3) © www.nfephp.org";
         $aFont = array('font'=>$this->fontePadrao, 'size'=>6, 'style'=>'I');
-        $this->__textBox($x, $y, $w, 4, $texto, $aFont, 'T', 'R', 0, 'http://www.nfephp.org');
+        $this->pTextBox($x, $y, $w, 4, $texto, $aFont, 'T', 'R', 0, 'http://www.nfephp.org');
     }//fim __footerCCe
 
     /**
