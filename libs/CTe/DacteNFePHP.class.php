@@ -143,6 +143,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
     protected $debugMode = 2;
     protected $formatPadrao;
     protected $formatNegrito;
+    protected $aquav;
 
 
     /**
@@ -237,6 +238,8 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
             $this->imp = $this->dom->getElementsByTagName("imp")->item(0);
             $this->toma4 = $this->dom->getElementsByTagName("toma4")->item(0);
             $this->toma03 = $this->dom->getElementsByTagName("toma03")->item(0);
+            //modal aquaviário
+            $this->aquav = $this->dom->getElementsByTagName("aquav")->item(0);
             $tomador = $this->pSimpleGetValue($this->toma03, "toma");
             //0-Remetente;1-Expedidor;2-Recebedor;3-Destinatário;4-Outros
             switch ($tomador) {
@@ -479,6 +482,8 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
                 } else {
                     $y += 53;
                 }
+            } else if ($this->modal == '3') {
+                $y += 37.75;
             } else {
                 $y += 24.95;
             }
@@ -499,7 +504,6 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
                 case '3':
                     $y += 17.9;
                     $x = $xInic;
-                    // TODO fmertins 31/10/14: este método não existe...
                     $r = $this->zModalAquaviario($x, $y);
                     break;
                 case '4':
@@ -520,6 +524,8 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
                 } else {
                     $y += 8.9;
                 }
+            } else if ($this->modal == '3') {
+                $y += 24.15;
             } else {
                 $y += 37;
             }
@@ -2152,6 +2158,8 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $w = $maxW;
         if ($this->modal == '1') {
             $h = $this->lota == 1 ? 25 : 53;
+        } else if ($this->modal == '3') {
+            $h = 37.6;
         } else {
             $h = 25;
         }
@@ -2182,6 +2190,8 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
             } else {
                 $this->pdf->Line($x, $y, $x, $y + 49.5);
             }
+        } else if ($this->modal == '3') {
+            $this->pdf->Line($x, $y, $x, $y + 34.1);
         } else {
             $this->pdf->Line($x, $y, $x, $y + 21.5);
         }
@@ -2606,6 +2616,143 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
                 'style' => '');
             $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
         }
+    } //fim da função zModalRod
+
+    /**
+     * zModalAquaviario
+     * Monta o campo com os dados do remetente na DACTE. ( retrato  e paisagem  )
+     *
+     * @param  number $x Posição horizontal canto esquerdo
+     * @param  number $y Posição vertical canto superior
+     * @return number Posição vertical final
+     */
+    protected function zModalAquaviario($x = 0, $y = 0)
+    {
+        $oldX = $x;
+        $oldY = $y;
+        if ($this->orientacao == 'P') {
+            $maxW = $this->wPrint;
+        } else {
+            $maxW = $this->wPrint - $this->wCanhoto;
+        }
+        $w = $maxW;
+        $h = 8.5;
+
+        $texto = 'DADOS ESPECÍFICOS DO MODAL AQUAVIÁRIO';
+        $aFont = $this->formatPadrao;
+        $this->pTextBox($x, $y, $w, $h * 3.2, $texto, $aFont, 'T', 'C', 1, '');
+        $y += 3.4;
+        $this->pdf->Line($x, $y, $w + 1, $y);
+        $texto = 'PORTO DE EMBARQUE';
+        $aFont = $this->formatPadrao;
+        $this->pTextBox($x, $y, $w * 0.23, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $texto = $this->pSimpleGetValue($this->aquav, "prtEmb");
+        $aFont = $this->formatNegrito;
+        $this->pTextBox($x, $y + 3, $w * 0.23, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $x += $w * 0.50;
+        $this->pdf->Line($x, $y, $x, $y + 7.7);
+        $texto = 'PORTO DE DESTINO';
+        $aFont = $this->formatPadrao;
+        $this->pTextBox($x, $y, $w * 0.23, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $texto = $this->pSimpleGetValue($this->aquav, "prtDest");
+        $aFont = $this->formatNegrito;
+        $this->pTextBox($x, $y + 3, $w * 0.50, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $y += 8;
+        $this->pdf->Line(208, $y, 1, $y);
+        $x = 1;
+        $texto = 'IDENTIFICAÇÃO DO NAVIO / REBOCADOR';
+        $aFont = $this->formatPadrao;
+        $this->pTextBox($x, $y, $w * 0.23, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $texto = $this->pSimpleGetValue($this->aquav, "xNavio");
+        $aFont = $this->formatNegrito;
+        $this->pTextBox($x, $y + 3, $w * 0.23, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $x += $w * 0.50;
+        $this->pdf->Line($x, $y, $x, $y + 7.7);
+        $texto = 'VR DA B. DE CALC. AFRMM';
+        $aFont = $this->formatPadrao;
+        $this->pTextBox($x, $y, $w * 0.23, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $texto = $this->pSimpleGetValue($this->aquav, "vPrest");
+        $aFont = $this->formatNegrito;
+        $this->pTextBox($x, $y + 3, $w * 0.50, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $x += $w * 0.17;
+        $this->pdf->Line($x, $y, $x, $y + 7.7);
+        $texto = 'VALOR DO AFRMM';
+        $aFont = $this->formatPadrao;
+        $this->pTextBox($x, $y, $w * 0.23, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $texto = $this->pSimpleGetValue($this->aquav, "vAFRMM");
+        $aFont = $this->formatNegrito;
+        $this->pTextBox($x, $y + 3, $w * 0.50, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $x += $w * 0.12;
+        $this->pdf->Line($x, $y, $x, $y + 7.7);
+        $texto = 'TIPO DE NAVEGAÇÃO';
+        $aFont = $this->formatPadrao;
+        $this->pTextBox($x, $y, $w * 0.23, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $texto = $this->pSimpleGetValue($this->aquav, "tpNav");
+        switch ($texto) {
+            case '0':
+                $texto = 'INTERIOR';
+                break;
+            case '1':
+                $texto = 'CABOTAGEM';
+                break;
+        }
+        $aFont = $this->formatNegrito;
+        $this->pTextBox($x, $y + 3, $w * 0.50, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $x += $w * 0.14;
+        $this->pdf->Line($x, $y, $x, $y + 7.7);
+        $texto = 'DIREÇÃO';
+        $aFont = $this->formatPadrao;
+        $this->pTextBox($x, $y, $w * 0.23, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $texto = $this->pSimpleGetValue($this->aquav, "direc");
+        switch ($texto) {
+            case 'N':
+                $texto = 'NORTE';
+                break;
+            case 'L':
+                $texto = 'LESTE';
+                break;
+            case 'S':
+                $texto = 'SUL';
+                break;
+            case 'O':
+                $texto = 'OESTE';
+                break;
+        }
+        $aFont = $this->formatNegrito;
+        $this->pTextBox($x, $y + 3, $w * 0.50, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $y += 8;
+        $this->pdf->Line(208, $y, 1, $y);
+        $x = 1;
+        $texto = 'IDENTIFICAÇÃO DOS CONTEINERS';
+        $aFont = $this->formatPadrao;
+        $this->pTextBox($x, $y, $w * 0.23, $h, $texto, $aFont, 'T', 'L', 0, '');
+        if ($this->infNF->item(0) !== null && $this->infNF->item(0)->getElementsByTagName('infUnidCarga') !== null) {
+            $texto = $this->infNF->item(0)->getElementsByTagName('infUnidCarga')->item(0)->getElementsByTagName('idUnidCarga')->item(0)->nodeValue;
+        } else if ($this->infNFe->item(0) !== null && $this->infNFe->item(0)->getElementsByTagName('infUnidCarga') !== null) {
+            $texto = $this->infNFe->item(0)->getElementsByTagName('infUnidCarga')->item(0)->getElementsByTagName('idUnidCarga')->item(0)->nodeValue;
+        } else if ($this->infOutros->item(0) !== null && $this->infOutros->item(0)->getElementsByTagName('infUnidCarga') !== null) {
+            $texto = $this->infOutros->item(0)->getElementsByTagName('infUnidCarga')->item(0)->getElementsByTagName('idUnidCarga')->item(0)->nodeValue;
+        } else {
+            $texto = '';
+        }
+        $aFont = $this->formatNegrito;
+        $this->pTextBox($x, $y + 3, $w * 0.23, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $x += $w * 0.50;
+        $this->pdf->Line($x, $y, $x, $y + 7.7);
+        $texto = 'IDENTIFICAÇÃO DAS BALSAS';
+        $aFont = $this->formatPadrao;
+        $this->pTextBox($x, $y, $w * 0.23, $h, $texto, $aFont, 'T', 'L', 0, '');
+        $texto = '';
+        if ($this->pSimpleGetValue($this->aquav, "balsa") !== '') {
+            foreach ($this->aquav->getElementsByTagName('balsa') as $k => $d) {
+                if ($k == 0)
+                    $texto = $this->aquav->getElementsByTagName('balsa')->item($k)->getElementsByTagName('xBalsa')->item(0)->nodeValue;
+                else
+                    $texto = $texto . ' / ' . $this->aquav->getElementsByTagName('balsa')->item($k)->getElementsByTagName('xBalsa')->item(0)->nodeValue;
+            }
+        }
+        $aFont = $this->formatNegrito;
+        $this->pTextBox($x, $y + 3, $w * 0.50, $h, $texto, $aFont, 'T', 'L', 0, '');
     } //fim da função zModalRod
 
     /**
