@@ -392,7 +392,7 @@ class ToolsNFe extends BaseTools
             $tpAmb = $evento->getElementsByTagName('tpAmb')->item(0)->nodeValue;
             $chaveEvento = $evento->getElementsByTagName('chNFe')->item(0)->nodeValue;
             $tpEvento = $evento->getElementsByTagName('tpEvento')->item(0)->nodeValue;
-            $nProtEvento = $evento->getElementsByTagName('nProt')->item(0)->nodeValue;
+            //$nProtEvento = $evento->getElementsByTagName('nProt')->item(0)->nodeValue;
             //verifica se conferem os dados
             //cStat = 135 ==> evento homologado
             //tpEvento = 110111 ==> Cancelamento
@@ -400,8 +400,7 @@ class ToolsNFe extends BaseTools
             //protocolo do evneto ==  protocolo da NFe
             if ($cStat == '135' &&
                 $tpEvento == '110111' &&
-                $chaveEvento == $chaveNFe &&
-                $nProtEvento == $nProtNFe
+                $chaveEvento == $chaveNFe
             ) {
                 $proNFe->getElementsByTagName('cStat')->item(0)->nodeValue = '101';
                 $proNFe->getElementsByTagName('xMotivo')->item(0)->nodeValue = 'Cancelamento de NF-e homologado';
