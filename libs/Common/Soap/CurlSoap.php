@@ -165,8 +165,12 @@ class CurlSoap
         //tamanho da mensagem
         $tamanho = strlen($data);
         //estabelecimento dos parametros da mensagem
+        //$parametros = array(
+        //    'Content-Type: application/soap+xml;charset=utf-8;action="'.$namespace."/".$method.'"',
+        //    'SOAPAction: "'.$method.'"',
+        //    "Content-length: $tamanho");
         $parametros = array(
-            'Content-Type: application/soap+xml;charset=utf-8;action="'.$namespace."/".$method.'"',
+            'Content-Type: application/soap+xml;charset=utf-8',
             'SOAPAction: "'.$method.'"',
             "Content-length: $tamanho");
         //solicita comunicação via cURL
