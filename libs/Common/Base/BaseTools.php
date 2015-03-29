@@ -196,7 +196,7 @@ class BaseTools
         //verifica se a contingência está ativada
         $pathContingencia = NFEPHP_ROOT.DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'contingencia.json';
         if (is_file($pathContingencia)) {
-            $contJson = file_get_contents($pathContingencia);
+            $contJson = Files\FilesFolders::readFile($pathContingencia);
             if (! empty($contJson)) {
                  $aCont = (array) json_decode($contJson);
                  $this->motivoContingencia = $aCont['motivo'];
