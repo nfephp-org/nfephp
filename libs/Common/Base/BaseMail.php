@@ -105,12 +105,18 @@ class BaseMail
      */
     public function buildMessage($msgHtml = '', $msgTxt = '')
     {
-        $this->content  = new MimeMessage();
+        //Html part
         $htmlPart = new MimePart($msgHtml);
-        $htmlPart->type = 'text/html';
+        $htmlPart->encoding = Mime::ENCODING_QUOTEDPRINTABLE;
+        $htmlPart->type = "text/html; charset=UTF-8";
+        //text part
         $textPart = new MimePart($msgTxt);
-        $textPart->type = 'text/plain';
-        $this->content->setParts(array($textPart, $htmlPart));
+        $textPart->encoding = Mime::ENCODING_QUOTEDPRINTABLE;
+        $textPart->type = "text/plain; charset=UTF-8";
+        //monatgem do conteúdo da mensagem
+        $this->content = new MimeMessage();
+        $this->content->addPart($textPart);
+        $this->content->addPart($htmlPart);
     }
 
     /**
@@ -120,13 +126,6 @@ class BaseMail
      */
     public function sendMail($subject = '', $aMail = array())
     {
-        $contentPart = new MimePart($this->content->generateMessage());
-        $contentPart->type = 'multipart/alternative;' . PHP_EOL . ' boundary="' .
-                $this->content->getMime()->boundary() . '"';
-        $body = new MimeMessage();
-        foreach ($this->aAttachments as $attachment) {
-            $body->setParts(array($contentPart, $attachment));
-        }
         $message = new Message();
         $message->setEncoding("UTF-8");
         $message->setFrom(
@@ -134,10 +133,26 @@ class BaseMail
             $this->aMailConf['mailFromName']
         );
         foreach ($aMail as $mail) {
+            //destinatários
             $message->addTo($mail);
         }
+        //assunto
         $message->setSubject($subject);
+        //cria o corpo da mensagem
+        $body = new MimeMessage();
+        $contentPart = new MimePart($this->content->generateMessage());
+        $contentPart->type = 'multipart/alternative;' . PHP_EOL . ' boundary="' .
+                $this->content->getMime()->boundary() . '"';
+        $messageType = 'multipart/related';
+        //adiciona o html e o txt
+        $body->addPart($contentPart);
+        foreach ($this->aAttachments as $attachment) {
+            $body->addPart($attachment);
+        }
+        //monta o corpo
         $message->setBody($body);
+        $message->getHeaders()->get('content-type')->setType($messageType);
+        //enviar
         $this->transport->send($message);
     }
     
