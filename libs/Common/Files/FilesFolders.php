@@ -240,7 +240,6 @@ class FilesFolders
      */
     public static function readFile($pathFile = '')
     {
-        $data = '';
         if ($pathFile == '') {
             $msg = "Um caminho para o arquivo deve ser passado!!";
             throw new Exception\InvalidArgumentException($msg);
@@ -249,10 +248,10 @@ class FilesFolders
             $msg = "O arquivo indicado não foi localizado!!";
             throw new Exception\InvalidArgumentException($msg);
         }
-        if (! $data = file_get_contents($pathFile)) {
+        if (! is_readable($pathFile)) {
             $msg = "O arquivo indicado não pode ser lido. Permissões!!";
             throw new Exception\RuntimeException($msg);
         }
-        return $data;
+        return file_get_contents($pathFile);
     }
 }

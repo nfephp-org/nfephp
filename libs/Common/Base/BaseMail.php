@@ -19,6 +19,7 @@ use Zend\Mime\Mime;
 use Zend\Mail\Transport\SmtpOptions;
 use Zend\Mail\Transport\Smtp as SmtpTransport;
 use Common\Exception;
+use Common\Files;
 
 if (!defined('NFEPHP_ROOT')) {
     define('NFEPHP_ROOT', dirname(dirname(dirname(__FILE__))));
@@ -55,13 +56,15 @@ class BaseMail
             $connConfig['ssl'] = $this->aMailConf['mailProtocol'];
         }
         $this->transport = new SmtpTransport();
-        $options = new SmtpOptions(array(
-            'name'              => $domain,
-            'host'              => $this->aMailConf['mailSmtp'],
-            'port'              => $this->aMailConf['mailPort'],
-            'connection_class'  => 'plain',
-            'connection_config' => $connConfig,
-        ));
+        $options = new SmtpOptions(
+            array(
+                'name'              => $domain,
+                'host'              => $this->aMailConf['mailSmtp'],
+                'port'              => $this->aMailConf['mailPort'],
+                'connection_class'  => 'plain',
+                'connection_config' => $connConfig,
+            )
+        );
         $this->transport->setOptions($options);
     }
 
@@ -73,7 +76,7 @@ class BaseMail
     public function setTemplate($pathFile = '')
     {
         if (is_file($pathFile)) {
-            $this->template = file_get_contents($pathFile);
+            $this->template = Files\FilesFolders::readFile($pathFile);
         }
     }
     
