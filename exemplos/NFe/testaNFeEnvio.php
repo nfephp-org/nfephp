@@ -12,8 +12,11 @@ $filename = '../xml/35101158716523000119550010000000011003000000-nfe.xml';
 $lote = substr(str_replace(',', '', number_format(microtime(true)*1000000, 0)), 0, 15);
 // montar o array com a NFe
 $sNFe = file_get_contents($filename);
+//array vazio passado como referencia
+$aResp = array();
+
 //enviar o lote
-if ($aResp = $nfe->autoriza($sNFe, $lote)) {
+if ($resp = $nfe->autoriza($sNFe, $lote, $aResp)) {
     if ($aResp['bStat']) {
         echo "Numero do Recibo : " . $aResp['nRec'] .", use este numero para obter o protocolo ou informações de erro no xml com testaRecibo.php.";
     } else {
