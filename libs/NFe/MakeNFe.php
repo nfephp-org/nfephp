@@ -744,6 +744,11 @@ class MakeNFe extends BaseMake
         $email = ''
     ) {
         $identificador = 'E01 <dest> - ';
+        if ($numIE == 'ISENTO') {
+            if ($indIEDest == '1') {
+                $indIEDest = '2';
+            }
+        }
         $this->dest = $this->dom->createElement("dest");
         if ($this->tpAmb == '2') {
             $this->dom->addChild(
@@ -785,6 +790,7 @@ class MakeNFe extends BaseMake
                     true,
                     $identificador . "Identificação do destinatário no caso de comprador estrangeiro"
                 );
+                $indIEDest = '9';
             }
             $this->dom->addChild(
                 $this->dest,
@@ -812,7 +818,7 @@ class MakeNFe extends BaseMake
                 $identificador . "Indicador da IE do Destinatário"
             );
         }
-        if ($indIEDest != '9') {
+        if ($indIEDest == '1') {
             $this->dom->addChild(
                 $this->dest,
                 "IE",
