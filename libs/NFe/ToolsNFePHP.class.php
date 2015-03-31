@@ -4707,6 +4707,9 @@ class ToolsNFePHP extends CommonNFePHP
                 }
             }
             curl_close($oCurl);
+            if ($info['http_code'] != 200) {
+                $xml = '';
+            }
             return $xml;
         } catch (nfephpException $e) {
             $this->pSetError($e->getMessage());
