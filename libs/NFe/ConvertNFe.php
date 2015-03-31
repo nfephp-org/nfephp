@@ -1848,6 +1848,13 @@ class ConvertNFe
         //S|
         //fake não faz nada
         $aCampos = array();
+        $this->linhaS[0] = '';
+        $this->linhaS[1] = '';
+        $this->linhaS[2] = '';
+        $this->linhaS[3] = '';
+        $this->linhaS[4] = '';
+        $this->linhaS[5] = '';
+        $this->linhaS[6] = '';
     }
     
     /**
