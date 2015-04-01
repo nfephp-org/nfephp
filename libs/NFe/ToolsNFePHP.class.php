@@ -2692,7 +2692,7 @@ class ToolsNFePHP extends CommonNFePHP
                     $chNFe = $resNFe->getElementsByTagName('chNFe')->item(0)->nodeValue;
                     $CNPJ = $resNFe->getElementsByTagName('CNPJ')->item(0)->nodeValue;
                     $xNome = $resNFe->getElementsByTagName('xNome')->item(0)->nodeValue;
-                    $dhEmi = $resNFe->getElementsByTagName('dhEmi')->item(0)->nodeValue;
+                    //$dhEmi = $resNFe->getElementsByTagName('dhEmi')->item(0)->nodeValue;
                     $dhRecbto= $resNFe->getElementsByTagName('dhRecbto')->item(0)->nodeValue;
                     $tpNF = $resNFe->getElementsByTagName('tpNF')->item(0)->nodeValue;
                     $cSitNFe = $resNFe->getElementsByTagName('cSitNFe')->item(0)->nodeValue;
@@ -2702,7 +2702,7 @@ class ToolsNFePHP extends CommonNFePHP
                         'NSU'=>$nsu,
                         'CNPJ'=>$CNPJ,
                         'xNome'=>$xNome,
-                        'dhEmi'=>$dhEmi,
+                        //'dhEmi'=>$dhEmi,
                         'dhRecbto'=>$dhRecbto,
                         'tpNF'=>$tpNF,
                         'cSitNFe'=>$cSitNFe,
@@ -2715,7 +2715,7 @@ class ToolsNFePHP extends CommonNFePHP
                     $chNFe = $resCanc->getElementsByTagName('chNFe')->item(0)->nodeValue;
                     $CNPJ = $resCanc->getElementsByTagName('CNPJ')->item(0)->nodeValue;
                     $xNome = $resCanc->getElementsByTagName('xNome')->item(0)->nodeValue;
-                    $dhEmi = $resCanc->getElementsByTagName('dhEmi')->item(0)->nodeValue;
+                    //$dhEmi = $resCanc->getElementsByTagName('dhEmi')->item(0)->nodeValue;
                     $dhRecbto= $resCanc->getElementsByTagName('dhRecbto')->item(0)->nodeValue;
                     $tpNF = $resCanc->getElementsByTagName('tpNF')->item(0)->nodeValue;
                     $cSitNFe = $resCanc->getElementsByTagName('cSitNFe')->item(0)->nodeValue;
@@ -2725,7 +2725,7 @@ class ToolsNFePHP extends CommonNFePHP
                         'NSU'=>$nsu,
                         'CNPJ'=>$CNPJ,
                         'xNome'=>$xNome,
-                        'dhEmi'=>$dhEmi,
+                        //'dhEmi'=>$dhEmi,
                         'dhRecbto'=>$dhRecbto,
                         'tpNF'=>$tpNF,
                         'cSitNFe'=>$cSitNFe,
@@ -4651,7 +4651,7 @@ class ToolsNFePHP extends CommonNFePHP
             curl_setopt($oCurl, CURLOPT_PORT, 443);
             curl_setopt($oCurl, CURLOPT_VERBOSE, 1);
             curl_setopt($oCurl, CURLOPT_HEADER, 1); //retorna o cabeçalho de resposta
-            //curl_setopt($oCurl, CURLOPT_SSLVERSION, 3);
+            curl_setopt($oCurl, CURLOPT_SSLVERSION, 3);
             curl_setopt($oCurl, CURLOPT_SSL_VERIFYHOST, 2); // verifica o host evita MITM
             curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, 0);
             curl_setopt($oCurl, CURLOPT_SSLCERT, $this->certKEY);
