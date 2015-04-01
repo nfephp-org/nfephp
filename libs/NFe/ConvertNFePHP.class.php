@@ -1342,10 +1342,12 @@ class ConvertNFePHP
                     $ICMS60->appendChild($orig);
                     $CST = $dom->createElement("CST", $dados[2]);
                     $ICMS60->appendChild($CST);
-                    $vBCST = $dom->createElement("vBCSTRet", $dados[3]);
-                    $ICMS60->appendChild($vBCST);
-                    $vICMSST = $dom->createElement("vICMSSTRet", $dados[4]);
-                    $ICMS60->appendChild($vICMSST);
+                    if (!empty($dados[3]) && !empty($dados[4])) {
+                        $vBCST = $dom->createElement("vBCSTRet", $dados[3]);
+                        $ICMS60->appendChild($vBCST);
+                        $vICMSST = $dom->createElement("vICMSSTRet", $dados[4]);
+                        $ICMS60->appendChild($vICMSST);
+                    }
                     $ICMS->appendChild($ICMS60);
                     break;
                 case "N09":
@@ -1427,9 +1429,9 @@ class ConvertNFePHP
                     $vICMSST = $dom->createElement("vICMSST", $dados[13]);
                     $ICMS90->appendChild($vICMSST);
                     if (!empty($dados[14]) || !empty($dados[15])) {
-                        $vICMSDeson = $dom->createElement("vICMSDeson",$dados[14]);
+                        $vICMSDeson = $dom->createElement("vICMSDeson", $dados[14]);
                         $ICMS90->appendChild($vICMSDeson);
-                        $motDesICMS = $dom->createElement("motDesICMS",$dados[15]);
+                        $motDesICMS = $dom->createElement("motDesICMS", $dados[15]);
                         $ICMS90->appendChild($motDesICMS);
                     }
                     $ICMS->appendChild($ICMS90);
@@ -1585,10 +1587,12 @@ class ConvertNFePHP
                     $ICMSSN500->appendChild($orig);
                     $CSOSN = $dom->createElement("CSOSN", $dados[2]);
                     $ICMSSN500->appendChild($CSOSN);
-                    $vBCSTRet = $dom->createElement("vBCSTRet", $dados[3]);
-                    $ICMSSN500->appendChild($vBCSTRet);
-                    $vICMSSTRet = $dom->createElement("vICMSSTRet", $dados[4]);
-                    $ICMSSN500->appendChild($vICMSSTRet);
+                    if (!empty($dados[3]) && !empty($dados[4])) {
+                        $vBCSTRet = $dom->createElement("vBCSTRet", $dados[3]);
+                        $ICMSSN500->appendChild($vBCSTRet);
+                        $vICMSSTRet = $dom->createElement("vICMSSTRet", $dados[4]);
+                        $ICMSSN500->appendChild($vICMSSTRet);
+                    }
                     $ICMS->appendChild($ICMSSN500);
                     break;
                 case "N10h":
@@ -1703,12 +1707,11 @@ class ConvertNFePHP
                 case "O11":
                     //Quantidade total e Valor 0 ou 1 [IPITrib]
                     // todos esses campos sao obrigatorios
-                    //O11|qUnid|vUnid|vIPI|
+                    //O11|qUnid|vUnid|
                     $qUnid = $dom->createElement("qUnid", $dados[1]);
                     $IPITrib->insertBefore($IPITrib->appendChild($qUnid), $vIPI);
                     $vUnid = $dom->createElement("vUnid", $dados[2]);
                     $IPITrib->insertBefore($IPITrib->appendChild($vUnid), $vIPI);
-                    //$dados[3] seria vIPI novamente (mesmo da TAG PAI O07), mas não há esta informação na NT 2013/005 (xml)
                     break;
                 case "O08":
                     //Grupo IPI Não tributavel 0 ou 1 [IPI]
