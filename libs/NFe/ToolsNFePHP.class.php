@@ -2692,7 +2692,8 @@ class ToolsNFePHP extends CommonNFePHP
                     $chNFe = $resNFe->getElementsByTagName('chNFe')->item(0)->nodeValue;
                     $CNPJ = $resNFe->getElementsByTagName('CNPJ')->item(0)->nodeValue;
                     $xNome = $resNFe->getElementsByTagName('xNome')->item(0)->nodeValue;
-                    //$dhEmi = $resNFe->getElementsByTagName('dhEmi')->item(0)->nodeValue;
+                    $dEmi = $resNFe->getElementsByTagName('dEmi')->item(0)->nodeValue;
+                    $vNF = $resNFe->getElementsByTagName('vNF')->item(0)->nodeValue;
                     $dhRecbto= $resNFe->getElementsByTagName('dhRecbto')->item(0)->nodeValue;
                     $tpNF = $resNFe->getElementsByTagName('tpNF')->item(0)->nodeValue;
                     $cSitNFe = $resNFe->getElementsByTagName('cSitNFe')->item(0)->nodeValue;
@@ -2702,7 +2703,8 @@ class ToolsNFePHP extends CommonNFePHP
                         'NSU'=>$nsu,
                         'CNPJ'=>$CNPJ,
                         'xNome'=>$xNome,
-                        //'dhEmi'=>$dhEmi,
+                        'dEmi'=>$dEmi,
+                        'vNF'=>$vNF,
                         'dhRecbto'=>$dhRecbto,
                         'tpNF'=>$tpNF,
                         'cSitNFe'=>$cSitNFe,
@@ -2715,7 +2717,8 @@ class ToolsNFePHP extends CommonNFePHP
                     $chNFe = $resCanc->getElementsByTagName('chNFe')->item(0)->nodeValue;
                     $CNPJ = $resCanc->getElementsByTagName('CNPJ')->item(0)->nodeValue;
                     $xNome = $resCanc->getElementsByTagName('xNome')->item(0)->nodeValue;
-                    //$dhEmi = $resCanc->getElementsByTagName('dhEmi')->item(0)->nodeValue;
+                    $dEmi = $resCanc->getElementsByTagName('dEmi')->item(0)->nodeValue;
+                    $vNF = $resCanc->getElementsByTagName('vNF')->item(0)->nodeValue;
                     $dhRecbto= $resCanc->getElementsByTagName('dhRecbto')->item(0)->nodeValue;
                     $tpNF = $resCanc->getElementsByTagName('tpNF')->item(0)->nodeValue;
                     $cSitNFe = $resCanc->getElementsByTagName('cSitNFe')->item(0)->nodeValue;
@@ -2725,7 +2728,8 @@ class ToolsNFePHP extends CommonNFePHP
                         'NSU'=>$nsu,
                         'CNPJ'=>$CNPJ,
                         'xNome'=>$xNome,
-                        //'dhEmi'=>$dhEmi,
+                        'dEmi'=>$dEmi,
+                        'vNF'=>$vNF,
                         'dhRecbto'=>$dhRecbto,
                         'tpNF'=>$tpNF,
                         'cSitNFe'=>$cSitNFe,
