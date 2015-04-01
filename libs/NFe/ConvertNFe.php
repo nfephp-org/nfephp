@@ -1583,8 +1583,9 @@ class ConvertNFe
      */
     protected function o07Entity($aCampos)
     {
-        //O07|CST|
+        //O07|CST|vIPI|
         $this->linhaO[1] = $aCampos[1];
+        $this->linhaO[11] = $aCampos[2];
     }
     
     /**
@@ -1605,10 +1606,9 @@ class ConvertNFe
      */
     protected function o11Entity($aCampos)
     {
-        //O11|qUnid|vUnid|vIPI|
+        //O11|qUnid|vUnid|
         $this->linhaO[9] = $aCampos[1]; //qUnid
         $this->linhaO[10] = $aCampos[2]; //vUnid
-        $this->linhaO[11] = $aCampos[3]; //vIPI
         $this->zLinhaOEntity($this->linhaO);
     }
     
