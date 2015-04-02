@@ -1509,7 +1509,7 @@ class MakeNFe extends BaseMake
      * @param string $nItem
      * @param string $nDI
      * @param string $nAdicao
-     * @param string $nSeqAdicC
+     * @param string $nSeqAdic
      * @param string $cFabricante
      * @param string $vDescDI
      * @param string $nDraw
@@ -1519,18 +1519,48 @@ class MakeNFe extends BaseMake
         $nItem = '',
         $nDI = '',
         $nAdicao = '',
-        $nSeqAdicC = '',
+        $nSeqAdic = '',
         $cFabricante = '',
         $vDescDI = '',
         $nDraw = ''
     ) {
         $identificador = 'I25 <adi> - ';
         $adi = $this->dom->createElement("adi");
-        $this->dom->addChild($adi, "nAdicao", $nAdicao, true, $identificador . "[item $nItem] Número da Adição");
-        $this->dom->addChild($adi, "nSeqAdicC", $nSeqAdicC, true, $identificador . "[item $nItem] Número sequencial do item dentro da Adição");
-        $this->dom->addChild($adi, "cFabricante", $cFabricante, true, $identificador . "[item $nItem] Código do fabricante estrangeiro");
-        $this->dom->addChild($adi, "vDescDI", $vDescDI, false, $identificador . "[item $nItem] Valor do desconto do item da DI Adição");
-        $this->dom->addChild($adi, "nDraw", $nDraw, false, $identificador . "[item $nItem] Número do ato concessório de Drawback");
+        $this->dom->addChild(
+            $adi,
+            "nAdicao",
+            $nAdicao,
+            true,
+            $identificador . "[item $nItem] Número da Adição"
+        );
+        $this->dom->addChild(
+            $adi,
+            "nSeqAdic",
+            $nSeqAdic,
+            true,
+            $identificador . "[item $nItem] Número sequencial do item dentro da Adição"
+        );
+        $this->dom->addChild(
+            $adi,
+            "cFabricante",
+            $cFabricante,
+            true,
+            $identificador . "[item $nItem] Código do fabricante estrangeiro"
+        );
+        $this->dom->addChild(
+            $adi,
+            "vDescDI",
+            $vDescDI,
+            false,
+            $identificador . "[item $nItem] Valor do desconto do item da DI Adição"
+        );
+        $this->dom->addChild(
+            $adi,
+            "nDraw",
+            $nDraw,
+            false,
+            $identificador . "[item $nItem] Número do ato concessório de Drawback"
+        );
         $this->aAdi[$nItem][$nDI][] = $adi;
         //colocar a adi em seu DI respectivo
         $nodeDI = $this->aDI[$nItem][$nDI];
