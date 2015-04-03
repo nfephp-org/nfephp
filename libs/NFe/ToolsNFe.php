@@ -34,7 +34,7 @@ class ToolsNFe extends BaseTools
      * errror
      * @var string
      */
-    public $error = '';
+    public $errors = array();
     /**
      * soapDebug
      * @var string 
@@ -1318,11 +1318,11 @@ class ToolsNFe extends BaseTools
             DIRECTORY_SEPARATOR .
             $xsdFile;
         if (! is_file($xsdPath)) {
-            $this->error = "O arquivo XSD $xsdFile não foi localizado.";
+            $this->errors[] = "O arquivo XSD $xsdFile não foi localizado.";
             return false;
         }
         if (! ValidXsd::validar($aResp['xml'], $xsdPath)) {
-            $this->error = ValidXsd::$errors;
+            $this->errors[] = ValidXsd::$errors;
             return false;
         }
         return true;
