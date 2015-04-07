@@ -4357,10 +4357,12 @@ class ToolsNFePHP extends CommonNFePHP
                 //acrescenta a cadeia completa dos certificados se estiverem
                 //inclusas no arquivo pfx, caso contrario deverão ser inclusas
                 //manualmente para acessar os serviços em GO
-                $aCer = $x509certdata['extracerts'];
                 $chain = '';
-                foreach ($aCer as $cert) {
-                    $chain .= "$cert";
+                if (isset($x509certdata['extracerts'])) {
+                    $aCer = $x509certdata['extracerts'];
+                    foreach ($aCer as $cert) {
+                        $chain .= "$cert";
+                    }
                 }
                 file_put_contents($this->pubKEY, $x509certdata['cert']);
                 file_put_contents($this->certKEY, $x509certdata['cert'] . $chain);
