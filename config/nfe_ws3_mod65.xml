@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
 ATENÇÃO! Este é o XML dos endereços dos webservices da NFC-e (NF-e modelo 65)
-layout "3.10", portanto é incompatível com a versão "2.00" do layout da NF-e,
-prevista para ser desativada em 01/12/2014.
+layout "3.10".
 
-ATENÇÃO!!! Em Julho/2014, vários endereços destes webservices ainda não foram
+ATENÇÃO!!! Em Abril/2015, vários endereços destes webservices ainda não foram
 totalmente revisados e/ou estão incompletos, testar com cuidado conforme cada
 UF/ambiente.
 -->
@@ -35,16 +34,16 @@ UF/ambiente.
   <UF>
     <sigla>AN</sigla>
     <homologacao>
-      <NfeConsultaDest method="nfeConsultaNFDest" operation="NfeConsultaDest" version="1.01">https://hom.nfe.fazenda.gov.br/NFeConsultaDest/NFeConsultaDest.asmx</NfeConsultaDest>
       <NFeDistribuicaoDFe method="nfeDistDFeInteresse" operation="NFeDistribuicaoDFe" version="1.00">https://hom.nfe.fazenda.gov.br/NFeDistribuicaoDFe/NFeDistribuicaoDFe.asmx</NFeDistribuicaoDFe>
-      <NfeDownloadNF method="nfeDownloadNF" operation="NfeDownloadNF" version="3.10">https://hom.nfe.fazenda.gov.br/NfeDownloadNF/NfeDownloadNF.asmx</NfeDownloadNF>
-      <RecepcaoEvento method="nfeRecepcaoEvento" operation="RecepcaoEvento" version="3.10">https://hom.nfe.fazenda.gov.br/RecepcaoEvento/RecepcaoEvento.asmx</RecepcaoEvento>            
+      <NfeConsultaDest method="nfeConsultaNFDest" operation="NfeConsultaDest" version="1.01">https://hom.nfe.fazenda.gov.br/NFeConsultaDest/NFeConsultaDest.asmx</NfeConsultaDest>
+      <NfeDownloadNF method="nfeDownloadNF" operation="NfeDownloadNF" version="1.00">https://hom.nfe.fazenda.gov.br/NfeDownloadNF/NfeDownloadNF.asmx</NfeDownloadNF>
+      <RecepcaoEvento method="nfeRecepcaoEvento" operation="RecepcaoEvento" version="1.00">https://hom.nfe.fazenda.gov.br/RecepcaoEvento/RecepcaoEvento.asmx</RecepcaoEvento>
     </homologacao>
     <producao>
+      <NFeDistribuicaoDFe method="nfeDistDFeInteresse" operation="NFeDistribuicaoDFe" version="1.00">https://www1.nfe.fazenda.gov.br/NFeDistribuicaoDFe/NFeDistribuicaoDFe.asmx</NFeDistribuicaoDFe>        
       <NfeConsultaDest method="nfeConsultaNFDest" operation="NfeConsultaDest" version="1.01">https://www.nfe.fazenda.gov.br/NFeConsultaDest/NFeConsultaDest.asmx</NfeConsultaDest>
-      <!-- TODO fmertins 06/11/14: falta a publicação do WS "NFeDistribuicaoDFe" ambiente de produção -->
-      <NfeDownloadNF method="nfeDownloadNF" operation="NfeDownloadNF" version="3.10">https://www.nfe.fazenda.gov.br/NfeDownloadNF/NfeDownloadNF.asmx</NfeDownloadNF>
-      <RecepcaoEvento method="nfeRecepcaoEvento" operation="RecepcaoEvento" version="3.10">https://www.nfe.fazenda.gov.br/RecepcaoEvento/RecepcaoEvento.asmx</RecepcaoEvento>            
+      <NfeDownloadNF method="nfeDownloadNF" operation="NfeDownloadNF" version="1.00">https://www.nfe.fazenda.gov.br/NfeDownloadNF/NfeDownloadNF.asmx</NfeDownloadNF>
+      <RecepcaoEvento method="nfeRecepcaoEvento" operation="RecepcaoEvento" version="1.00">https://www.nfe.fazenda.gov.br/RecepcaoEvento/RecepcaoEvento.asmx</RecepcaoEvento>
     </producao>
   </UF>
   <UF>
@@ -252,26 +251,28 @@ UF/ambiente.
   <UF>
     <sigla>RS</sigla>
     <homologacao>
-      <NfeAutorizacao method="nfeAutorizacaoLote" operation="" version="3.10">https://homologacao.nfe.sefaz.rs.gov.br/ws/NfeAutorizacao/NFeAutorizacao.asmx</NfeAutorizacao>
-      <NfeConsultaCadastro method="consultaCadastro2" operation="" version="3.10"></NfeConsultaCadastro>
-      <NfeConsultaDest method="nfeConsultaNFDest" operation="" version="3.10">https://homologacao.nfe.sefaz.rs.gov.br/ws/nfeConsultaDest/nfeConsultaDest.asmx</NfeConsultaDest>
-      <NfeConsultaProtocolo method="nfeConsultaNF2" operation="" version="3.10">https://homologacao.nfe.sefaz.rs.gov.br/ws/NfeConsulta/NfeConsulta2.asmx</NfeConsultaProtocolo>
+      <NfeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10">https://homologacao.nfe.sefaz.rs.gov.br/ws/NfeAutorizacao/NFeAutorizacao.asmx</NfeAutorizacao>
+      <NfeConsultaCadastro method="consultaCadastro2" operation="CadConsultaCadastro2" version="2.00">https://sef.sefaz.rs.gov.br/ws/cadconsultacadastro/cadconsultacadastro2.asmx</NfeConsultaCadastro>
+      <NfeConsultaDest method="nfeConsultaNFDest" operation="NfeConsultaDest" version="1.01">https://homologacao.nfe.sefaz.rs.gov.br/ws/nfeConsultaDest/nfeConsultaDest.asmx</NfeConsultaDest>
+      <NfeConsultaProtocolo method="nfeConsultaNF2" operation="NfeConsulta2" version="3.10">https://homologacao.nfe.sefaz.rs.gov.br/ws/NfeConsulta/NfeConsulta2.asmx</NfeConsultaProtocolo>
       <NfeConsultaQR method="QR-CODE" operation="" version="3.10">https://www.sefaz.rs.gov.br/NFCE/NFCE-COM.aspx</NfeConsultaQR>      
-      <NfeDownloadNF method="nfeDownloadNF" operation="" version="3.10">https://homologacao.nfe.sefaz.rs.gov.br/ws/nfeDownloadNF/nfeDownloadNF.asmx</NfeDownloadNF>
-      <NfeInutilizacao method="nfeInutilizacaoNF2" operation="" version="3.10">https://homologacao.nfe.sefaz.rs.gov.br/ws/nfeinutilizacao/nfeinutilizacao2.asmx</NfeInutilizacao>
-      <NfeRetAutorizacao method="nfeRetAutorizacaoLote" operation="" version="3.10">https://homologacao.nfe.sefaz.rs.gov.br/ws/NfeRetAutorizacao/NFeRetAutorizacao.asmx</NfeRetAutorizacao>
-      <NfeStatusServico method="nfeStatusServicoNF2" operation="" version="3.10">https://homologacao.nfe.sefaz.rs.gov.br/ws/NfeStatusServico/NfeStatusServico2.asmx</NfeStatusServico>
-      <RecepcaoEvento method="nfeRecepcaoEvento" operation="" version="1.00">https://homologacao.nfe.sefaz.rs.gov.br/ws/recepcaoevento/recepcaoevento.asmx</RecepcaoEvento>
+      <NfeDownloadNF method="nfeDownloadNF" operation="NfeDownloadNF" version="2.00">https://homologacao.nfe.sefaz.rs.gov.br/ws/nfeDownloadNF/nfeDownloadNF.asmx</NfeDownloadNF>
+      <NfeInutilizacao method="nfeInutilizacaoNF2" operation="NfeInutilizacao2" version="3.10">https://homologacao.nfe.sefaz.rs.gov.br/ws/nfeinutilizacao/nfeinutilizacao2.asmx</NfeInutilizacao>
+      <NfeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10">https://homologacao.nfe.sefaz.rs.gov.br/ws/NfeRetAutorizacao/NFeRetAutorizacao.asmx</NfeRetAutorizacao>
+      <NfeStatusServico method="nfeStatusServicoNF2" operation="NfeStatusServico2" version="3.10">https://homologacao.nfe.sefaz.rs.gov.br/ws/NfeStatusServico/NfeStatusServico2.asmx</NfeStatusServico>
+      <RecepcaoEvento method="nfeRecepcaoEvento" operation="RecepcaoEvento" version="1.00">https://homologacao.nfe.sefaz.rs.gov.br/ws/recepcaoevento/recepcaoevento.asmx</RecepcaoEvento>
     </homologacao>
     <producao>
-      <NfeConsultaCadastro method="consultaCadastro2" operation="" version="3.10">https://sef.sefaz.rs.gov.br/ws/cadconsultacadastro/cadconsultacadastro2.asmx</NfeConsultaCadastro>
-      <NfeConsultaDest method="nfeConsultaNFDest" operation="" version="3.10">https://nfe.sefaz.rs.gov.br/ws/nfeConsultaDest/nfeConsultaDest.asmx</NfeConsultaDest>
-      <NfeConsultaProtocolo method="nfeConsultaNF2" operation="" version="3.10">https://nfe.sefaz.rs.gov.br/ws/NfeConsulta/NfeConsulta2.asmx</NfeConsultaProtocolo>
+      <NfeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10">https://nfe.sefaz.rs.gov.br/ws/NfeAutorizacao/NFeAutorizacao.asmx</NfeAutorizacao>
+      <NfeConsultaCadastro method="consultaCadastro2" operation="CadConsultaCadastro2" version="2.00">https://sef.sefaz.rs.gov.br/ws/cadconsultacadastro/cadconsultacadastro2.asmx</NfeConsultaCadastro>
+      <NfeConsultaDest method="nfeConsultaNFDest" operation="NfeConsultaDest" version="1.01">https://nfe.sefaz.rs.gov.br/ws/nfeConsultaDest/nfeConsultaDest.asmx</NfeConsultaDest>
+      <NfeConsultaProtocolo method="nfeConsultaNF2" operation="NfeConsulta2" version="3.10">https://nfe.sefaz.rs.gov.br/ws/NfeConsulta/NfeConsulta2.asmx</NfeConsultaProtocolo>
       <NfeConsultaQR method="QR-CODE" operation="" version="3.10">https://www.sefaz.rs.gov.br/NFCE/NFCE-COM.aspx</NfeConsultaQR>      
-      <NfeDownloadNF method="nfeDownloadNF" operation="" version="3.10">https://nfe.sefaz.rs.gov.br/ws/nfeDownloadNF/nfeDownloadNF.asmx</NfeDownloadNF>
-      <NfeInutilizacao method="nfeInutilizacaoNF2" operation="" version="3.10">https://nfe.sefaz.rs.gov.br/ws/nfeinutilizacao/nfeinutilizacao2.asmx</NfeInutilizacao>
-      <NfeStatusServico method="nfeStatusServicoNF2" operation="" version="3.10">https://nfe.sefaz.rs.gov.br/ws/NfeStatusServico/NfeStatusServico2.asmx</NfeStatusServico>
-      <RecepcaoEvento method="nfeRecepcaoEvento" operation="" version="1.00">https://nfe.sefaz.rs.gov.br/ws/recepcaoevento/recepcaoevento.asmx</RecepcaoEvento>
+      <NfeDownloadNF method="nfeDownloadNF" operation="NfeDownloadNF" version="2.00">https://nfe.sefaz.rs.gov.br/ws/nfeDownloadNF/nfeDownloadNF.asmx</NfeDownloadNF>
+      <NfeInutilizacao method="nfeInutilizacaoNF2" operation="NfeInutilizacao2" version="3.10">https://nfe.sefaz.rs.gov.br/ws/NfeInutilizacao/NfeInutilizacao2.asmx</NfeInutilizacao>
+      <NfeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10">https://nfe.sefaz.rs.gov.br/ws/NfeRetAutorizacao/NFeRetAutorizacao.asmx</NfeRetAutorizacao>
+      <NfeStatusServico method="nfeStatusServicoNF2" operation="NfeStatusServico2" version="3.10">https://nfe.sefaz.rs.gov.br/ws/NfeStatusServico/NfeStatusServico2.asmx</NfeStatusServico>
+      <RecepcaoEvento method="nfeRecepcaoEvento" operation="RecepcaoEvento" version="1.00">https://nfe.sefaz.rs.gov.br/ws/recepcaoevento/recepcaoevento.asmx</RecepcaoEvento>
     </producao>
   </UF>
   <UF>
