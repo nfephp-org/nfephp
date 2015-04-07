@@ -77,6 +77,62 @@ class BaseMake
     }
     
     /**
+     * gravaXML
+     * grava o xml do documento fiscal na estrutura de pastas 
+     * em path indicar por exemplo /var/www/nfe ou /dados/cte ou /arquivo/mdfe
+     * ou seja as pastas principais onde guardar os arquivos
+     * Esse método itá colocar na subpastas [producao] ou [homologacao]
+     * na subpasta [entradas] e na subpasta [ANOMES]
+     * @param string $path
+     * @return boolean
+     */
+    public function gravaXML($path = '')
+    {
+        //pode ser NFe, CTe, MDFe e pode ser homologação ou produção
+        //essas informações estão dentro do xml
+        if ($path == '') {
+            return false;
+        }
+        if (! is_dir($path)) {
+            return false;
+        }
+        if (substr($path, -1) == DIRECTORY_SEPARATOR) {
+            $path = substr($path, 0, strlen($path)-1);
+        }
+        $aResp = array();
+        $aList = array('NFe' => 'nfe','CTe' => 'cte','MDFe' => 'mdfe');
+        Identify::setListSchemesId($aList);
+        $schem = Identify::identificacao($this->xml, $aResp);
+        if ($aResp['chave'] == '') {
+            return false;
+        }
+        $filename = $aResp['chave'].'-'.$schem.'.xml';
+        $dirBase = 'homologacao';
+        if ($aResp['tpAmb'] == '1') {
+            $dirBase = 'producao';
+        }
+        $aDh = explode('-', $aResp['dhEmi']);
+        $anomes = date('Ym');
+        if (count($aDh) > 1) {
+            $anomes = $aDh[0].$aDh[1];
+        }
+        $completePath = $path.
+            DIRECTORY_SEPARATOR.
+            $dirBase.
+            DIRECTORY_SEPARATOR.
+            'entradas'.
+            DIRECTORY_SEPARATOR.
+            $anomes;
+        
+        $content = $this->xml;
+        if (! FilesFolders::saveFile($completePath, $filename, $content)) {
+            return false;
+        }
+        return true;
+    }
+
+    
+    /**
      * montaChave
      * Monta a chave do documento fiscal
      * 

@@ -45,22 +45,41 @@ class Identify
     {
         if ($xml == '') {
             return '';
-        }
-        if (is_file($xml)) {
+        } elseif (is_file($xml)) {
             $xml = FilesFolders::readFile($xml);
         }
-        $dom = new DOMDocument('1.0', 'utf-8');
-        $dom->preserveWhiteSpace = false;
-        $dom->formatOutput = false;
-        $dom->loadXML($xml);
+        $dom = new Dom('1.0', 'utf-8');
+        $dom->loadXMLString($xml);
         $key = '';
         $schId = (string) self::zSearchNode($dom, $key);
         if ($schId == '') {
             return '';
         }
+        $chave = '';
+        $tpAmb = '';
+        $dhEmi = '';
+        if ($schId == 'nfe' || $schId == 'cte' || $schId == 'mdfe') {
+            switch ($schId) {
+                case 'nfe':
+                    $tag = 'infNFe';
+                    break;
+                case 'cte':
+                    $tag = 'infCTe';
+                    break;
+                case 'mdfe':
+                    $tag = 'infMDFe';
+                    break;
+            }
+            $chave = $dom->getChave($tag);
+            $tpAmb = $dom->getNodeValue('tpAmb');
+            $dhEmi = $dom->getNodeValue('dhEmi');
+        }
         $aResp['Id'] =  $schId;
         $aResp['tag'] =  $key;
         $aResp['dom'] = $dom;
+        $aResp['chave'] = $chave;
+        $aResp['tpAmb'] = $tpAmb;
+        $aResp['dhEmi'] = $dhEmi;
         return $schId;
     }
     
