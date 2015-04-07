@@ -15,6 +15,8 @@ namespace Common\Base;
 
 use Common\Dom\Dom;
 use Common\Keys\Keys;
+use Common\Identify\Identify;
+use Common\Files\FilesFolders;
 
 class BaseMake
 {

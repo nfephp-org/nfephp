@@ -12,7 +12,7 @@ namespace Common\Identify;
  * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
  */
 
-use DOMDocument;
+use Common\Dom\Dom;
 use Common\Files\FilesFolders;
 
 class Identify
