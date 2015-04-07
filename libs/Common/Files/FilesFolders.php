@@ -17,8 +17,8 @@ use Common\Exception;
 class FilesFolders
 {
     
-    protected $ambientes = array('homologacao','producao');
-    protected $subdirs = array(
+    protected static $ambientes = array('homologacao','producao');
+    protected static $subdirs = array(
         'entradas',
         'assinadas',
         'validadas',
@@ -82,14 +82,14 @@ class FilesFolders
      * @return boolean
      * @throws Exception\RuntimeException
      */
-    public function createFolders($dirPath = '')
+    public static function createFolders($dirPath = '')
     {
         //monta a arvore de diretórios necessária e estabelece permissões de acesso
         self::createFolder($dirPath);
-        foreach ($this->ambientes as $ambiente) {
+        foreach (self::$ambientes as $ambiente) {
             $folder = $dirPath.DIRECTORY_SEPARATOR.$ambiente;
             self::createFolder($folder);
-            foreach ($this->subdirs as $subdir) {
+            foreach (self::$subdirs as $subdir) {
                 $folder = $dirPath.DIRECTORY_SEPARATOR.$ambiente.DIRECTORY_SEPARATOR.$subdir;
                 self::createFolder($folder);
             }
@@ -142,7 +142,7 @@ class FilesFolders
      * @return array com os nome dos arquivos que atendem ao critério estabelecido ou false
      * @throws Exception\InvalidArgumentException
      */
-    public function listDir($folder, $fileMatch = '*-nfe.xml', $retpath = false)
+    public static function listDir($folder, $fileMatch = '*-nfe.xml', $retpath = false)
     {
         if ($folder == '' || $fileMatch == '') {
             throw new Exception\InvalidArgumentException(
@@ -179,7 +179,7 @@ class FilesFolders
      * @param string $respHtml passado por referencia irá conter a resposta em html
      * @return boolean
      */
-    public function writeTest($path = '', $message = '', &$respHtml = '')
+    public static function writeTest($path = '', $message = '', &$respHtml = '')
     {
         $cRed = '#FF0000';
         $cGreen = '#00CC00';
@@ -210,12 +210,12 @@ class FilesFolders
      * @return boolean
      * @throws Exception\RuntimeException
      */
-    public function removeFolder($dirPath)
+    public static function removeFolder($dirPath)
     {
         $files = array_diff(scandir($dirPath), array('.','..'));
         foreach ($files as $file) {
             if (is_dir("$dirPath/$file")) {
-                $this->removeFolder("$dirPath/$file");
+                self::removeFolder("$dirPath/$file");
             } else {
                 if (! unlink("$dirPath/$file")) {
                     throw new Exception\RuntimeException(
