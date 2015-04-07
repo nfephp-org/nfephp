@@ -49,10 +49,10 @@ if (!defined('PATH_ROOT')) {
 set_time_limit(1800);
 
 //classes utilizadas
-require_once '../../libs/External/mpdf/mpdf.php';
-require_once '../../libs/External/qrcode/qrcode.class.php';
-require_once '../../libs/Common/CommonNFePHP.class.php';
-require_once '../../libs/Common/DocumentoNFePHP.interface.php';
+require_once PATH_ROOT . 'libs/External/mpdf/mpdf.php';
+require_once PATH_ROOT . 'libs/External/qrcode/qrcode.class.php';
+require_once PATH_ROOT . 'libs/Common/CommonNFePHP.class.php';
+require_once PATH_ROOT . 'libs/Common/DocumentoNFePHP.interface.php';
 
 /**
  * Classe DanfceNFePHP
