@@ -431,13 +431,15 @@ class ReturnNFe
         }
         $tMed = ! empty($tag->getElementsByTagName('tMed')->item(0)->nodeValue) ?
                 $tag->getElementsByTagName('tMed')->item(0)->nodeValue : '';
+        $dhRecbto = ! empty($tag->getElementsByTagName('dhRecbto')->item(0)->nodeValue) ?
+                $tag->getElementsByTagName('dhRecbto')->item(0)->nodeValue : '';
         $aResposta = array(
             'bStat' => true,
             'versao' => $tag->getAttribute('versao'),
             'cStat' => $tag->getElementsByTagName('cStat')->item(0)->nodeValue,
             'verAplic' => $tag->getElementsByTagName('verAplic')->item(0)->nodeValue,
             'xMotivo' => $tag->getElementsByTagName('xMotivo')->item(0)->nodeValue,
-            'dhRecbto' => $tag->getElementsByTagName('dhRecbto')->item(0)->nodeValue,
+            'dhRecbto' => $dhRecbto,
             'tMed' => $tMed,
             'cUF' => $tag->getElementsByTagName('cUF')->item(0)->nodeValue
         );
