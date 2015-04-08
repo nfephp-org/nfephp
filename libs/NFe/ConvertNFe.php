@@ -81,6 +81,10 @@ class ConvertNFe
         $aNotas = $this->zSliceNotas($aDados);
         foreach ($aNotas as $nota) {
             $this->zArray2xml($nota);
+            //carrega os volumes, movido de yEntity
+            foreach ($this->linhaX26 as $vol) {
+                $this->zLinhaXVolEntity($vol);
+            }
             if ($this->make->montaNFe()) {
                 $aNF[] = $this->make->getXML();
             }
@@ -2310,17 +2314,13 @@ class ConvertNFe
     
     /**
      * yEntity
-     * Carrega os volumes
      * @param array $aCampos
      */
     protected function yEntity($aCampos)
     {
         //Y|
+        //fake não faz nada
         $aCampos = array();
-        //carrega os volumes
-        foreach ($this->linhaX26 as $vol) {
-            $this->zLinhaXVolEntity($vol);
-        }
     }
     
     /**
