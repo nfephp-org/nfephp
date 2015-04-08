@@ -501,13 +501,11 @@ class ToolsNFe extends BaseTools
             throw new Exception\InvalidArgumentException($msg);
         }
         if (is_array($aXml)) {
-            foreach ($aXml as $xml) {
-                $sxml .= $xml;
-            }
             if (count($aXml) > 1) {
                 //multiplas nfes, não pode ser sincrono
                 $indSinc = 0;
             }
+            $sxml = implode("", $sxml);
         }
         $sxml = preg_replace("/<\?xml.*\?>/", "", $sxml);
         $siglaUF = $this->aConfig['siglaUF'];
