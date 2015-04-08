@@ -275,8 +275,8 @@ class ToolsNFe extends BaseTools
         //carrega o protocolo
         $docprot = new Dom();
         $docprot->loadXMLFile($pathProtfile);
-        $nodeprot = $docprot->getNode('protNFe', 0);
-        if ($nodeprot == '') {
+        $nodeprots = $docprot->getElementsByTagName('protNFe');
+        if ($nodeprots->length == 0) {
             $msg = "O arquivo indicado não contem um protocolo de autorização!";
             throw new Exception\RuntimeException($msg);
         }
@@ -292,9 +292,16 @@ class ToolsNFe extends BaseTools
         $chaveNFe = preg_replace('/[^0-9]/', '', $chaveId);
         $digValueNFe = $docnfe->getNodeValue('DigestValue');
         //carrega os dados do protocolo
-        $protver     = $nodeprot->getAttribute("versao");
-        $chaveProt   = $nodeprot->getElementsByTagName("chNFe")->item(0)->nodeValue;
-        $digValueProt = $nodeprot->getElementsByTagName("digVal")->item(0)->nodeValue;
+        for ($i = 0; $i < $nodeprots->length; $i++) {
+            $nodeprot = $nodeprots->item($i);
+            $protver = $nodeprot->getAttribute("versao");
+            $chaveProt = $nodeprot->getElementsByTagName("chNFe")->item(0)->nodeValue;
+            $digValueProt = $nodeprot->getElementsByTagName("digVal")->item(0)->nodeValue;
+            $infProt = $nodeprot->getElementsByTagName("infProt")->item(0);
+            if ($digValueNFe == $digValueProt && $chaveNFe == $chaveProt) {
+                break;
+            }
+        }
         if ($digValueNFe != $digValueProt) {
             $msg = "Inconsistência! O DigestValue da NFe não combina com o"
                 . " do digVal do protocolo indicado!";
@@ -304,7 +311,6 @@ class ToolsNFe extends BaseTools
             $msg = "O protocolo indicado pertence a outra NFe. Os números das chaves não combinam !";
             throw new Exception\RuntimeException($msg);
         }
-        $infProt = $nodeprot->getElementsByTagName("infProt")->item(0);
         //cria a NFe processada com a tag do protocolo
         $procnfe = new \DOMDocument('1.0', 'utf-8');
         $procnfe->formatOutput = false;
