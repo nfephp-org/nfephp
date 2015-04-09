@@ -62,6 +62,21 @@ class Dom extends DOMDocument
     }
     
     /**
+     * getValue
+     * @param DOMElement $node
+     * @param string $name
+     * @return string
+     */
+    public function getValue($node, $name)
+    {
+        if (empty($node)) {
+            return '';
+        }
+        return ! empty($node->getElementsByTagName($name)->item(0)->nodeValue) ?
+            $node->getElementsByTagName($name)->item(0)->nodeValue : '';
+    }
+    
+    /**
      * getNode
      * Retorna o node solicitado
      * @param string $nodeName

@@ -1166,6 +1166,21 @@ class ToolsNFe extends BaseTools
     {
         //na nfe deve estar indicado a entrada em contingencia da data hora e o motivo
         //caso contrario ignorar a solicitação de EPEC
+        if (! is_array($aXml)) {
+            $aXml[] = $aXml; //se não é um array converte
+        }
+        if ($tpAmb == '') {
+            $tpAmb = $this->aConfig['tpAmb'];
+        }
+        foreach ($aXml as $xml) {
+            $dat = $this->zGetInfo($xml);
+            if ($dat['dhCont'] == '' || $dat['xJust'] == '') {
+                $msg = "Somente é possivel enviar para EPEC as notas emitidas "
+                        . "em contingência com a data/hora e justificativa da contingência.";
+                throw new Exception\InvalidArgumentException($msg);
+            }
+        }
+        $aRetorno = array();
         //EPEC é enviado para eventos AN somente.
         //NOTA: rever zSefazEvento e a classe ReturnNFe (evento) pois podem haver
         //multiplos eventos até 20, então em principio se poderia solicitar até 20
@@ -1192,6 +1207,42 @@ class ToolsNFe extends BaseTools
         //vNF Valor total da NF-e
         //vICMS Valor total do ICMS
         //vST Valor total do ICMS de Substituição Tributária
+    }
+    
+    /**
+     * zGetInfo
+     * Busca informações do XML
+     * para uso no sefazEPEC
+     * @param string $xml
+     * @return array
+     */
+    protected function zGetInfo($xml)
+    {
+        $dom = new Dom();
+        $dom->loadXMLString($xml);
+        $ide = $dom->getNode('ide');
+        $emit = $dom->getNode('emit');
+        $dest = $dom->getNode('dest');
+        $enderDest = $dest->getElementsByTagName('enderDest')->item(0);
+        $icmsTot = $dom->getNode('ICMSTot');
+        $resp = array(
+            'dhCont' => $dom->getValue($ide, 'dhCont'),
+            'xJust' => $dom->getValue($ide, 'xJust'),
+            'cOrgaoAutor' => $dom->getValue($ide, 'cUF'),
+            'tpAutor' => '1',
+            'dhEmi' => $dom->getValue($ide, 'dhEmi'),
+            'tpNF' => $dom->getValue($ide, 'tpNF'),
+            'IE' => $dom->getValue($emit, 'IE'),
+            'UF' => $dom->getValue($enderDest, 'UF'),
+            'CNPJ' => $dom->getValue($dest, 'CNPJ'),
+            'CPF' => $dom->getValue($dest, 'CPF'),
+            'idEstrangeiro' => $dom->getValue($dest, 'idEstrangeiro'),
+            'IEdest' => $dom->getValue($dest, 'IE'),
+            'vNF' => $dom->getValue($icmsTot, 'vNF'),
+            'vICMS' => $dom->getValue($icmsTot, 'vICMS'),
+            'vST'=> $dom->getValue($icmsTot, 'vST')
+        );
+        return $resp;
     }
     
     /**
