@@ -31,7 +31,7 @@ if (!defined('NFEPHP_ROOT')) {
 class ToolsNFe extends BaseTools
 {
     /**
-     * errror
+     * errrors
      * @var string
      */
     public $errors = array();
@@ -176,7 +176,7 @@ class ToolsNFe extends BaseTools
     }
     
     /**
-     * mailNFe
+     * enviaMail
      * Envia a NFe por email aos destinatários
      * Caso $aMails esteja vazio serão obtidos os email do destinatário  e 
      * os emails que estiverem registrados nos campos obsCont do xml
