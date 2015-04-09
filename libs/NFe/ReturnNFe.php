@@ -430,8 +430,8 @@ class ReturnNFe
             'xMotivo' => '',
             'evento' => array()
         );
-        $tag = $dom->getElementsByTagName('retEnvEvento')->item(0);
-        if (! isset($tag)) {
+        $tag = $dom->getNode('retEnvEvento');
+        if (empty($tag)) {
             return $aResposta;
         }
         $aResposta = array(
@@ -523,23 +523,38 @@ class ReturnNFe
     private static function zGetEvent($dom, $tag)
     {
         $aEvent = array();
-        $infEvento = $tag->getElementsByTagName('infEvento')->item(0);
-        if (isset($infEvento)) {
-            $aEvent = array(
-                'tpAmb' => $dom->getValue($infEvento, 'tpAmb'),
-                'verAplic' => $dom->getValue($infEvento, 'verAplic'),
-                'cOrgao' => $dom->getValue($infEvento, 'cOrgao'),
-                'cStat' => $dom->getValue($infEvento, 'cStat'),
-                'xMotivo' => $dom->getValue($infEvento, 'xMotivo'),
-                'chNFe' => $dom->getValue($infEvento, 'chNFe'),
-                'tpEvento' => $dom->getValue($infEvento, 'tpEvento'),
-                'xEvento' => $dom->getValue($infEvento, 'xEvento'),
-                'nSeqEvento' => $dom->getValue($infEvento, 'nSeqEvento'),
-                'dhRegEvento' => $dom->getValue($infEvento, 'dhRegEvento'),
-                'CNPJDest' => $dom->getValue($infEvento, 'CNPJDest'),
-                'emailDest' =>  $dom->getValue($infEvento, 'emailDest'),
-                'nProt' => $dom->getValue($infEvento, 'nProt')
-            );
+        $aRetEvento = $tag->getElementsByTagName('retEvento');
+        if (isset($aRetEvento)) {
+            foreach ($aRetEvento as $retEvento) {
+                $aNFePend = array();
+                $infEvento = $retEvento->getElementsByTagName('infEvento')->item(0);
+                if (isset($infEvento)) {
+                    $aChNFePend = $infEvento->getElementsByTagName('infEvento');
+                    if (isset($aChNFePend)) {
+                        foreach ($aChNFePend as $chNFePend) {
+                            $aNFePend[] = $chNFePend->nodeValue;
+                        }
+                    }
+                    $aEv[] = array(
+                        'tpAmb' => $dom->getValue($infEvento, 'tpAmb'),
+                        'verAplic' => $dom->getValue($infEvento, 'verAplic'),
+                        'cOrgao' => $dom->getValue($infEvento, 'cOrgao'),
+                        'cStat' => $dom->getValue($infEvento, 'cStat'),
+                        'xMotivo' => $dom->getValue($infEvento, 'xMotivo'),
+                        'chNFe' => $dom->getValue($infEvento, 'chNFe'),
+                        'tpEvento' => $dom->getValue($infEvento, 'tpEvento'),
+                        'xEvento' => $dom->getValue($infEvento, 'xEvento'),
+                        'nSeqEvento' => $dom->getValue($infEvento, 'nSeqEvento'),
+                        'cOrgaoAutor' => $dom->getValue($infEvento, 'cOrgaoAutor'),
+                        'dhRegEvento' => $dom->getValue($infEvento, 'dhRegEvento'),
+                        'CNPJDest' => $dom->getValue($infEvento, 'CNPJDest'),
+                        'emailDest' =>  $dom->getValue($infEvento, 'emailDest'),
+                        'nProt' => $dom->getValue($infEvento, 'nProt'),
+                        'chNFePend' => $aNFePend
+                    );
+                }
+            }
+            $aEvent = $aEv;
         }
         return $aEvent;
     }
