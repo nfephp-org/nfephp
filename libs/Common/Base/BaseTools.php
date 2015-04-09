@@ -49,6 +49,12 @@ class BaseTools
      * @var int
      */
     public $tsContingencia = '';
+    /**
+     * verAplic
+     * Versão da aplicação
+     * @var string 
+     */
+    public $verAplic = '';
     
     /**
      * oCertificate
@@ -260,6 +266,15 @@ class BaseTools
             $this->zGravaFile($tipo, $tpAmb, $filename, $sxml, 'assinadas', $anomes);
         }
         return $sxml;
+    }
+    
+    /**
+     * setVerAplic
+     * @param string $versao
+     */
+    public function setVerAplic($versao = '')
+    {
+        $this->verAplic = $versao;
     }
 
     /**
