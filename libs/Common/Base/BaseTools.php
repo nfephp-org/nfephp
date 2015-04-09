@@ -55,6 +55,12 @@ class BaseTools
      * @var string 
      */
     public $verAplic = '';
+    /**
+     * certExpireTimestamp
+     * TimeStamp com a data de vencimento do certificado
+     * @var intger 
+     */
+    public $certExpireTimestamp = 0;
     
     /**
      * oCertificate
@@ -198,6 +204,7 @@ class BaseTools
                 throw new Exception\RuntimeException($msg);
             }
         }
+        $this->certExpireTimestamp = $this->oCertificate->expireTimestamp;
         $this->zLoadSoapClass();
         //verifica se a contingência está ativada
         $pathContingencia = NFEPHP_ROOT.DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'contingencia.json';
