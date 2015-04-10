@@ -138,6 +138,11 @@ class BaseTools
      * @var string
      */
     protected $modelo = '55';
+    /**
+     * ambiente
+     * @var string
+     */
+    protected $ambiente = 'homologacao';
 
     protected $cUFlist = array(
         'AC'=>'12',
@@ -204,6 +209,7 @@ class BaseTools
                 throw new Exception\RuntimeException($msg);
             }
         }
+        $this->setAmbiente($this->aConfig['tpAmb']);
         $this->certExpireTimestamp = $this->oCertificate->expireTimestamp;
         $this->zLoadSoapClass();
         //verifica se a contingência está ativada
@@ -220,6 +226,19 @@ class BaseTools
         }
     }
     
+    /**
+     * setAmbiente
+     * Seta a varável de ambiente
+     * @param string $tpAmb
+     */
+    protected function setAmbiente($tpAmb = '2')
+    {
+        $this->ambiente = 'homologacao';
+        if ($tpAmb == '1') {
+            $this->ambiente = 'producao';
+        }
+    }
+
     /**
      * atualizaCertificado
      * @param string $certpfx certificado pfx em string ou o path para o certificado

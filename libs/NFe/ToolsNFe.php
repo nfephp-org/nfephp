@@ -1596,7 +1596,8 @@ class ToolsNFe extends BaseTools
         $this->aLastRetEvent = ReturnNFe::readReturnSefaz($servico, $retorno);
         if ($this->aLastRetEvent['cStat'] == '128') {
             if ($this->aLastRetEvent['evento'][0]['cStat'] == '135' ||
-                $this->aLastRetEvent['evento'][0]['cStat'] == '136'
+                $this->aLastRetEvent['evento'][0]['cStat'] == '136' ||
+                $this->aLastRetEvent['evento'][0]['cStat'] == '155'
             ) {
                 $pasta = 'eventos'; //default
                 if ($aliasEvento == 'CancNFe') {
