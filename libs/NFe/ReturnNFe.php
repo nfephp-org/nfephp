@@ -143,7 +143,7 @@ class ReturnNFe
         if (empty($tag)) {
             return $aResposta;
         }
-        $aProt[] = self::zGetProt($tag);
+        $aProt[] = self::zGetProt($dom, $tag);
         $aResposta = array(
             'bStat' => true,
             'versao' => $tag->getAttribute('versao'),
