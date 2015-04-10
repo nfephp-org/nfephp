@@ -56,7 +56,8 @@ class Dom extends DOMDocument
     {
         $node = $this->getElementsByTagName($nodeName)->item($itemNum);
         if (isset($node)) {
-            return $extraTextBefore . trim($node->nodeValue) . $extraTextAfter;
+            $texto = html_entity_decode(trim($node->nodeValue), ENT_QUOTES, 'UTF-8');
+            return $extraTextBefore . $texto . $extraTextAfter;
         }
         return '';
     }
@@ -72,8 +73,9 @@ class Dom extends DOMDocument
         if (empty($node)) {
             return '';
         }
-        return ! empty($node->getElementsByTagName($name)->item(0)->nodeValue) ?
+        $texto = ! empty($node->getElementsByTagName($name)->item(0)->nodeValue) ?
             $node->getElementsByTagName($name)->item(0)->nodeValue : '';
+        return html_entity_decode($texto, ENT_QUOTES, 'UTF-8');
     }
     
     /**
