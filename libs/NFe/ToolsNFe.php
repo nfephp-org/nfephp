@@ -1277,6 +1277,7 @@ class ToolsNFe extends BaseTools
         $filename = "$numLote-retEnvEpec.xml";
         $this->zGravaFile('nfe', $tpAmb, $filename, $retorno);
         //tratar dados de retorno
+        //TODO : incluir nos xml das NF o protocolo EPEC
         $aRetorno = ReturnNFe::readReturnSefaz($servico, $retorno);
         return $retorno;
     }
@@ -1594,10 +1595,18 @@ class ToolsNFe extends BaseTools
         //tratar dados de retorno
         $this->aLastRetEvent = ReturnNFe::readReturnSefaz($servico, $retorno);
         if ($this->aLastRetEvent['cStat'] == '128') {
-            if ($this->aLastRetEvent['evento']['cStat'] == '135' || $this->aLastRetEvent['evento']['cStat'] == '136') {
+            if ($this->aLastRetEvent['evento'][0]['cStat'] == '135' ||
+                $this->aLastRetEvent['evento'][0]['cStat'] == '136'
+            ) {
+                $pasta = 'eventos'; //default
+                if ($aliasEvento == 'CancNFe') {
+                    $pasta = 'canceladas';
+                } elseif ($aliasEvento == 'CCe') {
+                    $pasta = 'cartacorrecao';
+                }
                 $retorno = $this->zAddProtMsg('procEventoNFe', 'evento', $signedMsg, 'retEvento', $retorno);
                 $filename = "$chNFe-$aliasEvento-procEvento.xml";
-                $this->zGravaFile('nfe', $tpAmb, $filename, $retorno, 'eventos');
+                $this->zGravaFile('nfe', $tpAmb, $filename, $retorno, $pasta);
             }
         }
         return (string) $retorno;
