@@ -38,6 +38,12 @@ class BaseTools
      */
     public $enableSVCAN = false;
     /**
+     * enableSVCAN
+     * Habilita contingência ao serviço SVC-AN: Sefaz Virtual de Contingência Ambiente Nacional
+     * @var boolean
+     */
+    public $enableEPEC = false;
+    /**
      * motivoContingencia
      * Motivo por ter entrado em Contingencia
      * @var string 
