@@ -306,8 +306,8 @@ class CurlSoap
         $this->errorCurl = curl_error($oCurl);
         //fecha a conexão
         curl_close($oCurl);
-        //retorna resposta tendo o cuidado de decodificar caso esteja codificado
-        return htmlspecialchars_decode($resposta);
+        //retorna resposta
+        return $resposta;
     }
     
     /**
