@@ -82,17 +82,18 @@ class ToolsNFe extends BaseTools
     /**
      * ativaContingencia
      * Ativa a contingencia SVCAN ou SVCRS conforme a
-     * sigla do estado
+     * sigla do estado ou EPEC
      * @param string $siglaUF
      * @param string $motivo
+     * @param string $tipo
      * @return bool
      */
-    public function ativaContingencia($siglaUF = '', $motivo = '')
+    public function ativaContingencia($siglaUF = '', $motivo = '', $tipo = '')
     {
         if ($siglaUF == '' || $motivo == '') {
             return false;
         }
-        if ($this->enableSVCAN || $this->enableSVCRS) {
+        if ($this->enableSVCAN || $this->enableSVCRS || $this->enableEPEC) {
             return true;
         }
         $this->motivoContingencia = $motivo;
@@ -127,18 +128,26 @@ class ToolsNFe extends BaseTools
             'TO'=>'SVCAN'
         );
         $ctg = $ctgList[$siglaUF];
-        if ($ctg == 'SVCAN') {
-            $this->enableSVCAN = true;
-            $this->enableSVCRS = false;
-        } elseif ($ctg == 'SVCRS') {
-            $this->enableSVCAN = false;
-            $this->enableSVCRS = true;
+        
+        $this->enableSVCAN = false;
+        $this->enableSVCRS = false;
+        $this->enableEPEC = false;
+
+        if ($tipo == 'EPEC') {
+            $this->enableEPEC = true;
+        } else {
+            if ($ctg == 'SVCAN') {
+                $this->enableSVCAN = true;
+            } elseif ($ctg == 'SVCRS') {
+                $this->enableSVCRS = true;
+            }
         }
         $aCont = array(
             'motivo' => $this->motivoContingencia,
             'ts' => $this->tsContingencia,
             'SVCAN' => $this->enableSVCAN,
-            'SCVRS' => $this->enableSVCRS
+            'SCVRS' => $this->enableSVCRS,
+            'EPEC' => $this->enableEPEC
         );
         $strJson = json_encode($aCont);
         file_put_contents(NFEPHP_ROOT.DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'contingencia.json', $strJson);
@@ -154,6 +163,7 @@ class ToolsNFe extends BaseTools
     {
         $this->enableSVCAN = false;
         $this->enableSVCRS = false;
+        $this->enableEPEC = false;
         $this->tsContingencia = 0;
         $this->motivoContingencia = '';
         unlink(NFEPHP_ROOT.DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'contingencia.json');
