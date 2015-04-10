@@ -207,6 +207,9 @@ class CurlSoap
             $msg = "Não houve retorno de um xml verifique soapDebug!!";
             throw new Exception\RuntimeException($msg);
         }
+        if ($xml != '' && substr($xml, 0, 5) != '<?xml') {
+            $xml = '<?xml version="1.0" encoding="utf-8"?>'.$xml;
+        }
         return $xml;
     } //fim send
 
