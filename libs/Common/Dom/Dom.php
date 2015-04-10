@@ -132,6 +132,7 @@ class Dom extends DOMDocument
         }
         if ($obrigatorio || $content !== '') {
             $content = trim($content);
+            $content = htmlspecialchars($content, ENT_QUOTES);
             $temp = $this->createElement($name, $content);
             $parent->appendChild($temp);
         }

@@ -616,8 +616,20 @@ class MakeNFe extends BaseMake
             false,
             $identificador . "Inscrição Municipal do Prestador de Serviço do emitente"
         );
-        $this->dom->addChild($this->emit, "CNAE", $cnae, false, $identificador . "CNAE fiscal do emitente");
-        $this->dom->addChild($this->emit, "CRT", $crt, true, $identificador . "Código de Regime Tributário do emitente");
+        $this->dom->addChild(
+            $this->emit,
+            "CNAE",
+            $cnae,
+            false,
+            $identificador . "CNAE fiscal do emitente"
+        );
+        $this->dom->addChild(
+            $this->emit,
+            "CRT",
+            $crt,
+            true,
+            $identificador . "Código de Regime Tributário do emitente"
+        );
         return $this->emit;
     }
     
@@ -653,7 +665,13 @@ class MakeNFe extends BaseMake
     ) {
         $identificador = 'C05 <enderEmit> - ';
         $this->enderEmit = $this->dom->createElement("enderEmit");
-        $this->dom->addChild($this->enderEmit, "xLgr", $xLgr, true, $identificador . "Logradouro do Endereço do emitente");
+        $this->dom->addChild(
+            $this->enderEmit,
+            "xLgr",
+            $xLgr,
+            true,
+            $identificador . "Logradouro do Endereço do emitente"
+        );
         $this->dom->addChild($this->enderEmit, "nro", $nro, true, $identificador . "Número do Endereço do emitente");
         $this->dom->addChild(
             $this->enderEmit,
@@ -711,7 +729,13 @@ class MakeNFe extends BaseMake
             false,
             $identificador . "Nome do País do Endereço do emitente"
         );
-        $this->dom->addChild($this->enderEmit, "fone", $fone, false, $identificador . "Telefone do Endereço do emitente");
+        $this->dom->addChild(
+            $this->enderEmit,
+            "fone",
+            $fone,
+            false,
+            $identificador . "Telefone do Endereço do emitente"
+        );
         $node = $this->emit->getElementsByTagName("IE")->item(0);
         $this->emit->insertBefore($this->enderEmit, $node);
         return $this->enderEmit;
