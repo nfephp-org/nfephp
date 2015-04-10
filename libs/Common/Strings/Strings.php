@@ -71,11 +71,14 @@ class Strings
     public static function clearProt($procXML = '')
     {
         $procXML1 = self::clearMsg($procXML);
-        $procXML2 = str_replace(
-            'xmlns="http://www.portalfiscal.inf.br/nfe" xmlns="http://www.w3.org/2000/09/xmldsig#"',
-            'xmlns="http://www.portalfiscal.inf.br/nfe"',
-            $procXML1
-        );
+        $aApp = array('nfe','cte','mdfe');
+        foreach ($aApp as $app) {
+            $procXML2 = str_replace(
+                'xmlns="http://www.portalfiscal.inf.br/'.$app.'" xmlns="http://www.w3.org/2000/09/xmldsig#"',
+                'xmlns="http://www.portalfiscal.inf.br/'.$app.'"',
+                $procXML1
+            );
+        }
         return $procXML2;
     }
     
