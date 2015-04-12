@@ -268,24 +268,31 @@ class BaseTools
     /**
      * assinaDoc
      * @param string $xml
-     * @param boolean $saveFile
+     * @param string $tipo nfe, cte, ou mdfe
+     * @param string $tag Nome da tag a ser assinada 
+     * @param boolean $saveFile APENAS para salvar NFe, CTe ou MDFe
      * @return string
+     * @throws Exception\InvalidArgumentException
      * @throws Exception\RuntimeException
      */
     public function assinaDoc($xml = '', $tipo = '', $tag = '', $saveFile = false)
     {
+        if ($tag == '') {
+            $msg = 'Deve ser indicada uma tag a ser assinada';
+            throw new Exception\InvalidArgumentException($msg);
+        }
         if (is_file($xml)) {
             $xml = Files\FilesFolders::readFile($xml);
         }
         $sxml = $this->oCertificate->signXML($xml, $tag);
         $dom = new Dom();
         $dom->loadXMLString($sxml);
-        $versao = $dom->getElementsByTagName($tag)->item(0)->getAttribute('versao');
-//        if (! $this->zValidMessage($sxml, $tipo, $versao)) {
-//            $msg = "Falha na validação do $tipo. ".$this->error;
-//            throw new Exception\RuntimeException($msg);
-//        }
-        if ($saveFile) {
+        //$versao = $dom->getElementsByTagName($tag)->item(0)->getAttribute('versao');
+        //if (! $this->zValidMessage($sxml, $tipo, $versao)) {
+        //$msg = "Falha na validação do $tipo. ".$this->error;
+        //  throw new Exception\RuntimeException($msg);
+        //}
+        if ($saveFile && $tipo != '') {
             $dom = new Dom();
             $dom->loadXMLString($sxml);
             $tpAmb = $dom->getElementsByTagName('tpAmb')->item(0)->nodeValue;
