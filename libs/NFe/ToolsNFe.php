@@ -568,6 +568,8 @@ class ToolsNFe extends BaseTools
         $this->zGravaFile('nfe', $tpAmb, $filename, $retorno);
         //tratar dados de retorno
         $aRetorno = ReturnNFe::readReturnSefaz($servico, $retorno);
+        //caso o envio seja recebido com sucesso mover a NFe da pasta
+        //das assinadas para a pasta das enviadas
         return (string) $retorno;
     }
     
@@ -632,6 +634,9 @@ class ToolsNFe extends BaseTools
         $this->zGravaFile('nfe', $tpAmb, $filename, $retorno);
         //tratar dados de retorno
         $aRetorno = ReturnNFe::readReturnSefaz($servico, $retorno);
+        //podem ser retornados nenhum, um ou vários protocolos
+        //caso existam protocolos protocolar as NFe e movelas-las para a
+        //pasta enviadas/aprovadas/anomes
         return (string) $retorno;
     }
     
