@@ -15,9 +15,9 @@ Não deixe de se cadastrar no [grupo de discussão do NFePHP](http://groups.goog
 Condicionantes
 -----
 Para usar essa API é necessário conhecimento em programação PHP, bem como conhecer os padrões atuais da linguagem e ter bases de legislação fiscal. É extremanente recomendável que seja estudado o conteúdo dos seguintes sites.
-Documentação do Funcionamento do sistema de NFe [SEFAZ NFe](http://www.nfe.fazenda.gov.br/portal/principal.aspx)
-Composer [Documentação](https://getcomposer.org/doc/)
-[PHP do Jeito Certo](http://br.phptherightway.com/)
+* Documentação do Funcionamento do sistema de NFe [SEFAZ NFe](http://www.nfe.fazenda.gov.br/portal/principal.aspx)
+* Composer [Documentação](https://getcomposer.org/doc/)
+* [PHP do Jeito Certo](http://br.phptherightway.com/)
 
 
 Objetivo
