@@ -16,8 +16,8 @@ Condicionantes
 -----
 Para usar essa API é necessário conhecimento em programação PHP, bem como conhecer os padrões atuais da linguagem e ter bases de legislação fiscal. É extremanente recomendável que seja estudado o conteúdo dos seguintes sites.
 * Documentação do Funcionamento do sistema de NFe [SEFAZ NFe](http://www.nfe.fazenda.gov.br/portal/principal.aspx)
-* Composer [Documentação](https://getcomposer.org/doc/)  [composer.json](http://composer.json.jolicode.com/)
-* [PHP do Jeito Certo](http://br.phptherightway.com/)
+* Composer [Documentação](https://getcomposer.org/doc/)  Construção do [composer.json](http://composer.json.jolicode.com/)
+* IMPORTANTE [PHP do Jeito Certo](http://br.phptherightway.com/)
 * Coding Style Guide [PSR-2](http://www.php-fig.org/psr/psr-2/)
 * Autoload [PSR-4](http://www.php-fig.org/psr/psr-4/)
 
