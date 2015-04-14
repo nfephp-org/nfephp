@@ -1,6 +1,5 @@
 {
     "name": "nfephp-org/nfephp",
-    "version": "4.0.0-dev",
     "type": "library",
     "description": "NFePHP é uma API para gerenciamento das comunicações entre o emitente de NFe e os serviços dos SEFAZ estaduais. Inteiramente construido em PHP para rodar sob qualquer sistema operacional.",
     "keywords": [
@@ -72,6 +71,11 @@
             "./libs/Common/Strings/",
             "./libs/Extras/"
         ]
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-develop": "4.0.x-dev"
+        }
     },
     "minimum-stability": "stable"
 }
