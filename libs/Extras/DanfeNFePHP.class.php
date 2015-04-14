@@ -687,7 +687,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         while ($i < $this->det->length) {
             $texto = $this->pDescricaoProduto($this->det->item($i));
             $numlinhas = $this->pGetNumLines($texto, $w2, $fontProduto);
-            $hUsado += round(($numlinhas * $this->pdf->FontSize)+1, 0);
+            $hUsado += round(($numlinhas * $this->pdf->FontSize) + 3, 0);
             $i++;
         } //fim da soma das areas de itens usadas
         $qtdeItens = $i; //controle da quantidade de itens no DANFE
