@@ -20,6 +20,7 @@ use \DOMDocument;
 
 class MailNFe extends BaseMail
 {
+    public $error = '';
     protected $msgHtml = '';
     protected $msgTxt = '';
     protected $aMail = array();
@@ -54,7 +55,13 @@ class MailNFe extends BaseMail
             //se $aMail não é vazio então envia o email para todos os endereços do array
             $this->aMail = $aMail;
         }
-        $this->sendMail($assunto, $this->aMail);
+        $err = $this->sendMail($assunto, $this->aMail);
+        if ($err === true) {
+            return true;
+        } else {
+            $this->error = $err;
+            return false;
+        }
         return true;
     }
     

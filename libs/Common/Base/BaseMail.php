@@ -154,6 +154,12 @@ class BaseMail
         $message->getHeaders()->get('content-type')->setType($messageType);
         //enviar
         $this->transport->send($message);
+        try {
+            $this->transport->send($message);
+        } catch (\Zend\Mail\Protocol\Exception\RuntimeException $e) {
+            return $e;
+        }
+        return true;
     }
     
     /**
