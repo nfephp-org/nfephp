@@ -12,6 +12,10 @@ Para começar veja [nossas páginas Wiki](https://github.com/nfephp-org/nfephp/w
 
 Não deixe de se cadastrar no [grupo de discussão do NFePHP](http://groups.google.com/group/nfephp)!
 
+Versão de Desenvolvimento
+-----
+Versão 4.0.0-dev (observa a versão de layout 3.10 da SEFAZ)
+
 Condicionantes
 -----
 Para usar essa API é necessário conhecimento em programação PHP, bem como conhecer os padrões atuais da linguagem e ter bases de legislação fiscal. É extremanente recomendável que seja estudado o conteúdo dos seguintes sites.
