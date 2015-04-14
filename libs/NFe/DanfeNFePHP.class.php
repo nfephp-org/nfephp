@@ -750,7 +750,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         while ($i < $this->det->length) {
             $texto = $this->pDescricaoProduto($this->det->item($i));
             $numlinhas = $this->pGetNumLines($texto, $w2, $fontProduto);
-            $hUsado += round(($numlinhas * $this->pdf->FontSize)+1, 0);
+            $hUsado += round(($numlinhas * $this->pdf->FontSize) + 3, 0);
             $i++;
         } //fim da soma das areas de itens usadas
         $qtdeItens = $i; //controle da quantidade de itens no DANFE
@@ -2253,7 +2253,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $texto = 'QUANTIDADE';
         $aFont = array('font'=>$this->fontePadrao, 'size'=>6, 'style'=>'');
         $this->pTextBox($x, $y, $w1, $h, $texto, $aFont, 'T', 'L', 1, '');
-        if(!empty($quantidade)){
+        if (!empty($quantidade)) {
             $texto = $quantidade;
             $aFont = array('font'=>$this->fontePadrao, 'size'=>10, 'style'=>'B');
             $this->pTextBox($x, $y, $w1, $h, $texto, $aFont, 'B', 'C', 0, '');
