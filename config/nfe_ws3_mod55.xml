@@ -48,7 +48,7 @@ AM Consulta de Cadastro não EXISTE
       <NfeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10">https://hnfe.sefaz.ba.gov.br/webservices/NfeAutorizacao/NfeAutorizacao.asmx</NfeAutorizacao>
       <NfeConsultaCadastro method="consultaCadastro2" operation="CadConsultaCadastro2" version="2.00">https://hnfe.sefaz.ba.gov.br/webservices/nfenw/CadConsultaCadastro2.asmx</NfeConsultaCadastro>
       <NfeConsultaProtocolo method="nfeConsultaNF2" operation="NfeConsulta" version="3.10">https://hnfe.sefaz.ba.gov.br/webservices/NfeConsulta/NfeConsulta.asmx</NfeConsultaProtocolo>
-      <NfeInutilizacao method="nfeInutilizacaoNF2" operation="NfeInutilizacao2" version="3.10">https://hnfe.sefaz.ba.gov.br/webservices/nfenw/nfeinutilizacao2.asmx</NfeInutilizacao>
+      <NfeInutilizacao method="nfeInutilizacaoNF" operation="NfeInutilizacao" version="3.10">https://hnfe.sefaz.ba.gov.br/webservices/NfeInutilizacao/NfeInutilizacao.asmx</NfeInutilizacao>
       <NfeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10">https://hnfe.sefaz.ba.gov.br/webservices/NfeRetAutorizacao/NfeRetAutorizacao.asmx</NfeRetAutorizacao>
       <NfeStatusServico method="nfeStatusServicoNF2" operation="NfeStatusServico" version="3.10">https://hnfe.sefaz.ba.gov.br/webservices/NfeStatusServico/NfeStatusServico.asmx</NfeStatusServico>
       <RecepcaoEvento method="nfeRecepcaoEvento" operation="RecepcaoEvento" version="1.00">https://hnfe.sefaz.ba.gov.br/webservices/sre/recepcaoevento.asmx</RecepcaoEvento>
@@ -57,7 +57,7 @@ AM Consulta de Cadastro não EXISTE
       <NfeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10">https://nfe.sefaz.ba.gov.br/webservices/NfeAutorizacao/NfeAutorizacao.asmx</NfeAutorizacao>
       <NfeConsultaCadastro method="consultaCadastro2" operation="CadConsultaCadastro2" version="2.00">https://nfe.sefaz.ba.gov.br/webservices/nfenw/CadConsultaCadastro2.asmx</NfeConsultaCadastro>
       <NfeConsultaProtocolo method="nfeConsultaNF2" operation="NfeConsulta" version="3.10">https://nfe.sefaz.ba.gov.br/webservices/NfeConsulta/NfeConsulta.asmx</NfeConsultaProtocolo>
-      <NfeInutilizacao method="nfeInutilizacaoNF2" operation="NfeInutilizacao2" version="3.10">https://nfe.sefaz.ba.gov.br/webservices/nfenw/nfeinutilizacao2.asmx</NfeInutilizacao>
+      <NfeInutilizacao method="nfeInutilizacaoNF" operation="NfeInutilizacao" version="3.10">https://nfe.sefaz.ba.gov.br/webservices/NfeInutilizacao/NfeInutilizacao.asmx</NfeInutilizacao>
       <NfeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10">https://nfe.sefaz.ba.gov.br/webservices/NfeRetAutorizacao/NfeRetAutorizacao.asmx</NfeRetAutorizacao>
       <NfeStatusServico method="nfeStatusServicoNF2" operation="NfeStatusServico" version="3.10">https://nfe.sefaz.ba.gov.br/webservices/NfeStatusServico/NfeStatusServico.asmx</NfeStatusServico>
       <RecepcaoEvento method="nfeRecepcaoEvento" operation="RecepcaoEvento" version="1.00">https://nfe.sefaz.ba.gov.br/webservices/sre/recepcaoevento.asmx</RecepcaoEvento>
