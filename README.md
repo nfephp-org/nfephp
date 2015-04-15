@@ -1,6 +1,8 @@
 NFePHP
 =================
 
+[![Join the chat at https://gitter.im/nfephp-org/nfephp](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/nfephp-org/nfephp?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 [![Build Status](https://travis-ci.org/nfephp-org/nfephp.svg?branch=master)](https://travis-ci.org/nfephp-org/nfephp)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/nfephp-org/nfephp/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/nfephp-org/nfephp/?branch=master)
 [![Latest Stable Version](https://poser.pugx.org/nfephp-org/nfephp/v/stable.svg)](https://packagist.org/packages/nfephp-org/nfephp)
