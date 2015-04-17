@@ -658,6 +658,12 @@ class CTeNFePHP
                 $this->dactefont = $dacteFonte;
                 $this->dacteprinter = $dactePrinter;
                 $this->cteSchemeVer = $schemesCTe;
+                if (isset($certsDir)) {
+                    $this->certsDir =  $certsDir;
+                }
+                if (isset($imgDir)) {
+                    $this->imgDir =  $imgDir;
+                }
                 if (isset($arquivoURLxmlCTe)) {
                     $this->xmlURLfile = $arquivoURLxmlCTe;
                 }
@@ -1394,7 +1400,7 @@ class CTeNFePHP
      * ["dhRetorno"] =>  string(0)  ""
      * }
     **/
-    public function statusServico($UF = '', $tpAmb = '')
+    public function statusServico($UF = '', $tpAmb = '', &$aRetorno='')
     {
         // Retorno da funçao
         $aRetorno = array('bStat' => false,'cStat' => '','tMed'  => '','dhRecbto' => '','xMotivo' => '','xObs' => '');
@@ -1480,7 +1486,7 @@ class CTeNFePHP
             $this->errMsg = 'Nao houve retorno Soap verifique a mensagem de erro e o debug!!';
             $aRetorno = false;
         }
-        return $aRetorno;
+        return $retorno;
     } // Fim statusServico
 
     /**
@@ -1497,10 +1503,10 @@ class CTeNFePHP
      * @param   string  $tpAmb
      * @return    mixed false se falha ou array se retornada informação
      **/
-    public function consultaCadastro($UF, $CNPJ = '', $IE = '', $CPF = '', $tpAmp = '')
+    public function consultaCadastro($UF, $CNPJ = '', $IE = '', $CPF = '', $tpAmb = '', &$aRetorno='')
     {
         // Variavel de retorno do metodo
-        $aRetorno = array('bStat' => false,'cStat' => '','dados' => array());
+        $aRetorno = array('bStat' => false, 'cStat' => '', 'dados' => array());
         $flagIE = false;
         $flagCNPJ = false;
         $flagCPF = false;
@@ -1570,8 +1576,7 @@ class CTeNFePHP
                 . '" versao="' . $versao . '"><infCons><xServ>CONS-CAD</xServ><uf>' . $UF
                 . '</uf>' . $filtro . '</infCons></consCad><cteDadosMsg>';
         // Envia a solicitação via SOAP
-        $retorno = $this->zSendSOAP($urlservico, $namespace, $cabec, $dados, $metodo, $tpAmb);
-        return $aRetorno;
+        return $this->zSendSOAP($urlservico, $namespace, $cabec, $dados, $metodo, $tpAmb);
     } //Fim consultaCadastro
 
     /**
