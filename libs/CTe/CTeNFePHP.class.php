@@ -601,6 +601,12 @@ class CTeNFePHP
             $this->dactefont = $aConfig['dacteFonte'];
             $this->dacteprinter = $aConfig['dactePrinter'];
             $this->cteSchemeVer = $aConfig['schemesCTe'];
+            if (isset($aConfig['certsDir'])) {
+                $this->certsDir =  $aConfig['certsDir'];
+            }
+            if (isset($aConfig['imgDir'])) {
+                $this->imgDir =  $aConfig['imgDir'];
+            }
             if (isset($aConfig['arquivoURLxmlCTe'])) {
                 $this->xmlURLfile = $aConfig['arquivoURLxmlCTe'];
             }
@@ -689,10 +695,14 @@ class CTeNFePHP
         $this->anoMes = date('Ym');
         //carrega o caminho para os schemas
         $this->xsdDir = $this->raizDir . 'schemes'. DIRECTORY_SEPARATOR;
-        //carrega o caminho para os certificados
-        $this->certsDir =  $this->raizDir . 'certs'. DIRECTORY_SEPARATOR;
-        //carrega o caminho para as imagens
-        $this->imgDir =  $this->raizDir . 'images'. DIRECTORY_SEPARATOR;
+        //carrega o caminho para os certificados caso não tenha sido passado por config
+        if (empty($this->certsDir)) {
+            $this->certsDir =  $this->raizDir.'certs'. DIRECTORY_SEPARATOR;
+        }
+        //carrega o caminho para as imagens caso não tenha sido passado por config
+        if (empty($this->imgDir)) {
+            $this->imgDir =  $this->raizDir.'images'. DIRECTORY_SEPARATOR;
+        }
         // Verifica o ultimo caracter da variável $arqDir
         // se não for um DIRECTORY_SEPARATOR então colocar um
         if (substr($this->arqDir, -1, 1) != DIRECTORY_SEPARATOR) {
