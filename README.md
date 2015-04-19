@@ -12,6 +12,8 @@ NFePHP
 NFePHP é uma API para gerenciamento das comunicações entre o emitente de NFe e os serviços dos SEFAZ estaduais. Inteiramente construído em PHP para rodar sob qualquer sistema operacional.
 Para começar veja [nossas páginas Wiki](https://github.com/nfephp-org/nfephp/wiki).
 
+**ATENÇÃO: A API vai mudar !!! varias mudanças estão programadas e sendo aplicadas na branch DEVELOP, que em breve será movida para master e MASTER será movida para v3.1.
+
 Não deixe de se cadastrar no [grupo de discussão do NFePHP](http://groups.google.com/group/nfephp)!
 
 Objetivo
