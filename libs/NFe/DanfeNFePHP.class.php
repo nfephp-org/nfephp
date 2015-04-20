@@ -2374,10 +2374,50 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
                 $medTxt.= ' ';
             }
         }
+        $veicProdTxt='';
+        $veicProd = $prod->getElementsByTagName("veicProd");
+        if(isset($veicProd)){
+            $i = 0;
+            while($i < $veicProd->length) {
+                $iVeicProd = $veicProd->item($i);
+                $veicProdTxt .= $this->pSimpleGetValue($veicProd->item($i) , 'tpOp' , ";Operacao: ");
+                $veicProdTxt .= $this->pSimpleGetValue($veicProd->item($i) , 'chassi' , ";Chassi: ");
+                $veicProdTxt .= $this->pSimpleGetValue($veicProd->item($i) , 'cCor'  , ";Cod Cor: ");
+                $veicProdTxt .= $this->pSimpleGetValue($veicProd->item($i) , 'xCor'  , ";Desc Cor: ");
+                $veicProdTxt .= $this->pSimpleGetValue($veicProd->item($i) , 'pot'  , ";Pot Motor (CV): ");
+                $veicProdTxt .= $this->pSimpleGetValue($veicProd->item($i) , 'cilin'  , ";Cilindradas: ");
+                $pesoLiquido = isset($iVeicProd->getElementsByTagName("pesoL")->item(0)->nodeValue) ? $iVeicProd->getElementsByTagName("pesoL")->item(0)->nodeValue : 0;
+                $pesoLiquido = number_format($pesoLiquido, 3, ",", ".");
+                $veicProdTxt .= ";Peso Liq (t): $pesoLiquido";
+                $pesoBruto = isset($iVeicProd->getElementsByTagName("pesoB")->item(0)->nodeValue) ? $iVeicProd->getElementsByTagName("pesoB")->item(0)->nodeValue : 0;
+                $pesoBruto = number_format($pesoBruto, 3, ",", ".");
+                $veicProdTxt .= ";Peso Brut (t): $pesoBruto";
+                $veicProdTxt .= $this->pSimpleGetValue($veicProd->item($i) , 'nSerie'  , ";Serie: ");
+                $veicProdTxt .= $this->pSimpleGetValue($veicProd->item($i) , 'tpComb'  , ";Combustivel: ");
+                $veicProdTxt .= $this->pSimpleGetValue($veicProd->item($i) , 'nMotor'  , ";Num Motor: ");
+                $tracao = isset($iVeicProd->getElementsByTagName("CMT")->item(0)->nodeValue) ? $iVeicProd->getElementsByTagName("CMT")->item(0)->nodeValue : 0;
+                $tracao = number_format($tracao, 3, ",", ".");
+                $veicProdTxt .= ";Cap Max Tracao (t): $tracao";
+                $veicProdTxt .= $this->pSimpleGetValue($veicProd->item($i) , 'dist'  , ";Dist Eixos: ");
+                $veicProdTxt .= $this->pSimpleGetValue($veicProd->item($i) , 'anoMod'  , ";Ano Modelo: ");
+                $veicProdTxt .= $this->pSimpleGetValue($veicProd->item($i) , 'anoFab'  , ";Ano Fabric: ");
+                $veicProdTxt .= $this->pSimpleGetValue($veicProd->item($i) , 'tpPint'  , ";Tipo Pintura: ");
+                $veicProdTxt .= $this->pSimpleGetValue($veicProd->item($i) , 'tpVeic'  , ";Tipo Veiculo: ");
+                $veicProdTxt .= $this->pSimpleGetValue($veicProd->item($i) , 'espVeic'  , ";Esp Veiculo: ");
+                $veicProdTxt .= $this->pSimpleGetValue($veicProd->item($i) , 'VIN'  , ";Cond VIN: ");
+                $veicProdTxt .= $this->pSimpleGetValue($veicProd->item($i) , 'condVeic'  , ";Cond Veiculo: ");
+                $veicProdTxt .= $this->pSimpleGetValue($veicProd->item($i) , 'cMod'  , ";Cod Marca Modelo: ");
+                $veicProdTxt .= $this->pSimpleGetValue($veicProd->item($i) , 'cCorDENATRAN'  , ";Codigo Cor: ");
+                $veicProdTxt .= $this->pSimpleGetValue($veicProd->item($i) , 'lota'  , ";Cap Max Lotacao: ");
+                $veicProdTxt .= $this->pSimpleGetValue($veicProd->item($i) , 'tpRest'  , ";Restricao: ");
+                $i++;
+            }
+            if(!empty($veicProdTxt)) $veicProdTxt.= ' ';
+        }
         //NT2013.006 FCI
         $nFCI = (! empty($itemProd->getElementsByTagName('nFCI')->item(0)->nodeValue)) ?
                 ' FCI:'.$itemProd->getElementsByTagName('nFCI')->item(0)->nodeValue : '';
-        $tmp_ad=$infAdProd . ($this->descProdInfoComplemento ? $medTxt . $impostos . $nFCI : '');
+        $tmp_ad=$infAdProd . ($this->descProdInfoComplemento ? $veicProdTxt . $medTxt . $impostos . $nFCI : '');
         $texto = $prod->getElementsByTagName("xProd")->item(0)->nodeValue . (strlen($tmp_ad)!=0?"\n    ".$tmp_ad:'');
         if ($this->descProdQuebraLinha) {
             $texto = str_replace(";", "\n", $texto);
