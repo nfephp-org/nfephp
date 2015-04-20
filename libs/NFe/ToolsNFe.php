@@ -1173,11 +1173,12 @@ class ToolsNFe extends BaseTools
      * TODO: terminar esse método
      * @param string|array $aXml
      * @param string $tpAmb
+     * @param string $siglaUF 
      * @param array $aRetorno
      * @return string
      * @throws Exception\InvalidArgumentException
      */
-    public function sefazEPEC($aXml, $tpAmb = '2', &$aRetorno = array())
+    public function sefazEPEC($aXml, $tpAmb = '2', $siglaUF='AN', &$aRetorno = array())
     {
         //na nfe deve estar indicado a entrada em contingencia da data hora e o motivo
         //caso contrario ignorar a solicitação de EPEC
@@ -1192,15 +1193,15 @@ class ToolsNFe extends BaseTools
             $tpAmb = $this->aConfig['tpAmb'];
         }
         //carrega serviço
-        $servico = 'RecepcaoEvento';
+        $servico = 'RecepcaoEPEC';
         $this->zLoadServico(
             'nfe',
             $servico,
-            'AN',
+            $siglaUF,
             $tpAmb
         );
         if ($this->urlService == '') {
-            $msg = "A recepção de eventos não está disponível na SEFAZ AN!!!";
+            $msg = "A recepção de EPEC não está disponível na SEFAZ !!!";
             throw new Exception\RuntimeException($msg);
         }
         $aRetorno = array();

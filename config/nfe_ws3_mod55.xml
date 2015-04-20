@@ -34,12 +34,14 @@ AM Consulta de Cadastro não EXISTE
       <NfeConsultaDest method="nfeConsultaNFDest" operation="NfeConsultaDest" version="1.01">https://hom.nfe.fazenda.gov.br/NFeConsultaDest/NFeConsultaDest.asmx</NfeConsultaDest>
       <NfeDownloadNF method="nfeDownloadNF" operation="NfeDownloadNF" version="1.00">https://hom.nfe.fazenda.gov.br/NfeDownloadNF/NfeDownloadNF.asmx</NfeDownloadNF>
       <RecepcaoEvento method="nfeRecepcaoEvento" operation="RecepcaoEvento" version="1.00">https://hom.nfe.fazenda.gov.br/RecepcaoEvento/RecepcaoEvento.asmx</RecepcaoEvento>
+      <RecepcaoEPEC method="nfeRecepcaoEvento" operation="RecepcaoEvento" version="1.00">https://hom.nfe.fazenda.gov.br/RecepcaoEvento/RecepcaoEvento.asmx</RecepcaoEPEC>
     </homologacao>
     <producao>
       <NFeDistribuicaoDFe method="nfeDistDFeInteresse" operation="NFeDistribuicaoDFe" version="1.00">https://www1.nfe.fazenda.gov.br/NFeDistribuicaoDFe/NFeDistribuicaoDFe.asmx</NFeDistribuicaoDFe>        
       <NfeConsultaDest method="nfeConsultaNFDest" operation="NfeConsultaDest" version="1.01">https://www.nfe.fazenda.gov.br/NFeConsultaDest/NFeConsultaDest.asmx</NfeConsultaDest>
       <NfeDownloadNF method="nfeDownloadNF" operation="NfeDownloadNF" version="1.00">https://www.nfe.fazenda.gov.br/NfeDownloadNF/NfeDownloadNF.asmx</NfeDownloadNF>
       <RecepcaoEvento method="nfeRecepcaoEvento" operation="RecepcaoEvento" version="1.00">https://www.nfe.fazenda.gov.br/RecepcaoEvento/RecepcaoEvento.asmx</RecepcaoEvento>
+      <RecepcaoEPEC method="nfeRecepcaoEvento" operation="RecepcaoEvento" version="1.00">https://www.nfe.fazenda.gov.br/RecepcaoEvento/RecepcaoEvento.asmx</RecepcaoEPEC>
     </producao>
   </UF>
   <UF>

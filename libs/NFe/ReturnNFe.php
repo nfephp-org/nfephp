@@ -47,6 +47,7 @@ class ReturnNFe
                 //NOTA: irá ser desativado
                 return self::zReadStatusServico($dom);
                 break;
+            case 'RecepcaoEPEC':
             case 'RecepcaoEvento':
                 return self::zReadRecepcaoEvento($dom);
                 break;
