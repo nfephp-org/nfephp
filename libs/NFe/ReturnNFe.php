@@ -89,9 +89,7 @@ class ReturnNFe
             $aRetNFe['cStat'] = $dom->getValue($retNFe, 'cStat');
             $aRetNFe['xMotivo'] = $dom->getValue($retNFe, 'xMotivo');
             $aRetNFe['chNFe'] = $dom->getValue($retNFe, 'chNFe');
-            $nfeProc = ! empty($retNFe->getElementsByTagName('nfeProc')->item(0))
-                ? $retNFe->getElementsByTagName('nfeProc')->item(0)
-                : '';
+            $nfeProc = $retNFe->getElementsByTagName('nfeProc')->item(0);
             if (! empty($nfeProc)) {
                 $aRetNFe['nfeProc'] = $dom->saveXML($nfeProc);
             }
