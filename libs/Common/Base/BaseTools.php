@@ -67,6 +67,16 @@ class BaseTools
      * @var intger 
      */
     public $certExpireTimestamp = 0;
+    /**
+     * ambiente
+     * @var string
+     */
+    public $ambiente = 'homologacao';
+    /**
+     * aConfig
+     * @var array
+     */
+    public $aConfig = array();
     
     /**
      * oCertificate
@@ -78,11 +88,6 @@ class BaseTools
      * @var Object Class  
      */
     protected $oSoap;
-    /**
-     * aConfig
-     * @var array
-     */
-    protected $aConfig = array();
     /**
      * aDocFormat
      * @var array 
@@ -144,11 +149,7 @@ class BaseTools
      * @var string
      */
     protected $modelo = '55';
-    /**
-     * ambiente
-     * @var string
-     */
-    protected $ambiente = 'homologacao';
+    
 
     protected $cUFlist = array(
         'AC'=>'12',
