@@ -224,7 +224,7 @@ VURh6kJDAMVhhB5URXSnHhuGrKGi
     }
 
     /**
-     * @expectedException \Common\Exception\RuntimeException
+     * @expectedException NFePHP\Common\Exception\RuntimeException
      * @expectedExceptionMessage Data de validade vencida! [Valido até 02/10/10]
      */
     public function testValidadeCertificado()
@@ -236,7 +236,7 @@ VURh6kJDAMVhhB5URXSnHhuGrKGi
     }
 
     /**
-     * @expectedException \Common\Exception\InvalidArgumentException
+     * @expectedException NFePHP\Common\Exception\InvalidArgumentException
      * @expectedExceptionMessage O Certificado fornecido pertence a outro CNPJ!!
      */
     public function testProprietarioCertificado()

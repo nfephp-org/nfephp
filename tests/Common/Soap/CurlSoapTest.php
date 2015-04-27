@@ -33,7 +33,7 @@ class CurlSoapTest extends PHPUnit_Framework_TestCase
     }
     
     /**
-     * @expectedException Common\Exception\InvalidArgumentException
+     * @expectedException NFePHP\Common\Exception\InvalidArgumentException
      * @expectedExceptionMessage O protocolo SSL pode estar entre 0 e seis, inclusive, mas não além desses números.
      */
     public function testExceptionAoPassarProtocoloSslMenorQueZero()
@@ -42,7 +42,7 @@ class CurlSoapTest extends PHPUnit_Framework_TestCase
     }
     
     /**
-     * @expectedException Common\Exception\InvalidArgumentException
+     * @expectedException NFePHP\Common\Exception\InvalidArgumentException
      * @expectedExceptionMessage O protocolo SSL pode estar entre 0 e seis, inclusive, mas não além desses números.
      */
     public function testExceptionAoPassarProtocoloSslMaiorQueSeis()
@@ -51,7 +51,7 @@ class CurlSoapTest extends PHPUnit_Framework_TestCase
     }
     
     /**
-     * @expectedException Common\Exception\InvalidArgumentException
+     * @expectedException NFePHP\Common\Exception\InvalidArgumentException
      * @expectedExceptionMessage Alguns dos certificados não foram encontrados ou o timeout pode não ser numérico.
      */
     public function testExceptionAoPassarCertificados()
@@ -71,7 +71,7 @@ class CurlSoapTest extends PHPUnit_Framework_TestCase
         $timeout = '10';
         $args = array($priKey, $pubKey, $certKey, $timeout);
         //cria uma função "FAJUTA" de comunicação com a SEFAZ
-        $soap = $this->getMockBuilder('Common\Soap\CurlSoap')
+        $soap = $this->getMockBuilder('NFePHP\Common\Soap\CurlSoap')
             ->setConstructorArgs($args)
             ->setMethods(array('zCommCurl'))
             ->getMock();
@@ -99,7 +99,7 @@ class CurlSoapTest extends PHPUnit_Framework_TestCase
         $timeout = '10';
         $args = array($priKey, $pubKey, $certKey, $timeout);
         //cria uma função "FAJUTA" de comunicação com a SEFAZ
-        $soap = $this->getMockBuilder('Common\Soap\CurlSoap')
+        $soap = $this->getMockBuilder('NFePHP\Common\Soap\CurlSoap')
             ->setConstructorArgs($args)
             ->setMethods(array('zCommCurl'))
             ->getMock();
@@ -115,7 +115,7 @@ class CurlSoapTest extends PHPUnit_Framework_TestCase
     }
     
     /**
-     * @expectedException Common\Exception\RuntimeException
+     * @expectedException NFePHP\Common\Exception\RuntimeException
      * @expectedExceptionMessage HTTP/1.1 403 Forbidden
      */
     public function testSendForbidden()
@@ -126,7 +126,7 @@ class CurlSoapTest extends PHPUnit_Framework_TestCase
         $timeout = '10';
         $args = array($priKey, $pubKey, $certKey, $timeout);
         //cria uma função "FAJUTA" de comunicação com a SEFAZ
-        $soap = $this->getMockBuilder('Common\Soap\CurlSoap')
+        $soap = $this->getMockBuilder('NFePHP\Common\Soap\CurlSoap')
             ->setConstructorArgs($args)
             ->setMethods(array('zCommCurl'))
             ->getMock();
@@ -157,7 +157,7 @@ class CurlSoapTest extends PHPUnit_Framework_TestCase
         $timeout = '10';
         $args = array($priKey, $pubKey, $certKey, $timeout);
         //cria uma função "FAJUTA" de comunicação com a SEFAZ
-        $soap = $this->getMockBuilder('Common\Soap\CurlSoap')
+        $soap = $this->getMockBuilder('NFePHP\Common\Soap\CurlSoap')
             ->setConstructorArgs($args)
             ->setMethods(array('zCommCurl'))
             ->getMock();
@@ -183,7 +183,7 @@ class CurlSoapTest extends PHPUnit_Framework_TestCase
     }
     
     /**
-     * @expectedException Common\Exception\RuntimeException
+     * @expectedException NFePHP\Common\Exception\RuntimeException
      * @expectedExceptionMessage Não houve retorno do Curl.
      */
     public function testSendNaoHouveRetornoDoWebservice() 
@@ -194,7 +194,7 @@ class CurlSoapTest extends PHPUnit_Framework_TestCase
         $timeout = '10';
         $args = array($priKey, $pubKey, $certKey, $timeout);
         
-        $soap = $this->getMockBuilder('Common\Soap\CurlSoap')
+        $soap = $this->getMockBuilder('NFePHP\Common\Soap\CurlSoap')
             ->setConstructorArgs($args)
             ->setMethods(array('zCommCurl'))
             ->getMock();

@@ -50,7 +50,7 @@
     },
     "autoload": {
         "psr-4": {
-          "NFePHP\\": "libs/"  
+          "nfephp-org\\nfephp\\": "libs/"  
         },
         "psr-0": {
             "": ["libs/", "tests/"]
