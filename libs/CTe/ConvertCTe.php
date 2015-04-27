@@ -1,6 +1,6 @@
 <?php
 
-namespace CTe;
+namespace NFePHP\CTe;
 
 /**
  * Classe para a conversão de Conhecimentos de transporte do formato TXT conforme padrão
@@ -13,9 +13,9 @@ namespace CTe;
  * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
  */
 
-use Common\Strings\Strings;
-use Common\Exception;
-use CTe\MakeCTe;
+use NFePHP\Common\Strings\Strings;
+use NFePHP\Common\Exception;
+use NFePHP\CTe\MakeCTe;
 
 class ConvertCTe
 {

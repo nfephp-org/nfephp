@@ -1,5 +1,7 @@
 <?php
 
+namespace NFePHP\Extras;
+
 /**
  * Classe complementar
  * necessária para extender a classe base Exception
@@ -10,8 +12,6 @@
  * @name nfephpException
  *
  */
-
-namespace Extras;
 
 use Exception;
 

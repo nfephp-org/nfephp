@@ -4,7 +4,7 @@
  * Class KeysTest
  * @author Roberto L. Machado <linux.rlm at gmail dot com>
  */
-use Common\Keys\Keys;
+use NFePHP\Common\Keys\Keys;
 
 class KeysTest extends PHPUnit_Framework_TestCase
 {

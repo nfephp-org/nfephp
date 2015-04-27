@@ -1,5 +1,6 @@
 <?php
-namespace Common\Base;
+
+namespace NFePHP\Common\Base;
 
 /**
  * Classe base para o envio de emails tanto para NFe, NFCe, CTe e MDFe
@@ -18,8 +19,8 @@ use Zend\Mime\Part as MimePart;
 use Zend\Mime\Mime;
 use Zend\Mail\Transport\SmtpOptions;
 use Zend\Mail\Transport\Smtp as SmtpTransport;
-use Common\Exception;
-use Common\Files;
+use NFePHP\Common\Exception;
+use NFePHP\Common\Files;
 
 if (!defined('NFEPHP_ROOT')) {
     define('NFEPHP_ROOT', dirname(dirname(dirname(__FILE__))));

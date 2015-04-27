@@ -1,5 +1,6 @@
 <?php
-namespace Common\Base;
+
+namespace NFePHP\Common\Base;
 
 /**
  * Classe base para a criação das classes construtoras dos XML
@@ -13,10 +14,10 @@ namespace Common\Base;
  * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
  */
 
-use Common\Dom\Dom;
-use Common\Keys\Keys;
-use Common\Identify\Identify;
-use Common\Files\FilesFolders;
+use NFePHP\Common\Dom\Dom;
+use NFePHP\Common\Keys\Keys;
+use NFePHP\Common\Identify\Identify;
+use NFePHP\Common\Files\FilesFolders;
 
 class BaseMake
 {

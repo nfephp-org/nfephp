@@ -5,7 +5,7 @@
  * @author Roberto L. Machado <linux dot rlm at gmail dot com>
  */
 
-use Common\Soap\CurlSoap;
+use NFePHP\Common\Soap\CurlSoap;
 
 class CurlSoapTest extends PHPUnit_Framework_TestCase
 {

@@ -4,8 +4,8 @@
  * Class Pkcs12Test
  * @author Roberto L. Machado <linux dot rlm at gmail dot com>
  */
-use Common\Certificate\Asn;
-use Common\Certificate\Pkcs12;
+use NFePHP\Common\Certificate\Asn;
+use NFePHP\Common\Certificate\Pkcs12;
 
 class Pkcs12Test extends PHPUnit_Framework_TestCase
 {

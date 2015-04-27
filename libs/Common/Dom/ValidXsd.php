@@ -1,5 +1,6 @@
 <?php
-namespace Common\Dom;
+
+namespace NFePHP\Common\Dom;
 
 /**
  * Classe auxiliar para validar documentos XML com o seu respecitvo XSD

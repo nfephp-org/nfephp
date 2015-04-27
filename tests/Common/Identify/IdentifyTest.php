@@ -4,7 +4,7 @@
  * Class IdentifyTest
  * @author Roberto L. Machado <linux.rlm at gmail dot com>
  */
-use Common\Identify\Identify;
+use NFePHP\Common\Identify\Identify;
 
 class IdentifyTest extends PHPUnit_Framework_TestCase
 {

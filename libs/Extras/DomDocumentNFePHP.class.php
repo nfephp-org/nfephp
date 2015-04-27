@@ -1,6 +1,8 @@
-<?php namespace Extras;
+<?php
 
-use DOMDocument;
+namespace NFePHP\Extras;
+
+use \DOMDocument;
 
 class DomDocumentNFePHP extends DOMDocument
 {

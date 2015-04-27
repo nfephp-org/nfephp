@@ -1,6 +1,6 @@
 <?php
 
-namespace NFe;
+namespace NFePHP\NFe;
 
 /**
  * Classe para a identificação do documento eletrônico da NFe
@@ -12,8 +12,8 @@ namespace NFe;
  * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
  */
 
-use DOMDocument;
-use Common\Identify\Identify;
+use \DOMDocument;
+use NFePHP\Common\Identify\Identify;
 
 class IdentifyNFe
 {

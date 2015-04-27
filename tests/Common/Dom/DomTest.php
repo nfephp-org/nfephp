@@ -3,7 +3,7 @@
  * Class DomTest
  * @author Roberto L. Machado <linux.rlm at gmail dot com>
  */
-use Common\Dom\Dom;
+use NFePHP\Common\Dom\Dom;
 
 class DomTest extends PHPUnit_Framework_TestCase
 {

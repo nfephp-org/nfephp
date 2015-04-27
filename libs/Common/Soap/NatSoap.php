@@ -1,9 +1,6 @@
 <?php
 
-namespace Common\Soap;
-
-use Common\Soap\CorrectedSoapClient;
-use Common\Exception;
+namespace NFePHP\Common\Soap;
 
 /**
  * Classe auxiliar para envio das mensagens SOAP usando SOAP nativo do PHP
@@ -14,6 +11,9 @@ use Common\Exception;
  * @author     Roberto L. Machado <linux dot rlm at gmail dot com>
  * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
  */
+
+use NFePHP\Common\Soap\CorrectedSoapClient;
+use NFePHP\Common\Exception;
 
 class NatSoap
 {

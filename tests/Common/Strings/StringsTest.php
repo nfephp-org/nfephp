@@ -11,7 +11,7 @@ class StringsTest extends PHPUnit_Framework_TestCase
     {
         $txtSujo = "Esse é um código cheio de @$#$! , - . ; : / COISAS e 12093876486";
         $txtLimpo = "Esse e um codigo cheio de @ , - . ; : / COISAS e 12093876486";
-        $resp = Common\Strings\Strings::cleanString($txtSujo);
+        $resp = NFePHP\Common\Strings\Strings::cleanString($txtSujo);
         $this->assertEquals($txtLimpo, $resp);
     }
     
@@ -21,8 +21,8 @@ class StringsTest extends PHPUnit_Framework_TestCase
         $xmlLimpo1 = file_get_contents(dirname(dirname(dirname(__FILE__))) . '/fixtures/xml/xml-limpo1.xml');
         $xmlLimpo2 = file_get_contents(dirname(dirname(dirname(__FILE__))) . '/fixtures/xml/xml-limpo2.xml');
         
-        $resp1 = Common\Strings\Strings::clearXml($xmlSujo, false);
-        $resp2 = Common\Strings\Strings::clearXml($xmlSujo, true);
+        $resp1 = NFePHP\Common\Strings\Strings::clearXml($xmlSujo, false);
+        $resp2 = NFePHP\Common\Strings\Strings::clearXml($xmlSujo, true);
         $this->assertEquals($xmlLimpo1, $resp1);
         $this->assertEquals($xmlLimpo2, $resp2);
     }
@@ -31,7 +31,7 @@ class StringsTest extends PHPUnit_Framework_TestCase
     {
         $xmlSujo = '';
         $xmlLimpo = '';
-        $resp1 = Common\Strings\Strings::clearProt($xmlSujo);
+        $resp1 = NFePHP\Common\Strings\Strings::clearProt($xmlSujo);
         $this->assertEquals($xmlLimpo, $resp1);
     }
     
@@ -40,7 +40,7 @@ class StringsTest extends PHPUnit_Framework_TestCase
         //$str = new Common\Strings\Strings();
         $txtSujo = "AKJKJ >    < \n JKJS \t lkdlkd \r default:";
         $txtLimpo = "AKJKJ ><  JKJS  lkdlkd  ";
-        $txt = Common\Strings\Strings::clearMsg($txtSujo);
+        $txt = NFePHP\Common\Strings\Strings::clearMsg($txtSujo);
         $this->assertEquals($txt, $txtLimpo);
     }
 }

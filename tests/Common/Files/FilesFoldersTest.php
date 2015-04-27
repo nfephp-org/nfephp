@@ -4,7 +4,7 @@
  * Class FilesFoldersTest
  * @author Roberto L. Machado <linux.rlm at gmail dot com>
  */
-use Common\Files\FilesFolders;
+use NFePHP\Common\Files\FilesFolders;
 
 class FilesFoldersTest extends PHPUnit_Framework_TestCase
 {

@@ -1,10 +1,6 @@
 <?php
 
-namespace Common\Soap;
-
-use Common\Soap;
-use Common\Exception;
-use \DOMDocument;
+namespace NFePHP\Common\Soap;
 
 /**
  * Classe usada para obter os arquivos WSDL, que são as especificações 
@@ -16,6 +12,10 @@ use \DOMDocument;
  * @author     Roberto L. Machado <linux.rlm@gamil.com>
  * @link       http://github.com/nfephp-org/spedphp for the canonical source repository
  */
+
+use NFePHP\Common\Soap;
+use NFePHP\Common\Exception;
+use \DOMDocument;
 
 class Wsdl
 {

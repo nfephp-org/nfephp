@@ -1,6 +1,6 @@
 <?php
 
-namespace NFe;
+namespace NFePHP\NFe;
 
 /**
  * Classe para envio dos emails aos interessados
@@ -12,9 +12,9 @@ namespace NFe;
  * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
  */
 
-use Common\Dom\Dom;
-use Common\DateTime\DateTime;
-use Common\Base\BaseMail;
+use NFePHP\Common\Dom\Dom;
+use NFePHP\Common\DateTime\DateTime;
+use NFePHP\Common\Base\BaseMail;
 use Html2Text\Html2Text;
 use \DOMDocument;
 

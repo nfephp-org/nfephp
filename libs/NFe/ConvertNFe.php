@@ -1,6 +1,6 @@
 <?php
 
-namespace NFe;
+namespace NFePHP\NFe;
 
 /**
  * Classe para a conversão de notas fiscais do formato TXT conforme padrão
@@ -13,9 +13,9 @@ namespace NFe;
  * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
  */
 
-use Common\Strings\Strings;
-use Common\Exception;
-use NFe\MakeNFe;
+use NFePHP\Common\Strings\Strings;
+use NFePHP\Common\Exception;
+use NFePHP\NFe\MakeNFe;
 
 class ConvertNFe
 {

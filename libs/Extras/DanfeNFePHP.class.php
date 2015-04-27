@@ -1,12 +1,12 @@
 <?php
 
-namespace Extras;
+namespace NFePHP\Extras;
 
-use Extras\nfephpException;
-use Extras\PdfNFePHP;
-use Extras\CommonNFePHP;
-use Extras\DocumentoNFePHP;
-use Extras\DomDocumentNFePHP;
+use NFePHP\Extras\nfephpException;
+use NFePHP\Extras\PdfNFePHP;
+use NFePHP\Extras\CommonNFePHP;
+use NFePHP\Extras\DocumentoNFePHP;
+use NFePHP\Extras\DomDocumentNFePHP;
 
 //ajuste do tempo limite de resposta do processo
 //set_time_limit(1800);

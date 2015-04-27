@@ -4,7 +4,7 @@
  * Class AsnTest
  * @author Roberto L. Machado <linux.rlm at gmail dot com>
  */
-use Common\Certificate\Asn;
+use NFePHP\Common\Certificate\Asn;
 
 class AsnTest extends PHPUnit_Framework_TestCase
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Extras\FPDF;
+namespace NFePHP\Extras\FPDF;
 
 define('FPDF_VERSION', '1.6');
 

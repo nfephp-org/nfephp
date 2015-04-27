@@ -1,6 +1,6 @@
 <?php
 
-namespace NFe;
+namespace NFePHP\NFe;
 
 /**
  * Classe a construção do xml da NFe modelo 55 e modelo 65
@@ -23,8 +23,8 @@ namespace NFe;
 
 
 
-use Common\DateTime\DateTime;
-use Common\Base\BaseMake;
+use NFePHP\Common\DateTime\DateTime;
+use NFePHP\Common\Base\BaseMake;
 use \DOMDocument;
 use \DOMElement;
 

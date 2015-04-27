@@ -1,6 +1,6 @@
 <?php
 
-namespace Extras;
+namespace NFePHP\Extras;
 
 interface DocumentoNFePHP
 {
