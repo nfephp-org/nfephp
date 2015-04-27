@@ -1,5 +1,6 @@
 <?php
-namespace Common\Modules;
+
+namespace NFePHP\Common\Modules;
 
 /**
  * Classe auxiliar para obter informações dos modulos instalados no PHP

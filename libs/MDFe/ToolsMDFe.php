@@ -1,5 +1,6 @@
 <?php
-namespace MDFe;
+
+namespace NFePHP\MDFe;
 
 /**
  * Classe principal para a comunicação com a SEFAZ
@@ -11,17 +12,17 @@ namespace MDFe;
  * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
  */
 
-use Common\Base\BaseTools;
-use Common\DateTime\DateTime;
-use Common\LotNumber\LotNumber;
-use Common\Strings\Strings;
-use Common\Files;
-use Common\Exception;
-use Common\Dom\Dom;
-use NFe\ReturnMDFe;
-use NFe\MailMDFe;
-use NFe\IdentifyMDFe;
-use Common\Dom\ValidXsd;
+use NFePHP\Common\Base\BaseTools;
+use NFePHP\Common\DateTime\DateTime;
+use NFePHP\Common\LotNumber\LotNumber;
+use NFePHP\Common\Strings\Strings;
+use NFePHP\Common\Files;
+use NFePHP\Common\Exception;
+use NFePHP\Common\Dom\Dom;
+use NFePHP\MDFe\ReturnMDFe;
+use NFePHP\MDFe\MailMDFe;
+use NFePHP\MDFe\IdentifyMDFe;
+use NFePHP\Common\Dom\ValidXsd;
 
 if (!defined('NFEPHP_ROOT')) {
     define('NFEPHP_ROOT', dirname(dirname(dirname(__FILE__))));

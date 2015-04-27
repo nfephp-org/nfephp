@@ -1,6 +1,6 @@
 <?php
 
-namespace Common\Exception;
+namespace NFePHP\Common\Exception;
 
 /**
  * @category   NFePHP

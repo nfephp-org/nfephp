@@ -1,6 +1,6 @@
 <?php
 
-namespace Common\Soap;
+namespace NFePHP\Common\Soap;
 
 /**
  * Classe auxiliar para o envio de mesagens SOAP usando o SOAP nativo do PHP

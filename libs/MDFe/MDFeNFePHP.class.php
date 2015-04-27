@@ -1,4 +1,7 @@
 <?php
+
+namespace NFePHP\MDFe;
+
 /**
  * Este arquivo é parte do projeto NFePHP - Nota Fiscal eletrônica em PHP.
  *

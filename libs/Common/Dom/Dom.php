@@ -1,5 +1,6 @@
 <?php
-namespace Common\Dom;
+
+namespace NFePHP\Common\Dom;
 
 /**
  * Classe auxiliar com funções de DOM extendidas
@@ -12,8 +13,8 @@ namespace Common\Dom;
  */
 
 use \DOMDocument;
-use Common\Files\FilesFolders;
-use Common\Exception;
+use NFePHP\Common\Files\FilesFolders;
+use NFePHP\Common\Exception;
 
 class Dom extends DOMDocument
 {

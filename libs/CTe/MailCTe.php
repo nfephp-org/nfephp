@@ -1,6 +1,6 @@
 <?php
 
-namespace CTe;
+namespace NFePHP\CTe;
 
 /**
  * Classe para envio dos emails aos interessados

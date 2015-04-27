@@ -1,6 +1,6 @@
 <?php
 
-namespace MDFe;
+namespace NFePHP\MDFe;
 
 /**
  * Classe para envio dos emails aos interessados
@@ -19,9 +19,9 @@ namespace MDFe;
  * com o modulo de NF. 
  */
 
-use Common\Dom\Dom;
-use Common\DateTime\DateTime;
-use Common\Base\BaseMail;
+use NFePHP\Common\Dom\Dom;
+use NFePHP\Common\DateTime\DateTime;
+use NFePHP\Common\Base\BaseMail;
 use Html2Text\Html2Text;
 use \DOMDocument;
 

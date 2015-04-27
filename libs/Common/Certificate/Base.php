@@ -1,6 +1,6 @@
 <?php
 
-namespace Common\Certificate;
+namespace NFePHP\Common\Certificate;
 
 /**
  * Classe auxiliar para obter informações dos certificados digitais A1 (PKCS12)

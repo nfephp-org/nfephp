@@ -3,7 +3,7 @@ error_reporting(E_ALL);
 ini_set('display_errors', 'On');
 include_once '../../bootstrap.php';
 
-use NFe\MakeNFe;
+use NFePHP\NFe\MakeNFe;
 
 $nfe = new MakeNFe();
 

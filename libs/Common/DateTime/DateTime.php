@@ -1,6 +1,6 @@
 <?php
 
-namespace Common\DateTime;
+namespace NFePHP\Common\DateTime;
 
 /**
  * Classe auxiliar para tratar datas

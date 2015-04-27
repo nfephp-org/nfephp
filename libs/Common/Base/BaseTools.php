@@ -1,5 +1,6 @@
 <?php
-namespace Common\Base;
+
+namespace NFePHP\Common\Base;
 
 /**
  * Classe base das classes principais para a comunicação com a SEFAZ
@@ -12,12 +13,12 @@ namespace Common\Base;
  * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
  */
 
-use Common\Certificate\Pkcs12;
-use Common\DateTime\DateTime;
-use Common\Dom\Dom;
-use Common\Soap\CurlSoap;
-use Common\Files;
-use Common\Exception;
+use NFePHP\Common\Certificate\Pkcs12;
+use NFePHP\Common\DateTime\DateTime;
+use NFePHP\Common\Dom\Dom;
+use NFePHP\Common\Soap\CurlSoap;
+use NFePHP\Common\Files;
+use NFePHP\Common\Exception;
 
 if (!defined('NFEPHP_ROOT')) {
     define('NFEPHP_ROOT', dirname(dirname(dirname(__FILE__))));

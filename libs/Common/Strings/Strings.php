@@ -1,6 +1,6 @@
 <?php
 
-namespace Common\Strings;
+namespace NFePHP\Common\Strings;
 
 /**
  * Classe auxiliar para o tratamento de strings

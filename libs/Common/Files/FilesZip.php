@@ -1,6 +1,6 @@
 <?php
 
-namespace Common\Files;
+namespace NFePHP\Common\Files;
 
 /**
  * Classe auxiliar para criar, listar e testar os diretórios utilizados pela API
@@ -12,7 +12,7 @@ namespace Common\Files;
  * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
  */
 
-use Common\Exception;
+use NFePHP\Common\Exception;
 
 class FilesZip
 {

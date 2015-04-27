@@ -1,6 +1,6 @@
 <?php
 
-namespace Common\Soap;
+namespace NFePHP\Common\Soap;
 
 /**
  * Classe auxiliar para envio das mensagens SOAP usando cURL
@@ -12,8 +12,8 @@ namespace Common\Soap;
  * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
  */
 
-use Common\Strings\Strings;
-use Common\Exception;
+use NFePHP\Common\Strings\Strings;
+use NFePHP\Common\Exception;
 
 class CurlSoap
 {

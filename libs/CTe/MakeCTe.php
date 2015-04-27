@@ -1,6 +1,6 @@
 <?php
 
-namespace CTe;
+namespace NFePHP\CTe;
 
 /**
   * Este arquivo é parte do projeto NFePHP - Nota Fiscal eletrônica em PHP.
@@ -39,8 +39,8 @@ namespace CTe;
  * 
  */
 
-use Common\DateTime\DateTime;
-use Common\Base\BaseMake;
+use NFePHP\Common\DateTime\DateTime;
+use NFePHP\Common\Base\BaseMake;
 use \DOMDocument;
 use \DOMElement;
 

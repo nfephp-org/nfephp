@@ -1,6 +1,6 @@
 <?php
 
-namespace Common\Certificate;
+namespace NFePHP\Common\Certificate;
 
 /**
  * Classe para tratamento e uso dos certificados digitais modelo A1 (PKCS12)
@@ -13,9 +13,9 @@ namespace Common\Certificate;
  * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
  */
 
-use Common\Certificate\Asn;
-use Common\Exception;
-use Common\Dom\Dom;
+use NFePHP\Common\Certificate\Asn;
+use NFePHP\Common\Exception;
+use NFePHP\Common\Dom\Dom;
 
 class Pkcs12
 {

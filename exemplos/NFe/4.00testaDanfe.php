@@ -8,8 +8,8 @@ error_reporting(E_ALL);
 ini_set('display_errors', 'On');
 include_once '../../bootstrap.php';
 
-use Extras\DanfeNFePHP;
-use Common\Files\FilesFolders;
+use NFePHP\Extras\DanfeNFePHP;
+use NFePHP\Common\Files\FilesFolders;
 
 $xml = '../xml/35150300822602000124550010009923471099234700-procNfe.xml';
 

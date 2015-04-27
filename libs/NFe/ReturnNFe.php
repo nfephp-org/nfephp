@@ -1,5 +1,6 @@
 <?php
-namespace NFe;
+
+namespace NFePHP\NFe;
 
 /**
  * Classe auxiliar com funções de DOM extendidas
@@ -11,7 +12,7 @@ namespace NFe;
  * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
  */
 
-use Common\Dom\Dom;
+use NFePHP\Common\Dom\Dom;
 
 class ReturnNFe
 {

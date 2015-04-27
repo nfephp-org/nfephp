@@ -3,7 +3,7 @@
  * Class DateTimeTest
  * @author Roberto L. Machado <linux.rlm at gmail dot com>
  */
-use Common\DateTime\DateTime;
+use NFePHP\Common\DateTime\DateTime;
 
 class DateTimeTest extends PHPUnit_Framework_TestCase
 {

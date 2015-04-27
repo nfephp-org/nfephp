@@ -1,6 +1,6 @@
 <?php
 
-namespace Common\Identify;
+namespace NFePHP\Common\Identify;
 
 /**
  * Classe auxiliar para a identificação dos documentos eletrônicos
@@ -12,8 +12,8 @@ namespace Common\Identify;
  * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
  */
 
-use Common\Dom\Dom;
-use Common\Files\FilesFolders;
+use NFePHP\Common\Dom\Dom;
+use NFePHP\Common\Files\FilesFolders;
 
 class Identify
 {

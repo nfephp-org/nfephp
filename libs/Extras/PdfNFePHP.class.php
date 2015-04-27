@@ -1,8 +1,8 @@
 <?php
 
-namespace Extras;
+namespace NFePHP\Extras;
 
-use Extras\FPDF\FPDF;
+use NFePHP\Extras\FPDF\FPDF;
 
 class PdfNFePHP extends FPDF {
     

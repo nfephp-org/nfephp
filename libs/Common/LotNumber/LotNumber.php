@@ -1,6 +1,6 @@
 <?php
 
-namespace Common\LotNumber;
+namespace NFePHP\Common\LotNumber;
 
 /**
  * Classe auxiliar para tratar os lotes usados na comunicação com a SEFAZ
