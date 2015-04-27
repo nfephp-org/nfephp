@@ -5,7 +5,7 @@
  * @author Roberto L. Machado <linux dot rlm at gmail dot com>
  */
 
-class NFePHP\LotNumberTest extends PHPUnit_Framework_TestCase
+class LotNumberTest extends PHPUnit_Framework_TestCase
 {
    public function testGeraNumLote()
    {
