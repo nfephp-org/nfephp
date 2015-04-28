@@ -22,7 +22,7 @@ if (!defined('NFEPHP_SITUACAO_EXTERNA_CANCELADA')) {
     define('NFEPHP_SITUACAO_EXTERNA_NONE', 0);
 }
 
-class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
+class Danfe extends CommonNFePHP implements DocumentoNFePHP
 {
 
     /**
@@ -684,21 +684,20 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $numlinhas = 0;
         $hUsado = $hCabecItens;
         $w2 = round($this->wPrint*0.31, 0);
+        $hDispo = $hDispo1;
+        $totPag = 1;
         while ($i < $this->det->length) {
             $texto = $this->pDescricaoProduto($this->det->item($i));
             $numlinhas = $this->pGetNumLines($texto, $w2, $fontProduto);
-            $hUsado += round(($numlinhas * $this->pdf->FontSize) + 3, 0);
+            $hUsado += round(($numlinhas * $this->pdf->FontSize) + ($numlinhas * 0.5), 2);
+            if ($hUsado > $hDispo) {
+                $totPag++;
+                $hDispo = $hDispo2;
+                $hUsado = 7;
+            }
             $i++;
         } //fim da soma das areas de itens usadas
         $qtdeItens = $i; //controle da quantidade de itens no DANFE
-        if ($hUsado > $hDispo1) {
-            //serão necessárias mais paginas
-            $hOutras = $hUsado - $hDispo1;
-            $totPag = 1 + ceil($hOutras / $hDispo2);
-        } else {
-            //sera necessaria apenas uma pagina
-            $totPag = 1;
-        }
         //montagem da primeira página
         $pag = 1;
         $x = $xInic;
@@ -2473,7 +2472,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
                 $IPI  = $imposto->getElementsByTagName("IPI")->item(0);
                 $textoProduto = $this->pDescricaoProduto($thisItem);
                 $linhaDescr = $this->pGetNumLines($textoProduto, $w2, $aFont);
-                $h = round(($linhaDescr * $this->pdf->FontSize)+1, 0);
+                $h = round(($linhaDescr * $this->pdf->FontSize)+ ($linhaDescr * 0.5), 2);
                 $hUsado += $h;
                 if ($hUsado >= $hmax && $i < $totItens) {
                     //ultrapassa a capacidade para uma única página
