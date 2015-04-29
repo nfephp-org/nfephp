@@ -842,7 +842,7 @@ class MakeNFe extends BaseMake
                 $identificador . "Indicador da IE do Destinatário"
             );
         }
-        if ($indIEDest == '1') {
+        if ($numIE != '' && $numIE != 'ISENTO') {
             $this->dom->addChild(
                 $this->dest,
                 "IE",
