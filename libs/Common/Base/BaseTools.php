@@ -78,6 +78,16 @@ class BaseTools
      * @var array
      */
     public $aConfig = array();
+    /**
+     * sslProtocol
+     * @var integer 
+     */
+    public $sslProtocol = 0;
+    /**
+     * soapTimeout
+     * @var integer
+     */
+    public $soapTimeout = 10;
     
     /**
      * oCertificate
@@ -235,6 +245,76 @@ class BaseTools
     }
     
     /**
+     * setSSLProtocol
+     * Força o uso de um determinado protocolo de encriptação
+     * na comunicação https com a SEFAZ usando cURL
+     * Apenas é necessário quando a versão do PHP e do libssl não
+     * consegue estabelecer o protocolo correto durante o handshake
+     * 
+     * @param string $protocol
+     */
+    public function setSSLProtocol($protocol = '')
+    {
+        if (! empty($protocol)) {
+            switch ($protocol) {
+                case 'TLSv1':
+                    $this->sslProtocol = 1;
+                    break;
+                case 'SSLv2':
+                    $this->sslProtocol = 2;
+                    break;
+                case 'SSLv3':
+                    $this->sslProtocol = 3;
+                    break;
+                case 'TLSv1.0':
+                    $this->sslProtocol = 4;
+                    break;
+                case 'TLSv1.1':
+                    $this->sslProtocol = 5;
+                    break;
+                case 'TLSv1.2':
+                    $this->sslProtocol = 6;
+                    break;
+                default:
+                    $this->sslProtocol = 0;
+            }
+            $this->zLoadSoapClass();
+        }
+    }
+    
+    /**
+     * getSSLProtocol
+     * Retrona o protocolo que está setado
+     * @return string
+     */
+    public function getSSLProtocol()
+    {
+        $aPr = array('default','TLSv1','SSLv2','SSLv3','TLSv1.0','TLSv1.1','TLSv1.2');
+        return $aPr[$this->sslProtocol];
+    }
+    
+    /**
+     * setSoapTimeOut
+     * @param integer $segundos
+     */
+    public function setSoapTimeOut($segundos = 10)
+    {
+        if (! empty($segundos)) {
+            $this->soapTimeout = $segundos;
+            $this->zLoadSoapClass();
+        }
+    }
+    
+    /**
+     * getSoapTimeOut
+     * @return integer
+     */
+    public function getSoapTimeOut()
+    {
+        return $this->soapTimeout;
+    }
+    
+    /**
      * setAmbiente
      * Seta a varável de ambiente
      * @param string $tpAmb
@@ -246,7 +326,7 @@ class BaseTools
             $this->ambiente = 'producao';
         }
     }
-
+    
     /**
      * atualizaCertificado
      * @param string $certpfx certificado pfx em string ou o path para o certificado
@@ -328,7 +408,8 @@ class BaseTools
             $this->oCertificate->priKeyFile,
             $this->oCertificate->pubKeyFile,
             $this->oCertificate->certKeyFile,
-            '10'
+            $this->soapTimeout,
+            $this->sslProtocol
         );
     }
     
