@@ -538,7 +538,7 @@ class ConvertNFePHP
                         $dest->appendChild($xNome);
                         $indIEDest = $dom->createElement("indIEDest", $dados[2]);
                         $dest->appendChild($indIEDest);
-                        if ($dados[2] != '2' && $dados[2] != '9') {
+                        if ($dados[3] != '' && $dados[3] != 'ISENTO' && $dados[2] != '9') {
                             $IE = $dom->createElement("IE", $dados[3]);
                             $dest->appendChild($IE);
                         }
