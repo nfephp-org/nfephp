@@ -250,7 +250,6 @@ class BaseTools
      * na comunicação https com a SEFAZ usando cURL
      * Apenas é necessário quando a versão do PHP e do libssl não
      * consegue estabelecer o protocolo correto durante o handshake
-     * 
      * @param string $protocol
      */
     public function setSSLProtocol($protocol = '')
