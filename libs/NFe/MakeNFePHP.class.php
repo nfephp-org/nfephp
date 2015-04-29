@@ -664,7 +664,13 @@ class MakeNFe
             );
         }
         if ($numIE != '' && $numIE != 'ISENTO') {
-            $this->zAddChild($this->dest, "IE", $numIE, true, $identificador . "Inscrição Estadual do Destinatário");
+            $this->zAddChild(
+                $this->dest,
+                "IE",
+                $numIE,
+                true,
+                $identificador . "Inscrição Estadual do Destinatário"
+            );
         }
         $this->zAddChild($this->dest, "ISUF", $isUF, false, $identificador . "Inscrição na SUFRAMA do destinatário");
         $this->zAddChild(
