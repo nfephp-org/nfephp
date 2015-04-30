@@ -76,6 +76,9 @@ class DateTime
         if ($dataHora == '') {
             return '';
         }
+        //inserido devido a casos de má formação do xml com
+        //TZD +00:00 por exemplo
+        $dataHora = str_replace('+', '-', $dataHora);
         $aDH = explode('T', $dataHora);
         $adDH = explode('-', $aDH[0]);
         $atDH = array('0','0','0');
