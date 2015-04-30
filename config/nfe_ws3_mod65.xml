@@ -233,32 +233,33 @@ UF/ambiente.
       <RecepcaoEPEC method="nfeRecepcaoEvento" operation="RecepcaoEvento" version="1.00"></RecepcaoEPEC>
     </producao>
   </UF>
-  <UF>
+ <UF>
     <sigla>PR</sigla>
     <homologacao>
-      <NfeInutilizacao method="nfeInutilizacaoNF2" operation="" version="3.10"></NfeInutilizacao>
-      <NfeConsultaProtocolo method="nfeConsultaNF2" operation="" version="3.10"></NfeConsultaProtocolo>
-      <NfeStatusServico method="nfeStatusServicoNF2" operation="" version="3.10"></NfeStatusServico>
+      <NfeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10">https://homologacao.nfce.fazenda.pr.gov.br/nfce/NFeAutorizacao3</NfeAutorizacao>
+      <NFeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NFeRetAutorizacao" version="3.10">https://homologacao.nfce.fazenda.pr.gov.br/nfce/NFeRetAutorizacao3</NFeRetAutorizacao>
+      <NfeInutilizacao method="nfeInutilizacaoNF2" operation="" version="3.10">https://homologacao.nfce.fazenda.pr.gov.br/nfce/NFeInutilizacao3</NfeInutilizacao>
+      <NfeConsultaProtocolo method="nfeConsultaNF2" operation="" version="3.10">https://homologacao.nfce.fazenda.pr.gov.br/nfce/NFeConsulta3</NfeConsultaProtocolo>
+      <NfeStatusServico method="nfeStatusServicoNF2" operation="" version="3.10">https://homologacao.nfce.fazenda.pr.gov.br/nfce/NFeStatusServico3</NfeStatusServico>
       <NfeConsultaCadastro method="consultaCadastro2" operation="" version="3.10"></NfeConsultaCadastro>
-      <RecepcaoEvento method="nfeRecepcaoEvento" operation="" version="3.10"></RecepcaoEvento>
-      <NfeConsultaQR method="QR-CODE" operation="" version="3.10"></NfeConsultaQR>
+      <RecepcaoEvento method="nfeRecepcaoEvento" operation="" version="3.10">https://homologacao.nfce.fazenda.pr.gov.br/nfce/NFeRecepcaoEvent</RecepcaoEvento>
+      <NfeConsultaQR method="QR-CODE" operation="" version="3.10">http://www.dfeportal.fazenda.pr.gov.br/dfe-portal/rest/servico/consultaNFCe</NfeConsultaQR>
       <NfeConsultaDest method="nfeConsultaNFDest" operation="" version="3.10"></NfeConsultaDest>
       <NfeDownloadNF method="nfeDownloadNF" operation="" version="3.10"></NfeDownloadNF>
-      <RecepcaoEPEC method="nfeRecepcaoEvento" operation="RecepcaoEvento" version="1.00"></RecepcaoEPEC>
     </homologacao>
     <producao>
-      <NfeInutilizacao method="nfeInutilizacaoNF2" operation="" version="3.10"></NfeInutilizacao>
-      <NfeConsultaProtocolo method="nfeConsultaNF2" operation="" version="3.10"></NfeConsultaProtocolo>
-      <NfeStatusServico method="nfeStatusServicoNF2" operation="" version="3.10"></NfeStatusServico>
+      <NfeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10">https://nfce.fazenda.pr.gov.br/nfce/NFeAutorizacao3</NfeAutorizacao>
+      <NFeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NFeRetAutorizacao" version="3.10">https://nfce.fazenda.pr.gov.br/nfce/NFeRetAutorizacao3</NFeRetAutorizacao>
+      <NfeInutilizacao method="nfeInutilizacaoNF2" operation="" version="3.10">https://nfce.fazenda.pr.gov.br/nfce/NFeInutilizacao3</NfeInutilizacao>
+      <NfeConsultaProtocolo method="nfeConsultaNF2" operation="" version="3.10">https://nfce.fazenda.pr.gov.br/nfce/NFeConsulta3</NfeConsultaProtocolo>
+      <NfeStatusServico method="nfeStatusServicoNF2" operation="" version="3.10">https://nfce.fazenda.pr.gov.br/nfce/NFeStatusServico3</NfeStatusServico>
       <NfeConsultaCadastro method="consultaCadastro2" operation="" version="3.10"></NfeConsultaCadastro>
-      <RecepcaoEvento method="nfeRecepcaoEvento" operation="" version="3.10"></RecepcaoEvento>
-      <NfeConsultaQR method="QR-CODE" operation="" version="3.10"></NfeConsultaQR>
+      <RecepcaoEvento method="nfeRecepcaoEvento" operation="" version="3.10">https://nfce.fazenda.pr.gov.br/nfce/NFeRecepcaoEvento</RecepcaoEvento>
+      <NfeConsultaQR method="QR-CODE" operation="" version="3.10">http://www.dfeportal.fazenda.pr.gov.br/dfe-portal/rest/servico/consultaNFCe</NfeConsultaQR>
       <NfeConsultaDest method="nfeConsultaNFDest" operation="" version="3.10"></NfeConsultaDest>
       <NfeDownloadNF method="nfeDownloadNF" operation="" version="3.10"></NfeDownloadNF>
-      <RecepcaoEPEC method="nfeRecepcaoEvento" operation="RecepcaoEvento" version="1.00"></RecepcaoEPEC>
     </producao>
-  </UF>
-  <UF>
+  </UF>  <UF>
     <sigla>RN</sigla>
     <homologacao>
        <NfeConsultaQR method="QR-CODE" operation="" version="3.10">http://www.hom.nfe.rn.gov.br/portal/consultarNFCe.jsp</NfeConsultaQR>
