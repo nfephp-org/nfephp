@@ -560,7 +560,41 @@ class BaseTools
                 "Arquivo $pathXmlUrlFile parece ser invalido ou está corrompido."
             );
         }
-        $autorizadores = array(
+        $autorizadores['65'] = array(
+            'AC'=>'SVRS',
+            'AL'=>'SVRS',
+            'AM'=>'AM',
+            'AN'=>'AN',
+            'AP'=>'SVRS',
+            'BA'=>'SVRS',
+            'CE'=>'CE',
+            'DF'=>'SVRS',
+            'ES'=>'SVRS',
+            'GO'=>'SVRS',
+            'MA'=>'SVRS',
+            'MG'=>'MG',
+            'MS'=>'MS',
+            'MT'=>'MT',
+            'PA'=>'SVRS',
+            'PB'=>'SVRS',
+            'PE'=>'PE',
+            'PI'=>'SVRS',
+            'PR'=>'PR',
+            'RJ'=>'SVRS',
+            'RN'=>'SVRS',
+            'RO'=>'SVRS',
+            'RR'=>'SVRS',
+            'RS'=>'RS',
+            'SC'=>'SVRS',
+            'SE'=>'SVRS',
+            'SP'=>'SP',
+            'TO'=>'SVRS',
+            'SVAN'=>'SVAN',
+            'SVRS'=>'SVRS',
+            'SVCAN'=>'SVCAN',
+        );
+        
+        $autorizadores['55'] = array(
             'AC'=>'SVRS',
             'AL'=>'SVRS',
             'AM'=>'AM',
@@ -601,7 +635,7 @@ class BaseTools
         if ($tpAmb == '1') {
             $sAmbiente = 'producao';
         }
-        $alias = $autorizadores[$siglaUF];
+        $alias = $autorizadores[$this->modelo][$siglaUF];
         if ($tipo == 'mdfe') {
             $alias = 'RS';
         }
