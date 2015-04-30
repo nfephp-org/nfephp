@@ -23,7 +23,7 @@
  *
  * @package     NFePHP
  * @name        DanfeNFePHP.class.php
- * @version     2.2.6
+ * @version     2.2.7
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2012 &copy; NFePHP
@@ -204,7 +204,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
      * versão
      * @var string
      */
-    protected $version = '2.2.6';
+    protected $version = '2.2.7';
     /**
      * Texto
      * @var string
@@ -731,7 +731,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $hfooter = 5;// para rodape
         $hCabecItens = 4;//cabeçalho dos itens
         //alturas disponiveis para os dados
-        $hDispo1 = $this->hPrint - ($hcabecalho +
+        $hDispo1 = $this->hPrint - 10 - ($hcabecalho +
             $hdestinatario + ($linhasDup * $hduplicatas) + $himposto + $htransporte +
             ($linhaISSQN * $hissqn) + $hdadosadic + $hfooter + $hCabecItens +
             $this->pSizeExtraTextoFatura());
@@ -740,7 +740,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         } else {
             $hcanhoto = $this->hPrint;//para canhoto
         }
-        $hDispo2 = $this->hPrint - ($hcabecalho + $hfooter + $hCabecItens)-4;
+        $hDispo2 = $this->hPrint - 10 - ($hcabecalho + $hfooter + $hCabecItens)-4;
         //Contagem da altura ocupada para impressão dos itens
         $fontProduto = array('font'=>$this->fontePadrao, 'size'=>7, 'style'=>'');
         $i = 0;
