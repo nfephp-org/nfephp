@@ -686,4 +686,9 @@ class ToolsNFePHPTest extends PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('nProt', $retorno['protNFe']['infProt']);
         $this->assertEquals('311100000046263', $retorno['protNFe']['infProt']['nProt']);
     }
+
+    public function testaRetornoDataFormatoBrasileiro(){
+    	$tool = new ToolsNFePHP();
+    	$this->assertEquals('02/10/10 17:07', $tool->pTimestampCerts());
+    }
 }
