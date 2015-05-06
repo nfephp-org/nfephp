@@ -328,7 +328,7 @@ AM Consulta de Cadastro não EXISTE
         <NfeDownloadNF method="nfeDownloadNF" operation="NfeDownloadNF" version="1.00">https://nfe.svrs.rs.gov.br/ws/nfeDownloadNF/nfeDownloadNF.asmx</NfeDownloadNF>        
         <NfeConsultaProtocolo method="nfeConsultaNF2" operation="NfeConsulta2" version="3.10">https://nfe.svrs.rs.gov.br/ws/NfeConsulta/NfeConsulta2.asmx</NfeConsultaProtocolo>
         <NfeInutilizacao method="nfeInutilizacaoNF2" operation="NfeInutilizacao2" version="3.10">https://nfe.svrs.rs.gov.br/ws/nfeinutilizacao/nfeinutilizacao2.asmx</NfeInutilizacao>
-        <NfeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10">https://nfe-homologacao.svrs.rs.gov.br/ws/NfeRetAutorizacao/NFeRetAutorizacao.asmx</NfeRetAutorizacao>
+        <NfeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10">https://nfe.svrs.rs.gov.br/ws/NfeRetAutorizacao/NFeRetAutorizacao.asmx</NfeRetAutorizacao>
         <NfeStatusServico method="nfeStatusServicoNF2" operation="NfeStatusServico2" version="3.10">https://nfe.svrs.rs.gov.br/ws/NfeStatusServico/NfeStatusServico2.asmx</NfeStatusServico>
         <RecepcaoEvento method="nfeRecepcaoEvento" operation="RecepcaoEvento" version="1.00">https://nfe.svrs.rs.gov.br/ws/recepcaoevento/recepcaoevento.asmx</RecepcaoEvento>
     </producao>
