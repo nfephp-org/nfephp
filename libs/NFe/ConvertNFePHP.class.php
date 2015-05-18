@@ -27,7 +27,7 @@
  *
  * @package     NFePHP
  * @name        ConvertNFePHP
- * @version     3.10.19
+ * @version     3.10.20
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2015 &copy; NFePHP
@@ -1784,18 +1784,18 @@ class ConvertNFePHP
                     break;
                 case "Q05":
                     //Grupo de PIS Outras Operações 0 ou 1 [PIS]
-                    //Q05|CST|vPIS|
+                    //Q05|CST|
                     $PISOutr = $dom->createElement("PISOutr");
                     $CST = $dom->createElement("CST", $dados[1]);
                     $PISOutr->appendChild($CST);
-                    $vPIS = $dom->createElement("vPIS", $dados[2]);
-                    $PISOutr->appendChild($vPIS);
-                    $PIS->appendChild($PISOutr);
                     break;
                 case "Q07":
                     //Valor da Base de Cálculo do PIS e Alíquota do PIS (em percentual) 0 pu 1 [PISOutr]
                     // todos esses campos sao obrigatorios
-                    //Q07|vBC|pPIS|
+                    //Q07|vBC|pPIS|vPIS|
+                    $vPIS = $dom->createElement("vPIS", $dados[3]);
+                    $PISOutr->appendChild($vPIS);
+                    $PIS->appendChild($PISOutr);
                     $vBC = $dom->createElement("vBC", $dados[1]);
                     $PISOutr->insertBefore($vBC, $vPIS);
                     $pPIS = $dom->createElement("pPIS", $dados[2]);
