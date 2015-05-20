@@ -18,7 +18,7 @@ namespace NFePHP\NFe;
  *              Marcos Vinicios Balbi <marcusbalbi at hotmail dot com>
  * 
  * NOTA: Esta classe atende os padrões estabelecidos pela 
- * NOTA TÉCNICA 2013.005 Versão 1.21 de Novembro 2014
+ * NOTA TÉCNICA 2013.005 Versão 1.22 de Novembro 2014
  */
 
 
@@ -768,80 +768,56 @@ class MakeNFe extends BaseMake
         $email = ''
     ) {
         $identificador = 'E01 <dest> - ';
-        if ($numIE == 'ISENTO') {
-            if ($indIEDest == '1') {
-                $indIEDest = '2';
-            }
-        }
         $this->dest = $this->dom->createElement("dest");
-        if ($this->tpAmb == '2') {
-            $this->dom->addChild(
-                $this->dest,
-                "CNPJ",
-                '99999999000191',
-                true,
-                $identificador . "CNPJ do destinatário"
-            );
-            $this->dom->addChild(
-                $this->dest,
-                "xNome",
-                'NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL',
-                true,
-                $identificador . "Razão Social ou nome do destinatário"
-            );
-        } else {
-            if ($cnpj != '') {
-                $this->dom->addChild(
-                    $this->dest,
-                    "CNPJ",
-                    $cnpj,
-                    true,
-                    $identificador . "CNPJ do destinatário"
-                );
-            } elseif ($cpf != '') {
-                $this->dom->addChild(
-                    $this->dest,
-                    "CPF",
-                    $cpf,
-                    true,
-                    $identificador . "CPF do destinatário"
-                );
-            } else {
-                $this->dom->addChild(
-                    $this->dest,
-                    "idEstrangeiro",
-                    $idEstrangeiro,
-                    true,
-                    $identificador . "Identificação do destinatário no caso de comprador estrangeiro"
-                );
-                $indIEDest = '9';
-            }
-            $this->dom->addChild(
-                $this->dest,
-                "xNome",
-                $xNome,
-                true,
-                $identificador . "Razão Social ou nome do destinatário"
-            );
+        if (($numIE == 'ISENTO' || $numIE == '') && $indIEDest == '1') {
+            $indIEDest = '2';
         }
         if ($this->mod == '65') {
             $indIEDest = '9';
+        }
+        if ($this->tpAmb == '2') {
+            $xNome = 'NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL';
+        }
+        if ($cnpj != '') {
             $this->dom->addChild(
                 $this->dest,
-                "indIEDest",
-                $indIEDest,
+                "CNPJ",
+                $cnpj,
                 true,
-                $identificador . "Indicador da IE do Destinatário"
+                $identificador . "CNPJ do destinatário"
+            );
+        } elseif ($cpf != '') {
+            $this->dom->addChild(
+                $this->dest,
+                "CPF",
+                $cpf,
+                true,
+                $identificador . "CPF do destinatário"
             );
         } else {
             $this->dom->addChild(
                 $this->dest,
-                "indIEDest",
-                $indIEDest,
+                "idEstrangeiro",
+                $idEstrangeiro,
                 true,
-                $identificador . "Indicador da IE do Destinatário"
+                $identificador . "Identificação do destinatário no caso de comprador estrangeiro"
             );
+            $indIEDest = '9';
         }
+        $this->dom->addChild(
+            $this->dest,
+            "xNome",
+            $xNome,
+            true,
+            $identificador . "Razão Social ou nome do destinatário"
+        );
+        $this->dom->addChild(
+            $this->dest,
+            "indIEDest",
+            $indIEDest,
+            true,
+            $identificador . "Indicador da IE do Destinatário"
+        );
         if ($numIE != '' && $numIE != 'ISENTO') {
             $this->dom->addChild(
                 $this->dest,
