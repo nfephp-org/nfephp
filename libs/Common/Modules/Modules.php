@@ -49,7 +49,43 @@ class Modules
         }
         $this->list = $vModules;
     }
-
+    
+    /**
+     * verifyRequiredModules
+     * Verifica se os modulos requeridos pela API estão instalados
+     * @param string $lista
+     * @return bool
+     */
+    public static function verifyRequiredModules(&$lista = '')
+    {
+        $aReq = array(
+            'libxml',
+            'openssl',
+            'zlib',
+            'dom',
+            'fileinfo',
+            'iconv',
+            'soap',
+            'xml',
+            'xmlreader',
+            'xmlwriter',
+            'zip',
+            'curl',
+            'gd',
+            'json',
+            'mcrypt',
+            'xsl');
+        $enabled = true;
+        
+        foreach ($aReq as $req) {
+            if (! extension_loaded($req)) {
+                $enabled = ($enabled && false);
+                $lista .= "$req não está carregado no PHP.\n";
+            }
+        }
+        return $enabled;
+    }
+    
     /**
      * Checagem rápida se o modulo está carregadp
      * true se carregado ou false se não
