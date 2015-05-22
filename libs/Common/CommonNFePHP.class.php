@@ -196,6 +196,8 @@ class CommonNFePHP
                 $inter = explode('-', $aDH[1]);
             }else if(strpos($aDH[1], '+') !== FALSE) {
                 $inter = explode('+', $aDH[1]);
+            }else{//adicionado para correção quando $aDH[1] só possui hora com separador ':'.
+                $inter[0] = $aDH[1];
             }
             $atDH = explode(':', $inter[0]);
             $timestampDH = mktime($atDH[0], $atDH[1], $atDH[2], $adDH[1], $adDH[2], $adDH[0]);
