@@ -340,6 +340,13 @@ class ToolsNFePHP extends CommonNFePHP
      */
     private $pfxTimestamp = 0;
     /**
+     * pCertExpire
+     * String com a validade do certificado no formato brasileiro
+     * Ex.: dd/mm/yyyy hh:mm
+     * @var string
+     */
+    private $pCertExpire = '';
+    /**
      * priKEY
      * Path completo para a chave privada em formato pem
      * @var string
@@ -4382,6 +4389,24 @@ class ToolsNFePHP extends CommonNFePHP
     } //fim loadCerts
 
     /**
+     * pTimestampCerts
+     * Retorna uma string com a data de expiração do certificado no formato pt-BR
+     *
+     * @name pTimestampCerts
+     * @return  string dd/mm/yyyy hh:mm
+     */
+    public function pTimestampCerts()
+    {
+		$dia  = substr($this->pCertExpire, 4, 2);
+		$mes  = substr($this->pCertExpire, 2, 2);
+		$ano  = substr($this->pCertExpire, 0, 2);
+		$hora = substr($this->pCertExpire, 6, 2);
+		$min  = substr($this->pCertExpire, 8, 2);
+
+    	return "{$dia}/{$mes}/{$ano} {$hora}:{$min}";
+    }
+
+    /**
      * pValidCerts
      * Validaçao do cerificado digital, além de indicar
      * a validade, este metodo carrega a propriedade
@@ -4438,6 +4463,7 @@ class ToolsNFePHP extends CommonNFePHP
             $this->certMonthsToExpire = $monthsToExpire;
             $this->certDaysToExpire = $daysToExpire;
             $this->pfxTimestamp = $dValid;
+            $this->pCertExpire = $cert_data['validTo'];
             $aRetorno = array('status'=>$flagOK,'error'=>$errorMsg,'meses'=>$monthsToExpire,'dias'=>$daysToExpire);
         } catch (nfephpException $e) {
             $this->pSetError($e->getMessage());
