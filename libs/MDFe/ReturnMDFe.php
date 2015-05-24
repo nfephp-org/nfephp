@@ -193,7 +193,7 @@ class ReturnMDFe
             'dhRetorno' => '',
             'xObs' => ''
         );
-        $tag = $dom->getNode('consStatServMDFe');
+        $tag = $dom->getNode('retConsStatServMDFe');
         if (empty($tag)) {
             return $aResposta;
         }
