@@ -108,7 +108,7 @@ class ToolsNFe extends BaseTools
             'DF'=>'SVCAN',
             'ES'=>'SVCRS',
             'GO'=>'SVCRS',
-            'MA'=>'SVSRS',
+            'MA'=>'SVCRS',
             'MG'=>'SVCAN',
             'MS'=>'SVCRS',
             'MT'=>'SVCRS',
