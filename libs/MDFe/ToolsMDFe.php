@@ -548,7 +548,7 @@ class ToolsMDFe extends BaseTools
         //    throw new Exception\RuntimeException($msg);
         //}
         //montagem dos dados da mensagem SOAP
-        $body = "<mdefDadosMsg xmlns=\"$this->urlNamespace\">$cons</mdfeDadosMsg>";
+        $body = "<mdfeDadosMsg xmlns=\"$this->urlNamespace\">$cons</mdfeDadosMsg>";
         //consome o webservice e verifica o retorno do SOAP
         $retorno = $this->oSoap->send(
             $this->urlService,
