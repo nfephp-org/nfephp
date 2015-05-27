@@ -437,33 +437,43 @@ function changeAlerts(key, flag, msg) {
         <h3>Dito isso, a impressão desses cupons (DANFCE) pode ser mais complexa pois algumas dessas impressoras para serem eficientes dependem do envio de comandos diretos no padrão ESC/POS ou similar (ex. Epson TM T20). Nesse momento ainda não temos na nossa API este recurso e portanto a DANFCE por enquato é gerada apenas em PDF.</h3>
     </div>
     <div class="clear"> </div>
+    
   </div>
   <div id="tabs-5">
-      <h2 align="right">Webservices</h2>
-      <div id="esquerda">
-      <div>    
-      <div id="direita">
-        <h3>Os endereços dos webservices estão arquivados em arquivos xml na pasta config.</h3>
-      </div>
-      <div class="clear"> </div>
-  <div>    
+    <h2 align="right">Webservices</h2>
+    <div id="esquerda">
+    <span title="Arquivo de configuração dos Webservices para NFe.">WebServices NFe</span><br>
+    <input type="text" id="pathXmlUrlFileNFe" name="pathXmlUrlFileNFe" placeholder="Path para nfe_ws3_mod55.xml" size="30" value="<?php echo $pathXmlUrlFileNFe;?>" required /><br>
+    <span title="Arquivo de configuração dos Webservices para CTe.">WebServices CTe</span><br>
+    <input type="text" id="pathXmlUrlFileCTe" name="pathXmlUrlFileCTe" placeholder="Path para cte_ws1.xml" size="30" value="<?php echo $pathXmlUrlFileCTe;?>" required /><br>
+    <span title="Arquivo de configuração dos Webservices para MDFe.">WebServices MDFe</span><br>
+    <input type="text" id="pathXmlUrlFileMDFe" name="pathXmlUrlFileMDFe" placeholder="Path para mdfe_ws1.xml" size="30" value="<?php echo $pathXmlUrlFileMDFe;?>" required /><br>
+    <span title="Arquivo de configuração dos Webservices para CLe.">WebServices CLe</span><br>
+    <input type="text" id="pathXmlUrlFileCLe" name="pathXmlUrlFileCLe" placeholder="Path para cle_ws1.xml" size="30" value="<?php echo $pathXmlUrlFileCLe;?>" /><br>
+    <span title="Arquivo de configuração dos Webservices para NFSe.">WebServices NFSe</span><br>
+    <input type="text" id="pathXmlUrlFileNFSe" name="pathXmlUrlFileNFSe" placeholder="Path para nfse_ws.xml" size="30" value="<?php echo $pathXmlUrlFileNFSe;?>" /><br>
+    </div>
+    <div id="direita">
+      <h3>Os endereços dos webservices estão arquivados em arquivos xml na pasta config.</h3>
+    </div>
+    <div class="clear"> </div>
+  </div>    
   <div id="tabs-6">
     <h2 align="right">Schemas</h2>
     <div id="esquerda">
     <span title="Indique o path completo para o arquivo de schemas para NFe. ">Schemas NFe</span><br>
-    <input type="text" id="schemesNFe" name="schemesNFe" placeholder="pasta dos arquivos xsd" size="60" value="<?php echo $schemesNFe;?>" required /><br>
+    <input type="text" id="schemesNFe" name="schemesNFe" placeholder="pasta dos arquivos xsd" size="60" value="<?php echo $schemesNFe;?>" /><br>
     <span title="Indique o path completo para o arquivo de schemas para CTe. ">Schemas CTe</span><br>
-    <input type="text" id="schemesCTe" name="schemesCTe" placeholder="pasta dos arquivos xsd" size="60" value="<?php echo $schemesCTe;?>" required /><br>
+    <input type="text" id="schemesCTe" name="schemesCTe" placeholder="pasta dos arquivos xsd" size="60" value="<?php echo $schemesCTe;?>" /><br>
     <span title="Indique o path completo para o arquivo de schemas para MDFe. ">Schemas MDFe</span><br>
-    <input type="text" id="schemesMDFe" name="schemesMDFe" placeholder="pasta dos arquivos xsd" size="60" value="<?php echo $schemesMDFe;?>" required /><br>
+    <input type="text" id="schemesMDFe" name="schemesMDFe" placeholder="pasta dos arquivos xsd" size="60" value="<?php echo $schemesMDFe;?>" /><br>
     <span title="Indique o path completo para o arquivo de schemas para CLe. ">Schemas CLe</span><br>
-    <input type="text" id="schemesCLe" name="schemesCLe" placeholder="pasta dos arquivos xsd" size="60" value="<?php echo $schemesCLe;?>" required /><br>
+    <input type="text" id="schemesCLe" name="schemesCLe" placeholder="pasta dos arquivos xsd" size="60" value="<?php echo $schemesCLe;?>" /><br>
     <span title="Indique o path completo para os arquivos de schemas para NFSe. ">Schemas NFSe</span><br>
-    <input type="text" id="schemesNFSe" name="schemesNFSe" placeholder="pasta dos arquivos xsd" size="60" value="<?php echo $schemesNFSe;?>" required /><br>
+    <input type="text" id="schemesNFSe" name="schemesNFSe" placeholder="pasta dos arquivos xsd" size="60" value="<?php echo $schemesNFSe;?>" /><br>
     </div>
     <div id="direita">
         <h3>Os esquemas são arquivos xml (terminação xsd) que contêm as regras de formatação para cada campo de um determinado xml.</h3>
-            
     </div>
     <div class="clear"> </div>
     
@@ -514,7 +524,7 @@ $mailImapBox = '';    -->
     <input type="password" id="proxyPass" name="proxyPass" placeholder="Senha de acesso" size="20" value="<?php echo $proxyPass;?>" /><br>
     <p>Clique no botão abaixo para  salvar essas configurações e criar o arquivo config/config.json</p>
     <input type="text" id="configfolder" name="configfolder" placeholder="Path completo para a pasta" size="80" value="<?php echo $configfolder;?>" /><br>
-    <p><i>NOTA: os dados passarão por validações antes da gravação. Caso não atendam as regras os dados serão rejeitados.</i></p>
+    <p><i>NOTA: os dados passarão por validações antes da gravação. Caso não atendam as regras os dados serão rejeitados. Mantenha o arquivo config.josn em local seguro fora da acesso de intrusos.</i></p>
     <button value="save" type="submit">Salvar Configuração</button>
     </div>
     <div id="direita">
