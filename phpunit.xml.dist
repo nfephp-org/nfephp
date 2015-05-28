@@ -26,6 +26,8 @@
             <directory>./vendor</directory>
             <directory>./certs</directory>
             <directory>./config</directory>
+            <directory>./images</directory>
+            <directory>./install</directory>
             <directory>./exemplos</directory>
             <directory>./schemes</directory>
             <directory>./tests</directory>
