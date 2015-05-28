@@ -1,0 +1,508 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2008 (http://www.altova.com) by Rodrigo (Particular) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.portalfiscal.inf.br/nfe" targetNamespace="http://www.portalfiscal.inf.br/nfe" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:include schemaLocation="tiposBasico_v1.03.xsd"/>
+	<xs:include schemaLocation="tiposBasicoTransito_v1.02.xsd"/>
+	<xs:include schemaLocation="tiposBasicoCLe_v1.00.xsd"/>
+	<xs:complexType name="TCLe">
+		<xs:annotation>
+			<xs:documentation>Tipo de dados CLe</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="transportador">
+				<xs:annotation>
+					<xs:documentation>Identificação do emitente</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:choice>
+							<xs:element name="CNPJ" type="TCnpj">
+								<xs:annotation>
+									<xs:documentation>Número do CNPJ do emitente</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="CPF" type="TCpf">
+								<xs:annotation>
+									<xs:documentation>Número do CPF do emitente</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+						</xs:choice>
+						<xs:element name="xNome">
+							<xs:annotation>
+								<xs:documentation>Razão Social ou Nome do emitente</xs:documentation>
+							</xs:annotation>
+							<xs:simpleType>
+								<xs:restriction base="TString">
+									<xs:maxLength value="60"/>
+									<xs:minLength value="2"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+						<xs:element name="xFant" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Nome fantasia</xs:documentation>
+							</xs:annotation>
+							<xs:simpleType>
+								<xs:restriction base="TString">
+									<xs:maxLength value="60"/>
+									<xs:minLength value="1"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="mdTransp">
+				<xs:annotation>
+					<xs:documentation>Modal do Transporte</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:choice>
+						<xs:element name="rodoviario">
+							<xs:annotation>
+								<xs:documentation>Transporte Rodoviario</xs:documentation>
+							</xs:annotation>
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="pVeic" type="TpVeic">
+										<xs:annotation>
+											<xs:documentation>Placa do veículo</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="cUFVeic" type="TUf">
+										<xs:annotation>
+											<xs:documentation>UF do veículo conforme tabela IBGE</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="pCarreta" type="TpVeic" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>Placa da carreta (não obrigatório)</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="cUFCarreta" type="TUf" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>UF da carreta conforme tabela IBGE (não obrigatório)</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="pCarreta2" type="TpVeic" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>Placa da segunda carreta (não obrigatório)</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="cUFCarreta2" type="TUf" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>UF da segunda carreta conforme tabela IBGE (não obrigatório)</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="outro">
+							<xs:annotation>
+								<xs:documentation>Outra Modalidade de Transporte</xs:documentation>
+							</xs:annotation>
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="cMod" type="TModalidadeTransp">
+										<xs:annotation>
+											<xs:documentation>Identificação do Meio de Transporte</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="cUFTransporte" type="TUf"/>
+									<xs:element name="xIdent" type="TIdentMeioTransp">
+										<xs:annotation>
+											<xs:documentation>Identificação do Meio de Transporte</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+					</xs:choice>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="cUFOrigem" type="TUf">
+				<xs:annotation>
+					<xs:documentation>Unidade da Federação de Origem da Carga</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="cUFDestino" type="TUf">
+				<xs:annotation>
+					<xs:documentation>Unidade da Federação de Destino da Carga</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="dEmi" type="TData">
+				<xs:annotation>
+					<xs:documentation>Data de emissão da Capa de Lote</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="cSituacaoCLe" type="TSituacaoCLe">
+				<xs:annotation>
+					<xs:documentation>Código da situação atual da Capa de Lote: 1 - Em Aberto; 2 - Apresentada; 3 - Baixada; 5 - Cancelada</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="det">
+				<xs:annotation>
+					<xs:documentation>Lista de Chaves de NF-e Incluídas na CL-e</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="chvAcesso" type="TChNFe" maxOccurs="unbounded">
+							<xs:annotation>
+								<xs:documentation>Chave de Acesso da NF-e em trânsito</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="TConsCLe">
+		<xs:annotation>
+			<xs:documentation>Tipo Pedido de Consulta da Capa de Lote Eletrônica</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="tpAmb" type="TAmb">
+				<xs:annotation>
+					<xs:documentation>Identificação do Ambiente:
+1 - Produção
+2 - Homologação</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="chCLe" type="TChCLe">
+				<xs:annotation>
+					<xs:documentation>Chaves da CLe a ser consultada.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="versao" type="TVerCLe" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="TRetConsCLe">
+		<xs:annotation>
+			<xs:documentation>
+Tipo Retorno de Pedido de Consulta da Capa de Lote Eletrônica
+</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="tpAmb" type="TAmb">
+				<xs:annotation>
+					<xs:documentation>
+Identificação do Ambiente:
+1 - Produção
+2 - Homologação
+</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="cStat" type="TStat">
+				<xs:annotation>
+					<xs:documentation>Código do status da consulta da CL-e</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="xMotivo" type="TMotivo">
+				<xs:annotation>
+					<xs:documentation>Descrição literal do status da consulta da CL-e</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="CLe" type="TCLe" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="versao" type="TVerCLe" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="TRetConsLoteCLe">
+		<xs:annotation>
+			<xs:documentation>
+Tipo Retorno de Pedido de Consulta da Capa de Lote Eletrônica
+</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="tpAmb" type="TAmb">
+				<xs:annotation>
+					<xs:documentation>
+Identificação do Ambiente:
+1 - Produção
+2 - Homologação
+</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="cStat" type="TStat">
+				<xs:annotation>
+					<xs:documentation>Código do status da consulta ao lote da CL-e</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="xMotivo" type="TMotivo">
+				<xs:annotation>
+					<xs:documentation>Descrição literal do status da consulta ao lote da CL-e</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="loteCLe" type="TLoteCLe" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="versao" type="TVerCLe" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="TEnviCLe">
+		<xs:annotation>
+			<xs:documentation>
+Pedido de Cadastro da Capa de Lote Eletrônica
+</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="tpAmb" type="TAmb">
+				<xs:annotation>
+					<xs:documentation>
+Identificação do Ambiente:
+1 - Produção
+2 - Homologação
+</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="CLe" type="TCadCLe"/>
+		</xs:sequence>
+		<xs:attribute name="versao" type="TVerCLe" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="TRetCadCLe">
+		<xs:annotation>
+			<xs:documentation>
+Tipo Retorno do Pedido de Cadastro da Capa de Lote Eletrônica
+</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="tpAmb" type="TAmb">
+				<xs:annotation>
+					<xs:documentation>
+Identificação do Ambiente:
+1 - Produção
+2 - Homologação
+</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="cStat" type="TStat">
+				<xs:annotation>
+					<xs:documentation>Código do status do cadastro da CL-e</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="xMotivo" type="TMotivo">
+				<xs:annotation>
+					<xs:documentation>Descrição literal do status do cadastro da CL-e</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="chvCLe" type="TChCLe" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="versao" type="TVerCLe" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="TCadCLe">
+		<xs:annotation>
+			<xs:documentation>Tipo de dados CLe</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="transportador">
+				<xs:annotation>
+					<xs:documentation>Identificação do emitente</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:choice>
+							<xs:element name="CNPJ" type="TCnpj">
+								<xs:annotation>
+									<xs:documentation>Número do CNPJ do emitente</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="CPF" type="TCpf">
+								<xs:annotation>
+									<xs:documentation>Número do CPF do emitente</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+						</xs:choice>
+						<xs:element name="xNome">
+							<xs:annotation>
+								<xs:documentation>Razão Social ou Nome do emitente</xs:documentation>
+							</xs:annotation>
+							<xs:simpleType>
+								<xs:restriction base="TString">
+									<xs:maxLength value="60"/>
+									<xs:minLength value="2"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+						<xs:element name="xFant" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Nome fantasia</xs:documentation>
+							</xs:annotation>
+							<xs:simpleType>
+								<xs:restriction base="TString">
+									<xs:maxLength value="60"/>
+									<xs:minLength value="1"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+						<xs:element name="dadosTranspCLeAvulsa" minOccurs="0">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:choice>
+										<xs:element name="CPFCLeAvulsa" type="TCpf">
+											<xs:annotation>
+												<xs:documentation>CPF do transportador autônomo emitente da CLe Avulsa</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+										<xs:element name="CNPJCLeAvulsa" type="TCnpj">
+											<xs:annotation>
+												<xs:documentation>CNPJ do transportador emitente da CLe Avulsa</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+									</xs:choice>
+									<xs:element name="xNomeCLeAvulsa">
+										<xs:annotation>
+											<xs:documentation>Nome / Razão Social  do transportador emitente da CL-e Avulsa</xs:documentation>
+										</xs:annotation>
+										<xs:simpleType>
+											<xs:restriction base="TString">
+												<xs:minLength value="2"/>
+												<xs:maxLength value="60"/>
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="mdTransp">
+				<xs:annotation>
+					<xs:documentation>Modal do Transporte</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:choice>
+						<xs:element name="rodoviario">
+							<xs:annotation>
+								<xs:documentation>Transporte Rodoviario</xs:documentation>
+							</xs:annotation>
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="pVeic" type="TpVeic">
+										<xs:annotation>
+											<xs:documentation>Placa do veículo</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="cUFVeic" type="TUf">
+										<xs:annotation>
+											<xs:documentation>UF do veículo conforme tabela IBGE</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="pCarreta" type="TpVeic" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>Placa da carreta (não obrigatório)</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="cUFCarreta" type="TUf" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>UF da carreta conforme tabela IBGE (não obrigatório)</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="pCarreta2" type="TpVeic" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>Placa da segunda carreta (não obrigatório)</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="cUFCarreta2" type="TUf" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>UF da segunda carreta conforme tabela IBGE (não obrigatório)</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="outro">
+							<xs:annotation>
+								<xs:documentation>Outra Modalidade de Transporte</xs:documentation>
+							</xs:annotation>
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="cMod" type="TModalidadeTransp">
+										<xs:annotation>
+											<xs:documentation>Identificação do Meio de Transporte</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="cUFTransporte" type="TUf"/>
+									<xs:element name="xIdent" type="TIdentMeioTransp">
+										<xs:annotation>
+											<xs:documentation>Identificação do Meio de Transporte</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+					</xs:choice>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="cUFOrigem" type="TUf">
+				<xs:annotation>
+					<xs:documentation>Unidade da Federação de Origem da Carga</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="cUFDestino" type="TUf">
+				<xs:annotation>
+					<xs:documentation>Unidade da Federação de Destino da Carga</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="det">
+				<xs:annotation>
+					<xs:documentation>Lista de Chaves de NF-e Incluídas na CL-e</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="chvAcesso" type="TChNFe" maxOccurs="unbounded">
+							<xs:annotation>
+								<xs:documentation>Chave de Acesso da NF-e em trânsito</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="TConsLoteCLe">
+		<xs:annotation>
+			<xs:documentation>Tipo Pedido de Consulta de Lote da CL-e</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="tpAmb" type="TAmb">
+				<xs:annotation>
+					<xs:documentation>Identificação do Ambiente:
+1 - Produção
+2 - Homologação</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="chCLeInicial" type="TChCLe">
+				<xs:annotation>
+					<xs:documentation>Chave inicial da CL-e a partir da qual será recuperado o lote de CL-e</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="cUFDestino" type="TUf">
+				<xs:annotation>
+					<xs:documentation>Unidade da Federação de Destino da Carga</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="versao" type="TVerCLe" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="TLoteCLe">
+		<xs:annotation>
+			<xs:documentation>Tipo de dados Lote de CLe</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="det" maxOccurs="50">
+				<xs:annotation>
+					<xs:documentation>Lista de CLe Incluídas no Lote</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="CLe" type="TCLe">
+							<xs:annotation>
+								<xs:documentation>Detalhamento da Capa de Lote Eletrônica</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+					<xs:attribute name="nItem"/>
+					<xs:attribute name="chaveCLe"/>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>
