@@ -18,7 +18,7 @@ tools:
                 - 'install/*'
                 - 'libs/Extras/*'
                 - 'schemes/*'
-                - 'test/*'
+                - 'tests/*'
                 - 'vendor/*'
 
     php_code_coverage:
@@ -32,7 +32,7 @@ tools:
                 - 'install/*'
                 - 'libs/Extras/*'
                 - 'schemes/*'
-                - 'test/*'
+                - 'tests/*'
                 - 'vendor/*'
 
     php_code_sniffer:
@@ -52,7 +52,7 @@ tools:
                 - 'install/*'
                 - 'libs/Extras/*'
                 - 'schemes/*'
-                - 'test/*'
+                - 'tests/*'
                 - 'vendor/*'
 
     # Copy/Paste Detector
@@ -66,7 +66,7 @@ tools:
             - install
             - libs/Extras
             - schemes
-            - test
+            - tests
             - vendor
 
     # PHP CS Fixer (http://http://cs.sensiolabs.org/).
@@ -83,7 +83,7 @@ tools:
                 - 'install/*'
                 - 'libs/Extras/*'
                 - 'schemes/*'
-                - 'test/*'
+                - 'tests/*'
                 - 'vendor/*'
 
     # Analyzes the size and structure of a PHP project.
@@ -97,7 +97,7 @@ tools:
             - install
             - libs/Extras
             - schemes
-            - test
+            - tests
             - vendor
 
     # PHP Mess Detector (http://phpmd.org).
@@ -120,7 +120,7 @@ tools:
                 - 'install/*'
                 - 'libs/Extras/*'
                 - 'schemes/*'
-                - 'test/*'
+                - 'tests/*'
                 - 'vendor/*'
 
     # Analyzes the size and structure of a PHP project.
@@ -134,7 +134,7 @@ tools:
             - install
             - libs/Extras
             - schemes
-            - test
+            - tests
             - vendor
 
     # Runs Scrutinizer's PHP Analyzer Tool
@@ -161,7 +161,7 @@ tools:
                 - 'install/*'
                 - 'libs/Extras/*'
                 - 'schemes/*'
-                - 'test/*'
+                - 'tests/*'
                 - 'vendor/*'
 
     # Security Advisory Checker

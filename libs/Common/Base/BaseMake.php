@@ -49,7 +49,7 @@ class BaseMake
     /**
      * dom
      * Variável onde será montado o xml do documento fiscal
-     * @var DOMDocument
+     * @var NFePHP\Common\Dom\Dom
      */
     public $dom;
     /**
