@@ -13,7 +13,7 @@ tools:
             excluded_paths:
                 - 'certs/*'
                 - 'config/*'
-                - 'examplos/*'
+                - 'exemplos/*'
                 - 'images/*'
                 - 'install/*'
                 - 'libs/Extras/*'
@@ -27,7 +27,7 @@ tools:
             excluded_paths:
                 - 'certs/*'
                 - 'config/*'
-                - 'examplos/*'
+                - 'exemplos/*'
                 - 'images/*'
                 - 'install/*'
                 - 'libs/Extras/*'
@@ -47,7 +47,7 @@ tools:
             excluded_paths:
                 - 'certs/*'
                 - 'config/*'
-                - 'examplos/*'
+                - 'exemplos/*'
                 - 'images/*'
                 - 'install/*'
                 - 'libs/Extras/*'
@@ -61,7 +61,7 @@ tools:
         excluded_dirs:
             - certs
             - config
-            - examplos
+            - exemplos
             - images
             - install
             - libs/Extras
@@ -78,7 +78,7 @@ tools:
             excluded_paths:
                 - 'certs/*'
                 - 'config/*'
-                - 'examplos/*'
+                - 'exemplos/*'
                 - 'images/*'
                 - 'install/*'
                 - 'libs/Extras/*'
@@ -92,7 +92,7 @@ tools:
         excluded_dirs:
             - certs
             - config
-            - examplos
+            - exemplos
             - images
             - install
             - libs/Extras
@@ -115,7 +115,7 @@ tools:
             excluded_paths:
                 - 'certs/*'
                 - 'config/*'
-                - 'examplos/*'
+                - 'exemplos/*'
                 - 'images/*'
                 - 'install/*'
                 - 'libs/Extras/*'
@@ -129,7 +129,7 @@ tools:
         excluded_dirs:
             - certs
             - config
-            - examplos
+            - exemplos
             - images
             - install
             - libs/Extras
@@ -156,7 +156,7 @@ tools:
             excluded_paths:
                 - 'certs/*'
                 - 'config/*'
-                - 'examplos/*'
+                - 'exemplos/*'
                 - 'images/*'
                 - 'install/*'
                 - 'libs/Extras/*'
