@@ -2,6 +2,7 @@ nbproject
 *~
 *.pfx
 *.pem
+config.json
 vendor
 local
 /.DS_Store
