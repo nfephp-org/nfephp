@@ -1,13 +1,17 @@
 <?php
 
+if (!defined('PATH_NFEPHP')) {
+    define('PATH_NFEPHP', dirname(dirname(__FILE__)));
+}
+
 $aDocFormat = array(
     'format'=>'P',
     'paper' => 'A4',
     'southpaw' => true,
-    'pathLogoFile' => '/var/www/nfephp/images/logo.jpg',
+    'pathLogoFile' => PATH_NFEPHP . 'images/logo.jpg',
     'logoPosition' => 'L',
     'font' => 'Times',
-    'printer' => 'hpteste'
+    'printer' => ''
 );
 
 $aMailConf = array(
@@ -30,28 +34,32 @@ $aMailConf = array(
 );
 
 $aProxyConf = array(
-    'proxyIp'=>'',
-    'proxyPort'=>'',
-    'proxyUser'=>'',
-    'proxyPass'=>''
+    'proxyIp' => '',
+    'proxyPort' => '',
+    'proxyUser' => '',
+    'proxyPass' => ''
 );
 
 $aConfig = array(
+    'atualizacao' => date('Y-m-d h:i:s'),
     'tpAmb' => '2',
     'pathXmlUrlFileNFe' => 'nfe_ws3_mod55.xml',
     'pathXmlUrlFileCTe' => 'cte_ws2.xml',
     'pathXmlUrlFileMDFe' => 'mdfe_ws1.xml',
-    'pathXmlUrlFileCLe' => 'cle_ws1.xml',
+    'pathXmlUrlFileCLe' => '',
+    'pathXmlUrlFileNFSe' => '',
     'pathNFeFiles' => '/var/www/nfe',
     'pathCTeFiles'=> '/var/www/cte',
     'pathMDFeFiles'=> '/var/www/mdfe',
     'pathCLeFiles'=> '/var/www/cle',
-    'pathCertsFiles' => '/var/www/nfephp/certs/',
-    'siteUrl' => 'http://localhost/nfephp',
-    'schemesNFe' => 'PL_008c',
-    'schemesCTe' => 'PL_CTE_104',
-    'schemesMDFe' => 'MDFe_100',
-    'schemesCLe' => 'CLe_100',
+    'pathNFSeFiles'=> '/var/www/nfse',
+    'pathCertsFiles' => PATH_NFEPHP . 'certs/',
+    'siteUrl' => str_replace('criaJsonConfig.php', '', 'http://'.$_SERVER["SERVER_NAME"].$_SERVER["SCRIPT_NAME"]),
+    'schemesNFe' => 'PL_008f',
+    'schemesCTe' => 'PL_CTe_200',
+    'schemesMDFe' => 'PL_MDFe_100',
+    'schemesCLe' => '',
+    'schemesNFSe' => '',
     'razaosocial' => 'Sua Empresa Ltda',
     'siglaUF'=> 'SP',
     'cnpj' => '9999999999999',
@@ -67,5 +75,5 @@ print_r($aConfig);
 echo "<BR><BR><BR>";
 
 $config = json_encode($aConfig);
-$filename = './config/config.json';
+$filename = '../config/config.json';
 file_put_contents($filename, $config);

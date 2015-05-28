@@ -62,9 +62,9 @@ $pathCLeFiles = '';
 $pathNFSeFiles = '';
 $pathCertsFiles = PATH_NFEPHP .'/certs/';
 $siteUrl = str_replace('index.php', '', 'http://'.$_SERVER["SERVER_NAME"].$_SERVER["SCRIPT_NAME"]);
-$schemesNFe = PATH_NFEPHP .'/schemes/NFe';
-$schemesCTe = '';
-$schemesMDFe = '';
+$schemesNFe = 'PL_008f';
+$schemesCTe = 'PL_CTe_200';
+$schemesMDFe = 'PL_MDFe_100';
 $schemesCLe = '';
 $schemesNFSe = '';
 
