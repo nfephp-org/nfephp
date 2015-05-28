@@ -16,7 +16,7 @@ tools:
                 - 'examplos/*'
                 - 'images/*'
                 - 'install/*'
-                - 'libs/extras/*'
+                - 'libs/Extras/*'
                 - 'schemes/*'
                 - 'test/*'
                 - 'vendor/*'
@@ -30,7 +30,7 @@ tools:
                 - 'examplos/*'
                 - 'images/*'
                 - 'install/*'
-                - 'libs/extras/*'
+                - 'libs/Extras/*'
                 - 'schemes/*'
                 - 'test/*'
                 - 'vendor/*'
@@ -50,7 +50,7 @@ tools:
                 - 'examplos/*'
                 - 'images/*'
                 - 'install/*'
-                - 'libs/extras/*'
+                - 'libs/Extras/*'
                 - 'schemes/*'
                 - 'test/*'
                 - 'vendor/*'
@@ -64,7 +64,7 @@ tools:
             - examplos
             - images
             - install
-            - libs/extras
+            - libs/Extras
             - schemes
             - test
             - vendor
@@ -81,7 +81,7 @@ tools:
                 - 'examplos/*'
                 - 'images/*'
                 - 'install/*'
-                - 'libs/extras/*'
+                - 'libs/Extras/*'
                 - 'schemes/*'
                 - 'test/*'
                 - 'vendor/*'
@@ -95,7 +95,7 @@ tools:
             - examplos
             - images
             - install
-            - libs/extras
+            - libs/Extras
             - schemes
             - test
             - vendor
@@ -118,7 +118,7 @@ tools:
                 - 'examplos/*'
                 - 'images/*'
                 - 'install/*'
-                - 'libs/extras/*'
+                - 'libs/Extras/*'
                 - 'schemes/*'
                 - 'test/*'
                 - 'vendor/*'
@@ -132,7 +132,7 @@ tools:
             - examplos
             - images
             - install
-            - libs/extras
+            - libs/Extras
             - schemes
             - test
             - vendor
@@ -159,7 +159,7 @@ tools:
                 - 'examplos/*'
                 - 'images/*'
                 - 'install/*'
-                - 'libs/extras/*'
+                - 'libs/Extras/*'
                 - 'schemes/*'
                 - 'test/*'
                 - 'vendor/*'
