@@ -7,7 +7,7 @@ before_commands:
 
 tools:
     external_code_coverage:
-        enabled: true
+        enabled: false
         timeout: 300
         filter:
             excluded_paths:
@@ -22,7 +22,7 @@ tools:
                 - 'vendor/*'
 
     php_code_coverage:
-        enabled:              false
+        enabled: true
         filter:
             excluded_paths:
                 - 'certs/*'
@@ -36,9 +36,9 @@ tools:
                 - 'vendor/*'
 
     php_code_sniffer:
-        enabled:              true
+        enabled: true
         config:
-            standard:         PSR2
+            standard: PSR2
             sniffs:
                 generic:
                     files:
@@ -57,7 +57,7 @@ tools:
 
     # Copy/Paste Detector
     php_cpd:
-        enabled:              true
+        enabled: true
         excluded_dirs:
             - certs
             - config
@@ -71,9 +71,9 @@ tools:
 
     # PHP CS Fixer (http://http://cs.sensiolabs.org/).
     php_cs_fixer:
-        enabled:              true
+        enabled: true
         config:
-            level:            psr2
+            level: psr2
         filter:
             excluded_paths:
                 - 'certs/*'
@@ -88,7 +88,7 @@ tools:
 
     # Analyzes the size and structure of a PHP project.
     php_loc:
-        enabled:              true
+        enabled: true
         excluded_dirs:
             - certs
             - config
@@ -102,7 +102,7 @@ tools:
 
     # PHP Mess Detector (http://phpmd.org).
     php_mess_detector:
-        enabled:              true
+        enabled: true
         config:
             rulesets:
                 - codesize
@@ -125,7 +125,7 @@ tools:
 
     # Analyzes the size and structure of a PHP project.
     php_pdepend:
-        enabled:              true
+        enabled: true
         excluded_dirs:
             - certs
             - config
@@ -140,7 +140,7 @@ tools:
     # Runs Scrutinizer's PHP Analyzer Tool
     # https://scrutinizer-ci.com/docs/tools/php/php-analyzer/config_reference
     php_analyzer:
-        enabled:              true
+        enabled: true
         config:
             checkstyle:
                 enabled: true
