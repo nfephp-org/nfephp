@@ -63,6 +63,7 @@
             "./libs/Common/",
             "./libs/Common/Base/",
             "./libs/Common/Certificate/",
+            "./libs/Common/Configure/",
             "./libs/Common/DateTime/",
             "./libs/Common/Dom/",
             "./libs/Common/Exception/",

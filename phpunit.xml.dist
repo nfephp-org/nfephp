@@ -19,7 +19,7 @@
         <whitelist>
             <directory suffix=".php">./libs</directory>
             <exclude>
-                <directory>./libs/External</directory>
+                <directory>./libs/Extras</directory>
             </exclude>
         </whitelist>
         <blacklist>
