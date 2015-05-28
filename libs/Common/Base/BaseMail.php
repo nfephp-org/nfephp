@@ -28,10 +28,30 @@ if (!defined('NFEPHP_ROOT')) {
 
 class BaseMail
 {
+    /**
+     * $template
+     * @var string 
+     */
     protected $template = '';
+    /**
+     * $aMailConf
+     * @var array
+     */
     protected $aMailConf = array();
+    /**
+     * $transport
+     * @var string
+     */
     protected $transport = '';
+    /**
+     * $aAttachments
+     * @var array
+     */
     protected $aAttachments = array();
+    /**
+     * $content
+     * @var string
+     */
     protected $content = '';
     
     /**
