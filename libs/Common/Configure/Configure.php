@@ -4,6 +4,9 @@ namespace NFePHP\Common\Configure;
 
 use NFePHP\Common\Modules\Modules;
 use NFePHP\Common\Files\FilesFolders;
+use NFePHP\Common\Certificate\Pkcs12;
+use NFePHP\Common\Exception\InvalidArgumentException;
+use NFePHP\Common\Exception\RuntimeException;
 
 class Configure
 {
@@ -55,5 +58,101 @@ class Configure
             }
         }
         return $htmmod.'</table>';
+    }
+    
+    public static function checkCerts($cnpj = '', $pathCertsFiles = '', $certPfxName = '', $certPassword = '')
+    {
+        $flag = true;
+        $msg = '';
+        if (strlen($cnpj) != 14) {
+            $flag = $flag && false;
+            $msg .= "CNPJ incorreto! $cnpj \n";
+        }
+        if (! is_dir($pathCertsFiles)) {
+            $flag = $flag && false;
+            $msg .= "Diretório não localizado! $pathCertsFiles \n";
+        }
+        if (substr($pathCertsFiles, -1) !== DIRECTORY_SEPARATOR) {
+            $pathCertsFiles .= DIRECTORY_SEPARATOR;
+        }
+        try {
+            $cert = new Pkcs12($pathCertsFiles, $cnpj);
+            $flag = $cert->loadPfxFile($pathCertsFiles.$certPfxName, $certPassword);
+        } catch (InvalidArgumentException $exc) {
+            $flag = false;
+            $msg = $exc->getMessage();
+        } catch (RuntimeException $exc) {
+            $flag = false;
+            $msg = $exc->getMessage();
+        }
+        if ($msg == '') {
+            $msg = 'Certificado Validado, arquivos PEM criados na pasta.';
+        }
+        return array('cert' => array('status' => $flag, 'msg' => $msg));
+    }
+    
+    public static function checkFolders(
+        $pathnfe = '',
+        $pathcte = '',
+        $pathmdfe = '',
+        $pathcle = '',
+        $pathnfse = '',
+        $pathcerts = ''
+    ) {
+        $aResp = array(
+            'NFe' => array('status'=>true,'msg'=>''),
+            'CTe' => array('status'=>true,'msg'=>''),
+            'MDFe' => array('status'=>true,'msg'=>''),
+            'CLe' => array('status'=>true,'msg'=>''),
+            'NFSe' => array('status'=>true,'msg'=>''),
+            'Certs' => array('status'=>true,'msg'=>'')
+        );
+        //testa e constroi a estrutura da pasta
+        if ($pathnfe != '') {
+            try {
+                FilesFolders::createFolders($pathnfe);
+            } catch (RuntimeException $e) {
+                $aResp['NFe'] = array('status'=>false, 'msg'=>$e->getMessage());
+            }
+        }
+        //testa e constroi a estrutura da pasta
+        if ($pathcte != '') {
+            try {
+                FilesFolders::createFolders($pathcte);
+            } catch (RuntimeException $e) {
+                $aResp['CTe'] = array('status'=>false, 'msg'=>$e->getMessage());
+            }
+        }
+        //testa e constroi a estrutura da pasta
+        if ($pathmdfe != '') {
+            try {
+                FilesFolders::createFolders($pathmdfe);
+            } catch (RuntimeException $e) {
+                $aResp['MDFe'] = array('status'=>false, 'msg'=>$e->getMessage());
+            }
+        }
+        //testa e constroi a estrutura da pasta
+        if ($pathcle != '') {
+            try {
+                FilesFolders::createFolders($pathcle);
+            } catch (RuntimeException $e) {
+                $aResp['CLe'] = array('status'=>false, 'msg'=>$e->getMessage());
+            }
+        }
+        //testa e constroi a estrutura da pasta
+        if ($pathnfse != '') {
+            try {
+                FilesFolders::createFolders($pathnfse);
+            } catch (RuntimeException $e) {
+                $aResp['NFSe'] = array('status'=>false, 'msg'=>$e->getMessage());
+            }
+        }
+        //testa diretorio certs
+        if ($pathcerts != '') {
+            if (! is_writable($pathcerts)) {
+                $aResp['Certs'] = array('status'=>false, 'msg'=>'Diretório sem permissões de escrita');
+            }
+        }
+        return $aResp;
     }
 }

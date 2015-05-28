@@ -50,9 +50,9 @@ $htmod = $conf->chkModules();
 
 //variaveis da configuração
 $tpAmb = 2;
-$pathXmlUrlFileNFe = '';
-$pathXmlUrlFileCTe = '';
-$pathXmlUrlFileMDFe = '';
+$pathXmlUrlFileNFe = PATH_NFEPHP .'/config/nfe_ws3_mod55.xml';
+$pathXmlUrlFileCTe = PATH_NFEPHP .'/config/cte_ws2.xml';
+$pathXmlUrlFileMDFe = PATH_NFEPHP .'/config/mdf2_ws1.xml';
 $pathXmlUrlFileCLe = '';
 $pathXmlUrlFileNFSe = '';
 $pathNFeFiles = '';
@@ -60,9 +60,9 @@ $pathCTeFiles = '';
 $pathMDFeFiles = '';
 $pathCLeFiles = '';
 $pathNFSeFiles = '';
-$pathCertsFiles = '';
-$siteUrl = str_replace('configure.php', '', 'http://'.$_SERVER["SERVER_NAME"].$_SERVER["SCRIPT_NAME"]);
-$schemesNFe = '';
+$pathCertsFiles = PATH_NFEPHP .'/certs/';
+$siteUrl = str_replace('index.php', '', 'http://'.$_SERVER["SERVER_NAME"].$_SERVER["SCRIPT_NAME"]);
+$schemesNFe = PATH_NFEPHP .'/schemes/NFe';
 $schemesCTe = '';
 $schemesMDFe = '';
 $schemesCLe = '';
@@ -83,7 +83,7 @@ $logoPosition = 'L';
 $font = 'Times';
 $printer = '';
 
-$mailAuth = '';
+$mailAuth = true;
 $mailFrom = '';
 $mailSmtp = '';
 $mailUser = '';
@@ -114,60 +114,60 @@ if (is_file($pathConfig)) {
     $configJson = FilesFolders::readFile($pathConfig);
     $installConfig = json_decode($configJson);
 
-    $tpAmb = $installConfig->tpAmb;
-    $pathXmlUrlFileNFe = $installConfig->pathXmlUrlFileNFe;
-    $pathXmlUrlFileCTe = $installConfig->pathXmlUrlFileCTe;
-    $pathXmlUrlFileMDFe = $installConfig->pathXmlUrlFileMDFe;
-    $pathXmlUrlFileCLe = $installConfig->pathXmlUrlFileCLe;
+    $tpAmb = isset($installConfig->tpAmb) ? $installConfig->tpAmb : '2';
+    $pathXmlUrlFileNFe = isset($installConfig->pathXmlUrlFileNFe) ? $installConfig->pathXmlUrlFileNFe : '';
+    $pathXmlUrlFileCTe = isset($installConfig->pathXmlUrlFileCTe) ? $installConfig->pathXmlUrlFileCTe : '';
+    $pathXmlUrlFileMDFe = isset($installConfig->pathXmlUrlFileMDFe) ? $installConfig->pathXmlUrlFileMDFe : '';
+    $pathXmlUrlFileCLe = isset($installConfig->pathXmlUrlFileCLe) ? $installConfig->pathXmlUrlFileCLe : '';
     $pathXmlUrlFileNFSe = isset($installConfig->pathXmlUrlFileNFSe) ? $installConfig->pathXmlUrlFileNFSe : '';
-    $pathNFeFiles = $installConfig->pathNFeFiles;
-    $pathCTeFiles = $installConfig->pathCTeFiles;
-    $pathMDFeFiles = $installConfig->pathMDFeFiles;
-    $pathCLeFiles = $installConfig->pathCLeFiles;
+    $pathNFeFiles = isset($installConfig->pathNFeFiles) ? $installConfig->pathNFeFiles : '';
+    $pathCTeFiles = isset($installConfig->pathCTeFiles) ? $installConfig->pathCTeFiles : '';
+    $pathMDFeFiles = isset($installConfig->pathMDFeFiles) ? $installConfig->pathMDFeFiles : '';
+    $pathCLeFiles = isset($installConfig->pathCLeFiles) ? $installConfig->pathCLeFiles : '';
     $pathNFSeFiles = isset($installConfig->pathNFSeFiles) ? $installConfig->pathNFSeFiles : '';
-    $pathCertsFiles = $installConfig->pathCertsFiles;
-    $siteUrl = $installConfig->siteUrl;
-    $schemesNFe = $installConfig->schemesNFe;
-    $schemesCTe = $installConfig->schemesCTe;
-    $schemesMDFe = $installConfig->schemesMDFe;
-    $schemesCLe = $installConfig->schemesCLe;
+    $pathCertsFiles = isset($installConfig->pathCertsFiles) ? $installConfig->pathCertsFiles : '';
+    $siteUrl = isset($installConfig->siteUrl) ? $installConfig->siteUrl : $siteUrl;
+    $schemesNFe = isset($installConfig->schemesNFe) ? $installConfig->schemesNFe : '';
+    $schemesCTe = isset($installConfig->schemesCTe) ? $installConfig->schemesCTe : '';
+    $schemesMDFe = isset($installConfig->schemesMDFe) ? $installConfig->schemesMDFe : '';
+    $schemesCLe = isset($installConfig->schemesCLe) ? $installConfig->schemesCLe : '';
     $schemesNFSe = isset($installConfig->schemesNFSe) ? $installConfig->schemesNFSe : '';
-    $razaosocial = $installConfig->razaosocial;
-    $siglaUF = $installConfig->siglaUF;
-    $cnpj = $installConfig->cnpj;
-    $certPfxName = $installConfig->certPfxName;
-    $certPassword = $installConfig->certPassword;
-    $certPhrase = $installConfig->certPhrase;
+    $razaosocial = isset($installConfig->razaosocial) ? $installConfig->razaosocial : '';
+    $siglaUF = isset($installConfig->siglaUF) ? $installConfig->siglaUF : 'SP';
+    $cnpj = isset($installConfig->cnpj) ? $installConfig->cnpj : '';
+    $certPfxName = isset($installConfig->certPfxName) ? $installConfig->certPfxName : '';
+    $certPassword = isset($installConfig->certPassword) ? $installConfig->certPassword : '';
+    $certPhrase = isset($installConfig->certPhrase) ? $installConfig->certPhrase : '';
     
-    $format = $installConfig->aDocFormat->format;
-    $paper = $installConfig->aDocFormat->paper;
-    $southpaw = $installConfig->aDocFormat->southpaw;
-    $pathLogoFile = $installConfig->aDocFormat->pathLogoFile;
-    $logoPosition = $installConfig->aDocFormat->logoPosition;
-    $font = $installConfig->aDocFormat->font;
-    $printer = $installConfig->aDocFormat->printer;
+    $format = isset($installConfig->aDocFormat->format) ? $installConfig->aDocFormat->format : 'P';
+    $paper = isset($installConfig->aDocFormat->paper) ? $installConfig->aDocFormat->paper : 'A4';
+    $southpaw = isset($installConfig->aDocFormat->southpaw) ? $installConfig->aDocFormat->southpaw : true;
+    $pathLogoFile = isset($installConfig->aDocFormat->pathLogoFile) ? $installConfig->aDocFormat->pathLogoFile : '';
+    $logoPosition = isset($installConfig->aDocFormat->logoPosition) ? $installConfig->aDocFormat->logoPosition : 'L';
+    $font = isset($installConfig->aDocFormat->font) ? $installConfig->aDocFormat->font : 'Times';
+    $printer = isset($installConfig->aDocFormat->printer) ? $installConfig->aDocFormat->printer : '';
 
-    $mailAuth = $installConfig->aMailConf->mailAuth;
-    $mailFrom = $installConfig->aMailConf->mailFrom;
-    $mailSmtp = $installConfig->aMailConf->mailSmtp;
-    $mailUser = $installConfig->aMailConf->mailUser;
-    $mailPass = $installConfig->aMailConf->mailPass;
-    $mailProtocol = $installConfig->aMailConf->mailProtocol;
-    $mailPort = $installConfig->aMailConf->mailPort;
-    $mailFromMail = $installConfig->aMailConf->mailFromMail;
-    $mailFromName = $installConfig->aMailConf->mailFromName;
-    $mailReplayToMail = $installConfig->aMailConf->mailReplayToMail;
-    $mailReplayToName = $installConfig->aMailConf->mailReplayToName;
-    $mailImapHost = $installConfig->aMailConf->mailImapHost;
-    $mailImapPort = $installConfig->aMailConf->mailImapPort;
-    $mailImapSecurity = $installConfig->aMailConf->mailImapSecurity;
-    $mailImapNocerts = $installConfig->aMailConf->mailImapNocerts;
-    $mailImapBox = $installConfig->aMailConf->mailImapBox;
+    $mailAuth = isset($installConfig->aMailConf->mailAuth) ? $installConfig->aMailConf->mailAuth : true;
+    $mailFrom = isset($installConfig->aMailConf->mailFrom) ? $installConfig->aMailConf->mailFrom : '';
+    $mailSmtp = isset($installConfig->aMailConf->mailSmtp) ? $installConfig->aMailConf->mailSmtp : '';
+    $mailUser = isset($installConfig->aMailConf->mailUser) ? $installConfig->aMailConf->mailUser : '';
+    $mailPass = isset($installConfig->aMailConf->mailPass) ? $installConfig->aMailConf->mailPass : '';
+    $mailProtocol = isset($installConfig->aMailConf->mailProtocol) ? $installConfig->aMailConf->mailProtocol : '';
+    $mailPort = isset($installConfig->aMailConf->mailPort) ? $installConfig->aMailConf->mailPort : '';
+    $mailFromMail = isset($installConfig->aMailConf->mailFromMail) ? $installConfig->aMailConf->mailFromMail : '';
+    $mailFromName = isset($installConfig->aMailConf->mailFromName) ? $installConfig->aMailConf->mailFromName : '';
+    $mailReplayToMail = isset($installConfig->aMailConf->mailReplayToMail) ? $installConfig->aMailConf->mailReplayToMail : '';
+    $mailReplayToName = isset($installConfig->aMailConf->mailReplayToName) ? $installConfig->aMailConf->mailReplayToName : '';
+    $mailImapHost = isset($installConfig->aMailConf->mailImapHost) ? $installConfig->aMailConf->mailImapHost : '';
+    $mailImapPort = isset($installConfig->aMailConf->mailImapPort) ? $installConfig->aMailConf->mailImapPort : '';
+    $mailImapSecurity = isset($installConfig->aMailConf->mailImapSecurity) ? $installConfig->aMailConf->mailImapSecurity : '';
+    $mailImapNocerts = isset($installConfig->aMailConf->mailImapNocerts) ? $installConfig->aMailConf->mailImapNocerts : '';
+    $mailImapBox = isset($installConfig->aMailConf->mailImapBox) ? $installConfig->aMailConf->mailImapBox : '';
     
-    $proxyIp = $installConfig->aProxyConf->proxyIp;
-    $proxyPort = $installConfig->aProxyConf->proxyPort;
-    $proxyUser = $installConfig->aProxyConf->proxyUser;
-    $proxyPass = $installConfig->aProxyConf->proxyPass;
+    $proxyIp = isset($installConfig->aProxyConf->proxyIp) ? $installConfig->aProxyConf->proxyIp : '';
+    $proxyPort = isset($installConfig->aProxyConf->proxyPort) ? $installConfig->aProxyConf->proxyPort : '';
+    $proxyUser = isset($installConfig->aProxyConf->proxyUser) ? $installConfig->aProxyConf->proxyUser : '';
+    $proxyPass = isset($installConfig->aProxyConf->proxyPass) ? $installConfig->aProxyConf->proxyPass : '';
 }
 
 $aUF = array(
@@ -200,13 +200,13 @@ $aUF = array(
     'TO'
 );
 
-$selUF = "<select name=\"siglauf\" size=\"1\">";
+$selUF = "<select id=\"siglaUF\" name=\"siglaUF\" size=\"1\">";
 foreach ($aUF as $sigla) {
     $option = '';
     if ($sigla == $siglaUF) {
         $option = 'SELECTED';
     }
-    $selUF .= "<option value=\"AC\" $option>$sigla</option>";
+    $selUF .= "<option value=\"$sigla\" $option>$sigla</option>";
 }
 $selUF .= "</select>";
 
@@ -256,6 +256,32 @@ if ($logoPosition == 'L') {
 }
 $selLogoPosition .= "</select>";
 
+$selMailAuth = "<select id=\"mailAuth\" name=\"mailAuth\" size=\"1\">";
+if ($mailAuth) {
+    $selMailAuth .= "<option value=\"0\" >NÃO</option>";
+    $selMailAuth .= "<option value=\"1\" SELECTED>SIM</option>";
+} else {
+    $selMailAuth .= "<option value=\"0\" SELECTED>NÃO</option>";
+    $selMailAuth .= "<option value=\"1\">SIM</option>";
+}
+$selMailAuth .= "</select>";
+
+$selMailProt = "<select id=\"mailProtocol\" name=\"mailProtocol\" size=\"1\">";
+if ($mailProtocol == '') {
+    $selMailProt .= "<option value=\"\" selected>none</option>";
+    $selMailProt .= "<option value=\"ssl\">ssl</option>";
+    $selMailProt .= "<option value=\"tls\">tls</option>";
+} elseif ($mailProtocol == 'ssl') {
+    $selMailProt .= "<option value=\"\">none</option>";
+    $selMailProt .= "<option value=\"ssl\"  selected>ssl</option>";
+    $selMailProt .= "<option value=\"tls\">tls</option>";
+} elseif ($mailProtocol == 'tls') {
+    $selMailProt .= "<option value=\"\">none</option>";
+    $selMailProt .= "<option value=\"ssl\">ssl</option>";
+    $selMailProt .= "<option value=\"tls\" selected>tls</option>";
+}
+$selMailProt .= "</select>";
+
 ?>
 <!doctype html>
 <html lang="pt_BR">
@@ -263,9 +289,9 @@ $selLogoPosition .= "</select>";
   <meta charset="utf-8">
   <title>NFePHP Configure API</title>
   <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
+  <link rel="stylesheet" href="./nfephp.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
-  <link rel="stylesheet" href="./nfephp.css">
   <script>
   $(function() {
     $( "#tabs" ).tabs();
@@ -275,9 +301,13 @@ $selLogoPosition .= "</select>";
     $(':submit').on('click', function() {
         var urldir = 'folderchk.php';
         var button = $(this).val();
-        if (button != 'test') {
+        if (button == 'save') {
             urldir = 'saveconfig.php';
         }
+        if (button == 'certtest') {
+            urldir = 'certchk.php';
+        }
+        //alert(urldir);
         var dados = $("#formconf").serialize();
         $.ajax({
             url: urldir,
@@ -286,9 +316,22 @@ $selLogoPosition .= "</select>";
         })
         .done(function(data) {
             var jArray = JSON.parse(JSON.stringify(data));
-            if (button != 'test') {
-                alert('aqui');
-            } else {
+            if (button == 'save') {
+                var msg = jArray['msg'];
+                document.getElementById('dialogcert').textContent = msg;
+                $( "#dialogcert" ).dialog( "open" );
+            }
+            if (button == 'certtest') {
+                for (var key in jArray) {
+                    var resp = jArray[key];
+                    var flag = resp['status'];
+                    var msg = resp['msg'];
+                    var title = 'teste';
+                    document.getElementById('dialogcert').textContent = msg;
+                    $( "#dialogcert" ).dialog( "open" );
+                }    
+            }
+            if (button == 'test') {
                 for (var key in jArray) {
                     var resp = jArray[key];
                     var flag = resp['status'];
@@ -298,6 +341,15 @@ $selLogoPosition .= "</select>";
             }
         });
         return false;
+    });
+});
+
+$(function() {
+    $( "#dialogcert" ).dialog({
+        autoOpen: false,  
+    });
+    $( "#opener" ).click(function() {
+        $( "#dialogcert" ).dialog( "open" );
     });
 });
 
@@ -314,7 +366,6 @@ function changeAlerts(key, flag, msg) {
         document.getElementById(lbl).innerHTML = msg;
     }
 }
-
 </script>
 </head>
 <body>
@@ -322,7 +373,7 @@ function changeAlerts(key, flag, msg) {
         <h1>Configurador do Ambiente NFePHP (versão <?php echo $configureVer?>)</h1>    
     </div>    
 <div id="content">
-<form id="formconf" name="formconf" method="post" action="">    
+<form id="formconf" name="formconf" method="post" action="saveconfig.php">    
 <div id="tabs">
   <ul>
     <li><a href="#tabs-1">Módulos</a></li>
@@ -333,6 +384,7 @@ function changeAlerts(key, flag, msg) {
     <li><a href="#tabs-6">Schemas</a></li>
     <li><a href="#tabs-7">Email</a></li>
     <li><a href="#tabs-8">Proxy</a></li>
+    <li><a href="#tabs-9">Finalizar</a></li>
   </ul>
   <div id="tabs-1">
     <h2 align="right">Verificação dos Módulos</h2>
@@ -355,21 +407,21 @@ function changeAlerts(key, flag, msg) {
     <span title="Indique o ambiente padrão (1-Produção ou 2-Homologação)">Ambiente</span><br>
     <?php echo $selAmb;?><br>
     <span title="Indique a Razão Social Completa do Emitente">Razão Social do Emitente</span><br>
-    <input type="text" id="razaosocial" name="razaosocial" placeholder="Nome completo do emitente" size="80" value="<?php echo $razaosocial;?>" required /><br>
+    <input type="text" id="razaosocial" name="razaosocial" placeholder="Nome completo do emitente" size="60" value="<?php echo $razaosocial;?>" required /><br>
     <span title="Indique o CNPJ do emitente SEM FORMATAÇÃO">CNPJ do Emitente</span><br>
     <input type="text" id="cnpj" name="cnpj" placeholder="CNPJ sem formatação" size="25" value="<?php echo $cnpj;?>" required /><br>
     <span title="Selecione o estado do Emitente">Unidade da Federação</span><br>
     <?php echo $selUF;?><br>
     <span title="Indique o path real para a pasta dos certificados. Esta pasta deve ter permissões de escrita pelo usuário do servidor web. Ex. www-data">Path dos Certificados</span><br>
-    <input type="text" id="pathCertsFiles" name="pathCertsFiles" placeholder="Caminho para a pasta" size="80" value="<?php echo $pathCertsFiles;?>" required /><label id="lblCerts"></label><br>
+    <input type="text" id="pathCertsFiles" name="pathCertsFiles" placeholder="Caminho para a pasta" size="60" value="<?php echo $pathCertsFiles;?>" required /><label id="lblCerts"></label><br>
     <span title="Indique o nome do certificado que foi salvo na pasta dos certificados">Nome do arquivo pfx (Certificado)</span><br>
-    <input type="text" id="certPfxName" name="certPfxName" placeholder="Nome do arquivo PFX" size="80" value="<?php echo $certPfxName;?>" required /><br>
+    <input type="text" id="certPfxName" name="certPfxName" placeholder="Nome do arquivo PFX" size="60" value="<?php echo $certPfxName;?>" required /><br>
     <span title="Indique a senha configurada quando você criou o certificado">Senha do Certificado</span><br>
-    <input type="password" id="certPassword" name="certPassword" placeholder="senha" size="10" value="<?php echo $certPassword;?>" required /><br>
+    <input type="password" id="certPassword" name="certPassword" placeholder="senha" size="10" value="<?php echo $certPassword;?>" required /><button value="certtest" type="submit">Testar</button><br>
     <span title="Indique a palavra passe que você quer usar para encriptar os arquivos PEM do certificado">Palavra Passe</span><br>
-    <input type="password" id="certPhrase" name="certPhrase" placeholder="normalmente vazio" size="35" value="<?php echo $certPhrase;?>" /><br>
+    <input type="password" id="certPhrase" name="certPhrase" placeholder="não usado" size="35" value="<?php echo $certPhrase;?>" readonly /><br>
     <span title="Indique o endereço para acessar a base do seu sistema">URL do Site</span><br>
-    <input type="text" id="siteUrl" name="siteUrl" placeholder="Site url" size="80" value="<?php echo $siteUrl;?>" required /><br>
+    <input type="text" id="siteUrl" name="siteUrl" placeholder="Site url" size="60" value="<?php echo $siteUrl;?>" required /><br>
     </div>
     <div id="direita">
         <h3>Estes campos referen-se a os dados principais do emitente e todos os campos em amarelo são OBRIGATÓRIOS.</h3>
@@ -481,30 +533,20 @@ function changeAlerts(key, flag, msg) {
   <div id="tabs-7">
     <h2 align="right">Configurações de Email</h2>
     <div id="esquerda">
+    <span title="Indique se é necessária a autenticação ">Autenticação</span><br>
+    <?php echo $selMailAuth;?><br>
     <span title="Indique o endereço de email que será usado para envio dos documentos eletrônicos. Ex. nfe@seudominio.com.br">Endereço de Email</span><br>
     <input type="text" id="mailUser" name="mailUser" placeholder="Nome do usuário do email" size="50" value="<?php echo $mailUser;?>" /><br>
     <span title="Indique a senha de acesso da caixa postal do endereço de email">Senha de Email</span><br>
     <input type="password" id="mailPass" name="mailPass" placeholder="Senha do usuário" size="12" value="<?php echo $mailPass;?>" /><br>
     <span title="Indique o URL do Servidor SMTP Ex. smtp.seudominio.com.br">SMTP Server</span><br>
     <input type="text" id="mailSmtp" name="mailSmtp" placeholder="Servidor SMTP" size="50" value="<?php echo $mailSmtp;?>" /><br>
-    
-    <!--
-$mailAuth = '';
-$mailFrom = '';
-$mailSmtp = '';
-$mailUser = '';
-$mailPass = '';
-$mailProtocol = '';
-$mailPort = '';
-$mailFromMail = '';
-$mailFromName = '';
-$mailReplayToMail = '';
-$mailReplayToName = '';
-$mailImapHost = '';
-$mailImapPort = '';
-$mailImapSecurity = '';
-$mailImapNocerts = '';
-$mailImapBox = '';    -->
+    <span title="Indique ">From</span><br>
+    <input type="text" id="mailFrom" name="mailFrom" placeholder="from" size="50" value="<?php echo $mailFrom;?>" /><br>
+    <span title="Indique ">Protocol</span><br>
+    <?php echo $selMailProt;?><br>
+    <span title="Indique ">Port</span><br>
+    <input type="text" id="mailPort" name="mailPort" placeholder="Numero da porta" size="50" value="<?php echo $mailPort;?>" /><br>
   </div>
     <div id="direita">
         <h3>As configuração de email se referem a uma caixa postal criada pare enviar e receber os XML dos documetos fiscais da empresa como determina a legislação fiscal.</h3>
@@ -522,10 +564,6 @@ $mailImapBox = '';    -->
     <input type="text" id="proxyUser" name="proxyUser" placeholder="Nome do usuário" size="20" value="<?php echo $proxyUser;?>" /><br>
     <span title="Indique a senha de acesso do usuário autorizado, caso exija autenticação">Proxy Pass</span><br>
     <input type="password" id="proxyPass" name="proxyPass" placeholder="Senha de acesso" size="20" value="<?php echo $proxyPass;?>" /><br>
-    <p>Clique no botão abaixo para  salvar essas configurações e criar o arquivo config/config.json</p>
-    <input type="text" id="configfolder" name="configfolder" placeholder="Path completo para a pasta" size="80" value="<?php echo $configfolder;?>" /><br>
-    <p><i>NOTA: os dados passarão por validações antes da gravação. Caso não atendam as regras os dados serão rejeitados. Mantenha o arquivo config.josn em local seguro fora da acesso de intrusos.</i></p>
-    <button value="save" type="submit">Salvar Configuração</button>
     </div>
     <div id="direita">
         <h3>Aqui devem inclusas as configurações caso o sistema esteja instalado em um ambiente de rede cujo acesso a internet seja feito atraves de um servidor proxy. Caso não exista um servidor proxy na rede interna deixe esses campos em BRANCO.</h3>
@@ -536,8 +574,23 @@ $mailImapBox = '';    -->
     </div>
     <div class="clear"> </div>
   </div>
+  <div id="tabs-9">
+    <div id="esquerda">
+    <p>Clique no botão abaixo para  salvar essas configurações e criar o arquivo config/config.json</p>
+    <input type="text" id="configfolder" name="configfolder" placeholder="Path completo para a pasta" size="60" value="<?php echo $configfolder;?>" /><br>
+    <button value="save" type="submit">Salvar Configuração</button>
+    </div>
+    <div id="direita">
+        <h3>O arquivo de configuração "config.json" será salvo na pasta indicada no path e também na pasta "default" do NFePHP, caso não sejas as mesmas.</h3>
+        <h3>A ideia por traz do uso do formato json foi permitir de maneira mais facil usar a base de dados pra guardar os dados de configuração para o uso da API, sem ter recorrer a um arquivo mantido em pastas.</h3>
+        <h3>Se bem executado isso pode facilitar em muito o uso no mesmo servidor para multiplos clientes, além de prover um grau um pouco maior de segurança.</h3>
+        <p><i>NOTA: os dados passarão por validações antes da gravação. Caso não atendam as regras os dados serão rejeitados. Mantenha o arquivo config.json em local seguro fora do acesso de intrusos.</i></p>
+    </div>
+  <div class="clear"> </div>
+  </div>
 </div>
 </form>
-</div>    
+</div>
+<div id="dialogcert" title="Resultado">....</div>
 </body>
 </html>
