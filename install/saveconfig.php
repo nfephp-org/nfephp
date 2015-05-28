@@ -119,6 +119,7 @@ $aProxyConf = array(
 );
 
 $aConfig = array(
+    'atualizacao' => date('Y-m-d h:i:s'),
     'tpAmb' => $tpAmb,
     'pathXmlUrlFileNFe' => $pathXmlUrlFileNFe,
     'pathXmlUrlFileCTe' => $pathXmlUrlFileCTe,
