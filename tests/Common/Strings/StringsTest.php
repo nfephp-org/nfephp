@@ -17,9 +17,9 @@ class StringsTest extends PHPUnit_Framework_TestCase
     
     public function testClearXml()
     {
-        $xmlSujo = file_get_contents(dirname(dirname(dirname(__FILE__))) . '/fixtures/xml/xml-sujo.xml');
-        $xmlLimpo1 = file_get_contents(dirname(dirname(dirname(__FILE__))) . '/fixtures/xml/xml-limpo1.xml');
-        $xmlLimpo2 = file_get_contents(dirname(dirname(dirname(__FILE__))) . '/fixtures/xml/xml-limpo2.xml');
+        $xmlSujo = file_get_contents(dirname(dirname(dirname(__FILE__))) . '/fixtures/xml/NFe/xml-sujo.xml');
+        $xmlLimpo1 = file_get_contents(dirname(dirname(dirname(__FILE__))) . '/fixtures/xml/NFe/xml-limpo1.xml');
+        $xmlLimpo2 = file_get_contents(dirname(dirname(dirname(__FILE__))) . '/fixtures/xml/NFe/xml-limpo2.xml');
         
         $resp1 = NFePHP\Common\Strings\Strings::clearXml($xmlSujo, false);
         $resp2 = NFePHP\Common\Strings\Strings::clearXml($xmlSujo, true);
