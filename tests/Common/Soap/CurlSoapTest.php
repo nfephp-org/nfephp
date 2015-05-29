@@ -77,7 +77,7 @@ class CurlSoapTest extends PHPUnit_Framework_TestCase
             ->getMock();
         //estabelece retorno da chamada curl FAJUTA como se fosse uma resposta real
         $fileretornosefaz = dirname(dirname(dirname(__FILE__))) .
-            '/fixtures/xml/retornoSefazGetWsdl_SP_nfeStatusServicoNF2.xml';
+            '/fixtures/xml/NFe/retornoSefazGetWsdl_SP_nfeStatusServicoNF2.xml';
         $retornosefaz = file_get_contents($fileretornosefaz);
         $soap->expects($this->any())->method('zCommCurl')->will($this->returnValue($retornosefaz));
         //busca resposta
@@ -85,7 +85,7 @@ class CurlSoapTest extends PHPUnit_Framework_TestCase
         $wsdl = $soap->getWsdl($urlservice);
         //resultado padrão
         $wsdlfile = dirname(dirname(dirname(__FILE__))) .
-            '/fixtures/xml/retornoGetWsdl_SP_nfeStatusServicoNF2.asmx';
+            '/fixtures/xml/NFe/retornoGetWsdl_SP_nfeStatusServicoNF2.asmx';
         $wsdlstd = file_get_contents($wsdlfile);
         //teste
         $this->assertEquals($wsdl, $wsdlstd);
@@ -137,7 +137,7 @@ class CurlSoapTest extends PHPUnit_Framework_TestCase
         $oProperty->setValue($soap, $valor);
         //estabelece retorno da chamada curl FAJUTA como se fosse uma resposta real
         $fileretornosefaz = dirname(dirname(dirname(__FILE__))) .
-            '/fixtures/xml/forbidden.xml';
+            '/fixtures/xml/NFe/forbidden.xml';
         $retornosefaz = file_get_contents($fileretornosefaz);
         $soap->expects($this->any())->method('zCommCurl')->will($this->returnValue($retornosefaz));
         //busca resposta
@@ -146,7 +146,7 @@ class CurlSoapTest extends PHPUnit_Framework_TestCase
         $header = '<nfeCabecMsg xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeStatusServico2"><cUF>35</cUF><versaoDados>3.10</versaoDados></nfeCabecMsg>';
         $method = "nfeStatusServicoNF2";
         $body = '<nfeDadosMsg xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeStatusServico2"><consStatServ xmlns="http://www.portalfiscal.inf.br/nfe" versao="3.10"><tpAmb>2</tpAmb><cUF>35</cUF><xServ>STATUS</xServ></consStatServ></nfeDadosMsg>';
-        $resp = $soap->send($urlservice, $namespace, $header, $body, $method);
+        $soap->send($urlservice, $namespace, $header, $body, $method);
     }
 
     public function testSendSuccess()
@@ -168,7 +168,7 @@ class CurlSoapTest extends PHPUnit_Framework_TestCase
         $oProperty->setValue($soap, $valor);
         //estabelece retorno da chamada curl FAJUTA como se fosse uma resposta real
         $fileretornosefaz = dirname(dirname(dirname(__FILE__))) .
-            '/fixtures/xml/retornoSefaz_success_statusservico.xml';
+            '/fixtures/xml/NFe/retornoSefaz_success_statusservico.xml';
         $retornosefaz = file_get_contents($fileretornosefaz);
         $soap->expects($this->any())->method('zCommCurl')->will($this->returnValue($retornosefaz));
         //busca resposta
