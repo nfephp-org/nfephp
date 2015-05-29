@@ -747,7 +747,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $numlinhas = 0;
         $hUsado = $hCabecItens;
         $w2 = round($this->wPrint*0.31, 0);
-        $hDispo = $hDispo1;
+        $hDispo = $hDispo1 + 1;//acrecimo de 1 para comparação ficar identica à de dentro da função "pItensDANFE"
         $totPag = 1;
         while ($i < $this->det->length) {
             $texto = $this->pDescricaoProduto($this->det->item($i));
@@ -819,7 +819,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
             //coloca o cabeçalho na página adicional
             $y = $this->pCabecalhoDANFE($x, $y, $n, $totPag);
             //coloca os itens na página adicional
-            $y = $this->pItensDANFE($x, $y+1, $nInicial, $hDispo2, $pag, $totPag);
+            $y = $this->pItensDANFE($x, $y+1, $nInicial, $hDispo2, $n, $totPag);
             //coloca o rodapé da página
             if ($this->orientacao == 'P') {
                 $this->pRodape($xInic, $y + 4);
@@ -854,6 +854,8 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         if ($cdata == '') {
             return '';
         }
+		return $cdata;
+		
         //remove qualquer texto antes ou depois da tag CDATA
         $cdata = str_replace('<![CDATA[', '<CDATA>', $cdata);
         $cdata = str_replace(']]>', '</CDATA>', $cdata);
@@ -2692,12 +2694,12 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
                 }
                 $this->pTextBox($x, $y, $w14, $h, $texto, $aFont, 'T', 'C', 0, '');
                 $y += $h;
-                $i++;
+
                 //incrementa o controle dos itens processados.
                 $this->qtdeItensProc++;
-            } else {
-                $i++;
             }
+
+            $i++;
         }
         return $oldY+$hmax;
     } // fim itensDANFE
