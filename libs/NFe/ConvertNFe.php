@@ -20,34 +20,142 @@ use NFePHP\NFe\MakeNFe;
 class ConvertNFe
 {
     //parametros protegidos da classe
+    /**
+     * $limparString
+     * Força a substituição dos caracteres especiais e acentuados
+     * pelos seus substitutos normais
+     * @var bool
+     */
     protected $limparString = true;
+    /**
+     * $version
+     * versão do layout do xml da NFe
+     * que esta classe cria
+     * @var string
+     */
     protected $version = '3.10';
+    /**
+     * $make
+     * Instancia da classe MakeNFe
+     * @var NFePHP\NFe\MakeNFe
+     */
     protected $make;
-    protected $linhaBA10 = array(); //refNFP
-    protected $linhaC = array(); //emit
-    protected $linhaE = array(); //dest
+    /**
+     * $linhaBA10
+     * refNFP
+     * @var array
+     */
+    protected $linhaBA10 = array();
+    /**
+     * $linhaC
+     * Dados do Emitente
+     * @var array 
+     */
+    protected $linhaC = array();
+    /**
+     * $linhaE
+     * Dados do destinatario
+     * @var array 
+     */
+    protected $linhaE = array();
+    /**
+     * $linhaF
+     * Local de retirada
+     * @var array 
+     */
     protected $linhaF = array();
+    /**
+     * $linhaG
+     * Local de entrega
+     * @var array 
+     */
     protected $linhaG = array();
-    protected $nItem = 0; //numero do item da NFe
-    protected $nDI = '0'; //numero da DI
-    protected $linhaI50 = array(); //dados de exportação
-    protected $linhaLA = array(); //dados de combustiveis
-    protected $linhaO = array(); //dados de IPI
-    protected $linhaQ = array(); //dados do PIS
-    protected $linhaR = array(); //dados do PISST
-    protected $linhaS = array(); //dados do COFINS
+    /**
+     * $nItem
+     * numero do item da NFe
+     * @var int
+     */
+    protected $nItem = 0;
+    /**
+     * $nDI
+     * numero da DI
+     * @var int
+     */
+    protected $nDI = '0'; 
+    /**
+     * $linhaI50
+     * dados de exportação
+     * @var array
+     */
+    protected $linhaI50 = array();
+    /**
+     * $linhaLA
+     * dados de combustiveis
+     * @var array
+     */
+    protected $linhaLA = array();
+    /**
+     * $linhaO
+     * dados de IPI
+     * @var array
+     */
+    protected $linhaO = array();
+    /**
+     * $linhaQ
+     * dados do PIS
+     * @var array
+     */
+    protected $linhaQ = array();
+    /**
+     * $linhaR
+     * dados do PISST
+     * @var array
+     */
+    protected $linhaR = array();
+    /**
+     * $linhaS
+     * dados do COFINS
+     * @var array
+     */
+    protected $linhaS = array();
+    /**
+     * $linhaT
+     * dados de COFINSST
+     * @var array
+     */
     protected $linhaT = array();
+    /**
+     * $linhaX
+     * dados de transporte
+     * @var array
+     */
     protected $linhaX = array();
+    /**
+     * $linhaX26
+     * dados de volumes
+     * @var array
+     */
     protected $linhaX26 = array();
     protected $volId = -1;
+    /**
+     * $linhaZC
+     * dados de cana
+     * @var array
+     */
     protected $linhaZC = array();
+    /**
+     * $aLacres
+     * dados de lacres
+     * @var array
+     */
     protected $aLacres = array();
 
     /**
      * contruct
      * Método contrutor da classe
-     * @param boolean $limparString Ativa flag para limpar os caracteres especiais e acentos
-     * @return none
+     * @param boolean $limparString Ativa flag para limpar os caracteres especiais
+     *                e acentos
+     * @return void
      */
     public function __construct($limparString = true)
     {
@@ -469,6 +577,7 @@ class ConvertNFe
     
     /**
      * fEntity
+     * Local de retirada
      * @param array $aCampos
      */
     protected function fEntity($aCampos)
@@ -531,6 +640,7 @@ class ConvertNFe
     
     /**
      * gEntity
+     * Local de entrega
      * @param array $aCampos
      */
     protected function gEntity($aCampos)
@@ -1675,7 +1785,7 @@ class ConvertNFe
     protected function qEntity($aCampos)
     {
         //Q|
-        //fake não faz nada
+        //carrega numero do item
         $aCampos = array();
         $this->linhaQ[0] = $this->nItem;
         $this->linhaQ[1] = ''; //cst
