@@ -421,6 +421,7 @@ class BaseTools
      * @param string $service
      * @param string $siglaUF
      * @param string $tpAmb
+     * @param string $tipo
      * @return bool
      * @internal param string $servico Identificação do Servico
      * @internal param array $aURL Dados das Urls do SEFAZ
@@ -650,7 +651,7 @@ class BaseTools
     
     /**
      * zExtractUrl
-     * @param SimpleXMLElement $xmlWS
+     * @param \SimpleXMLElement $xmlWS
      * @param array $aUrl
      * @param string $expression
      * @return array
