@@ -44,9 +44,7 @@ require_once('../bootstrap.php');
 use NFePHP\Common\Configure\Configure;
 use NFePHP\Common\Files\FilesFolders;
 
-$conf = new Configure();
-
-$htmod = $conf->chkModules();
+$htmod = Configure::chkModules();
 
 //variaveis da configuração
 $tpAmb = 2;

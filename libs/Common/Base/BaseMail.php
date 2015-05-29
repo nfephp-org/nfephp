@@ -40,7 +40,7 @@ class BaseMail
     protected $aMailConf = array();
     /**
      * $transport
-     * @var string
+     * @var Zend\Mail\Transport\Smtp
      */
     protected $transport = '';
     /**
@@ -50,7 +50,7 @@ class BaseMail
     protected $aAttachments = array();
     /**
      * $content
-     * @var string
+     * @var Zend\Mime\Message
      */
     protected $content = '';
     
@@ -70,7 +70,7 @@ class BaseMail
         //configura a forma de transporte no envio dos emails
         $aMuser = explode('@', $this->aMailConf['mailUser']);
         $domain = $aMuser[1];
-        
+        $connConfig = array();
         $connConfig['username'] = $this->aMailConf['mailUser'];
         $connConfig['password'] = $this->aMailConf['mailPass'];
         if ($this->aMailConf['mailProtocol'] != '') {

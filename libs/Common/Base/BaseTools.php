@@ -65,7 +65,7 @@ class BaseTools
     /**
      * certExpireTimestamp
      * TimeStamp com a data de vencimento do certificado
-     * @var intger 
+     * @var double
      */
     public $certExpireTimestamp = 0;
     /**
@@ -80,12 +80,12 @@ class BaseTools
     public $aConfig = array();
     /**
      * sslProtocol
-     * @var integer 
+     * @var int
      */
     public $sslProtocol = 0;
     /**
      * soapTimeout
-     * @var integer
+     * @var int
      */
     public $soapTimeout = 10;
     
@@ -161,7 +161,10 @@ class BaseTools
      */
     protected $modelo = '55';
     
-
+    /**
+     * cUFlist
+     * @var array
+     */
     protected $cUFlist = array(
         'AC'=>'12',
         'AL'=>'27',
@@ -418,12 +421,6 @@ class BaseTools
      * @param string $service
      * @param string $siglaUF
      * @param string $tpAmb
-     * @param int $cUF
-     * @param string $urlservice
-     * @param string $namespace
-     * @param string $header
-     * @param string $method
-     * @param string $version
      * @return bool
      * @internal param string $servico Identificação do Servico
      * @internal param array $aURL Dados das Urls do SEFAZ
@@ -560,6 +557,7 @@ class BaseTools
                 "Arquivo $pathXmlUrlFile parece ser invalido ou está corrompido."
             );
         }
+        $autorizadores = array();
         $autorizadores['65'] = array(
             'AC'=>'SVRS',
             'AL'=>'SVRS',
@@ -652,7 +650,7 @@ class BaseTools
     
     /**
      * zExtractUrl
-     * @param simplexml $xmlWS
+     * @param SimpleXMLElement $xmlWS
      * @param array $aUrl
      * @param string $expression
      * @return array
