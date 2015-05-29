@@ -728,189 +728,127 @@ class Oids
         '2.16.76.1.1.17' => 'DPC da Autoridade Certificadora Imprensa Oficial ­ SP',
         '2.16.76.1.1.18' => 'DPC da Autoridade Certificadora PRODEMGE',
         '2.16.76.1.1.19' => 'DPC da Autoridade Certificadora do Sistema Justiça Federal - AC­JUS',
-        '2.16.76.1.1.20' => 'Declaração de Práticas de Certificação  
-            da Autoridade Certificadora do SERPRO Final - DPC SERPRO ACF',
+        '2.16.76.1.1.20' => 'Declaração de Práticas de Certificação da Autoridade Certificadora do SERPRO Final - DPC SERPRO ACF',
         '2.16.76.1.1' => 'DPC',
         '2.16.76.1.1.21' => 'Declaração de Práticas de Certificação da Autoridade Certificadora SINCOR',
-        '2.16.76.1.1.22' => 'Declaração de Práticas de Certificação 
-            da Autoridade Certificadora Imprensa Oficial SP SRF',
+        '2.16.76.1.1.22' => 'Declaração de Práticas de Certificação da Autoridade Certificadora Imprensa Oficial SP SRF',
         '2.16.76.1.1.23' => 'Declaração de Práticas de Certificação da AC FENACOR',
         '2.16.76.1.1.24' => 'Declaração de Práticas de Certificação da Autoridade Certificadora SERPRO­ JUS',
         '2.16.76.1.1.25' => 'DPC da AC Caixa Justiça',
         '2.16.76.1.1.26' => 'DPC da Autoridade Certificadora Imprensa Oficial SP (AC IMESP)',
         '2.16.76.1.1.27' => 'DPC da Autoridade Certificadora PRODEMGE SRF',
-        '2.16.76.1.1.28' => 'Declaração de Práticas de Certificação 
-            da Autoridade Certificadora CertSign  para a Justiça',
+        '2.16.76.1.1.28' => 'Declaração de Práticas de Certificação da Autoridade Certificadora CertSign para a Justiça',
         '2.16.76.1.1.29' => 'DPC da AC SERASA JUS',
         '2.16.76.1.2' => 'PC',
         '2.16.76.1.2.1' => 'A1',
-        '2.16.76.1.2.1.1' => 'Política de Certificados da ACSERPRO para 
-            certificados SERPRO­SPB ­ PC SERPRO­SPB',
+        '2.16.76.1.2.1.1' => 'Política de Certificados da ACSERPRO para certificados SERPRO­SPB ­ PC SERPRO­SPB',
         '2.16.76.1.2.1.2' => 'Política de Certificados para certificados da SERASA Autoridade Certificadora',
-        '2.16.76.1.2.1.3' => 'Política   de   Certificados   da   Autoridade   
-            Certificadora   da   Presidência   da República - PCA1',
-        '2.16.76.1.2.1.4' => 'Política   de   Certificado   da   Autoridade   
-            Certificadora   CertiSign   Certificadora Digital para o Sistema de Pagamentos Brasileiro 
-            na ICP­Brasil­ PC da AC CertiSign SPB na ICP­Brasil',
+        '2.16.76.1.2.1.3' => 'Política de Certificados da Autoridade Certificadora da Presidência da República - PCA1',
+        '2.16.76.1.2.1.4' => 'Política de Certificado da Autoridade Certificadora CertiSign Certificadora Digital para o Sistema de Pagamentos Brasileiro  na ICP­Brasil­ PC da AC CertiSign SPB na ICP­Brasil',
         '2.16.76.1.2.1.5' => 'Política de Certificados SEPROA1',
-        '2.16.76.1.2.1.6' => 'Política de Certificado Digital para Certificado de Assinatura Digital 
-            Tipo A1 -  SERASA CD',
+        '2.16.76.1.2.1.6' => 'Política de Certificado Digital para Certificado de Assinatura Digital Tipo A1 - SERASA CD',
         '2.16.76.1.2.1.7' => 'Política de Certificado de Assinatura Digital do Tipo A1 da AC Caixa IN',
-        '2.16.76.1.2.1.8' => 'Política de Certificado de Assinatura Digital do
-            Tipo A1 da AC Caixa PF',
-        '2.16.76.1.2.1.9' => 'Política de Certificado de Assinatura Digital do
-            Tipo A1 da AC Caixa PJ',
-        '2.16.76.1.2.1.10' => 'Política de Certificados  da  Autoridade  Certificadora  do  Serpro­SRF  
-            para certificados de assinatura digital do tipo A1 (PCSerpro­SRFA1)',
-        '2.16.76.1.2.1.11' => 'Política de  Certificado de  Assinatura Digital do
-            Tipo  A1 da  Autoridade  Certificadora  CertiSign  Múltipla  na  
-            Infra­estrutura  de  Chaves  Públicas  Brasileira',
-        '2.16.76.1.2.1.12' => 'Política  de  Certificado  de   Assinatura   Digital Tipo A1 da '
-    . 'Autoridade Certificadora CertiSign para a Secretaria da Receita Federal',
+        '2.16.76.1.2.1.8' => 'Política de Certificado de Assinatura Digital do Tipo A1 da AC Caixa PF',
+        '2.16.76.1.2.1.9' => 'Política de Certificado de Assinatura Digital do Tipo A1 da AC Caixa PJ',
+        '2.16.76.1.2.1.10' => 'Política de Certificados da Autoridade Certificadora do Serpro­SRF para certificados de assinatura digital do tipo A1 (PCSerpro­SRFA1)',
+        '2.16.76.1.2.1.11' => 'Política de Certificado de Assinatura Digital do Tipo A1 da Autoridade Certificadora CertiSign Múltipla na Infra­estrutura de Chaves Públicas Brasileira',
+        '2.16.76.1.2.1.12' => 'Política de Certificado de Assinatura Digital Tipo A1 da Autoridade Certificadora CertiSign para a Secretaria da Receita Federal',
         '2.16.76.1.2.1.13' => 'Política de Certificado de Assinatura Digital Tipo A1 da AC SERASA SRF',
-        '2.16.76.1.2.1.14' => 'Política  de Certificado  de  Assinatura   Digital
-            Tipo  A1  da  Autoridade Certificadora Imprensa Oficial ­ SP',
-        '2.16.76.1.2.1.15' => 'Política  de  Certificado  de  Assinatura   Digital
-            Tipo  A1  da  Autoridade  Certificadora PRODEMGE',
+        '2.16.76.1.2.1.14' => 'Política de Certificado de Assinatura Digital Tipo A1 da Autoridade Certificadora Imprensa Oficial ­ SP',
+        '2.16.76.1.2.1.15' => 'Política de Certificado de Assinatura Digital Tipo A1 da Autoridade Certificadora PRODEMGE',
         '2.16.76.1.2.1.16' => 'Política de Certificados SERPRO do Tipo A1 - PC SERPRO ACF A1',
         '2.16.76.1.2.1.17' => 'Política de Certificados do SERPRO - SPB - PC SERPRO ACF SPB',
-        '2.16.76.1.2.1.18' => 'Política  de  Certificado  de  Assinatura  Digital  
-            Tipo  A1  da  Autoridade Certificadora SINCOR',
-        '2.16.76.1.2.1.19' => 'Política de Certificado  de  Assinatura  Digital  Tipo  A1
-            da  Autoridade Certificadora SINCOR para Corretores de Seguros',
+        '2.16.76.1.2.1.18' => 'Política de Certificado de Assinatura Digital Tipo A1 da Autoridade Certificadora SINCOR',
+        '2.16.76.1.2.1.19' => 'Política de Certificado de Assinatura Digital Tipo A1 da Autoridade Certificadora SINCOR para Corretores de Seguros',
         '2.16.76.1.2' => 'PC',
         '2.16.76.1.2.1' => 'A1',
-        '2.16.76.1.2.1.20' => 'Política  de  Certificado  de  Assinatura  Digital
-            Tipo  A1  da  Autoridade Certificadora Imprensa Oficial SP SRF',
+        '2.16.76.1.2.1.20' => 'Política de Certificado de Assinatura Digital Tipo A1 da Autoridade Certificadora Imprensa Oficial SP SRF',
         '2.16.76.1.2.1.21' => 'Política de Certificados SERPRO­JUS do tipo A1 ­ PCSERPROJUSA1',
         '2.16.76.1.2.1.22' => 'Política de Certificado de Assinatura Digital do Tipo A1 da AC Caixa Justiça',
-        '2.16.76.1.2.1.23' => 'Política  de Certificado de  Assinatura  Tipo  A1
-            da  Autoridade  Certificadora PRODEMGE SRF',
-        '2.16.76.1.2.1.24' => 'Política de Certificado de Assinatura Digital Tipo A1
-            da Autoridade Certificadora CertiSign para a Justiça',
-        '2.16.76.1.2.1.25' => 'Política de Certificado Digital da AC  SERASA­JUS para Certificados Tipo A1',
+        '2.16.76.1.2.1.23' => 'Política de Certificado de Assinatura Tipo A1 da Autoridade Certificadora PRODEMGE SRF',
+        '2.16.76.1.2.1.24' => 'Política de Certificado de Assinatura Digital Tipo A1 da Autoridade Certificadora CertiSign para a Justiça',
+        '2.16.76.1.2.1.25' => 'Política de Certificado Digital da AC SERASA­JUS para Certificados Tipo A1',
         '2.16.76.1.2' => 'PC',
         '2.16.76.1.2.2' => 'A2',
-        '2.16.76.1.2.2.1' => 'Política de Certificado Digital para Certificado
-            de Assinatura Digital  Tipo A2 - SERASA CD',
-        '2.16.76.1.2.2.2' => 'Política de Certificado Digital para Certificado
-            de Assinatura Digital Tipo A2 da AC SERASA SRF',
-        '2.16.76.1.2.2.3' => 'Política de Certificado de Assinatura Digital do Tipo A2
-            da Autoridade  Certificadora  CertiSign  últipla  na  Infra­estrutura  de Chaves Públicas Brasileira',
-        '2.16.76.1.2.2.4' => 'Política de Certificado de Assinatura Digital do Tipo A2
-            da Autoridade Certificadora Imprensa Oficial ­ SP',
-        '2.16.76.1.2.2.5' => 'Política de Certificado de Assinatura Digital do Tipo A2
-            da AC Caixa Justiça',
-        '2.16.76.1.2.2.6' => 'Política de Certificado de Assinatura Digital Tipo A2
-            da Autoridade Certificadora CertiSign para a Justiça',
+        '2.16.76.1.2.2.1' => 'Política de Certificado Digital para Certificado de Assinatura Digital Tipo A2 - SERASA CD',
+        '2.16.76.1.2.2.2' => 'Política de Certificado Digital para Certificado de Assinatura Digital Tipo A2 da AC SERASA SRF',
+        '2.16.76.1.2.2.3' => 'Política de Certificado de Assinatura Digital do Tipo A2 da Autoridade Certificadora CertiSign últipla na Infra­estrutura de Chaves Públicas Brasileira',
+        '2.16.76.1.2.2.4' => 'Política de Certificado de Assinatura Digital do Tipo A2 da Autoridade Certificadora Imprensa Oficial ­ SP',
+        '2.16.76.1.2.2.5' => 'Política de Certificado de Assinatura Digital do Tipo A2 da AC Caixa Justiça',
+        '2.16.76.1.2.2.6' => 'Política de Certificado de Assinatura Digital Tipo A2 da Autoridade Certificadora CertiSign para a Justiça',
         '2.16.76.1.2.2.7' => 'Política de Certificado Digital da AC SERASA­JUS para Certificados Tipo A2',
         '2.16.76.1.2' => 'PC',
         '2.16.76.1.2.3' => 'A3',
-        '2.16.76.1.2.3.1' => 'Política de Certificados da Autoridade Certificadora 
-            da Presidência da República - PC ACPR',
-        '2.16.76.1.2.3.2' => 'Política  de  Certificados   da  Autoridade  Certificadora
-            do  SERPRO para certificados SERPRO do tipo A3 - PCSERPROA3',
-        '2.16.76.1.2.3.3' => 'Política de Certificado Digital para Certificado de 
-            Assinatura Digital Tipo A3 - SERASA CD',
-        '2.16.76.1.2.3.4' => 'Política de Certificados da Autoridade Certificadora do
-            Serpro­SRF para certificados de assinatura digital do tipo A3 (PCSerpro­SRFA3)',
-        '2.16.76.1.2.3.5' => 'Política de Certificado de Assinatura Digital do Tipo A3
-            da  Autoridade Certificadora CertiSign Múltipla na Infra­estrutura de Chaves Públicas Brasileira',
-        '2.16.76.1.2.3.6' => 'Política de Certificado de Assinatura Digital Tipo A3
-            da Autoridade Certificadora CertiSign para a Secretaria da Receita Federal na Infra­estrutura de 
-            Chaves Públicas Brasileira',
-        '2.16.76.1.2.3.7' => 'Política de Certificado de Assinatura Digital do Tipo A3 da AC Caixa  IN',
-        '2.16.76.1.2.3.8' => 'Política de Certificado de Assinatura Digital do Tipo A3 da AC Caixa  PF',
-        '2.16.76.1.2.3.9' => 'Política de Certificado de Assinatura Digital do Tipo A3 da AC Caixa   PJ',
+        '2.16.76.1.2.3.1' => 'Política de Certificados da Autoridade Certificadora da Presidência da República - PC ACPR',
+        '2.16.76.1.2.3.2' => 'Política de Certificados da Autoridade Certificadora do SERPRO para certificados SERPRO do tipo A3 - PCSERPROA3',
+        '2.16.76.1.2.3.3' => 'Política de Certificado Digital para Certificado de Assinatura Digital Tipo A3 - SERASA CD',
+        '2.16.76.1.2.3.4' => 'Política de Certificados da Autoridade Certificadora do Serpro­SRF para certificados de assinatura digital do tipo A3 (PCSerpro­SRFA3)',
+        '2.16.76.1.2.3.5' => 'Política de Certificado de Assinatura Digital do Tipo A3 da Autoridade Certificadora CertiSign Múltipla na Infra­estrutura de Chaves Públicas Brasileira',
+        '2.16.76.1.2.3.6' => 'Política de Certificado de Assinatura Digital Tipo A3 da Autoridade Certificadora CertiSign para a Secretaria da Receita Federal na Infra­estrutura de Chaves Públicas Brasileira',
+        '2.16.76.1.2.3.7' => 'Política de Certificado de Assinatura Digital do Tipo A3 da AC Caixa IN',
+        '2.16.76.1.2.3.8' => 'Política de Certificado de Assinatura Digital do Tipo A3 da AC Caixa PF',
+        '2.16.76.1.2.3.9' => 'Política de Certificado de Assinatura Digital do Tipo A3 da AC Caixa PJ',
         '2.16.76.1.2.3.10' => 'Política de Certificado de Assinatura Digital do Tipo A3 da AC SERASA SRF',
-        '2.16.76.1.2.3.11' => 'Política de Certificado de Assinatura Digital do Tipo A3 da  Autoridade '
-    . 'Certificadora  Imprensa Oficial ­ SP',
-        '2.16.76.1.2.3.12' => 'Política de Certificado de Assinatura Digital do Tipo A3
-            da  Autoridade Certificadora PRODEMGE',
+        '2.16.76.1.2.3.11' => 'Política de Certificado de Assinatura Digital do Tipo A3 da Autoridade Certificadora Imprensa Oficial ­ SP',
+        '2.16.76.1.2.3.12' => 'Política de Certificado de Assinatura Digital do Tipo A3 da Autoridade Certificadora PRODEMGE',
         '2.16.76.1.2.3.13' => 'Política de Certificados SERPRO do Tipo A3 - PC SERPRO A3',
-        '2.16.76.1.2.3.14' => 'Política de Certificado de Assinatura Digital Tipo A3 
-            da Autoridade Certificadora SINCOR',
-        '2.16.76.1.2.3.15' => 'Política de Certificado de Assinatura Digital Tipo A3
-            da Autoridade  Certificadora SINCOR para Corretores de Seguros',
-        '2.16.76.1.2.3.16' => 'Política de Certificado de Assinatura Digital Tipo A3
-            da Autoridade  Certificadora Imprensa Oficial SP SRF',
+        '2.16.76.1.2.3.14' => 'Política de Certificado de Assinatura Digital Tipo A3 da Autoridade Certificadora SINCOR',
+        '2.16.76.1.2.3.15' => 'Política de Certificado de Assinatura Digital Tipo A3 da Autoridade Certificadora SINCOR para Corretores de Seguros',
+        '2.16.76.1.2.3.16' => 'Política de Certificado de Assinatura Digital Tipo A3 da Autoridade Certificadora Imprensa Oficial SP SRF',
         '2.16.76.1.2' => 'PC',
         '2.16.76.1.2.3' => 'A3',
         '2.16.76.1.2.3.17' => 'Política de Certificado da AC FENACOR A3',
         '2.16.76.1.2.3.18' => 'Política de Certificados SERPRO­JUS do tipo A3 PCSERPROJUSA3',
-        '2.16.76.1.2.3.19' => 'Política de Certificado de Assinatura Digital do Tipo A3
-            da AC Caixa Justiça',
-        '2.16.76.1.2.3.20' => 'Política de Certificado de Assinatura Tipo A3 da
-            Autoridade Certificadora PRODEMGE SRF',
-        '2.16.76.1.2.3.21' => 'Política de Certificado de Assinatura Digital Tipo A3
-            da Autoridade Certificadora CertiSign para a Justiça',
+        '2.16.76.1.2.3.19' => 'Política de Certificado de Assinatura Digital do Tipo A3 da AC Caixa Justiça',
+        '2.16.76.1.2.3.20' => 'Política de Certificado de Assinatura Tipo A3 da Autoridade Certificadora PRODEMGE SRF',
+        '2.16.76.1.2.3.21' => 'Política de Certificado de Assinatura Digital Tipo A3 da Autoridade Certificadora CertiSign para a Justiça',
         '2.16.76.1.2.3.22' => 'Política de Certificado Digital da AC SERASA­JUS para Certificados Tipo A3',
         '2.16.76.1.2' => 'PC',
         '2.16.76.1.2.4' => 'A4',
-        '2.16.76.1.2.4.1' => 'Política de Certificado Digital para Certificado de Assinatura Digital
-            Tipo A4 - SERASA CD;',
+        '2.16.76.1.2.4.1' => 'Política de Certificado Digital para Certificado de Assinatura Digital Tipo A4 - SERASA CD;',
         '2.16.76.1.2.4.2' => 'VAGO',
-        '2.16.76.1.2.4.3' => 'Política de Certificado de Assinatura Digital do Tipo A4
-            da  Autoridade Certificadora CertiSign Múltipla na Infra­estrutura de Chaves Públicas Brasileira',
-        '2.16.76.1.2.4.4' => 'Política de Certificado de Assinatura Digital Tipo A4
-            da Autoridade Certificadora CertiSign para a Secretaria da 
-            Receita Federal na Infra­estrutura de Chaves Públicas Brasileira',
-        '2.16.76.1.2.4.5' => 'Política de Certificado de Assinatura Digital Tipo A4
-            da Autoridade Certificadora Imprensa Oficial ­ SP',
-        '2.16.76.1.2.4.6' => 'Política de Certificado de Assinatura Digital Tipo A4
-            da Autoridade Certificadora Imprensa Oficial - SP SRF',
-        '2.16.76.1.2.4.7' => 'Política de Certificado de Assinatura Tipo A4
-            da Autoridade Certificadora PRODEMGE SRF',
-        '2.16.76.1.2.4.8' => 'Política de Certificado de Assinatura Digital Tipo A4
-            da Autoridade Certificadora CertiSign para a Justiça',
+        '2.16.76.1.2.4.3' => 'Política de Certificado de Assinatura Digital do Tipo A4 da Autoridade Certificadora CertiSign Múltipla na Infra­estrutura de Chaves Públicas Brasileira',
+        '2.16.76.1.2.4.4' => 'Política de Certificado de Assinatura Digital Tipo A4  da Autoridade Certificadora CertiSign para a Secretaria da Receita Federal na Infra­estrutura de Chaves Públicas Brasileira',
+        '2.16.76.1.2.4.5' => 'Política de Certificado de Assinatura Digital Tipo A4 da Autoridade Certificadora Imprensa Oficial ­ SP',
+        '2.16.76.1.2.4.6' => 'Política de Certificado de Assinatura Digital Tipo A4 da Autoridade Certificadora Imprensa Oficial - SP SRF',
+        '2.16.76.1.2.4.7' => 'Política de Certificado de Assinatura Tipo A4 da Autoridade Certificadora PRODEMGE SRF',
+        '2.16.76.1.2.4.8' => 'Política de Certificado de Assinatura Digital Tipo A4 da Autoridade Certificadora CertiSign para a Justiça',
         '2.16.76.1.2.4.9' => 'VAGO',
-        '2.16.76.1.2.4.10' => 'Política de Certificado Digital  a  AC SERASA­JUS  para Certificados Tipo A4',
+        '2.16.76.1.2.4.10' => 'Política de Certificado Digital a AC SERASA­JUS para Certificados Tipo A4',
         '2.16.76.1.2' => 'PC',
         '2.16.76.1.2.101' => 'S1',
         '2.16.76.1.2.101.1' => 'Política de Certificado Digital para Certificado de Sigilo Tipo S1-SERASA CD',
-        '2.16.76.1.2.101.2' => 'Política de Certificado de Sigilo Tipo S1
-            da Autoridade Certificadora Imprensa Oficial ­ SP',
-        '2.16.76.1.2.101.3' => 'Política de Certificado de Sigilo do Tipo S1 
-            da Autoridade Certificadora CertiSign Múltipla',
+        '2.16.76.1.2.101.2' => 'Política de Certificado de Sigilo Tipo S1 da Autoridade Certificadora Imprensa Oficial ­ SP',
+        '2.16.76.1.2.101.3' => 'Política de Certificado de Sigilo do Tipo S1 da Autoridade Certificadora CertiSign Múltipla',
         '2.16.76.1.2.101.4' => 'Política de Certificado de Sigilo do Tipo S1 da Autoridade Certificadora PRODEMGE',
         '2.16.76.1.2.101.5' => 'Política de Certificado de Assinatura Digital do Tipo S1 da AC Caixa Justiça',
-        '2.16.76.1.2.101.6' => 'Política de Certificado de Assinatura Digital Tipo S1
-            da Autoridade Certificadora CertiSign para a Justiça',
+        '2.16.76.1.2.101.6' => 'Política de Certificado de Assinatura Digital Tipo S1 da Autoridade Certificadora CertiSign para a Justiça',
         '2.16.76.1.2.101.7' => 'Política de Certificado Digital da AC SERASA­JUS para Cerficados Tipo S1',
         '2.16.76.1.2' => 'PC',
         '2.16.76.1.2.102' => 'S2',
         '2.16.76.1.2.102.1' => 'Política de Certificado Digital para Certificado de Sigilo Tipo S2 - SERASA CD',
-        '2.16.76.1.2.102.2' => 'Política de Certificado de Sigilo Tipo S2
-            da Autoridade Certificadora Imprensa Oficial ­ SP',
-        '2.16.76.1.2.102.3' => 'Política de Certificado de Sigilo do Tipo S2
-            da Autoridade Certificadora CertiSign Múltipla',
+        '2.16.76.1.2.102.2' => 'Política de Certificado de Sigilo Tipo S2 da Autoridade Certificadora Imprensa Oficial ­ SP',
+        '2.16.76.1.2.102.3' => 'Política de Certificado de Sigilo do Tipo S2 da Autoridade Certificadora CertiSign Múltipla',
         '2.16.76.1.2.102.4' => 'Política de Certificado de Assinatura Digital do Tipo S2 da AC Caixa Justiça',
-        '2.16.76.1.2.102.5' => 'Política de Certificado de Assinatura Digital Tipo S2
-            da Autoridade Certificadora CertiSign para a Justiça',
+        '2.16.76.1.2.102.5' => 'Política de Certificado de Assinatura Digital Tipo S2 da Autoridade Certificadora CertiSign para a Justiça',
         '2.16.76.1.2.102.6' => 'Política de Certificado Digital da AC SERASA­JUS para Certificados Tipo S2',
         '2.16.76.1.2' => 'PC',
         '2.16.76.1.2.103' => 'S3',
-        '2.16.76.1.2.103.1' => 'Política de Certificado Digital para Certificado de Sigilo Tipo S3 -  SERASA CD',
+        '2.16.76.1.2.103.1' => 'Política de Certificado Digital para Certificado de Sigilo Tipo S3 - SERASA CD',
         '2.16.76.1.2.103.2' => 'VAGO',
-        '2.16.76.1.2.103.3' => 'Política de Certificado de Sigilo do Tipo S3
-            da Autoridade Certificadora CertiSign Múltipla',
-        '2.16.76.1.2.103.4' => 'Política de Certificado de Sigilo Tipo S3
-            da Autoridade Certificadora Imprensa Oficial ­ SP',
+        '2.16.76.1.2.103.3' => 'Política de Certificado de Sigilo do Tipo S3 da Autoridade Certificadora CertiSign Múltipla',
+        '2.16.76.1.2.103.4' => 'Política de Certificado de Sigilo Tipo S3 da Autoridade Certificadora Imprensa Oficial ­ SP',
         '2.16.76.1.2.103.5' => 'Política de Certificado de Sigilo Tipo S3 da Autoridade Certificadora PRODEMGE',
         '2.16.76.1.2.103.6' => 'Política de Certificado de Assinatura Digital do Tipo S3 da AC Caixa Justiça',
-        '2.16.76.1.2.103.7' => 'Política de Certificado de Assinatura Digital Tipo S3
-            da Autoridade Certificadora CertiSign para a Justiça',
+        '2.16.76.1.2.103.7' => 'Política de Certificado de Assinatura Digital Tipo S3 da Autoridade Certificadora CertiSign para a Justiça',
         '2.16.76.1.2.103.8' => 'Política de Certificado Digital da AC SERASA­JUS para Certificados Tipo S3',
         '2.16.76.1.2' => 'PC',
         '2.16.76.1.2.104' => 'S4',
         '2.16.76.1.2.104.1' => 'Política de Certificado Digital para Certificado de Sigilo Tipo S4 - SERASA CD',
         '2.16.76.1.2.104.2' => 'VAGO',
-        '2.16.76.1.2.104.3' => 'Política de Certificado de Sigilo do Tipo S4
-            da Autoridade Certificadora CertiSign Múltipla',
-        '2.16.76.1.2.104.4' => 'Política de Certificado de Sigilo Tipo S4
-            da Autoridade Certificadora Imprensa Oficial ­ SP',
-        '2.16.76.1.2.104.5' => 'Política de Certificado de Assinatura Digital 
-            Tipo S4 da Autoridade Certificadora CertiSign para a Justiça',
+        '2.16.76.1.2.104.3' => 'Política de Certificado de Sigilo do Tipo S4 da Autoridade Certificadora CertiSign Múltipla',
+        '2.16.76.1.2.104.4' => 'Política de Certificado de Sigilo Tipo S4 da Autoridade Certificadora Imprensa Oficial ­ SP',
+        '2.16.76.1.2.104.5' => 'Política de Certificado de Assinatura Digital Tipo S4 da Autoridade Certificadora CertiSign para a Justiça',
         '2.16.76.1.2.104.6' => 'Política de Certificado Digital da AC SERASA­JUS para Certificados Tipo S4',
         '2.16.76.1.2' => 'PC',
         '2.16.76.1.2.201' => 'PC de AC',
@@ -923,17 +861,17 @@ class Oids
         '2.16.76.1.2.201.7' => 'PC da Autoridade Certificadora Imprensa Oficial SP (AC IMESP)',
         '2.16.76.1.3' => 'Atributos Obrigatórios de Certificados',
         '2.16.76.1.3.1' => 'campo otherName em certificado de pessoa física',
-        '2.16.76.1.3.2' => 'campo otherName em certificado de pessoa  jurídica',
-        '2.16.76.1.3.3' => 'campo otherName em certificado de pessoa  jurídica',
+        '2.16.76.1.3.2' => 'campo otherName em certificado de pessoa jurídica',
+        '2.16.76.1.3.3' => 'campo otherName em certificado de pessoa jurídica',
         '2.16.76.1.3.4' => 'campo otherName em certificado de pessoa jurídica',
         '2.16.76.1.3.5' => 'campo otherName em certificado de pessoa física',
         '2.16.76.1.3.6' => 'campo otherName em certificado de pessoa física',
         '2.16.76.1.3.7' => 'campo otherName em certificado de pessoa jurídica',
-        '2.16.76.1.4' => 'Atributos Opcionais de  Certificados',
+        '2.16.76.1.4' => 'Atributos Opcionais de Certificados',
         '2.16.76.1.4.1' => 'Entidades Sindicais',
         '2.16.76.1.4.1.1' => 'SINCOR',
         '2.16.76.1.4.1.1.1' => 'Número de registro do corretor associado');
-        
+ 
     /**
      * getOid
      * @param type $key
