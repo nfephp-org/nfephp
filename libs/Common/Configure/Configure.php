@@ -10,13 +10,23 @@ use NFePHP\Common\Exception\RuntimeException;
 
 class Configure
 {
-    const CRED = '#FF0000';
-    const CGREEN = '#00CC00';
-    protected $cRed = '#FF0000';
-    protected $cGreen = '#00CC00';
+    /**
+     * $cRed
+     * @var hex 
+     */
+    protected static $cRed = '#FF0000';
     
-    //$name, $param1 = '', $param2 = '', $limit = '', $coment
-    public $aRequirements = array(
+    /**
+     *$cGreen
+     * @var hex
+     */
+    protected static $cGreen = '#00CC00';
+    
+    /**
+     * $aRequirements
+     * @var array
+     */
+    public static $aRequirements = array(
         'PHP' => array('php','','','5.4.0','Versão do PHP'),
         'cURL'=> array('curl','cURL Information','','7.22.2','mínimo cURL 7.22.2'),
         'OpenSSL' => array('openssl','OpenSSL Library Version','','','mínimo OpenSSL 1.0'),
@@ -26,26 +36,32 @@ class Configure
         'ZIP' => array('zip','Zip version', '', '', '-----')
     );
     
-    public function chkModules()
+    /**
+     * chkModules
+     * @return string
+     */
+    public static function chkModules()
     {
         //instanciar a classe de modulos
-        $modules = new Modules;
+        $modules = new Modules();
         //versão do php
         $phpversion = str_replace('-', '', substr(PHP_VERSION, 0, 6));
         $phpver = $modules->convVer($phpversion);
-        $phpvermin = $modules->convVer($this->aRequirements['PHP'][3]);
+        $phpvermin = $modules->convVer(self::$aRequirements['PHP'][3]);
         $status = 'NOK';
+        $bcor = "bgcolor=\"".self::$cRed."\"";
         $comment = "v. $phpversion Inadequada !!!";
         if ($phpver >= $phpvermin) {
-            $comment = "mínimo PHP ". $this->aRequirements['PHP'][3];
+            $comment = "mínimo PHP ". self::$aRequirements['PHP'][3];
             $status = 'OK';
+            $bcor = "bgcolor=\"".self::$cGreen."\"";
         }
-        $htmmod = "<table><tr>"
+        $htmmod = "<table><tr bgcolor=\"#FFFF99\">"
             . "<td>Versão do PHP $phpversion</td>"
-            . "<td><div align=\"center\">$status</div></td>"
+            . "<td $bcor><div align=\"center\">$status</div></td>"
             . "<td>$comment</td></tr>";
         
-        foreach ($this->aRequirements as $key => $param) {
+        foreach (self::$aRequirements as $key => $param) {
             if ($key != 'PHP') {
                 $htmmod .= $modules->testModule(
                     $param[0],
@@ -60,6 +76,14 @@ class Configure
         return $htmmod.'</table>';
     }
     
+    /**
+     * checkCerts
+     * @param string $cnpj
+     * @param string $pathCertsFiles
+     * @param string $certPfxName
+     * @param string $certPassword
+     * @return array
+     */
     public static function checkCerts($cnpj = '', $pathCertsFiles = '', $certPfxName = '', $certPassword = '')
     {
         $flag = true;
@@ -91,6 +115,16 @@ class Configure
         return array('cert' => array('status' => $flag, 'msg' => $msg));
     }
     
+    /**
+     * checkFolders
+     * @param string $pathnfe
+     * @param string $pathcte
+     * @param string $pathmdfe
+     * @param string $pathcle
+     * @param string $pathnfse
+     * @param string $pathcerts
+     * @return array
+     */
     public static function checkFolders(
         $pathnfe = '',
         $pathcte = '',
@@ -107,50 +141,38 @@ class Configure
             'NFSe' => array('status'=>true,'msg'=>''),
             'Certs' => array('status'=>true,'msg'=>'')
         );
-        //testa e constroi a estrutura da pasta
-        if ($pathnfe != '') {
-            try {
-                FilesFolders::createFolders($pathnfe);
-            } catch (RuntimeException $e) {
-                $aResp['NFe'] = array('status'=>false, 'msg'=>$e->getMessage());
-            }
-        }
-        //testa e constroi a estrutura da pasta
-        if ($pathcte != '') {
-            try {
-                FilesFolders::createFolders($pathcte);
-            } catch (RuntimeException $e) {
-                $aResp['CTe'] = array('status'=>false, 'msg'=>$e->getMessage());
-            }
-        }
-        //testa e constroi a estrutura da pasta
-        if ($pathmdfe != '') {
-            try {
-                FilesFolders::createFolders($pathmdfe);
-            } catch (RuntimeException $e) {
-                $aResp['MDFe'] = array('status'=>false, 'msg'=>$e->getMessage());
-            }
-        }
-        //testa e constroi a estrutura da pasta
-        if ($pathcle != '') {
-            try {
-                FilesFolders::createFolders($pathcle);
-            } catch (RuntimeException $e) {
-                $aResp['CLe'] = array('status'=>false, 'msg'=>$e->getMessage());
-            }
-        }
-        //testa e constroi a estrutura da pasta
-        if ($pathnfse != '') {
-            try {
-                FilesFolders::createFolders($pathnfse);
-            } catch (RuntimeException $e) {
-                $aResp['NFSe'] = array('status'=>false, 'msg'=>$e->getMessage());
-            }
-        }
+        //testa e constroi a estrutura da pasta NFe
+        $aResp['NFe'] = self::zFolderMTest($pathnfe);
+        //testa e constroi a estrutura da pasta CTe
+        $aResp['CTe'] = self::zFolderMTest($pathcte);
+        //testa e constroi a estrutura da pasta MDFe
+        $aResp['MDFe'] = self::zFolderMTest($pathmdfe);
+        //testa e constroi a estrutura da pasta cle
+        $aResp['CLe'] = self::zFolderMTest($pathcle);
+        //testa e constroi a estrutura da pasta NFSe
+        $aResp['NFSe'] = self::zFolderMTest($pathnfse);
         //testa diretorio certs
         if ($pathcerts != '') {
             if (! is_writable($pathcerts)) {
                 $aResp['Certs'] = array('status'=>false, 'msg'=>'Diretório sem permissões de escrita');
+            }
+        }
+        return $aResp;
+    }
+    
+    /**
+     * zFolderMTest
+     * @param string $path
+     * @return array
+     */
+    protected static function zFolderMTest($path = '')
+    {
+        $aResp = array('status' => true, 'msg' => '');
+        if ($path != '') {
+            try {
+                FilesFolders::createFolders($path);
+            } catch (RuntimeException $e) {
+                $aResp = array('status' => false, 'msg' => $e->getMessage());
             }
         }
         return $aResp;
