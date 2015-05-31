@@ -151,7 +151,7 @@ class FilesFolders
         }
         if (! is_dir($folder)) {
             throw new Exception\InvalidArgumentException(
-                "O diretório não existe!!!"
+                "O diretório não existe $folder !!!"
             );
         }
         $aList = array();
@@ -245,11 +245,11 @@ class FilesFolders
             throw new Exception\InvalidArgumentException($msg);
         }
         if (! is_file($pathFile)) {
-            $msg = "O arquivo indicado não foi localizado!!";
+            $msg = "O arquivo indicado não foi localizado!! $pathFile";
             throw new Exception\InvalidArgumentException($msg);
         }
         if (! is_readable($pathFile)) {
-            $msg = "O arquivo indicado não pode ser lido. Permissões!!";
+            $msg = "O arquivo indicado não pode ser lido. Permissões!! $pathFile";
             throw new Exception\RuntimeException($msg);
         }
         return file_get_contents($pathFile);
