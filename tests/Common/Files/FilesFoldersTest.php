@@ -42,7 +42,7 @@ class FilesFoldersTest extends PHPUnit_Framework_TestCase
     
     /**
      * @expectedException NFePHP\Common\Exception\InvalidArgumentException
-     * @expectedExceptionMessage O diretório não existe!!!
+     * @expectedExceptionMessage O diretório não existe /qualquercoisa !!!
      */
     public function testListDirFail()
     {
