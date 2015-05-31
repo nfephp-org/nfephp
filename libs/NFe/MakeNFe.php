@@ -21,8 +21,6 @@ namespace NFePHP\NFe;
  * NOTA TÉCNICA 2013.005 Versão 1.22 de Novembro 2014
  */
 
-
-
 use NFePHP\Common\DateTime\DateTime;
 use NFePHP\Common\Base\BaseMake;
 use \DOMDocument;
