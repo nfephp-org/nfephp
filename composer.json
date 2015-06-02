@@ -42,7 +42,7 @@
         "zendframework/zend-barcode": "2.4.*@dev",
         "zendframework/zend-mail": "2.4.*@dev",
         "soundasleep/html2text": "~0.2",
-        "mpdf/mpdf": "dev-master",
+        "mpdf/mpdf": "6.0.0",
         "endroid/qrcode": "1.*@dev"
     },
     "require-dev": {
