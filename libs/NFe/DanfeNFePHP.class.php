@@ -2579,11 +2579,13 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
                 $linhaDescr = $this->pGetNumLines($textoProduto, $w2, $aFont);
                 $h = round(($linhaDescr * $this->pdf->FontSize)+ ($linhaDescr * 0.5), 2);
                 $hUsado += $h;
-                if ($hUsado >= $hmax && $i < $totItens) {
-                    //ultrapassa a capacidade para uma única página
-                    //o restante dos dados serão usados nas proximas paginas
-                    $nInicio = $i;
-                    break;
+                if ($pag != $totpag) {
+                    if ($hUsado >= $hmax && $i < $totItens) {
+                        //ultrapassa a capacidade para uma única página
+                        //o restante dos dados serão usados nas proximas paginas
+                        $nInicio = $i;
+                        break;
+                    }
                 }
                 $y_linha=$y+$h;
                 // linha entre itens
