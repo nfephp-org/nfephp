@@ -1600,7 +1600,7 @@ class MDFeNFePHP {
         // Monta string com todas as MDFe enviadas no array
         $sMDFe = implode('', $aMDFe);
         // Remover <?xml version="1.0" encoding=... das MDFe pois somente uma dessas tags pode exitir na mensagem
-        $sMDFe = str_replace(array('<?xml version="1.0" encoding="utf-8"?>', '<?xml version="1.0" encoding="UTF-8"?>', '<?xml version="1.0">'), '', $sMDFe);
+        $sMDFe = str_replace(array('<?xml version="1.0" encoding="utf-8"?>', '<?xml version="1.0" encoding="UTF-8"?>', '<?xml version="1.0"?>'), '', $sMDFe);
         $sMDFe = str_replace(array("\r", "\n", "\s"), "", $sMDFe);
         // Montagem do cabeçalho da comunicação SOAP
         $cabec = '<mdfeCabecMsg xmlns="' . $namespace . '"><cUF>' . $this->cUF . '</cUF><versaoDados>' . $versao . '</versaoDados></mdfeCabecMsg>';
