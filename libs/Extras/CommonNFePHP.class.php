@@ -157,13 +157,14 @@ class CommonNFePHP
         if ($DH == '') {
             return '';
         }
+        $DH = str_replace('+', '-', $DH);
         $aDH = explode('T', $DH);
         $adDH = explode('-', $aDH[0]);
-        if( count($aDH) > 1 ){
+        if (count($aDH) > 1) {
             $inter = explode('-', $aDH[1]);
             $atDH = explode(':', $inter[0]);
             $timestampDH = mktime($atDH[0], $atDH[1], $atDH[2], $adDH[1], $adDH[2], $adDH[0]);
-        }else{
+        } else {
             $timestampDH = mktime($month = $adDH[1], $day =  $adDH[2], $year = $adDH[0]);
         }
         return $timestampDH;
