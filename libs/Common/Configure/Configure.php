@@ -31,7 +31,7 @@ class Configure
         'cURL'=> array('curl','cURL Information','','7.22.2','mínimo cURL 7.22.2'),
         'OpenSSL' => array('openssl','OpenSSL Library Version','','','mínimo OpenSSL 1.0'),
         'DOM' => array('dom','libxml Version','','2.0.6','mínimo DOM 2.0.6'),
-        'GD' => array('gd','GD Version','','1.1.1','mínimo GD 1.1.1'),
+        'GD' => array('gd','GD Support','','','-----'),
         'SOAP' => array('soap','Soap Client','','','-----'),
         'ZIP' => array('zip','Zip version', '', '', '-----')
     );
