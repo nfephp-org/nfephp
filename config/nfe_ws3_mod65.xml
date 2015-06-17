@@ -19,8 +19,8 @@ ATENÇÃO!!! Vários endereços destes webservices ainda não foram totalmente
     <sigla>AM</sigla>
     <homologacao>
         <!-- NOTA: este ambiente de homologação serve apenas a inscritos no estado do Amazinas -->
-       <NFeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10">https://homnfce.sefaz.am.gov.br/nfce-services/services/NfeAutorizacao</NFeAutorizacao>
-       <NFeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10">https://homnfce.sefaz.am.gov.br/nfce-services/services/NfeRetAutorizacao</NFeRetAutorizacao>
+       <NfeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10">https://homnfce.sefaz.am.gov.br/nfce-services/services/NfeAutorizacao</NfeAutorizacao>
+       <NfeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10">https://homnfce.sefaz.am.gov.br/nfce-services/services/NfeRetAutorizacao</NfeRetAutorizacao>
        <NfeInutilizacao  method="nfeInutilizacaoNF2" operation="NfeInutilizacao2" version="3.10">https://homnfce.sefaz.am.gov.br/nfce-services/services/NfeInutilizacao2</NfeInutilizacao>
        <NfeConsultaProtocolo method="nfeConsultaNF2" operation="NfeConsulta2" version="3.10">https://homnfce.sefaz.am.gov.br/nfce-services/services/NfeConsulta2</NfeConsultaProtocolo>
        <NfeStatusServico method="nfeStatusServicoNF2" operation="NfeStatusServico2" version="3.10">https://homnfce.sefaz.am.gov.br/nfce-services/services/NfeStatusServico2</NfeStatusServico>
@@ -33,8 +33,8 @@ ATENÇÃO!!! Vários endereços destes webservices ainda não foram totalmente
        <NfeStatusEPEC method="nfeStatusServicoNF2" operation="NfeStatusServico2" version="3.10"></NfeStatusEPEC>       
     </homologacao>
     <producao>
-       <NFeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10">https://nfce.sefaz.am.gov.br/nfce-services/services/NfeAutorizacao</NFeAutorizacao>
-       <NFeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10">https://nfce.sefaz.am.gov.br/nfce-services/services/NfeRetAutorizacao</NFeRetAutorizacao>
+       <NfeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10">https://nfce.sefaz.am.gov.br/nfce-services/services/NfeAutorizacao</NfeAutorizacao>
+       <NfeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10">https://nfce.sefaz.am.gov.br/nfce-services/services/NfeRetAutorizacao</NfeRetAutorizacao>
        <NfeInutilizacao  method="nfeInutilizacaoNF2" operation="NfeInutilizacao2" version="3.10">https://nfce.sefaz.am.gov.br/nfce-services/services/NfeInutilizacao2</NfeInutilizacao>
        <NfeConsultaProtocolo method="nfeConsultaNF2" operation="NfeConsulta2" version="3.10">https://nfce.sefaz.am.gov.br/nfce-services/services/NfeConsulta2</NfeConsultaProtocolo>
        <NfeStatusServico method="nfeStatusServicoNF2" operation="NfeStatusServico2" version="3.10">https://nfce.sefaz.am.gov.br/nfce-services/services/NfeStatusServico2</NfeStatusServico>
@@ -50,8 +50,8 @@ ATENÇÃO!!! Vários endereços destes webservices ainda não foram totalmente
   <UF>
     <sigla>AN</sigla>
     <homologacao>
-       <NFeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10"></NFeAutorizacao>
-       <NFeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10"></NFeRetAutorizacao>
+       <NfeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10"></NfeAutorizacao>
+       <NfeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10"></NfeRetAutorizacao>
        <NfeInutilizacao  method="nfeInutilizacaoNF2" operation="NfeInutilizacao2" version="3.10"></NfeInutilizacao>
        <NfeConsultaProtocolo method="nfeConsultaNF2" operation="NfeConsulta2" version="3.10"></NfeConsultaProtocolo>
        <NfeStatusServico method="nfeStatusServicoNF2" operation="NfeStatusServico2" version="3.10"></NfeStatusServico>
@@ -64,8 +64,8 @@ ATENÇÃO!!! Vários endereços destes webservices ainda não foram totalmente
        <NfeStatusEPEC method="nfeStatusServicoNF2" operation="NfeStatusServico2" version="3.10"></NfeStatusEPEC>       
     </homologacao>
     <producao>
-       <NFeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10"></NFeAutorizacao>
-       <NFeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10"></NFeRetAutorizacao>
+       <NfeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10"></NfeAutorizacao>
+       <NfeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10"></NfeRetAutorizacao>
        <NfeInutilizacao  method="nfeInutilizacaoNF2" operation="NfeInutilizacao2" version="3.10"></NfeInutilizacao>
        <NfeConsultaProtocolo method="nfeConsultaNF2" operation="NfeConsulta2" version="3.10"></NfeConsultaProtocolo>
        <NfeStatusServico method="nfeStatusServicoNF2" operation="NfeStatusServico2" version="3.10"></NfeStatusServico>
@@ -90,8 +90,8 @@ ATENÇÃO!!! Vários endereços destes webservices ainda não foram totalmente
   <UF>
     <sigla>BA</sigla>
     <homologacao>
-       <NFeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10"></NFeAutorizacao>
-       <NFeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10"></NFeRetAutorizacao>
+       <NfeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10"></NfeAutorizacao>
+       <NfeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10"></NfeRetAutorizacao>
        <NfeInutilizacao  method="nfeInutilizacaoNF2" operation="NfeInutilizacao2" version="3.10"></NfeInutilizacao>
        <NfeConsultaProtocolo method="nfeConsultaNF2" operation="NfeConsulta2" version="3.10"></NfeConsultaProtocolo>
        <NfeStatusServico method="nfeStatusServicoNF2" operation="NfeStatusServico2" version="3.10"></NfeStatusServico>
@@ -104,8 +104,8 @@ ATENÇÃO!!! Vários endereços destes webservices ainda não foram totalmente
        <NfeStatusEPEC method="nfeStatusServicoNF2" operation="NfeStatusServico2" version="3.10"></NfeStatusEPEC>       
     </homologacao>
     <producao>
-       <NFeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10"></NFeAutorizacao>
-       <NFeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10"></NFeRetAutorizacao>
+       <NfeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10"></NfeAutorizacao>
+       <NfeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10"></NfeRetAutorizacao>
        <NfeInutilizacao  method="nfeInutilizacaoNF2" operation="NfeInutilizacao2" version="3.10"></NfeInutilizacao>
        <NfeConsultaProtocolo method="nfeConsultaNF2" operation="NfeConsulta2" version="3.10"></NfeConsultaProtocolo>
        <NfeStatusServico method="nfeStatusServicoNF2" operation="NfeStatusServico2" version="3.10"></NfeStatusServico>
@@ -121,8 +121,8 @@ ATENÇÃO!!! Vários endereços destes webservices ainda não foram totalmente
   <UF>
     <sigla>CE</sigla>
     <homologacao>
-       <NFeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10"></NFeAutorizacao>
-       <NFeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10"></NFeRetAutorizacao>
+       <NfeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10"></NfeAutorizacao>
+       <NfeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10"></NfeRetAutorizacao>
        <NfeInutilizacao  method="nfeInutilizacaoNF2" operation="NfeInutilizacao2" version="3.10"></NfeInutilizacao>
        <NfeConsultaProtocolo method="nfeConsultaNF2" operation="NfeConsulta2" version="3.10"></NfeConsultaProtocolo>
        <NfeStatusServico method="nfeStatusServicoNF2" operation="NfeStatusServico2" version="3.10"></NfeStatusServico>
@@ -135,8 +135,8 @@ ATENÇÃO!!! Vários endereços destes webservices ainda não foram totalmente
        <NfeStatusEPEC method="nfeStatusServicoNF2" operation="NfeStatusServico2" version="3.10"></NfeStatusEPEC>       
     </homologacao>
     <producao>
-       <NFeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10"></NFeAutorizacao>
-       <NFeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10"></NFeRetAutorizacao>
+       <NfeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10"></NfeAutorizacao>
+       <NfeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10"></NfeRetAutorizacao>
        <NfeInutilizacao  method="nfeInutilizacaoNF2" operation="NfeInutilizacao2" version="3.10"></NfeInutilizacao>
        <NfeConsultaProtocolo method="nfeConsultaNF2" operation="NfeConsulta2" version="3.10"></NfeConsultaProtocolo>
        <NfeStatusServico method="nfeStatusServicoNF2" operation="NfeStatusServico2" version="3.10"></NfeStatusServico>
@@ -161,8 +161,8 @@ ATENÇÃO!!! Vários endereços destes webservices ainda não foram totalmente
   <UF>
     <sigla>GO</sigla>
     <homologacao>
-       <NFeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10"></NFeAutorizacao>
-       <NFeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10"></NFeRetAutorizacao>
+       <NfeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10"></NfeAutorizacao>
+       <NfeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10"></NfeRetAutorizacao>
        <NfeInutilizacao  method="nfeInutilizacaoNF2" operation="NfeInutilizacao2" version="3.10"></NfeInutilizacao>
        <NfeConsultaProtocolo method="nfeConsultaNF2" operation="NfeConsulta2" version="3.10"></NfeConsultaProtocolo>
        <NfeStatusServico method="nfeStatusServicoNF2" operation="NfeStatusServico2" version="3.10"></NfeStatusServico>
@@ -175,8 +175,8 @@ ATENÇÃO!!! Vários endereços destes webservices ainda não foram totalmente
        <NfeStatusEPEC method="nfeStatusServicoNF2" operation="NfeStatusServico2" version="3.10"></NfeStatusEPEC>       
     </homologacao>
     <producao>
-       <NFeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10"></NFeAutorizacao>
-       <NFeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10"></NFeRetAutorizacao>
+       <NfeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10"></NfeAutorizacao>
+       <NfeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10"></NfeRetAutorizacao>
        <NfeInutilizacao  method="nfeInutilizacaoNF2" operation="NfeInutilizacao2" version="3.10"></NfeInutilizacao>
        <NfeConsultaProtocolo method="nfeConsultaNF2" operation="NfeConsulta2" version="3.10"></NfeConsultaProtocolo>
        <NfeStatusServico method="nfeStatusServicoNF2" operation="NfeStatusServico2" version="3.10"></NfeStatusServico>
@@ -201,8 +201,8 @@ ATENÇÃO!!! Vários endereços destes webservices ainda não foram totalmente
   <UF>
     <sigla>MG</sigla>
     <homologacao>
-       <NFeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10"></NFeAutorizacao>
-       <NFeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10"></NFeRetAutorizacao>
+       <NfeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10"></NfeAutorizacao>
+       <NfeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10"></NfeRetAutorizacao>
        <NfeInutilizacao  method="nfeInutilizacaoNF2" operation="NfeInutilizacao2" version="3.10"></NfeInutilizacao>
        <NfeConsultaProtocolo method="nfeConsultaNF2" operation="NfeConsulta2" version="3.10"></NfeConsultaProtocolo>
        <NfeStatusServico method="nfeStatusServicoNF2" operation="NfeStatusServico2" version="3.10"></NfeStatusServico>
@@ -215,8 +215,8 @@ ATENÇÃO!!! Vários endereços destes webservices ainda não foram totalmente
        <NfeStatusEPEC method="nfeStatusServicoNF2" operation="NfeStatusServico2" version="3.10"></NfeStatusEPEC>       
     </homologacao>
     <producao>
-       <NFeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10"></NFeAutorizacao>
-       <NFeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10"></NFeRetAutorizacao>
+       <NfeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10"></NfeAutorizacao>
+       <NfeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10"></NfeRetAutorizacao>
        <NfeInutilizacao  method="nfeInutilizacaoNF2" operation="NfeInutilizacao2" version="3.10"></NfeInutilizacao>
        <NfeConsultaProtocolo method="nfeConsultaNF2" operation="NfeConsulta2" version="3.10"></NfeConsultaProtocolo>
        <NfeStatusServico method="nfeStatusServicoNF2" operation="NfeStatusServico2" version="3.10"></NfeStatusServico>
@@ -232,8 +232,8 @@ ATENÇÃO!!! Vários endereços destes webservices ainda não foram totalmente
   <UF>
     <sigla>MS</sigla>
     <homologacao>
-      <NFeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10"></NFeAutorizacao>
-      <NFeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10"></NFeRetAutorizacao>
+      <NfeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10"></NfeAutorizacao>
+      <NfeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10"></NfeRetAutorizacao>
       <NfeInutilizacao  method="nfeInutilizacaoNF2" operation="NfeInutilizacao2" version="3.10"></NfeInutilizacao>
       <NfeConsultaProtocolo method="nfeConsultaNF2" operation="NfeConsulta2" version="3.10"></NfeConsultaProtocolo>
       <NfeStatusServico method="nfeStatusServicoNF2" operation="NfeStatusServico2" version="3.10"></NfeStatusServico>
@@ -246,8 +246,8 @@ ATENÇÃO!!! Vários endereços destes webservices ainda não foram totalmente
       <NfeStatusEPEC method="nfeStatusServicoNF2" operation="NfeStatusServico2" version="3.10"></NfeStatusEPEC>       
     </homologacao>
     <producao>
-      <NFeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10"></NFeAutorizacao>
-      <NFeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10"></NFeRetAutorizacao>
+      <NfeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10"></NfeAutorizacao>
+      <NfeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10"></NfeRetAutorizacao>
       <NfeInutilizacao  method="nfeInutilizacaoNF2" operation="NfeInutilizacao2" version="3.10"></NfeInutilizacao>
       <NfeConsultaProtocolo method="nfeConsultaNF2" operation="NfeConsulta2" version="3.10"></NfeConsultaProtocolo>
       <NfeStatusServico method="nfeStatusServicoNF2" operation="NfeStatusServico2" version="3.10"></NfeStatusServico>
@@ -263,8 +263,8 @@ ATENÇÃO!!! Vários endereços destes webservices ainda não foram totalmente
   <UF>
     <sigla>MT</sigla>
     <homologacao>
-       <NFeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10">https://homologacao.sefaz.mt.gov.br/nfcews/services/NfeAutorizacao</NFeAutorizacao>
-       <NFeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10">https://homologacao.sefaz.mt.gov.br/nfcews/services/NfeRetAutorizacao</NFeRetAutorizacao>
+       <NfeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10">https://homologacao.sefaz.mt.gov.br/nfcews/services/NfeAutorizacao</NfeAutorizacao>
+       <NfeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10">https://homologacao.sefaz.mt.gov.br/nfcews/services/NfeRetAutorizacao</NfeRetAutorizacao>
        <NfeInutilizacao  method="nfeInutilizacaoNF2" operation="NfeInutilizacao2" version="3.10">https://homologacao.sefaz.mt.gov.br/nfcews/services/NfeInutilizacao2</NfeInutilizacao>
        <NfeConsultaProtocolo method="nfeConsultaNF2" operation="NfeConsulta2" version="3.10">https://homologacao.sefaz.mt.gov.br/nfcews/services/NfeConsulta2</NfeConsultaProtocolo>
        <NfeStatusServico method="nfeStatusServicoNF2" operation="NfeStatusServico2" version="3.10">https://homologacao.sefaz.mt.gov.br/nfcews/services/NfeStatusServico2</NfeStatusServico>
@@ -277,8 +277,8 @@ ATENÇÃO!!! Vários endereços destes webservices ainda não foram totalmente
        <NfeStatusEPEC method="nfeStatusServicoNF2" operation="NfeStatusServico2" version="3.10"></NfeStatusEPEC>       
     </homologacao>
     <producao>
-       <NFeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10">https://nfce.sefaz.mt.gov.br/nfcews/services/NfeAutorizacao</NFeAutorizacao>
-       <NFeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10">https://nfce.sefaz.mt.gov.br/nfcews/services/NfeRetAutorizacao</NFeRetAutorizacao>
+       <NfeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10">https://nfce.sefaz.mt.gov.br/nfcews/services/NfeAutorizacao</NfeAutorizacao>
+       <NfeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10">https://nfce.sefaz.mt.gov.br/nfcews/services/NfeRetAutorizacao</NfeRetAutorizacao>
        <NfeInutilizacao  method="nfeInutilizacaoNF2" operation="NfeInutilizacao2" version="3.10">https://nfce.sefaz.mt.gov.br/nfcews/services/NfeInutilizacao2</NfeInutilizacao>
        <NfeConsultaProtocolo method="nfeConsultaNF2" operation="NfeConsulta2" version="3.10">https://nfce.sefaz.mt.gov.br/nfcews/services/NfeConsulta2</NfeConsultaProtocolo>
        <NfeStatusServico method="nfeStatusServicoNF2" operation="NfeStatusServico2" version="3.10">https://nfce.sefaz.mt.gov.br/nfcews/services/NfeStatusServico2</NfeStatusServico>
@@ -348,8 +348,8 @@ ATENÇÃO!!! Vários endereços destes webservices ainda não foram totalmente
  <UF>
     <sigla>PR</sigla>
     <homologacao>
-       <NFeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao3" version="3.10">https://homologacao.nfce.fazenda.pr.gov.br/nfce/NFeAutorizacao3</NFeAutorizacao>
-       <NFeRetAutorizacao method="nfeRetAutorizacao" operation="NfeRetAutorizacao3" version="3.10">https://homologacao.nfce.fazenda.pr.gov.br/nfce/NFeRetAutorizacao3</NFeRetAutorizacao>
+       <NfeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao3" version="3.10">https://homologacao.nfce.fazenda.pr.gov.br/nfce/NfeAutorizacao3</NfeAutorizacao>
+       <NfeRetAutorizacao method="nfeRetAutorizacao" operation="NfeRetAutorizacao3" version="3.10">https://homologacao.nfce.fazenda.pr.gov.br/nfce/NfeRetAutorizacao3</NfeRetAutorizacao>
        <NfeInutilizacao  method="nfeInutilizacaoNF" operation="NfeInutilizacao3" version="3.10">https://homologacao.nfce.fazenda.pr.gov.br/nfce/NFeInutilizacao3</NfeInutilizacao>
        <NfeConsultaProtocolo method="nfeConsultaNF" operation="NfeConsulta3" version="3.10">https://homologacao.nfce.fazenda.pr.gov.br/nfce/NFeConsulta3</NfeConsultaProtocolo>
        <NfeStatusServico method="nfeStatusServicoNF" operation="NfeStatusServico3" version="3.10">https://homologacao.nfce.fazenda.pr.gov.br/nfce/NFeStatusServico3</NfeStatusServico>
@@ -361,8 +361,8 @@ ATENÇÃO!!! Vários endereços destes webservices ainda não foram totalmente
        <RecepcaoEPEC method="nfeRecepcaoEvento" operation="RecepcaoEvento" version="1.00"></RecepcaoEPEC>
     </homologacao>
     <producao>
-       <NFeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao3" version="3.10">https://nfce.fazenda.pr.gov.br/nfce/NFeAutorizacao3</NFeAutorizacao>
-       <NFeRetAutorizacao method="nfeRetAutorizacao" operation="NfeRetAutorizacao3" version="3.10">https://nfce.fazenda.pr.gov.br/nfce/NFeRetAutorizacao3</NFeRetAutorizacao>
+       <NfeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao3" version="3.10">https://nfce.fazenda.pr.gov.br/nfce/NfeAutorizacao3</NfeAutorizacao>
+       <NfeRetAutorizacao method="nfeRetAutorizacao" operation="NfeRetAutorizacao3" version="3.10">https://nfce.fazenda.pr.gov.br/nfce/NfeRetAutorizacao3</NfeRetAutorizacao>
        <NfeInutilizacao  method="nfeInutilizacaoNF" operation="NfeInutilizacao3" version="3.10">https://nfce.fazenda.pr.gov.br/nfce/NFeInutilizacao3</NfeInutilizacao>
        <NfeConsultaProtocolo method="nfeConsultaNF" operation="NfeConsulta3" version="3.10">https://nfce.fazenda.pr.gov.br/nfce/NFeConsulta3</NfeConsultaProtocolo>
        <NfeStatusServico method="nfeStatusServicoNF" operation="NfeStatusServico3" version="3.10">https://nfce.fazenda.pr.gov.br/nfce/NFeStatusServico3</NfeStatusServico>
@@ -414,8 +414,8 @@ ATENÇÃO!!! Vários endereços destes webservices ainda não foram totalmente
   <UF>
     <sigla>RS</sigla>
     <homologacao>
-       <NFeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10">https://nfce-homologacao.sefazrs.rs.gov.br/ws/NfeAutorizacao/NFeAutorizacao.asmx</NFeAutorizacao>
-       <NFeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10">https://nfce-homologacao.sefazrs.rs.gov.br/ws/NfeRetAutorizacao/NFeRetAutorizacao.asmx</NFeRetAutorizacao>
+       <NfeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10">https://nfce-homologacao.sefazrs.rs.gov.br/ws/NfeAutorizacao/NfeAutorizacao.asmx</NfeAutorizacao>
+       <NfeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10">https://nfce-homologacao.sefazrs.rs.gov.br/ws/NfeRetAutorizacao/NfeRetAutorizacao.asmx</NfeRetAutorizacao>
        <NfeInutilizacao  method="nfeInutilizacaoNF2" operation="NfeInutilizacao2" version="3.10">https://nfce-homologacao.sefazrs.rs.gov.br/ws/nfeinutilizacao/nfeinutilizacao2.asmx</NfeInutilizacao>
        <NfeConsultaProtocolo method="nfeConsultaNF2" operation="NfeConsulta2" version="3.10">https://nfce-homologacao.sefazrs.rs.gov.br/ws/NfeConsulta/NfeConsulta2.asmx</NfeConsultaProtocolo>
        <NfeStatusServico method="nfeStatusServicoNF2" operation="NfeStatusServico2" version="3.10">https://nfce-homologacao.sefazrs.rs.gov.br/ws/NfeStatusServico/NfeStatusServico2.asmx</NfeStatusServico>
@@ -428,8 +428,8 @@ ATENÇÃO!!! Vários endereços destes webservices ainda não foram totalmente
        <NfeStatusEPEC method="nfeStatusServicoNF2" operation="NfeStatusServico2" version="3.10"></NfeStatusEPEC>       
     </homologacao>
     <producao>
-       <NFeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10">https://nfce.sefazrs.rs.gov.br/ws/NfeAutorizacao/NFeAutorizacao.asmx</NFeAutorizacao>
-       <NFeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10">https://nfce.sefazrs.rs.gov.br/ws/NfeRetAutorizacao/NFeRetAutorizacao.asmx</NFeRetAutorizacao>
+       <NfeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10">https://nfce.sefazrs.rs.gov.br/ws/NfeAutorizacao/NfeAutorizacao.asmx</NfeAutorizacao>
+       <NfeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10">https://nfce.sefazrs.rs.gov.br/ws/NfeRetAutorizacao/NfeRetAutorizacao.asmx</NfeRetAutorizacao>
        <NfeInutilizacao  method="nfeInutilizacaoNF2" operation="NfeInutilizacao2" version="3.10">https://nfce.sefazrs.rs.gov.br/ws/nfeinutilizacao/nfeinutilizacao2.asmx</NfeInutilizacao>
        <NfeConsultaProtocolo method="nfeConsultaNF2" operation="NfeConsulta2" version="3.10">https://nfce.sefazrs.rs.gov.br/ws/NfeConsulta/NfeConsulta2.asmx</NfeConsultaProtocolo>
        <NfeStatusServico method="nfeStatusServicoNF2" operation="NfeStatusServico2" version="3.10">https://nfce.sefazrs.rs.gov.br/ws/NfeStatusServico/NfeStatusServico2.asmx</NfeStatusServico>
@@ -463,8 +463,8 @@ ATENÇÃO!!! Vários endereços destes webservices ainda não foram totalmente
   <UF>
     <sigla>SP</sigla>
     <homologacao>
-       <NFeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10">https://homologacao.nfce.fazenda.sp.gov.br/ws/nfeautorizacao.asmx</NFeAutorizacao>
-       <NFeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10">https://homologacao.nfce.fazenda.sp.gov.br/ws/nferetautorizacao.asmx</NFeRetAutorizacao>
+       <NfeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10">https://homologacao.nfce.fazenda.sp.gov.br/ws/nfeautorizacao.asmx</NfeAutorizacao>
+       <NfeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10">https://homologacao.nfce.fazenda.sp.gov.br/ws/nferetautorizacao.asmx</NfeRetAutorizacao>
        <NfeInutilizacao  method="nfeInutilizacaoNF2" operation="NfeInutilizacao2" version="3.10">https://homologacao.nfce.fazenda.sp.gov.br/ws/nfeinutilizacao2.asmx</NfeInutilizacao>
        <NfeConsultaProtocolo method="nfeConsultaNF2" operation="NfeConsulta2" version="3.10">https://homologacao.nfce.fazenda.sp.gov.br/ws/nfeconsulta2.asmx</NfeConsultaProtocolo>
        <NfeStatusServico method="nfeStatusServicoNF2" operation="NfeStatusServico2" version="3.10">https://homologacao.nfce.fazenda.sp.gov.br/ws/nfestatusservico2.asmx</NfeStatusServico>
@@ -477,8 +477,8 @@ ATENÇÃO!!! Vários endereços destes webservices ainda não foram totalmente
        <NfeStatusEPEC method="nfeStatusServicoNF2" operation="NfeStatusServico2" version="3.10">https://homologacao.nfce.epec.fazenda.sp.gov.br/EPECws/EPECStatusServico.asmx</NfeStatusEPEC>
     </homologacao>
     <producao>
-       <NFeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10">https://nfce.fazenda.sp.gov.br/ws/nfeautorizacao.asmx</NFeAutorizacao>
-       <NFeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10">https://nfce.fazenda.sp.gov.br/ws/nferetautorizacao.asmx</NFeRetAutorizacao>
+       <NfeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10">https://nfce.fazenda.sp.gov.br/ws/nfeautorizacao.asmx</NfeAutorizacao>
+       <NfeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10">https://nfce.fazenda.sp.gov.br/ws/nferetautorizacao.asmx</NfeRetAutorizacao>
        <NfeInutilizacao  method="nfeInutilizacaoNF2" operation="NfeInutilizacao2" version="3.10">https://nfce.fazenda.sp.gov.br/ws/nfeinutilizacao2.asmx</NfeInutilizacao>
        <NfeConsultaProtocolo method="nfeConsultaNF2" operation="NfeConsulta2" version="3.10">https://nfce.fazenda.sp.gov.br/ws/nfeconsulta2.asmx</NfeConsultaProtocolo>
        <NfeStatusServico method="nfeStatusServicoNF2" operation="NfeStatusServico2" version="3.10">https://nfce.fazenda.sp.gov.br/ws/nfestatusservico2.asmx</NfeStatusServico>
@@ -503,8 +503,8 @@ ATENÇÃO!!! Vários endereços destes webservices ainda não foram totalmente
   <UF>
     <sigla>SVAN</sigla>
     <homologacao>
-       <NFeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10"></NFeAutorizacao>
-       <NFeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10"></NFeRetAutorizacao>
+       <NfeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10"></NfeAutorizacao>
+       <NfeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10"></NfeRetAutorizacao>
        <NfeInutilizacao  method="nfeInutilizacaoNF2" operation="NfeInutilizacao2" version="3.10"></NfeInutilizacao>
        <NfeConsultaProtocolo method="nfeConsultaNF2" operation="NfeConsulta2" version="3.10"></NfeConsultaProtocolo>
        <NfeStatusServico method="nfeStatusServicoNF2" operation="NfeStatusServico2" version="3.10"></NfeStatusServico>
@@ -517,8 +517,8 @@ ATENÇÃO!!! Vários endereços destes webservices ainda não foram totalmente
        <NfeStatusEPEC method="nfeStatusServicoNF2" operation="NfeStatusServico2" version="3.10"></NfeStatusEPEC>       
     </homologacao>
     <producao>
-       <NFeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10"></NFeAutorizacao>
-       <NFeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10"></NFeRetAutorizacao>
+       <NfeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10"></NfeAutorizacao>
+       <NfeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10"></NfeRetAutorizacao>
        <NfeInutilizacao  method="nfeInutilizacaoNF2" operation="NfeInutilizacao2" version="3.10"></NfeInutilizacao>
        <NfeConsultaProtocolo method="nfeConsultaNF2" operation="NfeConsulta2" version="3.10"></NfeConsultaProtocolo>
        <NfeStatusServico method="nfeStatusServicoNF2" operation="NfeStatusServico2" version="3.10"></NfeStatusServico>
@@ -534,8 +534,8 @@ ATENÇÃO!!! Vários endereços destes webservices ainda não foram totalmente
   <UF>
     <sigla>SVRS</sigla>
     <homologacao>
-       <NFeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10">https://nfce-homologacao.svrs.rs.gov.br/ws/NfeAutorizacao/NFeAutorizacao.asmx</NFeAutorizacao>
-       <NFeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10">https://nfce-homologacao.svrs.rs.gov.br/ws/NfeRetAutorizacao/NFeRetAutorizacao.asmx</NFeRetAutorizacao>
+       <NfeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10">https://nfce-homologacao.svrs.rs.gov.br/ws/NfeAutorizacao/NfeAutorizacao.asmx</NfeAutorizacao>
+       <NfeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10">https://nfce-homologacao.svrs.rs.gov.br/ws/NfeRetAutorizacao/NfeRetAutorizacao.asmx</NfeRetAutorizacao>
        <NfeInutilizacao  method="nfeInutilizacaoNF2" operation="NfeInutilizacao2" version="3.10">https://nfce-homologacao.svrs.rs.gov.br/ws/nfeinutilizacao/nfeinutilizacao2.asmx</NfeInutilizacao>
        <NfeConsultaProtocolo method="nfeConsultaNF2" operation="NfeConsulta2" version="3.10">https://nfce-homologacao.svrs.rs.gov.br/ws/NfeConsulta/NfeConsulta2.asmx</NfeConsultaProtocolo>
        <NfeStatusServico method="nfeStatusServicoNF2" operation="NfeStatusServico2" version="3.10">https://nfce-homologacao.svrs.rs.gov.br/ws/NfeStatusServico/NfeStatusServico2.asmx</NfeStatusServico>
@@ -548,8 +548,8 @@ ATENÇÃO!!! Vários endereços destes webservices ainda não foram totalmente
        <NfeStatusEPEC method="nfeStatusServicoNF2" operation="NfeStatusServico2" version="3.10"></NfeStatusEPEC>       
     </homologacao>
     <producao>
-       <NFeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10">https://nfce.svrs.rs.gov.br/ws/NfeAutorizacao/NFeAutorizacao.asmx</NFeAutorizacao>
-       <NFeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10">https://nfce.svrs.rs.gov.br/ws/NfeRetAutorizacao/NFeRetAutorizacao.asmx</NFeRetAutorizacao>
+       <NfeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10">https://nfce.svrs.rs.gov.br/ws/NfeAutorizacao/NfeAutorizacao.asmx</NfeAutorizacao>
+       <NfeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10">https://nfce.svrs.rs.gov.br/ws/NfeRetAutorizacao/NfeRetAutorizacao.asmx</NfeRetAutorizacao>
        <NfeInutilizacao  method="nfeInutilizacaoNF2" operation="NfeInutilizacao2" version="3.10">https://nfce.svrs.rs.gov.br/ws/nfeinutilizacao/nfeinutilizacao2.asmx</NfeInutilizacao>
        <NfeConsultaProtocolo method="nfeConsultaNF2" operation="NfeConsulta2" version="3.10">https://nfce.svrs.rs.gov.br/ws/NfeConsulta/NfeConsulta2.asmx</NfeConsultaProtocolo>
        <NfeStatusServico method="nfeStatusServicoNF2" operation="NfeStatusServico2" version="3.10">https://nfce.svrs.rs.gov.br/ws/NfeStatusServico/NfeStatusServico2.asmx</NfeStatusServico>
@@ -565,8 +565,8 @@ ATENÇÃO!!! Vários endereços destes webservices ainda não foram totalmente
   <UF>
     <sigla>SVCAN</sigla>
     <homologacao>
-       <NFeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10"></NFeAutorizacao>
-       <NFeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10"></NFeRetAutorizacao>
+       <NfeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10"></NfeAutorizacao>
+       <NfeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10"></NfeRetAutorizacao>
        <NfeInutilizacao  method="nfeInutilizacaoNF2" operation="NfeInutilizacao2" version="3.10"></NfeInutilizacao>
        <NfeConsultaProtocolo method="nfeConsultaNF2" operation="NfeConsulta2" version="3.10"></NfeConsultaProtocolo>
        <NfeStatusServico method="nfeStatusServicoNF2" operation="NfeStatusServico2" version="3.10"></NfeStatusServico>
@@ -579,8 +579,8 @@ ATENÇÃO!!! Vários endereços destes webservices ainda não foram totalmente
        <NfeStatusEPEC method="nfeStatusServicoNF2" operation="NfeStatusServico2" version="3.10"></NfeStatusEPEC>       
     </homologacao>
     <producao>
-       <NFeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10"></NFeAutorizacao>
-       <NFeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10"></NFeRetAutorizacao>
+       <NfeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10"></NfeAutorizacao>
+       <NfeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10"></NfeRetAutorizacao>
        <NfeInutilizacao  method="nfeInutilizacaoNF2" operation="NfeInutilizacao2" version="3.10"></NfeInutilizacao>
        <NfeConsultaProtocolo method="nfeConsultaNF2" operation="NfeConsulta2" version="3.10"></NfeConsultaProtocolo>
        <NfeStatusServico method="nfeStatusServicoNF2" operation="NfeStatusServico2" version="3.10"></NfeStatusServico>
@@ -596,8 +596,8 @@ ATENÇÃO!!! Vários endereços destes webservices ainda não foram totalmente
   <UF>
     <sigla>SVCRS</sigla>
     <homologacao>
-       <NFeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10"></NFeAutorizacao>
-       <NFeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10"></NFeRetAutorizacao>
+       <NfeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10"></NfeAutorizacao>
+       <NfeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10"></NfeRetAutorizacao>
        <NfeInutilizacao  method="nfeInutilizacaoNF2" operation="NfeInutilizacao2" version="3.10"></NfeInutilizacao>
        <NfeConsultaProtocolo method="nfeConsultaNF2" operation="NfeConsulta2" version="3.10"></NfeConsultaProtocolo>
        <NfeStatusServico method="nfeStatusServicoNF2" operation="NfeStatusServico2" version="3.10"></NfeStatusServico>
@@ -610,8 +610,8 @@ ATENÇÃO!!! Vários endereços destes webservices ainda não foram totalmente
        <NfeStatusEPEC method="nfeStatusServicoNF2" operation="NfeStatusServico2" version="3.10"></NfeStatusEPEC>       
     </homologacao>
     <producao>
-       <NFeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10"></NFeAutorizacao>
-       <NFeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10"></NFeRetAutorizacao>
+       <NfeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10"></NfeAutorizacao>
+       <NfeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10"></NfeRetAutorizacao>
        <NfeInutilizacao  method="nfeInutilizacaoNF2" operation="NfeInutilizacao2" version="3.10"></NfeInutilizacao>
        <NfeConsultaProtocolo method="nfeConsultaNF2" operation="NfeConsulta2" version="3.10"></NfeConsultaProtocolo>
        <NfeStatusServico method="nfeStatusServicoNF2" operation="NfeStatusServico2" version="3.10"></NfeStatusServico>
