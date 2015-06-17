@@ -69,6 +69,9 @@ $schemesNFSe = '';
 $razaosocial = '';
 $siglaUF = 'SP';
 $cnpj = '';
+$tokenIBPT = '';
+$tokenNFCe = '';
+$tokenNFCeId = '';
 $certPfxName = '';
 $certPassword = '';
 $certPhrase = '';
@@ -133,6 +136,10 @@ if (is_file($pathConfig)) {
     $razaosocial = isset($installConfig->razaosocial) ? $installConfig->razaosocial : '';
     $siglaUF = isset($installConfig->siglaUF) ? $installConfig->siglaUF : 'SP';
     $cnpj = isset($installConfig->cnpj) ? $installConfig->cnpj : '';
+    $tokenIBPT = isset($installConfig->tokenIBPT) ? $installConfig->tokenIBPT : '';
+    $tokenNFCe = isset($installConfig->tokenNFCe) ? $installConfig->tokenNFCe : '';
+    $tokenNFCeId = isset($installConfig->tokenNFCeId) ? $installConfig->tokenNFCeId : '';
+    
     $certPfxName = isset($installConfig->certPfxName) ? $installConfig->certPfxName : '';
     $certPassword = isset($installConfig->certPassword) ? $installConfig->certPassword : '';
     $certPhrase = isset($installConfig->certPhrase) ? $installConfig->certPhrase : '';
@@ -420,6 +427,12 @@ function changeAlerts(key, flag, msg) {
     <input type="password" id="certPhrase" name="certPhrase" placeholder="não usado" size="35" value="<?php echo $certPhrase;?>" readonly /><br>
     <span title="Indique o endereço para acessar a base do seu sistema">URL do Site</span><br>
     <input type="text" id="siteUrl" name="siteUrl" placeholder="Site url" size="60" value="<?php echo $siteUrl;?>" required /><br>
+    <span title="Indique o token para pesquisa no IBPT, requer cadastramento prévio">Token IBPT</span><br>
+    <input type="text" id="tokenIBPT" name="tokenIBPT" placeholder="token para IBPT" size="60" value="<?php echo $tokenIBPT;?>" /><br>
+    <span title="Indique o token para montagem do QRCode nas NFCe, requer cadastramento prévio na SEFAZ">Token NFCe</span><br>
+    <input type="text" id="tokenNFCe" name="tokenNFCe" placeholder="toke para NFCe" size="60" value="<?php echo $tokenNFCe;?>" /><br>
+    <span title="Indique o ID do token NFCe, 6 digitos numericos com zeros a esquerda">Token Id NFCe</span><br>
+    <input type="text" id="tokenNFCeId" name="tokenNFCeId" placeholder="000000" size="8" value="<?php echo $tokenNFCeId;?>" /><br>    
     </div>
     <div id="direita">
         <h3>Estes campos referen-se a os dados principais do emitente e todos os campos em amarelo são OBRIGATÓRIOS.</h3>
