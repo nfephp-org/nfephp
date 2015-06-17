@@ -750,17 +750,15 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
         $seq .= '&vNF=' . $vNF;
         $seq .= '&vICMS=' . $vICMS;
         $seq .= '&digVal=' . strtoupper($digHex);
-        $seq .= '&cIdToken=' . $idToken.$token;
+        $seq .= '&cIdToken=' . $idToken;
         //o hash code é calculado com o Token incluso
-        $hash = sha1($seq);
+        $hash = sha1($seq.$token);
         $seq .= '&cHashQRCode='.$hash;
         if (strpos($url, '?') === false) {
             $seq = $url.'?'.$seq;
         } else {
             $seq = $url.'&'.$seq;
         }
-        //remove o Token da mensagem
-        $seq = str_replace($token, '', $seq);
         $qrCode = new QrCode();
         $qrCode->setText($seq)
                ->setSize(200)
