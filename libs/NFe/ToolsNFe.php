@@ -1692,4 +1692,40 @@ class ToolsNFe extends BaseTools
     {
         return $this->oCertificate->expireTimestamp;
     }
+    
+    /**
+     * getImpostosIBPT
+     * Consulta o serviço do IBPT para obter os impostos ao consumidor 
+     * conforme Lei 12.741/2012
+     * @param string $ncm
+     * @param string $exTarif
+     * @param string $siglaUF
+     * @return array Array (
+     *                 [Codigo] => 60063100
+     *                 [UF] => SP
+     *                 [EX] => 0
+     *                 [Descricao] => Outs.tecidos de malha de fibras sinteticas, crus ou branqueados
+     *                 [Nacional] => 13.45
+     *                 [Estadual] => 18
+     *                 [Importado] => 16.14
+     *               )
+     */
+    public function getImpostosIBPT($ncm = '', $exTarif = '0', $siglaUF = '')
+    {
+        if ($siglaUF == '') {
+            $siglaUF = $this->aConfig['siglaUF'];
+        }
+        $cnpj = $this->aConfig['cnpj'];
+        $tokenIBPT = $this->aConfig['tokenIBPT'];
+        if ($ncm == '' || $tokenIBPT == '' || $cnpj == '') {
+            return array();
+        }
+        return $this->oSoap->getIBPTProd(
+            $cnpj,
+            $tokenIBPT,
+            $ncm,
+            $siglaUF,
+            $exTarif
+        );
+    }
 }
