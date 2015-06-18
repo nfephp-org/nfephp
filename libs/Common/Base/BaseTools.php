@@ -200,10 +200,15 @@ class BaseTools
     /**
      * __construct
      * @param string $configJson
+     * @throws Exception\InvalidArgumentException
      * @throws Exception\RuntimeException
      */
     public function __construct($configJson = '')
     {
+        if ($configJson == '') {
+            $msg = 'O arquivo de configuração no formato JSON deve ser passado para a classe.';
+            throw new Exception\InvalidArgumentException($msg);
+        }    
         if (is_file($configJson)) {
             $configJson = Files\FilesFolders::readFile($configJson);
         }
