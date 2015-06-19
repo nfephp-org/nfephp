@@ -961,7 +961,7 @@ class CTeNFePHP
             if (!isset($Signature)) {
                 // remove o erro de falta de assinatura
                 foreach ($aIntErrors as $k => $intError) {
-                    if (strpos($intError->message, '({http://www.w3.org/2000/09/xmldsig#}Signature)') !== false) {
+                    if (strpos($intError->message, '( {http://www.w3.org/2000/09/xmldsig#}Signature )') !== false) {
                         // remove o erro da assinatura, se tiver outro meio melhor
                         // (atraves dos erros de codigo) e alguem souber como tratar por eles,
                         // por favor contribua...
