@@ -55,7 +55,7 @@ $ambiente=2;
 // versão dos mesmos, pois alguns estados não estão utilizando as mesmas versões
 // Para NF-e utiliza por padrão o arquivo do modelo "55"
 $arquivoURLxml='nfe_ws3_mod55.xml';
-$arquivoURLxmlCTe="cte_ws1.xml";
+$arquivoURLxmlCTe="cte_ws2.xml";
 
 // Diretório onde serão mantidos os arquivos com as NFe em xml
 // a partir deste diretório serão montados todos os subdiretórios do sistema
@@ -69,7 +69,7 @@ $baseurl='http://localhost/nfephp';
 
 // Versão em uso dos shemas utilizados para validação dos xmls
 $schemes='PL_008c';
-$schemesCTe="PL_CTE_104";
+$schemesCTe="PL_CTe_200";
 
 //###############################
 //###### EMPRESA EMITENTE #######
