@@ -401,7 +401,8 @@ class ToolsNFe extends BaseTools
         //pode ser um evento ou resultado de uma consulta com multiplos eventos
         $doccanc = new Dom();
         $doccanc->loadXMLFile($pathCancfile);
-        $eventos = $doccanc->getElementsByTagName('infEvento');
+        $retEvento = $doccanc->getElementsByTagName('retEvento')->item(0);
+        $eventos = $retEvento->getElementsByTagName('infEvento');
         foreach ($eventos as $evento) {
             //evento
             $cStat = $evento->getElementsByTagName('cStat')->item(0)->nodeValue;
