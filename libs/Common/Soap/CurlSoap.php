@@ -1,6 +1,6 @@
 <?php
 
-namespace Common\Soap;
+namespace NFePHP\Common\Soap;
 
 /**
  * Classe auxiliar para envio das mensagens SOAP usando cURL
@@ -12,8 +12,8 @@ namespace Common\Soap;
  * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
  */
 
-use Common\Strings\Strings;
-use Common\Exception;
+use NFePHP\Common\Strings\Strings;
+use NFePHP\Common\Exception;
 
 class CurlSoap
 {
@@ -165,8 +165,12 @@ class CurlSoap
         //tamanho da mensagem
         $tamanho = strlen($data);
         //estabelecimento dos parametros da mensagem
+        //$parametros = array(
+        //    'Content-Type: application/soap+xml;charset=utf-8;action="'.$namespace."/".$method.'"',
+        //    'SOAPAction: "'.$method.'"',
+        //    "Content-length: $tamanho");
         $parametros = array(
-            'Content-Type: application/soap+xml;charset=utf-8;action="'.$namespace."/".$method.'"',
+            'Content-Type: application/soap+xml;charset=utf-8',
             'SOAPAction: "'.$method.'"',
             "Content-length: $tamanho");
         //solicita comunicação via cURL
@@ -202,6 +206,9 @@ class CurlSoap
         if ($xml == '') {
             $msg = "Não houve retorno de um xml verifique soapDebug!!";
             throw new Exception\RuntimeException($msg);
+        }
+        if ($xml != '' && substr($xml, 0, 5) != '<?xml') {
+            $xml = '<?xml version="1.0" encoding="utf-8"?>'.$xml;
         }
         return $xml;
     } //fim send
@@ -240,7 +247,7 @@ class CurlSoap
      * @param string $parametros
      * @return string
      */
-    protected function zCommCurl($url, $data = '', $parametros = array())
+    protected function zCommCurl($url, $data = '', $parametros = array(), $port = 443)
     {
         //incializa cURL
         $oCurl = curl_init();
@@ -261,7 +268,6 @@ class CurlSoap
         curl_setopt($oCurl, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
         curl_setopt($oCurl, CURLOPT_CONNECTTIMEOUT, $this->soapTimeout);
         curl_setopt($oCurl, CURLOPT_URL, $url);
-        curl_setopt($oCurl, CURLOPT_PORT, 443);
         curl_setopt($oCurl, CURLOPT_VERBOSE, 1);
         curl_setopt($oCurl, CURLOPT_HEADER, 1);
         //caso não seja setado o protpcolo SSL o php deverá determinar
@@ -283,8 +289,14 @@ class CurlSoap
         }
         curl_setopt($oCurl, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, 0);
-        curl_setopt($oCurl, CURLOPT_SSLCERT, $this->certKeyPath);
-        curl_setopt($oCurl, CURLOPT_SSLKEY, $this->priKeyPath);
+        if ($port == 443) {
+            curl_setopt($oCurl, CURLOPT_PORT, 443);
+            curl_setopt($oCurl, CURLOPT_SSLCERT, $this->certKeyPath);
+            curl_setopt($oCurl, CURLOPT_SSLKEY, $this->priKeyPath);
+        } else {
+            $agent= 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 1.0.3705; .NET CLR 1.1.4322)';
+            curl_setopt($oCurl, CURLOPT_USERAGENT, $agent);
+        }
         curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
         if ($data != '') {
             curl_setopt($oCurl, CURLOPT_POST, 1);
@@ -302,8 +314,8 @@ class CurlSoap
         $this->errorCurl = curl_error($oCurl);
         //fecha a conexão
         curl_close($oCurl);
-        //retorna resposta tendo o cuidado de decodificar caso esteja codificado
-        return htmlspecialchars_decode($resposta);
+        //retorna resposta
+        return $resposta;
     }
     
     /**
@@ -344,4 +356,35 @@ class CurlSoap
         //carrega a variavel debug
         $this->soapDebug = $data."\n\n".$txtInfo."\n".$resposta;
     }
-}//fim da classe CurlSoap
+    
+    /**
+     * getIBPTProd
+     * Consulta o serviço do IBPT para obter os impostos ao consumidor 
+     * conforme Lei 12.741/2012
+     * @param string $cnpj
+     * @param string $tokenIBPT
+     * @param string $ncm
+     * @param string $siglaUF
+     * @param string $exTarif
+     * @return array
+     */
+    public function getIBPTProd(
+        $cnpj = '',
+        $tokenIBPT = '',
+        $ncm = '',
+        $siglaUF = '',
+        $exTarif = '0'
+    ) {
+        $url = "http://iws.ibpt.org.br/api/Produtos?token=$tokenIBPT&cnpj=$cnpj&codigo=$ncm&uf=$siglaUF&ex=$exTarif";
+        $resposta = $this->zCommCurl($url, '', array(), 80);
+        $retorno = str_replace("\r\n", "|", $resposta);
+        $aResp = explode("||", $retorno);
+        if (!empty($aResp[1])) {
+            if (substr($aResp[1], 0, 1) == '{') {
+                $json = $aResp[1];
+                return (array) json_decode($json, true);
+            }
+        }
+        return array();
+    }
+}

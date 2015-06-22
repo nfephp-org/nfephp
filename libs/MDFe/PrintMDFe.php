@@ -1,5 +1,6 @@
 <?php
-namespace MDFe;
+
+namespace NFePHP\MDFe;
 
 /**
  * Classe para impressão dos documentos ficais

@@ -1,5 +1,6 @@
 <?php
-namespace Common\Dom;
+
+namespace NFePHP\Common\Dom;
 
 /**
  * Classe auxiliar com funções de DOM extendidas
@@ -12,8 +13,8 @@ namespace Common\Dom;
  */
 
 use \DOMDocument;
-use Common\Files\FilesFolders;
-use Common\Exception;
+use NFePHP\Common\Files\FilesFolders;
+use NFePHP\Common\Exception;
 
 class Dom extends DOMDocument
 {
@@ -56,9 +57,26 @@ class Dom extends DOMDocument
     {
         $node = $this->getElementsByTagName($nodeName)->item($itemNum);
         if (isset($node)) {
-            return $extraTextBefore . trim($node->nodeValue) . $extraTextAfter;
+            $texto = html_entity_decode(trim($node->nodeValue), ENT_QUOTES, 'UTF-8');
+            return $extraTextBefore . $texto . $extraTextAfter;
         }
         return '';
+    }
+    
+    /**
+     * getValue
+     * @param DOMElement $node
+     * @param string $name
+     * @return string
+     */
+    public function getValue($node, $name)
+    {
+        if (empty($node)) {
+            return '';
+        }
+        $texto = ! empty($node->getElementsByTagName($name)->item(0)->nodeValue) ?
+            $node->getElementsByTagName($name)->item(0)->nodeValue : '';
+        return html_entity_decode($texto, ENT_QUOTES, 'UTF-8');
     }
     
     /**
@@ -117,6 +135,7 @@ class Dom extends DOMDocument
         }
         if ($obrigatorio || $content !== '') {
             $content = trim($content);
+            $content = htmlspecialchars($content, ENT_QUOTES);
             $temp = $this->createElement($name, $content);
             $parent->appendChild($temp);
         }

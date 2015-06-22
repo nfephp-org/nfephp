@@ -1,6 +1,6 @@
 <?php
 
-namespace Common\Certificate;
+namespace NFePHP\Common\Certificate;
 
 /**
  * Classe auxiliar para obter informações dos certificados digitais A1 (PKCS12)
@@ -11,6 +11,8 @@ namespace Common\Certificate;
  * @author     Roberto L. Machado <linux.rlm at gmail dot com>
  * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
  */
+
+use NFePHP\Common\Certificate\Oids;
 
 class Asn extends Base
 {
@@ -34,15 +36,13 @@ class Asn extends Base
         $certDer = self::pem2Der((string) $certPem);
         $data = self::getOIDdata((string) $certDer, '2.16.76.1.3.3');
         return (string) $data[0][1][1][0][1];
-    }//fim getCNPJCert
+    }
     
     /**
      * getOIDdata
-     * 
      * Recupera a informação referente ao OID contido no certificado
      * Este método assume que a OID está inserida dentro de uma estrutura do
      * tipo "sequencia", como primeiro elemento da estrutura
-     * 
      * @param string $certDer
      * @param string $oidNumber
      * @return array
@@ -57,11 +57,12 @@ class Asn extends Base
         $partes = explode($oidHexa, $certDer);
         $ret = array();
         //se count($partes) > 1 então o OID foi localizado no certificado
-        if (count($partes)>1) {
+        $tot = count($partes);
+        if ($tot > 1) {
             //O inicio da sequencia que nos interessa pode estar a 3 ou 2 digitos
             //antes do inicio da OID, isso depende do numero de bytes usados para
             //identificar o tamanho da sequencia
-            for ($i=1; $i<count($partes); $i++) {
+            for ($i = 1; $i < $tot; $i++) {
                 //recupera da primeira parte os 4 últimos digitos na parte sem o OID
                 $xcv4 = substr($partes[$i-1], strlen($partes[$i-1])-4, 4);
                 //recupera da primeira parte os 3 ultimos digitos na parte sem o OID
@@ -96,13 +97,11 @@ class Asn extends Base
             }
         }
         return $ret;
-    }//fim getOIDdata
+    }
 
     /**
      * parseASN
-     * 
      * Retorna a informação requerida do certificado
-     * 
      * @param string $data bloco de dados do certificado a ser traduzido
      * @param boolean $contextEspecific
      * @return array com o dado do certificado já traduzido
@@ -199,11 +198,10 @@ class Asn extends Base
         } else {
             return array_pop($result);
         }
-    }//fim parseASN
+    }
     
     /**
      * parseCommon
-     * 
      * @param string $data
      * @param string $result
      * @return string
@@ -217,10 +215,8 @@ class Asn extends Base
         return substr($data, 2 + $bytes + self::$len);
     }
 
-
     /**
      * parseBooleanType
-     *  
      * @param string $data
      * @param array $result
      * @return void
@@ -238,7 +234,6 @@ class Asn extends Base
 
     /**
      * parseIntegerType
-     *  
      * @param string $data
      * @param array $result
      * @return void
@@ -274,7 +269,6 @@ class Asn extends Base
      
     /**
      * parseHexExtensions
-     * 
      * @param string $data
      * @param array $result
      * @param string $text
@@ -288,11 +282,10 @@ class Asn extends Base
             $text .' (' . self::$len . ')',
             dechex($extensionData));
         $data = $dataI;
-    }//fim parseHexExtensions
+    }
 
     /**
      * parseTimesType
-     * 
      * @param string $data
      * @param array $result
      * @return void
@@ -309,7 +302,6 @@ class Asn extends Base
     
     /**
      * parsePrintableString
-     * 
      * @param string $data
      * @param array $result
      * @return void
@@ -321,12 +313,10 @@ class Asn extends Base
         $result[] = array(
             'Printable String (' . self::$len . ')',
             $stringData);
-        
-    }//fim parsePrintableString
+    }
     
     /**
      * parseCharString
-     * 
      * @param string $data
      * @param array $result
      * @return void
@@ -338,11 +328,10 @@ class Asn extends Base
         $result[] = array(
             'string (' . self::$len . ')',
             self::printHex((string) $stringData));
-    }//fim parseCharString
+    }
     
     /**
      * parseExtensions
-     * 
      * @param string $data
      * @param array $result
      * @param string $text
@@ -355,11 +344,10 @@ class Asn extends Base
         $result[] = array(
             "$text (" . self::$len . ")",
             array(self::parseASN((string) $extensionData, true)));
-    }//parseExtensions
+    }
     
     /**
      * parseSequence
-     * 
      * @param string $data
      * @param array $result
      * @return void
@@ -379,15 +367,12 @@ class Asn extends Base
     
     /**
      * parseOIDtype
-     * 
      * @param string $data
      * @param array $result
      * @return void
      */
     protected static function parseOIDtype(&$data, &$result)
     {
-        //lista com os números e descrição dos OID
-        include_once('oidsTable.php');
         // Object identifier type
         $data = self::parseCommon($data, $oidData);
         // Unpack the OID
@@ -404,10 +389,11 @@ class Asn extends Base
             }
             $iCount++;
         }
-        if (isset($oidsTable[$plain])) {
+        $oidResp = Oids::getOid($plain);
+        if ($oidResp) {
             $result[] =  array(
                 'oid('.self::$len . '): '.$plain,
-                $oidsTable[$plain]);
+                $oidResp);
         } else {
             $result[] = array(
                 'oid('.self::$len.'): '.$plain,
@@ -417,7 +403,6 @@ class Asn extends Base
     
     /**
      * parseSetOf
-     * 
      * @param string $data
      * @param array $result
      * @return void
@@ -432,7 +417,6 @@ class Asn extends Base
     
     /**
      * parseOctetSting
-     * 
      * @param string $data
      * @param array $result
      * @param boolean $contextEspecific
@@ -455,7 +439,6 @@ class Asn extends Base
     
     /**
      * parseUtf8String
-     * 
      * @param string $data
      * @param array $result
      * @param boolean $contextEspecific
@@ -478,7 +461,6 @@ class Asn extends Base
 
     /**
      * parseIA5String
-     * 
      * @param string $data
      * @param array $result
      * @return void
@@ -494,7 +476,6 @@ class Asn extends Base
     
     /**
      * parseString
-     * 
      * @param string $data
      * @param array $result
      * @return void
@@ -510,7 +491,6 @@ class Asn extends Base
     
     /**
      * parseBitString
-     * 
      * @param string $data
      * @param array $result
      * @return void

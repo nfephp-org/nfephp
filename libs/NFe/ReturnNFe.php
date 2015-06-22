@@ -1,5 +1,6 @@
 <?php
-namespace NFe;
+
+namespace NFePHP\NFe;
 
 /**
  * Classe auxiliar com funções de DOM extendidas
@@ -11,7 +12,7 @@ namespace NFe;
  * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
  */
 
-use \DOMDocument;
+use NFePHP\Common\Dom\Dom;
 
 class ReturnNFe
 {
@@ -20,43 +21,41 @@ class ReturnNFe
      * Trata o retorno da SEFAZ devolvendo o resultado em um array
      * @param string $method
      * @param string $xmlResp
-     * @param mixed $parametro
      * @return array
      */
-    public static function readReturnSefaz($method, $xmlResp, $parametro = false)
+    public static function readReturnSefaz($method, $xmlResp)
     {
-        $dom = new DOMDocument('1.0', 'utf-8');
-        $dom->formatOutput = false;
-        $dom->preserveWhiteSpace = false;
-        $dom->loadXML($xmlResp);
+        $dom = new Dom('1.0', 'utf-8');
+        $dom->loadXMLString($xmlResp);
         //para cada $method tem um formato de retorno especifico
         switch ($method) {
-            case 'nfeAutorizacaoLote':
+            case 'NfeAutorizacao':
                 return self::zReadAutorizacaoLote($dom);
                 break;
-            case 'nfeRetAutorizacaoLote':
+            case 'NfeRetAutorizacao':
                 return self::zReadRetAutorizacaoLote($dom);
                 break;
-            case 'consultaCadastro2':
+            case 'NfeConsultaCadastro':
                 return self::zReadConsultaCadastro2($dom);
                 break;
-            case 'nfeConsultaNF2':
+            case 'NfeConsultaProtocolo':
                 return self::zReadConsultaNF2($dom);
                 break;
-            case 'nfeInutilizacaoNF2':
+            case 'NfeInutilizacao':
                 return self::zReadInutilizacaoNF2($dom);
                 break;
-            case 'nfeStatusServicoNF2':
+            case 'NfeStatusServico':
                 //NOTA: irá ser desativado
                 return self::zReadStatusServico($dom);
                 break;
-            case 'nfeRecepcaoEvento':
+            case 'RecepcaoEPEC':
+            case 'RecepcaoEvento':
                 return self::zReadRecepcaoEvento($dom);
                 break;
-            case 'nfeDistDFeInteresse':
+            case 'NFeDistribuicaoDFe':
                 return self::zReadDistDFeInteresse($dom);
                 break;
-            case 'nfeDownloadNF':
+            case 'NfeDownloadNF':
                 return self::zReadDownloadNF($dom);
                 break;
         }
@@ -82,49 +81,39 @@ class ReturnNFe
             'dhResp' => '',
             'aRetNFe' => array()
         );
-        $tag = $dom->getElementsByTagName('retDownloadNFe')->item(0);
+        $tag = $dom->getNode('retDownloadNFe');
         if (! isset($tag)) {
             return $aResposta;
         }
-        $retNFe = ! empty($tag->getElementsByTagName('retNFe')->item(0))
-                ? $tag->getElementsByTagName('retNFe')->item(0)
-                : '';
+        $retNFe = $dom->getNode('retNFe');
         if (! empty($retNFe)) {
-            $aRetNFe['cStat'] = $retNFe->getElementsByTagName('cStat')->item(0)->nodeValue;
-            $aRetNFe['xMotivo'] = $retNFe->getElementsByTagName('xMotivo')->item(0)->nodeValue;
-            $aRetNFe['chNFe'] = $retNFe->getElementsByTagName('chNFe')->item(0)->nodeValue;
-            $nfeProc = ! empty($retNFe->getElementsByTagName('nfeProc')->item(0))
-                ? $retNFe->getElementsByTagName('nfeProc')->item(0)
-                : '';
+            $aRetNFe['cStat'] = $dom->getValue($retNFe, 'cStat');
+            $aRetNFe['xMotivo'] = $dom->getValue($retNFe, 'xMotivo');
+            $aRetNFe['chNFe'] = $dom->getValue($retNFe, 'chNFe');
+            $nfeProc = $retNFe->getElementsByTagName('nfeProc')->item(0);
             if (! empty($nfeProc)) {
                 $aRetNFe['nfeProc'] = $dom->saveXML($nfeProc);
             }
         }
-        $procNFeZip = !empty($tag->getElementsByTagName('procNFeZip')->item(0)->nodeValue)
-            ? $tag->getElementsByTagName('procNFeZip')->item(0)->nodeValue
-            : '';
+        $procNFeZip = $dom->getValue($tag, 'procNFeZip');
         if (! empty($procNFeZip)) {
             $aRetNFe['procZip'] = gzdecode(base64_decode($procNFeZip));
         }
-        $nfeZip = !empty($tag->getElementsByTagName('NFeZip')->item(0)->nodeValue)
-            ? $tag->getElementsByTagName('NFeZip')->item(0)->nodeValue
-            : '';
+        $nfeZip = $dom->getValue($tag, 'NFeZip');
         if (! empty($nfeZip)) {
             $aRetNFe['nfeZip'] = gzdecode(base64_decode($nfeZip));
         }
-        $protZip = !empty($tag->getElementsByTagName('protNFeZip')->item(0)->nodeValue)
-            ? $tag->getElementsByTagName('protNFeZip')->item(0)->nodeValue
-            : '';
+        $protZip = $dom->getValue($tag, 'protNFeZip');
         if (! empty($protZip)) {
             $aRetNFe['protZip'] = gzdecode(base64_decode($protZip));
         }
         $aResposta['bStat'] = true;
         $aResposta['versao'] = $tag->getAttribute('versao');
-        $aResposta['tpAmb'] = $tag->getElementsByTagName('tpAmb')->item(0)->nodeValue;
-        $aResposta['verAplic'] = $tag->getElementsByTagName('verAplic')->item(0)->nodeValue;
-        $aResposta['cStat'] = $tag->getElementsByTagName('cStat')->item(0)->nodeValue;
-        $aResposta['xMotivo'] = $tag->getElementsByTagName('xMotivo')->item(0)->nodeValue;
-        $aResposta['dhResp'] = $tag->getElementsByTagName('dhResp')->item(0)->nodeValue;
+        $aResposta['tpAmb'] = $dom->getValue($tag, 'tpAmb');
+        $aResposta['verAplic'] = $dom->getValue($tag, 'verAplic');
+        $aResposta['cStat'] = $dom->getValue($tag, 'cStat');
+        $aResposta['xMotivo'] = $dom->getValue($tag, 'xMotivo');
+        $aResposta['dhResp'] = $dom->getValue($tag, 'dhResp');
         $aResposta['aRetNFe'] = $aRetNFe;
         return $aResposta;
     }
@@ -150,29 +139,22 @@ class ReturnNFe
             'nRec' => '',
             'prot' => array()
         );
-        $tag = $dom->getElementsByTagName('retEnviNFe')->item(0);
-        if (! isset($tag)) {
+        $tag = $dom->getNode('retEnviNFe');
+        if (empty($tag)) {
             return $aResposta;
         }
-        $dhRecbto = $tag->getElementsByTagName('dhRecbto')->item(0)->nodeValue;
-        $nRec = !empty($tag->getElementsByTagName('nRec')->item(0))
-            ? $tag->getElementsByTagName('nRec')->item(0)->nodeValue
-            : '';
-        $tMed = !empty($tag->getElementsByTagName('tMed')->item(0))
-            ? $tag->getElementsByTagName('tMed')->item(0)->nodeValue
-            : '';
-        $aProt[] = self::zGetProt($tag);
+        $aProt[] = self::zGetProt($dom, $tag);
         $aResposta = array(
             'bStat' => true,
             'versao' => $tag->getAttribute('versao'),
-            'tpAmb' => $tag->getElementsByTagName('tpAmb')->item(0)->nodeValue,
-            'verAplic' => $tag->getElementsByTagName('verAplic')->item(0)->nodeValue,
-            'cStat' => $tag->getElementsByTagName('cStat')->item(0)->nodeValue,
-            'xMotivo' => $tag->getElementsByTagName('xMotivo')->item(0)->nodeValue,
-            'cUF' => $tag->getElementsByTagName('cUF')->item(0)->nodeValue,
-            'dhRecbto' => $dhRecbto,
-            'tMed' => $tMed,
-            'nRec' => $nRec,
+            'tpAmb' => $dom->getValue($tag, 'tpAmb'),
+            'verAplic' => $dom->getValue($tag, 'verAplic'),
+            'cStat' => $dom->getValue($tag, 'cStat'),
+            'xMotivo' => $dom->getValue($tag, 'xMotivo'),
+            'cUF' => $dom->getValue($tag, 'cUF'),
+            'dhRecbto' => $dom->getValue($tag, 'dhRecbto'),
+            'tMed' => $dom->getValue($tag, 'tMed'),
+            'nRec' => $dom->getValue($tag, 'nRec'),
             'prot' => $aProt
         );
         return $aResposta;
@@ -198,26 +180,25 @@ class ReturnNFe
             'nRec' => '',
             'aProt' => array()
         );
-        $tag = $dom->getElementsByTagName('retConsReciNFe')->item(0);
-        if (! isset($tag)) {
+        $tag = $dom->getNode('retConsReciNFe');
+        if (empty($tag)) {
             return $aResposta;
         }
         $aProt = array();
-        $dhRecbto = $tag->getElementsByTagName('dhRecbto')->item(0)->nodeValue;
         $tagProt = $tag->getElementsByTagName('protNFe');
         foreach ($tagProt as $protocol) {
-            $aProt[] = self::zGetProt($protocol);
+            $aProt[] = self::zGetProt($dom, $protocol);
         }
         $aResposta = array(
             'bStat'=>true,
             'versao' => $tag->getAttribute('versao'),
-            'tpAmb' => $tag->getElementsByTagName('tpAmb')->item(0)->nodeValue,
-            'cStat' => $tag->getElementsByTagName('cStat')->item(0)->nodeValue,
-            'verAplic' => $tag->getElementsByTagName('verAplic')->item(0)->nodeValue,
-            'xMotivo' => $tag->getElementsByTagName('xMotivo')->item(0)->nodeValue,
-            'dhRecbto' => $dhRecbto,
-            'cUF' => $tag->getElementsByTagName('tpAmb')->item(0)->nodeValue,
-            'nRec' => $tag->getElementsByTagName('nRec')->item(0)->nodeValue,
+            'tpAmb' => $dom->getValue($tag, 'tpAmb'),
+            'cStat' => $dom->getValue($tag, 'cStat'),
+            'verAplic' => $dom->getValue($tag, 'verAplic'),
+            'xMotivo' => $dom->getValue($tag, 'xMotivo'),
+            'dhRecbto' => $dom->getValue($tag, 'dhRecbto'),
+            'cUF' => $dom->getValue($tag, 'cUF'),
+            'nRec' => $dom->getValue($tag, 'nRec'),
             'aProt' => $aProt
         );
         return $aResposta;
@@ -244,29 +225,23 @@ class ReturnNFe
             'cUF' => '',
             'aCad' => array()
         );
-        $tag = $dom->getElementsByTagName('retConsCad')->item(0);
-        if (! isset($tag)) {
+        $tag = $dom->getNode('retConsCad');
+        if (empty($tag)) {
             return $aResposta;
         }
-        $infCons = $tag->getElementsByTagName('infCons')->item(0);
-        $iest = !empty($infCons->getElementsByTagName('IE')->item(0)->nodeValue) ?
-                $infCons->getElementsByTagName('IE')->item(0)->nodeValue : '';
-        $cnpj = !empty($infCons->getElementsByTagName('CNPJ')->item(0)->nodeValue) ?
-                $infCons->getElementsByTagName('CNPJ')->item(0)->nodeValue : '';
-        $cpf =  !empty($infCons->getElementsByTagName('CPF')->item(0)->nodeValue) ?
-                $infCons->getElementsByTagName('CPF')->item(0)->nodeValue : '';
+        $infCons = $dom->getNode('infCons');
         $aResposta = array(
             'bStat' => true,
             'version' => $tag->getAttribute('versao'),
-            'cStat' => $infCons->getElementsByTagName('cStat')->item(0)->nodeValue,
-            'verAplic' => $infCons->getElementsByTagName('verAplic')->item(0)->nodeValue,
-            'xMotivo' => $infCons->getElementsByTagName('xMotivo')->item(0)->nodeValue,
-            'UF' => $infCons->getElementsByTagName('UF')->item(0)->nodeValue,
-            'IE' => $iest,
-            'CNPJ' => $cnpj,
-            'CPF' => $cpf,
-            'dhCons' => $infCons->getElementsByTagName('dhCons')->item(0)->nodeValue,
-            'cUF' => $infCons->getElementsByTagName('cUF')->item(0)->nodeValue,
+            'cStat' => $dom->getValue($infCons, 'cStat'),
+            'verAplic' => $dom->getValue($infCons, 'verAplic'),
+            'xMotivo' => $dom->getValue($infCons, 'xMotivo'),
+            'UF' => $dom->getValue($infCons, 'UF'),
+            'IE' => $dom->getValue($infCons, 'IE'),
+            'CNPJ' => $dom->getValue($infCons, 'CNPJ'),
+            'CPF' => $dom->getValue($infCons, 'CPF'),
+            'dhCons' => $dom->getValue($infCons, 'dhCons'),
+            'cUF' => $dom->getValue($infCons, 'cUF'),
             'aCad' => array()
         );
         $aCad = array();
@@ -277,24 +252,25 @@ class ReturnNFe
         foreach ($infCad as $cad) {
             $ender = $cad->getElementsByTagName('ender')->item(0);
             $aCad[] = array(
-                'IE' => $cad->getElementsByTagName('IE')->item(0)->nodeValue,
-                'CNPJ' => $cad->getElementsByTagName('CNPJ')->item(0)->nodeValue,
-                'UF' => $cad->getElementsByTagName('UF')->item(0)->nodeValue,
-                'cSit' => $cad->getElementsByTagName('cSit')->item(0)->nodeValue,
-                'indCredNFe' => $cad->getElementsByTagName('indCredNFe')->item(0)->nodeValue,
-                'indCredCTe' => $cad->getElementsByTagName('indCredCTe')->item(0)->nodeValue,
-                'xNome' => $cad->getElementsByTagName('xNome')->item(0)->nodeValue,
-                'xRegApur' => $cad->getElementsByTagName('xRegApur')->item(0)->nodeValue,
-                'CNAE' => $cad->getElementsByTagName('CNAE')->item(0)->nodeValue,
-                'dIniAtiv' => $cad->getElementsByTagName('dIniAtiv')->item(0)->nodeValue,
-                'dUltSit' => $cad->getElementsByTagName('dUltSit')->item(0)->nodeValue,
-                'xLgr' => $ender->getElementsByTagName('xLgr')->item(0)->nodeValue,
-                'nro' => $ender->getElementsByTagName('nro')->item(0)->nodeValue,
-                'xCpl' => $ender->getElementsByTagName('xCpl')->item(0)->nodeValue,
-                'xBairro' => $ender->getElementsByTagName('xBairro')->item(0)->nodeValue,
-                'cMun' => $ender->getElementsByTagName('cMun')->item(0)->nodeValue,
-                'xMun' => $ender->getElementsByTagName('xMun')->item(0)->nodeValue,
-                'CEP' => $ender->getElementsByTagName('CEP')->item(0)->nodeValue
+                'IE' => $dom->getValue($cad, 'IE'),
+                'CNPJ' => $dom->getValue($cad, 'CNPJ'),
+                'UF' => $dom->getValue($cad, 'UF'),
+                'cSit' => $dom->getValue($cad, 'cSit'),
+                'indCredNFe' => $dom->getValue($cad, 'indCredNFe'),
+                'indCredCTe' => $dom->getValue($cad, 'indCredCTe'),
+                'xNome' => $dom->getValue($cad, 'xNome'),
+                'xFant' => $dom->getValue($cad, 'xFant'),
+                'xRegApur' => $dom->getValue($cad, 'xRegApur'),
+                'CNAE' => $dom->getValue($cad, 'CNAE'),
+                'dIniAtiv' => $dom->getValue($cad, 'dIniAtiv'),
+                'dUltSit' => $dom->getValue($cad, 'dUltSit'),
+                'xLgr' => $dom->getValue($ender, 'xLgr'),
+                'nro' => $dom->getValue($ender, 'nro'),
+                'xCpl' => $dom->getValue($ender, 'xCpl'),
+                'xBairro' => $dom->getValue($ender, 'xBairro'),
+                'cMun' => $dom->getValue($ender, 'cMun'),
+                'xMun' => $dom->getValue($ender, 'xMun'),
+                'CEP' => $dom->getValue($ender, 'CEP')
             );
         }
         $aResposta['aCad'] = $aCad;
@@ -323,29 +299,29 @@ class ReturnNFe
             'aCanc' => array(),
             'aEvent' => array()
         );
-        $tag = $dom->getElementsByTagName('retConsSitNFe')->item(0);
-        if (! isset($tag)) {
+        $tag = $dom->getNode('retConsSitNFe');
+        if (empty($tag)) {
             return $aResposta;
         }
         $aEvent = array();
         $procEventoNFe = $tag->getElementsByTagName('procEventoNFe');
         if (isset($procEventoNFe)) {
             foreach ($procEventoNFe as $evento) {
-                $aEvent[] = self::zGetEvent($evento);
+                $aEvent[] = self::zGetEvent($dom, $evento);
             }
         }
         $aResposta = array(
             'bStat' => true,
             'versao' => $tag->getAttribute('versao'),
-            'tpAmb' => $tag->getElementsByTagName('tpAmb')->item(0)->nodeValue,
-            'cStat' => $tag->getElementsByTagName('cStat')->item(0)->nodeValue,
-            'verAplic' => $tag->getElementsByTagName('verAplic')->item(0)->nodeValue,
-            'xMotivo' => $tag->getElementsByTagName('xMotivo')->item(0)->nodeValue,
-            'dhRecbto' => $tag->getElementsByTagName('dhRecbto')->item(0)->nodeValue,
-            'cUF' => $tag->getElementsByTagName('cUF')->item(0)->nodeValue,
-            'chNFe' => $tag->getElementsByTagName('chNFe')->item(0)->nodeValue,
-            'aProt' => self::zGetProt($tag),
-            'aCanc' => self::zGetCanc($tag),
+            'tpAmb' => $dom->getValue($tag, 'tpAmb'),
+            'cStat' => $dom->getValue($tag, 'cStat'),
+            'verAplic' => $dom->getValue($tag, 'verAplic'),
+            'xMotivo' => $dom->getValue($tag, 'xMotivo'),
+            'dhRecbto' => $dom->getValue($tag, 'dhRecbto'),
+            'cUF' => $dom->getValue($tag, 'cUF'),
+            'chNFe' => $dom->getValue($tag, 'chNFe'),
+            'aProt' => self::zGetProt($dom, $tag),
+            'aCanc' => self::zGetCanc($dom, $tag),
             'aEvent' => $aEvent
         );
         return $aResposta;
@@ -379,24 +355,24 @@ class ReturnNFe
         if (! isset($tag)) {
             return $aResposta;
         }
-        $aResposta['bStat'] = true;
-        $aResposta['versao'] = $tag->getAttribute('versao');
-        $aResposta['tpAmb'] = $tag->getElementsByTagName('tpAmb')->item(0)->nodeValue;
-        $aResposta['verAplic'] = $tag->getElementsByTagName('verAplic')->item(0)->nodeValue;
-        $aResposta['cStat'] = $tag->getElementsByTagName('cStat')->item(0)->nodeValue;
-        $aResposta['xMotivo'] = $tag->getElementsByTagName('xMotivo')->item(0)->nodeValue;
-        $aResposta['cUF'] = $tag->getElementsByTagName('cUF')->item(0)->nodeValue;
-        $aResposta['dhRecbto'] = $tag->getElementsByTagName('dhRecbto')->item(0)->nodeValue;
         $infInut = $tag->getElementsByTagName('infInut')->item(0);
-        if (! empty($infInut) && 'ID' !== $infInut->getAttribute('Id')) {
-            $aResposta['ano'] = $infInut->getElementsByTagName('ano')->item(0)->nodeValue;
-            $aResposta['CNPJ'] = $infInut->getElementsByTagName('CNPJ')->item(0)->nodeValue;
-            $aResposta['mod'] = $infInut->getElementsByTagName('mod')->item(0)->nodeValue;
-            $aResposta['serie'] = $infInut->getElementsByTagName('serie')->item(0)->nodeValue;
-            $aResposta['nNFIni'] = $infInut->getElementsByTagName('nNFIni')->item(0)->nodeValue;
-            $aResposta['nNFFin'] = $infInut->getElementsByTagName('nNFFin')->item(0)->nodeValue;
-            $aResposta['nProt'] = $infInut->getElementsByTagName('nProt')->item(0)->nodeValue;
-        }
+        $aResposta = array(
+            'bStat' => true,
+            'versao' => $tag->getAttribute('versao'),
+            'tpAmb' => $dom->getValue($tag, 'tpAmb'),
+            'verAplic' => $dom->getValue($tag, 'verAplic'),
+            'cStat' => $dom->getValue($tag, 'cStat'),
+            'xMotivo' => $dom->getValue($tag, 'xMotivo'),
+            'cUF' => $dom->getValue($tag, 'cUF'),
+            'dhRecbto' => $dom->getValue($tag, 'dhRecbto'),
+            'ano' => $dom->getValue($infInut, 'ano'),
+            'CNPJ' => $dom->getValue($infInut, 'CNPJ'),
+            'mod' => $dom->getValue($infInut, 'mod'),
+            'serie' => $dom->getValue($infInut, 'serie'),
+            'nNFIni' => $dom->getValue($infInut, 'nNFIni'),
+            'nNFFin' => $dom->getValue($infInut, 'nNFFin'),
+            'nProt' => $dom->getValue($infInut, 'nProt')
+        );
         return $aResposta;
     }
     
@@ -422,17 +398,15 @@ class ReturnNFe
         if (! isset($tag)) {
             return $aResposta;
         }
-        $tMed = ! empty($tag->getElementsByTagName('tMed')->item(0)->nodeValue) ?
-                $tag->getElementsByTagName('tMed')->item(0)->nodeValue : '';
         $aResposta = array(
             'bStat' => true,
             'versao' => $tag->getAttribute('versao'),
-            'cStat' => $tag->getElementsByTagName('cStat')->item(0)->nodeValue,
-            'verAplic' => $tag->getElementsByTagName('verAplic')->item(0)->nodeValue,
-            'xMotivo' => $tag->getElementsByTagName('xMotivo')->item(0)->nodeValue,
-            'dhRecbto' => $tag->getElementsByTagName('dhRecbto')->item(0)->nodeValue,
-            'tMed' => $tMed,
-            'cUF' => $tag->getElementsByTagName('cUF')->item(0)->nodeValue
+            'cStat' => $dom->getValue($tag, 'cStat'),
+            'verAplic' => $dom->getValue($tag, 'verAplic'),
+            'xMotivo' => $dom->getValue($tag, 'xMotivo'),
+            'dhRecbto' => $dom->getValue($tag, 'dhRecbto'),
+            'tMed' => $dom->getValue($tag, 'tMed'),
+            'cUF' => $dom->getValue($tag, 'cUF')
         );
         return $aResposta;
     }
@@ -456,20 +430,20 @@ class ReturnNFe
             'xMotivo' => '',
             'evento' => array()
         );
-        $tag = $dom->getElementsByTagName('retEnvEvento')->item(0);
-        if (! isset($tag)) {
+        $tag = $dom->getNode('retEnvEvento');
+        if (empty($tag)) {
             return $aResposta;
         }
         $aResposta = array(
             'bStat' => true,
             'versao' => $tag->getAttribute('versao'),
-            'idLote' => $tag->getElementsByTagName('idLote')->item(0)->nodeValue,
-            'tpAmb' => $tag->getElementsByTagName('tpAmb')->item(0)->nodeValue,
-            'verAplic' => $tag->getElementsByTagName('verAplic')->item(0)->nodeValue,
-            'cOrgao' => $tag->getElementsByTagName('cOrgao')->item(0)->nodeValue,
-            'cStat' => $tag->getElementsByTagName('cStat')->item(0)->nodeValue,
-            'xMotivo' => $tag->getElementsByTagName('xMotivo')->item(0)->nodeValue,
-            'evento' => self::zGetEvent($tag)
+            'idLote' => $dom->getValue($tag, 'idLote'),
+            'tpAmb' => $dom->getValue($tag, 'tpAmb'),
+            'verAplic' => $dom->getValue($tag, 'verAplic'),
+            'cOrgao' => $dom->getValue($tag, 'cOrgao'),
+            'cStat' => $dom->getValue($tag, 'cStat'),
+            'xMotivo' => $dom->getValue($tag, 'xMotivo'),
+            'evento' => self::zGetEvent($dom, $tag)
         );
         return $aResposta;
     }
@@ -492,7 +466,7 @@ class ReturnNFe
             'maxNSU' => 0,
             'aDoc' => array()
         );
-        $tag = $dom->getElementsByTagName('retDistDFeInt')->item(0);
+        $tag = $dom->getNode('retDistDFeInt');
         if (! isset($tag)) {
             return $aResposta;
         }
@@ -509,11 +483,11 @@ class ReturnNFe
         $aResposta = array(
             'bStat' => true,
             'versao' => $tag->getAttribute('versao'),
-            'cStat' => $tag->getElementsByTagName('cStat')->item(0)->nodeValue,
-            'xMotivo' => $tag->getElementsByTagName('xMotivo')->item(0)->nodeValue,
-            'dhResp' => $tag->getElementsByTagName('dhResp')->item(0)->nodeValue,
-            'ultNSU' => $tag->getElementsByTagName('ultNSU')->item(0)->nodeValue,
-            'maxNSU' => $tag->getElementsByTagName('maxNSU')->item(0)->nodeValue,
+            'cStat' => $dom->getValue($tag, 'cStat'),
+            'xMotivo' => $dom->getValue($tag, 'xMotivo'),
+            'dhResp' => $dom->getValue($tag, 'dhResp'),
+            'ultNSU' => $dom->getValue($tag, 'ultNSU'),
+            'maxNSU' => $dom->getValue($tag, 'maxNSU'),
             'aDoc' => $aDocZip
         );
         return $aResposta;
@@ -524,22 +498,18 @@ class ReturnNFe
      * @param DOMDocument $tag
      * @return array
      */
-    private static function zGetProt($tag)
+    private static function zGetProt($dom, $tag)
     {
         $aProt = array();
         $infProt = $tag->getElementsByTagName('infProt')->item(0);
-        if (! empty($infProt)) {
-            $nProt = $infProt->getElementsByTagName('nProt')->item(0)
-                ? $infProt->getElementsByTagName('nProt')->item(0)->nodeValue
-                : '';
-
+        if (isset($infProt)) {
             $aProt = array(
-                'chNFe' => $infProt->getElementsByTagName('chNFe')->item(0)->nodeValue,
-                'dhRecbto' => $infProt->getElementsByTagName('dhRecbto')->item(0)->nodeValue,
-                'nProt' => $nProt,
-                'digVal' => $infProt->getElementsByTagName('digVal')->item(0)->nodeValue,
-                'cStat' => $infProt->getElementsByTagName('cStat')->item(0)->nodeValue,
-                'xMotivo' => $infProt->getElementsByTagName('xMotivo')->item(0)->nodeValue
+                'chNFe' => $dom->getValue($infProt, 'chNFe'),
+                'dhRecbto' => $dom->getValue($infProt, 'dhRecbto'),
+                'nProt' => $dom->getValue($infProt, 'nProt'),
+                'digVal' => $dom->getValue($infProt, 'digVal'),
+                'cStat' => $dom->getValue($infProt, 'cStat'),
+                'xMotivo' => $dom->getValue($infProt, 'xMotivo')
             );
         }
         return $aProt;
@@ -550,36 +520,41 @@ class ReturnNFe
      * @param DOMDocument $tag
      * @return array
      */
-    private static function zGetEvent($tag)
+    private static function zGetEvent($dom, $tag)
     {
         $aEvent = array();
-        $infEvento = $tag->getElementsByTagName('infEvento')->item(0);
-        if (! empty($infEvento)) {
-            $cnpjDest = !empty($infEvento->getElementsByTagName('CNPJDest')->item(0))
-                ? $infEvento->getElementsByTagName('CNPJDest')->item(0)->nodeValue
-                : '';
-            $emailDest = !empty($infEvento->getElementsByTagName('emailDest')->item(0))
-                ? $infEvento->getElementsByTagName('emailDest')->item(0)->nodeValue
-                : '';
-            $nProt = !empty($infEvento->getElementsByTagName('nProt')->item(0))
-                ? $infEvento->getElementsByTagName('nProt')->item(0)->nodeValue
-                : '';
-
-            $aEvent = array(
-                'tpAmb' => $infEvento->getElementsByTagName('tpAmb')->item(0)->nodeValue,
-                'verAplic' => $infEvento->getElementsByTagName('verAplic')->item(0)->nodeValue,
-                'cOrgao' => $infEvento->getElementsByTagName('cOrgao')->item(0)->nodeValue,
-                'cStat' => $infEvento->getElementsByTagName('cStat')->item(0)->nodeValue,
-                'xMotivo' => $infEvento->getElementsByTagName('xMotivo')->item(0)->nodeValue,
-                'chNFe' => $infEvento->getElementsByTagName('chNFe')->item(0)->nodeValue,
-                'tpEvento' => $infEvento->getElementsByTagName('tpEvento')->item(0)->nodeValue,
-                'xEvento' => $infEvento->getElementsByTagName('xEvento')->item(0)->nodeValue,
-                'nSeqEvento' => $infEvento->getElementsByTagName('nSeqEvento')->item(0)->nodeValue,
-                'dhRegEvento' => $infEvento->getElementsByTagName('dhRegEvento')->item(0)->nodeValue,
-                'CNPJDest' => $cnpjDest,
-                'emailDest' => $emailDest,
-                'nProt' => $nProt
-            );
+        $aRetEvento = $tag->getElementsByTagName('retEvento');
+        if (isset($aRetEvento)) {
+            foreach ($aRetEvento as $retEvento) {
+                $aNFePend = array();
+                $infEvento = $retEvento->getElementsByTagName('infEvento')->item(0);
+                if (isset($infEvento)) {
+                    $aChNFePend = $infEvento->getElementsByTagName('infEvento');
+                    if (isset($aChNFePend)) {
+                        foreach ($aChNFePend as $chNFePend) {
+                            $aNFePend[] = $chNFePend->nodeValue;
+                        }
+                    }
+                    $aEv[] = array(
+                        'tpAmb' => $dom->getValue($infEvento, 'tpAmb'),
+                        'verAplic' => $dom->getValue($infEvento, 'verAplic'),
+                        'cOrgao' => $dom->getValue($infEvento, 'cOrgao'),
+                        'cStat' => $dom->getValue($infEvento, 'cStat'),
+                        'xMotivo' => $dom->getValue($infEvento, 'xMotivo'),
+                        'chNFe' => $dom->getValue($infEvento, 'chNFe'),
+                        'tpEvento' => $dom->getValue($infEvento, 'tpEvento'),
+                        'xEvento' => $dom->getValue($infEvento, 'xEvento'),
+                        'nSeqEvento' => $dom->getValue($infEvento, 'nSeqEvento'),
+                        'cOrgaoAutor' => $dom->getValue($infEvento, 'cOrgaoAutor'),
+                        'dhRegEvento' => $dom->getValue($infEvento, 'dhRegEvento'),
+                        'CNPJDest' => $dom->getValue($infEvento, 'CNPJDest'),
+                        'emailDest' =>  $dom->getValue($infEvento, 'emailDest'),
+                        'nProt' => $dom->getValue($infEvento, 'nProt'),
+                        'chNFePend' => $aNFePend
+                    );
+                }
+            }
+            $aEvent = $aEv;
         }
         return $aEvent;
     }
@@ -589,19 +564,21 @@ class ReturnNFe
      * @param DOMDocument $tag
      * @return array
      */
-    private static function zGetCanc($tag)
+    private static function zGetCanc($dom, $tag)
     {
         $aCanc = array();
         $infCanc = $tag->getElementsByTagName('infCanc')->item(0);
-        if (! empty($infCanc)) {
-            $aCanc['tpAmb'] = $infCanc->getElementsByTagName('tpAmb')->item(0)->nodeValue;
-            $aCanc['verAplic'] = $infCanc->getElementsByTagName('verAplic')->item(0)->nodeValue;
-            $aCanc['cStat'] = $infCanc->getElementsByTagName('cStat')->item(0)->nodeValue;
-            $aCanc['xMotivo'] = $infCanc->getElementsByTagName('xMotivo')->item(0)->nodeValue;
-            $aCanc['cUF'] = $infCanc->getElementsByTagName('cUF')->item(0)->nodeValue;
-            $aCanc['chNFe'] = $infCanc->getElementsByTagName('chNFe')->item(0)->nodeValue;
-            $aCanc['dhRecbto'] = $infCanc->getElementsByTagName('dhRecbto')->item(0)->nodeValue;
-            $aCanc['nProt'] = $infCanc->getElementsByTagName('nProt')->item(0)->nodeValue;
+        if (isset($infCanc)) {
+            $aCanc = array (
+                'tpAmb' => $dom->getValue($infCanc, 'tpAmb'),
+                'verAplic' => $dom->getValue($infCanc, 'verAplic'),
+                'cStat' => $dom->getValue($infCanc, 'cStat'),
+                'xMotivo' => $dom->getValue($infCanc, 'xMotivo'),
+                'cUF' => $dom->getValue($infCanc, 'cUF'),
+                'chNFe' => $dom->getValue($infCanc, 'chNFe'),
+                'dhRecbto' => $dom->getValue($infCanc, 'dhRecbto'),
+                'nProt' => $dom->getValue($infCanc, 'nProt')
+            );
         }
         return $aCanc;
     }

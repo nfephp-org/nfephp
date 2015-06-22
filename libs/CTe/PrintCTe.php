@@ -1,5 +1,6 @@
 <?php
-namespace CTe;
+
+namespace NFePHP\CTe;
 
 /**
  * Classe para impressão dos documentos ficais

@@ -1,5 +1,6 @@
 <?php
-namespace Common\Base;
+
+namespace NFePHP\Common\Base;
 
 /**
  * Classe base das classes principais para a comunicação com a SEFAZ
@@ -12,12 +13,12 @@ namespace Common\Base;
  * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
  */
 
-use Common\Certificate\Pkcs12;
-use Common\DateTime\DateTime;
-use Common\Dom\Dom;
-use Common\Soap\CurlSoap;
-use Common\Files;
-use Common\Exception;
+use NFePHP\Common\Certificate\Pkcs12;
+use NFePHP\Common\DateTime\DateTime;
+use NFePHP\Common\Dom\Dom;
+use NFePHP\Common\Soap\CurlSoap;
+use NFePHP\Common\Files;
+use NFePHP\Common\Exception;
 
 if (!defined('NFEPHP_ROOT')) {
     define('NFEPHP_ROOT', dirname(dirname(dirname(__FILE__))));
@@ -38,6 +39,12 @@ class BaseTools
      */
     public $enableSVCAN = false;
     /**
+     * enableSVCAN
+     * Habilita contingência ao serviço SVC-AN: Sefaz Virtual de Contingência Ambiente Nacional
+     * @var boolean
+     */
+    public $enableEPEC = false;
+    /**
      * motivoContingencia
      * Motivo por ter entrado em Contingencia
      * @var string 
@@ -49,6 +56,38 @@ class BaseTools
      * @var int
      */
     public $tsContingencia = '';
+    /**
+     * verAplic
+     * Versão da aplicação
+     * @var string 
+     */
+    public $verAplic = '';
+    /**
+     * certExpireTimestamp
+     * TimeStamp com a data de vencimento do certificado
+     * @var double
+     */
+    public $certExpireTimestamp = 0;
+    /**
+     * ambiente
+     * @var string
+     */
+    public $ambiente = 'homologacao';
+    /**
+     * aConfig
+     * @var array
+     */
+    public $aConfig = array();
+    /**
+     * sslProtocol
+     * @var int
+     */
+    public $sslProtocol = 0;
+    /**
+     * soapTimeout
+     * @var int
+     */
+    public $soapTimeout = 10;
     
     /**
      * oCertificate
@@ -60,11 +99,6 @@ class BaseTools
      * @var Object Class  
      */
     protected $oSoap;
-    /**
-     * aConfig
-     * @var array
-     */
-    protected $aConfig = array();
     /**
      * aDocFormat
      * @var array 
@@ -126,7 +160,11 @@ class BaseTools
      * @var string
      */
     protected $modelo = '55';
-
+    
+    /**
+     * cUFlist
+     * @var array
+     */
     protected $cUFlist = array(
         'AC'=>'12',
         'AL'=>'27',
@@ -162,10 +200,15 @@ class BaseTools
     /**
      * __construct
      * @param string $configJson
+     * @throws Exception\InvalidArgumentException
      * @throws Exception\RuntimeException
      */
     public function __construct($configJson = '')
     {
+        if ($configJson == '') {
+            $msg = 'O arquivo de configuração no formato JSON deve ser passado para a classe.';
+            throw new Exception\InvalidArgumentException($msg);
+        }    
         if (is_file($configJson)) {
             $configJson = Files\FilesFolders::readFile($configJson);
         }
@@ -192,11 +235,13 @@ class BaseTools
                 throw new Exception\RuntimeException($msg);
             }
         }
+        $this->setAmbiente($this->aConfig['tpAmb']);
+        $this->certExpireTimestamp = $this->oCertificate->expireTimestamp;
         $this->zLoadSoapClass();
         //verifica se a contingência está ativada
         $pathContingencia = NFEPHP_ROOT.DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'contingencia.json';
         if (is_file($pathContingencia)) {
-            $contJson = file_get_contents($pathContingencia);
+            $contJson = Files\FilesFolders::readFile($pathContingencia);
             if (! empty($contJson)) {
                  $aCont = (array) json_decode($contJson);
                  $this->motivoContingencia = $aCont['motivo'];
@@ -204,6 +249,88 @@ class BaseTools
                  $this->enableSVCAN = $aCont['SVCAN'];
                  $this->enableSVCRS = $aCont['SVCRS'];
             }
+        }
+    }
+    
+    /**
+     * setSSLProtocol
+     * Força o uso de um determinado protocolo de encriptação
+     * na comunicação https com a SEFAZ usando cURL
+     * Apenas é necessário quando a versão do PHP e do libssl não
+     * consegue estabelecer o protocolo correto durante o handshake
+     * @param string $protocol
+     */
+    public function setSSLProtocol($protocol = '')
+    {
+        if (! empty($protocol)) {
+            switch ($protocol) {
+                case 'TLSv1':
+                    $this->sslProtocol = 1;
+                    break;
+                case 'SSLv2':
+                    $this->sslProtocol = 2;
+                    break;
+                case 'SSLv3':
+                    $this->sslProtocol = 3;
+                    break;
+                case 'TLSv1.0':
+                    $this->sslProtocol = 4;
+                    break;
+                case 'TLSv1.1':
+                    $this->sslProtocol = 5;
+                    break;
+                case 'TLSv1.2':
+                    $this->sslProtocol = 6;
+                    break;
+                default:
+                    $this->sslProtocol = 0;
+            }
+            $this->zLoadSoapClass();
+        }
+    }
+    
+    /**
+     * getSSLProtocol
+     * Retrona o protocolo que está setado
+     * @return string
+     */
+    public function getSSLProtocol()
+    {
+        $aPr = array('default','TLSv1','SSLv2','SSLv3','TLSv1.0','TLSv1.1','TLSv1.2');
+        return $aPr[$this->sslProtocol];
+    }
+    
+    /**
+     * setSoapTimeOut
+     * @param integer $segundos
+     */
+    public function setSoapTimeOut($segundos = 10)
+    {
+        if (! empty($segundos)) {
+            $this->soapTimeout = $segundos;
+            $this->zLoadSoapClass();
+        }
+    }
+    
+    /**
+     * getSoapTimeOut
+     * @return integer
+     */
+    public function getSoapTimeOut()
+    {
+        return $this->soapTimeout;
+    }
+    
+    /**
+     * setAmbiente
+     * Seta a varável de ambiente
+     * @param string $tpAmb
+     */
+    protected function setAmbiente($tpAmb = '2')
+    {
+        $this->ambiente = 'homologacao';
+        if ($tpAmb == '1') {
+            $this->ambiente = 'producao';
         }
     }
     
@@ -230,24 +357,31 @@ class BaseTools
     /**
      * assinaDoc
      * @param string $xml
-     * @param boolean $saveFile
+     * @param string $tipo nfe, cte, ou mdfe
+     * @param string $tag Nome da tag a ser assinada 
+     * @param boolean $saveFile APENAS para salvar NFe, CTe ou MDFe
      * @return string
+     * @throws Exception\InvalidArgumentException
      * @throws Exception\RuntimeException
      */
     public function assinaDoc($xml = '', $tipo = '', $tag = '', $saveFile = false)
     {
+        if ($tag == '') {
+            $msg = 'Deve ser indicada uma tag a ser assinada';
+            throw new Exception\InvalidArgumentException($msg);
+        }
         if (is_file($xml)) {
             $xml = Files\FilesFolders::readFile($xml);
         }
         $sxml = $this->oCertificate->signXML($xml, $tag);
         $dom = new Dom();
         $dom->loadXMLString($sxml);
-        $versao = $dom->getElementsByTagName($tag)->item(0)->getAttribute('versao');
-//        if (! $this->zValidMessage($sxml, $tipo, $versao)) {
-//            $msg = "Falha na validação do $tipo. ".$this->error;
-//            throw new Exception\RuntimeException($msg);
-//        }
-        if ($saveFile) {
+        //$versao = $dom->getElementsByTagName($tag)->item(0)->getAttribute('versao');
+        //if (! $this->zValidMessage($sxml, $tipo, $versao)) {
+        //$msg = "Falha na validação do $tipo. ".$this->error;
+        //  throw new Exception\RuntimeException($msg);
+        //}
+        if ($saveFile && $tipo != '') {
             $dom = new Dom();
             $dom->loadXMLString($sxml);
             $tpAmb = $dom->getElementsByTagName('tpAmb')->item(0)->nodeValue;
@@ -261,6 +395,15 @@ class BaseTools
         }
         return $sxml;
     }
+    
+    /**
+     * setVerAplic
+     * @param string $versao
+     */
+    public function setVerAplic($versao = '')
+    {
+        $this->verAplic = $versao;
+    }
 
     /**
      * Carrega a classe SOAP e os certificados
@@ -272,7 +415,8 @@ class BaseTools
             $this->oCertificate->priKeyFile,
             $this->oCertificate->pubKeyFile,
             $this->oCertificate->certKeyFile,
-            '10'
+            $this->soapTimeout,
+            $this->sslProtocol
         );
     }
     
@@ -282,12 +426,7 @@ class BaseTools
      * @param string $service
      * @param string $siglaUF
      * @param string $tpAmb
-     * @param int $cUF
-     * @param string $urlservice
-     * @param string $namespace
-     * @param string $header
-     * @param string $method
-     * @param string $version
+     * @param string $tipo
      * @return bool
      * @internal param string $servico Identificação do Servico
      * @internal param array $aURL Dados das Urls do SEFAZ
@@ -424,7 +563,42 @@ class BaseTools
                 "Arquivo $pathXmlUrlFile parece ser invalido ou está corrompido."
             );
         }
-        $autorizadores = array(
+        $autorizadores = array();
+        $autorizadores['65'] = array(
+            'AC'=>'SVRS',
+            'AL'=>'SVRS',
+            'AM'=>'AM',
+            'AN'=>'AN',
+            'AP'=>'SVRS',
+            'BA'=>'SVRS',
+            'CE'=>'CE',
+            'DF'=>'SVRS',
+            'ES'=>'SVRS',
+            'GO'=>'SVRS',
+            'MA'=>'SVRS',
+            'MG'=>'MG',
+            'MS'=>'MS',
+            'MT'=>'MT',
+            'PA'=>'SVRS',
+            'PB'=>'SVRS',
+            'PE'=>'PE',
+            'PI'=>'SVRS',
+            'PR'=>'PR',
+            'RJ'=>'SVRS',
+            'RN'=>'SVRS',
+            'RO'=>'SVRS',
+            'RR'=>'SVRS',
+            'RS'=>'RS',
+            'SC'=>'SVRS',
+            'SE'=>'SVRS',
+            'SP'=>'SP',
+            'TO'=>'SVRS',
+            'SVAN'=>'SVAN',
+            'SVRS'=>'SVRS',
+            'SVCAN'=>'SVCAN',
+        );
+        
+        $autorizadores['55'] = array(
             'AC'=>'SVRS',
             'AL'=>'SVRS',
             'AM'=>'AM',
@@ -465,7 +639,7 @@ class BaseTools
         if ($tpAmb == '1') {
             $sAmbiente = 'producao';
         }
-        $alias = $autorizadores[$siglaUF];
+        $alias = $autorizadores[$this->modelo][$siglaUF];
         if ($tipo == 'mdfe') {
             $alias = 'RS';
         }
@@ -482,7 +656,7 @@ class BaseTools
     
     /**
      * zExtractUrl
-     * @param simplexml $xmlWS
+     * @param \SimpleXMLElement $xmlWS
      * @param array $aUrl
      * @param string $expression
      * @return array

@@ -1,8 +1,9 @@
 <?php
-namespace NFe;
+
+namespace NFePHP\NFe;
 
 /**
- * Classe para impressão dos documentos ficais
+ * Classe para impressão dos documentos fiscais
  * @category   NFePHP
  * @package    NFePHP\NFe\PrintNFe
  * @copyright  Copyright (c) 2008-2015
@@ -13,5 +14,9 @@ namespace NFe;
 
 class PrintNFe
 {
-    
+    //Danfe mod 55
+    //Danfce mode 65
+    //CCe
+    //Inutilizacao
+    //Cancelamento
 }

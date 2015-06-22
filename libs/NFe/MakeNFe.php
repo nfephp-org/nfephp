@@ -1,6 +1,6 @@
 <?php
 
-namespace NFe;
+namespace NFePHP\NFe;
 
 /**
  * Classe a construção do xml da NFe modelo 55 e modelo 65
@@ -18,13 +18,11 @@ namespace NFe;
  *              Marcos Vinicios Balbi <marcusbalbi at hotmail dot com>
  * 
  * NOTA: Esta classe atende os padrões estabelecidos pela 
- * NOTA TÉCNICA 2013.005 Versão 1.21 de Novembro 2014
+ * NOTA TÉCNICA 2013.005 Versão 1.22 de Novembro 2014
  */
 
-
-
-use Common\DateTime\DateTime;
-use Common\Base\BaseMake;
+use NFePHP\Common\DateTime\DateTime;
+use NFePHP\Common\Base\BaseMake;
 use \DOMDocument;
 use \DOMElement;
 
@@ -616,8 +614,20 @@ class MakeNFe extends BaseMake
             false,
             $identificador . "Inscrição Municipal do Prestador de Serviço do emitente"
         );
-        $this->dom->addChild($this->emit, "CNAE", $cnae, false, $identificador . "CNAE fiscal do emitente");
-        $this->dom->addChild($this->emit, "CRT", $crt, true, $identificador . "Código de Regime Tributário do emitente");
+        $this->dom->addChild(
+            $this->emit,
+            "CNAE",
+            $cnae,
+            false,
+            $identificador . "CNAE fiscal do emitente"
+        );
+        $this->dom->addChild(
+            $this->emit,
+            "CRT",
+            $crt,
+            true,
+            $identificador . "Código de Regime Tributário do emitente"
+        );
         return $this->emit;
     }
     
@@ -653,7 +663,13 @@ class MakeNFe extends BaseMake
     ) {
         $identificador = 'C05 <enderEmit> - ';
         $this->enderEmit = $this->dom->createElement("enderEmit");
-        $this->dom->addChild($this->enderEmit, "xLgr", $xLgr, true, $identificador . "Logradouro do Endereço do emitente");
+        $this->dom->addChild(
+            $this->enderEmit,
+            "xLgr",
+            $xLgr,
+            true,
+            $identificador . "Logradouro do Endereço do emitente"
+        );
         $this->dom->addChild($this->enderEmit, "nro", $nro, true, $identificador . "Número do Endereço do emitente");
         $this->dom->addChild(
             $this->enderEmit,
@@ -711,7 +727,13 @@ class MakeNFe extends BaseMake
             false,
             $identificador . "Nome do País do Endereço do emitente"
         );
-        $this->dom->addChild($this->enderEmit, "fone", $fone, false, $identificador . "Telefone do Endereço do emitente");
+        $this->dom->addChild(
+            $this->enderEmit,
+            "fone",
+            $fone,
+            false,
+            $identificador . "Telefone do Endereço do emitente"
+        );
         $node = $this->emit->getElementsByTagName("IE")->item(0);
         $this->emit->insertBefore($this->enderEmit, $node);
         return $this->enderEmit;
@@ -745,74 +767,56 @@ class MakeNFe extends BaseMake
     ) {
         $identificador = 'E01 <dest> - ';
         $this->dest = $this->dom->createElement("dest");
-        if ($this->tpAmb == '2') {
-            $this->dom->addChild(
-                $this->dest,
-                "CNPJ",
-                '99999999000191',
-                true,
-                $identificador . "CNPJ do destinatário"
-            );
-            $this->dom->addChild(
-                $this->dest,
-                "xNome",
-                'NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL',
-                true,
-                $identificador . "Razão Social ou nome do destinatário"
-            );
-        } else {
-            if ($cnpj != '') {
-                $this->dom->addChild(
-                    $this->dest,
-                    "CNPJ",
-                    $cnpj,
-                    true,
-                    $identificador . "CNPJ do destinatário"
-                );
-            } elseif ($cpf != '') {
-                $this->dom->addChild(
-                    $this->dest,
-                    "CPF",
-                    $cpf,
-                    true,
-                    $identificador . "CPF do destinatário"
-                );
-            } else {
-                $this->dom->addChild(
-                    $this->dest,
-                    "idEstrangeiro",
-                    $idEstrangeiro,
-                    true,
-                    $identificador . "Identificação do destinatário no caso de comprador estrangeiro"
-                );
-            }
-            $this->dom->addChild(
-                $this->dest,
-                "xNome",
-                $xNome,
-                true,
-                $identificador . "Razão Social ou nome do destinatário"
-            );
+        if (($numIE == 'ISENTO' || $numIE == '') && $indIEDest == '1') {
+            $indIEDest = '2';
         }
         if ($this->mod == '65') {
             $indIEDest = '9';
+        }
+        if ($this->tpAmb == '2') {
+            $xNome = 'NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL';
+        }
+        if ($cnpj != '') {
             $this->dom->addChild(
                 $this->dest,
-                "indIEDest",
-                $indIEDest,
+                "CNPJ",
+                $cnpj,
                 true,
-                $identificador . "Indicador da IE do Destinatário"
+                $identificador . "CNPJ do destinatário"
+            );
+        } elseif ($cpf != '') {
+            $this->dom->addChild(
+                $this->dest,
+                "CPF",
+                $cpf,
+                true,
+                $identificador . "CPF do destinatário"
             );
         } else {
             $this->dom->addChild(
                 $this->dest,
-                "indIEDest",
-                $indIEDest,
+                "idEstrangeiro",
+                $idEstrangeiro,
                 true,
-                $identificador . "Indicador da IE do Destinatário"
+                $identificador . "Identificação do destinatário no caso de comprador estrangeiro"
             );
+            $indIEDest = '9';
         }
-        if ($indIEDest != '9') {
+        $this->dom->addChild(
+            $this->dest,
+            "xNome",
+            $xNome,
+            true,
+            $identificador . "Razão Social ou nome do destinatário"
+        );
+        $this->dom->addChild(
+            $this->dest,
+            "indIEDest",
+            $indIEDest,
+            true,
+            $identificador . "Indicador da IE do Destinatário"
+        );
+        if ($numIE != '' && $numIE != 'ISENTO') {
             $this->dom->addChild(
                 $this->dest,
                 "IE",
@@ -1503,7 +1507,7 @@ class MakeNFe extends BaseMake
      * @param string $nItem
      * @param string $nDI
      * @param string $nAdicao
-     * @param string $nSeqAdicC
+     * @param string $nSeqAdic
      * @param string $cFabricante
      * @param string $vDescDI
      * @param string $nDraw
@@ -1513,18 +1517,48 @@ class MakeNFe extends BaseMake
         $nItem = '',
         $nDI = '',
         $nAdicao = '',
-        $nSeqAdicC = '',
+        $nSeqAdic = '',
         $cFabricante = '',
         $vDescDI = '',
         $nDraw = ''
     ) {
         $identificador = 'I25 <adi> - ';
         $adi = $this->dom->createElement("adi");
-        $this->dom->addChild($adi, "nAdicao", $nAdicao, true, $identificador . "[item $nItem] Número da Adição");
-        $this->dom->addChild($adi, "nSeqAdicC", $nSeqAdicC, true, $identificador . "[item $nItem] Número sequencial do item dentro da Adição");
-        $this->dom->addChild($adi, "cFabricante", $cFabricante, true, $identificador . "[item $nItem] Código do fabricante estrangeiro");
-        $this->dom->addChild($adi, "vDescDI", $vDescDI, false, $identificador . "[item $nItem] Valor do desconto do item da DI Adição");
-        $this->dom->addChild($adi, "nDraw", $nDraw, false, $identificador . "[item $nItem] Número do ato concessório de Drawback");
+        $this->dom->addChild(
+            $adi,
+            "nAdicao",
+            $nAdicao,
+            true,
+            $identificador . "[item $nItem] Número da Adição"
+        );
+        $this->dom->addChild(
+            $adi,
+            "nSeqAdic",
+            $nSeqAdic,
+            true,
+            $identificador . "[item $nItem] Número sequencial do item dentro da Adição"
+        );
+        $this->dom->addChild(
+            $adi,
+            "cFabricante",
+            $cFabricante,
+            true,
+            $identificador . "[item $nItem] Código do fabricante estrangeiro"
+        );
+        $this->dom->addChild(
+            $adi,
+            "vDescDI",
+            $vDescDI,
+            false,
+            $identificador . "[item $nItem] Valor do desconto do item da DI Adição"
+        );
+        $this->dom->addChild(
+            $adi,
+            "nDraw",
+            $nDraw,
+            false,
+            $identificador . "[item $nItem] Número do ato concessório de Drawback"
+        );
         $this->aAdi[$nItem][$nDI][] = $adi;
         //colocar a adi em seu DI respectivo
         $nodeDI = $this->aDI[$nItem][$nDI];

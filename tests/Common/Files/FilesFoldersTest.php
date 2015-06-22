@@ -4,17 +4,16 @@
  * Class FilesFoldersTest
  * @author Roberto L. Machado <linux.rlm at gmail dot com>
  */
-use Common\Files\FilesFolders;
+use NFePHP\Common\Files\FilesFolders;
 
 class FilesFoldersTest extends PHPUnit_Framework_TestCase
 {
     public function testCreateFoldersSuccess()
     {
         $folderBase = dirname(dirname(dirname(__FILE__))) . '/fixtures/NFe';
-        $folders = new FilesFolders();
-        $resp = $folders->createFolders($folderBase);
+        $resp = FilesFolders::createFolders($folderBase);
         $this->assertTrue($resp);
-        $resp = $folders->removeFolder($folderBase);
+        $resp = FilesFolders::removeFolder($folderBase);
         $this->assertTrue($resp);
     }
 
@@ -25,8 +24,7 @@ class FilesFoldersTest extends PHPUnit_Framework_TestCase
     public function testCreateFoldersFail()
     {
         $folderBase = '/root';
-        $folders = new FilesFolders();
-        $folders->createFolders($folderBase);
+        FilesFolders::createFolders($folderBase);
     }
     
     public function testListDirSuccess()
@@ -38,21 +36,19 @@ class FilesFoldersTest extends PHPUnit_Framework_TestCase
             dirname(dirname(dirname(__FILE__))) . '/fixtures/certs/certificado_pubKEY.pem'
         );
         $folderBase = dirname(dirname(dirname(__FILE__))) . '/fixtures/certs/';
-        $folders = new FilesFolders();
-        $aList = $folders->listDir($folderBase, '*.pem', true);
+        $aList = FilesFolders::listDir($folderBase, '*.pem', true);
         $this->assertEquals($aList, $files);
     }
     
     /**
-     * @expectedException Common\Exception\InvalidArgumentException
-     * @expectedExceptionMessage O diretório não existe!!!
+     * @expectedException NFePHP\Common\Exception\InvalidArgumentException
+     * @expectedExceptionMessage O diretório não existe /qualquercoisa !!!
      */
     public function testListDirFail()
     {
         $aList = array();
         $folderBase = '/qualquercoisa';
-        $folders = new FilesFolders();
-        $files = $folders->listDir($folderBase, '*.*', false);
+        $files = FilesFolders::listDir($folderBase, '*.*', false);
         $this->assertEquals($aList, $files);
     }
             
@@ -66,9 +62,8 @@ class FilesFoldersTest extends PHPUnit_Framework_TestCase
                 . '<td>O diret&oacute;rio deve ter permiss&atilde;o de escrita</td>'
                 . '</tr>';
         $folderBase = dirname(dirname(dirname(__FILE__))) . '/fixtures/certs';
-        $folders = new FilesFolders();
         $respHtml = '';
-        $resp = $folders->writeTest($folderBase, 'Test', $respHtml);
+        $resp = FilesFolders::writeTest($folderBase, 'Test', $respHtml);
         $this->assertTrue($resp);
         $this->assertEquals($htmlStandard, $respHtml);
     }

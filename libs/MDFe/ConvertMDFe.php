@@ -1,6 +1,6 @@
 <?php
 
-namespace MDFe;
+namespace NFePHP\MDFe;
 
 /**
  * Classe para a conversão dos manifestos de carga do formato TXT conforme padrão
@@ -19,9 +19,9 @@ namespace MDFe;
  * adequado a todas as possibilidades.
  */
 
-use Common\Strings\Strings;
-use Common\Exception;
-use MDFe\MakeMDFe;
+use NFePHP\Common\Strings\Strings;
+use NFePHP\Common\Exception;
+use NFePHP\MDFe\MakeMDFe;
 
 class ConvertMDFe
 {

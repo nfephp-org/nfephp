@@ -1,6 +1,6 @@
 <?php
 
-namespace Common\Files;
+namespace NFePHP\Common\Files;
 
 /**
  * Classe auxiliar para criar, listar e testar os diretórios utilizados pela API
@@ -12,13 +12,13 @@ namespace Common\Files;
  * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
  */
 
-use Common\Exception;
+use NFePHP\Common\Exception;
 
 class FilesFolders
 {
     
-    protected $ambientes = array('homologacao','producao');
-    protected $subdirs = array(
+    protected static $ambientes = array('homologacao','producao');
+    protected static $subdirs = array(
         'entradas',
         'assinadas',
         'validadas',
@@ -82,14 +82,14 @@ class FilesFolders
      * @return boolean
      * @throws Exception\RuntimeException
      */
-    public function createFolders($dirPath = '')
+    public static function createFolders($dirPath = '')
     {
         //monta a arvore de diretórios necessária e estabelece permissões de acesso
         self::createFolder($dirPath);
-        foreach ($this->ambientes as $ambiente) {
+        foreach (self::$ambientes as $ambiente) {
             $folder = $dirPath.DIRECTORY_SEPARATOR.$ambiente;
             self::createFolder($folder);
-            foreach ($this->subdirs as $subdir) {
+            foreach (self::$subdirs as $subdir) {
                 $folder = $dirPath.DIRECTORY_SEPARATOR.$ambiente.DIRECTORY_SEPARATOR.$subdir;
                 self::createFolder($folder);
             }
@@ -142,7 +142,7 @@ class FilesFolders
      * @return array com os nome dos arquivos que atendem ao critério estabelecido ou false
      * @throws Exception\InvalidArgumentException
      */
-    public function listDir($folder, $fileMatch = '*-nfe.xml', $retpath = false)
+    public static function listDir($folder, $fileMatch = '*-nfe.xml', $retpath = false)
     {
         if ($folder == '' || $fileMatch == '') {
             throw new Exception\InvalidArgumentException(
@@ -151,7 +151,7 @@ class FilesFolders
         }
         if (! is_dir($folder)) {
             throw new Exception\InvalidArgumentException(
-                "O diretório não existe!!!"
+                "O diretório não existe $folder !!!"
             );
         }
         $aList = array();
@@ -179,7 +179,7 @@ class FilesFolders
      * @param string $respHtml passado por referencia irá conter a resposta em html
      * @return boolean
      */
-    public function writeTest($path = '', $message = '', &$respHtml = '')
+    public static function writeTest($path = '', $message = '', &$respHtml = '')
     {
         $cRed = '#FF0000';
         $cGreen = '#00CC00';
@@ -210,12 +210,12 @@ class FilesFolders
      * @return boolean
      * @throws Exception\RuntimeException
      */
-    public function removeFolder($dirPath)
+    public static function removeFolder($dirPath)
     {
         $files = array_diff(scandir($dirPath), array('.','..'));
         foreach ($files as $file) {
             if (is_dir("$dirPath/$file")) {
-                $this->removeFolder("$dirPath/$file");
+                self::removeFolder("$dirPath/$file");
             } else {
                 if (! unlink("$dirPath/$file")) {
                     throw new Exception\RuntimeException(
@@ -240,19 +240,18 @@ class FilesFolders
      */
     public static function readFile($pathFile = '')
     {
-        $data = '';
         if ($pathFile == '') {
             $msg = "Um caminho para o arquivo deve ser passado!!";
             throw new Exception\InvalidArgumentException($msg);
         }
         if (! is_file($pathFile)) {
-            $msg = "O arquivo indicado não foi localizado!!";
+            $msg = "O arquivo indicado não foi localizado!! $pathFile";
             throw new Exception\InvalidArgumentException($msg);
         }
-        if (! $data = file_get_contents($pathFile)) {
-            $msg = "O arquivo indicado não pode ser lido. Permissões!!";
+        if (! is_readable($pathFile)) {
+            $msg = "O arquivo indicado não pode ser lido. Permissões!! $pathFile";
             throw new Exception\RuntimeException($msg);
         }
-        return $data;
+        return file_get_contents($pathFile);
     }
 }

@@ -1,5 +1,6 @@
 <?php
-namespace Common\Dom;
+
+namespace NFePHP\Common\Dom;
 
 /**
  * Classe auxiliar para validar documentos XML com o seu respecitvo XSD
@@ -15,7 +16,7 @@ use \DOMDocument;
 
 class ValidXsd
 {
-    public static $errors = '';
+    public static $errors = array();
     
     public static function validar($xml = '', $xsd = '')
     {
@@ -29,7 +30,7 @@ class ValidXsd
         if (! $dom->schemaValidate($xsd)) {
             $aIntErrors = libxml_get_errors();
             foreach ($aIntErrors as $intError) {
-                self::$errors .= self::zTranslateError($intError->message) . "\n";
+                self::$errors[] = self::zTranslateError($intError->message) . "\n";
             }
             return false;
         }

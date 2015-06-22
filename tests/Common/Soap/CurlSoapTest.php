@@ -5,7 +5,7 @@
  * @author Roberto L. Machado <linux dot rlm at gmail dot com>
  */
 
-use Common\Soap\CurlSoap;
+use NFePHP\Common\Soap\CurlSoap;
 
 class CurlSoapTest extends PHPUnit_Framework_TestCase
 {
@@ -33,7 +33,7 @@ class CurlSoapTest extends PHPUnit_Framework_TestCase
     }
     
     /**
-     * @expectedException Common\Exception\InvalidArgumentException
+     * @expectedException NFePHP\Common\Exception\InvalidArgumentException
      * @expectedExceptionMessage O protocolo SSL pode estar entre 0 e seis, inclusive, mas não além desses números.
      */
     public function testExceptionAoPassarProtocoloSslMenorQueZero()
@@ -42,7 +42,7 @@ class CurlSoapTest extends PHPUnit_Framework_TestCase
     }
     
     /**
-     * @expectedException Common\Exception\InvalidArgumentException
+     * @expectedException NFePHP\Common\Exception\InvalidArgumentException
      * @expectedExceptionMessage O protocolo SSL pode estar entre 0 e seis, inclusive, mas não além desses números.
      */
     public function testExceptionAoPassarProtocoloSslMaiorQueSeis()
@@ -51,7 +51,7 @@ class CurlSoapTest extends PHPUnit_Framework_TestCase
     }
     
     /**
-     * @expectedException Common\Exception\InvalidArgumentException
+     * @expectedException NFePHP\Common\Exception\InvalidArgumentException
      * @expectedExceptionMessage Alguns dos certificados não foram encontrados ou o timeout pode não ser numérico.
      */
     public function testExceptionAoPassarCertificados()
@@ -71,13 +71,13 @@ class CurlSoapTest extends PHPUnit_Framework_TestCase
         $timeout = '10';
         $args = array($priKey, $pubKey, $certKey, $timeout);
         //cria uma função "FAJUTA" de comunicação com a SEFAZ
-        $soap = $this->getMockBuilder('Common\Soap\CurlSoap')
+        $soap = $this->getMockBuilder('NFePHP\Common\Soap\CurlSoap')
             ->setConstructorArgs($args)
             ->setMethods(array('zCommCurl'))
             ->getMock();
         //estabelece retorno da chamada curl FAJUTA como se fosse uma resposta real
         $fileretornosefaz = dirname(dirname(dirname(__FILE__))) .
-            '/fixtures/xml/retornoSefazGetWsdl_SP_nfeStatusServicoNF2.xml';
+            '/fixtures/xml/NFe/retornoSefazGetWsdl_SP_nfeStatusServicoNF2.xml';
         $retornosefaz = file_get_contents($fileretornosefaz);
         $soap->expects($this->any())->method('zCommCurl')->will($this->returnValue($retornosefaz));
         //busca resposta
@@ -85,7 +85,7 @@ class CurlSoapTest extends PHPUnit_Framework_TestCase
         $wsdl = $soap->getWsdl($urlservice);
         //resultado padrão
         $wsdlfile = dirname(dirname(dirname(__FILE__))) .
-            '/fixtures/xml/retornoGetWsdl_SP_nfeStatusServicoNF2.asmx';
+            '/fixtures/xml/NFe/retornoGetWsdl_SP_nfeStatusServicoNF2.asmx';
         $wsdlstd = file_get_contents($wsdlfile);
         //teste
         $this->assertEquals($wsdl, $wsdlstd);
@@ -99,7 +99,7 @@ class CurlSoapTest extends PHPUnit_Framework_TestCase
         $timeout = '10';
         $args = array($priKey, $pubKey, $certKey, $timeout);
         //cria uma função "FAJUTA" de comunicação com a SEFAZ
-        $soap = $this->getMockBuilder('Common\Soap\CurlSoap')
+        $soap = $this->getMockBuilder('NFePHP\Common\Soap\CurlSoap')
             ->setConstructorArgs($args)
             ->setMethods(array('zCommCurl'))
             ->getMock();
@@ -115,7 +115,7 @@ class CurlSoapTest extends PHPUnit_Framework_TestCase
     }
     
     /**
-     * @expectedException Common\Exception\RuntimeException
+     * @expectedException NFePHP\Common\Exception\RuntimeException
      * @expectedExceptionMessage HTTP/1.1 403 Forbidden
      */
     public function testSendForbidden()
@@ -126,7 +126,7 @@ class CurlSoapTest extends PHPUnit_Framework_TestCase
         $timeout = '10';
         $args = array($priKey, $pubKey, $certKey, $timeout);
         //cria uma função "FAJUTA" de comunicação com a SEFAZ
-        $soap = $this->getMockBuilder('Common\Soap\CurlSoap')
+        $soap = $this->getMockBuilder('NFePHP\Common\Soap\CurlSoap')
             ->setConstructorArgs($args)
             ->setMethods(array('zCommCurl'))
             ->getMock();
@@ -137,7 +137,7 @@ class CurlSoapTest extends PHPUnit_Framework_TestCase
         $oProperty->setValue($soap, $valor);
         //estabelece retorno da chamada curl FAJUTA como se fosse uma resposta real
         $fileretornosefaz = dirname(dirname(dirname(__FILE__))) .
-            '/fixtures/xml/forbidden.xml';
+            '/fixtures/xml/NFe/forbidden.xml';
         $retornosefaz = file_get_contents($fileretornosefaz);
         $soap->expects($this->any())->method('zCommCurl')->will($this->returnValue($retornosefaz));
         //busca resposta
@@ -146,7 +146,7 @@ class CurlSoapTest extends PHPUnit_Framework_TestCase
         $header = '<nfeCabecMsg xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeStatusServico2"><cUF>35</cUF><versaoDados>3.10</versaoDados></nfeCabecMsg>';
         $method = "nfeStatusServicoNF2";
         $body = '<nfeDadosMsg xmlns="http://www.portalfiscal.inf.br/nfe/wsdl/NfeStatusServico2"><consStatServ xmlns="http://www.portalfiscal.inf.br/nfe" versao="3.10"><tpAmb>2</tpAmb><cUF>35</cUF><xServ>STATUS</xServ></consStatServ></nfeDadosMsg>';
-        $resp = $soap->send($urlservice, $namespace, $header, $body, $method);
+        $soap->send($urlservice, $namespace, $header, $body, $method);
     }
 
     public function testSendSuccess()
@@ -157,7 +157,7 @@ class CurlSoapTest extends PHPUnit_Framework_TestCase
         $timeout = '10';
         $args = array($priKey, $pubKey, $certKey, $timeout);
         //cria uma função "FAJUTA" de comunicação com a SEFAZ
-        $soap = $this->getMockBuilder('Common\Soap\CurlSoap')
+        $soap = $this->getMockBuilder('NFePHP\Common\Soap\CurlSoap')
             ->setConstructorArgs($args)
             ->setMethods(array('zCommCurl'))
             ->getMock();
@@ -168,7 +168,7 @@ class CurlSoapTest extends PHPUnit_Framework_TestCase
         $oProperty->setValue($soap, $valor);
         //estabelece retorno da chamada curl FAJUTA como se fosse uma resposta real
         $fileretornosefaz = dirname(dirname(dirname(__FILE__))) .
-            '/fixtures/xml/retornoSefaz_success_statusservico.xml';
+            '/fixtures/xml/NFe/retornoSefaz_success_statusservico.xml';
         $retornosefaz = file_get_contents($fileretornosefaz);
         $soap->expects($this->any())->method('zCommCurl')->will($this->returnValue($retornosefaz));
         //busca resposta
@@ -183,7 +183,7 @@ class CurlSoapTest extends PHPUnit_Framework_TestCase
     }
     
     /**
-     * @expectedException Common\Exception\RuntimeException
+     * @expectedException NFePHP\Common\Exception\RuntimeException
      * @expectedExceptionMessage Não houve retorno do Curl.
      */
     public function testSendNaoHouveRetornoDoWebservice() 
@@ -194,7 +194,7 @@ class CurlSoapTest extends PHPUnit_Framework_TestCase
         $timeout = '10';
         $args = array($priKey, $pubKey, $certKey, $timeout);
         
-        $soap = $this->getMockBuilder('Common\Soap\CurlSoap')
+        $soap = $this->getMockBuilder('NFePHP\Common\Soap\CurlSoap')
             ->setConstructorArgs($args)
             ->setMethods(array('zCommCurl'))
             ->getMock();

@@ -1,6 +1,6 @@
 <?php
 
-namespace NFe;
+namespace NFePHP\NFe;
 
 /**
  * Classe para a conversão de notas fiscais do formato TXT conforme padrão
@@ -13,41 +13,149 @@ namespace NFe;
  * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
  */
 
-use Common\Strings\Strings;
-use Common\Exception;
-use NFe\MakeNFe;
+use NFePHP\Common\Strings\Strings;
+use NFePHP\Common\Exception;
+use NFePHP\NFe\MakeNFe;
 
 class ConvertNFe
 {
     //parametros protegidos da classe
+    /**
+     * $limparString
+     * Força a substituição dos caracteres especiais e acentuados
+     * pelos seus substitutos normais
+     * @var bool
+     */
     protected $limparString = true;
+    /**
+     * $version
+     * versão do layout do xml da NFe
+     * que esta classe cria
+     * @var string
+     */
     protected $version = '3.10';
+    /**
+     * $make
+     * Instancia da classe MakeNFe
+     * @var NFePHP\NFe\MakeNFe
+     */
     protected $make;
-    protected $linhaBA10 = array(); //refNFP
-    protected $linhaC = array(); //emit
-    protected $linhaE = array(); //dest
+    /**
+     * $linhaBA10
+     * refNFP
+     * @var array
+     */
+    protected $linhaBA10 = array();
+    /**
+     * $linhaC
+     * Dados do Emitente
+     * @var array 
+     */
+    protected $linhaC = array();
+    /**
+     * $linhaE
+     * Dados do destinatario
+     * @var array 
+     */
+    protected $linhaE = array();
+    /**
+     * $linhaF
+     * Local de retirada
+     * @var array 
+     */
     protected $linhaF = array();
+    /**
+     * $linhaG
+     * Local de entrega
+     * @var array 
+     */
     protected $linhaG = array();
-    protected $nItem = 0; //numero do item da NFe
-    protected $nDI = '0'; //numero da DI
-    protected $linhaI50 = array(); //dados de exportação
-    protected $linhaLA = array(); //dados de combustiveis
-    protected $linhaO = array(); //dados de IPI
-    protected $linhaQ = array(); //dados do PIS
-    protected $linhaR = array(); //dados do PISST
-    protected $linhaS = array(); //dados do COFINS
+    /**
+     * $nItem
+     * numero do item da NFe
+     * @var int
+     */
+    protected $nItem = 0;
+    /**
+     * $nDI
+     * numero da DI
+     * @var int
+     */
+    protected $nDI = '0'; 
+    /**
+     * $linhaI50
+     * dados de exportação
+     * @var array
+     */
+    protected $linhaI50 = array();
+    /**
+     * $linhaLA
+     * dados de combustiveis
+     * @var array
+     */
+    protected $linhaLA = array();
+    /**
+     * $linhaO
+     * dados de IPI
+     * @var array
+     */
+    protected $linhaO = array();
+    /**
+     * $linhaQ
+     * dados do PIS
+     * @var array
+     */
+    protected $linhaQ = array();
+    /**
+     * $linhaR
+     * dados do PISST
+     * @var array
+     */
+    protected $linhaR = array();
+    /**
+     * $linhaS
+     * dados do COFINS
+     * @var array
+     */
+    protected $linhaS = array();
+    /**
+     * $linhaT
+     * dados de COFINSST
+     * @var array
+     */
     protected $linhaT = array();
+    /**
+     * $linhaX
+     * dados de transporte
+     * @var array
+     */
     protected $linhaX = array();
+    /**
+     * $linhaX26
+     * dados de volumes
+     * @var array
+     */
     protected $linhaX26 = array();
     protected $volId = -1;
+    /**
+     * $linhaZC
+     * dados de cana
+     * @var array
+     */
     protected $linhaZC = array();
+    /**
+     * $aLacres
+     * dados de lacres
+     * @var array
+     */
     protected $aLacres = array();
 
     /**
      * contruct
      * Método contrutor da classe
-     * @param boolean $limparString Ativa flag para limpar os caracteres especiais e acentos
-     * @return none
+     * @param boolean $limparString Ativa flag para limpar os caracteres especiais
+     *                e acentos
+     * @return void
      */
     public function __construct($limparString = true)
     {
@@ -81,6 +189,10 @@ class ConvertNFe
         $aNotas = $this->zSliceNotas($aDados);
         foreach ($aNotas as $nota) {
             $this->zArray2xml($nota);
+            //carrega os volumes, movido de yEntity
+            foreach ($this->linhaX26 as $vol) {
+                $this->zLinhaXVolEntity($vol);
+            }
             if ($this->make->montaNFe()) {
                 $aNF[] = $this->make->getXML();
             }
@@ -465,6 +577,7 @@ class ConvertNFe
     
     /**
      * fEntity
+     * Local de retirada
      * @param array $aCampos
      */
     protected function fEntity($aCampos)
@@ -527,6 +640,7 @@ class ConvertNFe
     
     /**
      * gEntity
+     * Local de entrega
      * @param array $aCampos
      */
     protected function gEntity($aCampos)
@@ -628,7 +742,9 @@ class ConvertNFe
     protected function hEntity($aCampos)
     {
         //H|item|infAdProd
-        $this->make->taginfAdProd($aCampos[1], $aCampos[2]);
+        if (! empty($aCampos[2])) {
+            $this->make->taginfAdProd($aCampos[1], $aCampos[2]);
+        }
         $this->nItem = (integer) $aCampos[1];
     }
     
@@ -1581,8 +1697,9 @@ class ConvertNFe
      */
     protected function o07Entity($aCampos)
     {
-        //O07|CST|
+        //O07|CST|vIPI|
         $this->linhaO[1] = $aCampos[1];
+        $this->linhaO[11] = $aCampos[2];
     }
     
     /**
@@ -1603,10 +1720,9 @@ class ConvertNFe
      */
     protected function o11Entity($aCampos)
     {
-        //O11|qUnid|vUnid|vIPI|
+        //O11|qUnid|vUnid|
         $this->linhaO[9] = $aCampos[1]; //qUnid
         $this->linhaO[10] = $aCampos[2]; //vUnid
-        $this->linhaO[11] = $aCampos[3]; //vIPI
         $this->zLinhaOEntity($this->linhaO);
     }
     
@@ -1669,7 +1785,7 @@ class ConvertNFe
     protected function qEntity($aCampos)
     {
         //Q|
-        //fake não faz nada
+        //carrega numero do item
         $aCampos = array();
         $this->linhaQ[0] = $this->nItem;
         $this->linhaQ[1] = ''; //cst
@@ -1846,6 +1962,13 @@ class ConvertNFe
         //S|
         //fake não faz nada
         $aCampos = array();
+        $this->linhaS[0] = '';
+        $this->linhaS[1] = '';
+        $this->linhaS[2] = '';
+        $this->linhaS[3] = '';
+        $this->linhaS[4] = '';
+        $this->linhaS[5] = '';
+        $this->linhaS[6] = '';
     }
     
     /**
@@ -2301,17 +2424,13 @@ class ConvertNFe
     
     /**
      * yEntity
-     * Carrega os volumes
      * @param array $aCampos
      */
     protected function yEntity($aCampos)
     {
         //Y|
+        //fake não faz nada
         $aCampos = array();
-        //carrega os volumes
-        foreach ($this->linhaX26 as $vol) {
-            $this->zLinhaXVolEntity($vol);
-        }
     }
     
     /**

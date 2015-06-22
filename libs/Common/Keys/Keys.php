@@ -1,6 +1,6 @@
 <?php
 
-namespace Common\Keys;
+namespace NFePHP\Common\Keys;
 
 /**
  * Classe auxiliar para criar, listar e testar os diretórios utilizados pela API

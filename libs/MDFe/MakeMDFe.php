@@ -1,6 +1,6 @@
 <?php
 
-namespace MDFe;
+namespace NFePHP\MDFe;
 
 /**
  * Classe a construção do xml do Manifesto Eletrônico de Documentos Fiscais (MDF-e)
@@ -17,8 +17,8 @@ namespace MDFe;
  * versão 1.00 de Junho de 2012
  */
 
-use Common\DateTime\DateTime;
-use Common\Base\BaseMake;
+use NFePHP\Common\DateTime\DateTime;
+use NFePHP\Common\Base\BaseMake;
 use \DOMDocument;
 use \DOMElement;
 

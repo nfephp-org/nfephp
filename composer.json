@@ -39,14 +39,19 @@
         "ext-iconv": "*",
         "ext-mbstring": "*",
         "zendframework/zendpdf": "2.0.*",
-        "zendframework/zend-barcode": "2.3.4",
-        "zendframework/zend-mail": "2.3.*@dev",
-        "soundasleep/html2text": "~0.2"
+        "zendframework/zend-barcode": "2.4.*@dev",
+        "zendframework/zend-mail": "2.4.*@dev",
+        "soundasleep/html2text": "~0.2",
+        "mpdf/mpdf": "6.0.0",
+        "endroid/qrcode": "1.*@dev"
     },
     "require-dev": {
         "phpunit/phpunit": "~4.0"
     },
     "autoload": {
+        "psr-4": {
+          "nfephp-org\\nfephp\\": "libs/"  
+        },
         "psr-0": {
             "": ["libs/", "tests/"]
         },
@@ -58,20 +63,24 @@
             "./libs/Common/",
             "./libs/Common/Base/",
             "./libs/Common/Certificate/",
+            "./libs/Common/Configure/",
             "./libs/Common/DateTime/",
             "./libs/Common/Dom/",
             "./libs/Common/Exception/",
             "./libs/Common/Files/",
+            "./libs/Common/Identify/",
+            "./libs/Common/Keys/",
             "./libs/Common/LotNumber/",
             "./libs/Common/Modules/",
             "./libs/Common/Soap/",
-            "./libs/Common/Strings/"
+            "./libs/Common/Strings/",
+            "./libs/Extras/"
         ]
     },
-    "minimum-stability": "dev",
     "extra": {
         "branch-alias": {
-            "dev-master": "3.10.x-dev"
+            "dev-develop": "4.0.x-dev"
         }
-    }
+    },
+    "minimum-stability": "dev"
 }

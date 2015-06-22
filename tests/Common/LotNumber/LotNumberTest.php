@@ -9,7 +9,7 @@ class LotNumberTest extends PHPUnit_Framework_TestCase
 {
    public function testGeraNumLote()
    {
-        $numLote = (string) Common\LotNumber\LotNumber::geraNumLote(15);
+        $numLote = (string) NFePHP\Common\LotNumber\LotNumber::geraNumLote(15);
         $num = strlen($numLote);
         $this->assertEquals($num, 15);
    }

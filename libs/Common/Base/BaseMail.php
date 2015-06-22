@@ -1,5 +1,6 @@
 <?php
-namespace Common\Base;
+
+namespace NFePHP\Common\Base;
 
 /**
  * Classe base para o envio de emails tanto para NFe, NFCe, CTe e MDFe
@@ -18,7 +19,8 @@ use Zend\Mime\Part as MimePart;
 use Zend\Mime\Mime;
 use Zend\Mail\Transport\SmtpOptions;
 use Zend\Mail\Transport\Smtp as SmtpTransport;
-use Common\Exception;
+use NFePHP\Common\Exception;
+use NFePHP\Common\Files;
 
 if (!defined('NFEPHP_ROOT')) {
     define('NFEPHP_ROOT', dirname(dirname(dirname(__FILE__))));
@@ -26,10 +28,30 @@ if (!defined('NFEPHP_ROOT')) {
 
 class BaseMail
 {
+    /**
+     * $template
+     * @var string 
+     */
     protected $template = '';
+    /**
+     * $aMailConf
+     * @var array
+     */
     protected $aMailConf = array();
+    /**
+     * $transport
+     * @var Zend\Mail\Transport\Smtp
+     */
     protected $transport = '';
+    /**
+     * $aAttachments
+     * @var array
+     */
     protected $aAttachments = array();
+    /**
+     * $content
+     * @var Zend\Mime\Message
+     */
     protected $content = '';
     
     /**
@@ -48,20 +70,22 @@ class BaseMail
         //configura a forma de transporte no envio dos emails
         $aMuser = explode('@', $this->aMailConf['mailUser']);
         $domain = $aMuser[1];
-        
+        $connConfig = array();
         $connConfig['username'] = $this->aMailConf['mailUser'];
         $connConfig['password'] = $this->aMailConf['mailPass'];
         if ($this->aMailConf['mailProtocol'] != '') {
             $connConfig['ssl'] = $this->aMailConf['mailProtocol'];
         }
         $this->transport = new SmtpTransport();
-        $options = new SmtpOptions(array(
-            'name'              => $domain,
-            'host'              => $this->aMailConf['mailSmtp'],
-            'port'              => $this->aMailConf['mailPort'],
-            'connection_class'  => 'plain',
-            'connection_config' => $connConfig,
-        ));
+        $options = new SmtpOptions(
+            array(
+                'name'              => $domain,
+                'host'              => $this->aMailConf['mailSmtp'],
+                'port'              => $this->aMailConf['mailPort'],
+                'connection_class'  => 'plain',
+                'connection_config' => $connConfig,
+            )
+        );
         $this->transport->setOptions($options);
     }
 
@@ -73,7 +97,7 @@ class BaseMail
     public function setTemplate($pathFile = '')
     {
         if (is_file($pathFile)) {
-            $this->template = file_get_contents($pathFile);
+            $this->template = Files\FilesFolders::readFile($pathFile);
         }
     }
     
@@ -102,12 +126,18 @@ class BaseMail
      */
     public function buildMessage($msgHtml = '', $msgTxt = '')
     {
-        $this->content  = new MimeMessage();
+        //Html part
         $htmlPart = new MimePart($msgHtml);
-        $htmlPart->type = 'text/html';
+        $htmlPart->encoding = Mime::ENCODING_QUOTEDPRINTABLE;
+        $htmlPart->type = "text/html; charset=UTF-8";
+        //text part
         $textPart = new MimePart($msgTxt);
-        $textPart->type = 'text/plain';
-        $this->content->setParts(array($textPart, $htmlPart));
+        $textPart->encoding = Mime::ENCODING_QUOTEDPRINTABLE;
+        $textPart->type = "text/plain; charset=UTF-8";
+        //monatgem do conteúdo da mensagem
+        $this->content = new MimeMessage();
+        $this->content->addPart($textPart);
+        $this->content->addPart($htmlPart);
     }
 
     /**
@@ -117,13 +147,6 @@ class BaseMail
      */
     public function sendMail($subject = '', $aMail = array())
     {
-        $contentPart = new MimePart($this->content->generateMessage());
-        $contentPart->type = 'multipart/alternative;' . PHP_EOL . ' boundary="' .
-                $this->content->getMime()->boundary() . '"';
-        $body = new MimeMessage();
-        foreach ($this->aAttachments as $attachment) {
-            $body->setParts(array($contentPart, $attachment));
-        }
         $message = new Message();
         $message->setEncoding("UTF-8");
         $message->setFrom(
@@ -131,11 +154,32 @@ class BaseMail
             $this->aMailConf['mailFromName']
         );
         foreach ($aMail as $mail) {
+            //destinatários
             $message->addTo($mail);
         }
+        //assunto
         $message->setSubject($subject);
+        //cria o corpo da mensagem
+        $body = new MimeMessage();
+        $contentPart = new MimePart($this->content->generateMessage());
+        $contentPart->type = 'multipart/alternative;' . PHP_EOL . ' boundary="' .
+                $this->content->getMime()->boundary() . '"';
+        $messageType = 'multipart/related';
+        //adiciona o html e o txt
+        $body->addPart($contentPart);
+        foreach ($this->aAttachments as $attachment) {
+            $body->addPart($attachment);
+        }
+        //monta o corpo
         $message->setBody($body);
-        $this->transport->send($message);
+        $message->getHeaders()->get('content-type')->setType($messageType);
+        //enviar
+        try {
+            $this->transport->send($message);
+        } catch (\Zend\Mail\Protocol\Exception\RuntimeException $e) {
+            return $e;
+        }
+        return true;
     }
     
     /**

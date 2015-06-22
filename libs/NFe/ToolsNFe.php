@@ -1,6 +1,6 @@
 <?php
 
-namespace NFe;
+namespace NFePHP\NFe;
 
 /**
  * Classe principal para a comunicação com a SEFAZ
@@ -12,17 +12,17 @@ namespace NFe;
  * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
  */
 
-use Common\Base\BaseTools;
-use Common\DateTime\DateTime;
-use Common\LotNumber\LotNumber;
-use Common\Strings\Strings;
-use Common\Files;
-use Common\Exception;
-use Common\Dom\Dom;
-use NFe\ReturnNFe;
-use NFe\MailNFe;
-use NFe\IdentifyNFe;
-use Common\Dom\ValidXsd;
+use NFePHP\Common\Base\BaseTools;
+use NFePHP\Common\DateTime\DateTime;
+use NFePHP\Common\LotNumber\LotNumber;
+use NFePHP\Common\Strings\Strings;
+use NFePHP\Common\Files;
+use NFePHP\Common\Exception;
+use NFePHP\Common\Dom\Dom;
+use NFePHP\NFe\ReturnNFe;
+use NFePHP\NFe\MailNFe;
+use NFePHP\NFe\IdentifyNFe;
+use NFePHP\Common\Dom\ValidXsd;
 
 if (!defined('NFEPHP_ROOT')) {
     define('NFEPHP_ROOT', dirname(dirname(dirname(__FILE__))));
@@ -31,10 +31,10 @@ if (!defined('NFEPHP_ROOT')) {
 class ToolsNFe extends BaseTools
 {
     /**
-     * errror
+     * errrors
      * @var string
      */
-    public $error = '';
+    public $errors = array();
     /**
      * soapDebug
      * @var string 
@@ -82,17 +82,18 @@ class ToolsNFe extends BaseTools
     /**
      * ativaContingencia
      * Ativa a contingencia SVCAN ou SVCRS conforme a
-     * sigla do estado
+     * sigla do estado ou EPEC
      * @param string $siglaUF
      * @param string $motivo
+     * @param string $tipo
      * @return bool
      */
-    public function ativaContingencia($siglaUF = '', $motivo = '')
+    public function ativaContingencia($siglaUF = '', $motivo = '', $tipo = '')
     {
         if ($siglaUF == '' || $motivo == '') {
             return false;
         }
-        if ($this->enableSVCAN || $this->enableSVCRS) {
+        if ($this->enableSVCAN || $this->enableSVCRS || $this->enableEPEC) {
             return true;
         }
         $this->motivoContingencia = $motivo;
@@ -107,7 +108,7 @@ class ToolsNFe extends BaseTools
             'DF'=>'SVCAN',
             'ES'=>'SVCRS',
             'GO'=>'SVCRS',
-            'MA'=>'SVSRS',
+            'MA'=>'SVCRS',
             'MG'=>'SVCAN',
             'MS'=>'SVCRS',
             'MT'=>'SVCRS',
@@ -127,18 +128,26 @@ class ToolsNFe extends BaseTools
             'TO'=>'SVCAN'
         );
         $ctg = $ctgList[$siglaUF];
-        if ($ctg == 'SVCAN') {
-            $this->enableSVCAN = true;
-            $this->enableSVCRS = false;
-        } elseif ($ctg == 'SVCRS') {
-            $this->enableSVCAN = false;
-            $this->enableSVCRS = true;
+        
+        $this->enableSVCAN = false;
+        $this->enableSVCRS = false;
+        $this->enableEPEC = false;
+
+        if ($tipo == 'EPEC') {
+            $this->enableEPEC = true;
+        } else {
+            if ($ctg == 'SVCAN') {
+                $this->enableSVCAN = true;
+            } elseif ($ctg == 'SVCRS') {
+                $this->enableSVCRS = true;
+            }
         }
         $aCont = array(
             'motivo' => $this->motivoContingencia,
             'ts' => $this->tsContingencia,
             'SVCAN' => $this->enableSVCAN,
-            'SCVRS' => $this->enableSVCRS
+            'SCVRS' => $this->enableSVCRS,
+            'EPEC' => $this->enableEPEC
         );
         $strJson = json_encode($aCont);
         file_put_contents(NFEPHP_ROOT.DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'contingencia.json', $strJson);
@@ -154,6 +163,7 @@ class ToolsNFe extends BaseTools
     {
         $this->enableSVCAN = false;
         $this->enableSVCRS = false;
+        $this->enableEPEC = false;
         $this->tsContingencia = 0;
         $this->motivoContingencia = '';
         unlink(NFEPHP_ROOT.DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'contingencia.json');
@@ -176,7 +186,7 @@ class ToolsNFe extends BaseTools
     }
     
     /**
-     * mailNFe
+     * enviaMail
      * Envia a NFe por email aos destinatários
      * Caso $aMails esteja vazio serão obtidos os email do destinatário  e 
      * os emails que estiverem registrados nos campos obsCont do xml
@@ -275,8 +285,8 @@ class ToolsNFe extends BaseTools
         //carrega o protocolo
         $docprot = new Dom();
         $docprot->loadXMLFile($pathProtfile);
-        $nodeprot = $docprot->getNode('protNFe', 0);
-        if ($nodeprot == '') {
+        $nodeprots = $docprot->getElementsByTagName('protNFe');
+        if ($nodeprots->length == 0) {
             $msg = "O arquivo indicado não contem um protocolo de autorização!";
             throw new Exception\RuntimeException($msg);
         }
@@ -292,9 +302,16 @@ class ToolsNFe extends BaseTools
         $chaveNFe = preg_replace('/[^0-9]/', '', $chaveId);
         $digValueNFe = $docnfe->getNodeValue('DigestValue');
         //carrega os dados do protocolo
-        $protver     = $nodeprot->getAttribute("versao");
-        $chaveProt   = $nodeprot->getElementsByTagName("chNFe")->item(0)->nodeValue;
-        $digValueProt = $nodeprot->getElementsByTagName("digVal")->item(0)->nodeValue;
+        for ($i = 0; $i < $nodeprots->length; $i++) {
+            $nodeprot = $nodeprots->item($i);
+            $protver = $nodeprot->getAttribute("versao");
+            $chaveProt = $nodeprot->getElementsByTagName("chNFe")->item(0)->nodeValue;
+            $digValueProt = $nodeprot->getElementsByTagName("digVal")->item(0)->nodeValue;
+            $infProt = $nodeprot->getElementsByTagName("infProt")->item(0);
+            if ($digValueNFe == $digValueProt && $chaveNFe == $chaveProt) {
+                break;
+            }
+        }
         if ($digValueNFe != $digValueProt) {
             $msg = "Inconsistência! O DigestValue da NFe não combina com o"
                 . " do digVal do protocolo indicado!";
@@ -304,7 +321,6 @@ class ToolsNFe extends BaseTools
             $msg = "O protocolo indicado pertence a outra NFe. Os números das chaves não combinam !";
             throw new Exception\RuntimeException($msg);
         }
-        $infProt = $nodeprot->getElementsByTagName("infProt")->item(0);
         //cria a NFe processada com a tag do protocolo
         $procnfe = new \DOMDocument('1.0', 'utf-8');
         $procnfe->formatOutput = false;
@@ -375,7 +391,7 @@ class ToolsNFe extends BaseTools
             throw new Exception\RuntimeException($msg);
         }
         $chaveNFe = $proNFe->getElementsByTagName('chNFe')->item(0)->nodeValue;
-        $nProtNFe = $proNFe->getElementsByTagName('nProt')->item(0)->nodeValue;
+        //$nProtNFe = $proNFe->getElementsByTagName('nProt')->item(0)->nodeValue;
         $tpAmb = $docnfe->getNodeValue('tpAmb');
         $anomes = date(
             'Ym',
@@ -392,7 +408,7 @@ class ToolsNFe extends BaseTools
             $tpAmb = $evento->getElementsByTagName('tpAmb')->item(0)->nodeValue;
             $chaveEvento = $evento->getElementsByTagName('chNFe')->item(0)->nodeValue;
             $tpEvento = $evento->getElementsByTagName('tpEvento')->item(0)->nodeValue;
-            $nProtEvento = $evento->getElementsByTagName('nProt')->item(0)->nodeValue;
+            //$nProtEvento = $evento->getElementsByTagName('nProt')->item(0)->nodeValue;
             //verifica se conferem os dados
             //cStat = 135 ==> evento homologado
             //tpEvento = 110111 ==> Cancelamento
@@ -400,8 +416,7 @@ class ToolsNFe extends BaseTools
             //protocolo do evneto ==  protocolo da NFe
             if ($cStat == '135' &&
                 $tpEvento == '110111' &&
-                $chaveEvento == $chaveNFe &&
-                $nProtEvento == $nProtNFe
+                $chaveEvento == $chaveNFe
             ) {
                 $proNFe->getElementsByTagName('cStat')->item(0)->nodeValue = '101';
                 $proNFe->getElementsByTagName('xMotivo')->item(0)->nodeValue = 'Cancelamento de NF-e homologado';
@@ -496,13 +511,11 @@ class ToolsNFe extends BaseTools
             throw new Exception\InvalidArgumentException($msg);
         }
         if (is_array($aXml)) {
-            foreach ($aXml as $xml) {
-                $sxml .= $xml;
-            }
             if (count($aXml) > 1) {
                 //multiplas nfes, não pode ser sincrono
                 $indSinc = 0;
             }
+            $sxml = implode("", $sxml);
         }
         $sxml = preg_replace("/<\?xml.*\?>/", "", $sxml);
         $siglaUF = $this->aConfig['siglaUF'];
@@ -513,9 +526,10 @@ class ToolsNFe extends BaseTools
             $idLote = LotNumber::geraNumLote(15);
         }
         //carrega serviço
+        $servico = 'NfeAutorizacao';
         $this->zLoadServico(
             'nfe',
-            'NfeAutorizacao',
+            $servico,
             $siglaUF,
             $tpAmb
         );
@@ -553,7 +567,9 @@ class ToolsNFe extends BaseTools
         $filename = "$idLote-retEnviNFe.xml";
         $this->zGravaFile('nfe', $tpAmb, $filename, $retorno);
         //tratar dados de retorno
-        $aRetorno = ReturnNFe::readReturnSefaz($this->urlMethod, $retorno);
+        $aRetorno = ReturnNFe::readReturnSefaz($servico, $retorno);
+        //caso o envio seja recebido com sucesso mover a NFe da pasta
+        //das assinadas para a pasta das enviadas
         return (string) $retorno;
     }
     
@@ -579,9 +595,10 @@ class ToolsNFe extends BaseTools
         }
         $siglaUF = $this->aConfig['siglaUF'];
         //carrega serviço
+        $servico = 'NfeRetAutorizacao';
         $this->zLoadServico(
             'nfe',
-            'NfeRetAutorizacao',
+            $servico,
             $siglaUF,
             $tpAmb
         );
@@ -616,7 +633,10 @@ class ToolsNFe extends BaseTools
         $filename = "$recibo-retConsReciNFe.xml";
         $this->zGravaFile('nfe', $tpAmb, $filename, $retorno);
         //tratar dados de retorno
-        $aRetorno = ReturnNFe::readReturnSefaz($this->urlMethod, $retorno);
+        $aRetorno = ReturnNFe::readReturnSefaz($servico, $retorno);
+        //podem ser retornados nenhum, um ou vários protocolos
+        //caso existam protocolos protocolar as NFe e movelas-las para a
+        //pasta enviadas/aprovadas/anomes
         return (string) $retorno;
     }
     
@@ -644,9 +664,10 @@ class ToolsNFe extends BaseTools
         $cUF = substr($chNFe, 0, 2);
         $siglaUF = $this->zGetSigla($cUF);
         //carrega serviço
+        $servico = 'NfeConsultaProtocolo';
         $this->zLoadServico(
             'nfe',
-            'NfeConsultaProtocolo',
+            $servico,
             $siglaUF,
             $tpAmb
         );
@@ -682,7 +703,7 @@ class ToolsNFe extends BaseTools
         $filename = "$chNFe-retConsSitNFe.xml";
         $this->zGravaFile('nfe', $tpAmb, $filename, $retorno);
         //tratar dados de retorno
-        $aRetorno = ReturnNFe::readReturnSefaz($this->urlMethod, $retorno);
+        $aRetorno = ReturnNFe::readReturnSefaz($servico, $retorno);
         return (string) $retorno;
     }
 
@@ -719,9 +740,10 @@ class ToolsNFe extends BaseTools
         //monta serviço
         $siglaUF = $this->aConfig['siglaUF'];
         //carrega serviço
+        $servico = 'NfeInutilizacao';
         $this->zLoadServico(
             'nfe',
-            'NfeInutilizacao',
+            $servico,
             $siglaUF,
             $tpAmb
         );
@@ -777,8 +799,59 @@ class ToolsNFe extends BaseTools
         $filename = "$sAno-$this->modelo-$sSerie-".$sInicio."_".$sFinal."-retInutNFe.xml";
         $this->zGravaFile('nfe', $tpAmb, $filename, $retorno);
         //tratar dados de retorno
-        $aRetorno = ReturnNFe::readReturnSefaz($this->urlMethod, $retorno);
+        $aRetorno = ReturnNFe::readReturnSefaz($servico, $retorno);
+        if ($aRetorno['cStat'] == '102') {
+            $retorno = $this->zAddProtMsg('ProcInutNFe', 'inutNFe', $signedMsg, 'retInutNFe', $retorno);
+            $filename = "$sAno-$this->modelo-$sSerie-".$sInicio."_".$sFinal."-procInutNFe.xml";
+            $this->zGravaFile('nfe', $tpAmb, $filename, $retorno, 'inutilizadas');
+        }
         return (string) $retorno;
+    }
+    
+    /**
+     * zAddProtMsg
+     * @param string $tagproc
+     * @param string $tagmsg
+     * @param string $xmlmsg
+     * @param string $tagretorno
+     * @param string $xmlretorno
+     * @return string
+     */
+    protected function zAddProtMsg($tagproc, $tagmsg, $xmlmsg, $tagretorno, $xmlretorno)
+    {
+        $doc = new Dom();
+        $doc->loadXMLString($xmlmsg);
+        $nodedoc = $doc->getNode($tagmsg, 0);
+        $procver = $nodedoc->getAttribute("versao");
+        $procns = $nodedoc->getAttribute("xmlns");
+        
+        $doc1 = new Dom();
+        $doc1->loadXMLString($xmlretorno);
+        $nodedoc1 = $doc1->getNode($tagretorno, 0);
+        
+        $proc = new \DOMDocument('1.0', 'utf-8');
+        $proc->formatOutput = false;
+        $proc->preserveWhiteSpace = false;
+        //cria a tag nfeProc
+        $procNode = $proc->createElement($tagproc);
+        $proc->appendChild($procNode);
+        //estabele o atributo de versão
+        $procNodeAtt1 = $procNode->appendChild($proc->createAttribute('versao'));
+        $procNodeAtt1->appendChild($proc->createTextNode($procver));
+        //estabelece o atributo xmlns
+        $procNodeAtt2 = $procNode->appendChild($proc->createAttribute('xmlns'));
+        $procNodeAtt2->appendChild($proc->createTextNode($procns));
+        //inclui a tag inutNFe
+        $node = $proc->importNode($nodedoc, true);
+        $procNode->appendChild($node);
+        //inclui a tag retInutNFe
+        $node = $proc->importNode($nodedoc1, true);
+        $procNode->appendChild($node);
+        //salva o xml como string em uma variável
+        $procXML = $proc->saveXML();
+        //remove as informações indesejadas
+        $procXML = Strings::clearProt($procXML);
+        return $procXML;
     }
     
     /**
@@ -851,9 +924,10 @@ class ToolsNFe extends BaseTools
             $txtFile = "CPF_$cpf";
         }
         //carrega serviço
+        $servico = 'NfeConsultaCadastro';
         $this->zLoadServico(
             'nfe',
-            'NfeConsultaCadastro',
+            $servico,
             $siglaUF,
             $tpAmb
         );
@@ -889,7 +963,7 @@ class ToolsNFe extends BaseTools
         $filename = "$txtFile-retConsCad.xml";
         $this->zGravaFile('nfe', $tpAmb, $filename, $retorno);
         //tratar dados de retorno
-        $aRetorno = ReturnNFe::readReturnSefaz($this->urlMethod, $retorno);
+        $aRetorno = ReturnNFe::readReturnSefaz($servico, $retorno);
         return (string) $retorno;
     }
 
@@ -914,9 +988,10 @@ class ToolsNFe extends BaseTools
             $siglaUF = $this->aConfig['siglaUF'];
         }
         //carrega serviço
+        $servico = 'NfeStatusServico';
         $this->zLoadServico(
             'nfe',
-            'NfeStatusServico',
+            $servico,
             $siglaUF,
             $tpAmb
         );
@@ -951,7 +1026,7 @@ class ToolsNFe extends BaseTools
         $filename = $siglaUF."_"."$datahora-retConsStatServ.xml";
         $this->zGravaFile('nfe', $tpAmb, $filename, $retorno);
         //tratar dados de retorno
-        $aRetorno = ReturnNFe::readReturnSefaz($this->urlMethod, $retorno);
+        $aRetorno = ReturnNFe::readReturnSefaz($servico, $retorno);
         return (string) $retorno;
     }
 
@@ -987,9 +1062,10 @@ class ToolsNFe extends BaseTools
             $cnpj = $this->aConfig['cnpj'];
         }
         //carrega serviço
+        $servico = 'NFeDistribuicaoDFe';
         $this->zLoadServico(
             'nfe',
-            'NFeDistribuicaoDFe',
+            $servico,
             $fonte,
             $tpAmb
         );
@@ -1037,7 +1113,7 @@ class ToolsNFe extends BaseTools
         $filename = "$tipoNSU-$datahora-retDistDFeInt.xml";
         $this->zGravaFile('nfe', $tpAmb, $filename, $retorno);
         //tratar dados de retorno
-        $aRetorno = ReturnNFe::readReturnSefaz($this->urlMethod, $retorno);
+        $aRetorno = ReturnNFe::readReturnSefaz($servico, $retorno);
         return (string) $retorno;
     }
 
@@ -1089,6 +1165,174 @@ class ToolsNFe extends BaseTools
         $retorno = $this->zSefazEvento($siglaUF, $chNFe, $tpAmb, $tpEvento, $nSeqEvento, $tagAdic);
         $aRetorno = $this->aLastRetEvent;
         return $retorno;
+    }
+    
+    /**
+     * sefazEPEC
+     * Solicita autorização em contingência EPEC
+     * TODO: terminar esse método
+     * @param string|array $aXml
+     * @param string $tpAmb
+     * @param string $siglaUF 
+     * @param array $aRetorno
+     * @return string
+     * @throws Exception\InvalidArgumentException
+     */
+    public function sefazEPEC($aXml, $tpAmb = '2', $siglaUF='AN', &$aRetorno = array())
+    {
+        //na nfe deve estar indicado a entrada em contingencia da data hora e o motivo
+        //caso contrario ignorar a solicitação de EPEC
+        if (! is_array($aXml)) {
+            $aXml[] = $aXml; //se não é um array converte
+        }
+        if (count($aXml) > 20) {
+            $msg = "O limite é de 20 NFe em um lote EPEC, você está passando [".count($aXml)."]";
+            throw new Exception\InvalidArgumentException($msg);
+        }
+        if ($tpAmb == '') {
+            $tpAmb = $this->aConfig['tpAmb'];
+        }
+        //carrega serviço
+        $servico = 'RecepcaoEPEC';
+        $this->zLoadServico(
+            'nfe',
+            $servico,
+            $siglaUF,
+            $tpAmb
+        );
+        if ($this->urlService == '') {
+            $msg = "A recepção de EPEC não está disponível na SEFAZ !!!";
+            throw new Exception\RuntimeException($msg);
+        }
+        $aRetorno = array();
+        $cnpj = $this->aConfig['cnpj'];
+        $aRet = $this->zTpEv($tpEvento);
+        $descEvento = $aRet['desc'];
+        $cOrgao = '91';
+        $tpEvento = '110140'; //EPEC
+        $datEv = '';
+        $numLote = LotNumber::geraNumLote();
+        foreach ($aXml as $xml) {
+            $dat = $this->zGetInfo($xml);
+            if ($dat['dhCont'] == '' || $dat['xJust'] == '') {
+                $msg = "Somente é possivel enviar para EPEC as notas emitidas "
+                        . "em contingência com a data/hora e justificativa da contingência.";
+                throw new Exception\InvalidArgumentException($msg);
+            }
+            $sSeqEvento = str_pad('1', 2, "0", STR_PAD_LEFT);
+            $eventId = "ID".$tpEvento.$chNFe.$sSeqEvento;
+            $chNFe = $dat['chave'];
+            $dhEvento = DateTime::convertTimestampToSefazTime();
+            $mensagem = "<evento xmlns=\"$this->urlPortal\" versao=\"$this->urlVersion\">"
+                . "<infEvento Id=\"$eventId\">"
+                . "<cOrgao>$cOrgao</cOrgao>"
+                . "<tpAmb>$tpAmb</tpAmb>"
+                . "<CNPJ>$cnpj</CNPJ>"
+                . "<chNFe>$chNFe</chNFe>"
+                . "<dhEvento>$dhEvento</dhEvento>"
+                . "<tpEvento>$tpEvento</tpEvento>"
+                . "<nSeqEvento>1</nSeqEvento>"
+                . "<verEvento>$this->urlVersion</verEvento>"
+                . "<detEvento versao=\"$this->urlVersion\">"
+                . "<descEvento>$descEvento</descEvento>"
+                . "<cOrgaoAutor>".$dat['cOrgaoAutor']."</cOrgaoAutor>"
+                . "<tpAutor>".$dat['tpAutor']."</tpAutor>"
+                . "<verAplic>$this->verAplic</verAplic>"
+                . "<dhEmi>".$dat['dhEmi']."</dhEmi>"
+                . "<tpNF>".$dat['tpNF']."</tpNF>"
+                . "<IE>".$dat['IE']."</IE>"
+                . "<dest>"
+                . "<UF>".$dat['UF']."</UF> ";
+            if ($dat['CNPJ'] != '') {
+                $mensagem .= "<CNPJ>.".$dat['CNPJ']."</CNPJ>";
+            } elseif ($dat['CPF'] != '') {
+                $mensagem .= "<CPF>".$dat['CPF']."</CPF>";
+            } else {
+                $mensagem .= "<idEstrangeiro>".$dat['idEstrangeiro']."</idEstrangeiro>";
+            }
+            if ($dat['IEdest'] != '') {
+                $mensagem .= "<IE>".$dat['IEdest']."</IE>";
+            }
+            $mensagem .= "</dest>"
+                . "<vNF>".$dat['vNF']."</vNF>"
+                . "<vICMS>".$dat['vICMS']."</vICMS>"
+                . "<vST>".$dat['vST']."</vST>"
+                . "</detEvento>"
+                . "</infEvento>"
+                . "</evento>";
+                //assinatura dos dados
+                $signedMsg = $this->oCertificate->signXML($mensagem, 'infEvento');
+                $signedMsg = Strings::clearXml($signedMsg, true);
+                $datEv .= $signedMsg;
+        }
+        $cons = "<envEvento xmlns=\"$this->urlPortal\" versao=\"$this->urlVersion\">"
+            . "<idLote>$numLote</idLote>"
+            . "$datEv"
+            . "</envEvento>";
+        //valida mensagem com xsd
+        //no caso do evento nao tem xsd organizado, esta fragmentado
+        //e por vezes incorreto por isso essa validação está desabilitada
+        //if (! $this->zValidMessage($cons, 'nfe', 'envEvento', $version)) {
+        //    $msg = 'Falha na validação. '.$this->error;
+        //    throw new Exception\RuntimeException($msg);
+        //}
+        $body = "<nfeDadosMsg xmlns=\"$this->urlNamespace\">$cons</nfeDadosMsg>";
+        //envia a solicitação via SOAP
+        $retorno = $this->oSoap->send(
+            $this->urlService,
+            $this->urlNamespace,
+            $this->urlHeader,
+            $body,
+            $this->urlMethod
+        );
+        $lastMsg = $this->oSoap->lastMsg;
+        $this->soapDebug = $this->oSoap->soapDebug;
+        //salva mensagens
+        $filename = "$numLote-envEpec.xml";
+        $this->zGravaFile('nfe', $tpAmb, $filename, $lastMsg);
+        $filename = "$numLote-retEnvEpec.xml";
+        $this->zGravaFile('nfe', $tpAmb, $filename, $retorno);
+        //tratar dados de retorno
+        //TODO : incluir nos xml das NF o protocolo EPEC
+        $aRetorno = ReturnNFe::readReturnSefaz($servico, $retorno);
+        return $retorno;
+    }
+    
+    /**
+     * zGetInfo
+     * Busca informações do XML
+     * para uso no sefazEPEC
+     * @param string $xml
+     * @return array
+     */
+    protected function zGetInfo($xml)
+    {
+        $dom = new Dom();
+        $dom->loadXMLString($xml);
+        $ide = $dom->getNode('ide');
+        $emit = $dom->getNode('emit');
+        $dest = $dom->getNode('dest');
+        $enderDest = $dest->getElementsByTagName('enderDest')->item(0);
+        $icmsTot = $dom->getNode('ICMSTot');
+        $resp = array(
+            'chave' => $dom->getChave('infNFe'),
+            'dhCont' => $dom->getValue($ide, 'dhCont'),
+            'xJust' => $dom->getValue($ide, 'xJust'),
+            'cOrgaoAutor' => $dom->getValue($ide, 'cUF'),
+            'tpAutor' => '1',
+            'dhEmi' => $dom->getValue($ide, 'dhEmi'),
+            'tpNF' => $dom->getValue($ide, 'tpNF'),
+            'IE' => $dom->getValue($emit, 'IE'),
+            'UF' => $dom->getValue($enderDest, 'UF'),
+            'CNPJ' => $dom->getValue($dest, 'CNPJ'),
+            'CPF' => $dom->getValue($dest, 'CPF'),
+            'idEstrangeiro' => $dom->getValue($dest, 'idEstrangeiro'),
+            'IEdest' => $dom->getValue($dest, 'IE'),
+            'vNF' => $dom->getValue($icmsTot, 'vNF'),
+            'vICMS' => $dom->getValue($icmsTot, 'vICMS'),
+            'vST'=> $dom->getValue($icmsTot, 'vST')
+        );
+        return $resp;
     }
     
     /**
@@ -1196,9 +1440,10 @@ class ToolsNFe extends BaseTools
             $cnpj = $this->aConfig['cnpj'];
         }
         //carrega serviço
+        $servico = 'NfeDownloadNF';
         $this->zLoadServico(
             'nfe',
-            'NfeDownloadNF',
+            $servico,
             'AN',
             $tpAmb
         );
@@ -1234,7 +1479,7 @@ class ToolsNFe extends BaseTools
         $filename = "$chNFe-retDownnfe.xml";
         $this->zGravaFile('nfe', $tpAmb, $filename, $retorno);
         //tratar dados de retorno
-        $aRetorno = ReturnNFe::readReturnSefaz($this->urlMethod, $retorno);
+        $aRetorno = ReturnNFe::readReturnSefaz($servico, $retorno);
         return (string) $retorno;
     }
     
@@ -1260,16 +1505,15 @@ class ToolsNFe extends BaseTools
             DIRECTORY_SEPARATOR .
             $xsdFile;
         if (! is_file($xsdPath)) {
-            $this->error = "O arquivo XSD $xsdFile não foi localizado.";
+            $this->errors[] = "O arquivo XSD $xsdFile não foi localizado.";
             return false;
         }
         if (! ValidXsd::validar($aResp['xml'], $xsdPath)) {
-            $this->error = ValidXsd::$errors;
+            $this->errors[] = ValidXsd::$errors;
             return false;
         }
         return true;
     }
-
     
     /**
      * zSefazEvento
@@ -1295,9 +1539,10 @@ class ToolsNFe extends BaseTools
             $tpAmb = $this->aConfig['tpAmb'];
         }
         //carrega serviço
+        $servico = 'RecepcaoEvento';
         $this->zLoadServico(
             'nfe',
-            'RecepcaoEvento',
+            $servico,
             $siglaUF,
             $tpAmb
         );
@@ -1364,7 +1609,23 @@ class ToolsNFe extends BaseTools
         $filename = "$chNFe-$aliasEvento-retEnvEvento.xml";
         $this->zGravaFile('nfe', $tpAmb, $filename, $retorno);
         //tratar dados de retorno
-        $this->aLastRetEvent = ReturnNFe::readReturnSefaz($this->urlMethod, $retorno);
+        $this->aLastRetEvent = ReturnNFe::readReturnSefaz($servico, $retorno);
+        if ($this->aLastRetEvent['cStat'] == '128') {
+            if ($this->aLastRetEvent['evento'][0]['cStat'] == '135' ||
+                $this->aLastRetEvent['evento'][0]['cStat'] == '136' ||
+                $this->aLastRetEvent['evento'][0]['cStat'] == '155'
+            ) {
+                $pasta = 'eventos'; //default
+                if ($aliasEvento == 'CancNFe') {
+                    $pasta = 'canceladas';
+                } elseif ($aliasEvento == 'CCe') {
+                    $pasta = 'cartacorrecao';
+                }
+                $retorno = $this->zAddProtMsg('procEventoNFe', 'evento', $signedMsg, 'retEvento', $retorno);
+                $filename = "$chNFe-$aliasEvento-procEvento.xml";
+                $this->zGravaFile('nfe', $tpAmb, $filename, $retorno, $pasta);
+            }
+        }
         return (string) $retorno;
     }
     
@@ -1378,15 +1639,21 @@ class ToolsNFe extends BaseTools
     {
         //montagem dos dados da mensagem SOAP
         switch ($tpEvento) {
+            case '110110':
+                //CCe
+                $aliasEvento = 'CCe';
+                $descEvento = 'Carta de Correcao';
+                break;
             case '110111':
                 //cancelamento
                 $aliasEvento = 'CancNFe';
                 $descEvento = 'Cancelamento';
                 break;
-            case '110110':
-                //CCe
-                $aliasEvento = 'CCe';
-                $descEvento = 'Carta de Correcao';
+            case '110140':
+                //EPEC
+                //emissão em contingência EPEC
+                $aliasEvento = 'EPEC';
+                $descEvento = 'EPEC';
                 break;
             case '210200':
                 //Confirmacao da Operacao
@@ -1421,8 +1688,44 @@ class ToolsNFe extends BaseTools
     * Retorna o timestamp para a data de vencimento do Certificado
     * @return int
     */
-    public function getTimestampCert(){
-      return $this->oCertificate->expireTimestamp;
+    public function getTimestampCert()
+    {
+        return $this->oCertificate->expireTimestamp;
     }
     
+    /**
+     * getImpostosIBPT
+     * Consulta o serviço do IBPT para obter os impostos ao consumidor 
+     * conforme Lei 12.741/2012
+     * @param string $ncm
+     * @param string $exTarif
+     * @param string $siglaUF
+     * @return array Array (
+     *                 [Codigo] => 60063100
+     *                 [UF] => SP
+     *                 [EX] => 0
+     *                 [Descricao] => Outs.tecidos de malha de fibras sinteticas, crus ou branqueados
+     *                 [Nacional] => 13.45
+     *                 [Estadual] => 18
+     *                 [Importado] => 16.14
+     *               )
+     */
+    public function getImpostosIBPT($ncm = '', $exTarif = '0', $siglaUF = '')
+    {
+        if ($siglaUF == '') {
+            $siglaUF = $this->aConfig['siglaUF'];
+        }
+        $cnpj = $this->aConfig['cnpj'];
+        $tokenIBPT = $this->aConfig['tokenIBPT'];
+        if ($ncm == '' || $tokenIBPT == '' || $cnpj == '') {
+            return array();
+        }
+        return $this->oSoap->getIBPTProd(
+            $cnpj,
+            $tokenIBPT,
+            $ncm,
+            $siglaUF,
+            $exTarif
+        );
+    }
 }

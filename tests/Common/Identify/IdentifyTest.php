@@ -4,7 +4,7 @@
  * Class IdentifyTest
  * @author Roberto L. Machado <linux.rlm at gmail dot com>
  */
-use Common\Identify\Identify;
+use NFePHP\Common\Identify\Identify;
 
 class IdentifyTest extends PHPUnit_Framework_TestCase
 {
@@ -37,7 +37,7 @@ class IdentifyTest extends PHPUnit_Framework_TestCase
         $aResp = array();
         Identify::setListSchemesId($aList);
         $xml = dirname(dirname(dirname(__FILE__))) .
-            '/fixtures/xml/35150158716523000119550010000000071000000076-protNFe.xml';
+            '/fixtures/xml/NFe/35150158716523000119550010000000071000000076-protNFe.xml';
         $schem = Identify::identificacao($xml, $aResp);
         $this->assertEquals($schem, 'nfe');
     }
