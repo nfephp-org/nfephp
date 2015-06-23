@@ -50,3 +50,5 @@ td {
 
 #direita { width: 50%; float: right; }
 #esquerda { width: 50%; float: left; }
+
+#tabs input {width: 95%;}

@@ -412,27 +412,27 @@ function changeAlerts(key, flag, msg) {
     <span title="Indique o ambiente padrão (1-Produção ou 2-Homologação)">Ambiente</span><br>
     <?php echo $selAmb;?><br>
     <span title="Indique a Razão Social Completa do Emitente">Razão Social do Emitente</span><br>
-    <input type="text" id="razaosocial" name="razaosocial" placeholder="Nome completo do emitente" size="60" value="<?php echo $razaosocial;?>" required /><br>
+    <input type="text" id="razaosocial" name="razaosocial" placeholder="Nome completo do emitente"  value="<?php echo $razaosocial;?>" required /><br>
     <span title="Indique o CNPJ do emitente SEM FORMATAÇÃO">CNPJ do Emitente</span><br>
     <input type="text" id="cnpj" name="cnpj" placeholder="CNPJ sem formatação" size="25" value="<?php echo $cnpj;?>" required /><br>
     <span title="Selecione o estado do Emitente">Unidade da Federação</span><br>
     <?php echo $selUF;?><br>
     <span title="Indique o path real para a pasta dos certificados. Esta pasta deve ter permissões de escrita pelo usuário do servidor web. Ex. www-data">Path dos Certificados</span><br>
-    <input type="text" id="pathCertsFiles" name="pathCertsFiles" placeholder="Caminho para a pasta" size="60" value="<?php echo $pathCertsFiles;?>" required /><label id="lblCerts"></label><br>
+    <input type="text" id="pathCertsFiles" name="pathCertsFiles" placeholder="Caminho para a pasta"  value="<?php echo $pathCertsFiles;?>" required /><label id="lblCerts"></label><br>
     <span title="Indique o nome do certificado que foi salvo na pasta dos certificados">Nome do arquivo pfx (Certificado)</span><br>
-    <input type="text" id="certPfxName" name="certPfxName" placeholder="Nome do arquivo PFX" size="60" value="<?php echo $certPfxName;?>" required /><br>
+    <input type="text" id="certPfxName" name="certPfxName" placeholder="Nome do arquivo PFX"  value="<?php echo $certPfxName;?>" required /><br>
     <span title="Indique a senha configurada quando você criou o certificado">Senha do Certificado</span><br>
     <input type="password" id="certPassword" name="certPassword" placeholder="senha" size="10" value="<?php echo $certPassword;?>" required /><button value="certtest" type="submit">Testar</button><br>
     <span title="Indique a palavra passe que você quer usar para encriptar os arquivos PEM do certificado">Palavra Passe</span><br>
     <input type="password" id="certPhrase" name="certPhrase" placeholder="não usado" size="35" value="<?php echo $certPhrase;?>" readonly /><br>
     <span title="Indique o endereço para acessar a base do seu sistema">URL do Site</span><br>
-    <input type="text" id="siteUrl" name="siteUrl" placeholder="Site url" size="60" value="<?php echo $siteUrl;?>" required /><br>
+    <input type="text" id="siteUrl" name="siteUrl" placeholder="Site url"  value="<?php echo $siteUrl;?>" required /><br>
     <span title="Indique o token para pesquisa no IBPT, requer cadastramento prévio">Token IBPT</span><br>
-    <input type="text" id="tokenIBPT" name="tokenIBPT" placeholder="token para IBPT" size="60" value="<?php echo $tokenIBPT;?>" /><br>
+    <input type="text" id="tokenIBPT" name="tokenIBPT" placeholder="token para IBPT"  value="<?php echo $tokenIBPT;?>" /><br>
     <span title="Indique o token para montagem do QRCode nas NFCe, requer cadastramento prévio na SEFAZ">Token NFCe</span><br>
-    <input type="text" id="tokenNFCe" name="tokenNFCe" placeholder="toke para NFCe" size="60" value="<?php echo $tokenNFCe;?>" /><br>
+    <input type="text" id="tokenNFCe" name="tokenNFCe" placeholder="toke para NFCe"  value="<?php echo $tokenNFCe;?>" /><br>
     <span title="Indique o ID do token NFCe, 6 digitos numericos com zeros a esquerda">Token Id NFCe</span><br>
-    <input type="text" id="tokenNFCeId" name="tokenNFCeId" placeholder="000000" size="8" value="<?php echo $tokenNFCeId;?>" /><br>    
+    <input type="text" id="tokenNFCeId" name="tokenNFCeId" placeholder="000000" size="8" value="<?php echo $tokenNFCeId;?>" /><br>
     </div>
     <div id="direita">
         <h3>Estes campos referen-se a os dados principais do emitente e todos os campos em amarelo são OBRIGATÓRIOS.</h3>
@@ -451,15 +451,15 @@ function changeAlerts(key, flag, msg) {
     <h2 align="right">Estrutura de Pastas (Files)</h2>
     <div id="esquerda">
     <span title="Indique o path completo para a pasta onde ficarão das NFe. Essa pasta deverá ser criada manualmente e ter permissões de escrita pelo usuário do servidor web.">Pasta das NFe</span><br>
-    <input type="text" id="pathNFeFiles" name="pathNFeFiles" placeholder="Pasta das NFe" size="60" value="<?php echo $pathNFeFiles;?>" required /><label id="lblNFe"></label><br>
+    <input type="text" id="pathNFeFiles" name="pathNFeFiles" placeholder="Pasta das NFe"  value="<?php echo $pathNFeFiles;?>" required /><label id="lblNFe"></label><br>
     <span title="Indique o path completo para a pasta onde ficarão das CTe. Essa pasta deverá ser criada manualmente e ter permissões de escrita pelo usuário do servidor web.">Pasta das CTe</span><br>
-    <input type="text" id="pathCTeFiles" name="pathCTeFiles" placeholder="Pasta das CTe" size="60" value="<?php echo $pathCTeFiles;?>" required /><label id="lblCTe"></label><br>
+    <input type="text" id="pathCTeFiles" name="pathCTeFiles" placeholder="Pasta das CTe"  value="<?php echo $pathCTeFiles;?>" required /><label id="lblCTe"></label><br>
     <span title="Indique o path completo para a pasta onde ficarão das MDFe. Essa pasta deverá ser criada manualmente e ter permissões de escrita pelo usuário do servidor web.">Pasts das MDFe</span><br>
-    <input type="text" id="pathMDFeFiles" name="pathMDFeFiles" placeholder="Pasta das MDFe" size="60" value="<?php echo $pathMDFeFiles;?>" required /><label id="lblMDFe"></label><br>
+    <input type="text" id="pathMDFeFiles" name="pathMDFeFiles" placeholder="Pasta das MDFe"  value="<?php echo $pathMDFeFiles;?>" required /><label id="lblMDFe"></label><br>
     <span title="Indique o path completo para a pasta onde ficarão das CLe. Essa pasta deverá ser criada manualmente e ter permissões de escrita pelo usuário do servidor web.">Pasta das CLe</span><br>
-    <input type="text" id="pathCLeFiles" name="pathCLeFiles" placeholder="Pasta das CLe" size="60" value="<?php echo $pathCLeFiles;?>" required /><label id="lblCLe"></label><br>
+    <input type="text" id="pathCLeFiles" name="pathCLeFiles" placeholder="Pasta das CLe"  value="<?php echo $pathCLeFiles;?>" required /><label id="lblCLe"></label><br>
     <span title="Indique o path completo para a pasta onde ficarão das NFSe. Essa pasta deverá ser criada manualmente e ter permissões de escrita pelo usuário do servidor web.">Pasta das NFSe</span><br>
-    <input type="text" id="pathNFSeFiles" name="pathNFSeFiles" placeholder="Pasta das NFSe" size="60" value="<?php echo $pathNFSeFiles;?>" required /><label id="lblNFSe"></label><br>
+    <input type="text" id="pathNFSeFiles" name="pathNFSeFiles" placeholder="Pasta das NFSe"  value="<?php echo $pathNFSeFiles;?>" required /><label id="lblNFSe"></label><br>
     <p>Teste de Escrita e Estruturação das pastas. Este teste irá verificar as permissões de escrita e criará toda a estrutura necessária nas pastas indicadas</p>
     <button value="test" type="submit">Testar</button>
     </div>
@@ -491,7 +491,7 @@ function changeAlerts(key, flag, msg) {
     <span title="Normalmente não usado mas teria que complementar o script para permitir a impressão direta. Pois esse recurso depende do sistema operacional.">Impressora</span><br>
     <input type="text" id="printer" name="printer" placeholder="Nome da Impressora" size="30" value="<?php echo $printer;?>" /><br>
     <span title="Imagem com a logomarca, deverá ser um aquivo JPEG ou PNG">Logo</span><br>
-    <input type="text" id="pathLogoFile" name="pathLogoFile" placeholder="Path completo para o arquivo com o logo" size="60" value="<?php echo $pathLogoFile;?>" /><br>
+    <input type="text" id="pathLogoFile" name="pathLogoFile" placeholder="Path completo para o arquivo com o logo"  value="<?php echo $pathLogoFile;?>" /><br>
     </div>
     <div id="direita">
         <h3>Para a impressão dos documentos auxiliares seja para NFe, CTe, MDFe ou CLe, está definido em documentação oficial o uso obrigatório de papel A4 e do tipo de letras "Times" (serifados), isso é fixo e não pode ser mudado.</h3>
@@ -500,7 +500,7 @@ function changeAlerts(key, flag, msg) {
         <h3>Dito isso, a impressão desses cupons (DANFCE) pode ser mais complexa pois algumas dessas impressoras para serem eficientes dependem do envio de comandos diretos no padrão ESC/POS ou similar (ex. Epson TM T20). Nesse momento ainda não temos na nossa API este recurso e portanto a DANFCE por enquato é gerada apenas em PDF.</h3>
     </div>
     <div class="clear"> </div>
-    
+
   </div>
   <div id="tabs-5">
     <h2 align="right">Webservices</h2>
@@ -520,26 +520,26 @@ function changeAlerts(key, flag, msg) {
       <h3>Os endereços dos webservices estão arquivados em arquivos xml na pasta config.</h3>
     </div>
     <div class="clear"> </div>
-  </div>    
+  </div>
   <div id="tabs-6">
     <h2 align="right">Schemas</h2>
     <div id="esquerda">
     <span title="Indique o path completo para o arquivo de schemas para NFe. ">Schemas NFe</span><br>
-    <input type="text" id="schemesNFe" name="schemesNFe" placeholder="pasta dos arquivos xsd" size="60" value="<?php echo $schemesNFe;?>" /><br>
+    <input type="text" id="schemesNFe" name="schemesNFe" placeholder="pasta dos arquivos xsd"  value="<?php echo $schemesNFe;?>" /><br>
     <span title="Indique o path completo para o arquivo de schemas para CTe. ">Schemas CTe</span><br>
-    <input type="text" id="schemesCTe" name="schemesCTe" placeholder="pasta dos arquivos xsd" size="60" value="<?php echo $schemesCTe;?>" /><br>
+    <input type="text" id="schemesCTe" name="schemesCTe" placeholder="pasta dos arquivos xsd"  value="<?php echo $schemesCTe;?>" /><br>
     <span title="Indique o path completo para o arquivo de schemas para MDFe. ">Schemas MDFe</span><br>
-    <input type="text" id="schemesMDFe" name="schemesMDFe" placeholder="pasta dos arquivos xsd" size="60" value="<?php echo $schemesMDFe;?>" /><br>
+    <input type="text" id="schemesMDFe" name="schemesMDFe" placeholder="pasta dos arquivos xsd"  value="<?php echo $schemesMDFe;?>" /><br>
     <span title="Indique o path completo para o arquivo de schemas para CLe. ">Schemas CLe</span><br>
-    <input type="text" id="schemesCLe" name="schemesCLe" placeholder="pasta dos arquivos xsd" size="60" value="<?php echo $schemesCLe;?>" /><br>
+    <input type="text" id="schemesCLe" name="schemesCLe" placeholder="pasta dos arquivos xsd"  value="<?php echo $schemesCLe;?>" /><br>
     <span title="Indique o path completo para os arquivos de schemas para NFSe. ">Schemas NFSe</span><br>
-    <input type="text" id="schemesNFSe" name="schemesNFSe" placeholder="pasta dos arquivos xsd" size="60" value="<?php echo $schemesNFSe;?>" /><br>
+    <input type="text" id="schemesNFSe" name="schemesNFSe" placeholder="pasta dos arquivos xsd"  value="<?php echo $schemesNFSe;?>" /><br>
     </div>
     <div id="direita">
         <h3>Os esquemas são arquivos xml (terminação xsd) que contêm as regras de formatação para cada campo de um determinado xml.</h3>
     </div>
     <div class="clear"> </div>
-    
+
   </div>
   <div id="tabs-7">
     <h2 align="right">Configurações de Email</h2>
@@ -588,7 +588,7 @@ function changeAlerts(key, flag, msg) {
   <div id="tabs-9">
     <div id="esquerda">
     <p>Clique no botão abaixo para  salvar essas configurações e criar o arquivo config/config.json</p>
-    <input type="text" id="configfolder" name="configfolder" placeholder="Path completo para a pasta" size="60" value="<?php echo $configfolder;?>" /><br>
+    <input type="text" id="configfolder" name="configfolder" placeholder="Path completo para a pasta"  value="<?php echo $configfolder;?>" /><br>
     <button value="save" type="submit">Salvar Configuração</button>
     </div>
     <div id="direita">
