@@ -660,21 +660,20 @@ class Pkcs12
                 $this->error = "A chave passada está corrompida ou não é uma chave. Obtenha s chaves corretas!!";
                 return false;
         }
+        
+        //Obtem os dados do certificado
         $certData = openssl_x509_parse($data);
-        // reformata a data de validade;
-        $ano = substr($certData['validTo'], 0, 2);
-        $mes = substr($certData['validTo'], 2, 2);
-        $dia = substr($certData['validTo'], 4, 2);
-        //obtem o timestamp da data de validade do certificado
-        $dValid = gmmktime(0, 0, 0, $mes, $dia, $ano);
-        // obtem o timestamp da data de hoje
-        $dHoje = gmmktime(0, 0, 0, date("m"), date("d"), date("Y"));
-        // compara a data de validade com a data atual
-        $this->expireTimestamp = $dValid;
-        if ($dHoje > $dValid) {
+        //Data de expiração do certificado
+        $dCertificado = new DateTime(date('Y-m-d', $cert_data['validTo_time_t']));
+        //Data de hoje
+        $dHoje = new DateTime('now');
+        //Carregar variavel com timestamp do certificado
+        $this->expireTimestamp = $cert_data['validTo_time_t'];
+        //compara as duas datas para saber se o certificado ainda é válido
+        if ($dHoje > $dCertificado) {
             $this->zRemovePemFiles();
             $this->zLeaveParam();
-            $msg = "Data de validade vencida! [Valido até $dia/$mes/$ano]";
+            $msg = 'O Certificado expirou em:'.$dCertificado->format('d-m-Y');
             $this->error = $msg;
             return false;
         }
