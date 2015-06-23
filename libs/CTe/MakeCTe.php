@@ -49,9 +49,9 @@ class MakeCTe extends BaseMake
     /**
      * versao
      * numero da versão do xml da CTe
-     * @var double
+     * @var string
      */
-    public $versao = 2.00;
+    public $versao = '2.00';
     /**
      * mod
      * modelo da CTe 57
