@@ -57,7 +57,6 @@ class MakeNFe extends BaseMake
     private $retirada = ''; //DOMNode
     private $entrega = ''; //DOMNode
     private $total = ''; //DOMNode
-    private $pag = ''; //DOMNode
     private $cobr = ''; //DOMNode
     private $transp = ''; //DOMNode
     private $infAdic = ''; //DOMNode
@@ -67,6 +66,7 @@ class MakeNFe extends BaseMake
     // Arrays
     private $aNFref = array(); //array de DOMNode
     private $aDup = array(); //array de DOMNodes
+    private $aPag = ''; //array de DOMNodes
     private $aReboque = array(); //array de DOMNodes
     private $aVol = array(); //array de DOMNodes
     private $aAutXML = array(); //array de DOMNodes
@@ -144,7 +144,10 @@ class MakeNFe extends BaseMake
         //[39a] tag cobr (389 Y01)
         $this->dom->appChild($this->infNFe, $this->cobr, 'Falta tag "infNFe"');
         //[42] tag pag (398a YA01)
-        $this->dom->appChild($this->infNFe, $this->pag, 'Falta tag "infNFe"');
+        //processa aPag e coloca as tags na tag pag
+        foreach ($this->aPag as $pag) {
+            $this->dom->appChild($this->infNFe, $pag, 'Falta tag "infNFe"');
+        }
         //[44] tag infAdic (399 Z01)
         $this->dom->appChild($this->infNFe, $this->infAdic, 'Falta tag "infNFe"');
         //[48] tag exporta (402 ZA01)
@@ -3311,7 +3314,7 @@ class MakeNFe extends BaseMake
      * tagpag
      * Grupo de Formas de Pagamento YA01 pai A01
      * tag NFe/infNFe/pag (opcional)
-     * Apenas par amodelo 65 NFCe
+     * Apenas para o modelo 65 NFCe
      * @param string $tPag
      * @param string $vPag
      * @return DOMElement
@@ -3320,10 +3323,11 @@ class MakeNFe extends BaseMake
         $tPag = '',
         $vPag = ''
     ) {
-        $this->pag = $this->dom->createElement("pag");
-        $this->dom->addChild($this->pag, "tPag", $tPag, true, "Forma de pagamento");
-        $this->dom->addChild($this->pag, "vPag", $vPag, true, "Valor do Pagamento");
-        return $this->pag;
+        $num = $this->zTagPag();
+        $pag = $this->dom->createElement("pag");
+        $this->dom->addChild($this->aPag[$num-1], "tPag", $tPag, true, "Forma de pagamento");
+        $this->dom->addChild($this->aPag[$num-1], "vPag", $vPag, true, "Valor do Pagamento");
+        return $pag;
     }
     
     /**
@@ -3623,6 +3627,20 @@ class MakeNFe extends BaseMake
     {
         $this->aNFref[] = $this->dom->createElement("NFref");
         return count($this->aNFref);
+    }
+    
+    /**
+     * zTagPag
+     * Informação de pagamentos
+     * tag NFe/infNFe/pag
+     * Podem ser criados até 100 desses Nodes por NFe
+     * Função chamada pelo método [tagPag]
+     * @return total registros
+     */
+    private function zTagPag()
+    {
+        $this->aPag[] = $this->dom->createElement("pag");
+        return count($this->aPag);
     }
     
     /**
