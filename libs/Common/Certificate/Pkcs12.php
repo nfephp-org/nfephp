@@ -423,7 +423,7 @@ class Pkcs12
         //pega o atributo id do node a ser assinado
         $idSigned = trim($node->getAttribute("Id"));
         //extrai os dados da tag para uma string na forma canonica
-        $dados = $node->C14N(false, false, null, null);
+        $dados = $node->C14N(true, false, null, null);
         //calcular o hash dos dados
         $hashValue = hash('sha1', $dados, true);
         //converter o hash para base64
@@ -481,7 +481,7 @@ class Pkcs12
         //adiciona o node <DigestValue> ao node <Reference>
         $referenceNode->appendChild($digestValueNode);
         //extrai node <SignedInfo> para uma string na sua forma canonica
-        $cnSignedInfoNode = $signedInfoNode->C14N(false, false, null, null);
+        $cnSignedInfoNode = $signedInfoNode->C14N(true, false, null, null);
         //cria uma variavel vasia que receberá a assinatura
         $signature = '';
         //calcula a assinatura do node canonizado <SignedInfo>
@@ -589,7 +589,7 @@ class Pkcs12
             //throw new Exception\RuntimeException($msg);
         }
         //remontando conteudo que foi assinado
-        $signContent = $dom->getElementsByTagName('SignedInfo')->item(0)->C14N(false, false, null, null);
+        $signContent = $dom->getElementsByTagName('SignedInfo')->item(0)->C14N(true, false, null, null);
         // validando assinatura do conteudo
         $signatureValueXML = $dom->getElementsByTagName('SignatureValue')->item(0)->nodeValue;
         $decodedSignature = base64_decode(str_replace(array("\r", "\n"), '', $signatureValueXML));
@@ -625,7 +625,7 @@ class Pkcs12
             throw new Exception\RuntimeException($msg);
         }
         //carregar o node em sua forma canonica
-        $tagInf = $node->C14N(false, false, null, null);
+        $tagInf = $node->C14N(true, false, null, null);
         //calcular o hash sha1
         $hashValue = hash('sha1', $tagInf, true);
         //converter o hash para base64 para obter o digest do node
