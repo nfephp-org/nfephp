@@ -31,9 +31,9 @@ class BaseMake
     /**
      * versao
      * numero da versão do xml do documento fiscal
-     * @var double
+     * @var string
      */
-    public $versao = 0;
+    public $versao = '';
     /**
      * mod
      * modelo do documento fiscal (55, 65, 57 ou 58)

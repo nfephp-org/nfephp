@@ -31,9 +31,9 @@ class MakeNFe extends BaseMake
     /**
      * versao
      * numero da versão do xml da NFe
-     * @var double
+     * @var string
      */
-    public $versao = 3.10;
+    public $versao = '3.10';
     /**
      * mod
      * modelo da nfe por ser 55-NFe ou 65-NFCe
@@ -178,7 +178,7 @@ class MakeNFe extends BaseMake
         $this->infNFe->setAttribute("Id", 'NFe'.$chave);
         $this->infNFe->setAttribute("versao", $versao);
         //$this->infNFe->setAttribute("pk_nItem",'');
-        $this->versao = (int) $versao;
+        $this->versao = $versao;
         $this->chNFe = $chave;
         return $this->infNFe;
     }
@@ -1151,7 +1151,7 @@ class MakeNFe extends BaseMake
     public function tagautXML($cnpj = '', $cpf = '')
     {
         $identificador = 'G50 <autXML> - ';
-        if ($this->versao > 2) {
+        if (intval($this->versao, 10) > 2) {
             $autXML = $this->dom->createElement("autXML");
             if ($cnpj != '') {
                 $this->dom->addChild($autXML, "CNPJ", $cnpj, true, $identificador . "CNPJ do Cliente Autorizado");

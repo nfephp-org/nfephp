@@ -27,7 +27,7 @@ class MakeMDFe extends BaseMake
     /**
      * versao
      * numero da versão do xml da MDFe
-     * @var double
+     * @var string
      */
     public $versao = '1.00';
     /**
@@ -129,7 +129,7 @@ class MakeMDFe extends BaseMake
         $this->infNFe = $this->dom->createElement("infMDFe");
         $this->infNFe->setAttribute("Id", 'MDFe'.$chave);
         $this->infNFe->setAttribute("versao", $versao);
-        $this->versao = (int) $versao;
+        $this->versao = $versao;
         $this->chMDFe = $chave;
         return $this->infMDFe;
     }
