@@ -66,7 +66,7 @@ class MakeNFe extends BaseMake
     // Arrays
     private $aNFref = array(); //array de DOMNode
     private $aDup = array(); //array de DOMNodes
-    private $aPag = ''; //array de DOMNodes
+    private $aPag = array(); //array de DOMNodes
     private $aReboque = array(); //array de DOMNodes
     private $aVol = array(); //array de DOMNodes
     private $aAutXML = array(); //array de DOMNodes
