@@ -1845,7 +1845,7 @@ class ConvertNFe
         $this->linhaQ[1] = $aCampos[1]; //cst
         $this->linhaQ[2] = ''; //vBC
         $this->linhaQ[3] = ''; //pPIS
-        $this->linhaQ[4] = ''; //vPIS
+        $this->linhaQ[4] = 0; //vPIS
         $this->linhaQ[5] = ''; //qBCProd
         $this->linhaQ[6] = ''; //vAliqProd
         $this->zLinhaQEntity($this->linhaQ);
