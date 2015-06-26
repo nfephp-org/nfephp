@@ -14,7 +14,7 @@ namespace NFePHP\Common\Base;
  * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
  */
 
-use NFePHP\Common\Dom\Dom;
+use NFePHP\Common\Dom\Dom as Dom;
 use NFePHP\Common\Keys\Keys;
 use NFePHP\Common\Identify\Identify;
 use NFePHP\Common\Files\FilesFolders;
@@ -49,7 +49,7 @@ class BaseMake
     /**
      * dom
      * Variável onde será montado o xml do documento fiscal
-     * @var NFePHP\Common\Dom\Dom
+     * @var \NFePHP\Common\Dom\Dom
      */
     public $dom;
     /**
@@ -60,7 +60,7 @@ class BaseMake
     public $tpAmb = '2';
     
     /**
-     * __contruct
+     * __construct
      * Função construtora cria um objeto DOMDocument
      * que será carregado com o documento fiscal
      */

@@ -20,8 +20,8 @@ class Dom extends DOMDocument
 {
     /**
      * __construct
-     * @param type $version
-     * @param type $charset
+     * @param string $version
+     * @param string $charset
      */
     public function __construct($version = '1.0', $charset = 'utf-8')
     {
@@ -116,7 +116,7 @@ class Dom extends DOMDocument
      * Adiciona um elemento ao node xml passado como referencia
      * Serão inclusos erros na array $erros[] sempre que a tag for obrigatória e
      * nenhum parâmetro for passado na variável $content e $force for false
-     * @param DOMElement $parent
+     * @param \DOMElement $parent
      * @param string $name
      * @param string $content
      * @param boolean $obrigatorio
