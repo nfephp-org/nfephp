@@ -2500,8 +2500,6 @@ class MakeCTe extends BaseMake
      * Nível: 2
      * Os parâmetros para esta função são todos os elementos da tag "Entrega" do tipo elemento (Ele = E|CE|A) e nível 3
      *
-     * TODO: Verificar se esta função deve ser privada já que não há parâmetros
-     *
      * @return \NFePHP\Common\Dom\Dom
      */
     private function zEntregaTag()
