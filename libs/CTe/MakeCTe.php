@@ -41,7 +41,6 @@ namespace NFePHP\CTe;
  *
  */
 
-use NFePHP\Common\DateTime\DateTime;
 use NFePHP\Common\Base\BaseMake;
 use \DOMElement;
 
@@ -615,7 +614,7 @@ class MakeCTe extends BaseMake
      * @param string $dhCont     Data e Hora da entrada em contingência
      * @param string $xJust      Justificativa da entrada em contingência
      *
-     * @return \DOMNode
+     * @return \DOMElement
      */
     public function ideTag(
         $cUF = '',
@@ -884,7 +883,7 @@ class MakeCTe extends BaseMake
      *
      * @param string $toma Tomador do Serviço
      *
-     * @return \NFePHP\Common\Dom\Dom
+     * @return \DOMElement
      */
     public function toma03Tag($toma = '')
     {
@@ -915,7 +914,7 @@ class MakeCTe extends BaseMake
      * @param string $fone  Telefone
      * @param string $email Endereço de email
      *
-     * @return \DOMNode
+     * @return \DOMElement
      */
     public function toma4Tag(
         $toma = '',
@@ -1023,7 +1022,7 @@ class MakeCTe extends BaseMake
      * @param string $cPais   Código do país
      * @param string $xPais   Nome do país
      *
-     * @return \DOMNode
+     * @return \DOMElement
      */
     public function enderTomaTag(
         $xLgr = '',
@@ -1125,7 +1124,7 @@ class MakeCTe extends BaseMake
      * @param string $destCalc  Município de destino para efeito de cálculo do frete
      * @param string $xObs      Observações Gerais
      *
-     * @return \DOMNode
+     * @return \DOMElement
      */
     public function complTag($xCaracAd = '', $xCaracSer = '', $xEmi = '', $origCalc = '', $destCalc = '', $xObs = '')
     {
@@ -1186,7 +1185,7 @@ class MakeCTe extends BaseMake
      * @param string $xDest Sigla ou código interno da Filial/Porto/Estação/Aeroporto de Destino
      * @param string $xRota Código da Rota de Entrega
      *
-     * @return \DOMNode
+     * @return \DOMElement
      */
     public function fluxoTag($xOrig = '', $xDest = '', $xRota = '')
     {
@@ -1224,7 +1223,7 @@ class MakeCTe extends BaseMake
      *
      * @param string $xPass Sigla ou código interno da Filial/Porto/Estação/Aeroporto de Passagem
      *
-     * @return \DOMNode
+     * @return \DOMElement
      */
     public function passTag($xPass = '')
     {
@@ -1249,7 +1248,7 @@ class MakeCTe extends BaseMake
      *
      * @param string $tpPer Tipo de data/período programado para entrega
      *
-     * @return \DOMNode
+     * @return \DOMElement
      */
     public function semDataTag($tpPer = '')
     {
@@ -1274,7 +1273,7 @@ class MakeCTe extends BaseMake
      * @param string $tpPer Tipo de data/período programado para entrega
      * @param string $dProg Data programada
      *
-     * @return \DOMNode
+     * @return \DOMElement
      */
     public function comDataTag($tpPer = '', $dProg = '')
     {
@@ -1307,7 +1306,7 @@ class MakeCTe extends BaseMake
      * @param string $dIni  Data inicial
      * @param string $dFim  Data final
      *
-     * @return \DOMNode
+     * @return \DOMElement
      */
     public function noPeriodoTag($tpPer = '', $dIni = '', $dFim = '')
     {
@@ -1345,7 +1344,7 @@ class MakeCTe extends BaseMake
      *
      * @param string $tpHor Tipo de hora
      *
-     * @return \DOMNode
+     * @return \DOMElement
      */
     public function semHoraTag($tpHor = '')
     {
@@ -1370,7 +1369,7 @@ class MakeCTe extends BaseMake
      * @param string $tpHor Tipo de hora
      * @param string $hProg Hora programada
      *
-     * @return \DOMNode
+     * @return \DOMElement
      */
     public function comHoraTag($tpHor = '', $hProg = '')
     {
@@ -1403,7 +1402,7 @@ class MakeCTe extends BaseMake
      * @param string $hIni  Hora inicial
      * @param string $hFim  Hora final
      *
-     * @return \DOMNode
+     * @return \DOMElement
      */
     public function noInterTag($tpHor = '', $hIni = '', $hFim = '')
     {
@@ -1514,7 +1513,7 @@ class MakeCTe extends BaseMake
      * @param string $xNome Razão social ou Nome do emitente
      * @param string $xFant Nome fantasia
      *
-     * @return \NFePHP\Common\Dom\Dom
+     * @return \DOMElement
      */
     public function emitTag($CNPJ = '', $IE = '', $xNome = '', $xFant = '')
     {
@@ -1567,7 +1566,7 @@ class MakeCTe extends BaseMake
      * @param string $UF      Sigla da UF
      * @param string $fone    Telefone
      *
-     * @return \DOMNode
+     * @return \DOMElement
      */
     public function enderEmitTag(
         $xLgr = '',
@@ -1662,7 +1661,7 @@ class MakeCTe extends BaseMake
      * @param string $fone  Telefone
      * @param string $email Endereço de email
      *
-     * @return \DOMNode
+     * @return \DOMElement
      */
     public function remTag($CNPJ = '', $CPF = '', $IE = '', $xNome = '', $xFant = '', $fone = '', $email = '')
     {
@@ -1755,7 +1754,7 @@ class MakeCTe extends BaseMake
      * @param string $cPais   Código do país
      * @param string $xPais   Nome do país
      *
-     * @return \NFePHP\Common\Dom\Dom
+     * @return \DOMElement
      */
     public function enderRemeTag(
         $xLgr = '',
@@ -1857,7 +1856,7 @@ class MakeCTe extends BaseMake
      * @param string $fone  Telefone
      * @param string $email Endereço de email
      *
-     * @return \DOMNode
+     * @return \DOMElement
      */
     public function expedTag($CNPJ = '', $CPF = '', $IE = '', $xNome = '', $fone = '', $email = '')
     {
@@ -1943,7 +1942,7 @@ class MakeCTe extends BaseMake
      * @param string $cPais   Código do país
      * @param string $xPais   Nome do país
      *
-     * @return \DOMNode
+     * @return \DOMElement
      */
     public function enderExpedTag(
         $xLgr = '',
@@ -2045,7 +2044,7 @@ class MakeCTe extends BaseMake
      * @param string $fone  Telefone
      * @param string $email Endereço de email
      *
-     * @return \DOMNode
+     * @return \DOMElement
      */
     public function recebTag($CNPJ = '', $CPF = '', $IE = '', $xNome = '', $fone = '', $email = '')
     {
@@ -2131,7 +2130,7 @@ class MakeCTe extends BaseMake
      * @param string $cPais   Código do país
      * @param string $xPais   Nome do país
      *
-     * @return \DOMNode
+     * @return \DOMElement
      */
     public function enderRecebTag(
         $xLgr = '',
@@ -2234,7 +2233,7 @@ class MakeCTe extends BaseMake
      * @param string $ISUF  Inscrição na SUFRAMA
      * @param string $email Endereço de email
      *
-     * @return \DOMNode
+     * @return \DOMElement
      */
     public function destTag($CNPJ = '', $CPF = '', $IE = '', $xNome = '', $fone = '', $ISUF = '', $email = '')
     {
@@ -2327,7 +2326,7 @@ class MakeCTe extends BaseMake
      * @param string $cPais   Código do país
      * @param string $xPais   Nome do país
      *
-     * @return \DOMNode
+     * @return \DOMElement
      */
     public function enderDestTag(
         $xLgr = '',
@@ -2425,7 +2424,7 @@ class MakeCTe extends BaseMake
      * @param string $vTPrest Valor Total da Prestação do Serviço
      * @param string $vRec    Valor a Receber
      *
-     * @return \DOMNode
+     * @return \DOMElement
      */
     public function vPrestTag($vTPrest = '', $vRec = '')
     {
@@ -2457,7 +2456,7 @@ class MakeCTe extends BaseMake
      * @param string $xNome Nome do componente
      * @param string $vComp Valor do componente
      *
-     * @return \DOMNode
+     * @return \DOMElement
      */
     public function compTag($xNome = '', $vComp = '')
     {
@@ -2484,7 +2483,7 @@ class MakeCTe extends BaseMake
     /**
      * Tag raiz do documento xml
      * Função chamada pelo método [ monta ]
-     * @return \DOMNode
+     * @return \DOMElement
      */
     private function zCTeTag() {
         if (empty($this->CTe)) {
@@ -2500,7 +2499,7 @@ class MakeCTe extends BaseMake
      * Nível: 2
      * Os parâmetros para esta função são todos os elementos da tag "Entrega" do tipo elemento (Ele = E|CE|A) e nível 3
      *
-     * @return \DOMNode
+     * @return \DOMElement
      */
     private function zEntregaTag()
     {
