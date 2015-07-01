@@ -43,7 +43,6 @@ namespace NFePHP\CTe;
 
 use NFePHP\Common\DateTime\DateTime;
 use NFePHP\Common\Base\BaseMake;
-use \DOMDocument;
 use \DOMElement;
 
 class MakeCTe extends BaseMake
@@ -93,7 +92,6 @@ class MakeCTe extends BaseMake
      * @var \DOMNode
      */
     private $CTe = '';
-
     /**
      * Informações do CT-e
      * @var \DOMNode
@@ -204,7 +202,6 @@ class MakeCTe extends BaseMake
      * @var \DOMNode
      */
     private $enderReme = '';
-
     /**
      * Informações do Expedidor da Carga
      * @var \DOMNode
@@ -244,7 +241,7 @@ class MakeCTe extends BaseMake
      * Componentes do Valor da Prestação
      * @var array
      */
-    private $Comp = array();
+    private $comp = array();
     /**
      * Informações relativas aos Impostos
      * @var \DOMNode
@@ -492,7 +489,6 @@ class MakeCTe extends BaseMake
         if (count($this->erros) > 0) {
             return false;
         }
-        // cria a tag raiz
         $this->zCTeTag();
         if ($this->toma03 != '') {
             $this->dom->appChild($this->ide, $this->toma03, 'Falta tag "ide"');
@@ -501,6 +497,62 @@ class MakeCTe extends BaseMake
             $this->dom->appChild($this->ide, $this->toma4, 'Falta tag "ide"');
         }
         $this->dom->appChild($this->infCte, $this->ide, 'Falta tag "infCte"');
+        if ($this->compl != '') {
+            if ($this->fluxo != '') {
+                foreach ($this->pass as $pass) {
+                    $this->dom->appChild($this->fluxo, $pass, 'Falta tag "fluxo"');
+                }
+                $this->dom->appChild($this->compl, $this->fluxo, 'Falta tag "infCte"');
+            }
+            if ($this->semData != '') {
+                $this->zEntregaTag();
+                $this->dom->appChild($this->entrega, $this->semData, 'Falta tag "Entrega"');
+            } else if ($this->comData != '') {
+                $this->zEntregaTag();
+                $this->dom->appChild($this->entrega, $this->comData, 'Falta tag "Entrega"');
+            } else if ($this->noPeriodo != '') {
+                $this->zEntregaTag();
+                $this->dom->appChild($this->entrega, $this->noPeriodo, 'Falta tag "Entrega"');
+            } else if ($this->semHora != '') {
+                $this->zEntregaTag();
+                $this->dom->appChild($this->entrega, $this->semHora, 'Falta tag "Entrega"');
+            } else if ($this->comHora != '') {
+                $this->zEntregaTag();
+                $this->dom->appChild($this->entrega, $this->comHora, 'Falta tag "Entrega"');
+            } else if ($this->noInter != '') {
+                $this->zEntregaTag();
+                $this->dom->appChild($this->entrega, $this->noInter, 'Falta tag "Entrega"');
+            }
+            foreach ($this->obsCont as $obsCont) {
+                $this->dom->appChild($this->compl, $obsCont, 'Falta tag "compl"');
+            }
+            foreach ($this->obsFisco as $obsFisco) {
+                $this->dom->appChild($this->compl, $obsFisco, 'Falta tag "compl"');
+            }
+            $this->dom->appChild($this->infCte, $this->compl, 'Falta tag "infCte"');
+        }
+        $this->dom->appChild($this->emit, $this->enderEmit, 'Falta tag "emit"');
+        $this->dom->appChild($this->infCte, $this->emit, 'Falta tag "infCte"');
+        if ($this->rem != '') {
+            $this->dom->appChild($this->rem, $this->enderReme, 'Falta tag "rem"');
+            $this->dom->appChild($this->infCte, $this->rem, 'Falta tag "infCte"');
+        }
+        if ($this->exped != '') {
+            $this->dom->appChild($this->exped, $this->enderExped, 'Falta tag "exped"');
+            $this->dom->appChild($this->infCte, $this->exped, 'Falta tag "infCte"');
+        }
+        if ($this->receb != '') {
+            $this->dom->appChild($this->receb, $this->enderReceb, 'Falta tag "receb"');
+            $this->dom->appChild($this->infCte, $this->receb, 'Falta tag "infCte"');
+        }
+        if ($this->dest != '') {
+            $this->dom->appChild($this->dest, $this->enderDest, 'Falta tag "dest"');
+            $this->dom->appChild($this->infCte, $this->dest, 'Falta tag "infCte"');
+        }
+        foreach ($this->comp as $comp) {
+            $this->dom->appChild($this->vPrest, $comp, 'Falta tag "vPrest"');
+        }
+        $this->dom->appChild($this->infCte, $this->vPrest, 'Falta tag "infCte"');
         $this->dom->appChild($this->CTe, $this->infCte, 'Falta tag "CTe"');
         $this->dom->appChild($this->dom, $this->CTe, 'Falta tag "DOMDocument"');
         $this->xml = $this->dom->saveXML();
@@ -849,7 +901,7 @@ class MakeCTe extends BaseMake
     }
 
     /**
-     * Gera as tags para o elemento: toma3 (Indicador do "papel" do tomador do serviço no CT-e) e adiciona ao grupo ide
+     * Gera as tags para o elemento: toma4 (Indicador do "papel" do tomador do serviço no CT-e) e adiciona ao grupo ide
      * #37
      * Nível: 2
      * Os parâmetros para esta função são todos os elementos da tag "toma4" do tipo elemento (Ele = E|CE|A) e nível 3
@@ -1125,6 +1177,1311 @@ class MakeCTe extends BaseMake
     }
 
     /**
+     * Gera as tags para o elemento: "fluxo" (Previsão do fluxo da carga)
+     * #63
+     * Nível: 2
+     * Os parâmetros para esta função são todos os elementos da tag "fluxo" do tipo elemento (Ele = E|CE|A) e nível 3
+     *
+     * @param string $xOrig Sigla ou código interno da Filial/Porto/Estação/ Aeroporto de Origem
+     * @param string $xDest Sigla ou código interno da Filial/Porto/Estação/Aeroporto de Destino
+     * @param string $xRota Código da Rota de Entrega
+     *
+     * @return \NFePHP\Common\Dom\Dom
+     */
+    public function fluxoTag($xOrig = '', $xDest = '', $xRota = '')
+    {
+        $identificador = '#63 <fluxo> - ';
+        $this->fluxo = $this->dom->createElement('fluxo');
+        $this->dom->addChild(
+            $this->fluxo,
+            'xOrig',
+            $xOrig,
+            false,
+            $identificador . 'Sigla ou código interno da Filial/Porto/Estação/ Aeroporto de Origem'
+        );
+        $this->dom->addChild(
+            $this->fluxo,
+            'xDest',
+            $xDest,
+            false,
+            $identificador . 'Sigla ou código interno da Filial/Porto/Estação/Aeroporto de Destino'
+        );
+        $this->dom->addChild(
+            $this->fluxo,
+            'xRota',
+            $xRota,
+            false,
+            $identificador . 'Código da Rota de Entrega'
+        );
+        return $this->fluxo;
+    }
+
+    /**
+     * Gera as tags para o elemento: "pass"
+     * #65
+     * Nível: 3
+     * Os parâmetros para esta função são todos os elementos da tag "pass" do tipo elemento (Ele = E|CE|A) e nível 4
+     *
+     * @param string $xPass Sigla ou código interno da Filial/Porto/Estação/Aeroporto de Passagem
+     *
+     * @return \NFePHP\Common\Dom\Dom
+     */
+    public function passTag($xPass = '')
+    {
+        $identificador = '#65 <pass> - ';
+        $this->pass[] = $this->dom->createElement('pass');
+        $posicao = (integer) count($this->pass) - 1;
+        $this->dom->addChild(
+            $this->pass[$posicao],
+            'xPass',
+            $xPass,
+            false,
+            $identificador . 'Sigla ou código interno da Filial/Porto/Estação/Aeroporto de Passagem'
+        );
+        return $this->pass[$posicao];
+    }
+
+    /**
+     * Gera as tags para o elemento: "semData" (Entrega sem data definida)
+     * #70
+     * Nível: 3
+     * Os parâmetros para esta função são todos os elementos da tag "semData" do tipo elemento (Ele = E|CE|A) e nível 4
+     *
+     * @param string $tpPer Tipo de data/período programado para entrega
+     *
+     * @return \NFePHP\Common\Dom\Dom
+     */
+    public function semDataTag($tpPer = '')
+    {
+        $identificador = '#70 <semData> - ';
+        $this->semData = $this->dom->createElement('semData');
+        $this->dom->addChild(
+            $this->semData,
+            'tpPer',
+            $tpPer,
+            true,
+            $identificador . 'Tipo de data/período programado para entrega'
+        );
+        return $this->semData;
+    }
+
+    /**
+     * Gera as tags para o elemento: "comData" (Entrega com data definida)
+     * #72
+     * Nível: 3
+     * Os parâmetros para esta função são todos os elementos da tag "comData" do tipo elemento (Ele = E|CE|A) e nível 4
+     *
+     * @param string $tpPer Tipo de data/período programado para entrega
+     * @param string $dProg Data programada
+     *
+     * @return \NFePHP\Common\Dom\Dom
+     */
+    public function comDataTag($tpPer = '', $dProg = '')
+    {
+        $identificador = '#72 <comData> - ';
+        $this->comData = $this->dom->createElement('comData');
+        $this->dom->addChild(
+            $this->comData,
+            'tpPer',
+            $tpPer,
+            true,
+            $identificador . 'Tipo de data/período programado para entrega'
+        );
+        $this->dom->addChild(
+            $this->comData,
+            'dProg',
+            $dProg,
+            true,
+            $identificador . 'Data programada'
+        );
+        return $this->comData;
+    }
+
+    /**
+     * Gera as tags para o elemento: "noPeriodo" (Entrega no período definido)
+     * #75
+     * Nível: 3
+     * Os parâmetros para esta função são todos os elementos da tag "noPeriodo" do tipo elemento (Ele = E|CE|A) e nível 4
+     *
+     * @param string $tpPer Tipo de data/período programado para entrega
+     * @param string $dIni  Data inicial
+     * @param string $dFim  Data final
+     *
+     * @return \NFePHP\Common\Dom\Dom
+     */
+    public function noPeriodoTag($tpPer = '', $dIni = '', $dFim = '')
+    {
+        $identificador = '#75 <noPeriodo> - ';
+        $this->noPeriodo = $this->dom->createElement('noPeriodo');
+        $this->dom->addChild(
+            $this->noPeriodo,
+            'tpPer',
+            $tpPer,
+            true,
+            $identificador . 'Tipo de data/período programado para entrega'
+        );
+        $this->dom->addChild(
+            $this->noPeriodo,
+            'dIni',
+            $dIni,
+            true,
+            $identificador . 'Data inicial'
+        );
+        $this->dom->addChild(
+            $this->noPeriodo,
+            'dFim',
+            $dFim,
+            true,
+            $identificador . 'Data final'
+        );
+        return $this->noPeriodo;
+    }
+
+    /**
+     * Gera as tags para o elemento: "semHora" (Entrega sem hora definida)
+     * #79
+     * Nível: 3
+     * Os parâmetros para esta função são todos os elementos da tag "semHora" do tipo elemento (Ele = E|CE|A) e nível 4
+     *
+     * @param string $tpHor Tipo de hora
+     *
+     * @return \NFePHP\Common\Dom\Dom
+     */
+    public function semHoraTag($tpHor = '')
+    {
+        $identificador = '#79 <semHora> - ';
+        $this->semHora = $this->dom->createElement('semHora');
+        $this->dom->addChild(
+            $this->semHora,
+            'tpHor',
+            $tpHor,
+            true,
+            $identificador . 'Tipo de hora'
+        );
+        return $this->semHora;
+    }
+
+    /**
+     * Gera as tags para o elemento: "comHora" (Entrega sem hora definida)
+     * # = 81
+     * Nível = 3
+     * Os parâmetros para esta função são todos os elementos da tag "comHora" do tipo elemento (Ele = E|CE|A) e nível 4
+     *
+     * @param string $tpHor Tipo de hora
+     * @param string $hProg Hora programada
+     *
+     * @return \NFePHP\Common\Dom\Dom
+     */
+    public function comHoraTag($tpHor = '', $hProg = '')
+    {
+        $identificador = '#81 <comHora> - ';
+        $this->comHora = $this->dom->createElement('comHora');
+        $this->dom->addChild(
+            $this->comHora,
+            'tpHor',
+            $tpHor,
+            true,
+            $identificador . 'Tipo de hora'
+        );
+        $this->dom->addChild(
+            $this->comHora,
+            'hProg',
+            $hProg,
+            true,
+            $identificador . 'Hora programada'
+        );
+        return $this->comHora;
+    }
+
+    /**
+     * Gera as tags para o elemento: "noInter" (Entrega no intervalo de horário definido)
+     * #84
+     * Nível: 3
+     * Os parâmetros para esta função são todos os elementos da tag "noInter" do tipo elemento (Ele = E|CE|A) e nível 4
+     *
+     * @param string $tpHor Tipo de hora
+     * @param string $hIni  Hora inicial
+     * @param string $hFim  Hora final
+     *
+     * @return \NFePHP\Common\Dom\Dom
+     */
+    public function noInterTag($tpHor = '', $hIni = '', $hFim = '')
+    {
+        $identificador = '#84 <noInter> - ';
+        $this->noInter = $this->dom->createElement('noInter');
+        $this->dom->addChild(
+            $this->noInter,
+            'tpHor',
+            $tpHor,
+            true,
+            $identificador . 'Tipo de hora'
+        );
+        $this->dom->addChild(
+            $this->noInter,
+            'hIni',
+            $hIni,
+            true,
+            $identificador . 'Hora inicial'
+        );
+        $this->dom->addChild(
+            $this->noInter,
+            'hFim',
+            $hFim,
+            true,
+            $identificador . 'Hora final'
+        );
+        return $this->noInter;
+    }
+
+    /**
+     * Gera as tags para o elemento: "ObsCont" (Campo de uso livre do contribuinte)
+     * #91
+     * Nível: 2
+     * Os parâmetros para esta função são todos os elementos da tag "ObsCont" do tipo elemento (Ele = E|CE|A) e nível 3
+     *
+     * @param string $xCampo Identificação do campo
+     * @param string $xTexto Conteúdo do campo
+     *
+     * @return boolean
+     */
+    public function obsContTag($xCampo = '', $xTexto = '')
+    {
+        $identificador = '#91 <ObsCont> - ';
+        $posicao = (integer) count($this->obsCont) - 1;
+        if (count($this->obsCont) <= 10) {
+            $this->obsCont[] = $this->dom->createElement('ObsCont');
+            $this->obsCont[$posicao]->setAttribute('xCampo', $xCampo);
+            $this->dom->addChild(
+                $this->obsCont[$posicao],
+                'xTexto',
+                $xTexto,
+                true,
+                $identificador . 'Conteúdo do campo'
+            );
+            return true;
+        }
+        $this->erros[] = array(
+            'tag' => (string) '<ObsCont>',
+            'desc' => (string) 'Campo de uso livre do contribuinte',
+            'erro' => (string) 'Tag deve aparecer de 0 a 10 vezes'
+        );
+        return false;
+    }
+
+    /**
+     * Gera as tags para o elemento: "ObsFisco" (Campo de uso livre do contribuinte)
+     * #94
+     * Nível: 2
+     * Os parâmetros para esta função são todos os elementos da tag "ObsFisco" do tipo elemento (Ele = E|CE|A) e nível 3
+     *
+     * @param string $xCampo Identificação do campo
+     * @param string $xTexto Conteúdo do campo
+     *
+     * @return boolean
+     */
+    public function obsFiscoTag($xCampo = '', $xTexto = '')
+    {
+        $identificador = '#94 <ObsFisco> - ';
+        $posicao = (integer) count($this->obsFisco) - 1;
+        if (count($this->obsFisco) <= 10) {
+            $this->obsFisco[] = $this->dom->createElement('obsFisco');
+            $this->obsFisco[$posicao]->setAttribute('xCampo', $xCampo);
+            $this->dom->addChild(
+                $this->obsFisco[$posicao],
+                'xTexto',
+                $xTexto,
+                true,
+                $identificador . 'Conteúdo do campo'
+            );
+            return true;
+        }
+        $this->erros[] = array(
+            'tag' => (string) '<ObsFisco>',
+            'desc' => (string) 'Campo de uso livre do contribuinte',
+            'erro' => (string) 'Tag deve aparecer de 0 a 10 vezes'
+        );
+        return false;
+    }
+
+    /**
+     * Gera as tags para o elemento: "emit" (Identificação do Emitente do CT-e)
+     * #97
+     * Nível: 1
+     * Os parâmetros para esta função são todos os elementos da tag "emit" do tipo elemento (Ele = E|CE|A) e nível 2
+     *
+     * @param string $CNPJ  CNPJ do emitente
+     * @param string $IE    Inscrição Estadual do Emitente
+     * @param string $xNome Razão social ou Nome do emitente
+     * @param string $xFant Nome fantasia
+     *
+     * @return \NFePHP\Common\Dom\Dom
+     */
+    public function emitTag($CNPJ = '', $IE = '', $xNome = '', $xFant = '')
+    {
+        $identificador = '#97 <emit> - ';
+        $this->emit = $this->dom->createElement('emit');
+        $this->dom->addChild(
+            $this->emit,
+            'CNPJ',
+            $CNPJ,
+            true,
+            $identificador . 'CNPJ do emitente'
+        );
+        $this->dom->addChild(
+            $this->emit,
+            'IE',
+            $IE,
+            true,
+            $identificador . 'Inscrição Estadual do Emitente'
+        );
+        $this->dom->addChild(
+            $this->emit,
+            'xNome',
+            $xNome,
+            true,
+            $identificador . 'Razão social ou Nome do emitente'
+        );
+        $this->dom->addChild(
+            $this->emit,
+            'xFant',
+            $xFant,
+            true,
+            $identificador . 'Nome fantasia'
+        );
+        return $this->emit;
+    }
+
+    /**
+     * Gera as tags para o elemento: "enderEmit" (Endereço do emitente)
+     * #102
+     * Nível: 2
+     * Os parâmetros para esta função são todos os elementos da tag "enderEmit" do tipo elemento (Ele = E|CE|A) e nível 3
+     *
+     * @param string $xLgr    Logradouro
+     * @param string $nro     Número
+     * @param string $xCpl    Complemento
+     * @param string $xBairro Bairro
+     * @param string $cMun    Código do município (utilizar a tabela do IBGE)
+     * @param string $xMun    Nome do município
+     * @param string $CEP     CEP
+     * @param string $UF      Sigla da UF
+     * @param string $fone    Telefone
+     *
+     * @return \NFePHP\Common\Dom\Dom
+     */
+    public function enderEmitTag(
+        $xLgr = '',
+        $nro = '',
+        $xCpl = '',
+        $xBairro = '',
+        $cMun = '',
+        $xMun = '',
+        $CEP = '',
+        $UF = '',
+        $fone = ''
+    ) {
+        $identificador = '#102 <enderEmit> - ';
+        $this->enderEmit = $this->dom->createElement('enderEmit');
+        $this->dom->addChild(
+            $this->enderEmit,
+            'xLgr',
+            $xLgr,
+            true,
+            $identificador . 'Logradouro'
+        );
+        $this->dom->addChild(
+            $this->enderEmit,
+            'nro',
+            $nro,
+            true,
+            $identificador . 'Número'
+        );
+        $this->dom->addChild(
+            $this->enderEmit,
+            'xCpl',
+            $xCpl,
+            false,
+            $identificador . 'Complemento'
+        );
+        $this->dom->addChild(
+            $this->enderEmit,
+            'xBairro',
+            $xBairro,
+            true,
+            $identificador . 'Bairro'
+        );
+        $this->dom->addChild(
+            $this->enderEmit,
+            'cMun',
+            $cMun,
+            true,
+            $identificador . 'Código do município'
+        );
+        $this->dom->addChild(
+            $this->enderEmit,
+            'xMun',
+            $xMun,
+            true,
+            $identificador . 'Nome do município'
+        );
+        $this->dom->addChild(
+            $this->enderEmit,
+            'CEP',
+            $CEP,
+            false,
+            $identificador . 'CEP'
+        );
+        $this->dom->addChild(
+            $this->enderEmit,
+            'UF',
+            $UF,
+            true,
+            $identificador . 'Sigla da UF'
+        );
+        $this->dom->addChild(
+            $this->enderEmit,
+            'fone',
+            $fone,
+            false,
+            $identificador . 'Telefone'
+        );
+        return $this->enderEmit;
+    }
+
+    /**
+     * Gera as tags para o elemento: "rem" (Informações do Remetente das mercadorias transportadas pelo CT-e)
+     * #112
+     * Nível = 1
+     * Os parâmetros para esta função são todos os elementos da tag "rem" do tipo elemento (Ele = E|CE|A) e nível 2
+     *
+     * @param string $CNPJ  Número do CNPJ
+     * @param string $CPF   Número do CPF
+     * @param string $IE    Inscrição Estadual
+     * @param string $xNome Razão social ou nome do remetente
+     * @param string $xFant Nome fantasia
+     * @param string $fone  Telefone
+     * @param string $email Endereço de email
+     *
+     * @return \NFePHP\Common\Dom\Dom
+     */
+    public function remTag($CNPJ = '', $CPF = '', $IE = '', $xNome = '', $xFant = '', $fone = '', $email = '')
+    {
+        $identificador = '#97 <rem> - ';
+        $this->rem = $this->dom->createElement('rem');
+        if ($CNPJ != '') {
+            $this->dom->addChild(
+                $this->rem,
+                'CNPJ',
+                $CNPJ,
+                true,
+                $identificador . 'CNPJ do Remente'
+            );
+        } else if ($CPF != '') {
+            $this->dom->addChild(
+                $this->rem,
+                'CPF',
+                $CPF,
+                true,
+                $identificador . 'CPF do Remente'
+            );
+        } else {
+            $this->dom->addChild(
+                $this->rem,
+                'CNPJ',
+                $CNPJ,
+                true,
+                $identificador . 'CNPJ do Remente'
+            );
+            $this->dom->addChild(
+                $this->rem,
+                'CPF',
+                $CPF,
+                true,
+                $identificador . 'CPF do remente'
+            );
+        }
+        $this->dom->addChild(
+            $this->rem,
+            'IE',
+            $IE,
+            true,
+            $identificador . 'Inscrição Estadual do remente'
+        );
+        $this->dom->addChild(
+            $this->rem,
+            'xNome',
+            $xNome,
+            true,
+            $identificador . 'Razão social ou Nome do remente'
+        );
+        $this->dom->addChild(
+            $this->rem,
+            'xFant',
+            $xFant,
+            true,
+            $identificador . 'Nome fantasia'
+        );
+        $this->dom->addChild(
+            $this->rem,
+            'fone',
+            $fone,
+            false,
+            $identificador . 'Telefone'
+        );
+        $this->dom->addChild(
+            $this->rem,
+            'email',
+            $email,
+            false,
+            $identificador . 'Endereço de email'
+        );
+        return $this->rem;
+    }
+
+    /**
+     * Gera as tags para o elemento: "enderReme" (Dados do endereço)
+     * #119
+     * Nível: 2
+     * Os parâmetros para esta função são todos os elementos da tag "enderReme" do tipo elemento (Ele = E|CE|A) e nível 3
+     *
+     * @param string $xLgr    Logradouro
+     * @param string $nro     Número
+     * @param string $xCpl    Complemento
+     * @param string $xBairro Bairro
+     * @param string $cMun    Código do município (utilizar a tabela do IBGE)
+     * @param string $xMun    Nome do município
+     * @param string $CEP     CEP
+     * @param string $UF      Sigla da UF
+     * @param string $cPais   Código do país
+     * @param string $xPais   Nome do país
+     *
+     * @return \NFePHP\Common\Dom\Dom
+     */
+    public function enderRemeTag(
+        $xLgr = '',
+        $nro = '',
+        $xCpl = '',
+        $xBairro = '',
+        $cMun = '',
+        $xMun = '',
+        $CEP = '',
+        $UF = '',
+        $cPais = '',
+        $xPais = ''
+    ) {
+        $identificador = '#119 <enderReme> - ';
+        $this->enderReme = $this->dom->createElement('enderReme');
+        $this->dom->addChild(
+            $this->enderReme,
+            'xLgr',
+            $xLgr,
+            true,
+            $identificador . 'Logradouro'
+        );
+        $this->dom->addChild(
+            $this->enderReme,
+            'nro',
+            $nro,
+            true,
+            $identificador . 'Número'
+        );
+        $this->dom->addChild(
+            $this->enderReme,
+            'xCpl',
+            $xCpl,
+            false,
+            $identificador . 'Complemento'
+        );
+        $this->dom->addChild(
+            $this->enderReme,
+            'xBairro',
+            $xBairro,
+            true,
+            $identificador . 'Bairro'
+        );
+        $this->dom->addChild(
+            $this->enderReme,
+            'cMun',
+            $cMun,
+            true,
+            $identificador . 'Código do município (utilizar a tabela do IBGE)'
+        );
+        $this->dom->addChild(
+            $this->enderReme,
+            'xMun',
+            $xMun,
+            true,
+            $identificador . 'Nome do município'
+        );
+        $this->dom->addChild(
+            $this->enderReme,
+            'CEP',
+            $CEP,
+            false,
+            $identificador . 'CEP'
+        );
+        $this->dom->addChild(
+            $this->enderReme,
+            'UF',
+            $UF,
+            true,
+            $identificador . 'Sigla da UF'
+        );
+        $this->dom->addChild(
+            $this->enderReme,
+            'cPais',
+            $cPais,
+            false,
+            $identificador . 'Código do país'
+        );
+        $this->dom->addChild(
+            $this->enderReme,
+            'xPais',
+            $xPais,
+            false,
+            $identificador . 'Nome do país'
+        );
+        return $this->enderReme;
+    }
+
+    /**
+     * Gera as tags para o elemento: "exped" (Informações do Expedidor da Carga)
+     * #142
+     * Nível: 1
+     * Os parâmetros para esta função são todos os elementos da tag "exped" do tipo elemento (Ele = E|CE|A) e nível 2
+     *
+     * @param string $CNPJ  Número do CNPJ
+     * @param string $CPF   Número do CPF
+     * @param string $IE    Inscrição Estadual
+     * @param string $xNome Razão Social ou Nome
+     * @param string $fone  Telefone
+     * @param string $email Endereço de email
+     *
+     * @return \NFePHP\Common\Dom\Dom
+     */
+    public function expedTag($CNPJ = '', $CPF = '', $IE = '', $xNome = '', $fone = '', $email = '')
+    {
+        $identificador = '#142 <exped> - ';
+        $this->exped = $this->dom->createElement('exped');
+        if ($CNPJ != '') {
+            $this->dom->addChild(
+                $this->exped,
+                'CNPJ',
+                $CNPJ,
+                true,
+                $identificador . 'Número do CNPJ'
+            );
+        } else if ($CPF != '') {
+            $this->dom->addChild(
+                $this->exped,
+                'CPF',
+                $CPF,
+                true,
+                $identificador . 'Número do CPF'
+            );
+        } else {
+            $this->dom->addChild(
+                $this->exped,
+                'CNPJ',
+                $CNPJ,
+                true,
+                $identificador . 'Número do CNPJ'
+            );
+            $this->dom->addChild(
+                $this->exped,
+                'CPF',
+                $CPF,
+                true,
+                $identificador . 'Número do CPF'
+            );
+        }
+        $this->dom->addChild(
+            $this->exped,
+            'IE',
+            $IE,
+            true,
+            $identificador . 'Inscrição Estadual'
+        );
+        $this->dom->addChild(
+            $this->exped,
+            'xNome',
+            $xNome,
+            true,
+            $identificador . 'Razão social ou Nome'
+        );
+        $this->dom->addChild(
+            $this->exped,
+            'fone',
+            $fone,
+            false,
+            $identificador . 'Telefone'
+        );
+        $this->dom->addChild(
+            $this->exped,
+            'email',
+            $email,
+            false,
+            $identificador . 'Endereço de email'
+        );
+        return $this->exped;
+    }
+
+    /**
+     * Gera as tags para o elemento: "enderExped" (Dados do endereço)
+     * #148
+     * Nível: 2
+     * Os parâmetros para esta função são todos os elementos da tag "enderExped" do tipo elemento (Ele = E|CE|A) e nível 3
+     *
+     * @param string $xLgr    Logradouro
+     * @param string $nro     Número
+     * @param string $xCpl    Complemento
+     * @param string $xBairro Bairro
+     * @param string $cMun    Código do município (utilizar a tabela do IBGE)
+     * @param string $xMun    Nome do município
+     * @param string $CEP     CEP
+     * @param string $UF      Sigla da UF
+     * @param string $cPais   Código do país
+     * @param string $xPais   Nome do país
+     *
+     * @return \NFePHP\Common\Dom\Dom
+     */
+    public function enderExpedTag(
+        $xLgr = '',
+        $nro = '',
+        $xCpl = '',
+        $xBairro = '',
+        $cMun = '',
+        $xMun = '',
+        $CEP = '',
+        $UF = '',
+        $cPais = '',
+        $xPais = ''
+    ) {
+        $identificador = '#148 <enderExped> - ';
+        $this->enderExped = $this->dom->createElement('enderExped');
+        $this->dom->addChild(
+            $this->enderExped,
+            'xLgr',
+            $xLgr,
+            true,
+            $identificador . 'Logradouro'
+        );
+        $this->dom->addChild(
+            $this->enderExped,
+            'nro',
+            $nro,
+            true,
+            $identificador . 'Número'
+        );
+        $this->dom->addChild(
+            $this->enderExped,
+            'xCpl',
+            $xCpl,
+            false,
+            $identificador . 'Complemento'
+        );
+        $this->dom->addChild(
+            $this->enderExped,
+            'xBairro',
+            $xBairro,
+            true,
+            $identificador . 'Bairro'
+        );
+        $this->dom->addChild(
+            $this->enderExped,
+            'cMun',
+            $cMun,
+            true,
+            $identificador . 'Código do município (utilizar a tabela do IBGE)'
+        );
+        $this->dom->addChild(
+            $this->enderExped,
+            'xMun',
+            $xMun,
+            true,
+            $identificador . 'Nome do município'
+        );
+        $this->dom->addChild(
+            $this->enderExped,
+            'CEP',
+            $CEP,
+            false,
+            $identificador . 'CEP'
+        );
+        $this->dom->addChild(
+            $this->enderExped,
+            'UF',
+            $UF,
+            true,
+            $identificador . 'Sigla da UF'
+        );
+        $this->dom->addChild(
+            $this->enderExped,
+            'cPais',
+            $cPais,
+            false,
+            $identificador . 'Código do país'
+        );
+        $this->dom->addChild(
+            $this->enderExped,
+            'xPais',
+            $xPais,
+            false,
+            $identificador . 'Nome do país'
+        );
+        return $this->enderExped;
+    }
+
+    /**
+     * Gera as tags para o elemento: "receb" (Informações do Recebedor da Carga)
+     * #160
+     * Nível: 1
+     * Os parâmetros para esta função são todos os elementos da tag "receb" do tipo elemento (Ele = E|CE|A) e nível 2
+     *
+     * @param string $CNPJ  Número do CNPJ
+     * @param string $CPF   Número do CPF
+     * @param string $IE    Inscrição Estadual
+     * @param string $xNome Razão Social ou Nome
+     * @param string $fone  Telefone
+     * @param string $email Endereço de email
+     *
+     * @return \NFePHP\Common\Dom\Dom
+     */
+    public function recebTag($CNPJ = '', $CPF = '', $IE = '', $xNome = '', $fone = '', $email = '')
+    {
+        $identificador = '#160 <receb> - ';
+        $this->receb = $this->dom->createElement('receb');
+        if ($CNPJ != '') {
+            $this->dom->addChild(
+                $this->receb,
+                'CNPJ',
+                $CNPJ,
+                true,
+                $identificador . 'Número do CNPJ'
+            );
+        } else if ($CPF != '') {
+            $this->dom->addChild(
+                $this->receb,
+                'CPF',
+                $CPF,
+                true,
+                $identificador . 'Número do CPF'
+            );
+        } else {
+            $this->dom->addChild(
+                $this->receb,
+                'CNPJ',
+                $CNPJ,
+                true,
+                $identificador . 'Número do CNPJ'
+            );
+            $this->dom->addChild(
+                $this->receb,
+                'CPF',
+                $CPF,
+                true,
+                $identificador . 'Número do CPF'
+            );
+        }
+        $this->dom->addChild(
+            $this->receb,
+            'IE',
+            $IE,
+            true,
+            $identificador . 'Inscrição Estadual'
+        );
+        $this->dom->addChild(
+            $this->receb,
+            'xNome',
+            $xNome,
+            true,
+            $identificador . 'Razão social ou Nome'
+        );
+        $this->dom->addChild(
+            $this->receb,
+            'fone',
+            $fone,
+            false,
+            $identificador . 'Telefone'
+        );
+        $this->dom->addChild(
+            $this->receb,
+            'email',
+            $email,
+            false,
+            $identificador . 'Endereço de email'
+        );
+        return $this->receb;
+    }
+
+    /**
+     * Gera as tags para o elemento: "enderReceb" (Informações do Recebedor da Carga)
+     * #166
+     * Nível: 2
+     * Os parâmetros para esta função são todos os elementos da tag "enderReceb" do tipo elemento (Ele = E|CE|A) e nível 3
+     *
+     * @param string $xLgr    Logradouro
+     * @param string $nro     Número
+     * @param string $xCpl    Complemento
+     * @param string $xBairro Bairro
+     * @param string $cMun    Código do município (utilizar a tabela do IBGE)
+     * @param string $xMun    Nome do município
+     * @param string $CEP     CEP
+     * @param string $UF      Sigla da UF
+     * @param string $cPais   Código do país
+     * @param string $xPais   Nome do país
+     *
+     * @return \NFePHP\Common\Dom\Dom
+     */
+    public function enderRecebTag(
+        $xLgr = '',
+        $nro = '',
+        $xCpl = '',
+        $xBairro = '',
+        $cMun = '',
+        $xMun = '',
+        $CEP = '',
+        $UF = '',
+        $cPais = '',
+        $xPais = ''
+    ) {
+        $identificador = '#160 <enderReceb> - ';
+        $this->enderReceb = $this->dom->createElement('enderReceb');
+        $this->dom->addChild(
+            $this->enderReceb,
+            'xLgr',
+            $xLgr,
+            true,
+            $identificador . 'Logradouro'
+        );
+        $this->dom->addChild(
+            $this->enderReceb,
+            'nro',
+            $nro,
+            true,
+            $identificador . 'Número'
+        );
+        $this->dom->addChild(
+            $this->enderReceb,
+            'xCpl',
+            $xCpl,
+            false,
+            $identificador . 'Complemento'
+        );
+        $this->dom->addChild(
+            $this->enderReceb,
+            'xBairro',
+            $xBairro,
+            true,
+            $identificador . 'Bairro'
+        );
+        $this->dom->addChild(
+            $this->enderReceb,
+            'cMun',
+            $cMun,
+            true,
+            $identificador . 'Código do município (utilizar a tabela do IBGE)'
+        );
+        $this->dom->addChild(
+            $this->enderReceb,
+            'xMun',
+            $xMun,
+            true,
+            $identificador . 'Nome do município'
+        );
+        $this->dom->addChild(
+            $this->enderReceb,
+            'CEP',
+            $CEP,
+            false,
+            $identificador . 'CEP'
+        );
+        $this->dom->addChild(
+            $this->enderReceb,
+            'UF',
+            $UF,
+            true,
+            $identificador . 'Sigla da UF'
+        );
+        $this->dom->addChild(
+            $this->enderReceb,
+            'cPais',
+            $cPais,
+            false,
+            $identificador . 'Código do país'
+        );
+        $this->dom->addChild(
+            $this->enderReceb,
+            'xPais',
+            $xPais,
+            false,
+            $identificador . 'Nome do país'
+        );
+        return $this->enderReceb;
+    }
+
+    /**
+     * Gera as tags para o elemento: "dest" (Informações do Destinatário do CT-e)
+     * #178
+     * Nível: 1
+     * Os parâmetros para esta função são todos os elementos da tag "dest" do tipo elemento (Ele = E|CE|A) e nível 2
+     *
+     * @param string $CNPJ  Número do CNPJ
+     * @param string $CPF   Número do CPF
+     * @param string $IE    Inscrição Estadual
+     * @param string $xNome Razão Social ou Nome
+     * @param string $fone  Telefone
+     * @param string $ISUF  Inscrição na SUFRAMA
+     * @param string $email Endereço de email
+     *
+     * @return \NFePHP\Common\Dom\Dom
+     */
+    public function destTag($CNPJ = '', $CPF = '', $IE = '', $xNome = '', $fone = '', $ISUF = '', $email = '')
+    {
+        $identificador = '#178 <dest> - ';
+        $this->dest = $this->dom->createElement('dest');
+        if ($CNPJ != '') {
+            $this->dom->addChild(
+                $this->dest,
+                'CNPJ',
+                $CNPJ,
+                true,
+                $identificador . 'Número do CNPJ'
+            );
+        } else if ($CPF != '') {
+            $this->dom->addChild(
+                $this->dest,
+                'CPF',
+                $CPF,
+                true,
+                $identificador . 'Número do CPF'
+            );
+        } else {
+            $this->dom->addChild(
+                $this->dest,
+                'CNPJ',
+                $CNPJ,
+                true,
+                $identificador . 'Número do CNPJ'
+            );
+            $this->dom->addChild(
+                $this->dest,
+                'CPF',
+                $CPF,
+                true,
+                $identificador . 'Número do CPF'
+            );
+        }
+        $this->dom->addChild(
+            $this->dest,
+            'IE',
+            $IE,
+            true,
+            $identificador . 'Inscrição Estadual'
+        );
+        $this->dom->addChild(
+            $this->dest,
+            'xNome',
+            $xNome,
+            true,
+            $identificador . 'Razão social ou Nome'
+        );
+        $this->dom->addChild(
+            $this->dest,
+            'fone',
+            $fone,
+            false,
+            $identificador . 'Telefone'
+        );
+        $this->dom->addChild(
+            $this->dest,
+            'ISUF',
+            $ISUF,
+            false,
+            $identificador . 'Inscrição na SUFRAMA'
+        );
+        $this->dom->addChild(
+            $this->dest,
+            'email',
+            $email,
+            false,
+            $identificador . 'Endereço de email'
+        );
+        return $this->dest;
+    }
+
+    /**
+     * Gera as tags para o elemento: "enderDest" (Informações do Recebedor da Carga)
+     * # = 185
+     * Nível = 2
+     * Os parâmetros para esta função são todos os elementos da tag "enderDest" do tipo elemento (Ele = E|CE|A) e nível 3
+     *
+     * @param string $xLgr    Logradouro
+     * @param string $nro     Número
+     * @param string $xCpl    Complemento
+     * @param string $xBairro Bairro
+     * @param string $cMun    Código do município (utilizar a tabela do IBGE)
+     * @param string $xMun    Nome do município
+     * @param string $CEP     CEP
+     * @param string $UF      Sigla da UF
+     * @param string $cPais   Código do país
+     * @param string $xPais   Nome do país
+     *
+     * @return \NFePHP\Common\Dom\Dom
+     */
+    public function enderDestTag(
+        $xLgr = '',
+        $nro = '',
+        $xCpl = '',
+        $xBairro = '',
+        $cMun = '',
+        $xMun = '',
+        $CEP = '',
+        $UF = '',
+        $cPais = '',
+        $xPais = ''
+    ) {
+        $identificador = '#185 <enderDest> - ';
+        $this->enderDest = $this->dom->createElement('enderDest');
+        $this->dom->addChild(
+            $this->enderDest,
+            'xLgr',
+            $xLgr,
+            true,
+            $identificador . 'Logradouro'
+        );
+        $this->dom->addChild(
+            $this->enderDest,
+            'nro',
+            $nro,
+            true,
+            $identificador . 'Número'
+        );
+        $this->dom->addChild(
+            $this->enderDest,
+            'xCpl',
+            $xCpl,
+            false,
+            $identificador . 'Complemento'
+        );
+        $this->dom->addChild(
+            $this->enderDest,
+            'xBairro',
+            $xBairro,
+            true,
+            $identificador . 'Bairro'
+        );
+        $this->dom->addChild(
+            $this->enderDest,
+            'cMun',
+            $cMun,
+            true,
+            $identificador . 'Código do município (utilizar a tabela do IBGE)'
+        );
+        $this->dom->addChild(
+            $this->enderDest,
+            'xMun',
+            $xMun,
+            true,
+            $identificador . 'Nome do município'
+        );
+        $this->dom->addChild(
+            $this->enderDest,
+            'CEP',
+            $CEP,
+            false,
+            $identificador . 'CEP'
+        );
+        $this->dom->addChild(
+            $this->enderDest,
+            'UF',
+            $UF,
+            true,
+            $identificador . 'Sigla da UF'
+        );
+        $this->dom->addChild(
+            $this->enderDest,
+            'cPais',
+            $cPais,
+            false,
+            $identificador . 'Código do país'
+        );
+        $this->dom->addChild(
+            $this->enderDest,
+            'xPais',
+            $xPais,
+            false,
+            $identificador . 'Nome do país'
+        );
+        return $this->enderDest;
+    }
+
+    /**
+     * Gera as tags para o elemento: "vPrest" (Local de Entrega constante na Nota Fiscal)
+     * #208
+     * Nível: 1
+     * Os parâmetros para esta função são todos os elementos da tag "vPrest" do tipo elemento (Ele = E|CE|A) e nível 2
+     *
+     * @param string $vTPrest Valor Total da Prestação do Serviço
+     * @param string $vRec    Valor a Receber
+     *
+     * @return \NFePHP\Common\Dom\Dom
+     */
+    public function vPrestTag($vTPrest = '', $vRec = '')
+    {
+        $identificador = '#208 <vPrest> - ';
+        $this->vPrest = $this->dom->createElement('vPrest');
+        $this->dom->addChild(
+            $this->vPrest,
+            'vTPrest',
+            $vTPrest,
+            true,
+            $identificador . 'Valor Total da Prestação do Serviço'
+        );
+        $this->dom->addChild(
+            $this->vPrest,
+            'vRec',
+            $vRec,
+            true,
+            $identificador . 'Valor a Receber'
+        );
+        return $this->vPrest;
+    }
+
+    /**
+     * Gera as tags para o elemento: "Comp" (Local de Entrega constante na Nota Fiscal)
+     * #211
+     * Nível: 2
+     * Os parâmetros para esta função são todos os elementos da tag "Comp" do tipo elemento (Ele = E|CE|A) e nível 3
+     *
+     * @param string $xNome Nome do componente
+     * @param string $vComp Valor do componente
+     *
+     * @return \NFePHP\Common\Dom\Dom
+     */
+    public function compTag($xNome = '', $vComp = '')
+    {
+        $identificador = '#65 <pass> - ';
+        $this->comp[] = $this->dom->createElement('Comp');
+        $posicao = (integer) count($this->obsCont) - 1;
+        $this->dom->addChild(
+            $this->comp[$posicao],
+            'xNome',
+            $xNome,
+            false,
+            $identificador . 'Nome do componente'
+        );
+        $this->dom->addChild(
+            $this->comp[$posicao],
+            'vComp',
+            $vComp,
+            false,
+            $identificador . 'Valor do componente'
+        );
+        return $this->comp[$posicao];
+    }
+
+    /**
      * Tag raiz do documento xml
      * Função chamada pelo método [ monta ]
      * @return DOMElement
@@ -1135,5 +2492,21 @@ class MakeCTe extends BaseMake
             $this->CTe->setAttribute('xmlns', 'http://www.portalfiscal.inf.br/cte');
         }
         return $this->CTe;
+    }
+
+    /**
+     * Gera as tags para o elemento: "Entrega" (Informações ref. a previsão de entrega)
+     * #69
+     * Nível: 2
+     * Os parâmetros para esta função são todos os elementos da tag "Entrega" do tipo elemento (Ele = E|CE|A) e nível 3
+     *
+     * TODO: Verificar se esta função deve ser privada já que não há parâmetros
+     *
+     * @return \NFePHP\Common\Dom\Dom
+     */
+    private function zEntregaTag()
+    {
+        $this->entrega = $this->dom->createElement('Entrega');
+        return $this->entrega;
     }
 }
