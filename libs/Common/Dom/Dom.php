@@ -146,8 +146,8 @@ class Dom extends DOMDocument
      * Acrescenta DOMElement a pai DOMElement
      * Caso o pai esteja vazio retorna uma exception com a mensagem
      * O parametro "child" pode ser vazio
-     * @param DOMElement $parent
-     * @param DOMElement $child
+     * @param \DOMNode $parent
+     * @param \DOMNode $child
      * @param string $msg
      * @return void
      * @throws Exception\InvalidArgumentException
