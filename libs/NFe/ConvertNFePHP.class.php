@@ -840,6 +840,7 @@ class ConvertNFePHP
                     //I05a|NVE|
                     $NVE = $dom->createElement("NVE", $dados[1]);
                     $prod->appendChild($NVE);
+                    break;
                 case "I18":
                     //Tag da Declaração de Importação [prod]
                     //I18|nDI|dDI|xLocDesemb|UFDesemb|dDesemb|tpViaTransp|vAFRMM|tpIntermedio|CNPJ|UFTerceiro|cExportador|
