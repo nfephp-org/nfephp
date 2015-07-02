@@ -209,7 +209,7 @@ class ConvertNFePHP
                           $indTot, $xPed, $nItemPed, $DI, $dDI, $xLocDesemb,
                           $UFDesemb, $dDesemb, $tpViaTransp, $vAFRMM, $tpIntermedio,
                           $UFTerceiro, $cExportador, $adi, $nAdicao,
-                          $nSeqAdicC, $cFabricante, $vDescDI, $nDraw,
+                          $nSeqAdic, $cFabricante, $vDescDI, $nDraw,
                           $detExport, $exportInd, $nRE, $chNFe, $qExport, $veicProd, $tpOP,
                           $chassi, $cCor, $xCor, $pot, $cilin, $pesoL, $pesoB,
                           $nSerie, $tpComb, $nMotor, $CMT, $dist, $anoMod,
@@ -840,6 +840,7 @@ class ConvertNFePHP
                     //I05a|NVE|
                     $NVE = $dom->createElement("NVE", $dados[1]);
                     $prod->appendChild($NVE);
+                    break;
                 case "I18":
                     //Tag da Declaração de Importação [prod]
                     //I18|nDI|dDI|xLocDesemb|UFDesemb|dDesemb|tpViaTransp|vAFRMM|tpIntermedio|CNPJ|UFTerceiro|cExportador|
@@ -900,15 +901,15 @@ class ConvertNFePHP
                     break;
                 case "I25":
                     //Adições [DI]
-                    //I25|nAdicao|nSeqAdicC|cFabricante|vDescDI|nDraw|
+                    //I25|nAdicao|nSeqAdic|cFabricante|vDescDI|nDraw|
                     $adi = $dom->createElement("adi");
                     if (!empty($dados[1])) {
                         $nAdicao = $dom->createElement("nAdicao", $dados[1]);
                         $adi->appendChild($nAdicao);
                     }
                     if (!empty($dados[2])) {
-                        $nSeqAdicC = $dom->createElement("nSeqAdicC", $dados[2]);
-                        $adi->appendChild($nSeqAdicC);
+                        $nSeqAdic = $dom->createElement("nSeqAdic", $dados[2]);
+                        $adi->appendChild($nSeqAdic);
                     }
                     if (!empty($dados[3])) {
                         $cFabricante = $dom->createElement("cFabricante", $dados[3]);
