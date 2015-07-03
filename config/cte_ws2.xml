@@ -89,22 +89,20 @@
 <UF>
     <sigla>RS</sigla>
     <homologacao>
-        <CteRecepcao method='CTeRecepcao' version='2.00'>https://homologacao.cte.sefaz.rs.gov.br/ws/cterecepcao/CteRecepcao.asmx</CteRecepcao>
-        <CteRetRecepcao method='CTeRetRecepcao' version='2.00'>https://homologacao.cte.sefaz.rs.gov.br/ws/cteretrecepcao/CteRetRecepcao.asmx</CteRetRecepcao>
-        <CteCancelamento method='CTeCancelamento' version='2.00'>https://homologacao.cte.sefaz.rs.gov.br/ws/ctecancelamento/ctecancelamento.asmx</CteCancelamento>
-        <CteInutilizacao method='CTeInutilizacao' version='2.00'>https://homologacao.cte.sefaz.rs.gov.br/ws/cteinutilizacao/cteinutilizacao.asmx</CteInutilizacao>
-        <CteConsultaProtocolo method='cteConsultaCT' version='2.00'>https://homologacao.cte.sefaz.rs.gov.br/ws/cteconsulta/cteconsulta.asmx</CteConsultaProtocolo>
-        <CteStatusServico method='cteStatusServicoCT' version='2.00'>https://homologacao.cte.sefaz.rs.gov.br/ws/ctestatusservico/ctestatusservico.asmx</CteStatusServico>
-        <CteRecepcaoEvento method='cteRecepcaoEvento' version='2.00'>https://homologacao.cte.sefaz.rs.gov.br/ws/cterecepcaoevento/cterecepcaoevento.asmx</CteRecepcaoEvento>
+        <CteRecepcao method='CTeRecepcao' version='2.00'>https://cte-homologacao.svrs.rs.gov.br/ws/cterecepcao/CteRecepcao.asmx</CteRecepcao>
+        <CteRetRecepcao method='CTeRetRecepcao' version='2.00'>https://cte-homologacao.svrs.rs.gov.br/ws/cteretrecepcao/cteRetRecepcao.asmx</CteRetRecepcao>
+        <CteConsultaProtocolo method='cteConsultaCT' version='2.00'>https://cte-homologacao.svrs.rs.gov.br/ws/cteconsulta/CteConsulta.asmx</CteConsultaProtocolo>
+        <CteRecepcaoEvento method='cteRecepcaoEvento' version='2.00'>https://cte-homologacao.svrs.rs.gov.br/ws/cterecepcaoevento/cterecepcaoevento.asmx</CteRecepcaoEvento>
+        <CteInutilizacao method='CTeInutilizacao' version='2.00'>https://cte-homologacao.svrs.rs.gov.br/ws/cteinutilizacao/cteinutilizacao.asmx</CteInutilizacao>
+        <CteStatusServico method='cteStatusServicoCT' version='2.00'>https://cte-homologacao.svrs.rs.gov.br/ws/ctestatusservico/CteStatusServico.asmx</CteStatusServico>
     </homologacao>
     <producao>
-        <CteRecepcao method='CTeRecepcao' version='2.00'>https://cte.sefaz.rs.gov.br/ws/cterecepcao/CteRecepcao.asmx</CteRecepcao>
-        <CteRetRecepcao method='CTeRetRecepcao' version='2.00'>https://cte.sefaz.rs.gov.br/ws/cteretrecepcao/CteRetRecepcao.asmx</CteRetRecepcao>
-        <CteCancelamento method='CTeCancelamento' version='2.00'>https://cte.sefaz.rs.gov.br/ws/ctecancelamento/ctecancelamento.asmx</CteCancelamento>
-        <CteInutilizacao method='CTeInutilizacao' version='2.00'>https://cte.sefaz.rs.gov.br/ws/cteinutilizacao/cteinutilizacao.asmx</CteInutilizacao>
-        <CteConsultaProtocolo method='cteConsultaCT' version='2.00'>https://cte.sefaz.rs.gov.br/ws/cteconsulta/cteconsulta.asmx</CteConsultaProtocolo>
-        <CteStatusServico method='cteStatusServicoCT' version='2.00'>https://cte.sefaz.rs.gov.br/ws/ctestatusservico/ctestatusservico.asmx</CteStatusServico>
-        <CteRecepcaoEvento method='cteRecepcaoEvento' version='2.00'>https://cte.sefaz.rs.gov.br/ws/cterecepcaoevento/cterecepcaoevento.asmx</CteRecepcaoEvento>
+        <CteRecepcao method='CTeRecepcao' version='2.00'>https://cte.svrs.rs.gov.br/ws/cterecepcao/CteRecepcao.asmx</CteRecepcao>
+        <CteRetRecepcao method='CTeRetRecepcao' version='2.00'>https://cte.svrs.rs.gov.br/ws/cteretrecepcao/cteRetRecepcao.asmx</CteRetRecepcao>
+        <CteConsultaProtocolo method='cteConsultaCT' version='2.00'>https://cte.svrs.rs.gov.br/ws/cteconsulta/CteConsulta.asmx</CteConsultaProtocolo>
+        <CteRecepcaoEvento method='cteRecepcaoEvento' version='2.00'>https://cte.svrs.rs.gov.br/ws/cterecepcaoevento/cterecepcaoevento.asmx</CteRecepcaoEvento>
+        <CteInutilizacao method='CTeInutilizacao' version='2.00'>https://cte.svrs.rs.gov.br/ws/cteinutilizacao/cteinutilizacao.asmx</CteInutilizacao>
+        <CteStatusServico method='cteStatusServicoCT' version='2.00'>https://cte.svrs.rs.gov.br/ws/ctestatusservico/CteStatusServico.asmx</CteStatusServico>
     </producao>
 </UF>
 <UF>
@@ -131,22 +129,20 @@
 <UF>
     <sigla>SVRS</sigla>
     <homologacao>
-        <CteRecepcao method='CTeRecepcao' version='2.00'>https://homologacao.cte.sefaz.rs.gov.br/ws/cterecepcao/CteRecepcao.asmx</CteRecepcao>
-        <CteRetRecepcao method='CTeRetRecepcao' version='2.00'>https://homologacao.cte.sefaz.rs.gov.br/ws/cteretrecepcao/CteRetRecepcao.asmx</CteRetRecepcao>
-        <CteCancelamento method='CTeCancelamento' version='2.00'>https://homologacao.cte.sefaz.rs.gov.br/ws/ctecancelamento/ctecancelamento.asmx</CteCancelamento>
-        <CteInutilizacao method='CTeInutilizacao' version='2.00'>https://homologacao.cte.sefaz.rs.gov.br/ws/cteinutilizacao/cteinutilizacao.asmx</CteInutilizacao>
-        <CteConsultaProtocolo method='cteConsultaCT' version='2.00'>https://homologacao.cte.sefaz.rs.gov.br/ws/cteconsulta/cteconsulta.asmx</CteConsultaProtocolo>
-        <CteStatusServico method='cteStatusServicoCT' version='2.00'>https://homologacao.cte.sefaz.rs.gov.br/ws/ctestatusservico/ctestatusservico.asmx</CteStatusServico>
-        <CteRecepcaoEvento method='cteRecepcaoEvento' version='2.00'>https://homologacao.cte.sefaz.rs.gov.br/ws/cterecepcaoevento/cterecepcaoevento.asmx</CteRecepcaoEvento>
+        <CteRecepcao method='CTeRecepcao' version='2.00'>https://cte-homologacao.svrs.rs.gov.br/ws/cterecepcao/CteRecepcao.asmx</CteRecepcao>
+        <CteRetRecepcao method='CTeRetRecepcao' version='2.00'>https://cte-homologacao.svrs.rs.gov.br/ws/cteretrecepcao/cteRetRecepcao.asmx</CteRetRecepcao>
+        <CteConsultaProtocolo method='cteConsultaCT' version='2.00'>https://cte-homologacao.svrs.rs.gov.br/ws/cteconsulta/CteConsulta.asmx</CteConsultaProtocolo>
+        <CteRecepcaoEvento method='cteRecepcaoEvento' version='2.00'>https://cte-homologacao.svrs.rs.gov.br/ws/cterecepcaoevento/cterecepcaoevento.asmx</CteRecepcaoEvento>
+        <CteInutilizacao method='CTeInutilizacao' version='2.00'>https://cte-homologacao.svrs.rs.gov.br/ws/cteinutilizacao/cteinutilizacao.asmx</CteInutilizacao>
+        <CteStatusServico method='cteStatusServicoCT' version='2.00'>https://cte-homologacao.svrs.rs.gov.br/ws/ctestatusservico/CteStatusServico.asmx</CteStatusServico>
     </homologacao>
     <producao>
-        <CteRecepcao method='CTeRecepcao' version='2.00'>https://cte.sefaz.rs.gov.br/ws/cterecepcao/CteRecepcao.asmx</CteRecepcao>
-        <CteRetRecepcao method='CTeRetRecepcao' version='2.00'>https://cte.sefaz.rs.gov.br/ws/cteretrecepcao/CteRetRecepcao.asmx</CteRetRecepcao>
-        <CteCancelamento method='CTeCancelamento' version='2.00'>https://cte.sefaz.rs.gov.br/ws/ctecancelamento/ctecancelamento.asmx</CteCancelamento>
-        <CteInutilizacao method='CTeInutilizacao' version='2.00'>https://cte.sefaz.rs.gov.br/ws/cteinutilizacao/cteinutilizacao.asmx</CteInutilizacao>
-        <CteConsultaProtocolo method='cteConsultaCT' version='2.00'>https://cte.sefaz.rs.gov.br/ws/cteconsulta/cteconsulta.asmx</CteConsultaProtocolo>
-        <CteStatusServico method='cteStatusServicoCT' version='2.00'>https://cte.sefaz.rs.gov.br/ws/ctestatusservico/ctestatusservico.asmx</CteStatusServico>
-        <CteRecepcaoEvento method='cteRecepcaoEvento' version='2.00'>https://cte.sefaz.rs.gov.br/ws/cterecepcaoevento/cterecepcaoevento.asmx</CteRecepcaoEvento>
+        <CteRecepcao method='CTeRecepcao' version='2.00'>https://cte.svrs.rs.gov.br/ws/cterecepcao/CteRecepcao.asmx</CteRecepcao>
+        <CteRetRecepcao method='CTeRetRecepcao' version='2.00'>https://cte.svrs.rs.gov.br/ws/cteretrecepcao/cteRetRecepcao.asmx</CteRetRecepcao>
+        <CteConsultaProtocolo method='cteConsultaCT' version='2.00'>https://cte.svrs.rs.gov.br/ws/cteconsulta/CteConsulta.asmx</CteConsultaProtocolo>
+        <CteRecepcaoEvento method='cteRecepcaoEvento' version='2.00'>https://cte.svrs.rs.gov.br/ws/cterecepcaoevento/cterecepcaoevento.asmx</CteRecepcaoEvento>
+        <CteInutilizacao method='CTeInutilizacao' version='2.00'>https://cte.svrs.rs.gov.br/ws/cteinutilizacao/cteinutilizacao.asmx</CteInutilizacao>
+        <CteStatusServico method='cteStatusServicoCT' version='2.00'>https://cte.svrs.rs.gov.br/ws/ctestatusservico/CteStatusServico.asmx</CteStatusServico>
     </producao>
 </UF>
 <UF>
