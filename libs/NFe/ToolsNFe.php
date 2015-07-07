@@ -306,7 +306,9 @@ class ToolsNFe extends BaseTools
             $nodeprot = $nodeprots->item($i);
             $protver = $nodeprot->getAttribute("versao");
             $chaveProt = $nodeprot->getElementsByTagName("chNFe")->item(0)->nodeValue;
-            $digValueProt = $nodeprot->getElementsByTagName("digVal")->item(0)->nodeValue;
+            $digValueProt = ($nodeprot->getElementsByTagName("digVal")->length)
+                ? $nodeprot->getElementsByTagName("digVal")->item(0)->nodeValue
+                : '';
             $infProt = $nodeprot->getElementsByTagName("infProt")->item(0);
             if ($digValueNFe == $digValueProt && $chaveNFe == $chaveProt) {
                 break;
