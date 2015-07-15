@@ -8,7 +8,7 @@ $nfe = new ToolsNFePHP;
 $docxml = file_get_contents($arq);
 
 //para NFe 3.10
-//$xsdFile = '../../schemes/PL_008e/nfe_v3.10.xsd';
+//$xsdFile = '../../schemes/PL_008f/nfe_v3.10.xsd';
 //para NFe 2.00 com protocolo
 $xsdFile = '../../schemes/PL_006u/procNFe_v2.00.xsd';
 
