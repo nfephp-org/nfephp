@@ -18,7 +18,7 @@
 		//enviar o lote
 		if ($resp = $nfe->autoriza($sNFe, $lote, $aResp)) {
 		    if ($aResp['bStat']) {
-		        echo("Nota transmitida com sucesso! Utilize o número do recibo para obter o protocolo ou informações de erro no xml com testaRecibo.php.");
+		        echo("Nota transmitida com sucesso! Utilize o número do recibo [" . $aResp['infRec']['nRec'] . "] para obter o protocolo ou informações de erro no xml com testaRecibo.php.");
 		    } else {
 		        echo('ERRO: ' . $nfe->errMsg);
 		    }
