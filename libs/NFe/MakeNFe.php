@@ -3368,7 +3368,7 @@ class MakeNFe extends BaseMake
                 true,
                 "Número de autorização da operação cartão de crédito e/ou débito"
             );
-            $this->dom->appChild($this->pag, $card, '');
+            $this->dom->appChild($this->aPag[count($this->aPag)-1], $card, '');
             return $card;
         }
     }
