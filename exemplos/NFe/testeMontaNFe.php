@@ -1,7 +1,7 @@
 <?php
-
 error_reporting(E_ALL);
 ini_set('display_errors', 'On');
+
 if (!defined('PATH_ROOT')) {
     define('PATH_ROOT', dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR);
 }
@@ -22,7 +22,7 @@ $cUF = '35'; //codigo numerico do estado
 $cNF = '76037739'; //numero aleatório da NF
 $natOp = 'VENDA DE PRODUTO'; //natureza da operação
 $indPag = '0'; //0=Pagamento à vista; 1=Pagamento a prazo; 2=Outros
-$mod = '65'; //modelo da NFe 55 ou 65 essa última NFCe
+$mod = '55'; //modelo da NFe 55 ou 65 essa última NFCe
 $serie = '0'; //serie da NFe
 $nNF = '28005'; // numero da NFe
 $dhEmi = '2014-02-03';  //para versão 3.00 '2014-02-03T13:22:42-3.00' não informar para NFCe
@@ -353,6 +353,16 @@ $vBCSTRet = '';
 $vICMSSTRet = '';
 $resp = $nfe->tagICMS($nItem, $orig, $cst, $modBC, $pRedBC, $vBC, $pICMS, $vICMS, $vICMSDeson, $motDesICMS, $modBCST, $pMVAST, $pRedBCST, $vBCST, $pICMSST, $vICMSST, $pDif, $vICMSDif, $vICMSOp, $vBCSTRet, $vICMSSTRet);
 
+$adProd[] = array(
+    'Informação adicional                do produto1',
+    'Produto 2       Informação adicional                do produto2'
+);
+
+$iCount = 1;
+foreach ($adProd as $inf) {
+    $resp = $nfe->taginfAdProd($iCount, $inf);
+    $iCount++;
+}
 
 //ICMSPart
 //$resp = $nfe->tagICMSPart($nItem, $orig, $cst, $modBC, $vBC, $pRedBC, $pICMS, $vICMS, $modBCST, $pMVAST, $pRedBCST, $vBCST, $pICMSST, $vICMSST, $pBCOp, $ufST);
