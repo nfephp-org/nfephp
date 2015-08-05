@@ -3300,6 +3300,9 @@ class MakeNFe
             if (!empty($this->aII[$nItem])) {
                 $this->zAppChild($imposto, $this->aII[$nItem], "Inclusão do node II");
             }
+            if (!empty($this->aISSQN[$nItem])) {
+                $this->zAppChild($imposto, $this->aISSQN[$nItem], "Inclusão do node ISSQN");
+            }
             if (!empty($this->aPIS[$nItem])) {
                 $this->zAppChild($imposto, $this->aPIS[$nItem], "Inclusão do node PIS");
             }
@@ -3311,9 +3314,6 @@ class MakeNFe
             }
             if (!empty($this->aCOFINSST[$nItem])) {
                 $this->zAppChild($imposto, $this->aCOFINSST[$nItem], "Inclusão do node COFINSST");
-            }
-            if (!empty($this->aISSQN[$nItem])) {
-                $this->zAppChild($imposto, $this->aISSQN[$nItem], "Inclusão do node ISSQN");
             }
             $this->aImposto[$nItem] = $imposto;
         }
