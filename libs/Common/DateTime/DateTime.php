@@ -97,10 +97,10 @@ class DateTime
      * @param int $timestamp
      * @return string
      */
-    public static function convertTimestampToSefazTime($timestamp = 0)
+    public static function convertTimestampToSefazTime($timestamp = 0, \DateTime $dateTime = null)
     {
         if ($timestamp == 0) {
-            return (string) str_replace(' ', 'T', date('Y-m-d H:i:sP'));
+            return (string) str_replace(' ', 'T', $dateTime->format('Y-m-d H:i:sP'));
         }
         return (string) str_replace(' ', 'T', date('Y-m-d H:i:sP', $timestamp));
     }

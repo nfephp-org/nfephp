@@ -31,4 +31,41 @@ class DateTimeTest extends PHPUnit_Framework_TestCase
         $seft = DateTime::convertTimestampToSefazTime($this->tstp);
         $this->assertEquals($seft, $this->sefTime);
     }
+    
+    public function testConvertTimestampToSefazTimeEmBranco()
+    {
+        $dateTime = $this->getMock('\DateTime', array('format'), array('2015-08-01 10:11:09'));
+        $dateTime->expects($this->once())
+                ->method('format')
+                ->with('Y-m-d H:i:sP')
+                ->will($this->returnValue('2015-08-01T10:11:09-03:00'));
+        
+        $this->assertEquals('2015-08-01T10:11:09-03:00', DateTime::convertTimestampToSefazTime(0, $dateTime));
+    }
+    
+    public function testConvertSefazTimeToTimestampEmBranco()
+    {
+        $this->assertEmpty(DateTime::convertSefazTimeToTimestamp());
+    }
+    
+    public function testTZDSiglaNaoInformada()
+    {
+        $this->assertEmpty(DateTime::tzdBR());
+    }
+    
+    /**
+     * @dataProvider siglasNaoExistentes
+     */
+    public function testTZDSiglaNaoExistente($uf)
+    {
+        $this->assertEmpty(DateTime::tzdBR($uf));
+    }
+    
+    public function siglasNaoExistentes()
+    {
+        return array(
+            array('TESTE'),
+            array('JO')
+        );
+    }
 }
