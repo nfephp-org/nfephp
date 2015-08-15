@@ -1,15 +1,17 @@
 <?php
-require_once('../../libs/NFe/ToolsNFePHP.class.php');
-$nfe = new ToolsNFePHP;
 
-$file = 'xml/35130471780456000160550010000000411000000410-nfe.xml';
-$arq = file_get_contents($file);
+require_once(dirname(__FILE__).'/../../libs/NFe/ToolsNFePHP.class.php');
 
-if ($xml = $nfe->signXML($arq, 'infNFe')){
+$nfe  = new ToolsNFePHP;
+$file = dirname(__FILE__).'/../xml/35101158716523000119550010000000011003000000-nfe.xml';
+$arq  = file_get_contents($file);
+
+if ($xml = $nfe->signXML($arq, 'infNFe')) {
+
     file_put_contents($file, $xml);
+
 } else {
+
     echo $nfe->errMsg;
+
 }
-
-
-?>
