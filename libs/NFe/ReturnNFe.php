@@ -523,6 +523,7 @@ class ReturnNFe
     private static function zGetEvent($dom, $tag)
     {
         $aEvent = array();
+        $aEv = array();
         $aRetEvento = $tag->getElementsByTagName('retEvento');
         if (isset($aRetEvento)) {
             foreach ($aRetEvento as $retEvento) {
