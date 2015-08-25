@@ -1676,7 +1676,7 @@ class ToolsNFe extends BaseTools
             case '210240':
                 //Operacao não Realizada
                 $aliasEvento = 'EvNaoRealizada';
-                $descEvento = 'Operacao não Realizada';
+                $descEvento = 'Operacao nao Realizada';
                 break;
             default:
                 $msg = "O código do tipo de evento informado não corresponde a "
