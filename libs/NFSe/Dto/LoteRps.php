@@ -22,19 +22,26 @@ class LoteRps
 
     /**
      * @var string
-     * @see \NFSe\Layouts
+     * @see \NFSe\LayoutType
      */
     protected $layout;
+
+    /**
+     * @var array
+     */
+    protected $rpss;
 
     /**
      * LoteRps constructor.
      * @param int $numero
      * @param string $layout
+     * @param AbstractRps[] $rpss
      */
-    public function __construct($numero, $layout)
+    public function __construct($numero, $layout, $rpss)
     {
         $this->numero = $numero;
         $this->layout = $layout;
+        $this->rpss = $rpss;
     }
 
     /**

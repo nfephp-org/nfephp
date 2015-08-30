@@ -2,8 +2,9 @@
 
 require __DIR__ . '/../../../vendor/autoload.php';
 
-// Dto que carregá dados LoteRps com RPSs de São Paulo
-$loteRpsSP = new \NFSe\Dto\LoteRps(1, \NFSe\LayoutType::LAYOUT_NOTA_PAULISTANA);
+// Dto que carregará dados LoteRps com RPSs de São Paulo
+$rpss = array( new \NFSe\Layouts\NotaPaulistana\Rps() );
+$loteRpsSP = new \NFSe\Dto\LoteRps(1, \NFSe\LayoutType::LAYOUT_NOTA_PAULISTANA, $rpss);
 
 // Novo "serviço" de fazer requisição em São Paulo
 $makeWebServiceRequest = new \NFSe\MakeWebServiceRequest();
