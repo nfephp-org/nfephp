@@ -21,27 +21,26 @@ class LoteRps
     protected $numero;
 
     /**
-     * @var string
-     * @see \NFSe\LayoutType
-     */
-    protected $layout;
-
-    /**
      * @var array
      */
     protected $rpss;
 
     /**
+     * @var string
+     */
+    protected $codigoMunicipo;
+
+    /**
      * LoteRps constructor.
      * @param int $numero
-     * @param string $layout
-     * @param AbstractRps[] $rpss
+     * @param array $rpss
+     * @param string $codigoMunicipo
      */
-    public function __construct($numero, $layout, $rpss)
+    public function __construct($numero, array $rpss, $codigoMunicipo)
     {
         $this->numero = $numero;
-        $this->layout = $layout;
         $this->rpss = $rpss;
+        $this->codigoMunicipo = $codigoMunicipo;
     }
 
     /**
@@ -53,13 +52,20 @@ class LoteRps
     }
 
     /**
-     * @return string
+     * @return array
      */
-    public function getLayout()
+    public function getRpss()
     {
-        return $this->layout;
+        return $this->rpss;
     }
 
+    /**
+     * @return string
+     */
+    public function getCodigoMunicipo()
+    {
+        return $this->codigoMunicipo;
+    }
 }
 
 ?>

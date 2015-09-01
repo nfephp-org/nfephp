@@ -23,6 +23,7 @@ class MakeWebServiceRequest implements MakeWebServiceRequestInterface
      */
     public function enviarLoteRps(LoteRps $loteRps)
     {
+        var_dump($loteRps->getRpss());
         return 'sou uma resposta da Nota Paulistana';
     }
 

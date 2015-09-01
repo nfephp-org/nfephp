@@ -11,10 +11,10 @@ namespace NFSe;
  * @author     Thiago Colares <thicolares at gmail dot com>
  * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
  */
-
-abstract class LayoutType
+abstract class City
 {
-    const LAYOUT_NOTA_PAULISTANA = 'NotaPaulistana';
+    // @todo colocar a associação Município x Layout em uma configuração
+    const SAO_PAULO = '3550308';
 }
 
 ?>

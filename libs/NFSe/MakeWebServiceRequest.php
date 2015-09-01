@@ -23,14 +23,14 @@ class MakeWebServiceRequest implements MakeWebServiceRequestInterface
     /**
      * MakeWebServiceRequest constructor.
      */
-    private function factory($layout)
+    private function factory( $codigoMunicipio )
     {
-        switch($layout) {
-            case LayoutType::LAYOUT_NOTA_PAULISTANA:
+        switch($codigoMunicipio) {
+            case City::SAO_PAULO:
                 $this->makeWebServiceRequest = new \NFSe\Layouts\NotaPaulistana\MakeWebServiceRequest();
                 break;
             default:
-                throw new \Exception("Layout '$layout' não implementado ou vazio.", 1439599943);
+                throw new \Exception("Layout não implementado para o município $codigoMunicipio ou vazio.", 1439599943);
         }
     }
 
@@ -39,10 +39,10 @@ class MakeWebServiceRequest implements MakeWebServiceRequestInterface
      * @param LoteRps $loteRps
      * @return string
      */
-    public function enviarLoteRps(LoteRps $loteRps)
+    public function enviarLoteRps( LoteRps $loteRps )
     {
-        $this->factory( $loteRps->getLayout() );
-        return $this->makeWebServiceRequest->enviarLoteRps($loteRps);
+        $this->factory( $loteRps->getCodigoMunicipo() );
+        return $this->makeWebServiceRequest->enviarLoteRps( $loteRps );
     }
 
     /**
@@ -50,10 +50,10 @@ class MakeWebServiceRequest implements MakeWebServiceRequestInterface
      * @param LoteRps $loteRps
      * @return string
      */
-    public function consultarSituacaoLoteRps(LoteRps $loteRps)
+    public function consultarSituacaoLoteRps( LoteRps $loteRps )
     {
-        $this->factory( $loteRps->getLayout() );
-        return $this->makeWebServiceRequest->consultarSituacaoLoteRps($loteRps);
+        $this->factory( $loteRps->getCodigoMunicipo() );
+        return $this->makeWebServiceRequest->consultarSituacaoLoteRps( $loteRps );
     }
 
     /**
@@ -63,7 +63,7 @@ class MakeWebServiceRequest implements MakeWebServiceRequestInterface
      */
     public function consultarLoteRps(LoteRps $loteRps)
     {
-        $this->factory( $loteRps->getLayout() );
+        $this->factory( $loteRps->getCodigoMunicipo() );
         return $this->makeWebServiceRequest->consultarSituacaoLoteRps($loteRps);
     }
 }
