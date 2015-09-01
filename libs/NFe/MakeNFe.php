@@ -10,15 +10,16 @@ namespace NFePHP\NFe;
  * @license    http://www.gnu.org/licenses/lesser.html LGPL v3
  * @author     Roberto L. Machado <linux.rlm at gmail dot com>
  * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
- * 
+ *
  *        CONTRIBUIDORES (em ordem alfabetica):
  *
  *              Cleiton Perin <cperin20 at gmail dot com>
  *              Elias Müller <elias at oxigennio dot com dot br>
  *              Marcos Vinicios Balbi <marcusbalbi at hotmail dot com>
- * 
- * NOTA: Esta classe atende os padrões estabelecidos pela 
+ *
+ * NOTA: Esta classe atende os padrões estabelecidos pela
  * NOTA TÉCNICA 2013.005 Versão 1.22 de Novembro 2014
+ * E pelas NT 2015.001, 2015.002
  */
 
 use NFePHP\Common\DateTime\DateTime;
@@ -49,6 +50,7 @@ class MakeNFe extends BaseMake
     //propriedades privadas utilizadas internamente pela classe
     private $NFe = ''; //DOMNode
     private $infNFe = ''; //DOMNode
+    private $infNFeSupl = ''; //DOMNode
     private $ide = ''; //DOMNode
     private $emit = ''; //DOMNode
     private $enderEmit = ''; //DOMNode
@@ -100,7 +102,7 @@ class MakeNFe extends BaseMake
   
     /**
      * montaNFe
-     * Método de montagem do xml da NFe 
+     * Método de montagem do xml da NFe
      * essa função retorna TRUE em caso de sucesso ou FALSE se houve erro
      * O xml da NFe deve ser recuperado pela funçao getXML() ou diretamente pela
      * propriedade publica $xml
@@ -158,6 +160,10 @@ class MakeNFe extends BaseMake
         $this->dom->appChild($this->infNFe, $this->cana, 'Falta tag "infNFe"');
         //[1] tag infNFe (1 A01)
         $this->dom->appChild($this->NFe, $this->infNFe, 'Falta tag "NFe"');
+        //tag infNFeSupl (1 ZX01) coloca as informações suplementares se houver
+        if ($this->infNFeSupl != '') {
+            $this->dom->appChild($this->NFe, $this->infNFeSupl, 'Falta tag "NFe"');
+        }
         //[0] tag NFe
         $this->dom->appChild($this->dom, $this->NFe, 'Falta DOMDocument');
         // testa da chave
@@ -184,6 +190,27 @@ class MakeNFe extends BaseMake
         $this->versao = $versao;
         $this->chNFe = $chave;
         return $this->infNFe;
+    }
+    
+    /**
+     * taginfNFeSupl
+     * Informações suplementares da Nota Fiscal ZX01 pai NFe
+     * @param string $qrcode
+     * @return DOMElement
+     */
+    public function taginfNFeSupl($qrcode = '')
+    {
+        $identificador = 'ZX01 <infNFeSupl> - ';
+        $data = "<![CDATA[$qrcode]]>";
+        $this->infNFeSupl = $this->dom->createElement("infNFeSupl");
+        $this->dom->addChild(
+            $$this->infNFeSupl,
+            "qrCode",
+            $data,
+            true,
+            $identificador . "Texto com o QR-Code impresso no DANFE NFC-e"
+        );
+        return $this->infNFeSupl;
     }
     
     /**
@@ -3334,12 +3361,14 @@ class MakeNFe extends BaseMake
      * tagcard
      * Grupo de Cartões YA04 pai YA01
      * tag NFe/infNFe/pag/card
+     * @param string $tpentrega
      * @param string $cnpj
      * @param string $tBand
      * @param string $cAut
      * @return DOMElement
      */
     public function tagcard(
+        $tpentrega = '',
         $cnpj = '',
         $tBand = '',
         $cAut = ''
@@ -3347,6 +3376,13 @@ class MakeNFe extends BaseMake
         //apenas para modelo 65
         if ($this->mod == '65' && $tBand != '') {
             $card = $this->dom->createElement("card");
+            $this->dom->addChild(
+                $card,
+                "tpEntrega",
+                $tpentrega,
+                true,
+                "Tipo de Integração para pagamento"
+            );
             $this->dom->addChild(
                 $card,
                 "CNPJ",
