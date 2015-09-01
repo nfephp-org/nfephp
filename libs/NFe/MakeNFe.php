@@ -66,6 +66,7 @@ class MakeNFe extends BaseMake
     private $compra = ''; //DOMNode
     private $cana = ''; //DOMNode
     // Arrays
+    private $aTotICMSUFDest = array('vICMSUFDest' => 0, 'vICMSUFRemet' => 0);
     private $aNFref = array(); //array de DOMNode
     private $aDup = array(); //array de DOMNodes
     private $aPag = array(); //array de DOMNodes
@@ -75,6 +76,7 @@ class MakeNFe extends BaseMake
     private $aDet = array(); //array de DOMNodes
     private $aProd = array(); //array de DOMNodes
     private $aNVE = array(); //array de DOMNodes
+    private $aCest = array(); //array de DOMNodes
     private $aRECOPI = array(); //array de DOMNodes
     private $aDetExport = array(); //array de DOMNodes
     private $aDI = array(); //array de DOMNodes
@@ -85,6 +87,7 @@ class MakeNFe extends BaseMake
     private $aComb = array(); //array de DOMNodes
     private $aImposto = array(); //array de DOMNodes
     private $aICMS = array(); //array de DOMNodes
+    private $aICMSUFDest = array(); //array de DOMNodes
     private $aIPI = array(); //array de DOMNodes
     private $aII = array(); //array de DOMNodes
     private $aISSQN = array(); //array de DOMNodes
@@ -1430,6 +1433,23 @@ class MakeNFe extends BaseMake
     }
     
     /**
+     * tagCEST
+     * Código Especificador da Substituição Tributária – CEST, 
+     * que identifica a mercadoria sujeita aos regimes de substituição 
+     * tributária e de antecipação do recolhimento do imposto.
+     * vide NT2015.003
+     * @param string $nItem
+     * @param string $texto
+     * @return DOMElement
+     */
+    public function tagCEST($nItem = '', $texto = '')
+    {   
+        $cest = $this->dom->createElement("CEST", $texto);
+        $this->aCest[$nItem][] = $cest;
+        return $cest;
+    }
+    
+    /**
      * tagRECOPI
      * @param string $nItem
      * @param string $texto
@@ -2401,6 +2421,79 @@ class MakeNFe extends BaseMake
     }
     
     /**
+     * tagICMSUFDest
+     * Grupo ICMSUFDest NA01 pai M01
+     * tag NFe/infNFe/det[]/imposto/ICMSUFDest (opcional)
+     * Grupo a ser informado nas vendas interestaduais para consumidor final,
+     * não contribuinte do ICMS
+     * @param string $nItem
+     * @param string $vBCUFDest
+     * @param string pICMSUFDest
+     * @param string $pICMSInter
+     * @param string $pICMSInterPart
+     * @param string $vICMSUFDest
+     * @param string $vICMSUFRemet
+     * @return DOMElement
+     */
+    public function tagICMSUFDest(
+        $nItem = '',
+        $vBCUFDest = '',
+        $pICMSUFDest = '',
+        $pICMSInter = '',
+        $pICMSInterPart = '',
+        $vICMSUFDest = '',
+        $vICMSUFRemet = ''
+    ) {
+        $icmsUFDest = $this->dom->createElement('ICMSFDest');
+        $this->dom->addChild(
+            $icmsUFDest,
+            "vBCUFDest",
+            $vBCUFDest,
+            true,
+            "[item $nItem] Valor da BC do ICMS na UF do destinatário"
+        );
+        $this->dom->addChild(
+            $icmsUFDest,
+            "pICMSUFDest",
+            $pICMSUFDest,
+            true,
+            "[item $nItem] Alíquota interna da UF do destinatário"
+        );
+        $this->dom->addChild(
+            $icmsUFDest,
+            "pICMSInter",
+            $pICMSInter,
+            true,
+            "[item $nItem] Alíquota interestadual das UF envolvidas"
+        );
+        $this->dom->addChild(
+            $icmsUFDest,
+            "pICMSInterPart",
+            $pICMSInterPart,
+            true,
+            "[item $nItem] Percentual provisório de partilha entre os Estados"
+        );
+        $this->dom->addChild(
+            $icmsUFDest,
+            "vICMSUFDest",
+            $vICMSUFDest,
+            true,
+            "[item $nItem] Valor do ICMS de partilha para a UF do destinatário"
+        );
+        $this->dom->addChild(
+            $icmsUFDest,
+            "vICMSUFRemet",
+            $vICMSUFRemet,
+            true,
+            "[item $nItem] Valor do ICMS de partilha para a UF do remetente"
+        );
+        $this->aICMSUFDest[$nItem] = $icmsUFDest;
+        $this->aTotICMSUFDest['vICMSUFDest'] += $vICMSUFDest;
+        $this->aTotICMSUFDest['vICMSUFRemet'] += $vICMSUFRemet;
+        return $icmsUFDest;
+    }
+    
+    /**
      * tagIPI
      * Grupo IPI O01 pai M01
      * tag NFe/infNFe/det[]/imposto/IPI (opcional)
@@ -2870,6 +2963,8 @@ class MakeNFe extends BaseMake
         $this->dom->addChild($ICMSTot, "vBC", $vBC, true, "Base de Cálculo do ICMS");
         $this->dom->addChild($ICMSTot, "vICMS", $vICMS, true, "Valor Total do ICMS");
         $this->dom->addChild($ICMSTot, "vICMSDeson", $vICMSDeson, true, "Valor Total do ICMS desonerado");
+        $this->dom->addChild($ICMSTot, "vICMSUFDest", $this->aTotICMSUFDest['vICMSUFDest'], false, "Valor total do ICMS de partilha para a UF do destinatário");
+        $this->dom->addChild($ICMSTot, "vICMSUFRemt", $this->aTotICMSUFDest['vICMSUFRemet'], false, "Valor total do ICMS de partilha para a UF do remetente");
         $this->dom->addChild($ICMSTot, "vBCST", $vBCST, true, "Base de Cálculo do ICMS ST");
         $this->dom->addChild($ICMSTot, "vST", $vST, true, "Valor Total do ICMS ST");
         $this->dom->addChild($ICMSTot, "vProd", $vProd, true, "Valor Total dos produtos e servi�os");
@@ -3691,6 +3786,9 @@ class MakeNFe extends BaseMake
             if (!empty($this->aICMS[$nItem])) {
                 $this->dom->appChild($imposto, $this->aICMS[$nItem], "Inclusão do node ICMS");
             }
+            if (!empty($this->aICMSUFDest[$nItem])) {
+                $this->dom->appChild($imposto, $this->aICMSUFDest[$nItem], "Inclusão do node ICMSUFDest");
+            }
             if (!empty($this->aIPI[$nItem])) {
                 $this->dom->appChild($imposto, $this->aIPI[$nItem], "Inclusão do node IPI");
             }
@@ -3797,6 +3895,17 @@ class MakeNFe extends BaseMake
                     }
                     $prod->insertBefore($child, $node);
                 }
+            }
+        }
+        //insere CEST
+        if (! empty($this->aCest)) {
+            foreach ($this->aCest as $nItem => $cest) {
+                $prod = $this->aProd[$nItem];
+                $node = $prod->getElementsByTagName("EXTIPI")->item(0);
+                if (empty($node)) {
+                    $node = $prod->getElementsByTagName("CFOP")->item(0);
+                }
+                $prod->insertBefore($cest, $node);
             }
         }
         //insere DI
