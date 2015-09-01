@@ -2471,16 +2471,17 @@ class ConvertNFe
      */
     protected function yaEntity($aCampos)
     {
-        //YA|tPag|vPag|CNPJ|tBand|cAut|
+        //YA|tPag|vPag|tpEntrega|CNPJ|tBand|cAut|
         $this->make->tagpag(
             $aCampos[1], //$tPag
             $aCampos[2] //$vPag
         );
-        if ($aCampos[4] != '') {
+        if ($aCampos[5] != '') {
             $this->make->tagcard(
-                $aCampos[3], //$cnpj
-                $aCampos[4], //$tBand
-                $aCampos[5] //$cAut
+                $aCampos[3], //$tpEntrega
+                $aCampos[4], //$cnpj
+                $aCampos[5], //$tBand
+                $aCampos[6] //$cAut
             );
         }
     }
@@ -2623,6 +2624,17 @@ class ConvertNFe
             $this->linhaZC[5], //$vTotDed
             $this->linhaZC[6] //$vLiqFor
         );
+    }
+    
+    /**
+     * zx01Entity
+     * Cria a tag infNFeSupl com o qrCode para impressão da DANFCE
+     * @param array $aCampos
+     */
+    protected function zx01Entity($aCampos)
+    {
+        //ZX01|qrcode
+        $this->make->taginfNFeSupl($aCampos[1]);
     }
     
     /**

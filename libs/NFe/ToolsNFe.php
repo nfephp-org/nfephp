@@ -1171,17 +1171,115 @@ class ToolsNFe extends BaseTools
     }
     
     /**
+     * sefazEPP
+     * Solicita pedido de prorrogação do prazo de retorno de produtos de uma
+     * NF-e de remessa para industrialização por encomenda com suspensão do ICMS
+     * em operações interestaduais
+     * @param string $chNFe
+     * @param string $tpAmb
+     * @param integer $nSeqEvento
+     * @param string $nProt
+     * @param array $itens
+     * @param array $aRetorno
+     * @return string
+     * @throws Exception\InvalidArgumentException
+     */
+    public function sefazEPP(
+        $chNFe = '',
+        $tpAmb = '2',
+        $nSeqEvento = 1,
+        $nProt = '',
+        $itens = array(),
+        &$aRetorno = array()
+    ) {
+        $chNFe = preg_replace('/[^0-9]/', '', $chNFe);
+        if (empty($itens)) {
+            $msg = "Devem ser passados os itens e as quantidades da NFe que será prorrogada!!";
+            throw new Exception\InvalidArgumentException($msg);
+        }
+        if (empty($nProt)) {
+            $msg = "Deve ser passado o numero do protocolo de autorização da "
+                . "NFe que terá o Pedido de prorrogação!!";
+            throw new Exception\InvalidArgumentException($msg);
+        }
+        if ($tpAmb == '') {
+            $tpAmb = $this->aConfig['tpAmb'];
+        }
+        $siglaUF = $this->zGetSigla(substr($chNFe, 0, 2));
+        $tpEvento = '111500';
+        if ($nSeqEvento == 2) {
+            $tpEvento = '111501';
+        }
+        $tagAdic = "<nProt>$nProt</nProt><itemPedido>";
+        foreach ($itens as $item) {
+            $tagAdic .= "<itemPedido numItem=\"".$item[0]."\"><qtdeItem>".$item[1]."</qtdeItem><itemPedido>";
+        }
+        $retorno = $this->zSefazEvento($siglaUF, $chNFe, $tpAmb, $tpEvento, $nSeqEvento, $tagAdic);
+        $aRetorno = $this->aLastRetEvent;
+        return $retorno;
+    }
+    
+    /**
+     * sefazECPP
+     * Solicita o cancelamento do pedido de prorrogação do prazo de retorno
+     * de produtos de uma NF-e de remessa para industrialização por encomenda
+     * com suspensão do ICMS em operações interestaduais
+     * @param string $chNFe
+     * @param string $tpAmb
+     * @param integer $nSeqEvento
+     * @param string $nProt
+     * @param array $aRetorno
+     * @return string
+     * @throws Exception\InvalidArgumentException
+     */
+    public function sefazECPP(
+        $chNFe = '',
+        $tpAmb = '2',
+        $nSeqEvento = 1,
+        $nProt = '',
+        &$aRetorno = array()
+    ) {
+        $chNFe = preg_replace('/[^0-9]/', '', $chNFe);
+        if (empty($chNFe)) {
+            $msg = "Deve ser passada a chave da NFe referente ao Pedido de "
+                . "prorrogação que será Cancelado!!";
+            throw new Exception\InvalidArgumentException($msg);
+        }
+        if (empty($nProt)) {
+            $msg = "Deve ser passado o numero do protocolo de autorização do "
+                . "Pedido de prorrogação que será Cancelado!!";
+            throw new Exception\InvalidArgumentException($msg);
+        }
+        if ($tpAmb == '') {
+            $tpAmb = $this->aConfig['tpAmb'];
+        }
+        $siglaUF = $this->zGetSigla(substr($chNFe, 0, 2));
+        $tpEvento = '111502';
+        $origEvent = '111500';
+        if ($nSeqEvento == 2) {
+            $tpEvento = '111503';
+            $origEvent = '111501';
+        }
+        $sSeqEvento = str_pad($nSeqEvento, 2, "0", STR_PAD_LEFT);
+        $idPedidoCancelado = "ID$origEvent$chNFe$sSeqEvento";
+        $tagAdic = "<idPedidoCancelado>$idPedidoCancelado</idPedidoCancelado><nProt>$nProt</nProt>";
+        $retorno = $this->zSefazEvento($siglaUF, $chNFe, $tpAmb, $tpEvento, $nSeqEvento, $tagAdic);
+        $aRetorno = $this->aLastRetEvent;
+        return $retorno;
+    }
+    
+    /**
      * sefazEPEC
      * Solicita autorização em contingência EPEC
      * TODO: terminar esse método
      * @param string|array $aXml
      * @param string $tpAmb
-     * @param string $siglaUF 
+     * @param string $siglaUF
      * @param array $aRetorno
      * @return string
      * @throws Exception\InvalidArgumentException
      */
-    public function sefazEPEC($aXml, $tpAmb = '2', $siglaUF='AN', &$aRetorno = array())
+    public function sefazEPEC($aXml, $tpAmb = '2', $siglaUF = 'AN', &$aRetorno = array())
     {
         //na nfe deve estar indicado a entrada em contingencia da data hora e o motivo
         //caso contrario ignorar a solicitação de EPEC
@@ -1657,6 +1755,20 @@ class ToolsNFe extends BaseTools
                 //emissão em contingência EPEC
                 $aliasEvento = 'EPEC';
                 $descEvento = 'EPEC';
+                break;
+            case '111500':
+            case '111501':
+                //EPP
+                //Pedido de prorrogação
+                $aliasEvento = 'EPP';
+                $descEvento = 'Pedido de Prorrogacao';
+                break;
+            case '111502':
+            case '111503':
+                //ECPP
+                //Cancelamento do Pedido de prorrogação
+                $aliasEvento = 'ECPP';
+                $descEvento = 'Cancelamento de Pedido de Prorrogacao';
                 break;
             case '210200':
                 //Confirmacao da Operacao
