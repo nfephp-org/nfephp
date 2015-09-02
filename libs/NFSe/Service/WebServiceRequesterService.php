@@ -1,33 +1,38 @@
 <?php
-namespace NFSe;
-use NFSe\Dto\LoteRps;
+namespace NFSe\Service;
+use NFSe\Model\City;
+use NFSe\Model\LoteRps;
 
 /**
  * Usa o DTO LoteRps para fazer requisições ao webservice e retorna XML (por enquanto)
  *
  * @category   NFePHP
- * @package    NFSe\MakeWebServiceRequest
+ * @package    NFSe\Service
  * @copyright  Copyright (c) 2008-2015
  * @license    http://www.gnu.org/licenses/lesser.html LGPL v3
  * @author     Thiago Colares <thicolares at gmail dot com>
  * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
  */
 
-class MakeWebServiceRequest implements MakeWebServiceRequestInterface
+class WebServiceRequesterService implements WebServiceRequesterServiceInterface
 {
     /**
-     * @var MakeWebServiceRequestInterface
+     * @var WebServiceRequesterServiceInterface
      */
-    protected $makeWebServiceRequest;
+    protected $webServiceRequesterService;
 
     /**
-     * MakeWebServiceRequest constructor.
+     * MakeWebServiceRequest init
+     *
+     * @param $codigoMunicipio
+     * @return void
+     * @throws \Exception
      */
-    private function factory( $codigoMunicipio )
+    private function init( $codigoMunicipio )
     {
         switch($codigoMunicipio) {
             case City::SAO_PAULO:
-                $this->makeWebServiceRequest = new \NFSe\Layouts\NotaPaulistana\MakeWebServiceRequest();
+                $this->webServiceRequesterService = new \NFSe\Layouts\NotaPaulistana\Service\WebServiceRequesterService();
                 break;
             default:
                 throw new \Exception("Layout não implementado para o município $codigoMunicipio ou vazio.", 1439599943);
@@ -41,8 +46,8 @@ class MakeWebServiceRequest implements MakeWebServiceRequestInterface
      */
     public function enviarLoteRps( LoteRps $loteRps )
     {
-        $this->factory( $loteRps->getCodigoMunicipo() );
-        return $this->makeWebServiceRequest->enviarLoteRps( $loteRps );
+        $this->init( $loteRps->getCodigoMunicipo() );
+        return $this->webServiceRequesterService->enviarLoteRps( $loteRps );
     }
 
     /**
@@ -52,8 +57,8 @@ class MakeWebServiceRequest implements MakeWebServiceRequestInterface
      */
     public function consultarSituacaoLoteRps( LoteRps $loteRps )
     {
-        $this->factory( $loteRps->getCodigoMunicipo() );
-        return $this->makeWebServiceRequest->consultarSituacaoLoteRps( $loteRps );
+        $this->init( $loteRps->getCodigoMunicipo() );
+        return $this->webServiceRequesterService->consultarSituacaoLoteRps( $loteRps );
     }
 
     /**
@@ -63,8 +68,8 @@ class MakeWebServiceRequest implements MakeWebServiceRequestInterface
      */
     public function consultarLoteRps(LoteRps $loteRps)
     {
-        $this->factory( $loteRps->getCodigoMunicipo() );
-        return $this->makeWebServiceRequest->consultarSituacaoLoteRps($loteRps);
+        $this->init( $loteRps->getCodigoMunicipo() );
+        return $this->webServiceRequesterService->consultarSituacaoLoteRps($loteRps);
     }
 }
 

@@ -3,11 +3,11 @@
 require __DIR__ . '/../../../vendor/autoload.php';
 
 // Dto que carregará dados LoteRps com RPSs de São Paulo
-$prestador = new \NFSe\Dto\Prestador();
-$tomador = new \NFSe\Dto\Tomador();
-$atividadeMunicipal = new \NFSe\Layouts\NotaPaulistana\AtividadeMunicipal('789567');
-$codigoMunicipio = '3550308';
-$rps = new \NFSe\Layouts\NotaPaulistana\Rps(
+$prestador = new \NFSe\Model\Prestador( \NFSe\Model\City::SAO_PAULO );
+$tomador = new \NFSe\Model\Tomador();
+$atividadeMunicipal = new \NFSe\Layouts\NotaPaulistana\Model\AtividadeMunicipal('789567');
+$codigoMunicipio = \NFSe\Model\City::SAO_PAULO;
+$rps = new \NFSe\Layouts\NotaPaulistana\Model\Rps(
     $prestador,
     $tomador,
     $codigoMunicipio, // $codigoMunicipio de São Paulo
@@ -34,15 +34,15 @@ $rps = new \NFSe\Layouts\NotaPaulistana\Rps(
 $rpss = array( $rps );
 
 // Novo Lote RPS
-$loteRpsSP = new \NFSe\Dto\LoteRps(1, $rpss, $codigoMunicipio);
+$loteRpsSP = new \NFSe\Model\LoteRps(1, $rpss, $codigoMunicipio);
 
 // Novo "serviço" de fazer requisição em São Paulo
-$makeWebServiceRequest = new \NFSe\MakeWebServiceRequest();
+$makeWebServiceRequest = new \NFSe\Service\WebServiceRequesterService();
 
 // Envio o lote e tenho um retorno em string -- será um envelope XML a ser tratado para retornar uma resposta
 // padrão em forma de Dto.
 
-// makeWebServiceRequest implementa factory pattern. O método a classe decide lá dentro a implementação que usará
+// webServiceRequesterService implementa factory pattern. O método a classe decide lá dentro a implementação que usará
 $response = $makeWebServiceRequest->enviarLoteRps($loteRpsSP);
 
 // Exemplo de resposta

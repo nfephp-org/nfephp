@@ -1,5 +1,5 @@
 <?php
-namespace NFSe\Dto;
+namespace NFSe\Model;
 
 /**
  * @category   NFePHP

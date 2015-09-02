@@ -1,29 +1,32 @@
 <?php
 
-namespace NFSe\Layouts\NotaPaulistana;
-use NFSe\Dto\LoteRps;
-use NFSe\MakeWebServiceRequestInterface;
+namespace NFSe\Layouts\NotaPaulistana\Service;
+
+use NFSe\Layouts\NotaPaulistana\Model\XmlFactory;
+use NFSe\Model\LoteRps;
+use NFSe\Service\WebServiceRequesterServiceInterface;
 
 /**
  * Classe que faz requisições para a Nota Paulistana
  *
  * @category   NFePHP
- * @package    ${NAMESPACE}${NAME}
+ * @package    NFSe\Layouts\NotaPaulistana\Service\WebServiceRequesterService
  * @copyright  Copyright (c) 2008-2015
  * @license    http://www.gnu.org/licenses/lesser.html LGPL v3
  * @author     Thiago Colares <thicolares at gmail dot com>
  * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
  */
-class MakeWebServiceRequest implements MakeWebServiceRequestInterface
+class WebServiceRequesterService implements WebServiceRequesterServiceInterface
 {
     /**
-     *
      * @param LoteRps $loteRps
      * @return string
      */
     public function enviarLoteRps(LoteRps $loteRps)
     {
-        var_dump($loteRps->getRpss());
+        // $xmlFactory = new XmlFactory(); // @todo configurar DI!!
+        // @todo 1 construir XMLcd .
+        // @todo 2 faz consulta soap e retorna
         return 'sou uma resposta da Nota Paulistana';
     }
 

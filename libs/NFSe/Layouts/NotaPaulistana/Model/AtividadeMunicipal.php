@@ -1,10 +1,10 @@
 <?php
-namespace NFSe\Layouts\NotaPaulistana;
-use NFSe\Dto\AbstractAtividadeMunicipal;
+namespace NFSe\Layouts\NotaPaulistana\Model;
+use NFSe\Model\AbstractAtividadeMunicipal;
 
 /**
  * @category   NFePHP
- * @package    NFSe\Layouts\NotaPaulistana\AtividadeMunicipal
+ * @package    NFSe\Layouts\NotaPaulistana
  * @copyright  Copyright (c) 2008-2015
  * @license    http://www.gnu.org/licenses/lesser.html LGPL v3
  * @author     Thiago Colares <thicolares at gmail dot com>

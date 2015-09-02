@@ -1,11 +1,11 @@
 <?php
-namespace NFSe;
+namespace NFSe\Model;
 
 /**
- * Constantes
+ * Constantes relacionadas aos municípios
  *
  * @category   NFePHP
- * @package    NFSe\LayoutType
+ * @package    NFSe
  * @copyright  Copyright (c) 2008-2015
  * @license    http://www.gnu.org/licenses/lesser.html LGPL v3
  * @author     Thiago Colares <thicolares at gmail dot com>

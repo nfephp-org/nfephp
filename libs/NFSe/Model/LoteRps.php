@@ -1,8 +1,8 @@
 <?php
-namespace NFSe\Dto;
+namespace NFSe\Model;
 
 /**
- * Um DTO que transporta os dados de um LoteRps
+ * DTO que transporta os dados de um LoteRps
  *
  * @category   NFePHP
  * @package    NFSe\Layouts\Dto\LoteRps
