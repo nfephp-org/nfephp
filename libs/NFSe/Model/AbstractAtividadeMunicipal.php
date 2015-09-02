@@ -1,9 +1,11 @@
 <?php
-namespace NFSe\Dto;
+namespace NFSe\Model;
 
 /**
+ *
+ *
  * @category   NFePHP
- * @package    NFSe\Dto\AbstractAtividadeMunicipal
+ * @package    NFSe\Dto
  * @copyright  Copyright (c) 2008-2015
  * @license    http://www.gnu.org/licenses/lesser.html LGPL v3
  * @author     Thiago Colares <thicolares at gmail dot com>

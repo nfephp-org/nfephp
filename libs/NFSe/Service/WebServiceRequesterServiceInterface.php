@@ -1,20 +1,20 @@
 <?php
 
-namespace NFSe;
+namespace NFSe\Service;
+use NFSe\Model\LoteRps;
 
-use NFSe\Dto\LoteRps;
 
 /**
  * Usa o DTO LoteRps para fazer requisições ao webservice e retorna XML (por enquanto)
  *
  * @category   NFePHP
- * @package    NFSe\MakeWebServiceRequest
+ * @package    NFSe\Service
  * @copyright  Copyright (c) 2008-2015
  * @license    http://www.gnu.org/licenses/lesser.html LGPL v3
  * @author     Thiago Colares <thicolares at gmail dot com>
  * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
  */
-interface MakeWebServiceRequestInterface
+interface WebServiceRequesterServiceInterface
 {
     /**
      *

@@ -1,9 +1,10 @@
 <?php
-namespace NFSe\Layouts\NotaPaulistana;
-use NFSe\Dto\AbstractAtividadeMunicipal;
-use NFSe\Dto\AbstractRps;
-use NFSe\Dto\Prestador;
-use NFSe\Dto\Tomador;
+namespace NFSe\Layouts\NotaPaulistana\Model;
+use NFSe\Model\AbstractAtividadeMunicipal;
+use NFSe\Model\AbstractRps;
+use NFSe\Model\Prestador;
+use NFSe\Model\Tomador;
+
 
 /**
  * @category   NFePHP

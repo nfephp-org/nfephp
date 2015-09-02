@@ -1,5 +1,5 @@
 <?php
-namespace NFSe\Dto;
+namespace NFSe\Model;
 
 /**
  * Classe com propriedades comuns de RPS e NFS-e
