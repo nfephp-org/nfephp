@@ -62,7 +62,10 @@ class WebServiceRequesterService implements WebServiceRequesterServiceInterface
      */
     public function consultarNfses(Prestador $prestador, \DateTime $dataEmissaoInicio, \DateTime $dataEmissaoFim)
     {
-        // TODO: Implement consultarNfses() method.
+        // @todo usar http://symfony.com/doc/current/components/dependency_injection/ ou http://php-di.org/
+        $xmlFactory = new XmlFactory();
+
+        $xml = $xmlFactory->createConsultarNfsePeriod($prestador, $dataEmissaoInicio, $dataEmissaoFim);
     }
 
 
