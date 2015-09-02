@@ -2,6 +2,7 @@
 
 namespace NFSe\Service;
 use NFSe\Model\LoteRps;
+use NFSe\Model\Prestador;
 
 
 /**
@@ -36,6 +37,17 @@ interface WebServiceRequesterServiceInterface
      * @return string
      */
     public function consultarLoteRps(LoteRps $loteRps);
+
+    /**
+     * Consulta NFS-es de um prestador dado um período
+     *
+     * @param Prestador $prestador
+     * @param \DateTime $dataEmissaoInicio
+     * @param \DateTime $dataEmissaoFim
+     * @return mixed
+     */
+    public function consultarNfses(Prestador $prestador, \DateTime $dataEmissaoInicio, \DateTime $dataEmissaoFim);
+
 }
 
 ?>

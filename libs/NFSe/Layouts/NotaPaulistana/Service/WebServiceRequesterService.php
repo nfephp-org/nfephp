@@ -4,6 +4,7 @@ namespace NFSe\Layouts\NotaPaulistana\Service;
 
 use NFSe\Layouts\NotaPaulistana\Model\XmlFactory;
 use NFSe\Model\LoteRps;
+use NFSe\Model\Prestador;
 use NFSe\Service\WebServiceRequesterServiceInterface;
 
 /**
@@ -24,9 +25,10 @@ class WebServiceRequesterService implements WebServiceRequesterServiceInterface
      */
     public function enviarLoteRps(LoteRps $loteRps)
     {
-        // $xmlFactory = new XmlFactory(); // @todo configurar DI!!
+        // @todo usar http://symfony.com/doc/current/components/dependency_injection/ ou http://php-di.org/
         // @todo 1 construir XMLcd .
         // @todo 2 faz consulta soap e retorna
+
         return 'sou uma resposta da Nota Paulistana';
     }
 
@@ -49,6 +51,20 @@ class WebServiceRequesterService implements WebServiceRequesterServiceInterface
     {
         return 'Sou da nota paulistana. vou retornar a nota, assim como nos demais layouts.';
     }
+
+    /**
+     * Consulta NFS-es de um prestador dado um período
+     *
+     * @param Prestador $prestador
+     * @param \DateTime $dataEmissaoInicio
+     * @param \DateTime $dataEmissaoFim
+     * @return mixed
+     */
+    public function consultarNfses(Prestador $prestador, \DateTime $dataEmissaoInicio, \DateTime $dataEmissaoFim)
+    {
+        // TODO: Implement consultarNfses() method.
+    }
+
 
 }
 
