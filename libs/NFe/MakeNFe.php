@@ -18,8 +18,8 @@ namespace NFePHP\NFe;
  *              Marcos Vinicios Balbi <marcusbalbi at hotmail dot com>
  *
  * NOTA: Esta classe atende os padrões estabelecidos pela
- * NOTA TÉCNICA 2013.005 Versão 1.22 de Novembro 2014
- * E pelas NT 2015.001, 2015.002
+ * NOTA TÉCNICA 2013.005 Versão 1.22 de Março 2015
+ * E pelas NT 2015.001, 2015.002, 2015.003
  */
 
 use NFePHP\Common\DateTime\DateTime;
@@ -85,6 +85,7 @@ class MakeNFe extends BaseMake
     private $aMed = array(); //array de DOMNodes
     private $aArma = array(); //array de DOMNodes
     private $aComb = array(); //array de DOMNodes
+    private $aEncerrante = array(); //array de DOMNodes
     private $aImposto = array(); //array de DOMNodes
     private $aICMS = array(); //array de DOMNodes
     private $aICMSUFDest = array(); //array de DOMNodes
@@ -1869,6 +1870,63 @@ class MakeNFe extends BaseMake
         }
         $this->aComb[$nItem] = $comb;
         return $comb;
+    }
+    
+    /**
+     * tagencerrante
+     * informações relacionadas com as operações de combustíveis, subgrupo de 
+     * encerrante que permite o controle sobre as operações de venda de combustíveis
+     * LA11 pai LA01
+     * tag NFe/infNFe/det[]/prod/comb/encerrante (opcional)
+     * @param string $nItem
+     * @param string $nBico
+     * @param string $nBomba
+     * @param string $nTanque
+     * @param string $vEncIni
+     * @param string $vEncFin
+     * @return DOMElement
+     */
+    public function tagencerrante($nItem = '', $nBico = '', $nBomba = '', $nTanque = '', $vEncIni = '', $vEncFin = '')
+    {
+        $identificador = 'LA11 <encerrante> - ';
+        $encerrante = $this->dom->createElement("encerrante");
+        $this->dom->addChild(
+            $encerrante,
+            "nBico",
+            $nBico,
+            true,
+            "$identificador [item $nItem] Número de identificação do bico utilizado no abastecimento"
+        );
+        $this->dom->addChild(
+            $encerrante,
+            "nBomba",
+            $nBomba,
+            false,
+            "$identificador [item $nItem] Número de identificação da bomba ao qual o bico está interligado"
+        );
+        $this->dom->addChild(
+            $encerrante,
+            "nTanque",
+            $nTanque,
+            true,
+            "$identificador [item $nItem] Número de identificação do tanque ao qual o bico está interligado"
+        );
+        $this->dom->addChild(
+            $encerrante,
+            "vEncIni",
+            $vEncIni,
+            true,
+            "$identificador [item $nItem] Valor do Encerrante no início do abastecimento" 
+        );
+        $this->dom->addChild(
+            $encerrante,
+            "vEncFin",
+            $vEncFin,
+            true,
+            "$identificador [item $nItem] Valor do Encerrante no final do abastecimento" 
+        );
+        $this->aEncerrante[$nItem] = $encerrante;
+        return $encerrante;
     }
     
     /**
@@ -3959,6 +4017,10 @@ class MakeNFe extends BaseMake
         if (!empty($this->aComb)) {
             foreach ($this->aComb as $nItem => $child) {
                 $prod = $this->aProd[$nItem];
+                $encerrante = $this->aEncerrante[$nItem];
+                if (! empty($encerrante)) {
+                    $this->dom->appChild($child, $encerrante, "inclusão do node encerrante na tag comb");
+                }
                 $this->dom->appChild($prod, $child, "Inclusão do node combustivel");
                 $this->aProd[$nItem] = $prod;
             }
