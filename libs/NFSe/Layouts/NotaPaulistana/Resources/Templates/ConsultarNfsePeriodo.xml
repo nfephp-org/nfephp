@@ -1,0 +1,16 @@
+<nfe:PedidoConsultaNFePeriodo xmlns:nfe="http://www.prefeitura.sp.gov.br/nfe" xmlns:xd="http://www.w3.org/2000/09/xmldsig#">
+	<Cabecalho Versao="1">
+		<CPFCNPJRemetente>
+			<CPF>{{prestador.cpf}}</CPF>
+			<CNPJ>{{prestador.cnpj}}</CNPJ>
+		</CPFCNPJRemetente>
+		<CPFCNPJ>
+			<CPF>{{prestador.cpf}}</CPF>
+			<CNPJ>{{prestador.cnpj}}</CNPJ>
+		</CPFCNPJ>
+		<Inscricao>{{prestador.inscricaoMunicipal}}</Inscricao>
+		<dtInicio>{{periodo.inicio}}</dtInicio>
+		<dtFim>{{periodo.fim}}</dtFim>
+		<NumeroPagina>{{numeroPagina}}</NumeroPagina>
+	</Cabecalho>
+</nfe:PedidoConsultaNFePeriodo>
