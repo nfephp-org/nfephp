@@ -30,7 +30,7 @@
  * @author    Roberto L. Machado <linux.rlm@gmail.com>
  * @copyright 2009-2013 &copy; NFePHP
  * @license   GNU/GPL v.3 or GNU/LGPL v.3
- * @version   GIT: 1.3.1
+ * @version   GIT: 1.3.2
  * @link      http://www.nfephp.org/
  *
  *        CONTRIBUIDORES (por ordem alfabetica):
@@ -2167,7 +2167,7 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $aFont = $this->formatPadrao;
         $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'C', 1, '');
         $descr1 = 'TIPO DOC';
-        $descr2 = 'CNPJ/CHAVE';
+        $descr2 = 'CNPJ/CHAVE/OBS';
         $descr3 = 'SÉRIE/NRO. DOCUMENTO';
         $y += 3.4;
         $this->pdf->Line($x, $y, $w + 1, $y);
@@ -2272,6 +2272,44 @@ class DacteNFePHP extends CommonNFePHP implements DocumentoNFePHP
             $this->pTextBox($auxX, $yIniDados, $w * 0.30, $h, $texto, $aFont, 'T', 'L', 0, '');
             $auxX += $w * 0.14;
         }
+        foreach ($this->infOutros as $k => $d){
+
+            $temp = $this->infOutros->item($k);
+            $tpDoc = $this->pSimpleGetValue($temp, "tpDoc");
+            $descOutros = $this->pSimpleGetValue($temp, "descOutros");
+            $nDoc = $this->pSimpleGetValue($temp, "nDoc");
+            $dEmi = $this->pSimpleGetDate($temp, "dEmi" , "Emissão: ");
+            $vDocFisc = $this->pSimpleGetValue($temp, "vDocFisc", "Valor: ");
+            $dPrev = $this->pSimpleGetDate($temp, "dPrev", "Entrega: ");
+
+            switch($tpDoc){
+                case "00":
+                    $tpDoc = "00 - Declaração";
+                    break;
+                case "10":
+                    $tpDoc = "10 - Dutoviário";
+                    break;
+                case "99":
+                    $tpDoc = "99 - Outros: [" . $descOutros . "]";
+                    break;
+                default:
+                break;
+            }
+
+            $numeroDocumento = $nDoc;
+            $cnpjChave = $dEmi . " " . $vDocFisc . " " . $dPrev;
+
+            if ($auxX > $w * 0.90) {
+                $yIniDados = $yIniDados + 4;
+                $auxX = $oldX;
+            }
+            $this->pTextBox($auxX, $yIniDados, $w * 0.10, $h, $tpDoc, $aFont, 'T', 'L', 0, '');
+            $auxX += $w * 0.09;
+            $this->pTextBox($auxX, $yIniDados, $w * 0.27, $h, $cnpjChave, $aFont, 'T', 'L', 0, '');
+            $auxX += $w * 0.28;
+            $this->pTextBox($auxX, $yIniDados, $w * 0.30, $h, $nDoc, $aFont, 'T', 'L', 0, '');
+            $auxX += $w * 0.14;
+      }
     } //fim da função zDocOrig
 
 
