@@ -3,14 +3,14 @@
  * não se esqueça de manter o config/nfe_ws3_mode55.xml atualizado
  */
 
-require_once('../../libs/NFe/ToolsNFePHP.class.php');
+require_once(dirname(__FILE__).'/../../libs/NFe/ToolsNFePHP.class.php');
 $nfe = new ToolsNFePHP;
 
-$fonte = 'AN';
-$tpAmb = '1';
-$ultNSU = 0;
-$numNSU = 0;
-$aResp = array();
+$fonte        = 'AN';
+$tpAmb        = '1';
+$ultNSU       = 0;
+$numNSU       = 0;
+$aResp        = array();
 $descompactar = false;
 
 $resposta = $nfe->getDistDFe($fonte, $tpAmb, $ultNSU, $numNSU, $aResp, $descompactar);

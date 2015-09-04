@@ -6,24 +6,27 @@
  *
  * Corrija os dados para o cancelamento antes de testar
  */
-require_once('../../libs/NFe/ToolsNFePHP.class.php');
+require_once(dirname(__FILE__).'/../../libs/NFe/ToolsNFePHP.class.php');
 
-$nfe = new ToolsNFePHP;
-$chNFe = "<ID da NFe>";
-$nProt = "<ID do protocolo de aprovação>";
-$xJust = "<descrição do motivo de cancelamento>";
-$tpAmb = '2';
+$nfe     = new ToolsNFePHP;
+$chNFe   = "<ID da NFe>";
+$nProt   = "<ID do protocolo de aprovação>";
+$xJust   = "<descrição do motivo de cancelamento>";
+$tpAmb   = '2';
 $modSOAP = '2';
 
-if ($resp = $nfe->cancelEvent($chNFe,$nProt,$xJust,$tpAmb,$modSOAP)){
+if ($resp = $nfe->cancelEvent($chNFe, $nProt, $xJust, $tpAmb, $modSOAP)) {
+
     header('Content-type: text/xml; charset=UTF-8');
     echo $resp;
+
 } else {
+
     header('Content-type: text/html; charset=UTF-8');
-    echo '<BR>';
-    echo $nfe->errMsg.'<BR>';
-    echo '<PRE>';
+    echo '<br>';
+    echo $nfe->errMsg.'<br>';
+    echo '<pre>';
     echo htmlspecialchars($nfe->soapDebug);
-    echo '</PRE><BR>';
+    echo '</pre><br>';
+
 }
-?>

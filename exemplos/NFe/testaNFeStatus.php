@@ -1,32 +1,45 @@
 <?php
-require_once('../../libs/NFe/ToolsNFePHP.class.php');
+
+require_once(dirname(__FILE__).'/../../libs/NFe/ToolsNFePHP.class.php');
 
 $nfe = new ToolsNFePHP;
+
 header('Content-type: text/html; charset=UTF-8');
+
 $sUF = 'AC;AL;AM;AP;BA;CE;DF;ES;GO;MA;MG;MS;MT;PA;PB;PE;PI;PR;RJ;RN;RO;RR;RS;SC;SE;SP;TO';
 $sUF = 'SP';
 
 //determina o ambiente 1-produção 2-homologação
-$tpAmb= '2';
-$aUF = explode(';', $sUF);
+$tpAmb = '2';
+$aUF   = explode(';', $sUF);
+
 if ($tpAmb == 1) {
-    $sAmb='Produção';
+
+    $sAmb = 'Produção';
+
 } else {
-    $sAmb='Homologação';
+
+    $sAmb = 'Homologação';
+
 }
 
 foreach ($aUF as $UF) {
-    echo '<BR><HR/><BR>';
-    echo "$UF [ $sAmb ] ==> $UF <BR>";
+
+    echo '<br><hr/><br>';
+    echo "$UF [ $sAmb ] ==> $UF <br>";
+
     $resp = $nfe->statusServico($UF, $tpAmb, $retorno);
+
     echo print_r($retorno);
-    echo '<BR>';
-    echo $nfe->errMsg.'<BR>';
-    echo '<PRE>';
+    echo '<br>';
+    echo $nfe->errMsg.'<br>';
+    echo '<pre>';
     echo htmlspecialchars($nfe->soapDebug);
-    echo '</PRE><BR>';
-    echo $UF . '[' . $sAmb . '] - ' . $retorno['xMotivo'] . '<BR><BR><HR/><BR>';
+    echo '</pre><br>';
+    echo $UF . '[' . $sAmb . '] - ' . $retorno['xMotivo'] . '<br><br><hr/><br>';
+
     flush();
+
 }
 
 /*

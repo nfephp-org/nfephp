@@ -7,31 +7,37 @@
 //e portanto as NFe retornadas são apenas as recebidas após essa última consulta.
 //
 //É recomendável que o usuário não tenha acesso a essa chamada e que a mesma seja
-//feita periódicamente (usando um agendador) por exemplo 3 ou 4 vezes ao dia no 
+//feita periódicamente (usando um agendador) por exemplo 3 ou 4 vezes ao dia no
 //máximo.
 error_reporting(E_ALL);
 ini_set('display_errors', 'On');
 
-require_once('../../libs/NFe/ToolsNFePHP.class.php');
-$nfe = new ToolsNFePHP('', 1, false);
+require_once(dirname(__FILE__).'/../../libs/NFe/ToolsNFePHP.class.php');
+
+$nfe     = new ToolsNFePHP('', 1, false);
 $modSOAP = '2'; //usando cURL
-$tpAmb = '1';//usando produção
-$indNFe = '0';
-$indEmi = '0';
-$ultNSU = '';
-$ambNac = true;
+$tpAmb   = '1';//usando produção
+$indNFe  = '0';
+$indEmi  = '0';
+$ultNSU  = '';
+$ambNac  = true;
 $retorno = array();
 $indCont = 1;
-$limite = 1;
-$nxm = '<?xml version="1.0" encoding="utf-8"?><root>';
+$limite  = 1;
+$nxm     = '<?xml version="1.0" encoding="utf-8"?><root>';
+
 while ($indCont != 0) {
+
     if (!$xml = $nfe->getListNFe($ambNac, $indNFe, $indEmi, $ultNSU, $tpAmb, $retorno)) {
+
         echo "Houve erro !! $nfe->errMsg";
-        echo '<br><br><PRE>';
+        echo '<br><br><pre>';
         echo htmlspecialchars($nfe->soapDebug);
-        echo '</PRE><BR>';
+        echo '</pre><br>';
         exit;
+
     }
+
     //carrega o retorno
     $indCont = $retorno['indCont'];
     $nxm .= '<pesquisa num="'.$limite.'">';
@@ -42,14 +48,20 @@ while ($indCont != 0) {
     //o tempo limite de processamento do php e o script pode ser interrompido
     //é recomendável que a pesquisa seja feita em etapas usando o numero do ultNSU
     //registrado
+
     if ($limite > 30) {
+
         break;
+
     }
+
     //tem de haver um intervalo de tempo entre cada pesquisa caso contrario o
     //webservice pode parar de responder, considerando ou um excesso de consultas
     //ou um ataque DoS
     sleep(5);
+
 }
+
 $nxm .= '</root>';
 header('Content-type: text/xml; charset=UTF-8');
 echo $nxm;
