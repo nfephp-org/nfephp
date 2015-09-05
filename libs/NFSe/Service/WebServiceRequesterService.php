@@ -2,6 +2,7 @@
 namespace NFSe\Service;
 use NFSe\Model\City;
 use NFSe\Model\LoteRps;
+use NFSe\Model\Prestador;
 
 /**
  * Usa o DTO LoteRps para fazer requisições ao webservice e retorna XML (por enquanto)

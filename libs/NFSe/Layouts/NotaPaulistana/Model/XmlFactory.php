@@ -1,6 +1,7 @@
 <?php
 namespace NFSe\Layouts\NotaPaulistana\Model;
 use NFSe\Model\XmlFactoryInterface;
+use NFSe\Service\XmlFillerService;
 
 /**
  * Classe responsável por criar os XMLs de São Paulo
@@ -26,6 +27,9 @@ class XmlFactory implements XmlFactoryInterface
     public function createConsultarNfsePeriod(
         \NFSe\Model\Prestador $prestador, \DateTime $dataEmissaoInicial, \DateTime $dataEmissaoFinal)
     {
+        $xmlFillerService = new XmlFillerService();
+        print __DIR__ . 'libs/NFSe/Layouts/NotaPaulistana/Resources/Templates/ConsultarNfsePeriodo.xml';
+        $xmlFillerService->fill( __DIR__ . 'libs/NFSe/Layouts/NotaPaulistana/Resources/Templates/ConsultarNfsePeriodo.xml', array());
         print "criei um xml para São Paulo <nfse>São Paulo</nfse>\n";
         return "<nfse>São Paulo</nfse>";
         // TODO: Implement createConsultarNfsePeriod() method.
