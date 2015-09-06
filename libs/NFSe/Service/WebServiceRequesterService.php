@@ -2,6 +2,7 @@
 namespace NFSe\Service;
 use NFSe\Model\City;
 use NFSe\Model\LoteRps;
+use NFSe\Model\Prestador;
 
 /**
  * Usa o DTO LoteRps para fazer requisições ao webservice e retorna XML (por enquanto)
@@ -70,6 +71,21 @@ class WebServiceRequesterService implements WebServiceRequesterServiceInterface
     {
         $this->init( $loteRps->getCodigoMunicipo() );
         return $this->webServiceRequesterService->consultarSituacaoLoteRps($loteRps);
+    }
+
+
+    /**
+     * Consulta NFS-es de um prestador dado um período
+     *
+     * @param Prestador $prestador
+     * @param \DateTime $dataEmissaoInicio
+     * @param \DateTime $dataEmissaoFim
+     * @return mixed
+     */
+    public function consultarNfses(Prestador $prestador, \DateTime $dataEmissaoInicio, \DateTime $dataEmissaoFim)
+    {
+        $this->init( $prestador->getCodigoMunicipio() );
+        return $this->webServiceRequesterService->consultarNfses($prestador, $dataEmissaoInicio, $dataEmissaoFim);
     }
 }
 
