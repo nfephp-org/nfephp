@@ -1602,6 +1602,8 @@ class ToolsNFe extends BaseTools
         $xsdPath = NFEPHP_ROOT.DIRECTORY_SEPARATOR .
             'schemes' .
             DIRECTORY_SEPARATOR .
+            'NFe' .
+            DIRECTORY_SEPARATOR .
             $this->aConfig['schemesNFe'] .
             DIRECTORY_SEPARATOR .
             $xsdFile;
