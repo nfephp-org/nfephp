@@ -64,6 +64,7 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
     protected $mPDF;
     protected $html;
     protected $imgQRCode;
+    protected $urlQR = '';
     protected $urlConsulta = array(
         '1'=> array(
             '12'=> array(
@@ -75,18 +76,24 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
             '21'=> array(
                 'chave'=>'',
                 'QR'=>'http://www.nfe.ma.gov.br/portal/consultarNFCe.jsp'),
-            '51'=> array(
-                'chave'=>'',
-                'QR'=>'http://www.nfe.sefaz.mt.gov.br/portal/consultarNFCe.jsp'),
             '24'=> array(
                 'chave'=>'',
                 'QR'=>'http://www.nfe.rn.gov.br/portal/consultarNFCe.jsp'),
+            '28'=> array(
+                'chave'=>'',
+                'QR'=>'http://www.nfe.se.gov.br/portal/consultarNFCe.jsp'),
+            '41' => array(
+                'chave'=>'',
+                'QR'=>'http://www.dfeportal.fazenda.pr.gov.br/dfe-portal/rest/servico/consultaNFCe'),
             '43'=> array(
                 'chave'=>'',
                 'QR'=>'https://www.sefaz.rs.gov.br/NFCE/NFCE-COM.aspx'),
             '28'=> array(
                 'chave'=>'',
-                'QR'=>'http://www.nfe.se.gov.br/portal/consultarNFCe.jsp')
+                'QR'=>'http://www.nfe.se.gov.br/portal/consultarNFCe.jsp'),
+            '51'=> array(
+                'chave'=>'',
+                'QR'=>'http://www.nfe.sefaz.mt.gov.br/portal/consultarNFCe.jsp')
         ),
         '2' => array(
             '12'=> array(
@@ -98,29 +105,33 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
             '21'=> array(
                 'chave'=>'',
                 'QR'=>'http://www.hom.nfe.ma.gov.br/portal/consultarNFCe.jsp'),
-            '51'=> array(
-                'chave'=>'',
-                'QR'=>'http://www.hom.nfe.sefaz.mt.gov.br/portal/consultarNFCe.jsp'),
             '24'=> array(
                 'chave'=>'',
                 'QR'=>'http://www.hom.nfe.rn.gov.br/portal/consultarNFCe.jsp'),
+            '28'=> array(
+                'chave'=>'',
+                'QR'=>'http://www.hom.nfe.se.gov.br/portal/consultarNFCe.jsp'),
+             '41' => array(
+                'chave'=>'',
+                'QR'=>'http://www.dfeportal.fazenda.pr.gov.br/dfe-portal/rest/servico/consultaNFCe'),
             '43'=> array(
                 'chave'=>'',
                 'QR'=>'https://www.sefaz.rs.gov.br/NFCE/NFCE-COM.aspx'),
-            '28'=> array(
+            '51'=> array(
                 'chave'=>'',
-                'QR'=>'http://www.hom.nfe.se.gov.br/portal/consultarNFCe.jsp')
+                'QR'=>'http://www.hom.nfe.sefaz.mt.gov.br/portal/consultarNFCe.jsp')
+
         ));
 
     /**
      * __contruct
-     * @param type $docXML
-     * @param type $sPathLogo
-     * @param type $mododebug
-     * @param type $idToken
-     * @param type $Token
+     * @param string $docXML
+     * @param string $sPathLogo
+     * @param string $mododebug
+     * @param string $idToken
+     * @param string $Token
      */
-    public function __construct($docXML = '', $sPathLogo = '', $mododebug = 0, $idToken = '', $emitToken = '')
+    public function __construct($docXML = '', $sPathLogo = '', $mododebug = 0, $idToken = '', $emitToken = '', $urlQR = '')
     {
         if (is_numeric($mododebug)) {
             $this->debugMode = $mododebug;
@@ -154,8 +165,10 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
         }
         $this->idToken = $idToken;
         $this->emitToken = $emitToken;
-        
-    } //fim __construct
+        if ($urlQR != '') {
+            $this->urlQR = $urlQR;
+        }
+    }
 
     public function getIdToken()
     {
@@ -193,36 +206,36 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
             return false;
         }
         return true;
-    } //fim simpleConsistencyCheck
+    }
     
     /**
      * monta
-     * @param type $orientacao
-     * @param type $papel
-     * @param type $logoAlign
-     * @return type
+     * @param string $orientacao
+     * @param string $papel
+     * @param string $logoAlign
+     * @return string
      */
     public function monta ($orientacao = '', $papel = array(80, 'one-page'), $logoAlign = 'C', $detalhes = false)
     {
         return $this->montaDANFE($detalhes);
-    }//fim monta
+    }
     
     /**
      * printDocument
      * @param type $nome
      * @param type $destino
      * @param type $printer
-     * @return type
+     * @return string
      */
     public function printDocument($nome = '', $destino = 'I', $printer = '')
     {
         return $this->printDANFE($nome, $destino, $printer);
-    }//fim printDocument
+    }
     
     /**
      * o objetivo desta função é ler o XML e gerar o DANFE com auxilio de conversão HTML-PDF
-     * @param type $detalhes
-     * @return type
+     * @param boolean $detalhes
+     * @return string
      */
     public function montaDANFE($detalhes = false)
     {
@@ -245,7 +258,9 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
         $vICMS = $this->pSimpleGetValue($this->ICMSTot, "vICMS");
         $qtdItens = $this->det->length;
         $urlChave = $this->urlConsulta[$tpAmb][$cUF]['chave'];
-        $urlQR = $this->urlConsulta[$tpAmb][$cUF]['QR'];
+        if ($this->urlQR == '') {
+            $urlQR = $this->urlConsulta[$tpAmb][$cUF]['QR'];
+        }    
         //DADOS DO EMITENTE
         $emitRazao  = $this->pSimpleGetValue($this->emit, "xNome");
         $emitCnpj   = $this->pSimpleGetValue($this->emit, "CNPJ");
@@ -267,11 +282,9 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
         $emitCEP = $this->pFormat($this->pSimpleGetValue($this->enderEmit, "CEP"), "#####-###");
         $emitMun = $this->pSimpleGetValue($this->enderEmit, "xMun");
         $emitUF = $this->pSimpleGetValue($this->enderEmit, "UF");
-
         //pag
         $tPagNome = '';
         $pagHtml = $this->pagamento($this->pag, $tPagNome);
-        
         //IMPOSTOS
         $impHtml = "<table width=\"100%\">\n";
         $impHtml .= "<tr>\n";
@@ -287,7 +300,6 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
         $impHtml .= "<td align='right'>".number_format($vNF, 2, ',', '.')."</td>\n";
         $impHtml .= "</tr>\n";
         $impHtml .= "</table>\n";
-        
         //necessário para QRCode
         $cDest  = '';
         if (isset($this->dest)) {
@@ -302,10 +314,7 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
                     : '';
             $cDest = $consCPF.$consCNPJ.$considEstrangeiro; //documentos do consumidor
         }
-        
         //DADOS PARA QRCODE
-        $idToken = '';
-        $Token = '';
         $this->imgQRCode = $this->makeQRCode(
             $chNFe,
             $urlQR,
@@ -315,10 +324,9 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
             $vNF,
             $vICMS,
             $digVal,
-            $idToken,
-            $Token
+            $this->idToken,
+            $this->emitToken
         );
-
         //FORMATAÇÃO DOS CAMPOS
         $numNF = "NFCe nº ".$this->pFormat($nNF, "###.###.###");
         $tsHora = $this->pConvertTime($dhEmi);
@@ -445,7 +453,6 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
         $this->html .= "<td align=\"right\">".number_format($vTotTrib, 2, ',', '.')."</td>\n";
         $this->html .= "</tr>\n";
         $this->html .= "</table>\n";
-
         //BLOCO DE DETALHES
         if ($detalhes) {
             //ITENS
@@ -464,7 +471,7 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
         $this->html .= "</table>\n";
         $this->html .= "</body>\n</html>\n";
         return $chNFe;
-    }//fim da função montaDANFE
+    }
 
     protected function pagamento($pag, &$tPnome)
     {
@@ -680,12 +687,12 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
             }
         }
         return true;
-    }//fim printDANFE
+    }
     
     /**
      * str2Hex
      * Converte string para haxadecimal ASCII
-     * @param type $str
+     * @param string $str
      * @return string
      */
     protected static function str2Hex($str)
@@ -705,8 +712,8 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
     /**
      * hex2Str
      * Converte hexadecimal ASCII para string
-     * @param type $str
-     * @return type
+     * @param string $str
+     * @return string
      */
     protected static function hex2Str($str)
     {
@@ -720,7 +727,7 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
             $iCount += 2;
         } while ($iCount < strlen($str));
         return $bin;
-    }//fim hex2Str
+    }
 
     protected function makeQRCode(
         $chNFe,
@@ -746,18 +753,18 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
         if ($cDest != '') {
             $seq .= '&cDest=' . $cDest;
         }
-        $seq .= '&dhEmi=' . strtoupper($dhHex);
+        $seq .= '&dhEmi=' . strtolower($dhHex);
         $seq .= '&vNF=' . $vNF;
         $seq .= '&vICMS=' . $vICMS;
-        $seq .= '&digVal=' . strtoupper($digHex);
+        $seq .= '&digVal=' . strtolower($digHex);
         $seq .= '&cIdToken=' . $idToken;
         //o hash code é calculado com o Token incluso
         $hash = sha1($seq.$token);
-        $seq .= '&cHashQRCode='.$hash;
+        $seq .= '&cHashQRCode='. strtoupper($hash);
         if (strpos($url, '?') === false) {
             $seq = $url.'?'.$seq;
         } else {
-            $seq = $url.'&'.$seq;
+            $seq = $url.''.$seq;
         }
         $qrCode = new QrCode();
         $qrCode->setText($seq)
@@ -772,6 +779,5 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
         $filename = $chNFe.date('YmdHis').'.jpg';
         file_put_contents($filename, $img);
         return $filename;
-        
-    }//fim makeQRCode
-}//fim Classe
+    }
+}
