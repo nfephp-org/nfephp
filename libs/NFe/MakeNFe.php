@@ -50,7 +50,6 @@ class MakeNFe extends BaseMake
     //propriedades privadas utilizadas internamente pela classe
     private $NFe = ''; //DOMNode
     private $infNFe = ''; //DOMNode
-    private $infNFeSupl = ''; //DOMNode
     private $ide = ''; //DOMNode
     private $emit = ''; //DOMNode
     private $enderEmit = ''; //DOMNode
@@ -164,10 +163,6 @@ class MakeNFe extends BaseMake
         $this->dom->appChild($this->infNFe, $this->cana, 'Falta tag "infNFe"');
         //[1] tag infNFe (1 A01)
         $this->dom->appChild($this->NFe, $this->infNFe, 'Falta tag "NFe"');
-        //tag infNFeSupl (1 ZX01) coloca as informações suplementares se houver
-        if ($this->infNFeSupl != '') {
-            $this->dom->appChild($this->NFe, $this->infNFeSupl, 'Falta tag "NFe"');
-        }
         //[0] tag NFe
         $this->dom->appChild($this->dom, $this->NFe, 'Falta DOMDocument');
         // testa da chave
@@ -194,27 +189,6 @@ class MakeNFe extends BaseMake
         $this->versao = $versao;
         $this->chNFe = $chave;
         return $this->infNFe;
-    }
-    
-    /**
-     * taginfNFeSupl
-     * Informações suplementares da Nota Fiscal ZX01 pai NFe
-     * @param string $qrcode
-     * @return DOMElement
-     */
-    public function taginfNFeSupl($qrcode = '')
-    {
-        $identificador = 'ZX01 <infNFeSupl> - ';
-        $data = "<![CDATA[$qrcode]]>";
-        $this->infNFeSupl = $this->dom->createElement("infNFeSupl");
-        $this->dom->addChild(
-            $$this->infNFeSupl,
-            "qrCode",
-            $data,
-            true,
-            $identificador . "Texto com o QR-Code impresso no DANFE NFC-e"
-        );
-        return $this->infNFeSupl;
     }
     
     /**
