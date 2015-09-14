@@ -483,9 +483,116 @@ class ToolsNFe extends BaseTools
      */
     public function assina($xml = '', $saveFile = false)
     {
-        return $this->assinaDoc($xml, 'nfe', 'infNFe', $saveFile);
+        $xmlSigned = $this->assinaDoc($xml, 'nfe', 'infNFe', $saveFile);
+        if ($this->modelo == 65) {
+            //descomentar essa linha após 03/11/2015 conforme NT 2015.002
+            //ou quando for habilitada essa TAG no XML da NFCe
+            //para incluir o QRCode no corpo da NFCe
+            //$xmlSigned = $this->zPutQRTag($xmlSigned, $saveFile);
+        }
+        return $xmlSigned;
     }
     
+    /**
+     * zPutQRTag
+     * Monta a URI para o QRCode e coloca a tag 
+     * no xml já assinado
+     * @param string $xmlSigned
+     * @return string
+     * NOTA: O Campo QRCode está habilitado para uso a partir de 
+     *       01/10/2015 homologação
+     *       03/11/2015 Produção
+     */
+    protected function zPutQRTag($xmlSigned, $saveFile)
+    {
+        //carrega o Dom com o xml assinado
+        $dom = new Dom();
+        $dom->loadXMLString($xmlSigned);
+        //pega os dados necessários para a montagem da URI a partir do xml
+        $nfe = $dom->getNode('NFe');
+        $ide = $dom->getNode('ide');
+        $dest = $dom->getNode('dest');
+        $icmsTot = $dom->getNode('ICMSTot');
+        $signedInfo  = $dom->getNode('SignedInfo');
+        $chNFe = $dom->getChave('infNFe');
+        $cUF = $dom->getValue($ide, 'cUF');
+        $tpAmb = $dom->getValue($ide, 'tpAmb');
+        $dhEmi = $dom->getValue($ide, 'dhEmi');
+        $cDest = '';
+        if (!empty($dest)) {
+            //pode ser CNPJ , CPF ou idEstrageiro
+            $cDest = $dom->getValue($dest, 'CNPJ');
+            if ($cDest == '') {
+                $cDest = $dom->getValue($dest, 'CPF');
+                if ($cDest == '') {
+                    $cDest = $dom->getValue($dest, 'idEstrangeiro');
+                }
+            }
+        }
+        $vNF = $dom->getValue($icmsTot, 'vNF');
+        $vICMS = $dom->getValue($icmsTot, 'vICMS');
+        $digVal = $dom->getValue($signedInfo, 'DigestValue');
+        $token = $this->aConfig['tokenNFCe'];
+        $idToken = $this->aConfig['tokenNFCeId'];
+        $versao = '100';
+        //pega a URL para consulta do QRCode do estado emissor
+        //essa url está em nfe_ws3_mode65.xml
+        //carrega serviço
+        $servico = 'NfeConsultaQR';
+        $siglaUF = $this->zGetSigla($cUF);
+        $this->zLoadServico(
+            'nfe',
+            $servico,
+            $siglaUF,
+            $tpAmb
+        );
+        if ($this->urlService == '') {
+            $this->errors[] = "A consulta por QRCode não está disponível na SEFAZ $siglaUF!!!";
+            return $xmlSigned;
+        }
+        $url = $this->urlService;
+        //usa a função zMakeQRCode para gerar a string da URI
+        $qrcode = $this->zMakeQRCode(
+            $chNFe,
+            $url,
+            $tpAmb,
+            $dhEmi,
+            $vNF,
+            $vICMS,
+            $digVal,
+            $token,
+            $cDest,
+            $idToken,
+            $versao
+        );
+        //inclui a TAG NFe/infNFeSupl com o qrcode
+        $data = "<![CDATA[$qrcode]]>";
+        if ($qrcode == '') {
+            return $xmlSigned;
+        }
+        $infNFeSupl = $dom->createElement("infNFeSupl");
+        $dom->addChild(
+            $infNFeSupl,
+            "qrCode",
+            $data,
+            true,
+            "Texto com o QR-Code impresso no DANFE NFC-e"
+        );
+        $dom->appChild($nfe, $infNFeSupl, 'Falta tag "NFe"');
+        $xmlSigned = $dom->saveXML();
+        //salva novamente o xml assinado e agora com o QRCode
+        if ($saveFile) {
+            $anomes = date(
+                'Ym',
+                DateTime::convertSefazTimeToTimestamp($dhEmi)
+            );
+            $filename = "$chNFe-nfe.xml";
+            $this->zGravaFile('nfe', $tpAmb, $filename, $xmlSigned, 'assinadas', $anomes);
+        }
+        //retorna a string com o xml assinado e com o QRCode
+        return $xmlSigned;
+    }
+
     /**
      * sefazEnviaLote
      * Solicita a autorização de uso de Lote de NFe
@@ -1844,5 +1951,82 @@ class ToolsNFe extends BaseTools
             $siglaUF,
             $exTarif
         );
+    }
+       
+    /**
+     * zMakeQRCode
+     * Cria a chave do QR Code a ser usado na NFCe
+     * @param string $chNFe
+     * @param string $url
+     * @param string $tpAmb
+     * @param string $dhEmi
+     * @param string $vNF
+     * @param string $vICMS
+     * @param string $digVal
+     * @param string $token
+     * @param string $cDest
+     * @param string $idToken
+     * @param string $versao
+     * @return string
+     */
+    protected function zMakeQRCode(
+        $chNFe,
+        $url,
+        $tpAmb,
+        $dhEmi,
+        $vNF,
+        $vICMS,
+        $digVal,
+        $token = '',
+        $cDest = '',
+        $idToken = '000001',
+        $versao = '100'
+    ) {
+        if ($token == '') {
+            return '';
+        }
+        $dhHex = self::zStr2Hex($dhEmi);
+        $digHex = self::zStr2Hex($digVal);
+        
+        $seq = '';
+        $seq .= 'chNFe=' . $chNFe;
+        $seq .= '&nVersao=' . $versao;
+        $seq .= '&tpAmb=' . $tpAmb;
+        if ($cDest != '') {
+            $seq .= '&cDest=' . $cDest;
+        }
+        $seq .= '&dhEmi=' . strtolower($dhHex);
+        $seq .= '&vNF=' . $vNF;
+        $seq .= '&vICMS=' . $vICMS;
+        $seq .= '&digVal=' . strtolower($digHex);
+        $seq .= '&cIdToken=' . $idToken;
+        //o hash code é calculado com o Token incluso
+        $hash = sha1($seq.$token);
+        $seq .= '&cHashQRCode='. strtoupper($hash);
+        if (strpos($url, '?') === false) {
+            $url = $url.'?';
+        }
+        $seq = $url.$seq;
+        return $seq;
+    }
+    
+    /**
+     * zStr2Hex
+     * Converte string para haxadecimal ASCII
+     * @param string $str
+     * @return string
+     */
+    protected static function zStr2Hex($str)
+    {
+        if ($str == '') {
+            return '';
+        }
+        $hex = "";
+        $iCount = 0;
+        do {
+            $hex .= sprintf("%02x", ord($str{$iCount}));
+            $iCount++;
+        } while ($iCount < strlen($str));
+        return $hex;
     }
 }
