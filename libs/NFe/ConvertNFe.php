@@ -2471,17 +2471,17 @@ class ConvertNFe
      */
     protected function yaEntity($aCampos)
     {
-        //YA|tPag|vPag|tpEntrega|CNPJ|tBand|cAut|
+        //YA|tPag|vPag|CNPJ|tBand|cAut|tpIntegra|
         $this->make->tagpag(
             $aCampos[1], //$tPag
             $aCampos[2] //$vPag
         );
-        if ($aCampos[5] != '') {
+        if ($aCampos[4] != '') {
             $this->make->tagcard(
-                $aCampos[3], //$tpEntrega
-                $aCampos[4], //$cnpj
-                $aCampos[5], //$tBand
-                $aCampos[6] //$cAut
+                $aCampos[3], //$cnpj
+                $aCampos[4], //$tBand
+                $aCampos[5], //$cAut
+                $aCampos[6] //$tpIntegra    
             );
         }
     }
