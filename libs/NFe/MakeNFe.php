@@ -3488,26 +3488,26 @@ class MakeNFe extends BaseMake
      * tagcard
      * Grupo de Cartões YA04 pai YA01
      * tag NFe/infNFe/pag/card
-     * @param string $tpentrega
+     * @param string $tpintrega
      * @param string $cnpj
      * @param string $tBand
      * @param string $cAut
      * @return DOMElement
      */
     public function tagcard(
-        $tpentrega = '',
         $cnpj = '',
         $tBand = '',
-        $cAut = ''
+        $cAut = '',
+        $tpIntegra = ''
     ) {
         //apenas para modelo 65
         if ($this->mod == '65' && $tBand != '') {
             $card = $this->dom->createElement("card");
             $this->dom->addChild(
                 $card,
-                "tpEntrega",
-                $tpentrega,
-                true,
+                "tpIntegra",
+                $tpIntegra,
+                false,
                 "Tipo de Integração para pagamento"
             );
             $this->dom->addChild(

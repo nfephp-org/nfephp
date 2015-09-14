@@ -485,7 +485,10 @@ class ToolsNFe extends BaseTools
     {
         $xmlSigned = $this->assinaDoc($xml, 'nfe', 'infNFe', $saveFile);
         if ($this->modelo == 65) {
-            $xmlSigned = $this->zPutQRTag($xmlSigned, $saveFile);
+            //descomentar essa linha após 03/11/2015 conforme NT 2015.002
+            //ou quando for habilitada essa TAG no XML da NFCe
+            //para incluir o QRCode no corpo da NFCe
+            //$xmlSigned = $this->zPutQRTag($xmlSigned, $saveFile);
         }
         return $xmlSigned;
     }
@@ -496,6 +499,9 @@ class ToolsNFe extends BaseTools
      * no xml já assinado
      * @param string $xmlSigned
      * @return string
+     * NOTA: O Campo QRCode está habilitado para uso a partir de 
+     *       01/10/2015 homologação
+     *       03/11/2015 Produção
      */
     protected function zPutQRTag($xmlSigned, $saveFile)
     {
@@ -561,6 +567,9 @@ class ToolsNFe extends BaseTools
         );
         //inclui a TAG NFe/infNFeSupl com o qrcode
         $data = "<![CDATA[$qrcode]]>";
+        if ($qrcode == '') {
+            return $xmlSigned;
+        }
         $infNFeSupl = $dom->createElement("infNFeSupl");
         $dom->addChild(
             $infNFeSupl,
@@ -1968,11 +1977,14 @@ class ToolsNFe extends BaseTools
         $vNF,
         $vICMS,
         $digVal,
-        $token,
+        $token = '',
         $cDest = '',
         $idToken = '000001',
         $versao = '100'
     ) {
+        if ($token == '') {
+            return '';
+        }
         $dhHex = self::zStr2Hex($dhEmi);
         $digHex = self::zStr2Hex($digVal);
         
