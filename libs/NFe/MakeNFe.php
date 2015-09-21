@@ -774,12 +774,16 @@ class MakeNFe extends BaseMake
         $email = ''
     ) {
         $identificador = 'E01 <dest> - ';
+        $flagNome = true;//marca se xNome é ou não obrigatório
         $this->dest = $this->dom->createElement("dest");
         if (($numIE == 'ISENTO' || $numIE == '') && $indIEDest == '1') {
             $indIEDest = '2';
         }
         if ($this->mod == '65') {
             $indIEDest = '9';
+            if ($xNome == '') {
+                $flagNome = false;//marca se xNome é ou não obrigatório
+            }
         }
         if ($this->tpAmb == '2') {
             $xNome = 'NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL';
@@ -814,7 +818,7 @@ class MakeNFe extends BaseMake
             $this->dest,
             "xNome",
             $xNome,
-            true,
+            $flagNome, //se mod 55 true ou mod 65 false
             $identificador . "Razão Social ou nome do destinatário"
         );
         $this->dom->addChild(
