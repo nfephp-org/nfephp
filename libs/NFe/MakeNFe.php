@@ -24,6 +24,7 @@ namespace NFePHP\NFe;
 
 use NFePHP\Common\DateTime\DateTime;
 use NFePHP\Common\Base\BaseMake;
+use NFePHP\Common\Exception\RuntimeException;
 use \DOMDocument;
 use \DOMElement;
 
@@ -894,7 +895,7 @@ class MakeNFe extends BaseMake
     ) {
         $identificador = 'E05 <enderDest> - ';
         if (empty($this->dest)) {
-            throw new Exception('A TAG dest deve ser criada antes do endereço do mesmo.');
+            throw new RuntimeException('A TAG dest deve ser criada antes do endereço do mesmo.');
         }
         $this->enderDest = $this->dom->createElement("enderDest");
         $this->dom->addChild(
