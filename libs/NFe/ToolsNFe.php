@@ -572,19 +572,13 @@ class ToolsNFe extends BaseTools
             return $dom->saveXML();
         }
         //inclui a TAG NFe/infNFeSupl com o qrcode
-        $data = "<![CDATA[$qrcode]]>";
         $infNFeSupl = $dom->createElement("infNFeSupl");
-        $dom->addChild(
-            $infNFeSupl,
-            "qrCode",
-            'GISMO',
-            true,
-            "Texto com o QR-Code impresso no DANFE NFC-e"
-        );
+        $nodeqr = $infNFeSupl->appendChild($dom->createElement('qrCode'));
+        $nodeqr->appendChild($dom->createCDATASection($qrcode));
         $signature = $dom->getElementsByTagName('Signature')->item(0);
         $nfe->insertBefore($infNFeSupl, $signature);
+        $dom->formatOutput = true;
         $xmlSigned = $dom->saveXML();
-        $xmlSigned = str_replace('GISMO', $data, $xmlSigned);
         //salva novamente o xml assinado e agora com o QRCode
         if ($saveFile) {
             $anomes = date(
