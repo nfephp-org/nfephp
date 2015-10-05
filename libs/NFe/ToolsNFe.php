@@ -484,30 +484,33 @@ class ToolsNFe extends BaseTools
     public function assina($xml = '', $saveFile = false)
     {
         $xmlSigned = $this->assinaDoc($xml, 'nfe', 'infNFe', $saveFile);
+        $dom = new Dom();
+        $dom->loadXMLString($xmlSigned);
+        $modelo = $dom->getValue($dom, 'mod');
+        $oldmod = $this->modelo;
+        $this->modelo = $modelo;
         if ($this->modelo == 65) {
             //descomentar essa linha após 03/11/2015 conforme NT 2015.002
             //ou quando for habilitada essa TAG no XML da NFCe
             //para incluir o QRCode no corpo da NFCe
-            //$xmlSigned = $this->zPutQRTag($xmlSigned, $saveFile);
+            //$xmlSigned = $this->zPutQRTag($dom, $saveFile);
         }
+        $this->modelo = $oldmod;
         return $xmlSigned;
     }
     
-    /**
+/**
      * zPutQRTag
      * Monta a URI para o QRCode e coloca a tag 
      * no xml já assinado
-     * @param string $xmlSigned
+     * @param Dom $dom
      * @return string
      * NOTA: O Campo QRCode está habilitado para uso a partir de 
      *       01/10/2015 homologação
      *       03/11/2015 Produção
      */
-    protected function zPutQRTag($xmlSigned, $saveFile)
+    protected function zPutQRTag(Dom $dom, $saveFile)
     {
-        //carrega o Dom com o xml assinado
-        $dom = new Dom();
-        $dom->loadXMLString($xmlSigned);
         //pega os dados necessários para a montagem da URI a partir do xml
         $nfe = $dom->getNode('NFe');
         $ide = $dom->getNode('ide');
@@ -548,7 +551,7 @@ class ToolsNFe extends BaseTools
         );
         if ($this->urlService == '') {
             $this->errors[] = "A consulta por QRCode não está disponível na SEFAZ $siglaUF!!!";
-            return $xmlSigned;
+            return $dom->saveXML();
         }
         $url = $this->urlService;
         //usa a função zMakeQRCode para gerar a string da URI
@@ -565,20 +568,16 @@ class ToolsNFe extends BaseTools
             $idToken,
             $versao
         );
-        //inclui a TAG NFe/infNFeSupl com o qrcode
-        $data = "<![CDATA[$qrcode]]>";
         if ($qrcode == '') {
-            return $xmlSigned;
+            return $dom->saveXML();
         }
+        //inclui a TAG NFe/infNFeSupl com o qrcode
         $infNFeSupl = $dom->createElement("infNFeSupl");
-        $dom->addChild(
-            $infNFeSupl,
-            "qrCode",
-            $data,
-            true,
-            "Texto com o QR-Code impresso no DANFE NFC-e"
-        );
-        $dom->appChild($nfe, $infNFeSupl, 'Falta tag "NFe"');
+        $nodeqr = $infNFeSupl->appendChild($dom->createElement('qrCode'));
+        $nodeqr->appendChild($dom->createCDATASection($qrcode));
+        $signature = $dom->getElementsByTagName('Signature')->item(0);
+        $nfe->insertBefore($infNFeSupl, $signature);
+        $dom->formatOutput = true;
         $xmlSigned = $dom->saveXML();
         //salva novamente o xml assinado e agora com o QRCode
         if ($saveFile) {
@@ -592,7 +591,7 @@ class ToolsNFe extends BaseTools
         //retorna a string com o xml assinado e com o QRCode
         return $xmlSigned;
     }
-
+    
     /**
      * sefazEnviaLote
      * Solicita a autorização de uso de Lote de NFe

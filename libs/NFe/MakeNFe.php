@@ -24,6 +24,7 @@ namespace NFePHP\NFe;
 
 use NFePHP\Common\DateTime\DateTime;
 use NFePHP\Common\Base\BaseMake;
+use NFePHP\Common\Exception\RuntimeException;
 use \DOMDocument;
 use \DOMElement;
 
@@ -46,7 +47,7 @@ class MakeNFe extends BaseMake
      * @var string
      */
     public $chNFe = '';
-    
+      
     //propriedades privadas utilizadas internamente pela classe
     private $NFe = ''; //DOMNode
     private $infNFe = ''; //DOMNode
@@ -238,7 +239,7 @@ class MakeNFe extends BaseMake
         $cDV = '',
         $tpAmb = '',
         $finNFe = '',
-        $indFinal = '',
+        $indFinal = '0',
         $indPres = '',
         $procEmi = '',
         $verProc = '',
@@ -894,7 +895,7 @@ class MakeNFe extends BaseMake
     ) {
         $identificador = 'E05 <enderDest> - ';
         if (empty($this->dest)) {
-            throw new Exception('A TAG dest deve ser criada antes do endereço do mesmo.');
+            throw new RuntimeException('A TAG dest deve ser criada antes do endereço do mesmo.');
         }
         $this->enderDest = $this->dom->createElement("enderDest");
         $this->dom->addChild(
@@ -1232,6 +1233,9 @@ class MakeNFe extends BaseMake
         $nItemPed = '',
         $nFCI = ''
     ) {
+        if ($this->tpAmb == '2' && $nItem == 1) {
+            $xProd = 'NOTA FISCAL EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL';
+        }
         $identificador = 'I01 <prod> - ';
         $prod = $this->dom->createElement("prod");
         $this->dom->addChild(
