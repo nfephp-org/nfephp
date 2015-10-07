@@ -26,7 +26,7 @@ class MailNFe extends BaseMail
     protected $aMail = array();
     
     /**
-     * enviaMail
+     * envia
      * @param string $pathFile
      * @param array $aMail
      * @param boolean $comPdf
