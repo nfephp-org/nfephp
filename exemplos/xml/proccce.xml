@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<procEventoNFe xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.00">
+  <evento xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.00">
+    <infEvento Id="ID1101103511051014278500019055111000000013199881790001">
+      <cOrgao>35</cOrgao>
+      <tpAmb>2</tpAmb>
+      <CNPJ>10142785000190</CNPJ>
+      <chNFe>35110510142785000190551110000000131998817900</chNFe>
+      <dhEvento>2011-06-06T11:48:20-03:00</dhEvento>
+      <tpEvento>110110</tpEvento>
+      <nSeqEvento>1</nSeqEvento>
+      <verEvento>1.00</verEvento>
+      <detEvento versao="1.00">
+        <descEvento>Carta de Correção</descEvento>
+        <xCorrecao>O periodo de referencia de lancamento da NF-e de ativo permanente foi informado indevidamente como sendo "ref.: ABRIL/2008", considerar o periodo como "ref.: MAIO/2011".</xCorrecao>
+        <xCondUso>A Carta de Correção é disciplinada pelo § 1º-A do art. 7º do Convênio S/N, de 15 de dezembro de 1970 e pode ser utilizada para regularização de erro ocorrido na emissão de documento fiscal, desde que o erro não esteja relacionado com: I - as variáveis que determinam o valor do imposto tais como: base de cálculo, alíquota, diferença de preço, quantidade, valor da operação ou da prestação; II - a correção de dados cadastrais que implique mudança do remetente ou do destinatário; III - a data de emissão ou de saída.</xCondUso>
+      </detEvento>
+    </infEvento>
+    <Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
+      <SignedInfo>
+        <CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315" />
+        <SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1" />
+        <Reference URI="#ID1101103511051014278500019055111000000013199881790001">
+          <Transforms>
+            <Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" />
+            <Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315" />
+          </Transforms>
+          <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+          <DigestValue>xB0+/F6Hae+3Olrc7bzAmSxfxDo=</DigestValue>
+        </Reference>
+      </SignedInfo>
+      <SignatureValue>dCC3i8H7Z4tReOpk2WeYrFUackIqMjR4pSrr9o7YJ008CjnbFavvg=</SignatureValue>
+      <KeyInfo>
+        <X509Data>
+          <X509Certificate>MIIFpTCCBI2gAwIBAgIEQeR/UjANBgbLKS91OCr+fY</X509Certificate>
+        </X509Data>
+      </KeyInfo>
+    </Signature>
+  </evento>
+  <retEvento versao="1.00" xmlns="http://www.portalfiscal.inf.br/nfe">
+    <infEvento>
+      <tpAmb>2</tpAmb>
+      <verAplic>SP_EVENTOS_PL_100</verAplic>
+      <cOrgao>35</cOrgao>
+      <cStat>135</cStat>
+      <xMotivo>Evento registrado e vinculado a NF-e</xMotivo>
+      <chNFe>35110510142785000190551110000000131998817900</chNFe>
+      <tpEvento>110110</tpEvento>
+      <xEvento>Carta de Correção registrada</xEvento>
+      <nSeqEvento>1</nSeqEvento>
+      <CNPJDest>10142785000190</CNPJDest>
+      <dhRegEvento>2011-06-06T12:09:21-03:00</dhRegEvento>
+      <nProt>135110004447087</nProt>
+    </infEvento>
+  </retEvento>
+</procEventoNFe>
