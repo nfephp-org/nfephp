@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+		   xmlns:nfe="http://www.portalfiscal.inf.br/nfe" 
+		   targetNamespace="http://www.portalfiscal.inf.br/nfe" 
+		   elementFormDefault="qualified" 
+		   attributeFormDefault="unqualified">
+	<xs:simpleType name="TCodUfIBGETransito">
+		<xs:annotation>
+			<xs:documentation>Tipo Código da UF da tabela do IBGE</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:token">
+			<xs:enumeration value="11"/>
+			<xs:enumeration value="12"/>
+			<xs:enumeration value="13"/>
+			<xs:enumeration value="14"/>
+			<xs:enumeration value="15"/>
+			<xs:enumeration value="16"/>
+			<xs:enumeration value="17"/>
+			<xs:enumeration value="21"/>
+			<xs:enumeration value="22"/>
+			<xs:enumeration value="23"/>
+			<xs:enumeration value="24"/>
+			<xs:enumeration value="25"/>
+			<xs:enumeration value="26"/>
+			<xs:enumeration value="27"/>
+			<xs:enumeration value="28"/>
+			<xs:enumeration value="29"/>
+			<xs:enumeration value="31"/>
+			<xs:enumeration value="32"/>
+			<xs:enumeration value="33"/>
+			<xs:enumeration value="35"/>
+			<xs:enumeration value="41"/>
+			<xs:enumeration value="42"/>
+			<xs:enumeration value="43"/>
+			<xs:enumeration value="50"/>
+			<xs:enumeration value="51"/>
+			<xs:enumeration value="52"/>
+			<xs:enumeration value="53"/>
+			<xs:enumeration value="99"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="TpVeic">
+		<xs:annotation>
+			<xs:documentation>Placa do veículo</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base = "xs:token">
+			<xs:minLength value = "1"/>
+			<xs:maxLength value = "8"/>
+			<xs:pattern value = "[A-Z0-9]+"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="TNomeUnidadeFiscal">
+		<xs:annotation>
+			<xs:documentation>Tipo Nome Unidade Fiscal</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:token">
+			<xs:maxLength value="255"/>
+			<xs:minLength value="1"/>
+		</xs:restriction>
+	</xs:simpleType>		
+	<xs:simpleType name="TTipoTransmissao">
+		<xs:annotation>
+			<xs:documentation>Tipo Tipo de Trasmissao</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:token">
+			<xs:enumeration value="N"/>
+			<xs:enumeration value="A"/>
+			<!-- N = Normal ; online -->
+			<!-- A = atrasada -->
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="TSentidoPassagem">
+		<xs:annotation>
+			<xs:documentation>Sentido da Passagem</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:token">
+			<xs:enumeration value="E"/>
+			<xs:enumeration value="S"/>
+			<xs:enumeration value="I"/>
+			<!-- E = Entrada -->
+			<!-- S = Saida -->
+			<!-- I = Indeterminado -->
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="TIndicadorRetorno">
+		<xs:annotation>
+			<xs:documentation>Indicador de Retorno de Mercadoria</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:token">
+			<xs:enumeration value="R"/>
+			<xs:enumeration value="D"/>
+			<!-- R = Mercadoria em Retorno -->
+			<!-- D = Mercadoria em Devolução -->
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="TObservacao">
+		<xs:annotation>
+			<xs:documentation>Tipo Observacoes</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:token">
+			<xs:minLength value="0"/>
+			<xs:maxLength value="500"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="TNFormularioSeguranca">
+		<xs:annotation>
+			<xs:documentation>Tipo Numero do Formulario de Seguranca</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:token">
+			<xs:minLength value="0"/>
+			<xs:maxLength value="11"/>
+			<!--9 posiçoes da numeração + 2 da série -->
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="TIdentMeioTransp">
+		<xs:annotation>
+			<xs:documentation>Tipo Identificacao do meio de transporte</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:token">
+			<xs:maxLength value="255"/>
+			<xs:minLength value="0"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="TModalidadeTransp">
+		<xs:annotation>
+			<xs:documentation>Outra Modalidade de Transporte</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:token">
+			<xs:enumeration value="F"/>
+			<xs:enumeration value="D"/>
+			<xs:enumeration value="AE"/>
+			<xs:enumeration value="AQ"/>
+			<xs:enumeration value="O"/>
+			<!-- F = Ferroviario -->
+			<!-- D = Dutoviario -->
+			<!-- AE = Aéreo -->
+			<!-- AQ = Aquaviário -->
+			<!-- O = Outro -->
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="TSerieTransito">
+		<xs:annotation>
+			<xs:documentation>Tipo Série do Documento Fiscal </xs:documentation>
+		</xs:annotation>		
+		<xs:restriction base = "xs:token">
+			<xs:length value = "11"/>
+			<xs:pattern value = "[A-Z]{2}[0-9]{9}"/>
+		</xs:restriction>
+	</xs:simpleType>	
+	<xs:simpleType name="TCUnidFiscal">
+		<xs:annotation>
+			<xs:documentation>Código da Unidade Fiscal</xs:documentation>
+		</xs:annotation>		
+		<xs:restriction base="xs:unsignedInt">
+			<xs:pattern value="[0-9]{3}" />
+		</xs:restriction>		
+	</xs:simpleType>
+</xs:schema>

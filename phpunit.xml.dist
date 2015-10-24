@@ -19,13 +19,15 @@
         <whitelist>
             <directory suffix=".php">./libs</directory>
             <exclude>
-                <directory>./libs/External</directory>
+                <directory>./libs/Extras</directory>
             </exclude>
         </whitelist>
         <blacklist>
             <directory>./vendor</directory>
             <directory>./certs</directory>
             <directory>./config</directory>
+            <directory>./images</directory>
+            <directory>./install</directory>
             <directory>./exemplos</directory>
             <directory>./schemes</directory>
             <directory>./tests</directory>
@@ -34,6 +36,6 @@
     <logging>
         <!--<log type="coverage-html" target="build/coverage" title="NFePHP" charset="UTF-8" yui="true" highlight="true" lowUpperBound="35" highLowerBound="70"/>-->
         <!--<log type="testdox-text" target="php://stdout"/>-->
-        <log type="coverage-clover" target="build/logs/clover.xml"/>
+        <!--<log type="coverage-clover" target="build/logs/clover.xml"/>-->
     </logging>
 </phpunit>

@@ -1,13 +1,11 @@
 NFePHP
 =================
 
-[![Join the chat at https://gitter.im/nfephp-org/nfephp](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/nfephp-org/nfephp?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
-[![Build Status](https://travis-ci.org/nfephp-org/nfephp.svg?branch=master)](https://travis-ci.org/nfephp-org/nfephp)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/nfephp-org/nfephp/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/nfephp-org/nfephp/?branch=master)
-[![Latest Stable Version](https://poser.pugx.org/nfephp-org/nfephp/v/stable.svg)](https://packagist.org/packages/nfephp-org/nfephp)
-[![Latest Unstable Version](https://poser.pugx.org/nfephp-org/nfephp/v/unstable.svg)](https://packagist.org/packages/nfephp-org/nfephp)
+[![Build Status](https://travis-ci.org/nfephp-org/nfephp.svg?branch=develop)](https://travis-ci.org/nfephp-org/nfephp)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/nfephp-org/nfephp/badges/quality-score.png?b=develop)](https://scrutinizer-ci.com/g/nfephp-org/nfephp/?branch=develop)
+[![Code Coverage](https://scrutinizer-ci.com/g/nfephp-org/nfephp/badges/coverage.png?b=develop)](https://scrutinizer-ci.com/g/nfephp-org/nfephp/?branch=develop)
 [![License](https://poser.pugx.org/nfephp-org/nfephp/license.svg)](https://packagist.org/packages/nfephp-org/nfephp)
+[![Latest Unstable Version](https://poser.pugx.org/nfephp-org/nfephp/v/unstable.svg)](https://packagist.org/packages/nfephp-org/nfephp)
 
 NFePHP é uma API para gerenciamento das comunicações entre o emitente de NFe e os serviços dos SEFAZ estaduais. Inteiramente construído em PHP para rodar sob qualquer sistema operacional.
 Para começar veja [nossas páginas Wiki](https://github.com/nfephp-org/nfephp/wiki).
@@ -15,6 +13,23 @@ Para começar veja [nossas páginas Wiki](https://github.com/nfephp-org/nfephp/w
 ***ATENÇÃO: A API vai mudar !!! varias mudanças estão programadas e sendo aplicadas na branch DEVELOP, que em breve será movida para master e MASTER será movida para v3.1. Portanto é recomendável que migrem suas aplicações para usar a API de DEVELOP, pelo menos em ambiente de testes e desenvolvimento. Nessa nova versão a maior alteração além dos nomes das classes e seus métodos é do uso de namespaces e do composer.
 
 Não deixe de se cadastrar no [grupo de discussão do NFePHP](http://groups.google.com/group/nfephp)!
+
+Versão de Desenvolvimento
+-----
+Versão 4.0.0-dev (observa a versão de layout 3.10 da SEFAZ)
+
+Condicionantes
+-----
+Para usar essa API é necessário conhecimento em programação PHP, bem como conhecer os padrões atuais da linguagem e ter bases de legislação fiscal. É extremanente recomendável que seja estudado o conteúdo dos seguintes sites.
+* Documentação do Funcionamento do sistema de NFe [SEFAZ NFe](http://www.nfe.fazenda.gov.br/portal/principal.aspx)
+* Documentação do Funcionamento do sistema de CTe [SEFAZ CTe](http://www.cte.fazenda.gov.br/listaSubMenu.aspx?Id=tW+YMyk/50s=)
+* Documentação do Funcionamento do sistema de MDFe [SEFAZ MDfe](https://mdfe-portal.sefaz.rs.gov.br/)
+* Composer [Documentação](https://getcomposer.org/doc/)  Construção do [composer.json](http://composer.json.jolicode.com/)
+* IMPORTANTE [PHP do Jeito Certo](http://br.phptherightway.com/)
+* Coding Style Guide [PSR-2](http://www.php-fig.org/psr/psr-2/)
+* Autoload [PSR-4](http://www.php-fig.org/psr/psr-4/)
+
+NOTA: A NFSe Nota Fiscal de Serviços Eletrônica, não tem padrão único, e a API tem somente alguns exemplos de montagem de um sistema para esse fim, mas nenhuma API realmente funcional para esse tipo de documentos fiscais.
 
 Objetivo
 -----
@@ -27,14 +42,17 @@ Licenciamento
 
 Dependências
 -------
+* composer <https://getcomposer.org/>
 * Apache: <http://httpd.apache.org/>
 * PHP 5.3+: <http://php.net>
 * Bibliotecas de terceiros
- * FPDF: Usada para gerar o DANFE em PDF. Veja <http://www.fpdf.org/>.
- * PHPMailer: Usada para envio das NFe ao destinatário. Veja <http://code.google.com/a/apache-extras.org/p/phpmailer/>.
- * QRCode: Usada para NFCe - Danfe Simplificado para venda consumidor.
+ * FPDF: Provisóriamente usada para gerar os documentos em PDF. Veja <http://www.fpdf.org/>.Deverá ser substituida pela classe ZendPdf (devido ao tendimento dos padrões PSR e ser mais ativamente mantida e distribuida via composer.
+ * zendframework/zendpdf (v. 2.x) Usada para gerar os documentos em PDF.
+ * zendframework/zend-mail (v.2.x) Usada para envio dos emails aos destinátarios dos docuemntos fiscais eletrônicos.
+ * zendframework/zend-barcode (v.2.x) Usada para gerar os codigos de barras 128 presente nos documentos fiscais em PDF.
+ * soundasleep/html2text (v.0.2) Usada para converter as mensagens Htlm dos emails em seu equivalente em texto puro. Usada na classe de envio dos emails.
+ * endroid/qrcode (v.1.x) Usada para gerar o QRCode impresso nas NFCe
 * Extensões PHP
- * SOAP: Nativo do PHP. Veja <http://br2.php.net/manual/book.soap.php>.
  * cURL: Normalmente já vem habilitado com o PHP 5.3+. Veja <http://br2.php.net/manual/book.curl.php> e <http://curl.haxx.se/>.
  * OpenSSL: Normalmente já vem habilitado com o PHP 5.3+. Veja <http://br2.php.net/manual/book.openssl.php> e <http://www.openssl.org/>.
  * mcrypt: Normalmente já vem habilitado com o PHP 5.3+. Veja <http://www.php.net/manual/book.mcrypt.php>.
