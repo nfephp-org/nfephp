@@ -3,6 +3,7 @@ nbproject
 *.pfx
 *.pem
 config.json
+composer.lock
 vendor
 local
 /.DS_Store
