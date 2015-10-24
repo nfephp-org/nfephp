@@ -13,6 +13,11 @@ Para começar veja [nossas páginas Wiki](https://github.com/nfephp-org/nfephp/w
 
 Não deixe de se cadastrar no [grupo de discussão do NFePHP](http://groups.google.com/group/nfephp)!
 
+IMPORTANTE:
+-----
+A partir desta versão o numero das versões seguirá uma sequencia própria da API e não mais irá se referir as versões de layout da NFe, CTe, etc.
+
+
 Versão de Desenvolvimento
 -----
 Versão 4.0.0-dev (observa a versão de layout 3.10 da SEFAZ)
@@ -99,7 +104,7 @@ Encontrou um bug? Informe-nos aqui no GitHub!
 
 Mantenedores
 -----------
-* NFe  - `Roberto L. Machado`
+* NFe  - `Roberto L. Machado` `Walker de Alencar`
 * NFCe - `Roberto L. Machado`
 * NFSe - `Hugo Cegana`
 * CTe  - `Luciano Antony` `Roberto Spadim` 
