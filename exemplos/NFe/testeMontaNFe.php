@@ -10,31 +10,31 @@ require_once(PATH_ROOT.'libs/NFe/MakeNFePHP.class.php');
 
 $nfe = new MakeNFe();
 
-//criar as tags em sequencia 
+//criar as tags em sequencia
 
 //Numero e versão da NFe (infNFe)
-$chave = '35140258716523000119550000000280051760377394';
+$chave  = '35140258716523000119550000000280051760377394';
 $versao = '3.10';
-$resp = $nfe->taginfNFe($chave, $versao);
+$resp   = $nfe->taginfNFe($chave, $versao);
 
 //Dados da NFe (ide)
-$cUF = '35'; //codigo numerico do estado
-$cNF = '76037739'; //numero aleatório da NF
-$natOp = 'VENDA DE PRODUTO'; //natureza da operação
-$indPag = '0'; //0=Pagamento à vista; 1=Pagamento a prazo; 2=Outros
-$mod = '55'; //modelo da NFe 55 ou 65 essa última NFCe
-$serie = '0'; //serie da NFe
-$nNF = '28005'; // numero da NFe
-$dhEmi = '2014-02-03';  //para versão 3.00 '2014-02-03T13:22:42-3.00' não informar para NFCe
+$cUF      = '35'; //codigo numerico do estado
+$cNF      = '76037739'; //numero aleatório da NF
+$natOp    = 'VENDA DE PRODUTO'; //natureza da operação
+$indPag   = '0'; //0=Pagamento à vista; 1=Pagamento a prazo; 2=Outros
+$mod      = '55'; //modelo da NFe 55 ou 65 essa última NFCe
+$serie    = '0'; //serie da NFe
+$nNF      = '28005'; // numero da NFe
+$dhEmi    = '2014-02-03';  //para versão 3.00 '2014-02-03T13:22:42-3.00' não informar para NFCe
 $dhSaiEnt = '2014-02-03'; //versão 2.00, 3.00 e 3.10
-$tpNF = '1';
-$idDest = '1'; //1=Operação interna; 2=Operação interestadual; 3=Operação com exterior.
-$cMunFG = '3550308';
-$tpImp = '1'; //0=Sem geração de DANFE; 1=DANFE normal, Retrato; 2=DANFE normal, Paisagem;
+$tpNF     = '1';
+$idDest   = '1'; //1=Operação interna; 2=Operação interestadual; 3=Operação com exterior.
+$cMunFG   = '3550308';
+$tpImp    = '1'; //0=Sem geração de DANFE; 1=DANFE normal, Retrato; 2=DANFE normal, Paisagem;
               //3=DANFE Simplificado; 4=DANFE NFC-e; 5=DANFE NFC-e em mensagem eletrônica
               //(o envio de mensagem eletrônica pode ser feita de forma simultânea com a impressão do DANFE;
               //usar o tpImp=5 quando esta for a única forma de disponibilização do DANFE).
-$tpEmis = '1'; //1=Emissão normal (não em contingência);
+$tpEmis   = '1'; //1=Emissão normal (não em contingência);
                //2=Contingência FS-IA, com impressão do DANFE em formulário de segurança;
                //3=Contingência SCAN (Sistema de Contingência do Ambiente Nacional);
                //4=Contingência DPEC (Declaração Prévia da Emissão em Contingência);
@@ -43,11 +43,11 @@ $tpEmis = '1'; //1=Emissão normal (não em contingência);
                //7=Contingência SVC-RS (SEFAZ Virtual de Contingência do RS);
                //9=Contingência off-line da NFC-e (as demais opções de contingência são válidas também para a NFC-e);
                //Nota: Para a NFC-e somente estão disponíveis e são válidas as opções de contingência 5 e 9.
-$cDV = '4'; //digito verificador
-$tpAmb = '1'; //1=Produção; 2=Homologação
-$finNFe = '1'; //1=NF-e normal; 2=NF-e complementar; 3=NF-e de ajuste; 4=Devolução/Retorno.
+$cDV      = '4'; //digito verificador
+$tpAmb    = '1'; //1=Produção; 2=Homologação
+$finNFe   = '1'; //1=NF-e normal; 2=NF-e complementar; 3=NF-e de ajuste; 4=Devolução/Retorno.
 $indFinal = '0'; //0=Não; 1=Consumidor final;
-$indPres = '9'; //0=Não se aplica (por exemplo, Nota Fiscal complementar ou de ajuste);
+$indPres  = '9'; //0=Não se aplica (por exemplo, Nota Fiscal complementar ou de ajuste);
                //1=Operação presencial;
                //2=Operação não presencial, pela Internet;
                //3=Operação não presencial, Teleatendimento;
@@ -58,34 +58,34 @@ $procEmi = '0'; //0=Emissão de NF-e com aplicativo do contribuinte;
                 //2=Emissão de NF-e avulsa, pelo contribuinte com seu certificado digital, através do site do Fisco;
                 //3=Emissão NF-e pelo contribuinte com aplicativo fornecido pelo Fisco.
 $verProc = '3.22.8'; //versão do aplicativo emissor
-$dhCont = ''; //entrada em contingência AAAA-MM-DDThh:mm:ssTZD
-$xJust = ''; //Justificativa da entrada em contingência
+$dhCont  = ''; //entrada em contingência AAAA-MM-DDThh:mm:ssTZD
+$xJust   = ''; //Justificativa da entrada em contingência
 
-$resp = $nfe->tagide($cUF, $cNF, $natOp, $indPag, $mod, $serie, $nNF, $dhEmi, $dhSaiEnt, $tpNF, $idDest, $cMunFG, $tpImp, $tpEmis, $cDV, $tpAmb, $finNFe, $indFinal, $indPres, $procEmi, $verProc, $dhCont, $xJust);
+$resp    = $nfe->tagide($cUF, $cNF, $natOp, $indPag, $mod, $serie, $nNF, $dhEmi, $dhSaiEnt, $tpNF, $idDest, $cMunFG, $tpImp, $tpEmis, $cDV, $tpAmb, $finNFe, $indFinal, $indPres, $procEmi, $verProc, $dhCont, $xJust);
 
-//refNFe NFe referenciada  
-$refNFe = '12345678901234567890123456789012345678901234';
-$resp = $nfe->tagrefNFe($refNFe);
+//refNFe NFe referenciada
+$refNFe  = '12345678901234567890123456789012345678901234';
+$resp    = $nfe->tagrefNFe($refNFe);
 
 //refNF Nota Fiscal 1A referenciada
-$cUF = '35';
-$AAMM = '1312';
-$CNPJ = '12345678901234';
-$mod = '1A';
+$cUF   = '35';
+$AAMM  = '1312';
+$CNPJ  = '12345678901234';
+$mod   = '1A';
 $serie = '0';
-$nNF = '1234';
-$resp = $nfe->tagrefNF($cUF, $AAMM, $CNPJ, $mod, $serie, $nNF);
+$nNF   = '1234';
+$resp  = $nfe->tagrefNF($cUF, $AAMM, $CNPJ, $mod, $serie, $nNF);
 
 //NFPref Nota Fiscal Produtor Rural referenciada
-$cUF = '35';
-$AAMM = '1312';
-$CNPJ = '12345678901234';
-$CPF = '123456789';
-$IE = '123456';
-$mod = '1';
+$cUF   = '35';
+$AAMM  = '1312';
+$CNPJ  = '12345678901234';
+$CPF   = '123456789';
+$IE    = '123456';
+$mod   = '1';
 $serie = '0';
-$nNF = '1234';
-$resp = $nfe->tagrefNFP($cUF, $AAMM, $CNPJ, $CPF, $IE, $mod, $serie, $nNF);
+$nNF   = '1234';
+$resp  = $nfe->tagrefNFP($cUF, $AAMM, $CNPJ, $CPF, $IE, $mod, $serie, $nNF);
 
 //CTeref CTe referenciada
 $refCTe = '12345678901234567890123456789012345678901234';
@@ -122,7 +122,7 @@ $cPais = '1058';
 $xPais = 'BRASIL';
 $fone = '1120677300';
 $resp = $nfe->tagenderEmit($xLgr, $nro, $xCpl, $xBairro, $cMun, $xMun, $UF, $CEP, $cPais, $xPais, $fone);
-        
+
 //destinatário
 $CNPJ = '10702368000155';
 $CPF = '';
