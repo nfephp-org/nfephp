@@ -20,7 +20,7 @@ A partir desta versão o numero das versões seguirá uma sequencia própria da 
 
 Versão de Desenvolvimento
 -----
-Versão 4.0.0-dev (observa a versão de layout 3.10 da SEFAZ)
+Versão 4.0.x-dev (observa a versão de layout 3.10 da SEFAZ)
 
 Condicionantes
 -----
@@ -43,11 +43,10 @@ Dependências
 -------
 * composer <https://getcomposer.org/>
 * Apache: <http://httpd.apache.org/>
-* PHP 5.3+: <http://php.net>
+* PHP 5.4+: <http://php.net>
 * Bibliotecas de terceiros
  * FPDF: Provisóriamente usada para gerar os documentos em PDF. Veja <http://www.fpdf.org/>.Deverá ser substituida pela classe ZendPdf (devido ao tendimento dos padrões PSR e ser mais ativamente mantida e distribuida via composer.
- * zendframework/zendpdf (v. 2.x) Usada para gerar os documentos em PDF.
- * zendframework/zend-mail (v.2.x) Usada para envio dos emails aos destinátarios dos docuemntos fiscais eletrônicos.
+  * zendframework/zend-mail (v.2.x) Usada para envio dos emails aos destinátarios dos docuemntos fiscais eletrônicos.
  * zendframework/zend-barcode (v.2.x) Usada para gerar os codigos de barras 128 presente nos documentos fiscais em PDF.
  * soundasleep/html2text (v.0.2) Usada para converter as mensagens Htlm dos emails em seu equivalente em texto puro. Usada na classe de envio dos emails.
  * endroid/qrcode (v.1.x) Usada para gerar o QRCode impresso nas NFCe
