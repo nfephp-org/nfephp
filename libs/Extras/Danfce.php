@@ -260,6 +260,8 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
         $urlChave = $this->urlConsulta[$tpAmb][$cUF]['chave'];
         if ($this->urlQR == '') {
             $urlQR = $this->urlConsulta[$tpAmb][$cUF]['QR'];
+        } else {
+            $urlQR = $this->urlQR;
         }    
         //DADOS DO EMITENTE
         $emitRazao  = $this->pSimpleGetValue($this->emit, "xNome");
