@@ -22,6 +22,18 @@ Versão de Desenvolvimento
 -----
 Versão 4.0.x-dev (observa a versão de layout 3.10 da SEFAZ)
 
+
+Instalação com Composer
+-----
+Pelo terminal vá até a raiz de seu projeto e lá execute :
+
+```
+composer require nfephp-org/nfephp
+``` 
+Isso fará com que o SEU arquivo composer.json seja acrescido da dependência da API.
+A API será baixada e colocada na pasta "vendor" e o arquivo autoload.php sejá atualizado.
+
+
 Condicionantes
 -----
 Para usar essa API é necessário conhecimento em programação PHP, bem como conhecer os padrões atuais da linguagem e ter bases de legislação fiscal. É extremanente recomendável que seja estudado o conteúdo dos seguintes sites.
