@@ -66,7 +66,7 @@ class MakeNFe extends BaseMake
     private $compra = ''; //DOMNode
     private $cana = ''; //DOMNode
     // Arrays
-    private $aTotICMSUFDest = array('vICMSUFDest' => '', 'vICMSUFRemet' => '');
+    private $aTotICMSUFDest = array('vFCPUFDest' => '', 'vICMSUFDest' => '', 'vICMSUFRemet' => '');
     private $aNFref = array(); //array de DOMNode
     private $aDup = array(); //array de DOMNodes
     private $aPag = array(); //array de DOMNodes
@@ -1898,14 +1898,14 @@ class MakeNFe extends BaseMake
             "vEncIni",
             $vEncIni,
             true,
-            "$identificador [item $nItem] Valor do Encerrante no início do abastecimento" 
+            "$identificador [item $nItem] Valor do Encerrante no início do abastecimento"
         );
         $this->dom->addChild(
             $encerrante,
             "vEncFin",
             $vEncFin,
             true,
-            "$identificador [item $nItem] Valor do Encerrante no final do abastecimento" 
+            "$identificador [item $nItem] Valor do Encerrante no final do abastecimento"
         );
         $this->aEncerrante[$nItem] = $encerrante;
         return $encerrante;
@@ -2471,6 +2471,7 @@ class MakeNFe extends BaseMake
      * @param string pICMSUFDest
      * @param string $pICMSInter
      * @param string $pICMSInterPart
+     * @param string $vFCPUFDest
      * @param string $vICMSUFDest
      * @param string $vICMSUFRemet
      * @return DOMElement
@@ -2481,6 +2482,7 @@ class MakeNFe extends BaseMake
         $pICMSUFDest = '',
         $pICMSInter = '',
         $pICMSInterPart = '',
+        $vFCPUFDest = '',     
         $vICMSUFDest = '',
         $vICMSUFRemet = ''
     ) {
@@ -2515,6 +2517,13 @@ class MakeNFe extends BaseMake
         );
         $this->dom->addChild(
             $icmsUFDest,
+            "vFCPUFDest",
+            $vFCPUFDest,
+            true,
+            "[item $nItem] Valor do ICMS relativo ao Fundo de Combate à Pobreza (FCP) da UF de destino"
+        );
+        $this->dom->addChild(
+            $icmsUFDest,
             "vICMSUFDest",
             $vICMSUFDest,
             true,
@@ -2529,6 +2538,7 @@ class MakeNFe extends BaseMake
         );
         $this->aICMSUFDest[$nItem] = $icmsUFDest;
         $this->aTotICMSUFDest['vICMSUFDest'] += $vICMSUFDest;
+        $this->aTotICMSUFDest['vFCPUFDest'] += $vFCPUFDest;
         $this->aTotICMSUFDest['vICMSUFRemet'] += $vICMSUFRemet;
         return $icmsUFDest;
     }
@@ -3003,6 +3013,7 @@ class MakeNFe extends BaseMake
         $this->dom->addChild($ICMSTot, "vBC", $vBC, true, "Base de Cálculo do ICMS");
         $this->dom->addChild($ICMSTot, "vICMS", $vICMS, true, "Valor Total do ICMS");
         $this->dom->addChild($ICMSTot, "vICMSDeson", $vICMSDeson, true, "Valor Total do ICMS desonerado");
+        $this->dom->addChild($ICMSTot, "vFCPUFDest", $this->aTotICMSUFDest['vFCPUFDest'], false, "Valor total do ICMS relativo ao Fundo de Combate à Pobreza(FCP) para a UF de destino");
         $this->dom->addChild($ICMSTot, "vICMSUFDest", $this->aTotICMSUFDest['vICMSUFDest'], false, "Valor total do ICMS de partilha para a UF do destinatário");
         $this->dom->addChild($ICMSTot, "vICMSUFRemt", $this->aTotICMSUFDest['vICMSUFRemet'], false, "Valor total do ICMS de partilha para a UF do remetente");
         $this->dom->addChild($ICMSTot, "vBCST", $vBCST, true, "Base de Cálculo do ICMS ST");
