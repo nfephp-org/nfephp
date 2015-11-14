@@ -7,6 +7,7 @@ NFePHP
 [![License](https://poser.pugx.org/nfephp-org/nfephp/license.svg)](https://packagist.org/packages/nfephp-org/nfephp)
 [![Latest Stable Version](https://poser.pugx.org/nfephp-org/nfephp/v/stable.svg)](https://packagist.org/packages/nfephp-org/nfephp)
 [![Latest Unstable Version](https://poser.pugx.org/nfephp-org/nfephp/v/unstable.svg)](https://packagist.org/packages/nfephp-org/nfephp)
+[![Total Downloads](https://poser.pugx.org/nfephp-org/nfephp/downloads)](https://packagist.org/packages/nfephp-org/nfephp)
 
 NFePHP é uma API para gerenciamento das comunicações entre o emitente de NFe e os serviços dos SEFAZ estaduais. Inteiramente construído em PHP para rodar sob qualquer sistema operacional.
 Para começar veja [nossas páginas Wiki](https://github.com/nfephp-org/nfephp/wiki).
@@ -21,6 +22,18 @@ A partir desta versão o numero das versões seguirá uma sequencia própria da 
 Versão de Desenvolvimento
 -----
 Versão 4.0.x-dev (observa a versão de layout 3.10 da SEFAZ)
+
+
+Instalação com Composer
+-----
+Pelo terminal vá até a raiz de seu projeto e lá execute :
+
+```
+composer require nfephp-org/nfephp
+``` 
+Isso fará com que o SEU arquivo composer.json seja acrescido da dependência da API.
+A API será baixada e colocada na pasta "vendor" e o arquivo autoload.php sejá atualizado.
+
 
 Condicionantes
 -----
