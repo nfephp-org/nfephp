@@ -101,6 +101,7 @@ class DateTime
     {
         if ($timestamp == 0) {
             return (string) str_replace(' ', 'T', $dateTime->format('Y-m-d H:i:sP'));
+            //return (string) $dateTime->format(\DateTime::W3C);
         }
         return (string) str_replace(' ', 'T', date('Y-m-d H:i:sP', $timestamp));
     }
