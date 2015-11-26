@@ -208,7 +208,7 @@ class BaseTools
         if ($configJson == '') {
             $msg = 'O arquivo de configuração no formato JSON deve ser passado para a classe.';
             throw new Exception\InvalidArgumentException($msg);
-        }    
+        }
         if (is_file($configJson)) {
             $configJson = Files\FilesFolders::readFile($configJson);
         }
@@ -239,7 +239,7 @@ class BaseTools
         $this->certExpireTimestamp = $this->oCertificate->expireTimestamp;
         $this->zLoadSoapClass();
         //verifica se a contingência está ativada
-        $pathContingencia = NFEPHP_ROOT.DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'contingencia.json';
+        $pathContingencia = NFEPHP_ROOT.DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.$this->aConfig['cnpj'].'_contingencia.json';
         if (is_file($pathContingencia)) {
             $contJson = Files\FilesFolders::readFile($pathContingencia);
             if (! empty($contJson)) {

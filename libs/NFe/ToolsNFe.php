@@ -150,7 +150,7 @@ class ToolsNFe extends BaseTools
             'EPEC' => $this->enableEPEC
         );
         $strJson = json_encode($aCont);
-        file_put_contents(NFEPHP_ROOT.DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'contingencia.json', $strJson);
+        file_put_contents(NFEPHP_ROOT.DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.$this->aConfig['cnpj'].'_contingencia.json', $strJson);
         return true;
     }
     
@@ -166,7 +166,7 @@ class ToolsNFe extends BaseTools
         $this->enableEPEC = false;
         $this->tsContingencia = 0;
         $this->motivoContingencia = '';
-        unlink(NFEPHP_ROOT.DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'contingencia.json');
+        unlink(NFEPHP_ROOT.DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.$this->aConfig['cnpj'].'_contingencia.json');
         return true;
     }
     
