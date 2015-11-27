@@ -3837,9 +3837,6 @@ class MakeNFe extends BaseMake
             if (!empty($this->aICMS[$nItem])) {
                 $this->dom->appChild($imposto, $this->aICMS[$nItem], "Inclusão do node ICMS");
             }
-            if (!empty($this->aICMSUFDest[$nItem])) {
-                $this->dom->appChild($imposto, $this->aICMSUFDest[$nItem], "Inclusão do node ICMSUFDest");
-            }
             if (!empty($this->aIPI[$nItem])) {
                 $this->dom->appChild($imposto, $this->aIPI[$nItem], "Inclusão do node IPI");
             }
@@ -3860,6 +3857,9 @@ class MakeNFe extends BaseMake
             }
             if (!empty($this->aCOFINSST[$nItem])) {
                 $this->dom->appChild($imposto, $this->aCOFINSST[$nItem], "Inclusão do node COFINSST");
+            }
+            if (!empty($this->aICMSUFDest[$nItem])) {
+                $this->dom->appChild($imposto, $this->aICMSUFDest[$nItem], "Inclusão do node ICMSUFDest");
             }
             $this->aImposto[$nItem] = $imposto;
         }
