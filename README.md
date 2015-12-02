@@ -18,10 +18,15 @@ IMPORTANTE:
 -----
 A partir desta versão o numero das versões seguirá uma sequencia própria da API e não mais irá se referir as versões de layout da NFe, CTe, etc.
 
+Nesta versão (4.0.x) apenas a NFe é funcional, para CTe, e MDFe deve ser usado a TAG 3.10-Obsoleta, pelo menos até que outros colaboradores se disponham a auxiar na refatoração  
 
 Versão de Desenvolvimento
 -----
 Versão 4.0.x-dev (observa a versão de layout 3.10 da SEFAZ)
+
+Verão Estável
+-----
+Devido as constantes alterações, dos schemas, webservices e legislações, promovidas pelo Congresso Naconal, pelas SEFAZ estaduais e pelos provedores dos webservices, a versão em MASTER e na última TAG são as mais estáveis e funcionais.
 
 
 Instalação com Composer
