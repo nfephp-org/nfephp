@@ -18,7 +18,7 @@ IMPORTANTE:
 -----
 A partir desta versão o numero das versões seguirá uma sequencia própria da API e não mais irá se referir as versões de layout da NFe, CTe, etc.
 
-Nesta versão (4.0.x) apenas a NFe é funcional, para CTe, e MDFe deve ser usado a TAG 3.10-Obsoleta, pelo menos até que outros colaboradores se disponham a auxiar na refatoração  
+Nesta versão (4.0.x) apenas a NFe é funcional, para CTe, e MDFe deve ser usado a TAG 3.10-Obsoleta, pelo menos até que outros colaboradores se disponham a auxiliar na refatoração  
 
 Versão de Desenvolvimento
 -----
