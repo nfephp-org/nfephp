@@ -3952,11 +3952,13 @@ class MakeNFe extends BaseMake
         if (! empty($this->aCest)) {
             foreach ($this->aCest as $nItem => $cest) {
                 $prod = $this->aProd[$nItem];
-                $node = $prod->getElementsByTagName("EXTIPI")->item(0);
-                if (empty($node)) {
-                    $node = $prod->getElementsByTagName("CFOP")->item(0);
+                foreach ($cest as $child) {
+                    $node = $prod->getElementsByTagName("EXTIPI")->item(0);
+                    if (empty($node)) {
+                        $node = $prod->getElementsByTagName("CFOP")->item(0);
+                    }
+                    $prod->insertBefore($child, $node);
                 }
-                $prod->insertBefore($cest, $node);
             }
         }
         //insere DI
