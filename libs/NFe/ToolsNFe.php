@@ -467,7 +467,7 @@ class ToolsNFe extends BaseTools
         $tpAmb = $docnfe->getNodeValue('tpAmb');
         $chNFe  = $docnfe->getChave('infNFe');
         $this->sefazConsultaChave($chNFe, $tpAmb, $aRetorno);
-        if ($aRetorno['cStat'] != '100') {
+        if ($aRetorno['cStat'] != '100' || $aRetorno['cStat'] != '150') {
             return false;
         }
         return true;
