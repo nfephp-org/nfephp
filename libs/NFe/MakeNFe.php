@@ -2468,7 +2468,8 @@ class MakeNFe extends BaseMake
      * não contribuinte do ICMS
      * @param string $nItem
      * @param string $vBCUFDest
-     * @param string pICMSUFDest
+     * @param string $pFCPUFDest
+     * @param string $pICMSUFDest
      * @param string $pICMSInter
      * @param string $pICMSInterPart
      * @param string $vFCPUFDest
@@ -2479,6 +2480,7 @@ class MakeNFe extends BaseMake
     public function tagICMSUFDest(
         $nItem = '',
         $vBCUFDest = '',
+        $pFCPUFDest = '',
         $pICMSUFDest = '',
         $pICMSInter = '',
         $pICMSInterPart = '',
@@ -2493,6 +2495,13 @@ class MakeNFe extends BaseMake
             $vBCUFDest,
             true,
             "[item $nItem] Valor da BC do ICMS na UF do destinatário"
+        );
+        $this->dom->addChild(
+            $icmsUFDest,
+            "pFCPUFDest",
+            $pFCPUFDest,
+            true,
+            "[item $nItem] Percentual do ICMS relativo ao Fundo de Combate à Pobreza (FCP) na UF de destino"
         );
         $this->dom->addChild(
             $icmsUFDest,

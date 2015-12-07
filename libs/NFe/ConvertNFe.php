@@ -792,10 +792,21 @@ class ConvertNFe
      */
     protected function i05aEntity($aCampos)
     {
-        //I05A|
+        //I05A|NVE
         $this->make->tagNVE($this->nItem, $aCampos[1]);
     }
     
+    /**
+     * i05cEntity
+     * Cria a tag CEST
+     * @param array $aCampos
+     */
+    protected function i05cEntity($aCampos)
+    {
+        //I05C|CEST
+        $this->make->tagCEST($this->nItem, $aCampos[1]);
+    }
+
     /**
      * i18Entity
      * Cria a tag DI
@@ -1603,6 +1614,27 @@ class ConvertNFe
         $this->zLinhaNSNEntity($aFields);
     }
     
+    /**
+     * naEntity
+     * Cria a tag ICMSUFDest
+     * @param array $aCampos
+     */
+    protected function naEntity($aCampos)
+    {
+        //NA|vBCUFDest|pFCPUFDest|pICMSUFDest|pICMSInter|pICMSInterPart|vFCPUFDest|vICMSUFDest|vICMSFRemet|
+        $this->make->tagICMSUFDest(
+            $this->nItem,
+            $aCampos[1], //$vBCUFDest,
+            $aCampos[2], //$pFCPUFDest,
+            $aCampos[3], //$pICMSUFDest,
+            $aCampos[4], //$pICMSInter,
+            $aCampos[5], //$pICMSInterPart,
+            $aCampos[6], //$vFCPUFDest,
+            $aCampos[7], //$vICMSUFDest,
+            $aCampos[8] //$vICMSUFRemet
+        );
+    }
+
     /**
      * zLinhaNEntity
      * Cria a tag ICMS
