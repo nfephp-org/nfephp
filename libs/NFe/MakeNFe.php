@@ -47,7 +47,7 @@ class MakeNFe extends BaseMake
      * @var string
      */
     public $chNFe = '';
-      
+
     //propriedades privadas utilizadas internamente pela classe
     private $NFe = ''; //DOMNode
     private $infNFe = ''; //DOMNode
@@ -76,7 +76,6 @@ class MakeNFe extends BaseMake
     private $aDet = array(); //array de DOMNodes
     private $aProd = array(); //array de DOMNodes
     private $aNVE = array(); //array de DOMNodes
-    private $aCest = array(); //array de DOMNodes
     private $aRECOPI = array(); //array de DOMNodes
     private $aDetExport = array(); //array de DOMNodes
     private $aDI = array(); //array de DOMNodes
@@ -103,7 +102,7 @@ class MakeNFe extends BaseMake
     private $aProcRef = array(); //array de DOMNodes
     private $aForDia = array(); //array de DOMNodes
     private $aDeduc = array(); //array de DOMNodes
-  
+
     /**
      * montaNFe
      * Método de montagem do xml da NFe
@@ -172,7 +171,7 @@ class MakeNFe extends BaseMake
         $this->xml = $this->dom->saveXML();
         return true;
     }
-    
+
     /**
      * taginfNFe
      * Informações da NF-e A01 pai NFe
@@ -191,7 +190,7 @@ class MakeNFe extends BaseMake
         $this->chNFe = $chave;
         return $this->infNFe;
     }
-    
+
     /**
      * tgaide
      * Informações de identificação da NF-e B01 pai A01
@@ -422,7 +421,7 @@ class MakeNFe extends BaseMake
         return $ide;
     }
 
-    
+
     /**
      * tagrefNFe
      * Chave de acesso da NF-e referenciada BA02 pai BA01
@@ -437,7 +436,7 @@ class MakeNFe extends BaseMake
         $this->dom->appChild($this->aNFref[$num-1], $refNFe);
         return $refNFe;
     }
-    
+
     /**
      * tagrefNF
      * Informação da NF modelo 1/1A referenciada BA03 pai BA01
@@ -470,7 +469,7 @@ class MakeNFe extends BaseMake
         $this->dom->appChild($this->aNFref[$num-1], $refNF);
         return $refNF;
     }
-    
+
     /**
      * tagrefNFP
      * Informações da NF de produtor rural referenciada BA10 pai BA01
@@ -527,7 +526,7 @@ class MakeNFe extends BaseMake
         $this->dom->appChild($this->aNFref[$num-1], $refNFP);
         return $refNFP;
     }
-    
+
     /**
      * tagrefCTe
      * Chave de acesso do CT-e referenciada BA19 pai BA01
@@ -542,7 +541,7 @@ class MakeNFe extends BaseMake
         $this->dom->appChild($this->aNFref[$num-1], $refCTe);
         return $refCTe;
     }
-    
+
     /**
      * tagrefECF
      * Informações do Cupom Fiscal referenciado BA20 pai BA01
@@ -572,7 +571,7 @@ class MakeNFe extends BaseMake
         $this->dom->appChild($this->aNFref[$num-1], $refECF);
         return $refECF;
     }
-    
+
     /**
      * tagemit
      * Identificação do emitente da NF-e C01 pai A01
@@ -639,7 +638,7 @@ class MakeNFe extends BaseMake
         );
         return $this->emit;
     }
-    
+
     /**
      * tagenderEmit
      * Endereço do emitente C05 pai C01
@@ -747,7 +746,7 @@ class MakeNFe extends BaseMake
         $this->emit->insertBefore($this->enderEmit, $node);
         return $this->enderEmit;
     }
-    
+
     /**
      * tagdest
      * Identificação do Destinatário da NF-e E01 pai A01
@@ -861,10 +860,10 @@ class MakeNFe extends BaseMake
         );
         return $this->dest;
     }
-    
+
     /**
      * tagenderDest
-     * Endereço do Destinatário da NF-e E05 pai E01 
+     * Endereço do Destinatário da NF-e E05 pai E01
      * tag NFe/infNFe/dest/enderDest  (opcional para modelo 65)
      * Os dados do destinatário devem ser inseridos antes deste método
      * @param string $xLgr
@@ -982,7 +981,7 @@ class MakeNFe extends BaseMake
         $this->dest->insertBefore($this->enderDest, $node);
         return $this->enderDest;
     }
-    
+
     /**
      * tagretirada
      * Identificação do Local de retirada F01 pai A01
@@ -1067,7 +1066,7 @@ class MakeNFe extends BaseMake
         );
         return $this->retirada;
     }
-    
+
     /**
      * tagentrega
      * Identificação do Local de entrega G01 pai A01
@@ -1152,7 +1151,7 @@ class MakeNFe extends BaseMake
         );
         return $this->entrega;
     }
-    
+
     /**
      * tagautXML
      * Pessoas autorizadas para o download do XML da NF-e G50 pai A01
@@ -1187,6 +1186,7 @@ class MakeNFe extends BaseMake
      * @param string $cEAN
      * @param string $xProd
      * @param string $NCM
+     * @param string $CEST
      * @param string $EXTIPI
      * @param string $CFOP
      * @param string $uCom
@@ -1205,7 +1205,6 @@ class MakeNFe extends BaseMake
      * @param string $xPed
      * @param string $nItemPed
      * @param string $nFCI
-     * @param string $nRECOPI
      * @return DOMElement
      */
     public function tagprod(
@@ -1214,6 +1213,7 @@ class MakeNFe extends BaseMake
         $cEAN = '',
         $xProd = '',
         $NCM = '',
+        $CEST = '',
         $EXTIPI = '',
         $CFOP = '',
         $uCom = '',
@@ -1270,6 +1270,13 @@ class MakeNFe extends BaseMake
         );
         $this->dom->addChild(
             $prod,
+            "CEST",
+            $CEST,
+            true,
+            $identificador . "[item $nItem] Código NCM com 8 dígitos ou 2 dígitos (gênero)"
+        );
+        $this->dom->addChild(
+            $prod,
             "EXTIPI",
             $EXTIPI,
             false,
@@ -1279,7 +1286,7 @@ class MakeNFe extends BaseMake
             $prod,
             "CFOP",
             $CFOP,
-            true,
+            false,
             $identificador . "[item $nItem] Código Fiscal de Operações e Prestações"
         );
         $this->dom->addChild(
@@ -1399,7 +1406,7 @@ class MakeNFe extends BaseMake
         $this->aProd[$nItem] = $prod;
         return $prod;
     }
-    
+
     /**
      * tagNVE
      * NVE NOMENCLATURA DE VALOR ADUANEIRO E ESTATÍSTICA
@@ -1414,24 +1421,7 @@ class MakeNFe extends BaseMake
         $this->aNVE[$nItem][] = $nve;
         return $nve;
     }
-    
-    /**
-     * tagCEST
-     * Código Especificador da Substituição Tributária – CEST, 
-     * que identifica a mercadoria sujeita aos regimes de substituição 
-     * tributária e de antecipação do recolhimento do imposto.
-     * vide NT2015.003
-     * @param string $nItem
-     * @param string $texto
-     * @return DOMElement
-     */
-    public function tagCEST($nItem = '', $texto = '')
-    {   
-        $cest = $this->dom->createElement("CEST", $texto);
-        $this->aCest[$nItem][] = $cest;
-        return $cest;
-    }
-    
+
     /**
      * tagRECOPI
      * @param string $nItem
@@ -1444,10 +1434,10 @@ class MakeNFe extends BaseMake
         $this->aRECOPI[$nItem] = $recopi;
         return $recopi;
     }
-    
+
     /**
      * taginfAdProd
-     * Informações adicionais do produto 
+     * Informações adicionais do produto
      * tag NFe/infNFe/det[]/infAdProd
      * @param string $nItem
      * @param string $texto
@@ -1459,7 +1449,7 @@ class MakeNFe extends BaseMake
         $this->aInfAdProd[$nItem] = $infAdProd;
         return $infAdProd;
     }
-    
+
     /**
      * tagDI
      * Declaração de Importação I8 pai I01
@@ -1532,7 +1522,7 @@ class MakeNFe extends BaseMake
         $this->aDI[$nItem][$nDI] = $tDI;
         return $tDI;
     }
-    
+
     /**
      * tagadi
      * Adições I25 pai I18
@@ -1599,7 +1589,7 @@ class MakeNFe extends BaseMake
         $this->aDI[$nItem][$nDI] = $nodeDI;
         return $adi;
     }
-    
+
     /**
      * tagdetExport
      * Grupo de informações de exportação para o item I50 pai I01
@@ -1630,7 +1620,7 @@ class MakeNFe extends BaseMake
         $this->aDetExport[$nItem] = $detExport;
         return $detExport;
     }
-    
+
     /**
      * tagveicProd
      * Detalhamento de Veículos novos J01 pai I90
@@ -1718,7 +1708,7 @@ class MakeNFe extends BaseMake
         $this->aVeicProd[$nItem] = $veicProd;
         return $veicProd;
     }
-    
+
     /**
      * tagmed
      * Detalhamento de medicamentos K01 pai I90
@@ -1761,7 +1751,7 @@ class MakeNFe extends BaseMake
         $this->aMed[$nItem] = $med;
         return $med;
     }
-    
+
     /**
      * tagarma
      * Detalhamento de armas L01 pai I90
@@ -1797,7 +1787,7 @@ class MakeNFe extends BaseMake
         $this->aArma[$nItem] = $arma;
         return $arma;
     }
-    
+
     /**
      * tagcomb
      * Detalhamento de combustiveis L101 pai I90
@@ -1853,10 +1843,10 @@ class MakeNFe extends BaseMake
         $this->aComb[$nItem] = $comb;
         return $comb;
     }
-    
+
     /**
      * tagencerrante
-     * informações relacionadas com as operações de combustíveis, subgrupo de 
+     * informações relacionadas com as operações de combustíveis, subgrupo de
      * encerrante que permite o controle sobre as operações de venda de combustíveis
      * LA11 pai LA01
      * tag NFe/infNFe/det[]/prod/comb/encerrante (opcional)
@@ -1910,7 +1900,7 @@ class MakeNFe extends BaseMake
         $this->aEncerrante[$nItem] = $encerrante;
         return $encerrante;
     }
-    
+
     /**
      * tagimposto
      * M01 pai H01
@@ -1933,7 +1923,7 @@ class MakeNFe extends BaseMake
         $this->aImposto[$nItem] = $imposto;
         return $imposto;
     }
-    
+
     /**
      * tagICMS
      * Informações do ICMS da Operação própria e ST N01 pai M01
@@ -2128,11 +2118,11 @@ class MakeNFe extends BaseMake
         $this->aICMS[$nItem] = $tagIcms;
         return $tagIcms;
     }
-    
+
     /**
      * tagICMSPart
-     * Grupo de Partilha do ICMS entre a UF de origem e UF de destino ou 
-     * a UF definida na legislação. N10a pai N01 
+     * Grupo de Partilha do ICMS entre a UF de origem e UF de destino ou
+     * a UF definida na legislação. N10a pai N01
      * tag NFe/infNFe/det[]/imposto/ICMS/ICMSPart
      * @param string $nItem
      * @param string $orig
@@ -2202,7 +2192,7 @@ class MakeNFe extends BaseMake
         $this->aICMS[$nItem] = $tagIcms;
         return $tagIcms;
     }
-    
+
     /**
      * tagICMSST N10b pai N01
      * Grupo de Repasse de ICMS ST retido anteriormente em operações
@@ -2242,7 +2232,7 @@ class MakeNFe extends BaseMake
         $this->aICMS[$nItem] = $tagIcms;
         return $tagIcms;
     }
-    
+
     /**
      * tagICMSSN
      * Tributação ICMS pelo Simples Nacional N10c pai N01
@@ -2459,30 +2449,35 @@ class MakeNFe extends BaseMake
         $this->aICMS[$nItem] = $tagIcms;
         return $tagIcms;
     }
-    
+
     /**
      * tagICMSUFDest
      * Grupo ICMSUFDest NA01 pai M01
      * tag NFe/infNFe/det[]/imposto/ICMSUFDest (opcional)
      * Grupo a ser informado nas vendas interestaduais para consumidor final,
      * não contribuinte do ICMS
+     *
      * @param string $nItem
      * @param string $vBCUFDest
-     * @param string pICMSUFDest
+     * @param string $pFCPUFDest
+     * @param string $pICMSUFDest
      * @param string $pICMSInter
      * @param string $pICMSInterPart
      * @param string $vFCPUFDest
      * @param string $vICMSUFDest
      * @param string $vICMSUFRemet
+     *
      * @return DOMElement
+     * @internal param pICMSUFDest $string
      */
     public function tagICMSUFDest(
         $nItem = '',
         $vBCUFDest = '',
+        $pFCPUFDest = '',
         $pICMSUFDest = '',
         $pICMSInter = '',
         $pICMSInterPart = '',
-        $vFCPUFDest = '',     
+        $vFCPUFDest = '',
         $vICMSUFDest = '',
         $vICMSUFRemet = ''
     ) {
@@ -2493,6 +2488,13 @@ class MakeNFe extends BaseMake
             $vBCUFDest,
             true,
             "[item $nItem] Valor da BC do ICMS na UF do destinatário"
+        );
+        $this->dom->addChild(
+            $icmsUFDest,
+            "pFCPUFDest",
+            $pFCPUFDest,
+            true,
+            "[item $nItem] Percentual do ICMS relativo ao Fundo de Combate à Pobreza(FCP) na UF de destino"
         );
         $this->dom->addChild(
             $icmsUFDest,
@@ -2542,7 +2544,7 @@ class MakeNFe extends BaseMake
         $this->aTotICMSUFDest['vICMSUFRemet'] += $vICMSUFRemet;
         return $icmsUFDest;
     }
-    
+
     /**
      * tagIPI
      * Grupo IPI O01 pai M01
@@ -2612,7 +2614,7 @@ class MakeNFe extends BaseMake
         $this->aIPI[$nItem] = $ipi;
         return $ipi;
     }
-    
+
     /**
      * tagII
      * Grupo Imposto de Importação P01 pai M01
@@ -2634,7 +2636,7 @@ class MakeNFe extends BaseMake
         $this->aII[$nItem] = $tii;
         return $tii;
     }
-    
+
     /**
      * tagPIS
      * Grupo PIS Q01 pai M01
@@ -2720,10 +2722,10 @@ class MakeNFe extends BaseMake
         $this->aPIS[$nItem] = $pis;
         return $pis;
     }
-    
+
     /**
      * tagPISST
-     * Grupo PIS Substituição Tributária R01 pai M01 
+     * Grupo PIS Substituição Tributária R01 pai M01
      * tag NFe/infNFe/det[]/imposto/PISST (opcional)
      * @param string $nItem
      * @param string $vBC
@@ -2825,7 +2827,7 @@ class MakeNFe extends BaseMake
         $this->aCOFINS[$nItem] = $confins;
         return $confins;
     }
-   
+
     /**
      * tagCOFINSST
      * Grupo COFINS Substituição Tributária T01 pai M01
@@ -2855,7 +2857,7 @@ class MakeNFe extends BaseMake
         $this->aCOFINSST[$nItem] = $cofinsst;
         return $cofinsst;
     }
-    
+
     /**
      * tagISSQN
      * Grupo ISSQN U01 pai M01
@@ -2936,7 +2938,7 @@ class MakeNFe extends BaseMake
         $this->aISSQN[$nItem] = $issqn;
         return $issqn;
     }
-    
+
     /**
      * tagimpostoDevol
      * Informação do Imposto devolvido U50 pai H01
@@ -2967,7 +2969,7 @@ class MakeNFe extends BaseMake
         $this->aImpostoDevol[$nItem] = $impostoDevol;
         return $impostoDevol;
     }
-  
+
     /**
      * tagICMSTot
      * Grupo Totais referentes ao ICMS W02 pai W01
@@ -3038,7 +3040,7 @@ class MakeNFe extends BaseMake
         $this->dom->appChild($this->total, $ICMSTot, '');
         return $ICMSTot;
     }
-    
+
     /**
      * tagISSQNTot
      * Grupo Totais referentes ao ISSQN W17 pai W01
@@ -3165,7 +3167,7 @@ class MakeNFe extends BaseMake
         $this->dom->appChild($this->total, $ISSQNTot, '');
         return $ISSQNTot;
     }
-        
+
     /**
      * tagretTrib
      * Grupo Retenções de Tributos W23 pai W01
@@ -3241,7 +3243,7 @@ class MakeNFe extends BaseMake
         $this->dom->appChild($this->total, $retTrib, '');
         return $retTrib;
     }
-    
+
     /**
      * tagtransp
      * Grupo Informações do Transporte X01 pai A01
@@ -3255,7 +3257,7 @@ class MakeNFe extends BaseMake
         $this->dom->addChild($this->transp, "modFrete", $modFrete, true, "Modalidade do frete");
         return $this->transp;
     }
-    
+
     /**
      * tagtransporta
      * Grupo Transportador X03 pai X01
@@ -3289,7 +3291,7 @@ class MakeNFe extends BaseMake
         $this->dom->appChild($this->transp, $transporta, 'A tag transp deveria ter sido carregada primeiro.');
         return $transporta;
     }
-    
+
     /**
      * tagveicTransp
      * Grupo Veículo Transporte X18 pai X17.1
@@ -3317,7 +3319,7 @@ class MakeNFe extends BaseMake
         $this->dom->appChild($this->transp, $veicTransp, 'A tag transp deveria ter sido carregada primeiro.');
         return $veicTransp;
     }
-    
+
     /**
      * tagreboque
      * Grupo Reboque X22 pai X17.1
@@ -3352,7 +3354,7 @@ class MakeNFe extends BaseMake
         $this->dom->appChild($this->transp, $reboque, 'A tag transp deveria ter sido carregada primeiro.');
         return $reboque;
     }
-        
+
     /**
      * tagretTransp
      * Grupo Retenção ICMS transporte X11 pai X01
@@ -3389,7 +3391,7 @@ class MakeNFe extends BaseMake
         $this->dom->appChild($this->transp, $retTransp, 'A tag transp deveria ter sido carregada primeiro.');
         return $retTransp;
     }
-    
+
     /**
      * tagvol
      * Grupo Volumes X26 pai X01
@@ -3457,7 +3459,7 @@ class MakeNFe extends BaseMake
         $this->dom->appChild($this->cobr, $fat);
         return $fat;
     }
-    
+
     /**
      * tagdup
      * Grupo Duplicata Y07 pai Y02
@@ -3482,7 +3484,7 @@ class MakeNFe extends BaseMake
         $this->aDup[] = $dup;
         return $dup;
     }
-    
+
     /**
      * tagpag
      * Grupo de Formas de Pagamento YA01 pai A01
@@ -3502,7 +3504,7 @@ class MakeNFe extends BaseMake
         $this->dom->addChild($this->aPag[$num-1], "vPag", $vPag, true, "Valor do Pagamento");
         return $pag;
     }
-    
+
     /**
      * tagcard
      * Grupo de Cartões YA04 pai YA01
@@ -3584,7 +3586,7 @@ class MakeNFe extends BaseMake
         );
         return $this->infAdic;
     }
-    
+
     /**
      * tagobsCont
      * Grupo Campo de uso livre do contribuinte Z04 pai Z01
@@ -3606,7 +3608,7 @@ class MakeNFe extends BaseMake
         $this->dom->appChild($this->infAdic, $obsCont, '');
         return $obsCont;
     }
-    
+
     /**
      * tagobsFisco
      * Grupo Campo de uso livre do Fisco Z07 pai Z01
@@ -3628,7 +3630,7 @@ class MakeNFe extends BaseMake
         $this->dom->appChild($this->infAdic, $obsFisco, '');
         return $obsFisco;
     }
-    
+
     /**
      * tagprocRef
      * Grupo Processo referenciado Z10 pai Z01 (NT2012.003)
@@ -3650,7 +3652,7 @@ class MakeNFe extends BaseMake
         $this->dom->appChild($this->infAdic, $procRef, '');
         return $procRef;
     }
-    
+
     /**
      * tagexporta
      * Grupo Exportação ZA01 pai A01
@@ -3683,7 +3685,7 @@ class MakeNFe extends BaseMake
         $this->dom->addChild($this->exporta, "xLocDespacho", $xLocDespacho, false, "Descrição do local de despacho");
         return $this->exporta;
     }
-    
+
     /**
      * tagcompra
      * Grupo Compra ZB01 pai A01
@@ -3704,7 +3706,7 @@ class MakeNFe extends BaseMake
         $this->dom->addChild($this->compra, "xCont", $xCont, false, "Contrato");
         return $this->compra;
     }
-    
+
     /**
      * tagcana
      * Grupo Cana ZC01 pai A01
@@ -3722,7 +3724,7 @@ class MakeNFe extends BaseMake
         $this->dom->addChild($this->cana, "ref", $ref, true, "Mês e ano de referência");
         return $this->cana;
     }
-    
+
     /**
      * tagforDia
      * Grupo Fornecimento diário de cana ZC04 pai ZC01
@@ -3751,7 +3753,7 @@ class MakeNFe extends BaseMake
         $this->dom->appChild($this->cana, $forDia, 'O metodo tacana deveria ter sido chamado antes. [tagforDia]');
         return $forDia;
     }
-    
+
     /**
      * tagdeduc
      * Grupo Deduções – Taxas e Contribuições ZC10 pai ZC01
@@ -3796,13 +3798,13 @@ class MakeNFe extends BaseMake
         }
         return $this->NFe;
     }
-    
+
     /**
      * zTagNFref
      * Informação de Documentos Fiscais referenciados BA01 pai B01
      * tag NFe/infNFe/ide/NFref
      * Podem ser criados até 500 desses Nodes por NFe
-     * Função chamada pelos métodos 
+     * Função chamada pelos métodos
      * [tagrefNFe] [tagrefNF] [tagrefNFP]  [tagCTeref] [tagrefECF]
      */
     private function zTagNFref()
@@ -3810,7 +3812,7 @@ class MakeNFe extends BaseMake
         $this->aNFref[] = $this->dom->createElement("NFref");
         return count($this->aNFref);
     }
-    
+
     /**
      * zTagPag
      * Informação de pagamentos
@@ -3824,7 +3826,7 @@ class MakeNFe extends BaseMake
         $this->aPag[] = $this->dom->createElement("pag");
         return count($this->aPag);
     }
-    
+
     /**
      * zTagImp
      * Insere dentro dentro das tags imposto o ICMS IPI II PIS COFINS ISSQN
@@ -3864,7 +3866,7 @@ class MakeNFe extends BaseMake
             $this->aImposto[$nItem] = $imposto;
         }
     }
-    
+
     /**
      * ztagCOFINSAliq
      * Grupo COFINS tributado pela alíquota S02 pai S01
@@ -3885,7 +3887,7 @@ class MakeNFe extends BaseMake
         $this->dom->addChild($confinsAliq, 'vCOFINS', $vCOFINS, true, "Valor da COFINS");
         return $confinsAliq;
     }
-    
+
     /**
      * zTagCOFINSNT
      * Grupo COFINS não tributado S04 pai S01
@@ -3900,7 +3902,7 @@ class MakeNFe extends BaseMake
         $this->dom->addChild($confinsnt, "CST", $cst, true, "Código de Situação Tributária da COFINS");
         return $confinsnt;
     }
-    
+
     /**
      * zTagCOFINSoutr
      * Grupo COFINS Outras Operações S05 pai S01
@@ -3925,7 +3927,7 @@ class MakeNFe extends BaseMake
         $this->dom->addChild($confinsoutr, "vCOFINS", $vCOFINS, true, "Valor da COFINS");
         return $confinsoutr;
     }
-    
+
     /**
      * Insere dentro da tag det os produtos
      * tag NFe/infNFe/det[]
@@ -3940,19 +3942,6 @@ class MakeNFe extends BaseMake
             foreach ($this->aNVE as $nItem => $nve) {
                 $prod = $this->aProd[$nItem];
                 foreach ($nve as $child) {
-                    $node = $prod->getElementsByTagName("EXTIPI")->item(0);
-                    if (empty($node)) {
-                        $node = $prod->getElementsByTagName("CFOP")->item(0);
-                    }
-                    $prod->insertBefore($child, $node);
-                }
-            }
-        }
-        //insere CEST
-        if (! empty($this->aCest)) {
-            foreach ($this->aCest as $nItem => $cest) {
-                $prod = $this->aProd[$nItem];
-                foreach ($cest as $child) {
                     $node = $prod->getElementsByTagName("EXTIPI")->item(0);
                     if (empty($node)) {
                         $node = $prod->getElementsByTagName("CFOP")->item(0);
@@ -4054,7 +4043,7 @@ class MakeNFe extends BaseMake
             $det = null;
         }
     }
-    
+
     /**
      * zTagttotal
      * Grupo Totais da NF-e W01 pai A01
@@ -4066,7 +4055,7 @@ class MakeNFe extends BaseMake
             $this->total = $this->dom->createElement("total");
         }
     }
-    
+
     /**
      * zTaglacres
      * Grupo Lacres X33 pai X26
@@ -4080,7 +4069,7 @@ class MakeNFe extends BaseMake
         $this->dom->addChild($lacre, "nLacre", $nLacre, true, "Número dos Lacres");
         return $lacre;
     }
-    
+
     /**
      * tagcobr
      * Grupo Cobrança Y01 pai A01
@@ -4093,14 +4082,14 @@ class MakeNFe extends BaseMake
             $this->cobr = $this->dom->createElement("cobr");
         }
     }
-    
+
     /**
      * zTaginfAdic
      * Grupo de Informações Adicionais Z01 pai A01
      * tag NFe/infNFe/infAdic (opcional)
-     * Função chamada pelos metodos 
+     * Função chamada pelos metodos
      * [taginfAdic] [tagobsCont] [tagobsFisco] [tagprocRef]
-     * 
+     *
      * @return DOMElement
      */
     private function zTaginfAdic()
@@ -4110,7 +4099,7 @@ class MakeNFe extends BaseMake
         }
         return $this->infAdic;
     }
- 
+
     /**
      * zTestaChaveXML
      * Remonta a chave da NFe de 44 digitos com base em seus dados
