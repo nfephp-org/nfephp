@@ -1,10 +1,8 @@
 NFSe
 =====
 
-Estas classes foram disponibilizadas por um de nossos colegas mas não há nenhum grupo de colaboradores
-executando testes ou verificações sobre esses códigos, nem mantendo ativamente os mesmos.
+Não está sendo mantida por nenhum colaborador
 
-Portanto NÃO SABEMOS SE ESTÃO FUNCIONAIS 
-
+Estamos no aguardo de colaboradores interessados em refatorar, testar e manter essas classes
 
 
