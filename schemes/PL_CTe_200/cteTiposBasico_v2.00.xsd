@@ -53,10 +53,10 @@
 											</xs:restriction>
 										</xs:simpleType>
 									</xs:element>
-									<xs:element name="forPag">
+									<xs:element name="forPag" minOccurs="0">
 										<xs:annotation>
-											<xs:documentation>Forma de pagamento do serviço</xs:documentation>
-											<xs:documentation>Preencher com: 
+											<xs:documentation>Forma de pagamento do serviço *** TAG OBSOLETA - Será retirada em versão futura</xs:documentation>
+											<xs:documentation>Preencher com:
 											0 - Pago;
 											1 - A pagar;
 											2 - Outros</xs:documentation>
@@ -165,7 +165,7 @@
 									<xs:element name="procEmi" type="TProcEmi">
 										<xs:annotation>
 											<xs:documentation>Identificador do processo de emissão do CT-e</xs:documentation>
-											<xs:documentation>Preencher com: 
+											<xs:documentation>Preencher com:
 											0 - emissão de CT-e com aplicativo do contribuinte;
 											1 - emissão de CT-e avulsa pelo Fisco;
 											2 - emissão de CT-e avulsa, pelo contribuinte com seu certificado digital, através do site do Fisco;
@@ -202,7 +202,7 @@
 										</xs:annotation>
 										<xs:simpleType>
 											<xs:restriction base="TString">
-												<xs:minLength value="1"/>
+												<xs:minLength value="2"/>
 												<xs:maxLength value="60"/>
 											</xs:restriction>
 										</xs:simpleType>
@@ -223,7 +223,7 @@
 									<xs:element name="tpServ">
 										<xs:annotation>
 											<xs:documentation>Tipo do Serviço</xs:documentation>
-											<xs:documentation>Preencher com: 
+											<xs:documentation>Preencher com:
 0 - Normal;1 - Subcontratação;
 2 - Redespacho;3 - Redespacho Intermediário; 4 - Serviço Vinculado a Multimodal</xs:documentation>
 										</xs:annotation>
@@ -251,7 +251,7 @@
 										</xs:annotation>
 										<xs:simpleType>
 											<xs:restriction base="TString">
-												<xs:minLength value="1"/>
+												<xs:minLength value="2"/>
 												<xs:maxLength value="60"/>
 											</xs:restriction>
 										</xs:simpleType>
@@ -275,7 +275,7 @@
 										</xs:annotation>
 										<xs:simpleType>
 											<xs:restriction base="TString">
-												<xs:minLength value="1"/>
+												<xs:minLength value="2"/>
 												<xs:maxLength value="60"/>
 											</xs:restriction>
 										</xs:simpleType>
@@ -349,7 +349,7 @@
 													<xs:element name="toma">
 														<xs:annotation>
 															<xs:documentation>Tomador do Serviço</xs:documentation>
-															<xs:documentation>Preencher com: 
+															<xs:documentation>Preencher com:
 															4 - Outros
 															Obs: Informar os dados cadastrais do tomador do serviço</xs:documentation>
 														</xs:annotation>
@@ -364,7 +364,7 @@
 														<xs:element name="CNPJ" type="TCnpjOpc">
 															<xs:annotation>
 																<xs:documentation>Número do CNPJ</xs:documentation>
-																<xs:documentation>Em caso de empresa não estabelecida no Brasil, será informado o CNPJ com zeros.															
+																<xs:documentation>Em caso de empresa não estabelecida no Brasil, será informado o CNPJ com zeros.
 Informar os zeros não significativos.</xs:documentation>
 															</xs:annotation>
 														</xs:element>
@@ -389,7 +389,7 @@ Informar os zeros não significativos.</xs:documentation>
 															<xs:simpleType>
 																<xs:restriction base="TString">
 																	<xs:maxLength value="60"/>
-																	<xs:minLength value="1"/>
+																	<xs:minLength value="2"/>
 																</xs:restriction>
 															</xs:simpleType>
 														</xs:element>
@@ -400,7 +400,7 @@ Informar os zeros não significativos.</xs:documentation>
 															<xs:simpleType>
 																<xs:restriction base="TString">
 																	<xs:maxLength value="60"/>
-																	<xs:minLength value="1"/>
+																	<xs:minLength value="2"/>
 																</xs:restriction>
 															</xs:simpleType>
 														</xs:element>
@@ -759,7 +759,7 @@ REENTREGA; DEVOLUÇÃO; REFATURAMENTO; etc</xs:documentation>
 										</xs:annotation>
 										<xs:simpleType>
 											<xs:restriction base="TString">
-												<xs:minLength value="1"/>
+												<xs:minLength value="2"/>
 												<xs:maxLength value="40"/>
 											</xs:restriction>
 										</xs:simpleType>
@@ -770,7 +770,7 @@ REENTREGA; DEVOLUÇÃO; REFATURAMENTO; etc</xs:documentation>
 										</xs:annotation>
 										<xs:simpleType>
 											<xs:restriction base="TString">
-												<xs:minLength value="1"/>
+												<xs:minLength value="2"/>
 												<xs:maxLength value="40"/>
 											</xs:restriction>
 										</xs:simpleType>
@@ -880,7 +880,7 @@ REENTREGA; DEVOLUÇÃO; REFATURAMENTO; etc</xs:documentation>
 										<xs:simpleType>
 											<xs:restriction base="TString">
 												<xs:maxLength value="60"/>
-												<xs:minLength value="1"/>
+												<xs:minLength value="2"/>
 											</xs:restriction>
 										</xs:simpleType>
 									</xs:element>
@@ -891,7 +891,7 @@ REENTREGA; DEVOLUÇÃO; REFATURAMENTO; etc</xs:documentation>
 										<xs:simpleType>
 											<xs:restriction base="TString">
 												<xs:maxLength value="60"/>
-												<xs:minLength value="1"/>
+												<xs:minLength value="2"/>
 											</xs:restriction>
 										</xs:simpleType>
 									</xs:element>
@@ -938,7 +938,7 @@ REENTREGA; DEVOLUÇÃO; REFATURAMENTO; etc</xs:documentation>
 										<xs:simpleType>
 											<xs:restriction base="TString">
 												<xs:maxLength value="60"/>
-												<xs:minLength value="1"/>
+												<xs:minLength value="2"/>
 											</xs:restriction>
 										</xs:simpleType>
 									</xs:element>
@@ -949,7 +949,7 @@ REENTREGA; DEVOLUÇÃO; REFATURAMENTO; etc</xs:documentation>
 										<xs:simpleType>
 											<xs:restriction base="TString">
 												<xs:maxLength value="60"/>
-												<xs:minLength value="1"/>
+												<xs:minLength value="2"/>
 											</xs:restriction>
 										</xs:simpleType>
 									</xs:element>
@@ -970,12 +970,6 @@ REENTREGA; DEVOLUÇÃO; REFATURAMENTO; etc</xs:documentation>
 										<xs:simpleType>
 											<xs:restriction base="TEmail"/>
 										</xs:simpleType>
-									</xs:element>
-									<xs:element name="locColeta" type="TEndReEnt" minOccurs="0">
-										<xs:annotation>
-											<xs:documentation>Local da Coleta</xs:documentation>
-											<xs:documentation>Informar apenas quando diferente do endereço do remetente.</xs:documentation>
-										</xs:annotation>
 									</xs:element>
 								</xs:sequence>
 							</xs:complexType>
@@ -1014,7 +1008,7 @@ REENTREGA; DEVOLUÇÃO; REFATURAMENTO; etc</xs:documentation>
 										<xs:simpleType>
 											<xs:restriction base="TString">
 												<xs:maxLength value="60"/>
-												<xs:minLength value="1"/>
+												<xs:minLength value="2"/>
 											</xs:restriction>
 										</xs:simpleType>
 									</xs:element>
@@ -1070,7 +1064,7 @@ REENTREGA; DEVOLUÇÃO; REFATURAMENTO; etc</xs:documentation>
 										<xs:simpleType>
 											<xs:restriction base="TString">
 												<xs:maxLength value="60"/>
-												<xs:minLength value="1"/>
+												<xs:minLength value="2"/>
 											</xs:restriction>
 										</xs:simpleType>
 									</xs:element>
@@ -1130,7 +1124,7 @@ REENTREGA; DEVOLUÇÃO; REFATURAMENTO; etc</xs:documentation>
 										<xs:simpleType>
 											<xs:restriction base="TString">
 												<xs:maxLength value="60"/>
-												<xs:minLength value="1"/>
+												<xs:minLength value="2"/>
 											</xs:restriction>
 										</xs:simpleType>
 									</xs:element>
@@ -1159,12 +1153,6 @@ REENTREGA; DEVOLUÇÃO; REFATURAMENTO; etc</xs:documentation>
 									<xs:element name="email" type="TEmail" minOccurs="0">
 										<xs:annotation>
 											<xs:documentation>Endereço de email</xs:documentation>
-										</xs:annotation>
-									</xs:element>
-									<xs:element name="locEnt" type="TEndReEnt" minOccurs="0">
-										<xs:annotation>
-											<xs:documentation>Local de Entrega constante na Nota Fiscal</xs:documentation>
-											<xs:documentation>Informar apenas quando diferente do endereço do destinatário</xs:documentation>
 										</xs:annotation>
 									</xs:element>
 								</xs:sequence>
@@ -1245,6 +1233,64 @@ REENTREGA; DEVOLUÇÃO; REFATURAMENTO; etc</xs:documentation>
 											</xs:restriction>
 										</xs:simpleType>
 									</xs:element>
+									<xs:element name="ICMSUFFim" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>Informações do ICMS de partilha com a UF de término do serviço de transporte na operação interestadual</xs:documentation>
+											<xs:documentation>Grupo a ser informado nas prestações interestaduais para consumidor final, não contribuinte do ICMS</xs:documentation>
+										</xs:annotation>
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="vBCUFFim" type="TDec_1302">
+													<xs:annotation>
+														<xs:documentation>Valor da BC do ICMS na UF de término da prestação do serviço de transporte</xs:documentation>
+													</xs:annotation>
+												</xs:element>
+												<xs:element name="pFCPUFFim" type="TDec_1302">
+													<xs:annotation>
+														<xs:documentation>Percentual do ICMS relativo ao Fundo de Combate à Pobreza (FCP) na UF de términa de prestação</xs:documentation>
+													</xs:annotation>
+												</xs:element>
+												<xs:element name="pICMSUFFim" type="TDec_0302">
+													<xs:annotation>
+														<xs:documentation>Alíquota interna da UF de término da prestação do serviço de transporte</xs:documentation>
+														<xs:documentation>Alíquota adotada nas operações internas na UF do destinatário</xs:documentation>
+													</xs:annotation>
+												</xs:element>
+												<xs:element name="pICMSInter" type="TDec_0302">
+													<xs:annotation>
+														<xs:documentation>Alíquota interestadual das UF envolvidas</xs:documentation>
+														<xs:documentation>Alíquota interestadual das UF envolvidas
+</xs:documentation>
+													</xs:annotation>
+												</xs:element>
+												<xs:element name="pICMSInterPart" type="TDec_0302">
+													<xs:annotation>
+														<xs:documentation>Percentual provisório de partilha entre os estados</xs:documentation>
+														<xs:documentation>Percentual de partilha para a UF do destinatário:
+- 40% em 2016;
+- 60% em 2017;
+- 80% em 2018;
+- 100% a partir de 2019.</xs:documentation>
+													</xs:annotation>
+												</xs:element>
+												<xs:element name="vFCPUFFim" type="TDec_1302">
+													<xs:annotation>
+														<xs:documentation>Valor do ICMS relativo ao Fundo de Combate à Pobreza (FCP) na UF de términa de prestação</xs:documentation>
+													</xs:annotation>
+												</xs:element>
+												<xs:element name="vICMSUFFim" type="TDec_1302">
+													<xs:annotation>
+														<xs:documentation>Valor do ICMS de partilha para a UF de término da prestação do serviço de transporte</xs:documentation>
+													</xs:annotation>
+												</xs:element>
+												<xs:element name="vICMSUFIni" type="TDec_1302">
+													<xs:annotation>
+														<xs:documentation>Valor do ICMS de partilha para a UF de início da prestação do serviço de transporte</xs:documentation>
+													</xs:annotation>
+												</xs:element>
+											</xs:sequence>
+										</xs:complexType>
+									</xs:element>
 								</xs:sequence>
 							</xs:complexType>
 						</xs:element>
@@ -1298,7 +1344,7 @@ REENTREGA; DEVOLUÇÃO; REFATURAMENTO; etc</xs:documentation>
 1 - Peso Bruto, sempre em quilogramas (obrigatório);
 2 - Peso Cubado; sempre em quilogramas;
 3 - Quantidade de volumes, sempre em unidades (obrigatório);
-4 - Cubagem, sempre em metros cúbicos (obrigatório apenas quando for impossível preencher as dimensões da(s) embalagem(ens) na tag #12 do leiaute do Aéreo).</xs:documentation>
+4 - Cubagem, sempre em metros cúbicos (obrigatório apenas quando for impossível preencher as dimensões da(s) embalagem(ens) na tag xDime do leiaute do Aéreo).</xs:documentation>
 														</xs:annotation>
 														<xs:complexType>
 															<xs:sequence>
@@ -1390,8 +1436,8 @@ Opcional para Redespacho Intermediario e Serviço vinculado a multimodal.</xs:do
 																	<xs:element name="mod" type="TModNF">
 																		<xs:annotation>
 																			<xs:documentation>Modelo da Nota Fiscal</xs:documentation>
-																			<xs:documentation>Preencher com: 
-01 - NF Modelo 01/1A e Avulsa; 
+																			<xs:documentation>Preencher com:
+01 - NF Modelo 01/1A e Avulsa;
 04 - NF de Produtor</xs:documentation>
 																		</xs:annotation>
 																	</xs:element>
@@ -1802,6 +1848,8 @@ Opcional para Redespacho Intermediario e Serviço vinculado a multimodal.</xs:do
 														<xs:simpleType>
 															<xs:restriction base="xs:string">
 																<xs:whiteSpace value="preserve"/>
+																<xs:minLength value="1"/>
+																<xs:maxLength value="1"/>
 																<xs:enumeration value="0"/>
 																<xs:enumeration value="1"/>
 																<xs:enumeration value="2"/>
@@ -1974,7 +2022,7 @@ Onde v9.99 é a a designação genérica para a versão do arquivo. Por exemplo,
 													<xs:element name="pontoFulgor" minOccurs="0">
 														<xs:annotation>
 															<xs:documentation>Ponto de Fulgor</xs:documentation>
-															<xs:documentation>Preencher conforme a legislação de transporte de produtos perigosos aplicada ao modal. 
+															<xs:documentation>Preencher conforme a legislação de transporte de produtos perigosos aplicada ao modal.
 															No caso de transporte rodoviário e ferroviário, este campo não é exigido.</xs:documentation>
 														</xs:annotation>
 														<xs:simpleType>
@@ -2313,7 +2361,7 @@ Onde v9.99 é a a designação genérica para a versão do arquivo. Por exemplo,
 					<xs:attribute name="versao" use="required">
 						<xs:annotation>
 							<xs:documentation>Versão do leiaute</xs:documentation>
-							<xs:documentation>Ex: "1.04"</xs:documentation>
+							<xs:documentation>Ex: "2.00"</xs:documentation>
 						</xs:annotation>
 						<xs:simpleType>
 							<xs:restriction base="TVerCTe"/>
@@ -2419,7 +2467,7 @@ Onde v9.99 é a a designação genérica para a versão do arquivo. Por exemplo,
 				<xs:simpleType>
 					<xs:restriction base="TString">
 						<xs:maxLength value="60"/>
-						<xs:minLength value="1"/>
+						<xs:minLength value="2"/>
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:element>
@@ -2452,7 +2500,7 @@ Onde v9.99 é a a designação genérica para a versão do arquivo. Por exemplo,
 				<xs:simpleType>
 					<xs:restriction base="TString">
 						<xs:maxLength value="60"/>
-						<xs:minLength value="1"/>
+						<xs:minLength value="2"/>
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:element>
@@ -2468,7 +2516,7 @@ Onde v9.99 é a a designação genérica para a versão do arquivo. Por exemplo,
 				<xs:simpleType>
 					<xs:restriction base="TString">
 						<xs:maxLength value="60"/>
-						<xs:minLength value="1"/>
+						<xs:minLength value="2"/>
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:element>
@@ -2508,7 +2556,7 @@ Onde v9.99 é a a designação genérica para a versão do arquivo. Por exemplo,
 				<xs:simpleType>
 					<xs:restriction base="TString">
 						<xs:maxLength value="255"/>
-						<xs:minLength value="1"/>
+						<xs:minLength value="2"/>
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:element>
@@ -2541,7 +2589,7 @@ Onde v9.99 é a a designação genérica para a versão do arquivo. Por exemplo,
 				<xs:simpleType>
 					<xs:restriction base="TString">
 						<xs:maxLength value="60"/>
-						<xs:minLength value="1"/>
+						<xs:minLength value="2"/>
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:element>
@@ -2559,7 +2607,7 @@ Onde v9.99 é a a designação genérica para a versão do arquivo. Por exemplo,
 				<xs:simpleType>
 					<xs:restriction base="TString">
 						<xs:maxLength value="60"/>
-						<xs:minLength value="1"/>
+						<xs:minLength value="2"/>
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:element>
@@ -2600,7 +2648,7 @@ Onde v9.99 é a a designação genérica para a versão do arquivo. Por exemplo,
 				<xs:simpleType>
 					<xs:restriction base="TString">
 						<xs:maxLength value="60"/>
-						<xs:minLength value="1"/>
+						<xs:minLength value="2"/>
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:element>
@@ -3640,7 +3688,7 @@ Por exemplo: para rodoviário tração ou reboque deverá preencher com a placa 
 	</xs:simpleType>
 	<xs:simpleType name="TVerCTe">
 		<xs:annotation>
-			<xs:documentation>Tipo Versão do CT-e - 1.04</xs:documentation>
+			<xs:documentation>Tipo Versão do CT-e - 2.00</xs:documentation>
 		</xs:annotation>
 		<xs:restriction base="xs:string">
 			<xs:whiteSpace value="preserve"/>
