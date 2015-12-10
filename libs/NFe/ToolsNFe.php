@@ -493,7 +493,7 @@ class ToolsNFe extends BaseTools
             //descomentar essa linha após 03/11/2015 conforme NT 2015.002
             //ou quando for habilitada essa TAG no XML da NFCe
             //para incluir o QRCode no corpo da NFCe
-            //$xmlSigned = $this->zPutQRTag($dom, $saveFile);
+            $xmlSigned = $this->zPutQRTag($dom, $saveFile);
         }
         $this->modelo = $oldmod;
         return $xmlSigned;
@@ -577,7 +577,7 @@ class ToolsNFe extends BaseTools
         $nodeqr->appendChild($dom->createCDATASection($qrcode));
         $signature = $dom->getElementsByTagName('Signature')->item(0);
         $nfe->insertBefore($infNFeSupl, $signature);
-        $dom->formatOutput = true;
+        $dom->formatOutput = false;
         $xmlSigned = $dom->saveXML();
         //salva novamente o xml assinado e agora com o QRCode
         if ($saveFile) {
