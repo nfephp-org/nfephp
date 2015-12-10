@@ -2410,16 +2410,16 @@ class MakeNFe extends BaseMake
                 $icmsSN = $this->dom->createElement("ICMSSN900");
                 $this->dom->addChild($icmsSN, 'orig', $orig, true, "[item $nItem] Origem da mercadoria");
                 $this->dom->addChild($icmsSN, 'CSOSN', $csosn, true, "[item $nItem] Código de Situação da Operação Simples Nacional");
-                $this->dom->addChild($icmsSN, 'modBC', $modBC, true, "[item $nItem] Modalidade de determinação da BC do ICMS");
-                $this->dom->addChild($icmsSN, 'vBC', $vBC, true, "[item $nItem] Valor da BC do ICMS");
+                $this->dom->addChild($icmsSN, 'modBC', $modBC, false, "[item $nItem] Modalidade de determinação da BC do ICMS");
+                $this->dom->addChild($icmsSN, 'vBC', $vBC, false, "[item $nItem] Valor da BC do ICMS");
                 $this->dom->addChild($icmsSN, 'pRedBC', $pRedBC, false, "[item $nItem] Percentual da Redução de BC");
-                $this->dom->addChild($icmsSN, 'pICMS', $pICMS, true, "[item $nItem] Alíquota do imposto");
-                $this->dom->addChild($icmsSN, 'vICMS', $vICMS, true, "[item $nItem] Valor do ICMS");
+                $this->dom->addChild($icmsSN, 'pICMS', $pICMS, false, "[item $nItem] Alíquota do imposto");
+                $this->dom->addChild($icmsSN, 'vICMS', $vICMS, false, "[item $nItem] Valor do ICMS");
                 $this->dom->addChild(
                     $icmsSN,
                     'modBCST',
                     $modBCST,
-                    true,
+                    false,
                     "[item $nItem] Alíquota aplicável de cálculo do crédito (Simples Nacional)."
                 );
                 $this->dom->addChild(
@@ -2430,21 +2430,21 @@ class MakeNFe extends BaseMake
                     "[item $nItem] Percentual da margem de valor Adicionado do ICMS ST"
                 );
                 $this->dom->addChild($icmsSN, 'pRedBCST', $pRedBCST, false, "[item $nItem] Percentual da Redução de BC do ICMS ST");
-                $this->dom->addChild($icmsSN, 'vBCST', $vBCST, true, "[item $nItem] Valor da BC do ICMS ST");
-                $this->dom->addChild($icmsSN, 'pICMSST', $pICMSST, true, "[item $nItem] Alíquota do imposto do ICMS ST");
-                $this->dom->addChild($icmsSN, 'vICMSST', $vICMSST, true, "[item $nItem] Valor do ICMS ST");
+                $this->dom->addChild($icmsSN, 'vBCST', $vBCST, false, "[item $nItem] Valor da BC do ICMS ST");
+                $this->dom->addChild($icmsSN, 'pICMSST', $pICMSST, false, "[item $nItem] Alíquota do imposto do ICMS ST");
+                $this->dom->addChild($icmsSN, 'vICMSST', $vICMSST, false, "[item $nItem] Valor do ICMS ST");
                 $this->dom->addChild(
                     $icmsSN,
                     'pCredSN',
                     $pCredSN,
-                    true,
+                    false,
                     "[item $nItem] Alíquota aplicável de cálculo do crédito (Simples Nacional)."
                 );
                 $this->dom->addChild(
                     $icmsSN,
                     'vCredICMSSN',
                     $vCredICMSSN,
-                    true,
+                    false,
                     "[item $nItem] Valor crédito do ICMS que pode ser aproveitado nos termos do art. 23 da LC 123 (Simples Nacional)"
                 );
                 break;
