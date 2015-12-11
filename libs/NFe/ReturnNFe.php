@@ -27,6 +27,9 @@ class ReturnNFe
     {
         $dom = new Dom('1.0', 'utf-8');
         $dom->loadXMLString($xmlResp);
+        if ($reason = $this->checkForFault($dom) != '') {
+            return array('Fault' => $reason);
+        }
         //para cada $method tem um formato de retorno especifico
         switch ($method) {
             case 'NfeAutorizacao':
@@ -60,6 +63,24 @@ class ReturnNFe
                 break;
         }
         return array();
+    }
+    
+    /**
+     * checkForFault
+     * Verifica se a mensagem de retorno é uma FAULT
+     * Normalmente essas falhas ocorrem devido a falhas internas
+     * nos servidores da SEFAZ
+     * @param NFePHP\Common\Dom\Dom $dom
+     * @return string
+     */
+    protected function checkForFault($dom)
+    {
+        $fault = $dom->getElementsByTagName('Fault')->item(0);
+        $reason = '';
+        if (isset($fault)) {
+            $reason = $fault->getElementsByTagName('Text')->item(0)->nodeValue;
+        }
+        return $reason;
     }
     
     /**
