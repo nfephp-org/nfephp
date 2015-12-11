@@ -414,10 +414,12 @@ class ToolsNFe extends BaseTools
             //$nProtEvento = $evento->getElementsByTagName('nProt')->item(0)->nodeValue;
             //verifica se conferem os dados
             //cStat = 135 ==> evento homologado
+            //cStat = 136 ==> vinculação do evento à respectiva NF-e prejudicada
+            //cStat = 155 ==> Cancelamento homologado fora de prazo
             //tpEvento = 110111 ==> Cancelamento
             //chave do evento == chave da NFe
             //protocolo do evneto ==  protocolo da NFe
-            if ($cStat == '135' &&
+            if (($cStat == '135' || $cStat == '136' || $cStat == '155') &&
                 $tpEvento == '110111' &&
                 $chaveEvento == $chaveNFe
             ) {
@@ -433,7 +435,7 @@ class ToolsNFe extends BaseTools
                         $tpAmb,
                         $filename,
                         $procXML,
-                        'enviadas'.DIRECTORY_SEPARATOR.'aprovadas',
+                        'canceladas',
                         $anomes
                     );
                 }
