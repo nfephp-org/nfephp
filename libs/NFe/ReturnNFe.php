@@ -27,7 +27,7 @@ class ReturnNFe
     {
         $dom = new Dom('1.0', 'utf-8');
         $dom->loadXMLString($xmlResp);
-        if ($reason = $this->checkForFault($dom) != '') {
+        if ($reason = self::checkForFault($dom) != '') {
             return array('Fault' => $reason);
         }
         //para cada $method tem um formato de retorno especifico
@@ -73,7 +73,7 @@ class ReturnNFe
      * @param NFePHP\Common\Dom\Dom $dom
      * @return string
      */
-    protected function checkForFault($dom)
+    protected static function checkForFault($dom)
     {
         $fault = $dom->getElementsByTagName('Fault')->item(0);
         $reason = '';
