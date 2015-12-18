@@ -641,7 +641,7 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
             return '';
         }
         $enderDest = $dest->getElementsByTagName("enderDest")->item(0);
-        $consNome = $this->pSimpleGetValue($enderDest, "xNome");
+        $consNome = $this->pSimpleGetValue($dest, "xNome");
         $consFone = $this->pSimpleGetValue($enderDest, "fone");
         $foneLen = strlen($consFone);
         if ($foneLen > 0) {
