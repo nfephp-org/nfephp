@@ -146,7 +146,7 @@ class ToolsNFe extends BaseTools
             'motivo' => $this->motivoContingencia,
             'ts' => $this->tsContingencia,
             'SVCAN' => $this->enableSVCAN,
-            'SCVRS' => $this->enableSVCRS,
+            'SVCRS' => $this->enableSVCRS,
             'EPEC' => $this->enableEPEC
         );
         $strJson = json_encode($aCont);
