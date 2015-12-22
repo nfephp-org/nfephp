@@ -801,7 +801,13 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
                ->setLabel('')
                ->setLabelFontSize(16);
         $img = $qrCode->get();
-        $filename = '../../images/'.date('YmdHis').'.jpg';
+        
+        if(!is_dir('images'))
+        {
+            mkdir('images', 0777);
+        }
+        $filename = 'images/'.date('YmdHis').'.jpg';
+        
         file_put_contents($filename, $img);
         return $filename;
     }
