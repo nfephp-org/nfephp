@@ -764,24 +764,26 @@ class ConvertNFe
             $aCampos[2], //cEAN
             $aCampos[3], //xProd
             $aCampos[4], //NCM
-            $aCampos[5], //EXTIPI
-            $aCampos[6], //CFOP
-            $aCampos[7], //uCom
-            $aCampos[8], //qCom
-            $aCampos[9], //vUnCom
-            $aCampos[10], //vProd
-            $aCampos[11], //cEANTrib
-            $aCampos[12], //uTrib
-            $aCampos[13], //qTrib
-            $aCampos[14], //vUnTrib
-            $aCampos[15], //vFrete
-            $aCampos[16], //vSeg
-            $aCampos[17], //vDesc
-            $aCampos[18], //vOutro
-            $aCampos[19], //indTot
-            $aCampos[20], //xPed
-            $aCampos[21], //nItemPed
-            $aCampos[22] //nFCI
+            $aCampos[5],//NVE
+            $aCampos[6],//CEST
+            $aCampos[7], //EXTIPI
+            $aCampos[8], //CFOP
+            $aCampos[9], //uCom
+            $aCampos[10], //qCom
+            $aCampos[11], //vUnCom
+            $aCampos[12], //vProd
+            $aCampos[13], //cEANTrib
+            $aCampos[14], //uTrib
+            $aCampos[15], //qTrib
+            $aCampos[16], //vUnTrib
+            $aCampos[17], //vFrete
+            $aCampos[18], //vSeg
+            $aCampos[19], //vDesc
+            $aCampos[20], //vOutro
+            $aCampos[21], //indTot
+            $aCampos[22], //xPed
+            $aCampos[23], //nItemPed
+            $aCampos[24] //nFCI
         );
     }
     
@@ -2220,25 +2222,28 @@ class ConvertNFe
      */
     protected function w02Entity($aCampos)
     {
-        //W02|vBC|vICMS|vICMSDeson|vBCST|vST|vProd|vFrete|vSeg|vDesc|vII|vIPI
+        //W02|vBC|vICMS|vICMSDeson|vFCPUFDest|vICMSUFDest|vICMSUFRemet||vBCST|vST|vProd|vFrete|vSeg|vDesc|vII|vIPI
         //   |vPIS|vCOFINS|vOutro|vNF|vTotTrib|
         $this->make->tagICMSTot(
             $aCampos[1], //$vBC
             $aCampos[2], //$vICMS
             $aCampos[3], //$vICMSDeson
-            $aCampos[4], //$vBCST
-            $aCampos[5], //$vST
-            $aCampos[6], //$vProd
-            $aCampos[7], //$vFrete
-            $aCampos[8], //$vSeg
-            $aCampos[9], //$vDesc
-            $aCampos[10], //$vII
-            $aCampos[11], //$vIPI
-            $aCampos[12], //$vPIS
-            $aCampos[13], //$vCOFINS
-            $aCampos[14], //$vOutro
-            $aCampos[15], //$vNF
-            $aCampos[16] //$vTotTrib
+            $aCampos[4], //vFCPUFDest
+            $aCampos[5], //vICMSUFDest
+            $aCampos[6], //vICMSUFRemet
+            $aCampos[8], //$vBCST
+            $aCampos[9], //$vST
+            $aCampos[10], //$vProd
+            $aCampos[11], //$vFrete
+            $aCampos[12], //$vSeg
+            $aCampos[13], //$vDesc
+            $aCampos[14], //$vII
+            $aCampos[15], //$vIPI
+            $aCampos[16], //$vPIS
+            $aCampos[17], //$vCOFINS
+            $aCampos[18], //$vOutro
+            $aCampos[19], //$vNF
+            $aCampos[20] //$vTotTrib
         );
     }
     
