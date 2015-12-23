@@ -764,26 +764,24 @@ class ConvertNFe
             $aCampos[2], //cEAN
             $aCampos[3], //xProd
             $aCampos[4], //NCM
-            $aCampos[5],//NVE
-            $aCampos[6],//CEST
-            $aCampos[7], //EXTIPI
-            $aCampos[8], //CFOP
-            $aCampos[9], //uCom
-            $aCampos[10], //qCom
-            $aCampos[11], //vUnCom
-            $aCampos[12], //vProd
-            $aCampos[13], //cEANTrib
-            $aCampos[14], //uTrib
-            $aCampos[15], //qTrib
-            $aCampos[16], //vUnTrib
-            $aCampos[17], //vFrete
-            $aCampos[18], //vSeg
-            $aCampos[19], //vDesc
-            $aCampos[20], //vOutro
-            $aCampos[21], //indTot
-            $aCampos[22], //xPed
-            $aCampos[23], //nItemPed
-            $aCampos[24] //nFCI
+            $aCampos[5], //EXTIPI
+            $aCampos[6], //CFOP
+            $aCampos[7], //uCom
+            $aCampos[8], //qCom
+            $aCampos[9], //vUnCom
+            $aCampos[10], //vProd
+            $aCampos[11], //cEANTrib
+            $aCampos[12], //uTrib
+            $aCampos[13], //qTrib
+            $aCampos[14], //vUnTrib
+            $aCampos[15], //vFrete
+            $aCampos[16], //vSeg
+            $aCampos[17], //vDesc
+            $aCampos[18], //vOutro
+            $aCampos[19], //indTot
+            $aCampos[20], //xPed
+            $aCampos[21], //nItemPed
+            $aCampos[22] //nFCI
         );
     }
     
@@ -2222,7 +2220,7 @@ class ConvertNFe
      */
     protected function w02Entity($aCampos)
     {
-        //W02|vBC|vICMS|vICMSDeson|vFCPUFDest|vICMSUFDest|vICMSUFRemet||vBCST|vST|vProd|vFrete|vSeg|vDesc|vII|vIPI
+        //W02|vBC|vICMS|vICMSDeson|vFCPUFDest|vICMSUFDest|vICMSUFRemet|vBCST|vST|vProd|vFrete|vSeg|vDesc|vII|vIPI
         //   |vPIS|vCOFINS|vOutro|vNF|vTotTrib|
         $this->make->tagICMSTot(
             $aCampos[1], //$vBC
@@ -2231,19 +2229,19 @@ class ConvertNFe
             $aCampos[4], //vFCPUFDest
             $aCampos[5], //vICMSUFDest
             $aCampos[6], //vICMSUFRemet
-            $aCampos[8], //$vBCST
-            $aCampos[9], //$vST
-            $aCampos[10], //$vProd
-            $aCampos[11], //$vFrete
-            $aCampos[12], //$vSeg
-            $aCampos[13], //$vDesc
-            $aCampos[14], //$vII
-            $aCampos[15], //$vIPI
-            $aCampos[16], //$vPIS
-            $aCampos[17], //$vCOFINS
-            $aCampos[18], //$vOutro
-            $aCampos[19], //$vNF
-            $aCampos[20] //$vTotTrib
+            $aCampos[7], //$vBCST
+            $aCampos[8], //$vST
+            $aCampos[9], //$vProd
+            $aCampos[10], //$vFrete
+            $aCampos[11], //$vSeg
+            $aCampos[12], //$vDesc
+            $aCampos[13], //$vII
+            $aCampos[14], //$vIPI
+            $aCampos[15], //$vPIS
+            $aCampos[16], //$vCOFINS
+            $aCampos[17], //$vOutro
+            $aCampos[18], //$vNF
+            $aCampos[19] //$vTotTrib
         );
     }
     
