@@ -445,7 +445,7 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
         $this->html .= "<td  colspan=\"3\"><b>Consulta via leitor QR Code</b></td>\n";
         $this->html .= "</tr>\n";
         $this->html .= "<tr>\n";
-        $this->html .= "<td  colspan=\"3\"><img src=\"./".$this->imgQRCode."\" ></td>\n";
+        $this->html .= "<td  colspan=\"3\"><img src=\"".$this->imgQRCode."\" ></td>\n";
         $this->html .= "</tr>\n";
         $this->html .= "</table>\n";
         //TOTAIS DA NF
@@ -801,7 +801,7 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
                ->setLabel('')
                ->setLabelFontSize(16);
         $img = $qrCode->get();
-        $filename = '../../images/'.date('YmdHis').'.jpg';
+        $filename = PATH_ROOT.'../images/'.date('YmdHis').'.jpg';
         file_put_contents($filename, $img);
         return $filename;
     }
