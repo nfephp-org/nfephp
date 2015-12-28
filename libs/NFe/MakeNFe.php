@@ -4074,6 +4074,10 @@ class MakeNFe extends BaseMake
         if (empty($this->total)) {
             $this->total = $this->dom->createElement("total");
         }
+        //ajuste de digitos dos campos totalizados
+        $this->aTotICMSUFDest['vFCPUFDest'] = number_format($this->aTotICMSUFDest['vFCPUFDest'], 2);
+        $this->aTotICMSUFDest['vICMSUFDest'] = number_format($this->aTotICMSUFDest['vICMSUFDest'], 2);
+        $this->aTotICMSUFDest['vICMSUFRemet'] = number_format($this->aTotICMSUFDest['vICMSUFRemet'], 2);
     }
     
     /**
