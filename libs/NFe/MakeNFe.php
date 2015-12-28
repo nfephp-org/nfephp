@@ -3027,7 +3027,7 @@ class MakeNFe extends BaseMake
         $this->dom->addChild($ICMSTot, "vICMSUFRemet", $this->aTotICMSUFDest['vICMSUFRemet'], false, "Valor total do ICMS de partilha para a UF do remetente");
         $this->dom->addChild($ICMSTot, "vBCST", $vBCST, true, "Base de Cálculo do ICMS ST");
         $this->dom->addChild($ICMSTot, "vST", $vST, true, "Valor Total do ICMS ST");
-        $this->dom->addChild($ICMSTot, "vProd", $vProd, true, "Valor Total dos produtos e servi�os");
+        $this->dom->addChild($ICMSTot, "vProd", $vProd, true, "Valor Total dos produtos e serviços");
         $this->dom->addChild($ICMSTot, "vFrete", $vFrete, true, "Valor Total do Frete");
         $this->dom->addChild($ICMSTot, "vSeg", $vSeg, true, "Valor Total do Seguro");
         $this->dom->addChild($ICMSTot, "vDesc", $vDesc, true, "Valor Total do Desconto");
@@ -4075,9 +4075,11 @@ class MakeNFe extends BaseMake
             $this->total = $this->dom->createElement("total");
         }
         //ajuste de digitos dos campos totalizados
-        $this->aTotICMSUFDest['vFCPUFDest'] = number_format($this->aTotICMSUFDest['vFCPUFDest'], 2);
-        $this->aTotICMSUFDest['vICMSUFDest'] = number_format($this->aTotICMSUFDest['vICMSUFDest'], 2);
-        $this->aTotICMSUFDest['vICMSUFRemet'] = number_format($this->aTotICMSUFDest['vICMSUFRemet'], 2);
+        if ($this->aTotICMSUFDest['vICMSUFDest'] != '') {
+            $this->aTotICMSUFDest['vICMSUFDest'] = number_format($this->aTotICMSUFDest['vICMSUFDest'], 2);
+            $this->aTotICMSUFDest['vICMSUFRemet'] = number_format($this->aTotICMSUFDest['vICMSUFRemet'], 2);
+            $this->aTotICMSUFDest['vFCPUFDest'] = number_format($this->aTotICMSUFDest['vFCPUFDest'], 2);
+        }
     }
     
     /**
