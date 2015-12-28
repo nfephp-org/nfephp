@@ -254,4 +254,17 @@ class FilesFolders
         }
         return file_get_contents($pathFile);
     }
+    
+    /**
+     * removeFile
+     * @param string $pathFile
+     * @return boolean
+     */
+    public static function removeFile($pathFile = '')
+    {
+        if ($pathFile == '' || !is_file($pathFile)) {
+            return true;
+        }
+        return unlink($pathFile);
+    }
 }

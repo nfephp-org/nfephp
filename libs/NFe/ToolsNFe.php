@@ -150,7 +150,13 @@ class ToolsNFe extends BaseTools
             'EPEC' => $this->enableEPEC
         );
         $strJson = json_encode($aCont);
-        file_put_contents(NFEPHP_ROOT.DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.$this->aConfig['cnpj'].'_contingencia.json', $strJson);
+        $filename = NFEPHP_ROOT
+            . DIRECTORY_SEPARATOR
+            . 'config'
+            . DIRECTORY_SEPARATOR
+            . $this->aConfig['cnpj']
+            . '_contingencia.json';
+        file_put_contents($filename, $strJson);
         return true;
     }
     
@@ -166,8 +172,13 @@ class ToolsNFe extends BaseTools
         $this->enableEPEC = false;
         $this->tsContingencia = 0;
         $this->motivoContingencia = '';
-        unlink(NFEPHP_ROOT.DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.$this->aConfig['cnpj'].'_contingencia.json');
-        return true;
+        $filename = NFEPHP_ROOT
+            . DIRECTORY_SEPARATOR
+            . 'config'
+            . DIRECTORY_SEPARATOR
+            . $this->aConfig['cnpj']
+            . '_contingencia.json';
+        return Files\FilesFolders::removeFile($filename);
     }
     
     /**
@@ -501,7 +512,7 @@ class ToolsNFe extends BaseTools
         return $xmlSigned;
     }
     
-/**
+    /**
      * zPutQRTag
      * Monta a URI para o QRCode e coloca a tag 
      * no xml já assinado
