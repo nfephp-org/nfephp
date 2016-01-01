@@ -1622,17 +1622,19 @@ class ConvertNFe
     protected function naEntity($aCampos)
     {
         //NA|vBCUFDest|pFCPUFDest|pICMSUFDest|pICMSInter|pICMSInterPart|vFCPUFDest|vICMSUFDest|vICMSFRemet|
-        $this->make->tagICMSUFDest(
-            $this->nItem,
-            $aCampos[1], //$vBCUFDest,
-            $aCampos[2], //$pFCPUFDest,
-            $aCampos[3], //$pICMSUFDest,
-            $aCampos[4], //$pICMSInter,
-            $aCampos[5], //$pICMSInterPart,
-            $aCampos[6], //$vFCPUFDest,
-            $aCampos[7], //$vICMSUFDest,
-            $aCampos[8] //$vICMSUFRemet
-        );
+        if ($aCampos[1] != '') {
+            $this->make->tagICMSUFDest(
+                $this->nItem,
+                $aCampos[1], //$vBCUFDest,
+                $aCampos[2], //$pFCPUFDest,
+                $aCampos[3], //$pICMSUFDest,
+                $aCampos[4], //$pICMSInter,
+                $aCampos[5], //$pICMSInterPart,
+                $aCampos[6], //$vFCPUFDest,
+                $aCampos[7], //$vICMSUFDest,
+                $aCampos[8] //$vICMSUFRemet
+            );
+        }
     }
 
     /**
