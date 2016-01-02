@@ -26,7 +26,7 @@ Versão 4.0.x-dev (observa a versão de layout 3.10 da SEFAZ)
 
 Versão Estável
 -----
-Devido as constantes alterações, dos schemas, webservices e legislações, promovidas pelo Congresso Naconal, pelas SEFAZ estaduais e pelos provedores dos webservices, a versão em MASTER e a última TAG são as mais estáveis e funcionais.
+Devido as constantes alterações, dos schemas, webservices e legislações, promovidas pelo Congresso Nacional, pelas SEFAZ estaduais e pelos provedores dos webservices, a versão em MASTER e a última TAG são as mais estáveis e funcionais.
 
 
 Instalação com Composer
