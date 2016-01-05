@@ -1934,9 +1934,6 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
                         "."
                     ) : '0, 00';
             $this->pImpostoDanfeHelper($x, $y, $w, $h, $texto, $valorImposto);
-        } else {
-            $texto = '';
-            $valorImposto = '';
         }
 
         //VALOR TOTAL DA NOTA
