@@ -1873,14 +1873,12 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
                         ",",
                         "."
                     ) : '0, 00';
-        } else {
-            $texto = '';
-            $valorImposto = '';
+            $this->pImpostoDanfeHelper($x, $y, $w, $h, $texto, $valorImposto);
         }
-        $this->pImpostoDanfeHelper($x, $y, $w, $h, $texto, $valorImposto);
+
         //VALOR TOTAL DOS PRODUTOS
         $x += $w;
-        $w = $w2;
+        $w = $w2 + ( $this->exibirPIS ? 0.0 : $wPis );;
         $texto = 'VALOR TOTAL DOS PRODUTOS';
         $valorImposto = number_format($this->ICMSTot->getElementsByTagName("vProd")->item(0)->nodeValue, 2, ",", ".");
         $this->pImpostoDanfeHelper($x, $y, $w, $h, $texto, $valorImposto);
@@ -1923,6 +1921,7 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
                 number_format($this->ICMSTot->getElementsByTagName("vIPI")->item(0)->nodeValue, 2, ",", ".") : '0, 00';
         $this->pImpostoDanfeHelper($x, $y, $w, $h, $texto, $valorImposto);
         //VALOR DO COFINS
+
         if ($this->exibirPIS) {
             $x += $w;
             $w = $wPis;
@@ -1934,14 +1933,15 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
                         ",",
                         "."
                     ) : '0, 00';
+            $this->pImpostoDanfeHelper($x, $y, $w, $h, $texto, $valorImposto);
         } else {
             $texto = '';
             $valorImposto = '';
         }
-        $this->pImpostoDanfeHelper($x, $y, $w, $h, $texto, $valorImposto);
+
         //VALOR TOTAL DA NOTA
         $x += $w;
-        $w = $w2;
+        $w = $w2  + ( $this->exibirPIS ? 0.0 : $wPis );
         $texto = 'VALOR TOTAL DA NOTA';
         $valorImposto = number_format($this->ICMSTot->getElementsByTagName("vNF")->item(0)->nodeValue, 2, ",", ".");
         $this->pImpostoDanfeHelper($x, $y, $w, $h, $texto, $valorImposto);
@@ -2320,7 +2320,7 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
         }
         return $texto;
     }
-    
+
     /**
      * itensDANFE
      * Monta o campo de itens da DANFE (retrato e paisagem)
