@@ -57,6 +57,15 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
      * @var boolean
      */
     public $exibirPIS=true;
+
+    // INÍCIO ATRIBUTOS DE PARÂMETROS DE EXIBIÇÃO
+    /**
+     * Parâmetro para exibir ou ocultar os valores do ICMS Interestadual e Valor Total dos Impostos.
+     * @var boolean
+     */
+    public $exibirIcmsInterestadual=true;
+
+
     /**
      * Parâmetro para exibir ou ocultar o texto sobre valor aproximado dos tributos.
      * @var boolean
@@ -322,7 +331,7 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
         $mododebug = 2
     ) {
         //verificacao temporária de segurança apenas para alertar se tentar instanciar
-        //a classe com 9 parâmetros, pois o "$exibirPis" foi removido em 20/08/2014
+        //a classe com 9 parâmetros, pois o "$exibirPIS" foi removido em 20/08/2014
         // e parametrizado como atributo público para simplificar o construtor
         if (func_num_args() == 9) {
             throw new nfephpException("ATENCAO: o construtor da classe DanfeNFePHP nao possui mais 9 parametros");
@@ -1810,25 +1819,22 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
         $oldX = $x;
         //#####################################################################
         $texto = "CÁLCULO DO IMPOSTO";
+
+        $campos_por_linha = 9;
+        if(!$this->exibirPIS){
+           $campos_por_linha--;
+        }
+        if(!$this->exibirIcmsInterestadual){
+           $campos_por_linha -= 2;
+        }
         if ($this->orientacao == 'P') {
             $maxW = $this->wPrint;
-            $wPis = 18;
-            $w1 = 31;
         } else {
             $maxW = $this->wPrint - $this->wCanhoto;
-            $wPis = 20;
-            $w1 = 40;
         }
-        if (! $this->exibirPIS) {
-            $wPis = 0;
-            if ($this->orientacao == 'P') {
-                $w1+= 2;
-            } else {
-                $w1+= 3;
-            }
-        }
+        $w1 = $maxW / $campos_por_linha;
+
         $w= $maxW;
-        $w2 = $maxW-(5*$w1+$wPis);
         $w = $w1;
         $aFont = array('font'=>$this->fontePadrao, 'size'=>7, 'style'=>'B');
         $this->pTextBox($x, $y, $w, 8, $texto, $aFont, 'T', 'L', 0, '');
@@ -1837,17 +1843,23 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
         $h = 7;
 
         $x = $this->pImpostoDanfeHelperV2($x, $y, $w, $h, "BASE DE CÁLCULO DO ICMS", "vBC");
-        $x = $this->pImpostoDanfeHelperV2($x, $y, $wPis, $h, "VALOR DO ICMS", "vICMS");
-        $x = $this->pImpostoDanfeHelperV2($x, $y, $wPis, $h, "BASE DE CÁLC. ICMS S.T.", "vBCST");
+        $x = $this->pImpostoDanfeHelperV2($x, $y, $w, $h, "VALOR DO ICMS", "vICMS");
+        $x = $this->pImpostoDanfeHelperV2($x, $y, $w, $h, "BASE DE CÁLC. ICMS S.T.", "vBCST");
         $x = $this->pImpostoDanfeHelperV2($x, $y, $w, $h, "VALOR DO ICMS SUBST.", "vST");
-        $x = $this->pImpostoDanfeHelperV2($x, $y, $w, $h, "VALOR IMP. IMPORTAÇÃO", "vII");
+        $x = $this->pImpostoDanfeHelperV2($x, $y, $w, $h, "V. IMP. IMPORTAÇÃO", "vII");
+
+        if( $this->exibirIcmsInterestadual){
+            $x = $this->pImpostoDanfeHelperV2($x, $y, $w, $h, "V. ICMS UF REMET.", "vICMSUFRemet");
+            $x = $this->pImpostoDanfeHelperV2($x, $y, $w, $h, "VALOR DO FCP", "vFCPUFDest");
+        }
+
         if ($this->exibirPIS) {
             $x = $this->pImpostoDanfeHelperV2($x, $y, $w, $h, "VALOR DO PIS", "vPIS");
         }
-        $x = $this->pImpostoDanfeHelperV2($x, $y, $w2 + ( $this->exibirPIS ? 0.0 : $wPis ), $h, "VALOR TOTAL DOS PRODUTOS", "vProd");
+
+        $x = $this->pImpostoDanfeHelperV2($x, $y, $w, $h, "V. TOTAL DOS PRODUTOS", "vProd");
 
         #####################################################
-
 
         $h = 7;
         $y += $h;
@@ -1855,16 +1867,20 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
         $x = $oldX;
 
         $x = $this->pImpostoDanfeHelperV2($x, $y, $w, $h, "VALOR DO FRETE", "vFrete");
-        $x = $this->pImpostoDanfeHelperV2($x, $y, $wPis, $h, "VALOR DO SEGURO", "vSeg");
-        $x = $this->pImpostoDanfeHelperV2($x, $y, $wPis, $h, "DESCONTO", "vDesc");
+        $x = $this->pImpostoDanfeHelperV2($x, $y, $w, $h, "VALOR DO SEGURO", "vSeg");
+        $x = $this->pImpostoDanfeHelperV2($x, $y, $w, $h, "DESCONTO", "vDesc");
         $x = $this->pImpostoDanfeHelperV2($x, $y, $w, $h, "OUTRAS DESPESAS", "vOutro");
         $x = $this->pImpostoDanfeHelperV2($x, $y, $w, $h, "VALOR TOTAL DO IPI", "vIPI");
-        if ($this->exibirPIS) {
-            $x = $this->pImpostoDanfeHelperV2($x, $y, $wPis, $h, "VALOR DA COFINS", "vCOFINS");
+
+        if( $this->exibirIcmsInterestadual){
+            $x = $this->pImpostoDanfeHelperV2($x, $y, $w, $h, "V. ICMS UF DEST.", "vICMSUFDest");
+            $x = $this->pImpostoDanfeHelperV2($x, $y, $w, $h, "V. TOT. TRIB.", "vTotTrib");
         }
-        $x = $this->pImpostoDanfeHelperV2($x, $y, $w2 + ( $this->exibirPIS ? 0.0 : $wPis ), $h, "VALOR TOTAL DA NOTA", "vNF");
 
-
+        if ($this->exibirPIS) {
+            $x = $this->pImpostoDanfeHelperV2($x, $y, $w, $h, "VALOR DA COFINS", "vCOFINS");
+        }
+        $x = $this->pImpostoDanfeHelperV2($x, $y, $w, $h, "V. TOTAL DA NOTA", "vNF");
 
         return ($y+$h);
     } //fim impostoDANFE
