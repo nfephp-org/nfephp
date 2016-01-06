@@ -1798,13 +1798,21 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
      * @param float $h Altura do campo
      * @param float $h Título do campo
      * @param float $h Valor do imposto
+     * @return float Sugestão do $x do próximo imposto
      */
-    protected function pImpostoDanfeHelper($x, $y, $w, $h, $titulo, $valorImposto)
+    protected function pImpostoDanfeHelper($x, $y, $w, $h, $titulo, $campoImposto)
     {
+        $valorImposto = $this->ICMSTot->getElementsByTagName($campoImposto)->item(0)->nodeValue;
+        $valorImposto = ! empty($valorImposto) ? number_format($valorImposto, 2, ",", ".") : '0, 00';
+
+
         $fontTitulo = array('font'=>$this->fontePadrao, 'size'=>6, 'style'=>'');
         $fontValor = array('font'=>$this->fontePadrao, 'size'=>10, 'style'=>'B');
         $this->pTextBox($x, $y, $w, $h, $titulo, $fontTitulo, 'T', 'L', 1, '');
         $this->pTextBox($x, $y, $w, $h, $valorImposto, $fontValor, 'B', 'R', 0, '');
+
+        $next_x = $x + $w;
+        return $next_x;
     }
 
     /**
@@ -1842,22 +1850,22 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
         $y += 3;
         $h = 7;
 
-        $x = $this->pImpostoDanfeHelperV2($x, $y, $w, $h, "BASE DE CÁLC. DO ICMS", "vBC");
-        $x = $this->pImpostoDanfeHelperV2($x, $y, $w, $h, "VALOR DO ICMS", "vICMS");
-        $x = $this->pImpostoDanfeHelperV2($x, $y, $w, $h, "BASE DE CÁLC. ICMS S.T.", "vBCST");
-        $x = $this->pImpostoDanfeHelperV2($x, $y, $w, $h, "VALOR DO ICMS SUBST.", "vST");
-        $x = $this->pImpostoDanfeHelperV2($x, $y, $w, $h, "V. IMP. IMPORTAÇÃO", "vII");
+        $x = $this->pImpostoDanfeHelper($x, $y, $w, $h, "BASE DE CÁLC. DO ICMS", "vBC");
+        $x = $this->pImpostoDanfeHelper($x, $y, $w, $h, "VALOR DO ICMS", "vICMS");
+        $x = $this->pImpostoDanfeHelper($x, $y, $w, $h, "BASE DE CÁLC. ICMS S.T.", "vBCST");
+        $x = $this->pImpostoDanfeHelper($x, $y, $w, $h, "VALOR DO ICMS SUBST.", "vST");
+        $x = $this->pImpostoDanfeHelper($x, $y, $w, $h, "V. IMP. IMPORTAÇÃO", "vII");
 
         if( $this->exibirIcmsInterestadual){
-            $x = $this->pImpostoDanfeHelperV2($x, $y, $w, $h, "V. ICMS UF REMET.", "vICMSUFRemet");
-            $x = $this->pImpostoDanfeHelperV2($x, $y, $w, $h, "VALOR DO FCP", "vFCPUFDest");
+            $x = $this->pImpostoDanfeHelper($x, $y, $w, $h, "V. ICMS UF REMET.", "vICMSUFRemet");
+            $x = $this->pImpostoDanfeHelper($x, $y, $w, $h, "VALOR DO FCP", "vFCPUFDest");
         }
 
         if ($this->exibirPIS) {
-            $x = $this->pImpostoDanfeHelperV2($x, $y, $w, $h, "VALOR DO PIS", "vPIS");
+            $x = $this->pImpostoDanfeHelper($x, $y, $w, $h, "VALOR DO PIS", "vPIS");
         }
 
-        $x = $this->pImpostoDanfeHelperV2($x, $y, $w, $h, "V. TOTAL PRODUTOS", "vProd");
+        $x = $this->pImpostoDanfeHelper($x, $y, $w, $h, "V. TOTAL PRODUTOS", "vProd");
 
         #####################################################
 
@@ -1866,34 +1874,24 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
         $w = $w1;
         $x = $oldX;
 
-        $x = $this->pImpostoDanfeHelperV2($x, $y, $w, $h, "VALOR DO FRETE", "vFrete");
-        $x = $this->pImpostoDanfeHelperV2($x, $y, $w, $h, "VALOR DO SEGURO", "vSeg");
-        $x = $this->pImpostoDanfeHelperV2($x, $y, $w, $h, "DESCONTO", "vDesc");
-        $x = $this->pImpostoDanfeHelperV2($x, $y, $w, $h, "OUTRAS DESPESAS", "vOutro");
-        $x = $this->pImpostoDanfeHelperV2($x, $y, $w, $h, "VALOR TOTAL IPI", "vIPI");
+        $x = $this->pImpostoDanfeHelper($x, $y, $w, $h, "VALOR DO FRETE", "vFrete");
+        $x = $this->pImpostoDanfeHelper($x, $y, $w, $h, "VALOR DO SEGURO", "vSeg");
+        $x = $this->pImpostoDanfeHelper($x, $y, $w, $h, "DESCONTO", "vDesc");
+        $x = $this->pImpostoDanfeHelper($x, $y, $w, $h, "OUTRAS DESPESAS", "vOutro");
+        $x = $this->pImpostoDanfeHelper($x, $y, $w, $h, "VALOR TOTAL IPI", "vIPI");
 
         if( $this->exibirIcmsInterestadual){
-            $x = $this->pImpostoDanfeHelperV2($x, $y, $w, $h, "V. ICMS UF DEST.", "vICMSUFDest");
-            $x = $this->pImpostoDanfeHelperV2($x, $y, $w, $h, "V. TOT. TRIB.", "vTotTrib");
+            $x = $this->pImpostoDanfeHelper($x, $y, $w, $h, "V. ICMS UF DEST.", "vICMSUFDest");
+            $x = $this->pImpostoDanfeHelper($x, $y, $w, $h, "V. TOT. TRIB.", "vTotTrib");
         }
 
         if ($this->exibirPIS) {
-            $x = $this->pImpostoDanfeHelperV2($x, $y, $w, $h, "VALOR DA COFINS", "vCOFINS");
+            $x = $this->pImpostoDanfeHelper($x, $y, $w, $h, "VALOR DA COFINS", "vCOFINS");
         }
-        $x = $this->pImpostoDanfeHelperV2($x, $y, $w, $h, "V. TOTAL DA NOTA", "vNF");
+        $x = $this->pImpostoDanfeHelper($x, $y, $w, $h, "V. TOTAL DA NOTA", "vNF");
 
         return ($y+$h);
     } //fim impostoDANFE
-
-    protected function pImpostoDanfeHelperV2($x, $y, $w, $h, $texto, $campoImposto){
-        $valorImposto = $this->ICMSTot->getElementsByTagName($campoImposto)->item(0)->nodeValue;
-        $valorImposto = ! empty($valorImposto) ? number_format($valorImposto, 2, ",", ".") : '0, 00';
-        $this->pImpostoDanfeHelper($x, $y, $w, $h, $texto, $valorImposto);
-
-        $next_x = $x + $w;
-        return $next_x;
-    }
-
 
     /**
      * transporteDANFE
