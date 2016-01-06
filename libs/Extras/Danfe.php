@@ -150,7 +150,7 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
      * versão
      * @var string
      */
-    protected $version = '2.2.7';
+    protected $version = '2.2.8';
     /**
      * Texto
      * @var string
