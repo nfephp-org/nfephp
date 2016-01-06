@@ -1878,72 +1878,47 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
 
         //VALOR TOTAL DOS PRODUTOS
         $x += $w;
-        $w = $w2 + ( $this->exibirPIS ? 0.0 : $wPis );;
+        $w = $w2 + ( $this->exibirPIS ? 0.0 : $wPis );
         $texto = 'VALOR TOTAL DOS PRODUTOS';
         $valorImposto = number_format($this->ICMSTot->getElementsByTagName("vProd")->item(0)->nodeValue, 2, ",", ".");
         $this->pImpostoDanfeHelper($x, $y, $w, $h, $texto, $valorImposto);
         //#####################################################################
         //VALOR DO FRETE
-        $w = $w1;
-        $y += $h;
-        $x = $oldX;
         $h = 7;
-        $texto = 'VALOR DO FRETE';
-        $valorImposto = number_format($this->ICMSTot->getElementsByTagName("vFrete")->item(0)->nodeValue, 2, ",", ".");
-        $this->pImpostoDanfeHelper($x, $y, $w, $h, $texto, $valorImposto);
-        //VALOR DO SEGURO
-        $x += $w;
-        $texto = 'VALOR DO SEGURO';
-        $valorImposto = ! empty($this->ICMSTot->getElementsByTagName("vSeg")->item(0)->nodeValue) ?
-                number_format($this->ICMSTot->getElementsByTagName("vSeg")->item(0)->nodeValue, 2, ",", ".") : '0, 00';
-        $this->pImpostoDanfeHelper($x, $y, $w, $h, $texto, $valorImposto);
-        //DESCONTO
-        $x += $w;
-        $texto = 'DESCONTO';
-        $valorImposto = ! empty($this->ICMSTot->getElementsByTagName("vDesc")->item(0)->nodeValue) ?
-                number_format($this->ICMSTot->getElementsByTagName("vDesc")->item(0)->nodeValue, 2, ",", ".") : '0, 00';
-        $this->pImpostoDanfeHelper($x, $y, $w, $h, $texto, $valorImposto);
-        //OUTRAS DESPESAS
-        $x += $w;
-        $texto = 'OUTRAS DESPESAS';
-        $valorImposto = ! empty($this->ICMSTot->getElementsByTagName("vOutro")->item(0)->nodeValue) ?
-                number_format(
-                    $this->ICMSTot->getElementsByTagName("vOutro")->item(0)->nodeValue,
-                    2,
-                    ",",
-                    "."
-                ) : '0, 00';
-        $this->pImpostoDanfeHelper($x, $y, $w, $h, $texto, $valorImposto);
-        //VALOR TOTAL DO IPI
-        $x += $w;
-        $texto = 'VALOR TOTAL DO IPI';
-        $valorImposto = ! empty($this->ICMSTot->getElementsByTagName("vIPI")->item(0)->nodeValue) ?
-                number_format($this->ICMSTot->getElementsByTagName("vIPI")->item(0)->nodeValue, 2, ",", ".") : '0, 00';
-        $this->pImpostoDanfeHelper($x, $y, $w, $h, $texto, $valorImposto);
+        $y += $h;
+
+
+        $w = $w1;
+        $x = $oldX;
+
+        $x = $this->pImpostoDanfeHelperV2($x, $y, $w, $h, "VALOR DO FRETE", "vFrete");
+        $x = $this->pImpostoDanfeHelperV2($x, $y, $w, $h, "VALOR DO SEGURO", "vSeg");
+        $x = $this->pImpostoDanfeHelperV2($x, $y, $w, $h, "DESCONTO", "vDesc");
+        $x = $this->pImpostoDanfeHelperV2($x, $y, $w, $h, "OUTRAS DESPESAS", "vOutro");
+        $x = $this->pImpostoDanfeHelperV2($x, $y, $w, $h, "VALOR TOTAL DO IPI", "vIPI");
+
         //VALOR DO COFINS
-
         if ($this->exibirPIS) {
-            $x += $w;
-            $w = $wPis;
-            $texto = 'VALOR DA COFINS';
-            $valorImposto = ! empty($this->ICMSTot->getElementsByTagName("vCOFINS")->item(0)->nodeValue) ?
-                    number_format(
-                        $this->ICMSTot->getElementsByTagName("vCOFINS")->item(0)->nodeValue,
-                        2,
-                        ",",
-                        "."
-                    ) : '0, 00';
-            $this->pImpostoDanfeHelper($x, $y, $w, $h, $texto, $valorImposto);
+            $x = $this->pImpostoDanfeHelperV2($x, $y, $wPis, $h, "VALOR DA COFINS", "vCOFINS");
         }
-
         //VALOR TOTAL DA NOTA
-        $x += $w;
-        $w = $w2  + ( $this->exibirPIS ? 0.0 : $wPis );
-        $texto = 'VALOR TOTAL DA NOTA';
-        $valorImposto = number_format($this->ICMSTot->getElementsByTagName("vNF")->item(0)->nodeValue, 2, ",", ".");
-        $this->pImpostoDanfeHelper($x, $y, $w, $h, $texto, $valorImposto);
+
+        $x = $this->pImpostoDanfeHelperV2($x, $y, $w2 + ( $this->exibirPIS ? 0.0 : $wPis ), $h, "VALOR TOTAL DA NOTA", "vNF");
+
+
+
         return ($y+$h);
     } //fim impostoDANFE
+
+    protected function pImpostoDanfeHelperV2($x, $y, $w, $h, $texto, $campoImposto){
+        $valorImposto = $this->ICMSTot->getElementsByTagName($campoImposto)->item(0)->nodeValue;
+        $valorImposto = ! empty($valorImposto) ? number_format($valorImposto, 2, ",", ".") : '0, 00';
+        $this->pImpostoDanfeHelper($x, $y, $w, $h, $texto, $valorImposto);
+
+        $next_x = $x + $w;
+        return $next_x;
+    }
+
 
     /**
      * transporteDANFE
