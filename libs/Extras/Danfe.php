@@ -1842,11 +1842,9 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
         }
         $w1 = $maxW / $campos_por_linha;
 
-        $w= $maxW;
         $w = $w1;
         $aFont = array('font'=>$this->fontePadrao, 'size'=>7, 'style'=>'B');
         $this->pTextBox($x, $y, $w, 8, $texto, $aFont, 'T', 'L', 0, '');
-        //BASE DE CÁLCULO DO ICMS
         $y += 3;
         $h = 7;
 
