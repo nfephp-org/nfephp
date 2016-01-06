@@ -1824,9 +1824,9 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
      */
     protected function pImpostoDANFE($x, $y)
     {
-        $oldX = $x;
+        $x_inicial = $x;
         //#####################################################################
-        $texto = "CÁLCULO DO IMPOSTO";
+
 
         $campos_por_linha = 9;
         if(!$this->exibirPIS){
@@ -1835,16 +1835,19 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
         if(!$this->exibirIcmsInterestadual){
            $campos_por_linha -= 2;
         }
+
         if ($this->orientacao == 'P') {
             $maxW = $this->wPrint;
+            $title_size = 31;
         } else {
             $maxW = $this->wPrint - $this->wCanhoto;
+            $title_size = 40;
         }
-        $w1 = $maxW / $campos_por_linha;
+        $w = $maxW / $campos_por_linha;
 
-        $w = $w1;
         $aFont = array('font'=>$this->fontePadrao, 'size'=>7, 'style'=>'B');
-        $this->pTextBox($x, $y, $w, 8, $texto, $aFont, 'T', 'L', 0, '');
+        $texto = "CÁLCULO DO IMPOSTO";
+        $this->pTextBox($x, $y, $title_size, 8, $texto, $aFont, 'T', 'L', 0, '');
         $y += 3;
         $h = 7;
 
@@ -1867,10 +1870,8 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
 
         #####################################################
 
-        $h = 7;
         $y += $h;
-        $w = $w1;
-        $x = $oldX;
+        $x = $x_inicial;
 
         $x = $this->pImpostoDanfeHelper($x, $y, $w, $h, "VALOR DO FRETE", "vFrete");
         $x = $this->pImpostoDanfeHelper($x, $y, $w, $h, "VALOR DO SEGURO", "vSeg");
@@ -2192,6 +2193,22 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
         return ($y+$h);
     } //fim transporteDANFE
 
+
+
+    protected function pDescricaoProdutoHelper($origem, $campo, $formato){
+        $valor_original = $origem->getElementsByTagName($campo)->item(0);
+        if( !isset( $valor_original )){
+            return "";
+        }
+        $valor_original = $valor_original->nodeValue;
+        $valor = ! empty( $valor_original ) ? number_format( $valor_original, 2, ",", ".") : '';
+
+        if($valor != ""){
+            return sprintf($formato, $valor);
+        }
+        return "";
+    }
+
     /**
      * descricaoProduto
      * Monta a string de descrição de cada Produto
@@ -2203,33 +2220,25 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
     {
         $prod = $itemProd->getElementsByTagName('prod')->item(0);
         $ICMS = $itemProd->getElementsByTagName("ICMS")->item(0);
+        $ICMSUFDest = $itemProd->getElementsByTagName("ICMSUFDest")->item(0);
         $impostos = '';
-        if (! empty($ICMS)) {
-            $pRedBC = ! empty($ICMS->getElementsByTagName("pRedBC")->item(0)->nodeValue) ?
-                    number_format($ICMS->getElementsByTagName("pRedBC")->item(0)->nodeValue, 2, ",", ".") : '';
-            if ($pRedBC != 0) {	// redução da base de cáclulo do ICMS
-                $impostos .= " pRedBC=$pRedBC%";
-            }
-            $ivaTxt = ! empty($ICMS->getElementsByTagName("pMVAST")->item(0)->nodeValue) ?
-                    number_format($ICMS->getElementsByTagName("pMVAST")->item(0)->nodeValue, 2, ",", ".") : '';
-            if ($ivaTxt != '') {
-                $impostos = " IVA=$ivaTxt%";
-            }
-            $icmsStTxt = ! empty($ICMS->getElementsByTagName("pICMSST")->item(0)->nodeValue) ?
-                    number_format($ICMS->getElementsByTagName("pICMSST")->item(0)->nodeValue, 2, ",", ".") : '';
-            if ($icmsStTxt != '') {
-                $impostos .= " pIcmsSt=$icmsStTxt%";
-            }
-            $bcIcmsSt = ! empty($ICMS->getElementsByTagName("vBCST")->item(0)->nodeValue) ?
-                    number_format($ICMS->getElementsByTagName("vBCST")->item(0)->nodeValue, 2, ",", ".") : '';
-            if ($bcIcmsSt != '') {
-                $impostos .= " BcIcmsSt=$bcIcmsSt";
-            }
-            $vIcmsSt = ! empty($ICMS->getElementsByTagName("vICMSST")->item(0)->nodeValue) ?
-                    number_format($ICMS->getElementsByTagName("vICMSST")->item(0)->nodeValue, 2, ",", ".") : '';
-            if ($vIcmsSt != '') {
-                $impostos .= " vIcmsSt=$vIcmsSt";
-            }
+
+        if ( !empty($ICMS)) {
+            $impostos .= $this->pDescricaoProdutoHelper($ICMS, "pRedBC", " pRedBC=%s%%");
+            $impostos .= $this->pDescricaoProdutoHelper($ICMS, "pMVAST", " IVA=%s%%");
+            $impostos .= $this->pDescricaoProdutoHelper($ICMS, "pICMSST", " pIcmsSt=%s%%");
+            $impostos .= $this->pDescricaoProdutoHelper($ICMS, "vBCST", " BcIcmsSt=%s%%");
+            $impostos .= $this->pDescricaoProdutoHelper($ICMS, "vICMSST", " vIcmsSt=%s%%");
+        }
+        if( !empty($ICMSUFDest)){
+
+            $impostos .= $this->pDescricaoProdutoHelper($ICMSUFDest, "pFCPUFDest", " pFCPUFDest=%s%%");
+            $impostos .= $this->pDescricaoProdutoHelper($ICMSUFDest, "pICMSUFDest", " pICMSUFDest=%s%%");
+            $impostos .= $this->pDescricaoProdutoHelper($ICMSUFDest, "pICMSInterPart", " pICMSInterPart=%s%%");
+            $impostos .= $this->pDescricaoProdutoHelper($ICMSUFDest, "vFCPUFDest", " vFCPUFDest=%s");
+            $impostos .= $this->pDescricaoProdutoHelper($ICMSUFDest, "vICMSUFDest", " vICMSUFDest=%s");
+            $impostos .= $this->pDescricaoProdutoHelper($ICMSUFDest, "vICMSUFRemet", " vICMSUFRemet=%s");
+
         }
         $infAdProd = ! empty($itemProd->getElementsByTagName('infAdProd')->item(0)->nodeValue) ?
                 substr($this->pAnfavea($itemProd->getElementsByTagName('infAdProd')->item(0)->nodeValue), 0, 500) : '';
