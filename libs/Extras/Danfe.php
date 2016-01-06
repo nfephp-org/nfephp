@@ -1842,7 +1842,7 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
         $y += 3;
         $h = 7;
 
-        $x = $this->pImpostoDanfeHelperV2($x, $y, $w, $h, "BASE DE CÁLCULO DO ICMS", "vBC");
+        $x = $this->pImpostoDanfeHelperV2($x, $y, $w, $h, "BASE DE CÁLC. DO ICMS", "vBC");
         $x = $this->pImpostoDanfeHelperV2($x, $y, $w, $h, "VALOR DO ICMS", "vICMS");
         $x = $this->pImpostoDanfeHelperV2($x, $y, $w, $h, "BASE DE CÁLC. ICMS S.T.", "vBCST");
         $x = $this->pImpostoDanfeHelperV2($x, $y, $w, $h, "VALOR DO ICMS SUBST.", "vST");
@@ -1857,7 +1857,7 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
             $x = $this->pImpostoDanfeHelperV2($x, $y, $w, $h, "VALOR DO PIS", "vPIS");
         }
 
-        $x = $this->pImpostoDanfeHelperV2($x, $y, $w, $h, "V. TOTAL DOS PRODUTOS", "vProd");
+        $x = $this->pImpostoDanfeHelperV2($x, $y, $w, $h, "V. TOTAL PRODUTOS", "vProd");
 
         #####################################################
 
@@ -1870,7 +1870,7 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
         $x = $this->pImpostoDanfeHelperV2($x, $y, $w, $h, "VALOR DO SEGURO", "vSeg");
         $x = $this->pImpostoDanfeHelperV2($x, $y, $w, $h, "DESCONTO", "vDesc");
         $x = $this->pImpostoDanfeHelperV2($x, $y, $w, $h, "OUTRAS DESPESAS", "vOutro");
-        $x = $this->pImpostoDanfeHelperV2($x, $y, $w, $h, "VALOR TOTAL DO IPI", "vIPI");
+        $x = $this->pImpostoDanfeHelperV2($x, $y, $w, $h, "VALOR TOTAL IPI", "vIPI");
 
         if( $this->exibirIcmsInterestadual){
             $x = $this->pImpostoDanfeHelperV2($x, $y, $w, $h, "V. ICMS UF DEST.", "vICMSUFDest");
