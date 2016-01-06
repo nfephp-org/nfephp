@@ -1802,9 +1802,14 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
      */
     protected function pImpostoDanfeHelper($x, $y, $w, $h, $titulo, $campoImposto)
     {
-        $valorImposto = $this->ICMSTot->getElementsByTagName($campoImposto)->item(0)->nodeValue;
-        $valorImposto = ! empty($valorImposto) ? number_format($valorImposto, 2, ",", ".") : '0, 00';
-
+        $valorImposto = '0, 00';
+        $the_field = $this->ICMSTot->getElementsByTagName($campoImposto)->item(0);
+        if( isset($the_field) ){
+            $the_value = $the_field->nodeValue;
+            if(!empty($the_value)){
+                $valorImposto = number_format($the_value, 2, ",", ".");
+            }
+        }
 
         $fontTitulo = array('font'=>$this->fontePadrao, 'size'=>6, 'style'=>'');
         $fontValor = array('font'=>$this->fontePadrao, 'size'=>10, 'style'=>'B');
