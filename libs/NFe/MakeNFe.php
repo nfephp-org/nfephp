@@ -4021,9 +4021,11 @@ class MakeNFe extends BaseMake
         if (!empty($this->aComb)) {
             foreach ($this->aComb as $nItem => $child) {
                 $prod = $this->aProd[$nItem];
-                $encerrante = $this->aEncerrante[$nItem];
-                if (! empty($encerrante)) {
-                    $this->dom->appChild($child, $encerrante, "inclusão do node encerrante na tag comb");
+                if (! empty($this->aEncerrante)) {
+                    $encerrante = $this->aEncerrante[$nItem];
+                    if (! empty($encerrante)) {
+                        $this->dom->appChild($child, $encerrante, "inclusão do node encerrante na tag comb");
+                    }
                 }
                 $this->dom->appChild($prod, $child, "Inclusão do node combustivel");
                 $this->aProd[$nItem] = $prod;
