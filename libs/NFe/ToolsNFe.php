@@ -1184,7 +1184,7 @@ class ToolsNFe extends BaseTools
             $cnpj = $this->aConfig['cnpj'];
         }
         //carrega serviço
-        $servico = 'NFeDistribuicaoDFe';
+        $servico = 'NfeDistribuicaoDFe';
         $this->zLoadServico(
             'nfe',
             $servico,
