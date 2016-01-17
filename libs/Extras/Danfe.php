@@ -2491,7 +2491,10 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
                 $this->pTextBox($x, $y, $w8, $h, $texto, $aFont, 'T', $alinhamento, 0, '');
                 $x += $w8;
                 // Valor do Produto
-                $texto = number_format($prod->getElementsByTagName("vProd")->item(0)->nodeValue, 2, ",", ".");
+                $texto = "";
+                if(is_numeric($prod->getElementsByTagName("vProd")->item(0)->nodeValue) ){
+                    $texto = number_format($prod->getElementsByTagName("vProd")->item(0)->nodeValue, 2, ",", ".");
+                }
                 $this->pTextBox($x, $y, $w9, $h, $texto, $aFont, 'T', $alinhamento, 0, '');
                 //Valor da Base de calculo
                 $x += $w9;
