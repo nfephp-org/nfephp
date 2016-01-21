@@ -693,7 +693,7 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
         $numlinhas = 0;
         $hUsado = $hCabecItens;
         $w2 = round($this->wPrint*0.31, 0);
-        $hDispo = $hDispo1;
+        $hDispo = $hDispo2;
         $totPag = 1;
         while ($i < $this->det->length) {
             $texto = $this->pDescricaoProduto($this->det->item($i));
