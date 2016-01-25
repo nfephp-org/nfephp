@@ -55,7 +55,7 @@ class ReturnNFe
             case 'RecepcaoEvento':
                 return self::zReadRecepcaoEvento($dom);
                 break;
-            case 'NFeDistribuicaoDFe':
+            case 'NfeDistribuicaoDFe':
                 return self::zReadDistDFeInteresse($dom);
                 break;
             case 'NfeDownloadNF':
