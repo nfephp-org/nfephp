@@ -703,6 +703,7 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
                 $totPag++;
                 $hDispo = $hDispo2;
                 $hUsado = 7;
+                $i--; // decrementa para readicionar o item que não coube nessa pagina na outra.
             }
             $i++;
         } //fim da soma das areas de itens usadas
