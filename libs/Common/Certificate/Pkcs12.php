@@ -113,7 +113,7 @@ class Pkcs12
      * @param string $priKey Chave privada em formato PEM, não o path mas a chave em si
      * @param string $certKey Certificado em formato PEM, não o path mas a chave em si
      * @param bool $ignoreValidCert
-     * @paran boolean $ignoreValidCert Ignora a validade do certificado, mais usado para fins de teste
+     * @param boolean $ignoreValidCert Ignora a validade do certificado, mais usado para fins de teste
      */
     public function __construct(
         $pathCerts = '',
@@ -358,7 +358,7 @@ class Pkcs12
             $msg = "As chaves não estão disponíveis.";
             throw new Exception\InvalidArgumentException($msg);
         }
-        //caso não seja informada a taga a ser assinada cai fora
+        //caso não seja informada a tag a ser assinada cai fora
         if ($tagid == '') {
             $msg = "A tag a ser assinada deve ser indicada.";
             throw new Exception\InvalidArgumentException($msg);
@@ -482,7 +482,7 @@ class Pkcs12
         $referenceNode->appendChild($digestValueNode);
         //extrai node <SignedInfo> para uma string na sua forma canonica
         $cnSignedInfoNode = $signedInfoNode->C14N(true, false, null, null);
-        //cria uma variavel vasia que receberá a assinatura
+        //cria uma variavel vazia que receberá a assinatura
         $signature = '';
         //calcula a assinatura do node canonizado <SignedInfo>
         //usando a chave privada em formato PEM
