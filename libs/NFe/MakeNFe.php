@@ -788,7 +788,6 @@ class MakeNFe extends BaseMake
         }
         if ($this->tpAmb == '2' && $this->mod == '55') {
             $xNome = 'NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL';
-            $cnpj = '99999999000191';
         }
         if ($cnpj != '') {
             $this->dom->addChild(
