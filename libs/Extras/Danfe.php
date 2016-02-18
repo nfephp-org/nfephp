@@ -2233,8 +2233,8 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
             $impostos .= $this->pDescricaoProdutoHelper($ICMS, "pRedBC", " pRedBC=%s%%");
             $impostos .= $this->pDescricaoProdutoHelper($ICMS, "pMVAST", " IVA=%s%%");
             $impostos .= $this->pDescricaoProdutoHelper($ICMS, "pICMSST", " pIcmsSt=%s%%");
-            $impostos .= $this->pDescricaoProdutoHelper($ICMS, "vBCST", " BcIcmsSt=%s%%");
-            $impostos .= $this->pDescricaoProdutoHelper($ICMS, "vICMSST", " vIcmsSt=%s%%");
+            $impostos .= $this->pDescricaoProdutoHelper($ICMS, "vBCST", " BcIcmsSt=%s");
+            $impostos .= $this->pDescricaoProdutoHelper($ICMS, "vICMSST", " vIcmsSt=%s");
         }
         if( !empty($ICMSUFDest)){
 
