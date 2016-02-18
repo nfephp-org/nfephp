@@ -103,6 +103,7 @@ class ReturnNFe
             'aRetNFe' => array()
         );
         $tag = $dom->getNode('retDownloadNFe');
+        $aRetNFe = array();
         if (! isset($tag)) {
             return $aResposta;
         }
