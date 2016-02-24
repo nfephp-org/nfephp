@@ -17,7 +17,7 @@ $tpAmb = '2';
 $xJust = '';
 $tpEvento = '210210'; //ciencia da operação
 $aResposta = array();
-$xml = $nfe->sefazManifesta($chave, $tpAmb, $xJust = '', $tpEvento = '', $aResposta);
+$xml = $nfe->sefazManifesta($chave, $tpAmb, $xJust, $tpEvento, $aResposta);
 echo '<br><br><PRE>';
 echo htmlspecialchars($nfe->soapDebug);
 echo '</PRE><BR>';
