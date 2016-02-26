@@ -2067,6 +2067,7 @@ class MakeNFe extends BaseMake
                 $this->dom->addChild($icms, 'vICMSOp', $vICMSOp, false, "$identificador [item $nItem] Valor do ICMS da Operação");
                 $this->dom->addChild($icms, 'pDif', $pDif, false, "$identificador [item $nItem] Percentual do diferimento");
                 $this->dom->addChild($icms, 'vICMSDif', $vICMSDif, false, "$identificador [item $nItem] Valor do ICMS diferido");
+                $this->dom->addChild($icms, 'vICMS', $vICMS, false, "$identificador [item $nItem] Valor do ICMS realmente devido");
                 break;
             case '60':
                 $icms = $this->dom->createElement("ICMS60");
