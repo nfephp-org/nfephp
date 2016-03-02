@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- 
+    Alterado os endereços MS produção conforme nota da SEFAZ MS 26 DE FEVEREIRO DE 2016 - 14:23 ACASARIN@FAZENDA.MS
+-->
 <WS xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
 <UF>
     <sigla>MG</sigla>
@@ -34,14 +37,14 @@
         <CteRecepcaoEvento method='cteRecepcaoEvento' version='2.00'>http://homologacao.cte.ms.gov.br/cteWEB/CteRecepcaoEvento.asmx</CteRecepcaoEvento>
     </homologacao>
     <producao>
-        <CteRecepcao method='CTeRecepcao' version='2.00'>https://producao.cte.ms.gov.br/cteWEB/CteRecepcao.asmx</CteRecepcao>
-        <CteRetRecepcao method='CTeRetRecepcao' version='2.00'>https://producao.cte.ms.gov.br/cteWEB/CteRetRecepcao.asmx</CteRetRecepcao>
-        <CteCancelamento method='CTeCancelamento' version='2.00'>https://producao.cte.ms.gov.br/cteWEB/CteCancelamento.asmx</CteCancelamento>
-        <CteInutilizacao method='CTeInutilizacao' version='2.00'>https://producao.cte.ms.gov.br/cteWEB/CteInutilizacao.asmx</CteInutilizacao>
-        <CteConsultaProtocolo method='cteConsultaCT' version='2.00'>https://producao.cte.ms.gov.br/cteWEB/CteConsulta.asmx</CteConsultaProtocolo>
-        <CteStatusServico method='cteStatusServicoCT' version='2.00'>https://producao.cte.ms.gov.br/cteWEB/CteStatusServico.asmx</CteStatusServico>
-        <CTeConsultaCadastro method='CTeConsultaCadastro' version='2.00'>https://producao.cte.ms.gov.br/cteWEB/CadConsultaCadastro.asmx</CTeConsultaCadastro>
-        <CteRecepcaoEvento method='cteRecepcaoEvento' version='2.00'>http://producao.cte.ms.gov.br/cteWEB/CteRecepcaoEvento.asmx</CteRecepcaoEvento>
+        <CteRecepcao method='CTeRecepcao' version='2.00'>https://producao.cte.ms.gov.br/ws/CteRecepcao</CteRecepcao>
+        <CteRetRecepcao method='CTeRetRecepcao' version='2.00'>https://producao.cte.ms.gov.br/ws/CteRetRecepcao</CteRetRecepcao>
+        <CteCancelamento method='CTeCancelamento' version='2.00'>https://producao.cte.ms.gov.br/ws/CteCancelamento</CteCancelamento>
+        <CteInutilizacao method='CTeInutilizacao' version='2.00'>https://producao.cte.ms.gov.br/ws/CteInutilizacao</CteInutilizacao>
+        <CteConsultaProtocolo method='cteConsultaCT' version='2.00'>https://producao.cte.ms.gov.br/ws/CteConsulta</CteConsultaProtocolo>
+        <CteStatusServico method='cteStatusServicoCT' version='2.00'>https://producao.cte.ms.gov.br/ws/CteStatusServico</CteStatusServico>
+        <CTeConsultaCadastro method='CTeConsultaCadastro' version='2.00'>https://producao.cte.ms.gov.br/ws/CadConsultaCadastro</CTeConsultaCadastro>
+        <CteRecepcaoEvento method='cteRecepcaoEvento' version='2.00'>http://producao.cte.ms.gov.br/ws/CteRecepcaoEvento</CteRecepcaoEvento>
     </producao>
 </UF>
 <UF>
