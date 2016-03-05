@@ -87,7 +87,9 @@ class MailNFe extends BaseMail
                 $ide->getElementsByTagName('dEmi')->item(0)->nodeValue;
         $data = date('d/m/Y', DateTime::convertSefazTimeToTimestamp($dhEmi));
         $vNF = $icmsTot->getElementsByTagName('vNF')->item(0)->nodeValue;
-        $this->aMail[] = $dest->getElementsByTagName('email')->item(0)->nodeValue;
+        $this->aMail[] = !empty($dest->getElementsByTagName('email')->item(0)->nodeValue) ?
+                $dest->getElementsByTagName('email')->item(0)->nodeValue :
+                '';
         //peagar os emails que existirem em obsCont
         $infAdic = $infNFe->getElementsByTagName('infAdic')->item(0);
         if (!empty($infAdic)) {
