@@ -23,6 +23,7 @@ use NFePHP\NFe\ReturnNFe;
 use NFePHP\NFe\MailNFe;
 use NFePHP\NFe\IdentifyNFe;
 use NFePHP\Common\Dom\ValidXsd;
+use NFePHP\Extras;
 
 if (!defined('NFEPHP_ROOT')) {
     define('NFEPHP_ROOT', dirname(dirname(dirname(__FILE__))));
@@ -206,14 +207,28 @@ class ToolsNFe extends BaseTools
      * @param string $templateFile path completo ao arquivo template html do corpo do email
      * @param boolean $comPdf se true o sistema irá renderizar o DANFE e anexa-lo a mensagem
      * @return boolean
+     * @throws Exception\RuntimeException
      */
     public function enviaMail($pathXml = '', $aMails = array(), $templateFile = '', $comPdf = false)
     {
-        $mail = new MailNFe($this->aMailConf);
-        if ($templateFile != '') {
-            $mail->setTemplate($templateFile);
+        $pathPdf = '';
+        if ($comPdf && $this->modelo == '55') {
+            $docxml = Files\FilesFolders::readFile($pathXml);
+            $danfe = new Extras\Danfe($docxml, 'P', 'A4', $this->aDocFormat['pathLogoFile'], 'I', '');
+            $id = $danfe->montaDANFE();
+            $pathPdf = $this->aConfig['pathNFeFiles']
+                . DIRECTORY_SEPARATOR
+                . $this->ambiente
+                . DIRECTORY_SEPARATOR
+                . 'pdf'
+                . DIRECTORY_SEPARATOR
+                . $id . '.pdf';
+            $pdf = $danfe->printDANFE($pathPdf, 'F');
         }
-        return $mail->envia($pathXml, $aMails, $comPdf);
+        if ($mail->envia($pathXml, $aMails, $comPdf, $pathPdf) === false) {
+            throw new Exception\RuntimeException('Email não enviado. '.$mail->error);
+        }
+        return true;
     }
     
     /**
