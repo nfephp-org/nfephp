@@ -90,32 +90,10 @@ ATENÇÃO!!! Vários endereços destes webservices ainda não foram totalmente
   <UF>
     <sigla>BA</sigla>
     <homologacao>
-       <NfeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10"></NfeAutorizacao>
-       <NfeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10"></NfeRetAutorizacao>
-       <NfeInutilizacao  method="nfeInutilizacaoNF2" operation="NfeInutilizacao2" version="3.10"></NfeInutilizacao>
-       <NfeConsultaProtocolo method="nfeConsultaNF2" operation="NfeConsulta2" version="3.10"></NfeConsultaProtocolo>
-       <NfeStatusServico method="nfeStatusServicoNF2" operation="NfeStatusServico2" version="3.10"></NfeStatusServico>
-       <RecepcaoEvento  method="nfeRecepcaoEvento" operation="RecepcaoEvento" version="1.00"></RecepcaoEvento>
-       <NfeConsultaQR method="QR-CODE" operation="NfeConsultaQR" version="100"></NfeConsultaQR>
-       <NfeConsultaCadastro method="consultaCadastro2" operation="NfeConsultaCadastro" version="3.10"></NfeConsultaCadastro>
-       <NfeConsultaDest method="nfeConsultaNFDest" operation="NfeConsultaDest" version="3.10"></NfeConsultaDest>
-       <NfeDownloadNF method="nfeDownloadNF" operation="NfeDownloadNF" version="3.10"></NfeDownloadNF>
-       <RecepcaoEPEC method="nfeRecepcaoEvento" operation="RecepcaoEvento" version="1.00"></RecepcaoEPEC>
-       <NfeStatusEPEC method="nfeStatusServicoNF2" operation="NfeStatusServico2" version="3.10"></NfeStatusEPEC>       
+       <NfeConsultaQR method="QR-CODE" operation="NfeConsultaQR" version="100">http://hnfe.sefaz.ba.gov.br/servicos/nfce/modulos/geral/NFCEC_consulta_chave_acesso.aspx</NfeConsultaQR>
     </homologacao>
     <producao>
-       <NfeAutorizacao method="nfeAutorizacaoLote" operation="NfeAutorizacao" version="3.10"></NfeAutorizacao>
-       <NfeRetAutorizacao method="nfeRetAutorizacaoLote" operation="NfeRetAutorizacao" version="3.10"></NfeRetAutorizacao>
-       <NfeInutilizacao  method="nfeInutilizacaoNF2" operation="NfeInutilizacao2" version="3.10"></NfeInutilizacao>
-       <NfeConsultaProtocolo method="nfeConsultaNF2" operation="NfeConsulta2" version="3.10"></NfeConsultaProtocolo>
-       <NfeStatusServico method="nfeStatusServicoNF2" operation="NfeStatusServico2" version="3.10"></NfeStatusServico>
-       <RecepcaoEvento  method="nfeRecepcaoEvento" operation="RecepcaoEvento" version="1.00"></RecepcaoEvento>
-       <NfeConsultaQR method="QR-CODE" operation="NfeConsultaQR" version="100"></NfeConsultaQR>
-       <NfeConsultaCadastro method="consultaCadastro2" operation="NfeConsultaCadastro" version="3.10"></NfeConsultaCadastro>
-       <NfeConsultaDest method="nfeConsultaNFDest" operation="NfeConsultaDest" version="3.10"></NfeConsultaDest>
-       <NfeDownloadNF method="nfeDownloadNF" operation="NfeDownloadNF" version="3.10"></NfeDownloadNF>
-       <RecepcaoEPEC method="nfeRecepcaoEvento" operation="RecepcaoEvento" version="1.00"></RecepcaoEPEC>
-       <NfeStatusEPEC method="nfeStatusServicoNF2" operation="NfeStatusServico2" version="3.10"></NfeStatusEPEC>       
+       <NfeConsultaQR method="QR-CODE" operation="NfeConsultaQR" version="100">http://nfe.sefaz.ba.gov.br/servicos/nfce/modulos/geral/NFCEC_consulta_chave_acesso.aspx</NfeConsultaQR>
     </producao>
   </UF>
   <UF>
