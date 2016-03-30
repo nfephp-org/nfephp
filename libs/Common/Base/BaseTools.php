@@ -446,7 +446,7 @@ class BaseTools
             $this->urlHeader = '';
             return false;
         }
-        $this->urlcUF = $this->zGetcUF($siglaUF);
+        $this->urlcUF = $this->getcUF($siglaUF);
         $pathXmlUrlFile = $this->zGetXmlUrlPath($tipo);
         
         if ($this->enableSVCAN) {
@@ -717,11 +717,11 @@ class BaseTools
     }
 
     /**
-     * zGetcUF
+     * getcUF
      * @param string $siglaUF
      * @return string numero cUF
      */
-    protected function zGetcUF($siglaUF = '')
+    public function getcUF($siglaUF = '')
     {
         return $this->cUFlist[$siglaUF];
     }
