@@ -1210,7 +1210,7 @@ class ToolsNFe extends BaseTools
             $msg = "A distribuição de documento DFe não está disponível na SEFAZ $fonte!!!";
             throw new Exception\RuntimeException($msg);
         }
-        $cUF = self::zGetcUF($siglaUF);
+        $cUF = self::getcUF($siglaUF);
         $ultNSU = str_pad($ultNSU, 15, '0', STR_PAD_LEFT);
         $tagNSU = "<distNSU><ultNSU>$ultNSU</ultNSU></distNSU>";
         if ($numNSU != 0) {
