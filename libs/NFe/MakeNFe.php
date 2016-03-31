@@ -1428,7 +1428,7 @@ class MakeNFe extends BaseMake
     public function tagCEST($nItem = '', $texto = '')
     {   
         $cest = $this->dom->createElement("CEST", $texto);
-        $this->aCest[$nItem][] = $cest;
+        $this->aCest[$nItem] = $cest;
         return $cest;
     }
     
