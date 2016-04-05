@@ -29,21 +29,14 @@ class MailNFe extends BaseMail
      * envia
      * @param string $pathFile
      * @param array $aMail
-     * @param boolean $comPdf
+     * @param bool $comPdf
      * @param string $pathPdf
-     * @return boolean
+     * @return bool
      */
     public function envia($pathFile = '', $aMail = array(), $comPdf = false, $pathPdf = '')
     {
-        if ($comPdf) {
-            if ($pathPdf == '') {
-                //se $comPdf é verdadeiro então é criado o DANFE
-                //com seu path na variável $pathPdf
-                //então é anexado ao email
-                //TODO : renderizar o pdf
-            }
-            //cria o anexo do pdf
-            $this->addAttachment($pathPdf, '');
+        if ($comPdf && $pathPdf != '') {
+           $this->addAttachment($pathPdf, '');
         }
         $assunto = $this->zMontaMessagem($pathFile);
         //cria o anexo do xml
@@ -87,7 +80,9 @@ class MailNFe extends BaseMail
                 $ide->getElementsByTagName('dEmi')->item(0)->nodeValue;
         $data = date('d/m/Y', DateTime::convertSefazTimeToTimestamp($dhEmi));
         $vNF = $icmsTot->getElementsByTagName('vNF')->item(0)->nodeValue;
-        $this->aMail[] = $dest->getElementsByTagName('email')->item(0)->nodeValue;
+        $this->aMail[] = !empty($dest->getElementsByTagName('email')->item(0)->nodeValue) ?
+                $dest->getElementsByTagName('email')->item(0)->nodeValue :
+                '';
         //peagar os emails que existirem em obsCont
         $infAdic = $infNFe->getElementsByTagName('infAdic')->item(0);
         if (!empty($infAdic)) {

@@ -113,7 +113,7 @@ class Pkcs12
      * @param string $priKey Chave privada em formato PEM, não o path mas a chave em si
      * @param string $certKey Certificado em formato PEM, não o path mas a chave em si
      * @param bool $ignoreValidCert
-     * @paran boolean $ignoreValidCert Ignora a validade do certificado, mais usado para fins de teste
+     * @param boolean $ignoreValidCert Ignora a validade do certificado, mais usado para fins de teste
      */
     public function __construct(
         $pathCerts = '',
@@ -229,8 +229,11 @@ class Pkcs12
      * Isso deverá ocorrer a cada atualização do certificado digital, ou seja,
      * pelo menos uma vez por ano, uma vez que a validade do certificado
      * é anual.
-     * Será verificado também se o certificado pertence realmente ao CNPJ
-     * indicado na instanciação da classe, se não for um erro irá ocorrer e
+     * Será verificado também se o certificado pertence realmente ao CNPJ 
+     * Essa verificação checa apenas se o certificado pertence a matriz ou filial 
+     * comparando apenas os primeiros 8 digitos do CNPJ, dessa forma ambas a 
+     * matriz e as filiais poderão usar o mesmo certificado indicado na instanciação
+     * da classe, se não for um erro irá ocorrer e
      * o certificado não será convertido para o formato PEM.
      * Em caso de erros, será retornado false e o motivo será indicado no
      * parâmetro error da classe.
@@ -270,7 +273,7 @@ class Pkcs12
         }
         if (!$ignoreOwner) {
             $cnpjCert = Asn::getCNPJCert($x509certdata['cert']);
-            if ($this->cnpj != $cnpjCert) {
+            if (substr($this->cnpj, 0, 8) != substr($cnpjCert, 0, 8)) {
                 throw new Exception\InvalidArgumentException(
                     "O Certificado fornecido pertence a outro CNPJ!!"
                 );
@@ -358,7 +361,7 @@ class Pkcs12
             $msg = "As chaves não estão disponíveis.";
             throw new Exception\InvalidArgumentException($msg);
         }
-        //caso não seja informada a taga a ser assinada cai fora
+        //caso não seja informada a tag a ser assinada cai fora
         if ($tagid == '') {
             $msg = "A tag a ser assinada deve ser indicada.";
             throw new Exception\InvalidArgumentException($msg);
@@ -482,7 +485,7 @@ class Pkcs12
         $referenceNode->appendChild($digestValueNode);
         //extrai node <SignedInfo> para uma string na sua forma canonica
         $cnSignedInfoNode = $signedInfoNode->C14N(true, false, null, null);
-        //cria uma variavel vasia que receberá a assinatura
+        //cria uma variavel vazia que receberá a assinatura
         $signature = '';
         //calcula a assinatura do node canonizado <SignedInfo>
         //usando a chave privada em formato PEM

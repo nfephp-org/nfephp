@@ -55,7 +55,7 @@ class ReturnNFe
             case 'RecepcaoEvento':
                 return self::zReadRecepcaoEvento($dom);
                 break;
-            case 'NFeDistribuicaoDFe':
+            case 'NfeDistribuicaoDFe':
                 return self::zReadDistDFeInteresse($dom);
                 break;
             case 'NfeDownloadNF':
@@ -103,6 +103,7 @@ class ReturnNFe
             'aRetNFe' => array()
         );
         $tag = $dom->getNode('retDownloadNFe');
+        $aRetNFe = array();
         if (! isset($tag)) {
             return $aResposta;
         }

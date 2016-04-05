@@ -786,8 +786,9 @@ class MakeNFe extends BaseMake
                 $flagNome = false;//marca se xNome é ou não obrigatório
             }
         }
-        if ($this->tpAmb == '2') {
+        if ($this->tpAmb == '2' && $this->mod == '55') {
             $xNome = 'NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL';
+            //a exigência do CNPJ 99999999000191 não existe mais
         }
         if ($cnpj != '') {
             $this->dom->addChild(
@@ -2066,6 +2067,7 @@ class MakeNFe extends BaseMake
                 $this->dom->addChild($icms, 'vICMSOp', $vICMSOp, false, "$identificador [item $nItem] Valor do ICMS da Operação");
                 $this->dom->addChild($icms, 'pDif', $pDif, false, "$identificador [item $nItem] Percentual do diferimento");
                 $this->dom->addChild($icms, 'vICMSDif', $vICMSDif, false, "$identificador [item $nItem] Valor do ICMS diferido");
+                $this->dom->addChild($icms, 'vICMS', $vICMS, false, "$identificador [item $nItem] Valor do ICMS realmente devido");
                 break;
             case '60':
                 $icms = $this->dom->createElement("ICMS60");
@@ -4021,9 +4023,11 @@ class MakeNFe extends BaseMake
         if (!empty($this->aComb)) {
             foreach ($this->aComb as $nItem => $child) {
                 $prod = $this->aProd[$nItem];
-                $encerrante = $this->aEncerrante[$nItem];
-                if (! empty($encerrante)) {
-                    $this->dom->appChild($child, $encerrante, "inclusão do node encerrante na tag comb");
+                if (! empty($this->aEncerrante)) {
+                    $encerrante = $this->aEncerrante[$nItem];
+                    if (! empty($encerrante)) {
+                        $this->dom->appChild($child, $encerrante, "inclusão do node encerrante na tag comb");
+                    }
                 }
                 $this->dom->appChild($prod, $child, "Inclusão do node combustivel");
                 $this->aProd[$nItem] = $prod;
@@ -4076,9 +4080,9 @@ class MakeNFe extends BaseMake
         }
         //ajuste de digitos dos campos totalizados
         if ($this->aTotICMSUFDest['vICMSUFDest'] != '') {
-            $this->aTotICMSUFDest['vICMSUFDest'] = number_format($this->aTotICMSUFDest['vICMSUFDest'], 2);
-            $this->aTotICMSUFDest['vICMSUFRemet'] = number_format($this->aTotICMSUFDest['vICMSUFRemet'], 2);
-            $this->aTotICMSUFDest['vFCPUFDest'] = number_format($this->aTotICMSUFDest['vFCPUFDest'], 2);
+            $this->aTotICMSUFDest['vICMSUFDest'] = number_format($this->aTotICMSUFDest['vICMSUFDest'], 2, '.', '');
+            $this->aTotICMSUFDest['vICMSUFRemet'] = number_format($this->aTotICMSUFDest['vICMSUFRemet'], 2, '.', '');
+            $this->aTotICMSUFDest['vFCPUFDest'] = number_format($this->aTotICMSUFDest['vFCPUFDest'], 2, '.', '');
         }
     }
     
