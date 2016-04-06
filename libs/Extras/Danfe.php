@@ -683,8 +683,10 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
             $this->pSizeExtraTextoFatura());
         if ($this->orientacao == 'P') {
             $hDispo1 -= 23 * $this->qCanhoto;//para canhoto
+            $w = $this->wPrint;
         } else {
             $hcanhoto = $this->hPrint;//para canhoto
+            $w = $this->wPrint - $this->wCanhoto;
         }
         $hDispo2 = $this->hPrint - 10 - ($hcabecalho + $hfooter + $hCabecItens)-4;
         //Contagem da altura ocupada para impressão dos itens
@@ -692,7 +694,7 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
         $i = 0;
         $numlinhas = 0;
         $hUsado = $hCabecItens;
-        $w2 = round($this->wPrint*0.31, 0);
+        $w2 = round($w*0.28, 0);
         $hDispo = $hDispo1;
         $totPag = 1;
         while ($i < $this->det->length) {
@@ -2326,7 +2328,7 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
         $this->pdf->Line($x+$w1, $y, $x+$w1, $y+$hmax);
         //DESCRIÇÃO DO PRODUTO / SERVIÇO
         $x += $w1;
-        $w2 = round($w*0.31, 0);
+        $w2 = round($w*0.28, 0);
         $texto = 'DESCRIÇÃO DO PRODUTO / SERVIÇO';
         $aFont = array('font'=>$this->fontePadrao, 'size'=>6, 'style'=>'');
         $this->pTextBox($x, $y, $w2, $h, $texto, $aFont, 'C', 'C', 0, '', false);
