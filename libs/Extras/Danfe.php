@@ -705,6 +705,8 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
                 $totPag++;
                 $hDispo = $hDispo2;
                 $hUsado = $hCabecItens;
+                // Remove canhoto para páginas secundárias em modo paisagem ('L')
+                $w2 = round($this->wPrint*0.28, 0);
                 $i--; // decrementa para readicionar o item que não coube nessa pagina na outra.
             }
             $i++;
@@ -768,7 +770,7 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
             //coloca o cabeçalho na página adicional
             $y = $this->pCabecalhoDANFE($x, $y, $n, $totPag);
             //coloca os itens na página adicional
-            $y = $this->pItensDANFE($x, $y+1, $nInicial, $hDispo2, $pag, $totPag, $hCabecItens);
+            $y = $this->pItensDANFE($x, $y+1, $nInicial, $hDispo2, $n, $totPag, $hCabecItens);
             //coloca o rodapé da página
             if ($this->orientacao == 'P') {
                 $this->pRodape($xInic, $y + 4);
