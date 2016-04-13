@@ -24,7 +24,7 @@
 				$url = $_SERVER['REQUEST_URI'];
 				$i = 0;
 				for($i=strlen($url);substr($url, $i,1) != '/';$i--);
-				$url = $_SERVER['SERVER_NAME'] . substr($url, 0, $i);
+				$url = $_SERVER['HTTP_HOST'] . substr($url, 0, $i);
 			?>
 
 			//$('#btnConverterTXT').hide();
