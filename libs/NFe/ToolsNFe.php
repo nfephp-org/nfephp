@@ -211,6 +211,7 @@ class ToolsNFe extends BaseTools
      */
     public function enviaMail($pathXml = '', $aMails = array(), $templateFile = '', $comPdf = false)
     {
+        $mail = new MailNFe($this->aMailConf);
         $pathPdf = '';
         if ($comPdf && $this->modelo == '55') {
             $docxml = Files\FilesFolders::readFile($pathXml);
