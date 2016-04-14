@@ -683,8 +683,10 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
             $this->pSizeExtraTextoFatura());
         if ($this->orientacao == 'P') {
             $hDispo1 -= 23 * $this->qCanhoto;//para canhoto
+            $w = $this->wPrint;
         } else {
             $hcanhoto = $this->hPrint;//para canhoto
+            $w = $this->wPrint - $this->wCanhoto;
         }
         $hDispo2 = $this->hPrint - 10 - ($hcabecalho + $hfooter + $hCabecItens)-4;
         //Contagem da altura ocupada para impressão dos itens
@@ -692,7 +694,7 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
         $i = 0;
         $numlinhas = 0;
         $hUsado = $hCabecItens;
-        $w2 = round($this->wPrint*0.31, 0);
+        $w2 = round($w*0.28, 0);
         $hDispo = $hDispo1;
         $totPag = 1;
         while ($i < $this->det->length) {
@@ -702,7 +704,9 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
             if ($hUsado > $hDispo) {
                 $totPag++;
                 $hDispo = $hDispo2;
-                $hUsado = 7;
+                $hUsado = $hCabecItens;
+                // Remove canhoto para páginas secundárias em modo paisagem ('L')
+                $w2 = round($this->wPrint*0.28, 0);
                 $i--; // decrementa para readicionar o item que não coube nessa pagina na outra.
             }
             $i++;
@@ -735,7 +739,7 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
         $y = $this->pTransporteDANFE($x, $y+1);
         //itens da DANFE
         $nInicial = 0;
-        $y = $this->pItensDANFE($x, $y+1, $nInicial, $hDispo1, $pag, $totPag);
+        $y = $this->pItensDANFE($x, $y+1, $nInicial, $hDispo1, $pag, $totPag, $hCabecItens);
         //coloca os dados do ISSQN
         if ($linhaISSQN == 1) {
             $y = $this->pIssqnDANFE($x, $y+4);
@@ -766,7 +770,7 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
             //coloca o cabeçalho na página adicional
             $y = $this->pCabecalhoDANFE($x, $y, $n, $totPag);
             //coloca os itens na página adicional
-            $y = $this->pItensDANFE($x, $y+1, $nInicial, $hDispo2, $pag, $totPag);
+            $y = $this->pItensDANFE($x, $y+1, $nInicial, $hDispo2, $n, $totPag, $hCabecItens);
             //coloca o rodapé da página
             if ($this->orientacao == 'P') {
                 $this->pRodape($xInic, $y + 4);
@@ -2290,7 +2294,7 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
      * @param float $hmax Altura máxima do campo de itens em mm
      * @return float Posição vertical final
      */
-    protected function pItensDANFE($x, $y, &$nInicio, $hmax, $pag = 0, $totpag = 0)
+    protected function pItensDANFE($x, $y, &$nInicio, $hmax, $pag = 0, $totpag = 0, $hCabecItens = 7)
     {
         $oldX = $x;
         $oldY = $y;
@@ -2326,7 +2330,7 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
         $this->pdf->Line($x+$w1, $y, $x+$w1, $y+$hmax);
         //DESCRIÇÃO DO PRODUTO / SERVIÇO
         $x += $w1;
-        $w2 = round($w*0.31, 0);
+        $w2 = round($w*0.28, 0);
         $texto = 'DESCRIÇÃO DO PRODUTO / SERVIÇO';
         $aFont = array('font'=>$this->fontePadrao, 'size'=>6, 'style'=>'');
         $this->pTextBox($x, $y, $w2, $h, $texto, $aFont, 'C', 'C', 0, '', false);
@@ -2418,7 +2422,7 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
         //##################################################################################
         // LOOP COM OS DADOS DOS PRODUTOS
         $i = 0;
-        $hUsado = 4;
+        $hUsado = $hCabecItens;
         $aFont = array('font'=>$this->fontePadrao, 'size'=>7, 'style'=>'');
         foreach ($this->det as $d) {
             if ($i >= $nInicio) {
