@@ -1856,11 +1856,12 @@ class ToolsNFe extends BaseTools
                 $pasta = 'eventos'; //default
                 if ($aliasEvento == 'CancNFe') {
                     $pasta = 'canceladas';
+                    $filename = "$chNFe-$aliasEvento-procEvento.xml";
                 } elseif ($aliasEvento == 'CCe') {
                     $pasta = 'cartacorrecao';
+                    $filename = "$chNFe-$aliasEvento-$nSeqEvento-procEvento.xml";
                 }
                 $retorno = $this->zAddProtMsg('procEventoNFe', 'evento', $signedMsg, 'retEvento', $retorno);
-                $filename = "$chNFe-$aliasEvento-procEvento.xml";
                 $this->zGravaFile('nfe', $tpAmb, $filename, $retorno, $pasta);
             }
         }
