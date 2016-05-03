@@ -429,9 +429,9 @@ function changeAlerts(key, flag, msg) {
     <input type="text" id="siteUrl" name="siteUrl" placeholder="Site url"  value="<?php echo $siteUrl;?>" required /><br>
     <span title="Indique o token para pesquisa no IBPT, requer cadastramento prévio">Token IBPT</span><br>
     <input type="text" id="tokenIBPT" name="tokenIBPT" placeholder="token para IBPT"  value="<?php echo $tokenIBPT;?>" /><br>
-    <span title="Indique o token para montagem do QRCode nas NFCe, requer cadastramento prévio na SEFAZ">Token NFCe</span><br>
-    <input type="text" id="tokenNFCe" name="tokenNFCe" placeholder="toke para NFCe"  value="<?php echo $tokenNFCe;?>" /><br>
-    <span title="Indique o ID do token NFCe, 6 digitos numericos com zeros a esquerda">Token Id NFCe</span><br>
+    <span title="Indique o Código de Segurança do Contribuinte (antigo Token) para montagem do QRCode nas NFCe, requer cadastramento prévio na SEFAZ">CSC - Código de Segurança do Contribuinte (antigo Token)</span><br>
+    <input type="text" id="tokenNFCe" name="tokenNFCe" placeholder="Código de Segurança do Contribuinte (antigo Token) para NFCe"  value="<?php echo $tokenNFCe;?>" /><br>
+    <span title="Indique o Identificador do CSC – Código de Segurança do Contribuinte no Banco de Dados da SEFAZ para NFCe, 6 digitos numericos com zeros a esquerda">Identificador do CSC NFCe</span><br>
     <input type="text" id="tokenNFCeId" name="tokenNFCeId" placeholder="000000" size="8" value="<?php echo $tokenNFCeId;?>" /><br>
     </div>
     <div id="direita">
