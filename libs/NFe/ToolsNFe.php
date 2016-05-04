@@ -1720,6 +1720,107 @@ class ToolsNFe extends BaseTools
     }
     
     /**
+     * sefazManutencaoCsc
+     * Manutenção do Código de Segurança do Contribuinte (Antigo Token)
+     * @param int $indOp
+     * @param string $tpAmb
+     * @param string $raizCNPJ
+     * @param string $idCsc
+     * @param string $codigoCsc
+     * @param array $aRetorno
+     * @return string
+     * @throws Exception\InvalidArgumentException
+     * @throws Exception\RuntimeException
+     * @internal function zLoadServico (Common\Base\BaseTools)
+     */
+    public function sefazManutencaoCsc($indOp = '', $tpAmb = '2', $raizCNPJ = '', $idCsc = '', $codigoCsc = '', $saveXml = false, &$aRetorno = array())
+    {
+        if ($codigoCsc == '') {
+            $codigoCsc = $this->aConfig['tokenNFCe'];
+        }
+        if ($idCsc == '') {
+            $idCsc = $this->aConfig['tokenNFCeId'];
+        }
+        if ($tpAmb == '') {
+            $tpAmb = $this->aConfig['tpAmb'];
+        }
+        if (!is_numeric($indOp)) {
+            $msg = "A operação deve ser informada.";
+            throw new Exception\InvalidArgumentException($msg);
+        } else {
+            if ($indOp == 3 && ($idCsc == '' || $codigoCsc == '')) {
+                $msg = "Para Revogação de CSC, é necessário informar o Código e ID do CSC que deseja revogar.";
+                throw new Exception\InvalidArgumentException($msg);
+            }
+        }
+        if ($raizCNPJ == '') {
+            $raizCNPJ = substr( $this->aConfig['cnpj'], 0, -6);
+        } else {
+            if (strlen($raizCNPJ)!=8) {
+                $msg = "raizCNPJ: Deve ser os 08 primeiros dígitos do CNPJ.";
+                throw new Exception\InvalidArgumentException($msg);
+            }
+        }
+        $siglaUF = $this->aConfig['siglaUF'];
+        //carrega serviço
+        $servico = 'CscNFCe';
+        $this->zLoadServico(
+            'nfe',
+            $servico,
+            $siglaUF,
+            $tpAmb
+        );
+        if ($this->urlService == '') {
+            $msg = "A manutenção do código de segurança do contribuinte de NFC-e não está disponível na SEFAZ $siglaUF!!!";
+            throw new Exception\RuntimeException($msg);
+        }
+        
+        if ($indOp==3) {
+            $cons = "<admCscNFCe versao=\"$this->urlVersion\" xmlns=\"$this->urlPortal\">"
+            . "<tpAmb>$tpAmb</tpAmb>"
+            . "<indOp>$indOp</indOp>"
+            . "<raizCNPJ>$raizCNPJ</raizCNPJ>"
+            . "<dadosCsc>"
+            .   "<idCsc>$idCsc</idCsc>"
+            .   "<codigoCsc>$codigoCsc</codigoCsc>"
+            . "</dadosCsc>"
+            . "</admCscNFCe>";
+        } else {
+            $cons = "<admCscNFCe versao=\"$this->urlVersion\" xmlns=\"$this->urlPortal\">"
+            . "<tpAmb>$tpAmb</tpAmb>"
+            . "<indOp>$indOp</indOp>"
+            . "<raizCNPJ>$raizCNPJ</raizCNPJ>"
+            . "</admCscNFCe>";    
+        }
+        
+        //montagem dos dados da mensagem SOAP
+        $body = "<nfeDadosMsg xmlns=\"$this->urlNamespace\">$cons</nfeDadosMsg>";
+        
+        //envia a solicitação via SOAP
+        $retorno = $this->oSoap->send(
+            $this->urlService,
+            $this->urlNamespace,
+            $this->urlHeader,
+            $body,
+            $this->urlMethod
+        );
+        $lastMsg = $this->oSoap->lastMsg;
+        $this->soapDebug = $this->oSoap->soapDebug;
+        
+        //salva mensagens
+        if ($saveXml) {
+            $filename = "$raizCNPJ-$indOp-admCscNFCe.xml";
+            $this->zGravaFile('nfe', $tpAmb, $filename, $lastMsg, 'csc');
+            $filename = "$raizCNPJ-$indOp-retAdmCscNFCe.xml";
+            $this->zGravaFile('nfe', $tpAmb, $filename, $retorno, 'csc');
+        }
+        
+        //tratar dados de retorno
+        $aRetorno = ReturnNFe::readReturnSefaz($servico, $retorno);
+        return (string) $retorno;
+    }
+    
+    /**
      * validarXml
      * Valida qualquer xml do sistema NFe com seu xsd
      * NOTA: caso não exista um arquivo xsd apropriado retorna false

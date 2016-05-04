@@ -456,6 +456,7 @@ class BaseTools
         } else {
             $aURL = self::zLoadSEFAZ($pathXmlUrlFile, $tpAmb, $siglaUF, $tipo);
         }
+        
         //recuperação da versão
         $this->urlVersion = $aURL[$service]['version'];
         //recuperação da url do serviço
@@ -574,7 +575,7 @@ class BaseTools
             'CE'=>'CE',
             'DF'=>'SVRS',
             'ES'=>'SVRS',
-            'GO'=>'SVRS',
+            'GO'=>'GO',
             'MA'=>'SVRS',
             'MG'=>'MG',
             'MS'=>'MS',
@@ -709,7 +710,7 @@ class BaseTools
             $path = $this->aConfig['pathMDFeFiles'];
         }
         $pathTemp = Files\FilesFolders::getFilePath($tpAmb, $path, $subFolder)
-            . DIRECTORY_SEPARATOR.$anomes;
+            . DIRECTORY_SEPARATOR.$anomes;        
         if (! Files\FilesFolders::saveFile($pathTemp, $filename, $data)) {
             $msg = 'Falha na gravação no diretório. '.$pathTemp;
             throw new Exception\RuntimeException($msg);

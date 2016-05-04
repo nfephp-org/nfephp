@@ -36,7 +36,8 @@ class FilesFolders
         'temporarias',
         'recebidas',
         'consultadas',
-        'pdf'
+        'pdf',
+        'csc'
     );
     
     /**
