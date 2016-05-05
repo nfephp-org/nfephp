@@ -432,7 +432,7 @@ function changeAlerts(key, flag, msg) {
     <span title="Indique o Código de Segurança do Contribuinte (antigo Token) para montagem do QRCode nas NFCe, requer cadastramento prévio na SEFAZ">CSC - Código de Segurança do Contribuinte (antigo Token)</span><br>
     <input type="text" id="tokenNFCe" name="tokenNFCe" placeholder="Código de Segurança do Contribuinte (antigo Token) para NFCe"  value="<?php echo $tokenNFCe;?>" /><br>
     <span title="Indique o Identificador do CSC – Código de Segurança do Contribuinte no Banco de Dados da SEFAZ para NFCe, 6 digitos numericos com zeros a esquerda">Identificador do CSC NFCe</span><br>
-    <input type="text" id="tokenNFCeId" name="tokenNFCeId" placeholder="000000" size="8" value="<?php echo $tokenNFCeId;?>" /><br>
+    <input type="text" id="tokenNFCeId" name="tokenNFCeId" placeholder="Identificador do CSC, necessário para validar o CSC." size="8" value="<?php echo $tokenNFCeId;?>" /><br>
     </div>
     <div id="direita">
         <h3>Estes campos referen-se a os dados principais do emitente e todos os campos em amarelo são OBRIGATÓRIOS.</h3>

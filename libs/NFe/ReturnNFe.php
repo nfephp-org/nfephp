@@ -61,6 +61,9 @@ class ReturnNFe
             case 'NfeDownloadNF':
                 return self::zReadDownloadNF($dom);
                 break;
+            case 'CscNFCe':
+                return self::zReadCscNFCe($dom);
+                break;
         }
         return array();
     }
@@ -137,6 +140,47 @@ class ReturnNFe
         $aResposta['xMotivo'] = $dom->getValue($tag, 'xMotivo');
         $aResposta['dhResp'] = $dom->getValue($tag, 'dhResp');
         $aResposta['aRetNFe'] = $aRetNFe;
+        return $aResposta;
+    }
+    
+    /**
+     * zReadCscNFCe
+     * @param DOMDocument $dom
+     * @param boolean $parametro
+     * @return array
+     */
+    protected static function zReadCscNFCe($dom)
+    {
+        //retorno da funçao
+        $aResposta = array(
+            'bStat' => false,
+            'versao' => '',
+            'tpAmb' => '',
+            'indOp' => '',
+            'cStat' => '',
+            'xMotivo' => '',
+            'aRetNFe' => array()
+        );
+        $tag = $dom->getNode('cscNFCeResult');
+        $aRetCSC = array();
+        if (! isset($tag)) {
+            return $aResposta;
+        }
+        $retAdmCscNFCe = $dom->getNode('retAdmCscNFCe');
+        if (! empty($retAdmCscNFCe)) {
+            $aResposta['versao'] = $retAdmCscNFCe->getAttribute('versao');
+        }
+        $dadosCsc = $dom->getNode('dadosCsc');
+        if (! empty($dadosCsc)) {
+            $aResposta['idCsc'] = $dom->getValue($dadosCsc, 'idCsc');
+            $aResposta['codigoCsc'] = $dom->getValue($dadosCsc, 'codigoCsc');
+        }
+        $aResposta['bStat'] = true;
+        $aResposta['tpAmb'] = $dom->getValue($tag, 'tpAmb');
+        $aResposta['indOp'] = $dom->getValue($tag, 'indOp');
+        $aResposta['cStat'] = $dom->getValue($tag, 'cStat');
+        $aResposta['xMotivo'] = $dom->getValue($tag, 'xMotivo');
+        $aResposta['aRetCSC'] = $aRetCSC;
         return $aResposta;
     }
     
