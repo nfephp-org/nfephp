@@ -299,7 +299,13 @@ class ToolsNFe extends BaseTools
     {
         //carrega a NFe
         $docnfe = new Dom();
-        $docnfe->loadXMLFile($pathNFefile);
+        
+        if(file_exists($pathNFefile)){ 
+			$docnfe->loadXMLFile($pathNFefile);
+		}else{
+			$docnfe->loadXMLString($pathNFefile);
+		}
+        
         $nodenfe = $docnfe->getNode('NFe', 0);
         if ($nodenfe == '') {
             $msg = "O arquivo indicado como NFe não é um xml de NFe!";
@@ -311,7 +317,13 @@ class ToolsNFe extends BaseTools
         }
         //carrega o protocolo
         $docprot = new Dom();
-        $docprot->loadXMLFile($pathProtfile);
+        
+        if(file_exists($pathProtfile)){ 
+			$docprot->loadXMLFile($pathProtfile);
+		}else{
+			$docprot->loadXMLString($pathProtfile);
+		}
+        
         $nodeprots = $docprot->getElementsByTagName('protNFe');
         if ($nodeprots->length == 0) {
             $msg = "O arquivo indicado não contem um protocolo de autorização!";
