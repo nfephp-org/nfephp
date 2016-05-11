@@ -302,11 +302,11 @@ class ToolsNFe extends BaseTools
         
         if(file_exists($pathNFefile)){
             //carrega o XML pelo caminho do arquivo informado
-			$docnfe->loadXMLFile($pathNFefile);
-		}else{
-		    //carrega o XML pelo conteúdo
-			$docnfe->loadXMLString($pathNFefile);
-		}
+            $docnfe->loadXMLFile($pathNFefile);
+        }else{
+            //carrega o XML pelo conteúdo
+            $docnfe->loadXMLString($pathNFefile);
+        }
         
         $nodenfe = $docnfe->getNode('NFe', 0);
         if ($nodenfe == '') {
@@ -322,11 +322,11 @@ class ToolsNFe extends BaseTools
         
         if(file_exists($pathProtfile)){
             //carrega o XML pelo caminho do arquivo informado
-			$docprot->loadXMLFile($pathProtfile);
-		}else{
-		    //carrega o XML pelo conteúdo
-			$docprot->loadXMLString($pathProtfile);
-		}
+            $docprot->loadXMLFile($pathProtfile);
+        }else{
+            //carrega o XML pelo conteúdo
+            $docprot->loadXMLString($pathProtfile);
+        }
         
         $nodeprots = $docprot->getElementsByTagName('protNFe');
         if ($nodeprots->length == 0) {
