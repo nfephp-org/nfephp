@@ -712,7 +712,7 @@ class ToolsNFe extends BaseTools
     
     /**
      * sefazConsultaRecibo
-     * Contuta a situação de um Lote de NFe enviadas pelo recibo desse envio
+     * Consulta a situação de um Lote de NFe enviadas pelo recibo desse envio
      * @param string $recibo
      * @param string $tpAmb
      * @param array $aRetorno
