@@ -300,10 +300,10 @@ class ToolsNFe extends BaseTools
         //carrega a NFe
         $docnfe = new Dom();
         
-        if(file_exists($pathNFefile)){
+        if (file_exists($pathNFefile)) {
             //carrega o XML pelo caminho do arquivo informado
             $docnfe->loadXMLFile($pathNFefile);
-        }else{
+        } else {
             //carrega o XML pelo conteúdo
             $docnfe->loadXMLString($pathNFefile);
         }
@@ -320,10 +320,10 @@ class ToolsNFe extends BaseTools
         //carrega o protocolo
         $docprot = new Dom();
         
-        if(file_exists($pathProtfile)){
+        if (file_exists($pathProtfile)) {
             //carrega o XML pelo caminho do arquivo informado
             $docprot->loadXMLFile($pathProtfile);
-        }else{
+        } else {
             //carrega o XML pelo conteúdo
             $docprot->loadXMLString($pathProtfile);
         }
