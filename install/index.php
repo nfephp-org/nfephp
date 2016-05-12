@@ -588,14 +588,20 @@ function changeAlerts(key, flag, msg) {
     <div id="esquerda">
     <span title="Indique se é necessária a autenticação ">Autenticação</span><br>
     <?php echo $selMailAuth;?><br>
-    <span title="Indique o endereço de email que será usado para envio dos documentos eletrônicos. Ex. nfe@seudominio.com.br">Endereço de Email</span><br>
-    <input type="text" id="mailUser" name="mailUser" placeholder="Nome do usuário do email" size="50" value="<?php echo $mailUser;?>" /><br>
-    <span title="Indique a senha de acesso da caixa postal do endereço de email">Senha de Email</span><br>
+    <span title="Indique o endereço de email que será usado para envio dos documentos eletrônicos. Ex. nfe@seudominio.com.br">Endereço de E-mail</span><br>
+    <input type="text" id="mailUser" name="mailUser" placeholder="Nome do usuário do e-mail" size="250" value="<?php echo $mailUser;?>" /><br>
+    <span title="Indique a senha de acesso da caixa postal do endereço de e-mail">Senha de E-mail</span><br>
     <input type="password" id="mailPass" name="mailPass" placeholder="Senha do usuário" size="12" value="<?php echo $mailPass;?>" /><br>
     <span title="Indique o URL do Servidor SMTP Ex. smtp.seudominio.com.br">SMTP Server</span><br>
     <input type="text" id="mailSmtp" name="mailSmtp" placeholder="Servidor SMTP" size="50" value="<?php echo $mailSmtp;?>" /><br>
-    <span title="Indique ">From</span><br>
-    <input type="text" id="mailFrom" name="mailFrom" placeholder="from" size="50" value="<?php echo $mailFrom;?>" /><br>
+    <span title="Indique ">From (E-mail)</span><br>
+    <input type="text" id="mailFromMail" name="mailFromMail" placeholder="E-mail de identificação (Geralmente o mesmo utilizado para o envio)" size="250" value="<?php echo $mailFromMail;?>" /><br>
+    <span title="Indique ">From (Nome)</span><br>
+    <input type="text" id="mailFromName" name="mailFromName" placeholder="Nome de identificação do E-mail" size="50" value="<?php echo $mailFromName;?>" /><br>
+    <span title="Indique ">Reply (E-mail)</span><br>
+    <input type="text" id="mailReplayToMail" name="mailReplayToMail" placeholder="E-mail especifico para respostas (Se vazio, será utilizado o From)" size="250" value="<?php echo $mailReplayToMail;?>" /><br>
+    <span title="Indique ">Reply (Nome)</span><br>
+    <input type="text" id="mailReplayToName" name="mailReplayToName" placeholder="Nome de identificação do e-mail de respostas" size="50" value="<?php echo $mailReplayToName;?>" /><br>
     <span title="Indique ">Protocol</span><br>
     <?php echo $selMailProt;?><br>
     <span title="Indique ">Port</span><br>

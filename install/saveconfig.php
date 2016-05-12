@@ -83,6 +83,7 @@ $mailProtocol = filter_input(INPUT_GET, 'mailProtocol', FILTER_SANITIZE_STRING);
 $mailPort = filter_input(INPUT_GET, 'mailPort', FILTER_SANITIZE_NUMBER_INT);
 
 $mailFromMail = filter_input(INPUT_GET, 'mailFromMail', FILTER_VALIDATE_EMAIL);
+$mailFrom = empty($mailFrom) ? $mailFromMail : '';
 $mailFromName = filter_input(INPUT_GET, 'mailFromName', FILTER_SANITIZE_STRING);
 $mailReplayToMail = filter_input(INPUT_GET, 'mailReplayToMail', FILTER_VALIDATE_EMAIL);
 $mailReplayToName = filter_input(INPUT_GET, 'mailReplayToName', FILTER_SANITIZE_STRING);

@@ -15,6 +15,7 @@ namespace NFePHP\NFe;
 use NFePHP\Common\Dom\Dom;
 use NFePHP\Common\DateTime\DateTime;
 use NFePHP\Common\Base\BaseMail;
+use NFePHP\Common\Exception;
 use Html2Text\Html2Text;
 use \DOMDocument;
 
@@ -43,10 +44,12 @@ class MailNFe extends BaseMail
         $this->addAttachment($pathFile, '');
         //constroi a mensagem
         $this->buildMessage($this->msgHtml, $this->msgTxt);
-        //se $aMail está vazio então pega o endereço de email do destinatário no xml
-        if (! empty($aMail)) {
-            //se $aMail não é vazio então envia o email para todos os endereços do array
+        if (sizeof($aMail)) {
+            // Se for informado um ou mais e-mails no $aMail, utiliza eles
             $this->aMail = $aMail;
+        } elseif (!sizeof($this->aMail)) {
+            // Caso não seja informado nenhum e-mail e não tenha sido recuperado qualquer e-mail do xml
+            throw new Exception\RuntimeException('Nenhum e-mail informado ou recuperado do XML.');
         }
         $err = $this->sendMail($assunto, $this->aMail);
         if ($err === true) {
@@ -82,8 +85,8 @@ class MailNFe extends BaseMail
         $vNF = $icmsTot->getElementsByTagName('vNF')->item(0)->nodeValue;
         $this->aMail[] = !empty($dest->getElementsByTagName('email')->item(0)->nodeValue) ?
                 $dest->getElementsByTagName('email')->item(0)->nodeValue :
-                '';
-        //peagar os emails que existirem em obsCont
+                '';        
+        //pega os emails que existirem em obsCont
         $infAdic = $infNFe->getElementsByTagName('infAdic')->item(0);
         if (!empty($infAdic)) {
             $obsConts = $infAdic->getElementsByTagName('obsCont');

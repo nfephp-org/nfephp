@@ -206,14 +206,15 @@ class ToolsNFe extends BaseTools
      * @param array $aMails
      * @param string $templateFile path completo ao arquivo template html do corpo do email
      * @param boolean $comPdf se true o sistema irá renderizar o DANFE e anexa-lo a mensagem
+     * @param string $pathPdf
      * @return boolean
      * @throws Exception\RuntimeException
      */
-    public function enviaMail($pathXml = '', $aMails = array(), $templateFile = '', $comPdf = false)
+    public function enviaMail($pathXml = '', $aMails = array(), $templateFile = '', $comPdf = false, $pathPdf = '')
     {
         $mail = new MailNFe($this->aMailConf);
-        $pathPdf = '';
-        if ($comPdf && $this->modelo == '55') {
+        // Se não for informado o caminho do PDF, monta um através do XML
+        if ($comPdf && $this->modelo == '55' && $pathPdf == '') {
             $docxml = Files\FilesFolders::readFile($pathXml);
             $danfe = new Extras\Danfe($docxml, 'P', 'A4', $this->aDocFormat['pathLogoFile'], 'I', '');
             $id = $danfe->montaDANFE();
@@ -223,7 +224,7 @@ class ToolsNFe extends BaseTools
                 . DIRECTORY_SEPARATOR
                 . 'pdf'
                 . DIRECTORY_SEPARATOR
-                . $id . '.pdf';
+                . $id . '-danfe.pdf';
             $pdf = $danfe->printDANFE($pathPdf, 'F');
         }
         if ($mail->envia($pathXml, $aMails, $comPdf, $pathPdf) === false) {
