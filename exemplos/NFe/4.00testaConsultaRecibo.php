@@ -10,10 +10,10 @@ $nfe->setModelo('55');
 
 $aResposta = array();
 $tpAmb = '2';
-$recibo = '351000087215190';
+$recibo = '521000011732162';
 $retorno = $nfe->sefazConsultaRecibo($recibo, $tpAmb, $aResposta);
-echo '<br><br><PRE>';
+echo '<br><br><pre>';
 echo htmlspecialchars($nfe->soapDebug);
-echo '</PRE><BR>';
+echo '</pre><br><br><pre>';
 print_r($aResposta);
-echo "<br>";
+echo "</pre><br>";

@@ -8,11 +8,12 @@ use NFePHP\NFe\ToolsNFe;
 $nfe = new ToolsNFe('../../config/config.json');
 $aResposta = array();
 
-$pathNFefile = '/var/www/nfe/homologacao/assinadas/35150158716523000119550010000000071000000076-nfe.xml';
-$pathProtfile = '/var/www/nfe/homologacao/temporarias/201501/35150158716523000119550010000000071000000076-retConsSitNFe.xml';
+$chave = '52160500067985000172550010000000101000000100';
+$recibo = '521000011732162';
+$pathNFefile = "D:/xampp/htdocs/GIT-nfephp-org/nfephp/xmls/NF-e/homologacao/assinadas/{$chave}-nfe.xml";
+$pathProtfile = "D:/xampp/htdocs/GIT-nfephp-org/nfephp/xmls/NF-e/homologacao/temporarias/201605/{$recibo}-retConsReciNFe.xml";
 $saveFile = true;
 $retorno = $nfe->addProtocolo($pathNFefile, $pathProtfile, $saveFile);
-echo '<br><br><PRE>';
+echo '<br><br><pre>';
 echo htmlspecialchars($retorno);
-echo '</PRE><BR>';
-echo "<br>";
+echo "</pre><br>";

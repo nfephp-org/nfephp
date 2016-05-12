@@ -48,9 +48,9 @@ $htmod = Configure::chkModules();
 
 //variaveis da configuração
 $tpAmb = 2;
-$pathXmlUrlFileNFe = PATH_NFEPHP .'/config/nfe_ws3_mod55.xml';
-$pathXmlUrlFileCTe = PATH_NFEPHP .'/config/cte_ws2.xml';
-$pathXmlUrlFileMDFe = PATH_NFEPHP .'/config/mdf2_ws1.xml';
+$pathXmlUrlFileNFe = 'nfe_ws3_mod55.xml';
+$pathXmlUrlFileCTe = 'cte_ws2.xml';
+$pathXmlUrlFileMDFe = 'mdf2_ws1.xml';
 $pathXmlUrlFileCLe = '';
 $pathXmlUrlFileNFSe = '';
 $pathNFeFiles = '';
@@ -58,7 +58,7 @@ $pathCTeFiles = '';
 $pathMDFeFiles = '';
 $pathCLeFiles = '';
 $pathNFSeFiles = '';
-$pathCertsFiles = PATH_NFEPHP .'/certs/';
+$pathCertsFiles = PATH_NFEPHP . DIRECTORY_SEPARATOR . 'certs' . DIRECTORY_SEPARATOR;
 $siteUrl = str_replace('index.php', '', 'http://'.$_SERVER["SERVER_NAME"].$_SERVER["SCRIPT_NAME"]);
 $schemesNFe = 'PL_008i2';
 $schemesCTe = 'PL_CTe_200';
@@ -67,8 +67,14 @@ $schemesCLe = '';
 $schemesNFSe = '';
 
 $razaosocial = '';
+$nomefantasia = '';
 $siglaUF = 'SP';
 $cnpj = '';
+$ie = 'ISENTO';
+$im = '';
+$iest = '';
+$cnae = '';
+$regime = '1';
 $tokenIBPT = '';
 $tokenNFCe = '';
 $tokenNFCeId = '';
@@ -106,8 +112,8 @@ $proxyPort = '';
 $proxyUser = '';
 $proxyPass = '';
 
-$configfolder = PATH_NFEPHP .'/config';
-$pathConfig =  $configfolder .'/config.json';
+$configfolder = PATH_NFEPHP  . DIRECTORY_SEPARATOR . 'config';
+$pathConfig =  $configfolder . DIRECTORY_SEPARATOR . 'config.json';
 
 $configureVer = '4.0';
 
@@ -134,8 +140,14 @@ if (is_file($pathConfig)) {
     $schemesCLe = isset($installConfig->schemesCLe) ? $installConfig->schemesCLe : '';
     $schemesNFSe = isset($installConfig->schemesNFSe) ? $installConfig->schemesNFSe : '';
     $razaosocial = isset($installConfig->razaosocial) ? $installConfig->razaosocial : '';
+    $nomefantasia = isset($installConfig->nomefantasia) ? $installConfig->nomefantasia : '';
     $siglaUF = isset($installConfig->siglaUF) ? $installConfig->siglaUF : 'SP';
     $cnpj = isset($installConfig->cnpj) ? $installConfig->cnpj : '';
+    $ie = isset($installConfig->ie) ? $installConfig->ie : '';
+    $im = isset($installConfig->im) ? $installConfig->im : '';
+    $iest = isset($installConfig->iest) ? $installConfig->iest : '';
+    $cnae = isset($installConfig->cnae) ? $installConfig->cnae : '';
+    $regime = isset($installConfig->regime) ? $installConfig->regime : '1';
     $tokenIBPT = isset($installConfig->tokenIBPT) ? $installConfig->tokenIBPT : '';
     $tokenNFCe = isset($installConfig->tokenNFCe) ? $installConfig->tokenNFCe : '';
     $tokenNFCeId = isset($installConfig->tokenNFCeId) ? $installConfig->tokenNFCeId : '';
@@ -204,6 +216,22 @@ $aUF = array(
     'SP',
     'TO'
 );
+
+$selRegime = "<select id=\"regime\" name=\"regime\" size=\"1\">";
+if ($regime == 1) {
+    $selRegime .= "<option value=\"1\" selected>Simples Nacional</option>";
+    $selRegime .= "<option value=\"2\">Simples Nacional - Excesso Sublimite de Receita Bruta</option>";
+    $selRegime .= "<option value=\"3\">Regime Normal</option>";
+} elseif ($regime == 2) {
+    $selRegime .= "<option value=\"1\">Simples Nacional</option>";
+    $selRegime .= "<option value=\"2\" selected>Simples Nacional - Excesso Sublimite de Receita Bruta</option>";
+    $selRegime .= "<option value=\"3\">Regime Normal</option>";
+} elseif ($regime == 3) {
+    $selRegime .= "<option value=\"1\">Simples Nacional</option>";
+    $selRegime .= "<option value=\"2\">Simples Nacional - Excesso Sublimite de Receita Bruta</option>";
+    $selRegime .= "<option value=\"3\" selected>Regime Normal</option>";
+}
+$selRegime .= "</select>";
 
 $selUF = "<select id=\"siglaUF\" name=\"siglaUF\" size=\"1\">";
 foreach ($aUF as $sigla) {
@@ -412,11 +440,23 @@ function changeAlerts(key, flag, msg) {
     <span title="Indique o ambiente padrão (1-Produção ou 2-Homologação)">Ambiente</span><br>
     <?php echo $selAmb;?><br>
     <span title="Indique a Razão Social Completa do Emitente">Razão Social do Emitente</span><br>
-    <input type="text" id="razaosocial" name="razaosocial" placeholder="Nome completo do emitente"  value="<?php echo $razaosocial;?>" required /><br>
+    <input type="text" id="razaosocial" name="razaosocial" placeholder="Nome completo do emitente" maxlength="60" value="<?php echo $razaosocial;?>" required /><br>
+    <span title="Indique o Nome Fantasia Completo do Emitente">Nome Fantasia</span><br>
+    <input type="text" id="nomefantasia" name="nomefantasia" placeholder="Nome fantasia do emitente" maxlength="60" value="<?php echo $nomefantasia;?>" required /><br>
     <span title="Indique o CNPJ do emitente SEM FORMATAÇÃO">CNPJ do Emitente</span><br>
-    <input type="text" id="cnpj" name="cnpj" placeholder="CNPJ sem formatação" size="25" value="<?php echo $cnpj;?>" required /><br>
+    <input type="text" id="cnpj" name="cnpj" placeholder="CNPJ sem formatação" maxlength="14" value="<?php echo $cnpj;?>" required /><br>
+    <span title="Indique a Inscrição Estadual do emitente SEM FORMATAÇÃO">IE do Emitente</span><br>
+    <input type="text" id="ie" name="ie" placeholder="IE sem formatação ou o literal 'ISENTO'" maxlength="14" value="<?php echo $ie;?>" required /><br>
+    <span title="Indique a Inscrição Municipal do emitente SEM FORMATAÇÃO">IM do Emitente</span><br>
+    <input type="text" id="im" name="im" placeholder="IM sem formatação" maxlength="15" value="<?php echo $im;?>" /><br>
+    <span title="Indique a Inscrição Estadual (Subst. Tributário)">IE (Subst. Tributário)</span><br>
+    <input type="text" id="iest" name="iest" placeholder="IE (Subst. Tributário)" maxlength="14" value="<?php echo $iest;?>" required /><br>
+    <span title="Indique o Código Nacional de Atividade Econômica do emitente SEM FORMATAÇÃO">CNAE do Emitente</span><br>
+    <input type="text" id="cnae" name="cnae" placeholder="CNAE Principal sem formatação" maxlength="7" value="<?php echo $cnae;?>" /><br>
     <span title="Selecione o estado do Emitente">Unidade da Federação</span><br>
     <?php echo $selUF;?><br>
+    <span title="Indique o Regime Tributário (1-Simples Nacional;2-Simples Nacional, excesso sublimite de receita bruta;3-Regime Normal.)">Regime Tributário</span><br>
+    <?php echo $selRegime;?><br>
     <span title="Indique o path real para a pasta dos certificados. Esta pasta deve ter permissões de escrita pelo usuário do servidor web. Ex. www-data">Path dos Certificados</span><br>
     <input type="text" id="pathCertsFiles" name="pathCertsFiles" placeholder="Caminho para a pasta"  value="<?php echo $pathCertsFiles;?>" required /><label id="lblCerts"></label><br>
     <span title="Indique o nome do certificado que foi salvo na pasta dos certificados">Nome do arquivo pfx (Certificado)</span><br>
@@ -436,14 +476,16 @@ function changeAlerts(key, flag, msg) {
     </div>
     <div id="direita">
         <h3>Estes campos referen-se a os dados principais do emitente e todos os campos em amarelo são OBRIGATÓRIOS.</h3>
-        <h3>Razão Social - indicar a razão social do emitente exatamente igual ao seu registro na SEFAZ, alguns simbolos poderão ser substituidos por seus equivalentes em entidades html (ex. &amp;)</h3>
+        <h3>Razão Social - indicar a Razão Social do emitente exatamente igual ao seu registro na SEFAZ, alguns simbolos poderão ser substituidos por seus equivalentes em entidades html (ex. &amp;)</h3>
+        <h3>Nome Fantasia - indicar o Nome Fantasia do emitente exatamente igual ao seu registro na SEFAZ, alguns simbolos poderão ser substituidos por seus equivalentes em entidades html (ex. &amp;)</h3>
+        <h3>Inscrição Estadual - indicar o número de <u>Cadastrado de Contribuintes do ICMS</u>, pode ser informado o literal “ISENTO” para os contribuintes do ICMS isentos de inscrição no Cadastro de Contribuintes de ICMS.</h3>
+        <h3>Inscrição Municipal - inidicar o número de <u>Cadastro de Contribuintes do ISSQN</u>, necessário para emissão de NF-e conjugada, com itens de produtos sujeitos ao ICMS e itens de serviços sujeitos ao ISSQN.</h3>
+        <h3>Inscrição Estadual do Substituto Tributário - indicar o número de <u>Cadastrado de Contribuintes do ICMS</u> do estado de Destino (Substituto), para quem pretender efetuar vendas interestaduais de mercadorias sujeitas à substituição tributária.</h3>
+        <h3>Regime Tributário - selecione a opção de regime tributário em que o emissor atua (MEI - Microempreendedor Individual atua no regime 'Simples Nacional').</h3>
+        <h3>CNAE - indicar o <u>Código Nacional de Atividade Econômica</u> principal do emitente, necessário quando a Inscrição Municipal for informada.</h3>
+        <h3>CSC - <u>Código de Segurança do Contribuinte</u>, é obrigatório informar para quem deseja emitir NFC-e, é fornecido pelas SEFAZ (ou pode ser gerado através da API se sua SEFAZ possui o serviço por WebService).</h3>
         <h3></h3>
-        <h3></h3>
-        <h3></h3>
-        <h3></h3>
-        <h3></h3>
-        <h3></h3>
-        <h3></h3>
+        <h3>Dica: Utilize o site da Receita Federal para verificar os dados cadastrais do CNPJ, <a href="http://www.receita.fazenda.gov.br/PessoaJuridica/CNPJ/cnpjreva/Cnpjreva_Solicitacao.asp" title="Emissão de Comprovante de Inscrição e de Situação Cadastral - Receita Federal" target="_blank">clique aqui</a>.</h3>
     </div>
     <div class="clear"> </div>
   </div>

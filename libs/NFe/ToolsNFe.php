@@ -98,7 +98,7 @@ class ToolsNFe extends BaseTools
             return true;
         }
         $this->motivoContingencia = $motivo;
-        $this->tsContingencia = mktime();
+        $this->tsContingencia = time(); // mktime() necessita de paramentos...
         $ctgList = array(
             'AC'=>'SVCAN',
             'AL'=>'SVCAN',
@@ -342,8 +342,7 @@ class ToolsNFe extends BaseTools
             }
         }
         if ($digValueNFe != $digValueProt) {
-            $msg = "Inconsistência! O DigestValue da NFe não combina com o"
-                . " do digVal do protocolo indicado!";
+            $msg = "Inconsistência! O DigestValue da NFe não combina com o do digVal do protocolo indicado!";
             throw new Exception\RuntimeException($msg);
         }
         if ($chaveNFe != $chaveProt) {
@@ -380,7 +379,7 @@ class ToolsNFe extends BaseTools
         //remove as informações indesejadas
         $procXML = Strings::clearProt($procXML);
         if ($saveFile) {
-            $filename = "$chaveNFe-protNFe.xml";
+            $filename = "{$chaveNFe}-protNFe.xml";
             $this->zGravaFile(
                 'nfe',
                 $tpAmb,

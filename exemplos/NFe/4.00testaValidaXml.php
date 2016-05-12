@@ -8,14 +8,17 @@ use NFePHP\NFe\ToolsNFe;
 $nfe = new ToolsNFe('../../config/config.json');
 $nfe->setModelo('55');
 
-$chave = '35150458716523000119550010000000131000000139';
+$chave = '52160500067985000172550010000000101000000100';
 $tpAmb = '2';
-$xml = "/var/www/nfe/homologacao/assinadas/$chave-nfe.xml";
+// $xml = "/var/www/nfe/homologacao/assinadas/{$chave}-nfe.xml"; // Ambiente Linux
+$xml = "D:/xampp/htdocs/GIT-nfephp-org/nfephp/xmls/NF-e/homologacao/assinadas/{$chave}-nfe.xml"; // Ambiente Windows
 
 if (! $nfe->validarXml($xml)) {
-    echo "Eita !?! Tem bicho na linha .... <br>";
+    echo "<h3>Eita !?! Tem bicho na linha .... </h3>";    
     foreach ($nfe->errors as $erro) {
-        echo "$erro <br>";
+        foreach ($erro as $e) {
+            echo "$e <br>";
+        }
     }
     exit();
 }
