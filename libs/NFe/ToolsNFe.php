@@ -532,7 +532,7 @@ class ToolsNFe extends BaseTools
      * zPutQRTag
      * Monta a URI para o QRCode e coloca a tag 
      * no xml já assinado
-     * @param Dom $dom
+    0000000000000000000000000000000000000 * @param Dom $dom
      * @return string
      * NOTA: O Campo QRCode está habilitado para uso a partir de 
      *       01/10/2015 homologação
@@ -567,8 +567,18 @@ class ToolsNFe extends BaseTools
         $token = $this->aConfig['tokenNFCe'];
         $idToken = $this->aConfig['tokenNFCeId'];
         $versao = '100';
-        //pega a URL para consulta do QRCode do estado emissor
-        //essa url está em nfe_ws3_mode65.xml
+        
+        /*
+         *Pega a URL para consulta do QRCode do estado emissor, 
+         *essa url está em nfe_ws3_mode65.xml, em tese essa url 
+         *NÃO É uma WebService, é simplismente uma página para 
+         *consulta do QRCode via parametros GET, percebe-se que 
+         *em todas as SEFAZ o endereço de consulta do QRCode se
+         *difere do padrão de endereço das WS. 
+         *Esse é um serviço para ser utilizado pelo consumidor...
+         *NOTA: Sem o endereço de consulta não é possível gerar o QR-Code!!!
+        */
+        
         //carrega serviço
         $servico = 'NfeConsultaQR';
         $siglaUF = $this->zGetSigla($cUF);

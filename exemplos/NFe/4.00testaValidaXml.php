@@ -13,13 +13,17 @@ $tpAmb = '2';
 // $xml = "/var/www/nfe/homologacao/assinadas/{$chave}-nfe.xml"; // Ambiente Linux
 $xml = "D:/xampp/htdocs/GIT-nfephp-org/nfephp/xmls/NF-e/homologacao/assinadas/{$chave}-nfe.xml"; // Ambiente Windows
 
-if (! $nfe->validarXml($xml)) {
+if (! $nfe->validarXml($xml) || sizeof($nfeTools->errors)) {
     echo "<h3>Eita !?! Tem bicho na linha .... </h3>";    
     foreach ($nfe->errors as $erro) {
-        foreach ($erro as $e) {
-            echo "$e <br>";
+        if (is_array($erro)) { 
+            foreach ($erro as $err) {
+                echo "$err <br>";
+            }
+        } else {
+            echo "$erro <br>";
         }
     }
-    exit();
+    exit;
 }
 echo "NFe Valida !";

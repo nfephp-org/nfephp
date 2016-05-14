@@ -10,16 +10,16 @@ $nfe = new MakeNFe();
 
 $nfeTools = new ToolsNFe('../../config/config.json');
 
-//Dados da NFe (ide)
+//Dados da NFe - infNFe
 $cUF = '52'; //codigo numerico do estado
 $cNF = '00000010'; //numero aleatório da NF
-$natOp = 'VENDA DE PRODUTO'; //natureza da operação
+$natOp = 'Venda de Produto'; //natureza da operação
 $indPag = '1'; //0=Pagamento à vista; 1=Pagamento a prazo; 2=Outros
 $mod = '55'; //modelo da NFe 55 ou 65 essa última NFCe
 $serie = '1'; //serie da NFe
 $nNF = '10'; // numero da NFe
-$dhEmi = str_replace(" ", "T", date("Y-m-d H:i:sP"));//para versão 3.10 '2014-02-03T13:22:42-3.00' não informar para NFCe
-$dhSaiEnt = str_replace(" ", "T", date("Y-m-d H:i:sP")); //versão 2.00, 3.00 e 3.10
+$dhEmi = date("Y-m-d\TH:i:sP");//Formato: “AAAA-MM-DDThh:mm:ssTZD” (UTC - Universal Coordinated Time).
+$dhSaiEnt = date("Y-m-d\TH:i:sP");//Não informar este campo para a NFC-e.
 $tpNF = '1';
 $idDest = '1'; //1=Operação interna; 2=Operação interestadual; 3=Operação com exterior.
 $cMunFG = '5200258';
@@ -38,7 +38,7 @@ $tpEmis = '1'; //1=Emissão normal (não em contingência);
                //Nota: Para a NFC-e somente estão disponíveis e são válidas as opções de contingência 5 e 9.
 $tpAmb = '2'; //1=Produção; 2=Homologação
 $finNFe = '1'; //1=NF-e normal; 2=NF-e complementar; 3=NF-e de ajuste; 4=Devolução/Retorno.
-$indFinal = '0'; //0=Não; 1=Consumidor final;
+$indFinal = '0'; //0=Normal; 1=Consumidor final;
 $indPres = '9'; //0=Não se aplica (por exemplo, Nota Fiscal complementar ou de ajuste);
                //1=Operação presencial;
                //2=Operação não presencial, pela Internet;
@@ -54,9 +54,8 @@ $dhCont = ''; //entrada em contingência AAAA-MM-DDThh:mm:ssTZD
 $xJust = ''; //Justificativa da entrada em contingência
 
 //Numero e versão da NFe (infNFe)
-$tempData = explode("-", $dhEmi);
-$ano = $tempData[0] - 2000;
-$mes = $tempData[1];
+$ano = date('y',strtotime($dhEmi));
+$mes = date('m',strtotime($dhEmi));
 $cnpj = $nfeTools->aConfig['cnpj'];
 $chave = $nfe->montaChave($cUF, $ano, $mes, $cnpj, $mod, $serie, $nNF, $tpEmis, $cNF);
 $versao = '3.10';
@@ -327,7 +326,7 @@ $orig = '0';
 $cst = '00'; // Tributado Integralmente
 $modBC = '3';
 $pRedBC = '';
-$vBC = '840.00';
+$vBC = '840.00'; // = $qTrib * $vUnTrib
 $pICMS = '27.00'; // Alíquota do Estado de GO p/ 'NCM 2203.00.00 - Cervejas de Malte, inclusive Chope'
 $vICMS = '226.80'; // = $vBC * ( $pICMS / 100 )
 $vICMSDeson = '';
@@ -350,7 +349,7 @@ $orig = '0';
 $cst = '00';
 $modBC = '3';
 $pRedBC = '';
-$vBC = '360.00';
+$vBC = '360.00'; // = $qTrib * $vUnTrib
 $pICMS = '17.00'; // Alíquota Interna do Estado de GO 
 $vICMS = '61.20'; // = $vBC * ( $pICMS / 100 )
 $vICMSDeson = '';
@@ -382,7 +381,7 @@ $motDesICMS = '';
 $modBCST = '5'; // Calculo Por Pauta (valor)
 $pMVAST = '';
 $pRedBCST = '';
-$vBCST = '1030.80'; // Pauda do Chope Claro 1000ml em GO R$ 8,59 x 60 Litros
+$vBCST = '1030.80'; // Pauta do Chope Claro 1000ml em GO R$ 8,59 x 60 Litros
 $pICMSST = '27.00'; // GO para GO
 $vICMSST = '51.50'; // = (Valor da Pauta * Alíquota ICMS ST) - Valor ICMS Próprio
 $pDif = '';

@@ -95,6 +95,9 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
             '51'=> array(
                 'chave'=>'',
                 'QR'=>'http://www.nfe.sefaz.mt.gov.br/portal/consultarNFCe.jsp'),
+            '52'=> array(
+                'chave'=>'http://nfe.sefaz.go.gov.br/nfeweb/jsp/CConsultaCompletaNFEJSF.jsf',
+                'QR'=>'http://nfe.sefaz.go.gov.br/nfeweb/jsp/CConsultaCompletaNFEJSF.jsf'),
             '53'=> array(
                 'chave'=>'',
                 'QR'=>'http://dec.fazenda.df.gov.br/ConsultarNFCe.aspx')
@@ -121,6 +124,9 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
             '43'=> array(
                 'chave'=>'',
                 'QR'=>'https://www.sefaz.rs.gov.br/NFCE/NFCE-COM.aspx'),
+            '52'=> array(
+                'chave'=>'http://homolog.sefaz.go.gov.br/nfeweb/jsp/CConsultaCompletaNFEJSF.jsf',
+                'QR'=>'http://homolog.sefaz.go.gov.br/nfeweb/jsp/CConsultaCompletaNFEJSF.jsf'),
             '51'=> array(
                 'chave'=>'',
                 'QR'=>'http://www.hom.nfe.sefaz.mt.gov.br/portal/consultarNFCe.jsp'),

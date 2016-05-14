@@ -450,7 +450,7 @@ function changeAlerts(key, flag, msg) {
     <span title="Indique a Inscrição Municipal do emitente SEM FORMATAÇÃO">IM do Emitente</span><br>
     <input type="text" id="im" name="im" placeholder="IM sem formatação" maxlength="15" value="<?php echo $im;?>" /><br>
     <span title="Indique a Inscrição Estadual (Subst. Tributário)">IE (Subst. Tributário)</span><br>
-    <input type="text" id="iest" name="iest" placeholder="IE (Subst. Tributário)" maxlength="14" value="<?php echo $iest;?>" required /><br>
+    <input type="text" id="iest" name="iest" placeholder="IE (Subst. Tributário)" maxlength="14" value="<?php echo $iest;?>"/><br>
     <span title="Indique o Código Nacional de Atividade Econômica do emitente SEM FORMATAÇÃO">CNAE do Emitente</span><br>
     <input type="text" id="cnae" name="cnae" placeholder="CNAE Principal sem formatação" maxlength="7" value="<?php echo $cnae;?>" /><br>
     <span title="Selecione o estado do Emitente">Unidade da Federação</span><br>
