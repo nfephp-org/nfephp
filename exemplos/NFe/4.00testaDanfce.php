@@ -11,6 +11,7 @@ $nfe = new ToolsNFe('../../config/config.json');
 
 $saida = isset($_REQUEST['o']) ? $_REQUEST['o'] : 'pdf'; //pdf ou html
 
+$ecoNFCe = '1'; //0=Sim (NFC-e Simplificada); 1=Não (NFC-e Completa)
 $chave = '52160522234907000158650010000002001000002009';
 $xmlProt = "D:/xampp/htdocs/GIT-nfephp-org/nfephp/xmls/NF-e/homologacao/enviadas/aprovadas/201605/{$chave}-protNFe.xml";
 // Uso da nomeclatura '-danfce.pdf' para facilitar a diferenciação entre PDFs DANFE e DANFCE salvos na mesma pasta...
@@ -18,5 +19,7 @@ $pdfDanfe = "D:/xampp/htdocs/GIT-nfephp-org/nfephp/xmls/NF-e/homologacao/pdf/201
 
 $docxml = FilesFolders::readFile($xmlProt);
 $danfe = new Danfce($docxml, $nfe->aConfig['aDocFormat']->pathLogoFile, 2);
-$id = $danfe->montaDANFE(false);
+$id = $danfe->montaDANFE($ecoNFCe);
+$salva = $danfe->printDANFE('pdf', $pdfDanfe, 'F'); //salva na pasta pdf
+$id = $danfe->montaDANFE($ecoNFCe);
 $abre = $danfe->printDANFE($saida, $pdfDanfe, 'I');
