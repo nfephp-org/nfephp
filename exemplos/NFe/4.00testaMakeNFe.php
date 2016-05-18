@@ -612,16 +612,11 @@ foreach ($aDup as $dup) {
 //**************************************************************
 
 // Calculo de carga tributária similar ao IBPT - Lei 12.741/12
-$federal = $vII+$vIPI+$vIOF+$vPIS+$vCOFINS;
-$estadual = $vICMS+$vST;
-$municipal = $vISS; 
-$textoIBPT = "Valor Aprox. Tributos R$ ".number_format($federal+$estadual+$municipal,2,',','.')." - ";
-$textoIBPT .= $federal>0?number_format($federal,2,',','.')." Federal":"";
-$textoIBPT .= $federal>0?$estadual>0&&$municipal>0?", ":" e ":"";
-$textoIBPT .= $estadual>0?number_format($estadual,2,',','.')." Estadual":"";
-$textoIBPT .= $estadual>0&&$municipal>0?" e ":"";
-$textoIBPT .= $municipal>0?number_format($municipal,2,',','.')." Municipal":"";
-$textoIBPT .= ". ";
+$federal = number_format($vII+$vIPI+$vIOF+$vPIS+$vCOFINS,2,',','.');
+$estadual = number_format($vICMS+$vST,2,',','.');
+$municipal = number_format($vISS,2,',','.');
+$totalT = number_format($federal+$estadual+$municipal,2,',','.');
+$textoIBPT = "Valor Aprox. Tributos R$ {$totalT} - {$federal} Federal, {$estadual} Estadual e {$municipal} Municipal.";
 
 //Informações Adicionais
 //$infAdFisco = "SAIDA COM SUSPENSAO DO IPI CONFORME ART 29 DA LEI 10.637";

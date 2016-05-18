@@ -1236,9 +1236,6 @@ class MakeNFe extends BaseMake
         $nItemPed = '',
         $nFCI = ''
     ) {
-        if ($this->tpAmb == '2' && $this->mod == 65 && $nItem == 1) {
-            $xProd = 'NOTA FISCAL EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL';
-        }
         $identificador = 'I01 <prod> - ';
         $prod = $this->dom->createElement("prod");
         $this->dom->addChild(

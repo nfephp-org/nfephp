@@ -85,7 +85,9 @@ $certPhrase = '';
 $format = 'P';
 $paper = 'A4';
 $southpaw = true;
-$pathLogoFile = '';
+$pathLogoFile = PATH_NFEPHP . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'logo.jpg';
+$pathLogoNFe = PATH_NFEPHP . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'logo-nfe.png';
+$pathLogoNFCe = PATH_NFEPHP . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'logo-nfce.png';
 $logoPosition = 'L';
 $font = 'Times';
 $printer = '';
@@ -160,6 +162,8 @@ if (is_file($pathConfig)) {
     $paper = isset($installConfig->aDocFormat->paper) ? $installConfig->aDocFormat->paper : 'A4';
     $southpaw = isset($installConfig->aDocFormat->southpaw) ? $installConfig->aDocFormat->southpaw : true;
     $pathLogoFile = isset($installConfig->aDocFormat->pathLogoFile) ? $installConfig->aDocFormat->pathLogoFile : '';
+    $pathLogoNFe = isset($installConfig->aDocFormat->pathLogoNFe) ? $installConfig->aDocFormat->pathLogoNFe : '';
+    $pathLogoNFCe = isset($installConfig->aDocFormat->pathLogoNFCe) ? $installConfig->aDocFormat->pathLogoNFCe : '';
     $logoPosition = isset($installConfig->aDocFormat->logoPosition) ? $installConfig->aDocFormat->logoPosition : 'L';
     $font = isset($installConfig->aDocFormat->font) ? $installConfig->aDocFormat->font : 'Times';
     $printer = isset($installConfig->aDocFormat->printer) ? $installConfig->aDocFormat->printer : '';
@@ -532,14 +536,18 @@ function changeAlerts(key, flag, msg) {
     <input type="text" id="font" name="font" size="10" value="<?php echo $font;?>" readonly /><br>
     <span title="Normalmente não usado mas teria que complementar o script para permitir a impressão direta. Pois esse recurso depende do sistema operacional.">Impressora</span><br>
     <input type="text" id="printer" name="printer" placeholder="Nome da Impressora" size="30" value="<?php echo $printer;?>" /><br>
-    <span title="Imagem com a logomarca, deverá ser um aquivo JPEG ou PNG">Logo</span><br>
-    <input type="text" id="pathLogoFile" name="pathLogoFile" placeholder="Path completo para o arquivo com o logo"  value="<?php echo $pathLogoFile;?>" /><br>
+    <span title="Imagem com a logomarca, deverá ser um aquivo JPEG ou PNG">Logo (80x80px ou 160x50px jpg, gif ou png)</span><br>
+    <input type="text" id="pathLogoFile" name="pathLogoFile" placeholder="Path completo para o arquivo com o logo" value="<?php echo $pathLogoFile;?>" />
+    <input type="hidden" name="pathLogoNFe" value="<?php echo $pathLogoNFe;?>" readonly />
+    <input type="hidden" name="pathLogoNFCe" value="<?php echo $pathLogoNFCe;?>" readonly />
+    <br>
     </div>
     <div id="direita">
         <h3>Para a impressão dos documentos auxiliares seja para NFe, CTe, MDFe ou CLe, está definido em documentação oficial o uso obrigatório de papel A4 e do tipo de letras "Times" (serifados), isso é fixo e não pode ser mudado.</h3>
         <h3>O formato de impressão seja ele "Portraite" ou "Landscape" é definido também pelo campo &lt;tpImp&gt; do XML, portanto essa definição aqui estabelecida NÃO sobrepõe a especificação contida no XML, e nem é válida para qualquer documento auxiliar.</h3>
-        <h3>Para a impressão dos documentos auxiliares da NFCe as regras são diferentes tendo em vista que se trata de um substitudo do cupom fiscal. Nesses casos é usual havem impressoras termicas não-fiscais, especificas para a impressão desses cupons.</h3>
-        <h3>Dito isso, a impressão desses cupons (DANFCE) pode ser mais complexa pois algumas dessas impressoras para serem eficientes dependem do envio de comandos diretos no padrão ESC/POS ou similar (ex. Epson TM T20). Nesse momento ainda não temos na nossa API este recurso e portanto a DANFCE por enquato é gerada apenas em PDF.</h3>
+        <h3>A impressão de documentos auxiliares da NFC-e deve ser feita em impressoras comum (não fiscal) térmicas, laser ou deskjet de 80 colunas.</h3>
+        <h3>Por enquanto a API não envia os dados direto para impressora, e por tanto a DANFCE só é impressa em PDF ou HTML.</h3>
+        <h3>Caso não seja informado uma imagem para logo, será usado as imagens padrão para cada tipo de documento NF-e e NFC-e.</h3>
     </div>
     <div class="clear"> </div>
 
