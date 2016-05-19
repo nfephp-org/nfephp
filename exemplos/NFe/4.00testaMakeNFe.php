@@ -4,22 +4,25 @@ ini_set('display_errors', 'On');
 include_once '../../bootstrap.php';
 
 use NFePHP\NFe\MakeNFe;
+use NFePHP\NFe\ToolsNFe;
 
 $nfe = new MakeNFe();
 
-//Dados da NFe (ide)
-$cUF = '35'; //codigo numerico do estado
-$cNF = '00000009'; //numero aleatório da NF
-$natOp = 'VENDA DE PRODUTO'; //natureza da operação
+$nfeTools = new ToolsNFe('../../config/config.json');
+
+//Dados da NFe - infNFe
+$cUF = '52'; //codigo numerico do estado
+$cNF = '00000010'; //numero aleatório da NF
+$natOp = 'Venda de Produto'; //natureza da operação
 $indPag = '1'; //0=Pagamento à vista; 1=Pagamento a prazo; 2=Outros
 $mod = '55'; //modelo da NFe 55 ou 65 essa última NFCe
 $serie = '1'; //serie da NFe
-$nNF = '9'; // numero da NFe
-$dhEmi = str_replace(" ", "T", date("Y-m-d H:i:sP"));//para versão 3.10 '2014-02-03T13:22:42-3.00' não informar para NFCe
-$dhSaiEnt = str_replace(" ", "T", date("Y-m-d H:i:sP")); //versão 2.00, 3.00 e 3.10
+$nNF = '10'; // numero da NFe
+$dhEmi = date("Y-m-d\TH:i:sP");//Formato: “AAAA-MM-DDThh:mm:ssTZD” (UTC - Universal Coordinated Time).
+$dhSaiEnt = date("Y-m-d\TH:i:sP");//Não informar este campo para a NFC-e.
 $tpNF = '1';
-$idDest = '2'; //1=Operação interna; 2=Operação interestadual; 3=Operação com exterior.
-$cMunFG = '3550308';
+$idDest = '1'; //1=Operação interna; 2=Operação interestadual; 3=Operação com exterior.
+$cMunFG = '5200258';
 $tpImp = '1'; //0=Sem geração de DANFE; 1=DANFE normal, Retrato; 2=DANFE normal, Paisagem;
               //3=DANFE Simplificado; 4=DANFE NFC-e; 5=DANFE NFC-e em mensagem eletrônica
               //(o envio de mensagem eletrônica pode ser feita de forma simultânea com a impressão do DANFE;
@@ -33,10 +36,9 @@ $tpEmis = '1'; //1=Emissão normal (não em contingência);
                //7=Contingência SVC-RS (SEFAZ Virtual de Contingência do RS);
                //9=Contingência off-line da NFC-e (as demais opções de contingência são válidas também para a NFC-e);
                //Nota: Para a NFC-e somente estão disponíveis e são válidas as opções de contingência 5 e 9.
-$cDV = '4'; //digito verificador
 $tpAmb = '2'; //1=Produção; 2=Homologação
 $finNFe = '1'; //1=NF-e normal; 2=NF-e complementar; 3=NF-e de ajuste; 4=Devolução/Retorno.
-$indFinal = '0'; //0=Não; 1=Consumidor final;
+$indFinal = '0'; //0=Normal; 1=Consumidor final;
 $indPres = '9'; //0=Não se aplica (por exemplo, Nota Fiscal complementar ou de ajuste);
                //1=Operação presencial;
                //2=Operação não presencial, pela Internet;
@@ -47,21 +49,19 @@ $procEmi = '0'; //0=Emissão de NF-e com aplicativo do contribuinte;
                 //1=Emissão de NF-e avulsa pelo Fisco;
                 //2=Emissão de NF-e avulsa, pelo contribuinte com seu certificado digital, através do site do Fisco;
                 //3=Emissão NF-e pelo contribuinte com aplicativo fornecido pelo Fisco.
-$verProc = '3.22.8'; //versão do aplicativo emissor
+$verProc = '4.0.43'; //versão do aplicativo emissor
 $dhCont = ''; //entrada em contingência AAAA-MM-DDThh:mm:ssTZD
 $xJust = ''; //Justificativa da entrada em contingência
 
 //Numero e versão da NFe (infNFe)
-//$chave = '35140258716523000119550000000280051760377394';
-$tempData = explode("-", $dhEmi);
-$ano = $tempData[0] - 2000;
-$mes = $tempData[1];
-$cnpj = '58716523000119';
+$ano = date('y',strtotime($dhEmi));
+$mes = date('m',strtotime($dhEmi));
+$cnpj = $nfeTools->aConfig['cnpj'];
 $chave = $nfe->montaChave($cUF, $ano, $mes, $cnpj, $mod, $serie, $nNF, $tpEmis, $cNF);
 $versao = '3.10';
 $resp = $nfe->taginfNFe($chave, $versao);
 
-$cDV = substr($chave, -1); //digito verificador
+$cDV = substr($chave, -1); //Digito Verificador da Chave de Acesso da NF-e, o DV é calculado com a aplicação do algoritmo módulo 11 (base 2,9) da Chave de Acesso.
 
 //tag IDE
 $resp = $nfe->tagide($cUF, $cNF, $natOp, $indPag, $mod, $serie, $nNF, $dhEmi, $dhSaiEnt, $tpNF, $idDest, $cMunFG, $tpImp, $tpEmis, $cDV, $tpAmb, $finNFe, $indFinal, $indPres, $procEmi, $verProc, $dhCont, $xJust);
@@ -100,56 +100,56 @@ $resp = $nfe->tagide($cUF, $cNF, $natOp, $indPag, $mod, $serie, $nNF, $dhEmi, $d
 //$nCOO = '111';
 //$resp = $nfe->tagrefECF($mod, $nECF, $nCOO);
 
-//Dados do emitente
-$CNPJ = '58716523000119';
-$CPF = '';
-$xNome = 'FIMATEC TEXTIL LTDA';
-$xFant = 'FIMATEC';
-$IE = '112006603110';
-$IEST = '';
-$IM = '95095870';
-$CNAE = '0131380';
-$CRT = '3';
+//Dados do emitente - (Importando dados do config.json)
+$CNPJ = $nfeTools->aConfig['cnpj'];
+$CPF = ''; // Utilizado para CPF na nota
+$xNome = $nfeTools->aConfig['razaosocial'];
+$xFant = $nfeTools->aConfig['nomefantasia'];
+$IE = $nfeTools->aConfig['ie'];
+$IEST = $nfeTools->aConfig['iest'];
+$IM = $nfeTools->aConfig['im'];
+$CNAE = $nfeTools->aConfig['cnae'];
+$CRT = $nfeTools->aConfig['regime'];
 $resp = $nfe->tagemit($CNPJ, $CPF, $xNome, $xFant, $IE, $IEST, $IM, $CNAE, $CRT);
 
 //endereço do emitente
-$xLgr = 'RUA DOS PATRIOTAS';
-$nro = '897';
-$xCpl = 'ARMAZEM 42';
-$xBairro = 'IPIRANGA';
-$cMun = '3550308';
-$xMun = 'Sao Paulo';
-$UF = 'SP';
-$CEP = '04207040';
+$xLgr = 'Av. Rio de Janeiro';
+$nro = 's/n';
+$xCpl = 'Qd. 38 Lt. 4,5 e 34';
+$xBairro = 'Jardim Pinheiros I';
+$cMun = '5200258';
+$xMun = 'Águas Lindas de Goiás';
+$UF = 'GO';
+$CEP = '72910000';
 $cPais = '1058';
-$xPais = 'BRASIL';
-$fone = '1120677300';
+$xPais = 'Brasil';
+$fone = '6239324097';
 $resp = $nfe->tagenderEmit($xLgr, $nro, $xCpl, $xBairro, $cMun, $xMun, $UF, $CEP, $cPais, $xPais, $fone);
         
 //destinatário
-$CNPJ = '10702368000155';
+$CNPJ = '23401454000170';
 $CPF = '';
 $idEstrangeiro = '';
-$xNome = 'M R SANTOS DE PAULA TECIDOS ME';
+$xNome = 'Chinnon Santos - Tecnologia e Assessoria em Softwares';
 $indIEDest = '1';
-$IE = '244827055110';
+$IE = '';
 $ISUF = '';
-$IM = '';
-$email = 'linux.rlm@gmail.com';
+$IM = '4128095';
+$email = 'nfe@chinnonsantos.com';
 $resp = $nfe->tagdest($CNPJ, $CPF, $idEstrangeiro, $xNome, $indIEDest, $IE, $ISUF, $IM, $email);
 
 //Endereço do destinatário
-$xLgr = 'AV GASPAR RICARDO';
-$nro = '471';
+$xLgr = 'Av. Vila Alpes';
+$nro = 's/n';
 $xCpl = '';
-$xBairro = 'CENTRO';
-$cMun = '4115200';
-$xMun = 'Maringa';
-$UF = 'PR';
-$CEP = '87040365';
+$xBairro = 'Vila Alpes';
+$cMun = '5208707';
+$xMun = 'Goiânia';
+$UF = 'GO';
+$CEP = '74310010';
 $cPais = '1058';
-$xPais = 'BRASIL';
-$fone = '4430330100';
+$xPais = 'Brasil';
+$fone = '6292779404';
 $resp = $nfe->tagenderDest($xLgr, $nro, $xCpl, $xBairro, $cMun, $xMun, $UF, $CEP, $cPais, $xPais, $fone);
 
 //Identificação do local de retirada (se diferente do emitente)
@@ -177,39 +177,68 @@ $resp = $nfe->tagenderDest($xLgr, $nro, $xCpl, $xBairro, $cMun, $xMun, $UF, $CEP
 //$resp = $nfe->tagentrega($CNPJ, $CPF, $xLgr, $nro, $xCpl, $xBairro, $cMun, $xMun, $UF);
 
 //Identificação dos autorizados para fazer o download da NFe (somente versão 3.1)
-//$aAut = array('11111111111111','2222222','33333333333333');
-//foreach ($aAut as $aut) {
-//    if (strlen($aut) == 14) {
-//        $resp = $nfe->tagautXML($aut);
-//    } else {
-//        $resp = $nfe->tagautXML('', $aut);
-//    }
-//}
+/*$aAut = array('23401454000170');
+foreach ($aAut as $aut) {
+    if (strlen($aut) == 14) {
+        $resp = $nfe->tagautXML($aut);
+    } else {
+        $resp = $nfe->tagautXML('', $aut);
+    }
+}*/
 
-//produtos
+//produtos 1 (Limite da API é de 56 itens por Nota)
 $aP[] = array(
         'nItem' => 1,
-        'cProd' => '2517BCB01',
+        'cProd' => '15',
         'cEAN' => '97899072659522',
-        'xProd' => 'DELFOS 80 MESCLA TINTO C/ AMAC. S.T 1,78M',
-        'NCM' => '60063300',
+        'xProd' => 'Chopp Pilsen - Barril 30 Lts',
+        'NCM' => '22030000',
+        'NVE' => '',
+        'CEST' => '0302300', // Convênio ICMS 92/15
         'EXTIPI' => '',
-        'CFOP' => '6101',
-        'uCom' => 'KG',
-        'qCom' => '389.9500',
-        'vUnCom' => '49.9200000000',
-        'vProd' => '19466.30',
+        'CFOP' => '5101',
+        'uCom' => 'Un',
+        'qCom' => '4',
+        'vUnCom' => '210.00',
+        'vProd' => '840.00',
         'cEANTrib' => '',
-        'uTrib' => 'KG',
-        'qTrib' => '389.9500',
-        'vUnTrib' => '49.9200000000',
+        'uTrib' => 'Lt',
+        'qTrib' => '120',
+        'vUnTrib' => '7.00',
         'vFrete' => '',
         'vSeg' => '',
         'vDesc' => '',
         'vOutro' => '',
         'indTot' => '1',
-        'xPed' => '14972',
+        'xPed' => '16',
         'nItemPed' => '1',
+        'nFCI' => '');
+//produtos 2        
+$aP[] = array(
+        'nItem' => 2,
+        'cProd' => '56',
+        'cEAN' => '7896030801822',
+        'xProd' => 'Copo Personalizado Klima 300ml',
+        'NCM' => '39241000',
+        'NVE' => '',
+        'CEST' => '',
+        'EXTIPI' => '',
+        'CFOP' => '5102',
+        'uCom' => 'Cx',
+        'qCom' => '2',
+        'vUnCom' => '180.00',
+        'vProd' => '360.00',
+        'cEANTrib' => '',
+        'uTrib' => 'Cx',
+        'qTrib' => '2',
+        'vUnTrib' => '180.00',
+        'vFrete' => '',
+        'vSeg' => '',
+        'vDesc' => '',
+        'vOutro' => '',
+        'indTot' => '1',
+        'xPed' => '16',
+        'nItemPed' => '2',
         'nFCI' => '');
 
 foreach ($aP as $prod) {
@@ -218,6 +247,8 @@ foreach ($aP as $prod) {
     $cEAN = $prod['cEAN'];
     $xProd = $prod['xProd'];
     $NCM = $prod['NCM'];
+    $NVE = $prod['NVE'];
+    $CEST = $prod['CEST'];
     $EXTIPI = $prod['EXTIPI'];
     $CFOP = $prod['CFOP'];
     $uCom = $prod['uCom'];
@@ -236,37 +267,41 @@ foreach ($aP as $prod) {
     $xPed = $prod['xPed'];
     $nItemPed = $prod['nItemPed'];
     $nFCI = $prod['nFCI'];
-    $resp = $nfe->tagprod($nItem, $cProd, $cEAN, $xProd, $NCM, $EXTIPI, $CFOP, $uCom, $qCom, $vUnCom, $vProd, $cEANTrib, $uTrib, $qTrib, $vUnTrib, $vFrete, $vSeg, $vDesc, $vOutro, $indTot, $xPed, $nItemPed, $nFCI);
+    $resp = $nfe->tagprod($nItem, $cProd, $cEAN, $xProd, $NCM, $NVE, $CEST, $EXTIPI, $CFOP, $uCom, $qCom, $vUnCom, $vProd, $cEANTrib, $uTrib, $qTrib, $vUnTrib, $vFrete, $vSeg, $vDesc, $vOutro, $indTot, $xPed, $nItemPed, $nFCI);
 }
 
-$nItem = 1;
-$vDesc = 'BRANCO_FIT F01516 ped. 14972 lote: 7755214/C,7772214/B,7772214/C';
+// Informações adicionais na linha do Produto
+/*$nItem = 1; //produtos 1
+$vDesc = 'Barril 30 Litros Chopp Tipo Pilsen - Pedido Nº15';
+$resp = $nfe->taginfAdProd($nItem, $vDesc);*/
+$nItem = 2; //produtos 2
+$vDesc = 'Caixa com 1000 unidades';
 $resp = $nfe->taginfAdProd($nItem, $vDesc);
 
-//DI
-$nItem = '1';
+//DI - Declaração de Importação
+/*$nItem = '1';
 $nDI = '234556786';
-$dDI = '22/12/2013';
+$dDI = date('Y-m-d'); // Formato: “AAAA-MM-DD”
 $xLocDesemb = 'SANTOS';
 $UFDesemb = 'SP';
-$dDesemb = '22/12/2013';
+$dDesemb = date('Y-m-d'); // Formato: “AAAA-MM-DD”
 $tpViaTransp = '1';
 $vAFRMM = '1.00';
-$tpIntermedio = '0';
+$tpIntermedio = '1';
 $CNPJ = '';
 $UFTerceiro = '';
 $cExportador = '111';
-$resp = $nfe->tagDI($nItem, $nDI, $dDI, $xLocDesemb, $UFDesemb, $dDesemb, $tpViaTransp, $vAFRMM, $tpIntermedio, $CNPJ, $UFTerceiro, $cExportador);
+$resp = $nfe->tagDI($nItem, $nDI, $dDI, $xLocDesemb, $UFDesemb, $dDesemb, $tpViaTransp, $vAFRMM, $tpIntermedio, $CNPJ, $UFTerceiro, $cExportador);*/
 
-//adi
-$nItem = '1';
+//adi - Adições
+/*$nItem = '1';
 $nDI = '234556786';
 $nAdicao = '1';
-$nSeqAdicC = '1111';
-$cFabricante = 'seila';
-$vDescDI = '0.00';
+$nSeqAdicC = '123';
+$cFabricante = 'Klima Chopp';
+$vDescDI = '5.00';
 $nDraw = '9393939';
-$resp = $nfe->tagadi($nItem, $nDI, $nAdicao, $nSeqAdicC, $cFabricante, $vDescDI, $nDraw);
+$resp = $nfe->tagadi($nItem, $nDI, $nAdicao, $nSeqAdicC, $cFabricante, $vDescDI, $nDraw);*/
 
 //detExport
 //$nItem = '2';
@@ -277,20 +312,23 @@ $resp = $nfe->tagadi($nItem, $nDI, $nAdicao, $nSeqAdicC, $cFabricante, $vDescDI,
 //$qExport = '100';
 //$resp = $nfe->tagdetExport($nItem, $nDraw, $exportInd, $nRE, $chNFe, $qExport);
 
-//imposto
-$nItem = 1;
-$vTotTrib = '';
+//Impostos
+$nItem = 1; //produtos 1
+$vTotTrib = '449.90'; // 226.80 ICMS + 51.50 ICMSST + 50.40 IPI + 39.36 PIS + 81.84 CONFIS
+$resp = $nfe->tagimposto($nItem, $vTotTrib);
+$nItem = 2; //produtos 2
+$vTotTrib = '74.34'; // 61.20 ICMS + 2.34 PIS + 10.80 CONFIS
 $resp = $nfe->tagimposto($nItem, $vTotTrib);
 
-//ICMS
-$nItem = 1;
-$orig = '1';
-$cst = '00';
+//ICMS - Imposto sobre Circulação de Mercadorias e Serviços
+$nItem = 1; //produtos 1
+$orig = '0';
+$cst = '00'; // Tributado Integralmente
 $modBC = '3';
 $pRedBC = '';
-$vBC = '19466.30';
-$pICMS = '12.00';
-$vICMS = '2335.96';
+$vBC = '840.00'; // = $qTrib * $vUnTrib
+$pICMS = '27.00'; // Alíquota do Estado de GO p/ 'NCM 2203.00.00 - Cervejas de Malte, inclusive Chope'
+$vICMS = '226.80'; // = $vBC * ( $pICMS / 100 )
 $vICMSDeson = '';
 $motDesICMS = '';
 $modBCST = '';
@@ -306,16 +344,81 @@ $vBCSTRet = '';
 $vICMSSTRet = '';
 $resp = $nfe->tagICMS($nItem, $orig, $cst, $modBC, $pRedBC, $vBC, $pICMS, $vICMS, $vICMSDeson, $motDesICMS, $modBCST, $pMVAST, $pRedBCST, $vBCST, $pICMSST, $vICMSST, $pDif, $vICMSDif, $vICMSOp, $vBCSTRet, $vICMSSTRet);
 
-//ICMSPart
+$nItem = 2; //produtos 2
+$orig = '0';
+$cst = '00';
+$modBC = '3';
+$pRedBC = '';
+$vBC = '360.00'; // = $qTrib * $vUnTrib
+$pICMS = '17.00'; // Alíquota Interna do Estado de GO 
+$vICMS = '61.20'; // = $vBC * ( $pICMS / 100 )
+$vICMSDeson = '';
+$motDesICMS = '';
+$modBCST = '';
+$pMVAST = '';
+$pRedBCST = '';
+$vBCST = ''; 
+$pICMSST = '';
+$vICMSST = '';
+$pDif = '';
+$vICMSDif = '';
+$vICMSOp = '';
+$vBCSTRet = '';
+$vICMSSTRet = '';
+$resp = $nfe->tagICMS($nItem, $orig, $cst, $modBC, $pRedBC, $vBC, $pICMS, $vICMS, $vICMSDeson, $motDesICMS, $modBCST, $pMVAST, $pRedBCST, $vBCST, $pICMSST, $vICMSST, $pDif, $vICMSDif, $vICMSOp, $vBCSTRet, $vICMSSTRet);
+
+//ICMS 10
+$nItem = 1; //produtos 1
+$orig = '0';
+$cst = '10'; // Tributada e com cobrança do ICMS por substituição tributária
+$modBC = '3';
+$pRedBC = '';
+$vBC = '840.00';
+$pICMS = '27.00'; // Alíquota do Estado de GO p/ 'NCM 2203.00.00 - Cervejas de Malte, inclusive Chope'
+$vICMS = '226.80'; // = $vBC * ( $pICMS / 100 )
+$vICMSDeson = '';
+$motDesICMS = '';
+$modBCST = '5'; // Calculo Por Pauta (valor)
+$pMVAST = '';
+$pRedBCST = '';
+$vBCST = '1030.80'; // Pauta do Chope Claro 1000ml em GO R$ 8,59 x 60 Litros
+$pICMSST = '27.00'; // GO para GO
+$vICMSST = '51.50'; // = (Valor da Pauta * Alíquota ICMS ST) - Valor ICMS Próprio
+$pDif = '';
+$vICMSDif = '';
+$vICMSOp = '';
+$vBCSTRet = '';
+$vICMSSTRet = '';
+$resp = $nfe->tagICMS($nItem, $orig, $cst, $modBC, $pRedBC, $vBC, $pICMS, $vICMS, $vICMSDeson, $motDesICMS, $modBCST, $pMVAST, $pRedBCST, $vBCST, $pICMSST, $vICMSST, $pDif, $vICMSDif, $vICMSOp, $vBCSTRet, $vICMSSTRet);
+
+$vST = $vICMSST; // Total de ICMS ST
+
+//ICMSPart - ICMS em Operações Interestaduais - CST 10
 //$resp = $nfe->tagICMSPart($nItem, $orig, $cst, $modBC, $vBC, $pRedBC, $pICMS, $vICMS, $modBCST, $pMVAST, $pRedBCST, $vBCST, $pICMSST, $vICMSST, $pBCOp, $ufST);
-//ICMSST
+
+//ICMSST - Tributação ICMS por Substituição Tributária (ST) - CST 40, 41, 50 e 51
 //$resp = $nfe->tagICMSST($nItem, $orig, $cst, $vBCSTRet, $vICMSSTRet, $vBCSTDest, $vICMSSTDest);
-//ICMSSN
+
+//ICMSSN - Tributação ICMS pelo Simples Nacional - CST 30
 //$resp = $nfe->tagICMSSN($nItem, $orig, $csosn, $modBC, $vBC, $pRedBC, $pICMS, $vICMS, $pCredSN, $vCredICMSSN, $modBCST, $pMVAST, $pRedBCST, $vBCST, $pICMSST, $vICMSST, $vBCSTRet, $vICMSSTRet);
 
-//IPI
-$nItem = 1;
-$cst = '55';
+//IPI - Imposto sobre Produto Industrializado
+$nItem = 1; //produtos 1
+$cst = '50'; // 50 - Saída Tributada (Código da Situação Tributária)
+$clEnq = '';
+$cnpjProd = '';
+$cSelo = '';
+$qSelo = '';
+$cEnq = '999';
+$vBC = '840.00';
+$pIPI = '6.00'; //Calculo por alíquota - 6% Alíquota GO.
+$qUnid = '';
+$vUnid = '';
+$vIPI = '50.40'; // = $vBC * ( $pIPI / 100 )
+$resp = $nfe->tagIPI($nItem, $cst, $clEnq, $cnpjProd, $cSelo, $qSelo, $cEnq, $vBC, $pIPI, $qUnid, $vUnid, $vIPI);
+
+$nItem = 2; //produtos 2
+$cst = '53'; // 53 - Saída Não-Tributada
 $clEnq = '';
 $cnpjProd = '';
 $cSelo = '';
@@ -325,15 +428,24 @@ $vBC = '';
 $pIPI = '';
 $qUnid = '';
 $vUnid = '';
-$vIPI = '';
+$vIPI = ''; // = $vBC * ( $pIPI / 100 )
 $resp = $nfe->tagIPI($nItem, $cst, $clEnq, $cnpjProd, $cSelo, $qSelo, $cEnq, $vBC, $pIPI, $qUnid, $vUnid, $vIPI);
 
-//PIS
-$nItem = 1;
-$cst = '01';
-$vBC = '19466.30';
-$pPIS = '1.65';
-$vPIS = '321.19';
+//PIS - Programa de Integração Social
+$nItem = 1; //produtos 1
+$cst = '03'; //Operação Tributável (base de cálculo = quantidade vendida x alíquota por unidade de produto)
+$vBC = ''; 
+$pPIS = '';
+$vPIS = '39.36';
+$qBCProd = '60.00';
+$vAliqProd = '0.3280';
+$resp = $nfe->tagPIS($nItem, $cst, $vBC, $pPIS, $vPIS, $qBCProd, $vAliqProd);
+
+$nItem = 2; //produtos 2
+$cst = '01'; //Operação Tributável (base de cálculo = (valor da operação * alíquota normal) / 100
+$vBC = '180.00'; 
+$pPIS = '0.6500';
+$vPIS = '2.34';
 $qBCProd = '';
 $vAliqProd = '';
 $resp = $nfe->tagPIS($nItem, $cst, $vBC, $pPIS, $vPIS, $qBCProd, $vAliqProd);
@@ -341,12 +453,21 @@ $resp = $nfe->tagPIS($nItem, $cst, $vBC, $pPIS, $vPIS, $qBCProd, $vAliqProd);
 //PISST
 //$resp = $nfe->tagPISST($nItem, $vBC, $pPIS, $qBCProd, $vAliqProd, $vPIS);
 
-//COFINS
-$nItem = 1;
-$cst = '01';
-$vBC = '19466.30';
-$pCOFINS = '7.60';
-$vCOFINS = '1479.44';
+//COFINS - Contribuição para o Financiamento da Seguridade Social
+$nItem = 1; //produtos 1
+$cst = '03'; //Operação Tributável (base de cálculo = quantidade vendida x alíquota por unidade de produto)
+$vBC = '';
+$pCOFINS = '';
+$vCOFINS = '81.84';
+$qBCProd = '60.00';
+$vAliqProd = '0.682';
+$resp = $nfe->tagCOFINS($nItem, $cst, $vBC, $pCOFINS, $vCOFINS, $qBCProd, $vAliqProd);
+
+$nItem = 2; //produtos 2
+$cst = '01'; //Operação Tributável (base de cálculo = (valor da operação * alíquota normal) / 100
+$vBC = '180.00';
+$pCOFINS = '3.00';
+$vCOFINS = '10.80';
 $qBCProd = '';
 $vAliqProd = '';
 $resp = $nfe->tagCOFINS($nItem, $cst, $vBC, $pCOFINS, $vCOFINS, $qBCProd, $vAliqProd);
@@ -366,27 +487,38 @@ $resp = $nfe->tagCOFINS($nItem, $cst, $vBC, $pCOFINS, $vCOFINS, $qBCProd, $vAliq
 //retTrib
 //$resp = $nfe->tagretTrib($vRetPIS, $vRetCOFINS, $vRetCSLL, $vBCIRRF, $vIRRF, $vBCRetPrev, $vRetPrev);
 
+//Inicialização de váriaveis não declaradas...
+$vII = isset($vII) ? $vII : 0;
+$vIPI = isset($vIPI) ? $vIPI : 0;
+$vIOF = isset($vIOF) ? $vIOF : 0;
+$vPIS = isset($vPIS) ? $vPIS : 0;
+$vCOFINS = isset($vCOFINS) ? $vCOFINS : 0;
+$vICMS = isset($vICMS) ? $vICMS : 0;
+$vBCST = isset($vBCST) ? $vBCST : 0;
+$vST = isset($vST) ? $vST : 0;
+$vISS = isset($vISS) ? $vISS : 0;
+
 //total
-$vBC = '19466.30';
-$vICMS = '2335.96';
+$vBC = '1200.00';
+$vICMS = '288.00';
 $vICMSDeson = '0.00';
-$vBCST = '0.00';
-$vST = '0.00';
-$vProd = '19466.30';
+$vBCST = '1030.80';
+$vST = '51.50';
+$vProd = '1200.00';
 $vFrete = '0.00';
 $vSeg = '0.00';
 $vDesc = '0.00';
 $vII = '0.00';
-$vIPI = '0.00';
-$vPIS = '321.19';
-$vCOFINS = '1479.44';
+$vIPI = '50.40';
+$vPIS = '41.70';
+$vCOFINS = '92.64';
 $vOutro = '0.00';
-$vNF = '19466.30';
-$vTotTrib = '';
+$vNF = number_format($vProd-$vDesc-$vICMSDeson+$vST+$vFrete+$vSeg+$vOutro+$vII+$vIPI,2,'.','');
+$vTotTrib = number_format($vICMS+$vST+$vII+$vIPI+$vPIS+$vCOFINS+$vIOF+$vISS,2,'.','');
 $resp = $nfe->tagICMSTot($vBC, $vICMS, $vICMSDeson, $vBCST, $vST, $vProd, $vFrete, $vSeg, $vDesc, $vII, $vIPI, $vPIS, $vCOFINS, $vOutro, $vNF, $vTotTrib);
 
 //frete
-$modFrete = '0'; //0=Por conta do emitente; 1=Por conta do destinatário/remetente; 2=Por conta de terceiros;
+$modFrete = '0'; //0=Por conta do emitente; 1=Por conta do destinatário/remetente; 2=Por conta de terceiros; 9=Sem Frete;
 $resp = $nfe->tagtransp($modFrete);
 
 //transportadora
@@ -428,32 +560,40 @@ $resp = $nfe->tagtransp($modFrete);
 //    //$resp = $nfe->tagreboque($placa, $UF, $RNTC, $vagao, $balsa);
 //}
 
-//dados dos volumes transportados
-$aVol = array(array('24','VOLUMES','','','389.950','399.550',''));
+//Dados dos Volumes Transportados
+$aVol = array(
+    array('4','Barris','','','120.000','120.000',''),
+    array('2','Volume','','','10.000','10.000','')
+);
 foreach ($aVol as $vol) {
     $qVol = $vol[0]; //Quantidade de volumes transportados
     $esp = $vol[1]; //Espécie dos volumes transportados
     $marca = $vol[2]; //Marca dos volumes transportados
     $nVol = $vol[3]; //Numeração dos volume
-    $pesoL = $vol[4];
-    $pesoB = $vol[5];
+    $pesoL = intval($vol[4]); //Kg do tipo Int, mesmo que no manual diz que pode ter 3 digitos verificador...
+    $pesoB = intval($vol[5]); //...se colocar Float não vai passar na expressão regular do Schema. =\
     $aLacres = $vol[6];
     $resp = $nfe->tagvol($qVol, $esp, $marca, $nVol, $pesoL, $pesoB, $aLacres);
 }
 
 //dados da fatura
-$nFat = '000034189';
-$vOrig = '19466.30';
+$nFat = '000035342';
+$vOrig = '1200.00';
 $vDesc = '';
-$vLiq = '19466.30';
+$vLiq = '1200.00';
 $resp = $nfe->tagfat($nFat, $vOrig, $vDesc, $vLiq);
 
-//dados das duplicadas
-$aDup = array(array('34189-1','2015-04-10','19466.30'));
+//dados das duplicatas (Pagamentos)
+$aDup = array(
+    array('35342-1','2016-06-20','300.00'),
+    array('35342-2','2016-07-20','300.00'),
+    array('35342-3','2016-08-20','300.00'),
+    array('35342-4','2016-09-20','300.00')
+);
 foreach ($aDup as $dup) {
-    $nDup = $dup[0];
-    $dVenc = $dup[1];
-    $vDup = $dup[2];
+    $nDup = $dup[0]; //Código da Duplicata
+    $dVenc = $dup[1]; //Vencimento
+    $vDup = $dup[2]; // Valor
     $resp = $nfe->tagdup($nDup, $dVenc, $vDup);
 }
 
@@ -471,9 +611,17 @@ foreach ($aDup as $dup) {
 //$resp = $nfe->tagcard($CNPJ, $tBand, $cAut);
 //**************************************************************
 
-//informações Adicionais
-$infAdFisco = 'SAIDA COM SUSPENSAO DO IPI CONFORME ART 29 DA LEI 10.637';
-$infCpl = '';
+// Calculo de carga tributária similar ao IBPT - Lei 12.741/12
+$federal = number_format($vII+$vIPI+$vIOF+$vPIS+$vCOFINS,2,',','.');
+$estadual = number_format($vICMS+$vST,2,',','.');
+$municipal = number_format($vISS,2,',','.');
+$totalT = number_format($federal+$estadual+$municipal,2,',','.');
+$textoIBPT = "Valor Aprox. Tributos R$ {$totalT} - {$federal} Federal, {$estadual} Estadual e {$municipal} Municipal.";
+
+//Informações Adicionais
+//$infAdFisco = "SAIDA COM SUSPENSAO DO IPI CONFORME ART 29 DA LEI 10.637";
+$infAdFisco = "";
+$infCpl = "Pedido Nº16 - {$textoIBPT} ";
 $resp = $nfe->taginfAdic($infAdFisco, $infCpl);
 
 //observações emitente
@@ -559,7 +707,8 @@ $resp = $nfe->montaNFe();
 if ($resp) {
     header('Content-type: text/xml; charset=UTF-8');
     $xml = $nfe->getXML();
-    $filename = "/var/www/nfe/homologacao/entradas/$chave-nfe.xml";
+    // $filename = "/var/www/nfe/homologacao/entradas/{$chave}-nfe.xml"; // Ambiente Linux
+    $filename = "D:/xampp/htdocs/GIT-nfephp-org/nfephp/xmls/NF-e/homologacao/entradas/{$chave}-nfe.xml"; // Ambiente Windows
     file_put_contents($filename, $xml);
     chmod($filename, 0777);
     echo $xml;

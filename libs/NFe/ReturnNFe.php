@@ -453,12 +453,15 @@ class ReturnNFe
         $aResposta = array(
             'bStat' => false,
             'versao' => '',
-            'cStat' => '',
+            'tpAmb' => '',
             'verAplic' => '',
+            'cStat' => '',
             'xMotivo' => '',
+            'cUF' => '',
             'dhRecbto' => '',
             'tMed' => '',
-            'cUF' => ''
+            'dhRetorno' => '',
+            'xObs' => ''
         );
         $tag = $dom->getElementsByTagName('retConsStatServ')->item(0);
         if (! isset($tag)) {
@@ -467,12 +470,15 @@ class ReturnNFe
         $aResposta = array(
             'bStat' => true,
             'versao' => $tag->getAttribute('versao'),
-            'cStat' => $dom->getValue($tag, 'cStat'),
+            'tpAmb' => $tag->getAttribute('tpAmb'),
             'verAplic' => $dom->getValue($tag, 'verAplic'),
+            'cStat' => $dom->getValue($tag, 'cStat'),
             'xMotivo' => $dom->getValue($tag, 'xMotivo'),
+            'cUF' => $dom->getValue($tag, 'cUF'),
             'dhRecbto' => $dom->getValue($tag, 'dhRecbto'),
-            'tMed' => $dom->getValue($tag, 'tMed'),
-            'cUF' => $dom->getValue($tag, 'cUF')
+            'tMed' => $dom->getValue($tag, 'tMed'),            
+            'dhRetorno' => $dom->getValue($tag, 'dhRetorno'),
+            'xObs' => $dom->getValue($tag, 'xObs')
         );
         return $aResposta;
     }

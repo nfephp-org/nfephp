@@ -2,7 +2,7 @@ nbproject
 *~
 *.pfx
 *.pem
-config.json
+/config/*.json
 composer.lock
 vendor
 local

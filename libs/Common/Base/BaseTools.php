@@ -736,4 +736,22 @@ class BaseTools
     {
         return array_search($cUF, $this->cUFlist);
     }
+    
+    /**
+     * zGetSigla
+     * @param string $cUF
+     * @param int $tpAmb
+     * @return string
+     */
+    public function zGetUrlQR($cUF,$tpAmb)
+    {
+        $siglaUF = $this->zGetSigla($cUF);
+        $this->zLoadServico('nfe','NfeConsultaQR',$siglaUF,$tpAmb);
+        if ($this->urlService == '') {
+            $url = "http://www.sefaz.".strtolower($siglaUF).".gov.br/";   
+        } else {
+            $url = $this->urlService;
+        }
+        return $url;
+    }
 }

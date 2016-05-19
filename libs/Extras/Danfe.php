@@ -540,7 +540,7 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
             $linhasDup = 2;
         } elseif (($this->dup->length > 14) && ($this->dup->length <= 21)) {
             $linhasDup = 3;
-        } elseif ($this->dup->length > 21) {   // TODO fmertins 20/08/14: mudar para "else" apenas? E acho que a variavel deveria receber outro valor, ja que esta igual a 3 que dá na mesma da condição anterior, parece ser bug? Talvez atribuir 4 ao inves de 3?
+        } elseif ($this->dup->length > 21) {   // chinnonsantos 11/05/2016: Limite máximo de impressão de duplicatas na NFe, só vai ser exibito as 21 primeiras duplicatas (parcelas de pagamento), se não oculpa espaço d+, cada linha comporta até 7 duplicatas.
             $linhasDup = 3;
         }
         //verifica se será impressa a linha dos serviços ISSQN

@@ -19,8 +19,8 @@ $nfe->setModelo('65');
 $indOp = '1';
 $tpAmb = '2';
 $raizCNPJ = ''; // Deixe vazio para utilizar o CNPJ do Certificado
-$idCsc = '1';
-$codigoCsc = '433f0a3dbe4c7720';
+$idCsc = '';
+$codigoCsc = '';
 $saveXml = true; // Salva o resultado em XML na pasta csc
 
 $aResposta = array();
