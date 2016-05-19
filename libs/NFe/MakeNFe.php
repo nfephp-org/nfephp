@@ -1215,6 +1215,8 @@ class MakeNFe extends BaseMake
         $cEAN = '',
         $xProd = '',
         $NCM = '',
+        $NVE = '',
+        $CEST = '',
         $EXTIPI = '',
         $CFOP = '',
         $uCom = '',
@@ -1234,9 +1236,6 @@ class MakeNFe extends BaseMake
         $nItemPed = '',
         $nFCI = ''
     ) {
-        if ($this->tpAmb == '2' && $this->mod == 65 && $nItem == 1) {
-            $xProd = 'NOTA FISCAL EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL';
-        }
         $identificador = 'I01 <prod> - ';
         $prod = $this->dom->createElement("prod");
         $this->dom->addChild(
@@ -1268,6 +1267,20 @@ class MakeNFe extends BaseMake
             $NCM,
             true,
             $identificador . "[item $nItem] Código NCM com 8 dígitos ou 2 dígitos (gênero)"
+        );
+        $this->dom->addChild(
+            $prod,
+            "NVE",
+            $NVE,
+            false,
+            $identificador . "[item $nItem] Código NVE com 2 letras maiúsculas e 4 dígitos"
+        );
+        $this->dom->addChild(
+            $prod,
+            "CEST",
+            $CEST,
+            false,
+            $identificador . "[item $nItem] Código CEST com 7 dígitos"
         );
         $this->dom->addChild(
             $prod,
@@ -2604,20 +2617,14 @@ class MakeNFe extends BaseMake
             $this->dom->addChild($ipiTrib, "CST", $cst, true, "[item $nItem] Código da situação tributária do IPI");
             $this->dom->addChild($ipiTrib, "vBC", $vBC, false, "[item $nItem] Valor da BC do IPI");
             $this->dom->addChild($ipiTrib, "pIPI", $pIPI, false, "[item $nItem] Alíquota do IPI");
-            $this->dom->addChild(
-                $ipiTrib,
-                "qUnid",
-                $qUnid,
-                false,
-                "[item $nItem] Quantidade total na unidade padrão para tributação "
-                . "(somente para os produtos tributados por unidade)"
+            $this->dom->addChild($ipiTrib, "qUnid", $qUnid, false, "[item $nItem] Quantidade total na unidade padrão para tributação (somente para os produtos tributados por unidade)"
             );
             $this->dom->addChild($ipiTrib, "vUnid", $vUnid, false, "[item $nItem] Valor por Unidade Tributável");
             $this->dom->addChild($ipiTrib, "vIPI", $vIPI, true, "[item $nItem] Valor do IPI");
             $ipi->appendChild($ipiTrib);
         } else {
             $ipINT = $this->dom->createElement('IPINT');
-            $this->dom->addChild($ipINT, "CST", $cst, true, "[item $nItem] Código da situação tributária do IPI");
+            $this->dom->addChild($ipINT, "CST", $cst, true, "[item $nItem] Código da situação tributária do IPINT");
             $ipi->appendChild($ipINT);
         }
         $this->aIPI[$nItem] = $ipi;

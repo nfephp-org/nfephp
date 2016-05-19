@@ -98,7 +98,7 @@ class ToolsNFe extends BaseTools
             return true;
         }
         $this->motivoContingencia = $motivo;
-        $this->tsContingencia = mktime();
+        $this->tsContingencia = time(); // mktime() necessita de paramentos...
         $ctgList = array(
             'AC'=>'SVCAN',
             'AL'=>'SVCAN',
@@ -206,14 +206,15 @@ class ToolsNFe extends BaseTools
      * @param array $aMails
      * @param string $templateFile path completo ao arquivo template html do corpo do email
      * @param boolean $comPdf se true o sistema irá renderizar o DANFE e anexa-lo a mensagem
+     * @param string $pathPdf
      * @return boolean
      * @throws Exception\RuntimeException
      */
-    public function enviaMail($pathXml = '', $aMails = array(), $templateFile = '', $comPdf = false)
+    public function enviaMail($pathXml = '', $aMails = array(), $templateFile = '', $comPdf = false, $pathPdf = '')
     {
         $mail = new MailNFe($this->aMailConf);
-        $pathPdf = '';
-        if ($comPdf && $this->modelo == '55') {
+        // Se não for informado o caminho do PDF, monta um através do XML
+        if ($comPdf && $this->modelo == '55' && $pathPdf == '') {
             $docxml = Files\FilesFolders::readFile($pathXml);
             $danfe = new Extras\Danfe($docxml, 'P', 'A4', $this->aDocFormat['pathLogoFile'], 'I', '');
             $id = $danfe->montaDANFE();
@@ -223,7 +224,7 @@ class ToolsNFe extends BaseTools
                 . DIRECTORY_SEPARATOR
                 . 'pdf'
                 . DIRECTORY_SEPARATOR
-                . $id . '.pdf';
+                . $id . '-danfe.pdf';
             $pdf = $danfe->printDANFE($pathPdf, 'F');
         }
         if ($mail->envia($pathXml, $aMails, $comPdf, $pathPdf) === false) {
@@ -358,8 +359,7 @@ class ToolsNFe extends BaseTools
             }
         }
         if ($digValueNFe != $digValueProt) {
-            $msg = "Inconsistência! O DigestValue da NFe não combina com o"
-                . " do digVal do protocolo indicado!";
+            $msg = "Inconsistência! O DigestValue da NFe não combina com o do digVal do protocolo indicado!";
             throw new Exception\RuntimeException($msg);
         }
         if ($chaveNFe != $chaveProt) {
@@ -396,7 +396,7 @@ class ToolsNFe extends BaseTools
         //remove as informações indesejadas
         $procXML = Strings::clearProt($procXML);
         if ($saveFile) {
-            $filename = "$chaveNFe-protNFe.xml";
+            $filename = "{$chaveNFe}-protNFe.xml";
             $this->zGravaFile(
                 'nfe',
                 $tpAmb,
@@ -548,7 +548,7 @@ class ToolsNFe extends BaseTools
      * zPutQRTag
      * Monta a URI para o QRCode e coloca a tag 
      * no xml já assinado
-     * @param Dom $dom
+    0000000000000000000000000000000000000 * @param Dom $dom
      * @return string
      * NOTA: O Campo QRCode está habilitado para uso a partir de 
      *       01/10/2015 homologação
@@ -583,8 +583,18 @@ class ToolsNFe extends BaseTools
         $token = $this->aConfig['tokenNFCe'];
         $idToken = $this->aConfig['tokenNFCeId'];
         $versao = '100';
-        //pega a URL para consulta do QRCode do estado emissor
-        //essa url está em nfe_ws3_mode65.xml
+        
+        /*
+         *Pega a URL para consulta do QRCode do estado emissor, 
+         *essa url está em nfe_ws3_mode65.xml, em tese essa url 
+         *NÃO É uma WebService, é simplismente uma página para 
+         *consulta do QRCode via parametros GET, percebe-se que 
+         *em todas as SEFAZ o endereço de consulta do QRCode se
+         *difere do padrão de endereço das WS. 
+         *Esse é um serviço para ser utilizado pelo consumidor...
+         *NOTA: Sem o endereço de consulta não é possível gerar o QR-Code!!!
+        */
+        
         //carrega serviço
         $servico = 'NfeConsultaQR';
         $siglaUF = $this->zGetSigla($cUF);
@@ -729,7 +739,7 @@ class ToolsNFe extends BaseTools
     
     /**
      * sefazConsultaRecibo
-     * Contuta a situação de um Lote de NFe enviadas pelo recibo desse envio
+     * Consulta a situação de um Lote de NFe enviadas pelo recibo desse envio
      * @param string $recibo
      * @param string $tpAmb
      * @param array $aRetorno
