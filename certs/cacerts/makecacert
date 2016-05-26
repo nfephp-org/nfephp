@@ -14,17 +14,25 @@
 #       evitar negativas de acesso devido a regras de segurança
 #       estabelecidas
 #
+# Exemplo de uso :
+#
+# userprompt$ ./makecacert nfe_cacerts.crt NFeCacert nfe_autorizadores.list
+#
 # Author: Roberto L. Machado <linux dot rlm at gmail dot com>
 # Version: 0.1 de 2016-05-26
 # Copyright (c) 2016 Roberto L. Machado
 # Lisence: LGPLv3, GPLv3 or MIT
 #-------------------------------------------------------------------
 
+
 PORT=443
-KEYSTOREFILE=NFeCacert
+KEYSTOREFILE=$2
 KEYSTOREPASS=changeme
-CERTFILE=nfe_cacerts.crt
-SEFAZ=autorizadores.list
+CERTFILE=$1
+SEFAZ=$3
+FAIL=""
+PREFIX=${KEYSTOREFILE:0:3}
+LOGFILE=$PREFIX"_fail.log"
 
 #--------------------------------------------------------------
 # Esta função lê cada linha do arquivo que contêm
@@ -42,6 +50,7 @@ function readURLs()
        getSSLCert $url
        groupCerts $url
        addCertsKeyStore $url
+       cleanCert $url
     done < $1
 }
 
@@ -53,19 +62,26 @@ function getSSLCert()
     # remove o certificado anterior, se houver
     rm -f $1.cert
     # busca os dados SSL na URL, e separa o certificado das denais informações 
-    timeout 4 openssl s_client -connect $1:$PORT < /dev/null | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > $1.cert
+    timeout 4 openssl s_client -connect $1:$PORT < /dev/null | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > $1.crt
     # verifique se o arquivo não está vazio, isso ocorre caso o certificado não seja fornecido pela URL
     # é necessário investigar esses casos pois pode estar fora do ar temporariamente ou o servidor tem falhas em 
     # sua configuração impedindo a recuperação do certificado nesse caso a importação deverá ser feita manualmente  
-    if [ -s "$1.cert" ]
+    if [ -s "$1.crt" ]
     then
         # deixe o arquivo ficar
-        echo ""
+        echo "SUCESSO $1" >> $LOGFILE
     else
-        echo "##########################################################################" 
-        echo "#             Não foi possivel pegar o certificado de $1.                #"
-        echo "##########################################################################"
-        rm -f $1.cert
+        if [ -z "$1" ]
+        then
+            echo ""
+        else
+            FAIL+="FALHA $1\n"
+            echo "FALHA $1" >> $LOGFILE
+            echo "##########################################################################" 
+            echo "# Não foi possivel pegar o certificado de $1"
+            echo "##########################################################################"
+            rm -f $1.crt
+        fi    
     fi
 }
 
@@ -75,33 +91,105 @@ function getSSLCert()
 #-----------------------------------------------------
 function groupCerts()
 {
-    if [ -f $1.cert ]
+    if [ -f $1.crt ]
     then
-        cat $1.cert >> $CERTFILE
+        cat $1.crt >> $CERTFILE
     fi    
 }
 
-#-----------------------------------
+#-----------------------------------------
 # Esta função adiciona os certificados a 
 # um KeyStore Java 
-#-----------------------------------
+#-----------------------------------------
 function addCertsKeyStore()
 {
-    if [ -f $1.cert ]
+    if [ -f $1.crt ]
     then
-   	    keytool -import -noprompt -trustcacerts -alias $1 -file $1.cert -keystore $KEYSTOREFILE -storepass $KEYSTOREPASS
+   	    keytool -import -noprompt -trustcacerts -alias $1 -file $1.crt -keystore $KEYSTOREFILE -storepass $KEYSTOREPASS
     fi	
 }
 
+function cleanCert()
+{
+    if [ -f $1.crt ]
+    then
+        rm -f $1.crt
+    fi  
+}
+
+#-----------------------------------------------
+# Esta função mostra a forma de uso do script
+#-----------------------------------------------
+function displayUsage()
+{
+    echo ""
+    echo "Este script monta os certificados dos autorizadores do sistema SPED"
+    echo "o OpenSSL e o Java devem estar instalados e corretamente configurados no ambiente"
+    echo "e requer 3 (tres) parametros para funcionar"
+    echo -e "\nUsage:\n$0 [cacert file] [keystore file] [url list file]\n"
+    echo -e "   [cacert file]   <nome do arquivo cacert>"
+    echo -e "   [keystore file] <nome do arquivo keystore>"
+    echo -e "   [url list file] <nome do arquivo com a lista de urls>\n"
+    echo -e " Exemplo: ./makecacert nfe_cacerts.crt NFeCacert nfe_autorizadores.list\n"
+}
+
+# se menos de 3 algumentos foram passados
+if [  $# -le 2 ] 
+then 
+    displayUsage
+    exit 1
+fi 
+ 
+# verifica se foi passado um -h ou --help
+if [[ ( $# == "--help") ||  $# == "-h" ]] 
+then 
+    displayUsage
+    exit 0
+fi 
+
+# verifica se a lista de url foi passada
+if [ -f $SEFAZ ]
+then
+    echo ""
+else
+    echo -e "\nO arquivo com a lista de servidores não foi localizada.\n"
+    exit 1
+fi
+
+# remove os arquivos anteriores
 rm -f $CERTFILE
 rm -f $KEYSTOREFILE
+rm -f $LOGFILE
 
+# executa a carga
 readURLs $SEFAZ
 
-NUM=$(grep 'END CERTIFICATE' $CERTFILE | wc -l)
-echo "Foram inclusos $NUM certificados ao keystore NFeCacert e ao arquivo nfe_cacerts.crt"
-echo "Voce pode verificar pelos dados abaixo:"
-keytool -list -keystore ${KEYSTOREFILE} -storepass ${KEYSTOREPASS}
+# verifica quantos certificados foram importados
+if [ -f $CERTFILE ]
+then
+    NUM=$(grep 'END CERTIFICATE' $CERTFILE | wc -l)
+    echo -e "\nForam inclusos $NUM certificados ao keystore NFeCacert e ao arquivo nfe_cacerts.crt\n"
+else
+    echo -e "\nNÃO FORAM INCLUSOS CERTIFICADOS !!!"
+fi
+    
+# verifica se existe uma keystore
+if [ -f $KEYSTOREFILE ]
+then
+    
+    echo -e "Voce pode verificar pelos dados abaixo:\n\n"
+    keytool -list -keystore ${KEYSTOREFILE} -storepass ${KEYSTOREPASS}
+fi
 
+# verifica se a variavel FAIL contem algo
+if [ -z "$FAIL" ]
+then
+    echo ""
+else
+    echo -e "Os seguintes servidores não forneceram seus certificados:\n"
+    echo -e $FAIL
+fi
+
+# sai    
 exit 0
 
