@@ -1,0 +1,107 @@
+#!/bin/bash
+
+#-------------------------------------------------------------------
+# Este é um script bash desenvovido para obter os certificados dos 
+# servidores das unidades autorizadoras para NFe e NFCe
+# Os certificados das autorizadoras são armazenados nos arquivos
+#
+# nfe_cacerts.crt -- no formato PEM para uso no Linux e PHP
+# NFeCacert       -- no formato Java Keystore para uso do Java  
+# 
+# NOTA: Os certificados dos servidores tem validade e portanto 
+#       este script deve ser usado regularmente para manter os 
+#       certificados válidos disponíveis para uso de forma a 
+#       evitar negativas de acesso devido a regras de segurança
+#       estabelecidas
+#
+# Author: Roberto L. Machado <linux dot rlm at gmail dot com>
+# Version: 0.1 de 2016-05-26
+# Copyright (c) 2016 Roberto L. Machado
+# Lisence: LGPLv3, GPLv3 or MIT
+#-------------------------------------------------------------------
+
+PORT=443
+KEYSTOREFILE=NFeCacert
+KEYSTOREPASS=changeme
+CERTFILE=nfe_cacerts.crt
+SEFAZ=autorizadores.list
+
+#--------------------------------------------------------------
+# Esta função lê cada linha do arquivo que contêm
+# as URLs das autorizadoras e executa a tarefa de baixar 
+# os certificados, agregar-los para uso de sistemas 
+# PHP no arquivo nfe_cacerts.crt
+# e ainda monta um keystore JAVA com esses mesmos certificados
+# no arquivo NFeCacerts
+#--------------------------------------------------------------
+function readURLs()
+{
+    while read url
+    do 
+       echo -e "$url"
+       getSSLCert $url
+       groupCerts $url
+       addCertsKeyStore $url
+    done < $1
+}
+
+#--------------------------------------------------------------
+# Esta função acessa a URL e recupera o certificado do servidor
+#--------------------------------------------------------------
+function getSSLCert()
+{
+    # remove o certificado anterior, se houver
+    rm -f $1.cert
+    # busca os dados SSL na URL, e separa o certificado das denais informações 
+    timeout 4 openssl s_client -connect $1:$PORT < /dev/null | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > $1.cert
+    # verifique se o arquivo não está vazio, isso ocorre caso o certificado não seja fornecido pela URL
+    # é necessário investigar esses casos pois pode estar fora do ar temporariamente ou o servidor tem falhas em 
+    # sua configuração impedindo a recuperação do certificado nesse caso a importação deverá ser feita manualmente  
+    if [ -s "$1.cert" ]
+    then
+        # deixe o arquivo ficar
+        echo ""
+    else
+        echo "##########################################################################" 
+        echo "#             Não foi possivel pegar o certificado de $1.                #"
+        echo "##########################################################################"
+        rm -f $1.cert
+    fi
+}
+
+#-----------------------------------------------------
+# Esta função agrega os certificados em formato PEM
+# para usos em sistemas Linux e PHP
+#-----------------------------------------------------
+function groupCerts()
+{
+    if [ -f $1.cert ]
+    then
+        cat $1.cert >> $CERTFILE
+    fi    
+}
+
+#-----------------------------------
+# Esta função adiciona os certificados a 
+# um KeyStore Java 
+#-----------------------------------
+function addCertsKeyStore()
+{
+    if [ -f $1.cert ]
+    then
+   	    keytool -import -noprompt -trustcacerts -alias $1 -file $1.cert -keystore $KEYSTOREFILE -storepass $KEYSTOREPASS
+    fi	
+}
+
+rm -f $CERTFILE
+rm -f $KEYSTOREFILE
+
+readURLs $SEFAZ
+
+NUM=$(grep 'END CERTIFICATE' $CERTFILE | wc -l)
+echo "Foram inclusos $NUM certificados ao keystore NFeCacert e ao arquivo nfe_cacerts.crt"
+echo "Voce pode verificar pelos dados abaixo:"
+keytool -list -keystore ${KEYSTOREFILE} -storepass ${KEYSTOREPASS}
+
+exit 0
+
