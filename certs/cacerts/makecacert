@@ -27,7 +27,7 @@
 
 PORT=443
 KEYSTOREFILE=$2
-KEYSTOREPASS=changeme
+KEYSTOREPASS=changeit
 CERTFILE=$1
 SEFAZ=$3
 FAIL=""
@@ -176,6 +176,8 @@ rm -f $CERTFILE
 rm -f $KEYSTOREFILE
 rm -f $LOGFILE
 rm -f cert.*.pem
+
+cp $JAVA_HOME/jre/lib/security/cacerts $KEYSTOREFILE
 
 # executa a carga
 readURLs $SEFAZ
