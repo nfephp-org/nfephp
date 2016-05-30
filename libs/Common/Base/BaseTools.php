@@ -4,7 +4,7 @@ namespace NFePHP\Common\Base;
 
 /**
  * Classe base das classes principais para a comunicação com a SEFAZ
- * 
+ *
  * @category   NFePHP
  * @package    NFePHP\Common\Base
  * @copyright  Copyright (c) 2008-2015
@@ -47,7 +47,7 @@ class BaseTools
     /**
      * motivoContingencia
      * Motivo por ter entrado em Contingencia
-     * @var string 
+     * @var string
      */
     public $motivoContingencia = '';
     /**
@@ -59,7 +59,7 @@ class BaseTools
     /**
      * verAplic
      * Versão da aplicação
-     * @var string 
+     * @var string
      */
     public $verAplic = '';
     /**
@@ -96,12 +96,12 @@ class BaseTools
     protected $oCertificate;
     /**
      * oSoap
-     * @var Object Class  
+     * @var Object Class
      */
     protected $oSoap;
     /**
      * aDocFormat
-     * @var array 
+     * @var array
      */
     protected $aDocFormat = array();
     /**
@@ -122,17 +122,17 @@ class BaseTools
     protected $urlPortal = '';
     /**
      * urlcUF
-     * @var string 
+     * @var string
      */
     protected $urlcUF = '';
     /**
      * urlVersion
-     * @var string 
+     * @var string
      */
     protected $urlVersion = '';
     /**
      * urlService
-     * @var string 
+     * @var string
      */
     protected $urlService = '';
     /**
@@ -142,17 +142,17 @@ class BaseTools
     protected $urlMethod = '';
     /**
      * urlOperation
-     * @var string 
+     * @var string
      */
     protected $urlOperation = '';
     /**
      * urlNamespace
-     * @var string 
+     * @var string
      */
     protected $urlNamespace = '';
     /**
      * urlHeader
-     * @var string 
+     * @var string
      */
     protected $urlHeader = '';
     /**
@@ -358,7 +358,7 @@ class BaseTools
      * assinaDoc
      * @param string $xml
      * @param string $tipo nfe, cte, ou mdfe
-     * @param string $tag Nome da tag a ser assinada 
+     * @param string $tag Nome da tag a ser assinada
      * @param boolean $saveFile APENAS para salvar NFe, CTe ou MDFe
      * @return string
      * @throws Exception\InvalidArgumentException
@@ -686,8 +686,8 @@ class BaseTools
      * @param string $tpAmb ambiente
      * @param string $filename nome do arquivo
      * @param string $data dados a serem salvos
-     * @param string $subFolder 
-     * @param string $anomes 
+     * @param string $subFolder
+     * @param string $anomes
      * @throws Exception\RuntimeException
      */
     protected function zGravaFile(
@@ -710,7 +710,7 @@ class BaseTools
             $path = $this->aConfig['pathMDFeFiles'];
         }
         $pathTemp = Files\FilesFolders::getFilePath($tpAmb, $path, $subFolder)
-            . DIRECTORY_SEPARATOR.$anomes;        
+            . DIRECTORY_SEPARATOR.$anomes;
         if (! Files\FilesFolders::saveFile($pathTemp, $filename, $data)) {
             $msg = 'Falha na gravação no diretório. '.$pathTemp;
             throw new Exception\RuntimeException($msg);
@@ -743,12 +743,12 @@ class BaseTools
      * @param int $tpAmb
      * @return string
      */
-    public function zGetUrlQR($cUF,$tpAmb)
+    public function zGetUrlQR($cUF, $tpAmb)
     {
         $siglaUF = $this->zGetSigla($cUF);
-        $this->zLoadServico('nfe','NfeConsultaQR',$siglaUF,$tpAmb);
+        $this->zLoadServico('nfe', 'NfeConsultaQR', $siglaUF, $tpAmb);
         if ($this->urlService == '') {
-            $url = "http://www.sefaz.".strtolower($siglaUF).".gov.br/";   
+            $url = "http://www.sefaz.".strtolower($siglaUF).".gov.br/";
         } else {
             $url = $this->urlService;
         }

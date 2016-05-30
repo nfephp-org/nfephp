@@ -24,17 +24,17 @@ class NatSoap
     public $soapDebug = '';
     /**
      *
-     * @var integer 
+     * @var integer
      */
     public $soapTimeout = 10;
     /**
      *
-     * @var array 
+     * @var array
      */
     public $aError = array();
     /**
      *
-     * @var string 
+     * @var string
      */
     public $pathWsdl = '';
     
@@ -49,7 +49,7 @@ class NatSoap
     private $priKEY;
        
     /**
-     * 
+     *
      * @param string $publicKey
      * @param string $privateKey
      * @param string $certificateKey
@@ -82,7 +82,7 @@ class NatSoap
     /**
      * Estabelece comunicaçao com servidor SOAP 1.1 ou 1.2 da SEFAZ,
      * usando as chaves publica e privada parametrizadas na contrução da classe.
-     * Conforme Manual de Integração Versão 4.0.1 
+     * Conforme Manual de Integração Versão 4.0.1
      *
      * @param string $urlsefaz
      * @param string $namespace

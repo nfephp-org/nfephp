@@ -78,7 +78,7 @@ class FilesFolders
     
     /**
      * createFolders
-     * Cria a estrutura de diretorios para a guarda dos arquivos 
+     * Cria a estrutura de diretorios para a guarda dos arquivos
      * @param string $dirPath path do diretorio a ser criado
      * @return boolean
      * @throws Exception\RuntimeException

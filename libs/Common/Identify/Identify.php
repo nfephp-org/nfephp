@@ -20,7 +20,7 @@ class Identify
     /**
      * Lista com a identificação das TAGs principais que identificam o documento
      * e o respectivo arquivo xsd
-     * @var array 
+     * @var array
      */
     protected static $schemesId = array();
     
@@ -37,7 +37,7 @@ class Identify
     
     /**
      * identificacao
-     * Identifica o documento 
+     * Identifica o documento
      * @param type $xml
      * @return string
      */

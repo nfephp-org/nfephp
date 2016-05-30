@@ -45,7 +45,7 @@ class CurlSoap
     protected $infoCurl = array();
     /**
      * pubKeyPath
-     * @var string 
+     * @var string
      */
     private $pubKeyPath = '';
     /**
@@ -75,23 +75,23 @@ class CurlSoap
     private $proxyUSER = '';
     /**
      * proxyPASS
-     * @var string 
+     * @var string
      */
     private $proxyPASS = '';
     /**
      * sslProtocol
-     * @var integer 
+     * @var integer
      */
     private $sslProtocol = 0;
     
     /**
      * __construct
-     * 
+     *
      * @param string $priKeyPath path para a chave privada
      * @param string $pubKeyPath path para a chave publica
      * @param string $certKeyPath path para o certificado
      * @param string $timeout tempo de espera da resposta do webservice
-     * @param integer $sslProtocol 
+     * @param integer $sslProtocol
      */
     public function __construct($priKeyPath = '', $pubKeyPath = '', $certKeyPath = '', $timeout = 10, $sslProtocol = 0)
     {
@@ -359,7 +359,7 @@ class CurlSoap
     
     /**
      * getIBPTProd
-     * Consulta o serviço do IBPT para obter os impostos ao consumidor 
+     * Consulta o serviço do IBPT para obter os impostos ao consumidor
      * conforme Lei 12.741/2012
      * @param string $cnpj
      * @param string $tokenIBPT

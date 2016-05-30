@@ -18,7 +18,7 @@ class Keys
     /**
      * buildKey
      * Monta as chaves de 44 digitos para NFe, NFCe, CTe e MDFe
-     * 
+     *
      * @param string $cUF
      * @param string $ano
      * @param string $mes
@@ -54,7 +54,7 @@ class Keys
     /**
      * testaChave
      * Testa a chave com o digito verificador no final
-     * 
+     *
      * @param string $chave
      * @return boolean
      */
@@ -74,9 +74,9 @@ class Keys
     /**
      * calculaDV
      * Função para o calculo o digito verificador da chave da NFe
-     * 
+     *
      * @param string $chave43
-     * @return string 
+     * @return string
      */
     public static function calculaDV($chave43)
     {

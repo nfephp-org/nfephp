@@ -16,7 +16,7 @@ class DateTime
 {
     /**
      * tzdBR
-     * Para esta função funcionar corretamente é importante 
+     * Para esta função funcionar corretamente é importante
      * que os pacotes referentes ao Horario de verão estejam
      * atualizados instalados e ativos no sistema operacional
      * @param string $siglaUF
@@ -67,7 +67,7 @@ class DateTime
     /**
      * convertSefazTimeToTimestamp
      * Converte a imformação de data e tempo contida na NFe
-     * 
+     *
      * @param string $DH Informação de data e tempo extraida da NFe
      * @return timestamp UNIX Para uso com a funçao date do php
      */

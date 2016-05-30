@@ -18,16 +18,16 @@ class Asn extends Base
 {
     /**
      * Comprimento do campo sendo usado
-     * 
-     * @var integer 
+     *
+     * @var integer
      */
     protected static $len = 0;
     
     /**
      * getCNPJCert
-     * 
+     *
      * Obtêm o numero de CNPJ da chave publica do Certificado (A1)
-     * 
+     *
      * @param string $certpem conteúdo do certificado
      * @return string CNPJ
      */

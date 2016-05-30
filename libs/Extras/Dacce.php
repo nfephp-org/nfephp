@@ -60,7 +60,7 @@ class Dacce extends CommonNFePHP implements DocumentoNFePHP
     protected $xml; // string XML NFe
     protected $logomarca = ''; // path para logomarca em jpg
     protected $errMsg = ''; // mesagens de erro
-    protected $errStatus = FALSE; // status de erro TRUE um erro ocorreu FALSE sem erros
+    protected $errStatus = false; // status de erro TRUE um erro ocorreu FALSE sem erros
     protected $orientacao = 'P'; // orientação da DANFE P-Retrato ou L-Paisagem
     protected $papel = 'A4'; // formato do papel
     protected $destino = 'I'; // destivo do arquivo pdf I-borwser, S-retorna o arquivo, D-força download, F-salva em arquivo local
@@ -116,7 +116,7 @@ class Dacce extends CommonNFePHP implements DocumentoNFePHP
             // ativar modo debug
             error_reporting(E_ALL);
             ini_set('display_errors', 'On');
-        } else if ($this->debugMode === 0) {
+        } elseif ($this->debugMode === 0) {
             // desativar modo debug
             error_reporting(0);
             ini_set('display_errors', 'Off');
