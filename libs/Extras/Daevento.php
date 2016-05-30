@@ -33,7 +33,7 @@
  *        CONTRIBUIDORES (por ordem alfabetica):
  *              Leandro C. Lopez <leandro dot castoldi at gmail dot com>
  *              Lucas Vaccaro <lucas-vaccaro at outlook dot com>
- *		        Roberto Spadim <roberto at spadim dot com dot br>
+ *              Roberto Spadim <roberto at spadim dot com dot br>
  */
 
 namespace NFePHP\Extras;
@@ -127,7 +127,7 @@ class Daevento extends CommonNFePHP implements DocumentoNFePHP
             // ativar modo debug
             error_reporting(E_ALL);
             ini_set('display_errors', 'On');
-        } else if ($this->debugMode === 0) {
+        } elseif ($this->debugMode === 0) {
             // desativar modo debug
             error_reporting(0);
             ini_set('display_errors', 'Off');
@@ -166,14 +166,13 @@ class Daevento extends CommonNFePHP implements DocumentoNFePHP
         $this->retEvento = $this->dom->getElementsByTagName("retEvento")->item(0);
         $this->rinfEvento = $this->retEvento->getElementsByTagName("infEvento")->item(0);
         $this->tpEvento = $this->infEvento->getElementsByTagName("tpEvento")->item(0)->nodeValue;
-        if (
-            !in_array(
-                $this->tpEvento,
-                array(
+        if (!in_array(
+            $this->tpEvento,
+            array(
                     '110110',
                     '110111'
                 )
-            )
+        )
         ) {
             $this->errMsg = 'Evento não implementado ' . $tpEvento . ' !!';
             $this->errStatus = true;
@@ -459,10 +458,11 @@ class Daevento extends CommonNFePHP implements DocumentoNFePHP
             'size' => 16,
             'style' => 'B'
         );
-        if ($this->tpEvento == '110110')
+        if ($this->tpEvento == '110110') {
             $texto = 'Representação Gráfica de CC-e';
-        else
+        } else {
             $texto = 'Representação Gráfica de Evento';
+        }
         $this->pTextBox($x, $y + 2, $w2, 8, $texto, $aFont, 'T', 'C', 0, '');
 
         $aFont = array(
@@ -470,10 +470,11 @@ class Daevento extends CommonNFePHP implements DocumentoNFePHP
             'size' => 12,
             'style' => 'I'
         );
-        if ($this->tpEvento == '110110')
+        if ($this->tpEvento == '110110') {
             $texto = '(Carta de Correção Eletrônica)';
-        elseif ($this->tpEvento == '110111')
+        } elseif ($this->tpEvento == '110111') {
             $texto = '(Cancelamento de NFe)';
+        }
         $this->pTextBox($x, $y + 7, $w2, 8, $texto, $aFont, 'T', 'C', 0, '');
 
         $texto = 'ID do Evento: ' . $this->id;
@@ -499,10 +500,11 @@ class Daevento extends CommonNFePHP implements DocumentoNFePHP
         $x = $oldX;
         $this->pTextBox($x, $y1, $maxW, 40);
         $sY = $y1 + 40;
-        if ($this->tpEvento == '110110')
+        if ($this->tpEvento == '110110') {
             $texto = 'De acordo com as determinações legais vigentes, vimos por meio desta comunicar-lhe que a Nota Fiscal, abaixo referenciada, contém irregularidades que estão destacadas e suas respectivas correções, solicitamos que sejam aplicadas essas correções ao executar seus lançamentos fiscais.';
-        elseif ($this->tpEvento == '110111')
+        } elseif ($this->tpEvento == '110111') {
             $texto = 'De acordo com as determinações legais vigentes, vimos por meio desta comunicar-lhe que a Nota Fiscal, abaixo referenciada, está cancelada, solicitamos que sejam aplicadas essas correções ao executar seus lançamentos fiscais.';
+        }
         $aFont = array(
             'font' => $this->fontePadrao,
             'size' => 10,
@@ -646,10 +648,11 @@ class Daevento extends CommonNFePHP implements DocumentoNFePHP
     private function pBody($x, $y)
     {
         $maxW = $this->wPrint;
-        if ($this->tpEvento == '110110')
+        if ($this->tpEvento == '110110') {
             $texto = 'CORREÇÕES A SEREM CONSIDERADAS';
-        else
+        } else {
             $texto = 'JUSTIFICATIVA DO CANCELAMENTO';
+        }
         $aFont = array(
             'font' => $this->fontePadrao,
             'size' => 10,
@@ -659,10 +662,11 @@ class Daevento extends CommonNFePHP implements DocumentoNFePHP
 
         $y += 5;
         $this->pTextBox($x, $y, $maxW, 190);
-        if ($this->tpEvento == '110110')
+        if ($this->tpEvento == '110110') {
             $texto = $this->xCorrecao;
-        elseif ($this->tpEvento == '110111')
+        } elseif ($this->tpEvento == '110111') {
             $texto = $this->xJust;
+        }
         $aFont = array(
             'font' => $this->fontePadrao,
             'size' => 12,
@@ -680,10 +684,11 @@ class Daevento extends CommonNFePHP implements DocumentoNFePHP
     private function pFooter($x, $y)
     {
         $w = $this->wPrint;
-        if ($this->tpEvento == '110110')
+        if ($this->tpEvento == '110110') {
             $texto = "Este documento é uma representação gráfica da CC-e e foi impresso apenas para sua informação e não possui validade fiscal.\n A CC-e deve ser recebida e mantida em arquivo eletrônico XML e pode ser consultada através dos Portais das SEFAZ.";
-        elseif ($this->tpEvento == '110111')
+        } elseif ($this->tpEvento == '110111') {
             $texto = "Este documento é uma representação gráfica do evento de NFe e foi impresso apenas para sua informação e não possui validade fiscal.\n O Evento deve ser recebido e mantido em arquivo eletrônico XML e pode ser consultada através dos Portais das SEFAZ.";
+        }
         $aFont = array(
             'font' => $this->fontePadrao,
             'size' => 10,

@@ -12,7 +12,7 @@ class Configure
 {
     /**
      * $cRed
-     * @var hex 
+     * @var hex
      */
     protected static $cRed = '#FF0000';
     

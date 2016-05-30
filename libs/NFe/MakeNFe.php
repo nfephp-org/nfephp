@@ -865,7 +865,7 @@ class MakeNFe extends BaseMake
     
     /**
      * tagenderDest
-     * Endereço do Destinatário da NF-e E05 pai E01 
+     * Endereço do Destinatário da NF-e E05 pai E01
      * tag NFe/infNFe/dest/enderDest  (opcional para modelo 65)
      * Os dados do destinatário devem ser inseridos antes deste método
      * @param string $xLgr
@@ -1431,8 +1431,8 @@ class MakeNFe extends BaseMake
     
     /**
      * tagCEST
-     * Código Especificador da Substituição Tributária – CEST, 
-     * que identifica a mercadoria sujeita aos regimes de substituição 
+     * Código Especificador da Substituição Tributária – CEST,
+     * que identifica a mercadoria sujeita aos regimes de substituição
      * tributária e de antecipação do recolhimento do imposto.
      * vide NT2015.003
      * @param string $nItem
@@ -1440,7 +1440,7 @@ class MakeNFe extends BaseMake
      * @return DOMElement
      */
     public function tagCEST($nItem = '', $texto = '')
-    {   
+    {
         $cest = $this->dom->createElement("CEST", $texto);
         $this->aCest[$nItem][] = $cest;
         return $cest;
@@ -1461,7 +1461,7 @@ class MakeNFe extends BaseMake
     
     /**
      * taginfAdProd
-     * Informações adicionais do produto 
+     * Informações adicionais do produto
      * tag NFe/infNFe/det[]/infAdProd
      * @param string $nItem
      * @param string $texto
@@ -1870,7 +1870,7 @@ class MakeNFe extends BaseMake
     
     /**
      * tagencerrante
-     * informações relacionadas com as operações de combustíveis, subgrupo de 
+     * informações relacionadas com as operações de combustíveis, subgrupo de
      * encerrante que permite o controle sobre as operações de venda de combustíveis
      * LA11 pai LA01
      * tag NFe/infNFe/det[]/prod/comb/encerrante (opcional)
@@ -2146,8 +2146,8 @@ class MakeNFe extends BaseMake
     
     /**
      * tagICMSPart
-     * Grupo de Partilha do ICMS entre a UF de origem e UF de destino ou 
-     * a UF definida na legislação. N10a pai N01 
+     * Grupo de Partilha do ICMS entre a UF de origem e UF de destino ou
+     * a UF definida na legislação. N10a pai N01
      * tag NFe/infNFe/det[]/imposto/ICMS/ICMSPart
      * @param string $nItem
      * @param string $orig
@@ -2499,7 +2499,7 @@ class MakeNFe extends BaseMake
         $pICMSUFDest = '',
         $pICMSInter = '',
         $pICMSInterPart = '',
-        $vFCPUFDest = '',     
+        $vFCPUFDest = '',
         $vICMSUFDest = '',
         $vICMSUFRemet = ''
     ) {
@@ -2617,8 +2617,7 @@ class MakeNFe extends BaseMake
             $this->dom->addChild($ipiTrib, "CST", $cst, true, "[item $nItem] Código da situação tributária do IPI");
             $this->dom->addChild($ipiTrib, "vBC", $vBC, false, "[item $nItem] Valor da BC do IPI");
             $this->dom->addChild($ipiTrib, "pIPI", $pIPI, false, "[item $nItem] Alíquota do IPI");
-            $this->dom->addChild($ipiTrib, "qUnid", $qUnid, false, "[item $nItem] Quantidade total na unidade padrão para tributação (somente para os produtos tributados por unidade)"
-            );
+            $this->dom->addChild($ipiTrib, "qUnid", $qUnid, false, "[item $nItem] Quantidade total na unidade padrão para tributação (somente para os produtos tributados por unidade)");
             $this->dom->addChild($ipiTrib, "vUnid", $vUnid, false, "[item $nItem] Valor por Unidade Tributável");
             $this->dom->addChild($ipiTrib, "vIPI", $vIPI, true, "[item $nItem] Valor do IPI");
             $ipi->appendChild($ipiTrib);
@@ -2741,7 +2740,7 @@ class MakeNFe extends BaseMake
     
     /**
      * tagPISST
-     * Grupo PIS Substituição Tributária R01 pai M01 
+     * Grupo PIS Substituição Tributária R01 pai M01
      * tag NFe/infNFe/det[]/imposto/PISST (opcional)
      * @param string $nItem
      * @param string $vBC
@@ -3820,7 +3819,7 @@ class MakeNFe extends BaseMake
      * Informação de Documentos Fiscais referenciados BA01 pai B01
      * tag NFe/infNFe/ide/NFref
      * Podem ser criados até 500 desses Nodes por NFe
-     * Função chamada pelos métodos 
+     * Função chamada pelos métodos
      * [tagrefNFe] [tagrefNF] [tagrefNFP]  [tagCTeref] [tagrefECF]
      */
     private function zTagNFref()
@@ -4124,9 +4123,9 @@ class MakeNFe extends BaseMake
      * zTaginfAdic
      * Grupo de Informações Adicionais Z01 pai A01
      * tag NFe/infNFe/infAdic (opcional)
-     * Função chamada pelos metodos 
+     * Função chamada pelos metodos
      * [taginfAdic] [tagobsCont] [tagobsFisco] [tagprocRef]
-     * 
+     *
      * @return DOMElement
      */
     private function zTaginfAdic()

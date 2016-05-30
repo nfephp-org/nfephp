@@ -4,7 +4,7 @@ namespace NFePHP\Common\Base;
 
 /**
  * Classe base para o envio de emails tanto para NFe, NFCe, CTe e MDFe
- *  
+ *
  * @category   NFePHP
  * @package    NFePHP\Common\Base\BaseMail
  * @copyright  Copyright (c) 2008-2015
@@ -30,7 +30,7 @@ class BaseMail
 {
     /**
      * $template
-     * @var string 
+     * @var string
      */
     protected $template = '';
     /**
@@ -184,7 +184,7 @@ class BaseMail
     
     /**
      * zRemakeFilename
-     * Caso não seja passado um nome de arquivo então 
+     * Caso não seja passado um nome de arquivo então
      * pega o nome do arquivo do path
      * @param string $pathFile
      * @param string $filename

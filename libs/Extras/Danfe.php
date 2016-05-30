@@ -1809,9 +1809,9 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
     {
         $valorImposto = '0, 00';
         $the_field = $this->ICMSTot->getElementsByTagName($campoImposto)->item(0);
-        if( isset($the_field) ){
+        if (isset($the_field)) {
             $the_value = $the_field->nodeValue;
-            if(!empty($the_value)){
+            if (!empty($the_value)) {
                 $valorImposto = number_format($the_value, 2, ",", ".");
             }
         }
@@ -1839,11 +1839,11 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
 
 
         $campos_por_linha = 9;
-        if(!$this->exibirPIS){
-           $campos_por_linha--;
+        if (!$this->exibirPIS) {
+            $campos_por_linha--;
         }
-        if(!$this->exibirIcmsInterestadual){
-           $campos_por_linha -= 2;
+        if (!$this->exibirIcmsInterestadual) {
+            $campos_por_linha -= 2;
         }
 
         if ($this->orientacao == 'P') {
@@ -1867,7 +1867,7 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
         $x = $this->pImpostoDanfeHelper($x, $y, $w, $h, "VALOR DO ICMS SUBST.", "vST");
         $x = $this->pImpostoDanfeHelper($x, $y, $w, $h, "V. IMP. IMPORTAÇÃO", "vII");
 
-        if( $this->exibirIcmsInterestadual){
+        if ($this->exibirIcmsInterestadual) {
             $x = $this->pImpostoDanfeHelper($x, $y, $w, $h, "V. ICMS UF REMET.", "vICMSUFRemet");
             $x = $this->pImpostoDanfeHelper($x, $y, $w, $h, "VALOR DO FCP", "vFCPUFDest");
         }
@@ -1889,7 +1889,7 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
         $x = $this->pImpostoDanfeHelper($x, $y, $w, $h, "OUTRAS DESPESAS", "vOutro");
         $x = $this->pImpostoDanfeHelper($x, $y, $w, $h, "VALOR TOTAL IPI", "vIPI");
 
-        if( $this->exibirIcmsInterestadual){
+        if ($this->exibirIcmsInterestadual) {
             $x = $this->pImpostoDanfeHelper($x, $y, $w, $h, "V. ICMS UF DEST.", "vICMSUFDest");
             $x = $this->pImpostoDanfeHelper($x, $y, $w, $h, "V. TOT. TRIB.", "vTotTrib");
         }
@@ -1947,7 +1947,7 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
         $this->pTextBox($x, $y, $w2, $h, $texto, $aFont, 'T', 'L', 1, '');
         $tipoFrete = ! empty($this->transp->getElementsByTagName("modFrete")->item(0)->nodeValue) ?
                 $this->transp->getElementsByTagName("modFrete")->item(0)->nodeValue : '0';
-        switch($tipoFrete) {
+        switch ($tipoFrete) {
             case 0:
                 $texto = "(0) Emitente";
                 break;
@@ -2143,7 +2143,7 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
         $texto = 'QUANTIDADE';
         $aFont = array('font'=>$this->fontePadrao, 'size'=>6, 'style'=>'');
         $this->pTextBox($x, $y, $w1, $h, $texto, $aFont, 'T', 'L', 1, '');
-        if(!empty($quantidade)){
+        if (!empty($quantidade)) {
             $texto = $quantidade;
             $aFont = array('font'=>$this->fontePadrao, 'size'=>10, 'style'=>'B');
             $this->pTextBox($x, $y, $w1, $h, $texto, $aFont, 'B', 'C', 0, '');
@@ -2205,15 +2205,16 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
 
 
 
-    protected function pDescricaoProdutoHelper($origem, $campo, $formato){
+    protected function pDescricaoProdutoHelper($origem, $campo, $formato)
+    {
         $valor_original = $origem->getElementsByTagName($campo)->item(0);
-        if( !isset( $valor_original )){
+        if (!isset($valor_original)) {
             return "";
         }
         $valor_original = $valor_original->nodeValue;
-        $valor = ! empty( $valor_original ) ? number_format( $valor_original, 2, ",", ".") : '';
+        $valor = ! empty($valor_original) ? number_format($valor_original, 2, ",", ".") : '';
 
-        if($valor != ""){
+        if ($valor != "") {
             return sprintf($formato, $valor);
         }
         return "";
@@ -2233,22 +2234,20 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
         $ICMSUFDest = $itemProd->getElementsByTagName("ICMSUFDest")->item(0);
         $impostos = '';
 
-        if ( !empty($ICMS)) {
+        if (!empty($ICMS)) {
             $impostos .= $this->pDescricaoProdutoHelper($ICMS, "pRedBC", " pRedBC=%s%%");
             $impostos .= $this->pDescricaoProdutoHelper($ICMS, "pMVAST", " IVA=%s%%");
             $impostos .= $this->pDescricaoProdutoHelper($ICMS, "pICMSST", " pIcmsSt=%s%%");
             $impostos .= $this->pDescricaoProdutoHelper($ICMS, "vBCST", " BcIcmsSt=%s");
             $impostos .= $this->pDescricaoProdutoHelper($ICMS, "vICMSST", " vIcmsSt=%s");
         }
-        if( !empty($ICMSUFDest)){
-
+        if (!empty($ICMSUFDest)) {
             $impostos .= $this->pDescricaoProdutoHelper($ICMSUFDest, "pFCPUFDest", " pFCPUFDest=%s%%");
             $impostos .= $this->pDescricaoProdutoHelper($ICMSUFDest, "pICMSUFDest", " pICMSUFDest=%s%%");
             $impostos .= $this->pDescricaoProdutoHelper($ICMSUFDest, "pICMSInterPart", " pICMSInterPart=%s%%");
             $impostos .= $this->pDescricaoProdutoHelper($ICMSUFDest, "vFCPUFDest", " vFCPUFDest=%s");
             $impostos .= $this->pDescricaoProdutoHelper($ICMSUFDest, "vICMSUFDest", " vICMSUFDest=%s");
             $impostos .= $this->pDescricaoProdutoHelper($ICMSUFDest, "vICMSUFRemet", " vICMSUFRemet=%s");
-
         }
         $infAdProd = ! empty($itemProd->getElementsByTagName('infAdProd')->item(0)->nodeValue) ?
                 substr($this->pAnfavea($itemProd->getElementsByTagName('infAdProd')->item(0)->nodeValue), 0, 500) : '';
@@ -2497,7 +2496,7 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
                 $x += $w8;
                 // Valor do Produto
                 $texto = "";
-                if(is_numeric($prod->getElementsByTagName("vProd")->item(0)->nodeValue) ){
+                if (is_numeric($prod->getElementsByTagName("vProd")->item(0)->nodeValue)) {
                     $texto = number_format($prod->getElementsByTagName("vProd")->item(0)->nodeValue, 2, ",", ".");
                 }
                 $this->pTextBox($x, $y, $w9, $h, $texto, $aFont, 'T', $alinhamento, 0, '');
@@ -2702,7 +2701,7 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
         $xJust = $this->pSimpleGetValue($this->ide, 'xJust', 'Justificativa: ');
         $dhCont = $this->pSimpleGetValue($this->ide, 'dhCont', ' Entrada em contingência : ');
         $texto = '';
-        switch($this->tpEmis) {
+        switch ($this->tpEmis) {
             case 2:
                 $texto = 'CONTINGÊNCIA FS' . $dhCont . $xJust;
                 break;
@@ -3019,9 +3018,9 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
             }
             $refECF = $nfRef->getElementsByTagName('refECF');
             foreach ($refECF as $umaRefNFe) {
-                $mod	= $umaRefNFe->getElementsByTagName('mod')->item(0)->nodeValue;
-                $nECF	= $umaRefNFe->getElementsByTagName('nECF')->item(0)->nodeValue;
-                $nCOO	= $umaRefNFe->getElementsByTagName('nCOO')->item(0)->nodeValue;
+                $mod    = $umaRefNFe->getElementsByTagName('mod')->item(0)->nodeValue;
+                $nECF   = $umaRefNFe->getElementsByTagName('nECF')->item(0)->nodeValue;
+                $nCOO   = $umaRefNFe->getElementsByTagName('nCOO')->item(0)->nodeValue;
                 $saida .= sprintf($formaECFRef, $mod, $nECF, $nCOO);
             }
             $refNFP = $nfRef->getElementsByTagName('refNFP');

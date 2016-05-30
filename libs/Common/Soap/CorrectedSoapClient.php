@@ -18,7 +18,7 @@ class CorrectedSoapClient extends \SoapClient
 {
     /**
      * __construct
-     * 
+     *
      * @param mixed $wsdl
      * @param array $options
      */
@@ -33,7 +33,7 @@ class CorrectedSoapClient extends \SoapClient
      * @param  string$location
      * @param  string $action
      * @param  int $version
-     * @param  int $oneWay 
+     * @param  int $oneWay
      * @return string
      */
     public function __doRequest($request, $location, $action, $version, $oneWay = 0)

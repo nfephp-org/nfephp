@@ -10,8 +10,8 @@ namespace NFePHP\MDFe;
  * @license    http://www.gnu.org/licenses/lesser.html LGPL v3
  * @author     Roberto L. Machado <linux.rlm at gmail dot com>
  * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
- * 
- * NOTA: Esta classe foi construida conforme estabelecido no 
+ *
+ * NOTA: Esta classe foi construida conforme estabelecido no
  * Manual de Orientação do Contribuinte
  * Padrões Técnicos de Comunicação do Manifesto Eletrônico de Documentos Fiscais
  * versão 1.00 de Junho de 2012
@@ -76,7 +76,7 @@ class MakeMDFe extends BaseMake
     private $aCountDoc = array(); //contador de documentos fiscais
     
     /**
-     * 
+     *
      * @return boolean
      */
     public function montaMDFe()
@@ -138,7 +138,7 @@ class MakeMDFe extends BaseMake
      * tgaide
      * Informações de identificação da MDFe 4 pai 1
      * tag MDFe/infMDFe/ide
-     * 
+     *
      * @param string $cUF
      * @param string $tbAmb
      * @param string $tpEmit
@@ -291,7 +291,7 @@ class MakeMDFe extends BaseMake
     
     /**
      * tagInfMunCarrega
-     * 
+     *
      * tag MDFe/infMDFe/ide/infMunCarrega
      * @param string $cMunCarrega
      * @param string $xMunCarrega
@@ -322,7 +322,7 @@ class MakeMDFe extends BaseMake
     
     /**
      * tagInfPercurso
-     * 
+     *
      * tag MDFe/infMDFe/ide/infPercurso
      * @param string $ufPer
      * @return DOMElement

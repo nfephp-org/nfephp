@@ -37,7 +37,7 @@ class MailNFe extends BaseMail
     public function envia($pathFile = '', $aMail = array(), $comPdf = false, $pathPdf = '')
     {
         if ($comPdf && $pathPdf != '') {
-           $this->addAttachment($pathPdf, '');
+            $this->addAttachment($pathPdf, '');
         }
         $assunto = $this->zMontaMessagem($pathFile);
         //cria o anexo do xml
@@ -85,7 +85,7 @@ class MailNFe extends BaseMail
         $vNF = $icmsTot->getElementsByTagName('vNF')->item(0)->nodeValue;
         $this->aMail[] = !empty($dest->getElementsByTagName('email')->item(0)->nodeValue) ?
                 $dest->getElementsByTagName('email')->item(0)->nodeValue :
-                '';        
+                '';
         //pega os emails que existirem em obsCont
         $infAdic = $infNFe->getElementsByTagName('infAdic')->item(0);
         if (!empty($infAdic)) {

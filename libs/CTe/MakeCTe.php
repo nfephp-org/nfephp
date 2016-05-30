@@ -506,19 +506,19 @@ class MakeCTe extends BaseMake
             if ($this->semData != '') {
                 $this->zEntregaTag();
                 $this->dom->appChild($this->entrega, $this->semData, 'Falta tag "Entrega"');
-            } else if ($this->comData != '') {
+            } elseif ($this->comData != '') {
                 $this->zEntregaTag();
                 $this->dom->appChild($this->entrega, $this->comData, 'Falta tag "Entrega"');
-            } else if ($this->noPeriodo != '') {
+            } elseif ($this->noPeriodo != '') {
                 $this->zEntregaTag();
                 $this->dom->appChild($this->entrega, $this->noPeriodo, 'Falta tag "Entrega"');
-            } else if ($this->semHora != '') {
+            } elseif ($this->semHora != '') {
                 $this->zEntregaTag();
                 $this->dom->appChild($this->entrega, $this->semHora, 'Falta tag "Entrega"');
-            } else if ($this->comHora != '') {
+            } elseif ($this->comHora != '') {
                 $this->zEntregaTag();
                 $this->dom->appChild($this->entrega, $this->comHora, 'Falta tag "Entrega"');
-            } else if ($this->noInter != '') {
+            } elseif ($this->noInter != '') {
                 $this->zEntregaTag();
                 $this->dom->appChild($this->entrega, $this->noInter, 'Falta tag "Entrega"');
             }
@@ -1675,7 +1675,7 @@ class MakeCTe extends BaseMake
                 true,
                 $identificador . 'CNPJ do Remente'
             );
-        } else if ($CPF != '') {
+        } elseif ($CPF != '') {
             $this->dom->addChild(
                 $this->rem,
                 'CPF',
@@ -1870,7 +1870,7 @@ class MakeCTe extends BaseMake
                 true,
                 $identificador . 'Número do CNPJ'
             );
-        } else if ($CPF != '') {
+        } elseif ($CPF != '') {
             $this->dom->addChild(
                 $this->exped,
                 'CPF',
@@ -2058,7 +2058,7 @@ class MakeCTe extends BaseMake
                 true,
                 $identificador . 'Número do CNPJ'
             );
-        } else if ($CPF != '') {
+        } elseif ($CPF != '') {
             $this->dom->addChild(
                 $this->receb,
                 'CPF',
@@ -2247,7 +2247,7 @@ class MakeCTe extends BaseMake
                 true,
                 $identificador . 'Número do CNPJ'
             );
-        } else if ($CPF != '') {
+        } elseif ($CPF != '') {
             $this->dom->addChild(
                 $this->dest,
                 'CPF',
@@ -2485,7 +2485,8 @@ class MakeCTe extends BaseMake
      * Função chamada pelo método [ monta ]
      * @return \DOMElement
      */
-    private function zCTeTag() {
+    private function zCTeTag()
+    {
         if (empty($this->CTe)) {
             $this->CTe = $this->dom->createElement('CTe');
             $this->CTe->setAttribute('xmlns', 'http://www.portalfiscal.inf.br/cte');

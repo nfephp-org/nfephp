@@ -4,7 +4,7 @@ namespace NFePHP\Common\Certificate;
 
 /**
  * Classe para tratamento e uso dos certificados digitais modelo A1 (PKCS12)
- * 
+ *
  * @category   NFePHP
  * @package    NFePHP\Common\Certificate
  * @copyright  Copyright (c) 2008-2014
@@ -21,7 +21,7 @@ class Pkcs12
 {
     /**
      * Path para o diretorio onde o arquivo pfx está localizado
-     * @var string 
+     * @var string
      */
     public $pathCerts = '';
     
@@ -45,7 +45,7 @@ class Pkcs12
     
     /**
      * String que contêm a chave publica em formato PEM
-     * @var string 
+     * @var string
      */
     public $pubKey = '';
     
@@ -65,7 +65,7 @@ class Pkcs12
     /**
      * Flag para ignorar testes de validade do certificado
      * isso é usado apenas para fins de testes
-     * @var boolean 
+     * @var boolean
      */
     public $ignoreValidCert = false;
     
@@ -101,7 +101,7 @@ class Pkcs12
     
     /**
      * Id do docimento sendo assinado
-     * @var string 
+     * @var string
      */
     public $docId = '';
 
@@ -156,13 +156,13 @@ class Pkcs12
     
     /**
      * zInit
-     * Método de inicialização da classe irá verificar 
+     * Método de inicialização da classe irá verificar
      * os parâmetros, arquivos e validade dos mesmos
      * Em caso de erro o motivo da falha será indicada na parâmetro
-     * error da classe, os outros parâmetros serão limpos e os 
+     * error da classe, os outros parâmetros serão limpos e os
      * arquivos inválidos serão removidos da pasta
      * @param boolean $flagCert indica que as chaves já foram passas como strings
-     * @return boolean 
+     * @return boolean
      */
     private function zInit($flagCert = false)
     {
@@ -229,9 +229,9 @@ class Pkcs12
      * Isso deverá ocorrer a cada atualização do certificado digital, ou seja,
      * pelo menos uma vez por ano, uma vez que a validade do certificado
      * é anual.
-     * Será verificado também se o certificado pertence realmente ao CNPJ 
-     * Essa verificação checa apenas se o certificado pertence a matriz ou filial 
-     * comparando apenas os primeiros 8 digitos do CNPJ, dessa forma ambas a 
+     * Será verificado também se o certificado pertence realmente ao CNPJ
+     * Essa verificação checa apenas se o certificado pertence a matriz ou filial
+     * comparando apenas os primeiros 8 digitos do CNPJ, dessa forma ambas a
      * matriz e as filiais poderão usar o mesmo certificado indicado na instanciação
      * da classe, se não for um erro irá ocorrer e
      * o certificado não será convertido para o formato PEM.
@@ -327,7 +327,7 @@ class Pkcs12
      * aadChain
      * @param array $aCerts Array com os caminhos completos para cada certificado da cadeia
      *                     ou um array com o conteúdo desses certificados
-     * @return void 
+     * @return void
      */
     public function aadChain($aCerts = array())
     {
@@ -686,7 +686,7 @@ class Pkcs12
     
     /**
      * zCleanPubKey
-     * Remove a informação de inicio e fim do certificado 
+     * Remove a informação de inicio e fim do certificado
      * contido no formato PEM, deixando o certificado (chave publica) pronta para ser
      * anexada ao xml da NFe
      * @return string contendo o certificado limpo
@@ -715,7 +715,7 @@ class Pkcs12
      * Divide a string do certificado publico em linhas
      * com 76 caracteres (padrão original)
      * @param string $cntIn certificado
-     * @return string certificado reformatado 
+     * @return string certificado reformatado
      */
     protected function zSplitLines($cntIn = '')
     {

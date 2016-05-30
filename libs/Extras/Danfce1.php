@@ -3,17 +3,17 @@
 namespace NFePHP\Extras;
 
 /**
- * Classe para a impressão em PDF do Docuimento Auxiliar de NFe Consumidor 
- * 
+ * Classe para a impressão em PDF do Docuimento Auxiliar de NFe Consumidor
+ *
  * @category   NFePHP
  * @package    NFePHP\NFe\ConvertNFe
  * @copyright  Copyright (c) 2008-2015
  * @license    http://www.gnu.org/licenses/lesser.html LGPL v3
  * @author    Roberto Spadim <roberto at spadim dot com dot br>
  * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
- * 
+ *
  * CONTRIBUIDORES (por ordem alfabetica):
- *            Roberto L. Machado <linux dot rlm at gmail dot com>   
+ *            Roberto L. Machado <linux dot rlm at gmail dot com>
  *            Mario Almeida <mario at grupopmz dot com dot br>
  */
 
@@ -76,11 +76,13 @@ class Danfce1 extends CommonNFePHP implements DocumentoNFePHP
     public function __construct(
         $docXML = '',
         $sPathLogo = '',
-        $mododebug = 0, // habilita os erros do sistema
+        $mododebug = 0,
+        // habilita os erros do sistema
         $idToken = '',
         $emitToken = '',
-        $urlQR = '')
-    {
+        $urlQR = ''
+    ) {
+    
         if (is_numeric($mododebug)) {
             $this->debugMode = $mododebug;
         }
@@ -200,7 +202,7 @@ class Danfce1 extends CommonNFePHP implements DocumentoNFePHP
         $this->pdf->SetLineWidth(0.1); // define a largura da linha
         $this->pdf->SetTextColor(0, 0, 0);
 
-        $this->pTextBox(0,0, $maxW, $maxH); // POR QUE PRECISO DESA LINHA?
+        $this->pTextBox(0, 0, $maxW, $maxH); // POR QUE PRECISO DESA LINHA?
 
         $hcabecalho = 27;//para cabeçalho (dados emitente mais logomarca)  (FIXO)
         $hcabecalhoSecundario = 10;//para cabeçalho secundário (cabeçalho sefaz) (FIXO)
@@ -210,7 +212,9 @@ class Danfce1 extends CommonNFePHP implements DocumentoNFePHP
         $hmsgfiscal = 21;// para imposto (FIXO)
         if (!isset($this->dest)) {
             $hcliente = 6;// para cliente (FIXO)
-        } else {$hcliente = 12;}// para cliente (FIXO)};
+        } else {
+            $hcliente = 12;
+        }// para cliente (FIXO)};
         $hQRCode = 50;// para qrcode (FIXO)
         $hCabecItens = 4;//cabeçalho dos itens
         
@@ -280,7 +284,7 @@ class Danfce1 extends CommonNFePHP implements DocumentoNFePHP
             if ($foneLen == 11) {
                 $digito9 = substr($emitFone, 2, 1);
             }
-            $emitFone = ' - ('.$ddd.') '.$digito9. ' ' . substr($fone1,0,4) . '-' . substr($fone1,-4);
+            $emitFone = ' - ('.$ddd.') '.$digito9. ' ' . substr($fone1, 0, 4) . '-' . substr($fone1, -4);
         } else {
             $emitFone = '';
         }
@@ -398,9 +402,7 @@ class Danfce1 extends CommonNFePHP implements DocumentoNFePHP
         $aFontProdutos = array('font'=>$this->fontePadrao, 'size'=>7, 'style'=>'');
 
         if ($qtdItens > 0) {
-            
             foreach ($this->det as $detI) {
-                
                 $thisItem   = $detI;
                 $prod       = $thisItem->getElementsByTagName("prod")->item(0);
                 $nitem      = $thisItem->getAttribute("nItem");
@@ -412,7 +414,7 @@ class Danfce1 extends CommonNFePHP implements DocumentoNFePHP
                 $vProd      = number_format($this->pSimpleGetValue($prod, "vProd"), 2, ",", ".");
 
                 //COLOCA PRODUTO
-                $yBoxProd = $y + $hLinha + ($cont*$hMaxLinha); 
+                $yBoxProd = $y + $hLinha + ($cont*$hMaxLinha);
 
                 //COLOCA PRODUTO CÓDIGO
                 $wBoxCod = $w*0.17;
@@ -450,9 +452,7 @@ class Danfce1 extends CommonNFePHP implements DocumentoNFePHP
                 $this->pTextBox($xBoxTotal, $yBoxProd, $wBoxTotal, $hMaxLinha, $texto, $aFontProdutos, 'C', 'R', 0, '', false);
                 
                 $cont++;
-                
             }
-            
         }
 
         
@@ -513,7 +513,7 @@ class Danfce1 extends CommonNFePHP implements DocumentoNFePHP
         $this->pTextBox($xValor, $yTotalFinal, $wColDir, $hLinha, $texto, $aFont, 'T', 'R', 0, '', false);
 
         // VER NA LEI A OBRIGATORIEDADE
-        //COLOCA TOTAL TRIBUTOS 
+        //COLOCA TOTAL TRIBUTOS
         /*
         $yTotalFinal = $y + ($hLinha*4);
         $texto = "Informação dos Tributos Totais Incidentes";
@@ -555,9 +555,7 @@ class Danfce1 extends CommonNFePHP implements DocumentoNFePHP
         $cont = 0;
         
         if ($qtdPgto > 0) {
-            
             foreach ($this->pag as $pagI) {
-                
                 $tPag = $this->pSimpleGetValue($pagI, "tPag");
                 $tPagNome = $this->tipoPag($tPag);
                 $tPnome = $tPagNome;
@@ -573,7 +571,7 @@ class Danfce1 extends CommonNFePHP implements DocumentoNFePHP
                     $tBandNome = self::getCardName($tBand);
                 }
                 //COLOCA PRODUTO
-                $yBoxProd = $y + $hLinha + ($cont*$hLinha); 
+                $yBoxProd = $y + $hLinha + ($cont*$hLinha);
 
                 //COLOCA PRODUTO CÓDIGO
                 $texto = $tPagNome;
@@ -585,9 +583,7 @@ class Danfce1 extends CommonNFePHP implements DocumentoNFePHP
                 $this->pTextBox($xBoxDescricao, $yBoxProd, $wBoxDir, $hLinha, $texto, $aFontProdutos, 'C', 'R', 0, '', false);
 
                 $cont++;
-                
             }
-            
         }
 
         
@@ -684,14 +680,11 @@ class Danfce1 extends CommonNFePHP implements DocumentoNFePHP
             $yTex1 = $y + $hLinha;
             $texto = $consNome ." - ". $consDoc . "\n" . $consLgr . "," . $consNro . " " . $consCpl . "," . $consBairro . ". CEP:" . $consCEP . ". " . $consMun . "-" . $consUF;
             $this->pTextBox($x, $yTex1, $w, $hLinha*3, $texto, $aFontTex, 'C', 'C', 0, '', false);
-            
         } else {
-            
             //COLOCA TITULO
             $yTex1 = $y + $hLinha;
             $texto = "Consumidor não identificado";
             $this->pTextBox($x, $yTex1, $w, $hLinha, $texto, $aFontTex, 'C', 'C', 0, '', false);
-
         }
         
     }
@@ -717,10 +710,10 @@ class Danfce1 extends CommonNFePHP implements DocumentoNFePHP
         $hQr = 50;
         $yQr = ($y+$margemInterna);
         $xQr = ($w/2) - ($wQr/2);
-        $qrcode->displayFPDF($this->pdf,$xQr,$yQr,$wQr);
+        $qrcode->displayFPDF($this->pdf, $xQr, $yQr, $wQr);
         $yQr = ($yQr+$hQr+$margemInterna);
         $this->pTextBox($x, $yQr, $w, $hBoxLinha, "Protocolo de Autorização: " . $nProt . "\n" . $dhRecbto, $aFontTex, 'C', 'C', 0, '', false);
-    }   
+    }
    
     /**
      * printDANFE
@@ -889,12 +882,13 @@ class Danfce1 extends CommonNFePHP implements DocumentoNFePHP
     }
 
 
-    public function monta($orientacao = '', $papel = '', $logoAlign = 'C') {
+    public function monta($orientacao = '', $papel = '', $logoAlign = 'C')
+    {
         
     }
 
-    public function printDocument($nome = '', $destino = 'I', $printer = '') {
+    public function printDocument($nome = '', $destino = 'I', $printer = '')
+    {
         
     }
-
 }

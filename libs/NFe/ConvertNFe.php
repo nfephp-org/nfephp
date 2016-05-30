@@ -49,25 +49,25 @@ class ConvertNFe
     /**
      * $linhaC
      * Dados do Emitente
-     * @var array 
+     * @var array
      */
     protected $linhaC = array();
     /**
      * $linhaE
      * Dados do destinatario
-     * @var array 
+     * @var array
      */
     protected $linhaE = array();
     /**
      * $linhaF
      * Local de retirada
-     * @var array 
+     * @var array
      */
     protected $linhaF = array();
     /**
      * $linhaG
      * Local de entrega
-     * @var array 
+     * @var array
      */
     protected $linhaG = array();
     /**
@@ -81,7 +81,7 @@ class ConvertNFe
      * numero da DI
      * @var int
      */
-    protected $nDI = '0'; 
+    protected $nDI = '0';
     /**
      * $linhaI50
      * dados de exportação
@@ -1416,7 +1416,7 @@ class ConvertNFe
 
     /**
      * n10bEntity
-     * Cria tag ICMSST 
+     * Cria tag ICMSST
      * @param array $aCampos
      */
     protected function n10bEntity($aCampos)
@@ -2515,7 +2515,7 @@ class ConvertNFe
                 $aCampos[3], //$cnpj
                 $aCampos[4], //$tBand
                 $aCampos[5], //$cAut
-                $aCampos[6] //$tpIntegra    
+                $aCampos[6] //$tpIntegra
             );
         }
     }
@@ -2701,7 +2701,7 @@ class ConvertNFe
     
     /**
      * zSliceNotas
-     * Separa as notas em um array 
+     * Separa as notas em um array
      * @param array $array
      * @return array
      */
