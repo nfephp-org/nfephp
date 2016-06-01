@@ -665,7 +665,8 @@ class ToolsNFe extends BaseTools
         $idLote = '',
         &$aRetorno = array(),
         $indSinc = 0,
-        $compactarZip = false
+        $compactarZip = false,
+        $salvarMensagens = true    
     ) {
         $sxml = $aXml;
         if (empty($aXml)) {
@@ -720,14 +721,17 @@ class ToolsNFe extends BaseTools
             $method = $this->urlMethod."Zip";
         }
         //envia a solicitação via SOAP
-        $retorno = $this->oSoap->send($this->urlService, $this->urlNamespace, $this->urlHeader, $body, $method);
-        $lastMsg = $this->oSoap->lastMsg;
+        $retorno = $this->oSoap->send($this->urlService, $this->urlNamespace, $this->urlHeader, $body, $method);        
         $this->soapDebug = $this->oSoap->soapDebug;
         //salva mensagens
-        $filename = "$idLote-enviNFe.xml";
-        $this->zGravaFile('nfe', $tpAmb, $filename, $lastMsg);
-        $filename = "$idLote-retEnviNFe.xml";
-        $this->zGravaFile('nfe', $tpAmb, $filename, $retorno);
+        if($salvarMensagens){
+            $lastMsg = $this->oSoap->lastMsg;
+            $filename = "$idLote-enviNFe.xml";
+            $this->zGravaFile('nfe', $tpAmb, $filename, $lastMsg);
+            $filename = "$idLote-retEnviNFe.xml";
+            $this->zGravaFile('nfe', $tpAmb, $filename, $retorno);
+        }
+        
         //tratar dados de retorno
         $aRetorno = ReturnNFe::readReturnSefaz($servico, $retorno);
         //caso o envio seja recebido com sucesso mover a NFe da pasta
