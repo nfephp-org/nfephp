@@ -86,8 +86,8 @@ $format = 'P';
 $paper = 'A4';
 $southpaw = true;
 $pathLogoFile = PATH_NFEPHP . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'logo.jpg';
-$pathLogoNFe = PATH_NFEPHP . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'logo-nfe.png';
-$pathLogoNFCe = PATH_NFEPHP . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'logo-nfce.png';
+$pathLogoNFe = PATH_NFEPHP . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'logo-nfe.jpg';
+$pathLogoNFCe = PATH_NFEPHP . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'logo-nfce.jpg';
 $logoPosition = 'L';
 $font = 'Times';
 $printer = '';
@@ -536,10 +536,12 @@ function changeAlerts(key, flag, msg) {
     <input type="text" id="font" name="font" size="10" value="<?php echo $font;?>" readonly /><br>
     <span title="Normalmente não usado mas teria que complementar o script para permitir a impressão direta. Pois esse recurso depende do sistema operacional.">Impressora</span><br>
     <input type="text" id="printer" name="printer" placeholder="Nome da Impressora" size="30" value="<?php echo $printer;?>" /><br>
-    <span title="Imagem com a logomarca, deverá ser um aquivo JPEG ou PNG">Logo (80x80px ou 160x50px jpg, gif ou png)</span><br>
+    <span title="Imagem com a logomarca, deverá ser um aquivo JPEG">Logo Padrão(80x80px ou 160x50px jpg, gif ou png)</span><br>
     <input type="text" id="pathLogoFile" name="pathLogoFile" placeholder="Path completo para o arquivo com o logo" value="<?php echo $pathLogoFile;?>" />
-    <input type="hidden" name="pathLogoNFe" value="<?php echo $pathLogoNFe;?>" readonly />
-    <input type="hidden" name="pathLogoNFCe" value="<?php echo $pathLogoNFCe;?>" readonly />
+    <span title="Imagem com a logomarca, deverá ser um aquivo JPEG">Logo Especifica p/ NF-e (80x80px ou 160x50px jpg, gif ou png)</span><br>
+    <input type="text" name="pathLogoNFe" placeholder="Path completo para o arquivo com o logo padrão p/ NF-e" value="<?php echo $pathLogoNFe;?>" />
+    <span title="Imagem com a logomarca, deverá ser um aquivo JPEG">Logo Especifica p/ NFC-e (80x80px ou 160x50px jpg, gif ou png)</span><br>
+    <input type="text" name="pathLogoNFCe" placeholder="Path completo para o arquivo com o logo padrão p/ NFC-e" value="<?php echo $pathLogoNFCe;?>" />
     <br>
     </div>
     <div id="direita">
