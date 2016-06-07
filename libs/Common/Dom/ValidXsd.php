@@ -28,7 +28,7 @@ class ValidXsd
         $dom->loadXML($xml, LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
         libxml_clear_errors();
         if (! $dom->schemaValidate($xsd)) {
-            $aIntErrors = libxml_get_errors();
+            $aIntErrors =   libxml_get_errors();
             foreach ($aIntErrors as $intError) {
                 self::$errors[] = self::zTranslateError($intError->message) . "\n";
             }
