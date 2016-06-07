@@ -1977,13 +1977,13 @@ class ToolsNFe extends BaseTools
         $lastMsg = $this->oSoap->lastMsg;
         $this->soapDebug = $this->oSoap->soapDebug;
         //salva mensagens
+        //tratar dados de retorno
+        $this->aLastRetEvent = ReturnNFe::readReturnSefaz($servico, $retorno);
         if($this->getSalvarMensagensEvento()){
             $filename = "$chNFe-$aliasEvento-envEvento.xml";
             $this->zGravaFile('nfe', $tpAmb, $filename, $lastMsg);
             $filename = "$chNFe-$aliasEvento-retEnvEvento.xml";
-            $this->zGravaFile('nfe', $tpAmb, $filename, $retorno);
-            //tratar dados de retorno
-            $this->aLastRetEvent = ReturnNFe::readReturnSefaz($servico, $retorno);
+            $this->zGravaFile('nfe', $tpAmb, $filename, $retorno);            
             if ($this->aLastRetEvent['cStat'] == '128') {
                 if ($this->aLastRetEvent['evento'][0]['cStat'] == '135' ||
                     $this->aLastRetEvent['evento'][0]['cStat'] == '136' ||
