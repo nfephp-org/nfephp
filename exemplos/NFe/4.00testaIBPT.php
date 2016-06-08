@@ -7,9 +7,9 @@ use NFePHP\NFe\ToolsNFe;
 
 $nfe = new ToolsNFe('../../config/config.json');
 $nfe->setModelo('55');
-$ncm = '60063100';
+$ncm = '22030000';
 $exTarif = '0';
-$siglaUF = 'SP';
+$siglaUF = 'GO';
 
 $resp = $nfe->getImpostosIBPT($ncm, $exTarif, $siglaUF);
 

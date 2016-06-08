@@ -2,7 +2,7 @@ nbproject
 *~
 *.pfx
 *.pem
-config.json
+/config/*.json
 composer.lock
 vendor
 local
@@ -15,4 +15,4 @@ local
 /phpunit.xml
 /tests/folder
 .coverage
-
+xmls

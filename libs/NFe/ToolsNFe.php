@@ -98,7 +98,7 @@ class ToolsNFe extends BaseTools
             return true;
         }
         $this->motivoContingencia = $motivo;
-        $this->tsContingencia = mktime();
+        $this->tsContingencia = time(); // mktime() necessita de paramentos...
         $ctgList = array(
             'AC'=>'SVCAN',
             'AL'=>'SVCAN',
@@ -206,14 +206,15 @@ class ToolsNFe extends BaseTools
      * @param array $aMails
      * @param string $templateFile path completo ao arquivo template html do corpo do email
      * @param boolean $comPdf se true o sistema irá renderizar o DANFE e anexa-lo a mensagem
+     * @param string $pathPdf
      * @return boolean
      * @throws Exception\RuntimeException
      */
-    public function enviaMail($pathXml = '', $aMails = array(), $templateFile = '', $comPdf = false)
+    public function enviaMail($pathXml = '', $aMails = array(), $templateFile = '', $comPdf = false, $pathPdf = '')
     {
         $mail = new MailNFe($this->aMailConf);
-        $pathPdf = '';
-        if ($comPdf && $this->modelo == '55') {
+        // Se não for informado o caminho do PDF, monta um através do XML
+        if ($comPdf && $this->modelo == '55' && $pathPdf == '') {
             $docxml = Files\FilesFolders::readFile($pathXml);
             $danfe = new Extras\Danfe($docxml, 'P', 'A4', $this->aDocFormat['pathLogoFile'], 'I', '');
             $id = $danfe->montaDANFE();
@@ -223,7 +224,7 @@ class ToolsNFe extends BaseTools
                 . DIRECTORY_SEPARATOR
                 . 'pdf'
                 . DIRECTORY_SEPARATOR
-                . $id . '.pdf';
+                . $id . '-danfe.pdf';
             $pdf = $danfe->printDANFE($pathPdf, 'F');
         }
         if ($mail->envia($pathXml, $aMails, $comPdf, $pathPdf) === false) {
@@ -299,7 +300,15 @@ class ToolsNFe extends BaseTools
     {
         //carrega a NFe
         $docnfe = new Dom();
-        $docnfe->loadXMLFile($pathNFefile);
+        
+        if (file_exists($pathNFefile)) {
+            //carrega o XML pelo caminho do arquivo informado
+            $docnfe->loadXMLFile($pathNFefile);
+        } else {
+            //carrega o XML pelo conteúdo
+            $docnfe->loadXMLString($pathNFefile);
+        }
+        
         $nodenfe = $docnfe->getNode('NFe', 0);
         if ($nodenfe == '') {
             $msg = "O arquivo indicado como NFe não é um xml de NFe!";
@@ -311,7 +320,15 @@ class ToolsNFe extends BaseTools
         }
         //carrega o protocolo
         $docprot = new Dom();
-        $docprot->loadXMLFile($pathProtfile);
+        
+        if (file_exists($pathProtfile)) {
+            //carrega o XML pelo caminho do arquivo informado
+            $docprot->loadXMLFile($pathProtfile);
+        } else {
+            //carrega o XML pelo conteúdo
+            $docprot->loadXMLString($pathProtfile);
+        }
+        
         $nodeprots = $docprot->getElementsByTagName('protNFe');
         if ($nodeprots->length == 0) {
             $msg = "O arquivo indicado não contem um protocolo de autorização!";
@@ -342,8 +359,7 @@ class ToolsNFe extends BaseTools
             }
         }
         if ($digValueNFe != $digValueProt) {
-            $msg = "Inconsistência! O DigestValue da NFe não combina com o"
-                . " do digVal do protocolo indicado!";
+            $msg = "Inconsistência! O DigestValue da NFe não combina com o do digVal do protocolo indicado!";
             throw new Exception\RuntimeException($msg);
         }
         if ($chaveNFe != $chaveProt) {
@@ -380,7 +396,7 @@ class ToolsNFe extends BaseTools
         //remove as informações indesejadas
         $procXML = Strings::clearProt($procXML);
         if ($saveFile) {
-            $filename = "$chaveNFe-protNFe.xml";
+            $filename = "{$chaveNFe}-protNFe.xml";
             $this->zGravaFile(
                 'nfe',
                 $tpAmb,
@@ -532,7 +548,7 @@ class ToolsNFe extends BaseTools
      * zPutQRTag
      * Monta a URI para o QRCode e coloca a tag 
      * no xml já assinado
-     * @param Dom $dom
+    0000000000000000000000000000000000000 * @param Dom $dom
      * @return string
      * NOTA: O Campo QRCode está habilitado para uso a partir de 
      *       01/10/2015 homologação
@@ -567,8 +583,18 @@ class ToolsNFe extends BaseTools
         $token = $this->aConfig['tokenNFCe'];
         $idToken = $this->aConfig['tokenNFCeId'];
         $versao = '100';
-        //pega a URL para consulta do QRCode do estado emissor
-        //essa url está em nfe_ws3_mode65.xml
+        
+        /*
+         *Pega a URL para consulta do QRCode do estado emissor, 
+         *essa url está em nfe_ws3_mode65.xml, em tese essa url 
+         *NÃO É uma WebService, é simplismente uma página para 
+         *consulta do QRCode via parametros GET, percebe-se que 
+         *em todas as SEFAZ o endereço de consulta do QRCode se
+         *difere do padrão de endereço das WS. 
+         *Esse é um serviço para ser utilizado pelo consumidor...
+         *NOTA: Sem o endereço de consulta não é possível gerar o QR-Code!!!
+        */
+        
         //carrega serviço
         $servico = 'NfeConsultaQR';
         $siglaUF = $this->zGetSigla($cUF);
@@ -713,7 +739,7 @@ class ToolsNFe extends BaseTools
     
     /**
      * sefazConsultaRecibo
-     * Contuta a situação de um Lote de NFe enviadas pelo recibo desse envio
+     * Consulta a situação de um Lote de NFe enviadas pelo recibo desse envio
      * @param string $recibo
      * @param string $tpAmb
      * @param array $aRetorno
@@ -1714,6 +1740,107 @@ class ToolsNFe extends BaseTools
         $this->zGravaFile('nfe', $tpAmb, $filename, $lastMsg);
         $filename = "$chNFe-retDownnfe.xml";
         $this->zGravaFile('nfe', $tpAmb, $filename, $retorno);
+        //tratar dados de retorno
+        $aRetorno = ReturnNFe::readReturnSefaz($servico, $retorno);
+        return (string) $retorno;
+    }
+    
+    /**
+     * sefazManutencaoCsc
+     * Manutenção do Código de Segurança do Contribuinte (Antigo Token)
+     * @param int $indOp
+     * @param string $tpAmb
+     * @param string $raizCNPJ
+     * @param string $idCsc
+     * @param string $codigoCsc
+     * @param array $aRetorno
+     * @return string
+     * @throws Exception\InvalidArgumentException
+     * @throws Exception\RuntimeException
+     * @internal function zLoadServico (Common\Base\BaseTools)
+     */
+    public function sefazManutencaoCsc($indOp = '', $tpAmb = '2', $raizCNPJ = '', $idCsc = '', $codigoCsc = '', $saveXml = false, &$aRetorno = array())
+    {
+        if ($codigoCsc == '') {
+            $codigoCsc = $this->aConfig['tokenNFCe'];
+        }
+        if ($idCsc == '') {
+            $idCsc = $this->aConfig['tokenNFCeId'];
+        }
+        if ($tpAmb == '') {
+            $tpAmb = $this->aConfig['tpAmb'];
+        }
+        if (!is_numeric($indOp)) {
+            $msg = "A operação deve ser informada.";
+            throw new Exception\InvalidArgumentException($msg);
+        } else {
+            if ($indOp == 3 && ($idCsc == '' || $codigoCsc == '')) {
+                $msg = "Para Revogação de CSC, é necessário informar o Código e ID do CSC que deseja revogar.";
+                throw new Exception\InvalidArgumentException($msg);
+            }
+        }
+        if ($raizCNPJ == '') {
+            $raizCNPJ = substr( $this->aConfig['cnpj'], 0, -6);
+        } else {
+            if (strlen($raizCNPJ)!=8) {
+                $msg = "raizCNPJ: Deve ser os 08 primeiros dígitos do CNPJ.";
+                throw new Exception\InvalidArgumentException($msg);
+            }
+        }
+        $siglaUF = $this->aConfig['siglaUF'];
+        //carrega serviço
+        $servico = 'CscNFCe';
+        $this->zLoadServico(
+            'nfe',
+            $servico,
+            $siglaUF,
+            $tpAmb
+        );
+        if ($this->urlService == '') {
+            $msg = "A manutenção do código de segurança do contribuinte de NFC-e não está disponível na SEFAZ $siglaUF!!!";
+            throw new Exception\RuntimeException($msg);
+        }
+        
+        if ($indOp==3) {
+            $cons = "<admCscNFCe versao=\"$this->urlVersion\" xmlns=\"$this->urlPortal\">"
+            . "<tpAmb>$tpAmb</tpAmb>"
+            . "<indOp>$indOp</indOp>"
+            . "<raizCNPJ>$raizCNPJ</raizCNPJ>"
+            . "<dadosCsc>"
+            .   "<idCsc>$idCsc</idCsc>"
+            .   "<codigoCsc>$codigoCsc</codigoCsc>"
+            . "</dadosCsc>"
+            . "</admCscNFCe>";
+        } else {
+            $cons = "<admCscNFCe versao=\"$this->urlVersion\" xmlns=\"$this->urlPortal\">"
+            . "<tpAmb>$tpAmb</tpAmb>"
+            . "<indOp>$indOp</indOp>"
+            . "<raizCNPJ>$raizCNPJ</raizCNPJ>"
+            . "</admCscNFCe>";    
+        }
+        
+        //montagem dos dados da mensagem SOAP
+        $body = "<nfeDadosMsg xmlns=\"$this->urlNamespace\">$cons</nfeDadosMsg>";
+        
+        //envia a solicitação via SOAP
+        $retorno = $this->oSoap->send(
+            $this->urlService,
+            $this->urlNamespace,
+            $this->urlHeader,
+            $body,
+            $this->urlMethod
+        );
+        $lastMsg = $this->oSoap->lastMsg;
+        $this->soapDebug = $this->oSoap->soapDebug;
+        
+        //salva mensagens
+        if ($saveXml) {
+            $filename = "$raizCNPJ-$indOp-admCscNFCe.xml";
+            $this->zGravaFile('nfe', $tpAmb, $filename, $lastMsg, 'csc');
+            $filename = "$raizCNPJ-$indOp-retAdmCscNFCe.xml";
+            $this->zGravaFile('nfe', $tpAmb, $filename, $retorno, 'csc');
+        }
+        
         //tratar dados de retorno
         $aRetorno = ReturnNFe::readReturnSefaz($servico, $retorno);
         return (string) $retorno;

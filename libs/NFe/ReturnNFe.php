@@ -61,6 +61,9 @@ class ReturnNFe
             case 'NfeDownloadNF':
                 return self::zReadDownloadNF($dom);
                 break;
+            case 'CscNFCe':
+                return self::zReadCscNFCe($dom);
+                break;
         }
         return array();
     }
@@ -137,6 +140,47 @@ class ReturnNFe
         $aResposta['xMotivo'] = $dom->getValue($tag, 'xMotivo');
         $aResposta['dhResp'] = $dom->getValue($tag, 'dhResp');
         $aResposta['aRetNFe'] = $aRetNFe;
+        return $aResposta;
+    }
+    
+    /**
+     * zReadCscNFCe
+     * @param DOMDocument $dom
+     * @param boolean $parametro
+     * @return array
+     */
+    protected static function zReadCscNFCe($dom)
+    {
+        //retorno da funçao
+        $aResposta = array(
+            'bStat' => false,
+            'versao' => '',
+            'tpAmb' => '',
+            'indOp' => '',
+            'cStat' => '',
+            'xMotivo' => '',
+            'aRetNFe' => array()
+        );
+        $tag = $dom->getNode('cscNFCeResult');
+        $aRetCSC = array();
+        if (! isset($tag)) {
+            return $aResposta;
+        }
+        $retAdmCscNFCe = $dom->getNode('retAdmCscNFCe');
+        if (! empty($retAdmCscNFCe)) {
+            $aResposta['versao'] = $retAdmCscNFCe->getAttribute('versao');
+        }
+        $dadosCsc = $dom->getNode('dadosCsc');
+        if (! empty($dadosCsc)) {
+            $aResposta['idCsc'] = $dom->getValue($dadosCsc, 'idCsc');
+            $aResposta['codigoCsc'] = $dom->getValue($dadosCsc, 'codigoCsc');
+        }
+        $aResposta['bStat'] = true;
+        $aResposta['tpAmb'] = $dom->getValue($tag, 'tpAmb');
+        $aResposta['indOp'] = $dom->getValue($tag, 'indOp');
+        $aResposta['cStat'] = $dom->getValue($tag, 'cStat');
+        $aResposta['xMotivo'] = $dom->getValue($tag, 'xMotivo');
+        $aResposta['aRetCSC'] = $aRetCSC;
         return $aResposta;
     }
     
@@ -409,12 +453,15 @@ class ReturnNFe
         $aResposta = array(
             'bStat' => false,
             'versao' => '',
-            'cStat' => '',
+            'tpAmb' => '',
             'verAplic' => '',
+            'cStat' => '',
             'xMotivo' => '',
+            'cUF' => '',
             'dhRecbto' => '',
             'tMed' => '',
-            'cUF' => ''
+            'dhRetorno' => '',
+            'xObs' => ''
         );
         $tag = $dom->getElementsByTagName('retConsStatServ')->item(0);
         if (! isset($tag)) {
@@ -423,12 +470,15 @@ class ReturnNFe
         $aResposta = array(
             'bStat' => true,
             'versao' => $tag->getAttribute('versao'),
-            'cStat' => $dom->getValue($tag, 'cStat'),
+            'tpAmb' => $tag->getAttribute('tpAmb'),
             'verAplic' => $dom->getValue($tag, 'verAplic'),
+            'cStat' => $dom->getValue($tag, 'cStat'),
             'xMotivo' => $dom->getValue($tag, 'xMotivo'),
+            'cUF' => $dom->getValue($tag, 'cUF'),
             'dhRecbto' => $dom->getValue($tag, 'dhRecbto'),
-            'tMed' => $dom->getValue($tag, 'tMed'),
-            'cUF' => $dom->getValue($tag, 'cUF')
+            'tMed' => $dom->getValue($tag, 'tMed'),            
+            'dhRetorno' => $dom->getValue($tag, 'dhRetorno'),
+            'xObs' => $dom->getValue($tag, 'xObs')
         );
         return $aResposta;
     }

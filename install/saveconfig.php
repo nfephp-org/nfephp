@@ -45,8 +45,19 @@ $schemesCLe = filter_input(INPUT_GET, 'schemesCLe', FILTER_SANITIZE_STRING);
 $schemesNFSe = filter_input(INPUT_GET, 'schemesNFSe', FILTER_SANITIZE_STRING);
 
 $razaosocial = filter_input(INPUT_GET, 'razaosocial', FILTER_SANITIZE_SPECIAL_CHARS);
+$nomefantasia = filter_input(INPUT_GET, 'nomefantasia', FILTER_SANITIZE_SPECIAL_CHARS);
 $siglaUF = filter_input(INPUT_GET, 'siglaUF', FILTER_SANITIZE_STRING);
 $cnpj = filter_input(INPUT_GET, 'cnpj', FILTER_SANITIZE_STRING);
+$ie = filter_input(INPUT_GET, 'ie', FILTER_SANITIZE_STRING);
+$im = filter_input(INPUT_GET, 'im', FILTER_SANITIZE_STRING);
+$iest = filter_input(INPUT_GET, 'iest', FILTER_SANITIZE_STRING);
+$cnae = filter_input(INPUT_GET, 'cnae', FILTER_SANITIZE_STRING);
+$regime = filter_input(
+    INPUT_GET,
+    'regime',
+    FILTER_VALIDATE_INT,
+    array("options" => array("min_range"=>1, "max_range"=>3))
+);
 $tokenIBPT = filter_input(INPUT_GET, 'tokenIBPT', FILTER_SANITIZE_STRING);
 $tokenNFCe = filter_input(INPUT_GET, 'tokenNFCe', FILTER_SANITIZE_STRING);
 $tokenNFCeId = filter_input(INPUT_GET, 'tokenNFCeId', FILTER_SANITIZE_STRING);
@@ -59,6 +70,8 @@ $format = filter_input(INPUT_GET, 'format', FILTER_SANITIZE_STRING);
 $paper = filter_input(INPUT_GET, 'paper', FILTER_SANITIZE_STRING);
 $southpaw = filter_input(INPUT_GET, 'southpaw');
 $pathLogoFile = filter_input(INPUT_GET, 'pathLogoFile', FILTER_SANITIZE_STRING);
+$pathLogoNFe = filter_input(INPUT_GET, 'pathLogoNFe', FILTER_SANITIZE_STRING);
+$pathLogoNFCe = filter_input(INPUT_GET, 'pathLogoNFCe', FILTER_SANITIZE_STRING);
 $logoPosition = filter_input(INPUT_GET, 'logoPosition', FILTER_SANITIZE_STRING);
 $font = filter_input(INPUT_GET, 'font', FILTER_SANITIZE_STRING);
 $printer = filter_input(INPUT_GET, 'printer', FILTER_SANITIZE_STRING);
@@ -72,6 +85,7 @@ $mailProtocol = filter_input(INPUT_GET, 'mailProtocol', FILTER_SANITIZE_STRING);
 $mailPort = filter_input(INPUT_GET, 'mailPort', FILTER_SANITIZE_NUMBER_INT);
 
 $mailFromMail = filter_input(INPUT_GET, 'mailFromMail', FILTER_VALIDATE_EMAIL);
+$mailFrom = empty($mailFrom) ? $mailFromMail : '';
 $mailFromName = filter_input(INPUT_GET, 'mailFromName', FILTER_SANITIZE_STRING);
 $mailReplayToMail = filter_input(INPUT_GET, 'mailReplayToMail', FILTER_VALIDATE_EMAIL);
 $mailReplayToName = filter_input(INPUT_GET, 'mailReplayToName', FILTER_SANITIZE_STRING);
@@ -91,6 +105,8 @@ $aDocFormat = array(
     'paper' => $paper,
     'southpaw' => $southpaw,
     'pathLogoFile' => $pathLogoFile,
+    'pathLogoNFe' => $pathLogoNFe,
+    'pathLogoNFCe' => $pathLogoNFCe,
     'logoPosition' => $logoPosition,
     'font' => $font,
     'printer' => $printer
@@ -143,8 +159,14 @@ $aConfig = array(
     'schemesCLe' => $schemesCLe,
     'schemesNFSe' => $schemesNFSe,
     'razaosocial' => $razaosocial,
+    'nomefantasia' => $nomefantasia,
     'siglaUF'=> $siglaUF,
     'cnpj' => $cnpj,
+    'ie' => $ie,
+    'im' => $im,
+    'iest' => $iest,
+    'cnae' => $cnae,
+    'regime' => $regime,
     'tokenIBPT' => $tokenIBPT,
     'tokenNFCe' => $tokenNFCe,
     'tokenNFCeId' => $tokenNFCeId,
