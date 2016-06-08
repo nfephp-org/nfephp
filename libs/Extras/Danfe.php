@@ -423,7 +423,10 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
         $logoAlign = 'C',
         $situacaoExterna = NFEPHP_SITUACAO_EXTERNA_NONE,
         $classPdf = false,
-        $dpecNumReg = ''
+        $dpecNumReg = '',
+        $margSup = 2,
+        $margEsq = 2,
+        $margInf = 2
     ) {
         return $this->montaDANFE(
             $orientacao,
@@ -431,7 +434,10 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
             $logoAlign,
             $situacaoExterna,
             $classPdf,
-            $dpecNumReg
+            $dpecNumReg,
+            $margSup,
+            $margEsq,
+            $margInf
         );
     }//fim monta
 
@@ -465,7 +471,10 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
         $logoAlign = 'C',
         $situacaoExterna = NFEPHP_SITUACAO_EXTERNA_NONE,
         $classPdf = false,
-        $depecNumReg = ''
+        $depecNumReg = '',
+        $margSup = 2,
+        $margEsq = 2,
+        $margInf = 2
     ) {
         //se a orientação estiver em branco utilizar o padrão estabelecido na NF
         if ($orientacao == '') {
@@ -490,9 +499,6 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
         //margens do PDF, em milímetros. Obs.: a margem direita é sempre igual à
         //margem esquerda. A margem inferior *não* existe na FPDF, é definida aqui
         //apenas para controle se necessário ser maior do que a margem superior
-        $margSup = 2;
-        $margEsq = 2;
-        $margInf = 2;
         // posição inicial do conteúdo, a partir do canto superior esquerdo da página
         $xInic = $margEsq;
         $yInic = $margSup;
@@ -3019,9 +3025,9 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
             }
             $refECF = $nfRef->getElementsByTagName('refECF');
             foreach ($refECF as $umaRefNFe) {
-                $mod	= $umaRefNFe->getElementsByTagName('mod')->item(0)->nodeValue;
-                $nECF	= $umaRefNFe->getElementsByTagName('nECF')->item(0)->nodeValue;
-                $nCOO	= $umaRefNFe->getElementsByTagName('nCOO')->item(0)->nodeValue;
+                $mod    = $umaRefNFe->getElementsByTagName('mod')->item(0)->nodeValue;
+                $nECF   = $umaRefNFe->getElementsByTagName('nECF')->item(0)->nodeValue;
+                $nCOO   = $umaRefNFe->getElementsByTagName('nCOO')->item(0)->nodeValue;
                 $saida .= sprintf($formaECFRef, $mod, $nECF, $nCOO);
             }
             $refNFP = $nfRef->getElementsByTagName('refNFP');
