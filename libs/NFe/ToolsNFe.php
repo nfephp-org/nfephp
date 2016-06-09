@@ -823,7 +823,7 @@ class ToolsNFe extends BaseTools
      * @throws Exception\RuntimeException
      * @internal function zLoadServico (Common\Base\BaseTools)
      */
-    public function sefazConsultaChave($chave = '', $tpAmb = '2', &$aRetorno = array())
+    public function sefazConsultaChave($chave = '', $tpAmb = '2', &$aRetorno = array(),$salvaMensagens = true)
     {
         $chNFe = preg_replace('/[^0-9]/', '', $chave);
         if (strlen($chNFe) != 44) {
@@ -870,10 +870,12 @@ class ToolsNFe extends BaseTools
         $lastMsg = $this->oSoap->lastMsg;
         $this->soapDebug = $this->oSoap->soapDebug;
         //salva mensagens
-        $filename = "$chNFe-consSitNFe.xml";
-        $this->zGravaFile('nfe', $tpAmb, $filename, $lastMsg);
-        $filename = "$chNFe-retConsSitNFe.xml";
-        $this->zGravaFile('nfe', $tpAmb, $filename, $retorno);
+        if($salvaMensagens){
+            $filename = "$chNFe-consSitNFe.xml";
+            $this->zGravaFile('nfe', $tpAmb, $filename, $lastMsg);
+            $filename = "$chNFe-retConsSitNFe.xml";
+            $this->zGravaFile('nfe', $tpAmb, $filename, $retorno);
+        }        
         //tratar dados de retorno
         $aRetorno = ReturnNFe::readReturnSefaz($servico, $retorno);
         return (string) $retorno;
@@ -899,7 +901,8 @@ class ToolsNFe extends BaseTools
         $nFin = 0,
         $xJust = '',
         $tpAmb = '2',
-        &$aRetorno = array()
+        &$aRetorno = array(),
+        $salvarMensagens = true
     ) {
         $xJust = Strings::cleanString($xJust);
         $nSerie = (integer) $nSerie;
@@ -966,16 +969,21 @@ class ToolsNFe extends BaseTools
         $lastMsg = $this->oSoap->lastMsg;
         $this->soapDebug = $this->oSoap->soapDebug;
         //salva mensagens
-        $filename = "$sAno-$this->modelo-$sSerie-".$sInicio."_".$sFinal."-inutNFe.xml";
-        $this->zGravaFile('nfe', $tpAmb, $filename, $lastMsg);
-        $filename = "$sAno-$this->modelo-$sSerie-".$sInicio."_".$sFinal."-retInutNFe.xml";
-        $this->zGravaFile('nfe', $tpAmb, $filename, $retorno);
+        if($salvarMensagens){
+            $filename = "$sAno-$this->modelo-$sSerie-".$sInicio."_".$sFinal."-inutNFe.xml";
+            $this->zGravaFile('nfe', $tpAmb, $filename, $lastMsg);
+            $filename = "$sAno-$this->modelo-$sSerie-".$sInicio."_".$sFinal."-retInutNFe.xml";
+            $this->zGravaFile('nfe', $tpAmb, $filename, $retorno);
+        }
+        
         //tratar dados de retorno
         $aRetorno = ReturnNFe::readReturnSefaz($servico, $retorno);
         if ($aRetorno['cStat'] == '102') {
             $retorno = $this->zAddProtMsg('ProcInutNFe', 'inutNFe', $signedMsg, 'retInutNFe', $retorno);
-            $filename = "$sAno-$this->modelo-$sSerie-".$sInicio."_".$sFinal."-procInutNFe.xml";
-            $this->zGravaFile('nfe', $tpAmb, $filename, $retorno, 'inutilizadas');
+            if($salvarMensagens){
+                $filename = "$sAno-$this->modelo-$sSerie-".$sInicio."_".$sFinal."-procInutNFe.xml";
+                $this->zGravaFile('nfe', $tpAmb, $filename, $retorno, 'inutilizadas');
+            }            
         }
         return (string) $retorno;
     }
