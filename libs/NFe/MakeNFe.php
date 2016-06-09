@@ -2139,7 +2139,9 @@ class MakeNFe extends BaseMake
                 break;
         }
         $tagIcms = $this->dom->createElement('ICMS');
-        $tagIcms->appendChild($icms);
+        if(isset($icms)){
+            $tagIcms->appendChild($icms);
+        }
         $this->aICMS[$nItem] = $tagIcms;
         return $tagIcms;
     }
@@ -2470,7 +2472,9 @@ class MakeNFe extends BaseMake
         } else {
             $tagIcms = $this->dom->createElement('ICMS');
         }
-        $this->dom->appChild($tagIcms, $icmsSN, "Inserindo ICMSST em ICMS[$nItem]");
+        if(isset($icmsSN)){
+            $this->dom->appChild($tagIcms, $icmsSN, "Inserindo ICMSST em ICMS[$nItem]");
+        }
         $this->aICMS[$nItem] = $tagIcms;
         return $tagIcms;
     }
@@ -2734,7 +2738,9 @@ class MakeNFe extends BaseMake
                 break;
         }
         $pis = $this->dom->createElement('PIS');
-        $pis->appendChild($pisItem);
+        if(isset($pisItem)){
+            $pis->appendChild($pisItem);
+        }
         $this->aPIS[$nItem] = $pis;
         return $pis;
     }
@@ -2839,7 +2845,9 @@ class MakeNFe extends BaseMake
                 break;
         }
         $confins = $this->dom->createElement('COFINS');
-        $confins->appendChild($confinsItem);
+        if(isset($confinsItem)){
+            $confins->appendChild($confinsItem);
+        }
         $this->aCOFINS[$nItem] = $confins;
         return $confins;
     }
