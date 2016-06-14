@@ -38,7 +38,7 @@ class ToolsNFe extends BaseTools
     public $errors = array();
     /**
      * soapDebug
-     * @var string 
+     * @var string
      */
     public $soapDebug = '';
     /**
@@ -49,7 +49,7 @@ class ToolsNFe extends BaseTools
     protected $urlPortal = 'http://www.portalfiscal.inf.br/nfe';
     /**
      * aLastRetEvent
-     * @var array 
+     * @var array
      */
     private $aLastRetEvent = array();
     
@@ -163,7 +163,7 @@ class ToolsNFe extends BaseTools
     
     /**
      * desativaContingencia
-     * Desliga opção de contingência 
+     * Desliga opção de contingência
      * @return boolean
      */
     public function desativaContingencia()
@@ -200,7 +200,7 @@ class ToolsNFe extends BaseTools
     /**
      * enviaMail
      * Envia a NFe por email aos destinatários
-     * Caso $aMails esteja vazio serão obtidos os email do destinatário  e 
+     * Caso $aMails esteja vazio serão obtidos os email do destinatário  e
      * os emails que estiverem registrados nos campos obsCont do xml
      * @param string $pathXml
      * @param array $aMails
@@ -546,11 +546,11 @@ class ToolsNFe extends BaseTools
     
     /**
      * zPutQRTag
-     * Monta a URI para o QRCode e coloca a tag 
+     * Monta a URI para o QRCode e coloca a tag
      * no xml já assinado
-    0000000000000000000000000000000000000 * @param Dom $dom
+     * @param Dom $dom
      * @return string
-     * NOTA: O Campo QRCode está habilitado para uso a partir de 
+     * NOTA: O Campo QRCode está habilitado para uso a partir de
      *       01/10/2015 homologação
      *       03/11/2015 Produção
      */
@@ -583,7 +583,6 @@ class ToolsNFe extends BaseTools
         $token = $this->aConfig['tokenNFCe'];
         $idToken = $this->aConfig['tokenNFCeId'];
         $versao = '100';
-        
         /*
          *Pega a URL para consulta do QRCode do estado emissor, 
          *essa url está em nfe_ws3_mode65.xml, em tese essa url 
@@ -594,7 +593,6 @@ class ToolsNFe extends BaseTools
          *Esse é um serviço para ser utilizado pelo consumidor...
          *NOTA: Sem o endereço de consulta não é possível gerar o QR-Code!!!
         */
-        
         //carrega serviço
         $servico = 'NfeConsultaQR';
         $siglaUF = $this->zGetSigla($cUF);
@@ -1780,7 +1778,7 @@ class ToolsNFe extends BaseTools
             }
         }
         if ($raizCNPJ == '') {
-            $raizCNPJ = substr( $this->aConfig['cnpj'], 0, -6);
+            $raizCNPJ = substr($this->aConfig['cnpj'], 0, -6);
         } else {
             if (strlen($raizCNPJ)!=8) {
                 $msg = "raizCNPJ: Deve ser os 08 primeiros dígitos do CNPJ.";
@@ -1816,7 +1814,7 @@ class ToolsNFe extends BaseTools
             . "<tpAmb>$tpAmb</tpAmb>"
             . "<indOp>$indOp</indOp>"
             . "<raizCNPJ>$raizCNPJ</raizCNPJ>"
-            . "</admCscNFCe>";    
+            . "</admCscNFCe>";
         }
         
         //montagem dos dados da mensagem SOAP
@@ -2075,7 +2073,7 @@ class ToolsNFe extends BaseTools
     
     /**
      * getImpostosIBPT
-     * Consulta o serviço do IBPT para obter os impostos ao consumidor 
+     * Consulta o serviço do IBPT para obter os impostos ao consumidor
      * conforme Lei 12.741/2012
      * @param string $ncm
      * @param string $exTarif
