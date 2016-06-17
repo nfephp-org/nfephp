@@ -158,9 +158,10 @@ class BaseMake
     /**
      * higienizarString
      * Substitui caracteres acentuados por não acentuados, 
-     * remove acentos e caracateres especiais (exceto ', &, < e >),
-     * troca os caracteres: > (sinal de maior), < (sinal de menor),
-     * & (e-comercial) e ' (sinal de apóstrofe) em HTML,
+     * remove acentos e caracateres especiais (exceto &, < e >),
+     * troca quebra de linha e tabulação por espaço, 
+     * troca os caracteres: > (sinal de maior), 
+     * < (sinal de menor) e & (e-comercial) em HTML,
      * remove espaços do inicio e final da string.
      *
      * @param string $string
@@ -168,7 +169,8 @@ class BaseMake
      */
     function higienizarString($string)
     {
-        $string = preg_replace( '/[`^"~]/', NULL, iconv( 'UTF-8', 'ASCII//TRANSLIT', $string ) );
+        $string = preg_replace( '/[`^\'"~]/', NULL, iconv( 'UTF-8', 'ASCII//TRANSLIT', $string ) );
+        $string = preg_replace( '/[\t\v\n\r]/', ' ', $string );
         $string = htmlspecialchars( $string , ENT_QUOTES);
         $string = trim( $string );
         return $string;
