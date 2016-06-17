@@ -37,7 +37,7 @@ class ToolsMDFe extends BaseTools
     public $errors = array();
     /**
      * soapDebug
-     * @var string 
+     * @var string
      */
     public $soapDebug = '';
     /**
@@ -48,7 +48,7 @@ class ToolsMDFe extends BaseTools
     protected $urlPortal = 'http://www.portalfiscal.inf.br/mdfe';
     /**
      * aLastRetEvent
-     * @var array 
+     * @var array
      */
     private $aLastRetEvent = array();
     
@@ -71,7 +71,7 @@ class ToolsMDFe extends BaseTools
     /**
      * enviaMail
      * Envia a MDFe por email aos destinatários
-     * Caso $aMails esteja vazio serão obtidos os email do destinatário  e 
+     * Caso $aMails esteja vazio serão obtidos os email do destinatário  e
      * os emails que estiverem registrados nos campos obsCont do xml
      * @param string $pathXml
      * @param array $aMails

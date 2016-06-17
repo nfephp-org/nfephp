@@ -2,7 +2,6 @@
 
 namespace NFePHP\Extras;
 
-
 class CommonNFePHP
 {
     /**
@@ -92,7 +91,7 @@ class CommonNFePHP
             return '';
         }
         $vct = $theObj->getElementsByTagName($keyName)->item(0);
-        if (isset( $vct )) {
+        if (isset($vct)) {
             $theDate = explode("-", $vct->nodeValue);
             return $extraText . $theDate[2] . "/" . $theDate[1] . "/" . $theDate[0];
         }

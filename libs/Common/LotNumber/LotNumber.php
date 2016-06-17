@@ -18,7 +18,7 @@ class LotNumber
      * geraNumLote
      * Gera numero de lote com base em microtime
      * @param integer $numdigits numero de digitos para o lote
-     * @return string 
+     * @return string
      */
     public static function geraNumLote($numdigits = 15)
     {

@@ -102,7 +102,7 @@ class Modules
 
     /**
      * Obtêm os parâmetros do modulo carregado
-     * Pode ser uma simples configuração especificada por $setting 
+     * Pode ser uma simples configuração especificada por $setting
      * ou todos os valores caso nada seja passado no parâmetro
      * @param string $moduleName
      * @param string $setting
@@ -123,7 +123,7 @@ class Modules
     }
     
     /**
-     * Lista todos os modulos php instalados sem seus 
+     * Lista todos os modulos php instalados sem seus
      * parametros
      * @return array
      */
@@ -136,7 +136,7 @@ class Modules
     }
     
     /**
-     * Função para padronização do numero de versões de 2.7.2 para 020702 
+     * Função para padronização do numero de versões de 2.7.2 para 020702
      * @param string $ver
      * @return string
      */
@@ -172,7 +172,7 @@ class Modules
     }
     
     /**
-     * Rotina de teste dos molulos instalados 
+     * Rotina de teste dos molulos instalados
      * se a versão é suficiente e se estão habilitados
      * @param string $name
      * @param string $alias

@@ -10,13 +10,13 @@ namespace NFePHP\MDFe;
  * @license    http://www.gnu.org/licenses/lesser.html LGPL v3
  * @author     Roberto L. Machado <linux.rlm at gmail dot com>
  * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
- * 
- * NOTA: O envio de email's pelo sistema de MDFe não é necessário pois não 
- * envolve clientes ou fornecedores é apenas uma forma de comunicar o transporte de 
+ *
+ * NOTA: O envio de email's pelo sistema de MDFe não é necessário pois não
+ * envolve clientes ou fornecedores é apenas uma forma de comunicar o transporte de
  * mercadorias, principalmente nos postos fiscais.
  * Esta classe foi eleborada apenas para o caso de por aulgum motivo o emitente
  * deseje enviar o MDFe a outros e também para manter a compatibilidade e estrutura similar
- * com o modulo de NF. 
+ * com o modulo de NF.
  */
 
 use NFePHP\Common\Dom\Dom;

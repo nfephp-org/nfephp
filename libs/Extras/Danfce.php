@@ -3,17 +3,17 @@
 namespace NFePHP\Extras;
 
 /**
- * Classe para a impressão em PDF do Docuimento Auxiliar de NFe Consumidor 
- * 
+ * Classe para a impressão em PDF do Docuimento Auxiliar de NFe Consumidor
+ *
  * @category   NFePHP
  * @package    NFePHP\NFe\ConvertNFe
  * @copyright  Copyright (c) 2008-2015
  * @license    http://www.gnu.org/licenses/lesser.html LGPL v3
  * @author    Roberto Spadim <roberto at spadim dot com dot br>
  * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
- * 
+ *
  * CONTRIBUIDORES (por ordem alfabetica):
- *            Roberto L. Machado <linux dot rlm at gmail dot com>   
+ *            Roberto L. Machado <linux dot rlm at gmail dot com>
  *            Mario Almeida <mario at grupopmz dot com dot br>
  */
 
@@ -266,7 +266,7 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
      * @param boolean $ecoNFCe false = Não (NFC-e Completa); true = Sim (NFC-e Simplificada)
      * @return string
      */
-    public function monta ($orientacao = '', $papel = array(80, 'one-page'), $logoAlign = 'C', $ecoNFCe = true)
+    public function monta($orientacao = '', $papel = array(80, 'one-page'), $logoAlign = 'C', $ecoNFCe = true)
     {
         return $this->montaDANFCE($ecoNFCe);
     }
@@ -315,7 +315,7 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
         $qtdItens = $this->det->length;
         if ($this->urlQR == '') {
             //Busca no XML a URL da Consulta
-            $urlQR = $toolsNFe->zGetUrlQR($cUF,$tpAmb);
+            $urlQR = $toolsNFe->zGetUrlQR($cUF, $tpAmb);
         } else {
             $urlQR = $this->urlQR;
         }
@@ -386,7 +386,7 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
         //$valorProdutos = number_format($vProd, 2, ",", ".");
         //$valorTotal = number_format($vNF, 2, ",", ".");
         
-        /* 
+        /*
          * Leiaute de Impressão DANFE NFC-e em acordo com 
          * Manual Padrões Técnicos do DANFE-NFC-e e QR Code
          * Versão 3.4
@@ -465,17 +465,17 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
             $this->html .= "<td class=\"tLeft\">".htmlspecialchars('Valor a Pagar R$')."</td>\n";
             $this->html .= "<td class=\"tRight\">".number_format($vOutro, 2, ',', '.')."</td>\n";
             $this->html .= "</tr>\n";
-        }        
+        }
         // Formas de Pagamentos
         $this->html .= "<tr>\n";
         $this->html .= "<th class=\"tLeft\">FORMA DE PAGAMENTO</th>\n";
         $this->html .= "<th class=\"tRight\">VALOR PAGO</th>\n";
         $this->html .= "</tr>\n";
-        $this->html .= self::pagamento($this->pag);        
+        $this->html .= self::pagamento($this->pag);
         $this->html .= "</table>\n";
         
         // -- Divisão V – Área de Mensagem Fiscal
-        $this->html .= "<table width=\"100%\">\n";        
+        $this->html .= "<table width=\"100%\">\n";
         if ($tpEmis != 1) {
             $this->html .= "<tr>\n";
             $this->html .= "<td colspan=\"3\"><strong>".
@@ -504,7 +504,7 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
             $this->html .= " ".htmlspecialchars('Emissão: ').date('d/m/y H:i:s', $tsHora)."</td>\n";
         } else {
             $this->html .= " ".htmlspecialchars('Emissão: ').date('d/m/y H:i:s', $tsHora);
-            $this->html .= "<br><strong>Via do Consumidor</strong></td>\n";   
+            $this->html .= "<br><strong>Via do Consumidor</strong></td>\n";
         }
         $this->html .= "</tr>\n";
         $this->html .= "<tr>\n";
@@ -535,17 +535,17 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
         $this->html .= "<tr>\n";
         $this->html .= "<td colspan=\"3\" class=\"menor tCenter\"><strong>{$this->infCpl}</strong></td>\n";
         $this->html .= "</tr>\n";
-        $this->html .= "</table>\n";     
+        $this->html .= "</table>\n";
                 
         // ***                                            ***//
         // *** Via do Estabelecimento em Modo Contigência ***//
         // ***                                            ***//
         
         if ($tpEmis != 1) {
-            $html2via    = str_replace('Via do Consumidor','Via do Estabelecimento',$this->html);
+            $html2via    = str_replace('Via do Consumidor', 'Via do Estabelecimento', $this->html);
             $this->html .= "<br><hr><br>\n";
             $this->html .= $html2via;
-        }        
+        }
         
         $this->html .= "</body>\n</html>\n";
         return $chNFe;
@@ -885,7 +885,7 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
      * @param string $seq
      * @return string
      */
-    private function imgQR($seq,$dimensao=165)
+    private function imgQR($seq, $dimensao = 165)
     {
         $dimensao = $dimensao<100?100:$dimensao; //Dimensão mínima para leitura 100px = 26.4mm
         $dimensao = $dimensao>230?230:$dimensao; //Dimensão máxima para layout 230px = 60.8mm

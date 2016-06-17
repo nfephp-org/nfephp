@@ -5,7 +5,7 @@ namespace NFePHP\Common\Base;
 /**
  * Classe base para a criação das classes construtoras dos XML
  * tanto para NFe, NFCe, CTe e MDFe
- *  
+ *
  * @category   NFePHP
  * @package    NFePHP\Common\Base\BaseMake
  * @copyright  Copyright (c) 2008-2015
@@ -54,7 +54,7 @@ class BaseMake
     public $dom;
     /**
      * tpAmb
-     * tipo de ambiente 
+     * tipo de ambiente
      * @var string
      */
     public $tpAmb = '2';
@@ -81,7 +81,7 @@ class BaseMake
     
     /**
      * gravaXML
-     * grava o xml do documento fiscal na estrutura de pastas 
+     * grava o xml do documento fiscal na estrutura de pastas
      * em path indicar por exemplo /var/www/nfe ou /dados/cte ou /arquivo/mdfe
      * ou seja as pastas principais onde guardar os arquivos
      * Esse método itá colocar na subpastas [producao] ou [homologacao]
@@ -138,7 +138,7 @@ class BaseMake
     /**
      * montaChave
      * Monta a chave do documento fiscal
-     * 
+     *
      * @param string $cUF
      * @param string $ano
      * @param string $mes

@@ -476,7 +476,7 @@ class ReturnNFe
             'xMotivo' => $dom->getValue($tag, 'xMotivo'),
             'cUF' => $dom->getValue($tag, 'cUF'),
             'dhRecbto' => $dom->getValue($tag, 'dhRecbto'),
-            'tMed' => $dom->getValue($tag, 'tMed'),            
+            'tMed' => $dom->getValue($tag, 'tMed'),
             'dhRetorno' => $dom->getValue($tag, 'dhRetorno'),
             'xObs' => $dom->getValue($tag, 'xObs')
         );

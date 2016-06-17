@@ -3,7 +3,7 @@
 namespace NFePHP\Common\Soap;
 
 /**
- * Classe usada para obter os arquivos WSDL, que são as especificações 
+ * Classe usada para obter os arquivos WSDL, que são as especificações
  * da comunicação SOAP com os webservices da SEFAZ e das Prefeituras;
  * @category   NFePHP
  * @package    NFePHP\Common\Soap
@@ -26,7 +26,7 @@ class Wsdl
     /**
      * downloadWsdl
      * Baixa o arquivo wsdl necessário para a comunicação SOAP nativa
-     * O WSDL pode também ser usado para verificar a mensagem SOAP com o 
+     * O WSDL pode também ser usado para verificar a mensagem SOAP com o
      * uso do SOAPUI um recurso muito importante para testes off-line.
      * @param string $url
      * @param string $priKeyPath

@@ -34,7 +34,7 @@ class Strings
     
     /**
      * clearXml
-     * Remove \r \n \s \t 
+     * Remove \r \n \s \t
      * @param string $xml
      * @param boolean $remEnc remover encoding do xml
      * @return string
