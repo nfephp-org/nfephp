@@ -66,6 +66,7 @@ class ToolsCTe extends BaseTools
         $indSinc = 0,
         $compactarZip = false
     ) {
+        $this->modelo = '65';
         $sxml = $aXml;
         if (empty($aXml)) {
             $msg = "Pelo menos uma NFe deve ser informada.";
@@ -125,7 +126,7 @@ class ToolsCTe extends BaseTools
 //            $method = $this->urlMethod."Zip";
 //        }
 
-        /*
+
         $lastMsg = $this->oSoap->lastMsg;
         $this->soapDebug = $this->oSoap->soapDebug;
         //salva mensagens
@@ -134,7 +135,7 @@ class ToolsCTe extends BaseTools
         $filename = "$idLote-retEnviCTe.xml";
         $this->zGravaFile('cte', $tpAmb, $filename, $retorno);
         //tratar dados de retorno
-        */
+
         $aRetorno = ReturnCTe::readReturnSefaz($servico, $retorno);
         //caso o envio seja recebido com sucesso mover a NFe da pasta
         //das assinadas para a pasta das enviadas

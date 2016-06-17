@@ -25,7 +25,7 @@ $chave = $cte->montaChave(
 
 $resp = $cte->infCteTag(
     $chave,
-    $versao = '3.10');
+    $versao = '2.00');
 
 $cDV = substr($chave, -1); //Digito Verificador
 
@@ -44,7 +44,7 @@ $resp = $cte->ideTag(
     $tpAmb = '2', //homologacao
     $tpCTe = '0',
     $procEmi = '0',
-    $verProc = '3.1',
+    $verProc = '2.0',
     $refCTE = '',
     $cMunEnv = '',
     $xMunEnv = '',
