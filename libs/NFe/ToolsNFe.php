@@ -199,18 +199,23 @@ class ToolsNFe extends BaseTools
     
     /**
      * enviaMail
+     *
      * Envia a NFe por email aos destinatários
      * Caso $aMails esteja vazio serão obtidos os email do destinatário  e
      * os emails que estiverem registrados nos campos obsCont do xml
-     * @param string $pathXml
-     * @param array $aMails
-     * @param string $templateFile path completo ao arquivo template html do corpo do email
-     * @param boolean $comPdf se true o sistema irá renderizar o DANFE e anexa-lo a mensagem
-     * @param string $pathPdf
+     *
+     * @param string $pathXml Caminho do arquivo XML
+     * @param array $aMail Lista de e-mail de destinatários
+     * @param string $templateFile Caminho do template html
+     * @param bool $comPdf Se true, anexa a DANFE PDF no e-mail
+     * @param string $pathPdf Caminho do arquivo PDF caso $comPdf = true,
+     * se não for informado será renderizado a DANFE através do arquivo XML
+     * @param string $nameXml Nome para o anexo do XML
+     * @param string $namePdf Nome para o anexo do PDF
      * @return boolean
      * @throws Exception\RuntimeException
      */
-    public function enviaMail($pathXml = '', $aMails = array(), $templateFile = '', $comPdf = false, $pathPdf = '')
+    public function enviaMail($pathXml = '', $aMails = array(), $templateFile = '', $comPdf = false, $pathPdf = '', $nameXml = '', $namePdf = '')
     {
         $mail = new MailNFe($this->aMailConf);
         // Se não for informado o caminho do PDF, monta um através do XML
@@ -227,7 +232,7 @@ class ToolsNFe extends BaseTools
                 . $id . '-danfe.pdf';
             $pdf = $danfe->printDANFE($pathPdf, 'F');
         }
-        if ($mail->envia($pathXml, $aMails, $comPdf, $pathPdf) === false) {
+        if ($mail->envia($pathXml, $aMails, $comPdf, $pathPdf, $nameXml, $namePdf) === false) {
             throw new Exception\RuntimeException('Email não enviado. '.$mail->error);
         }
         return true;
