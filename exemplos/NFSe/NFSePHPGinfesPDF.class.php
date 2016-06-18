@@ -30,13 +30,13 @@
  *
  *        CONTRIBUIDORES (em ordem alfabetica):
  *            Roberto Leite Machado <linux dot rlm at gamil dot com>
- * 
  */
 
-require_once('../External/FPDF/fpdf.php');
+require_once '../External/FPDF/fpdf.php';
 
 
-class NFSePHPGinfesPDF extends FPDF {
+class NFSePHPGinfesPDF extends FPDF
+{
     
     
     protected $arquivo_xml_origem;
@@ -44,7 +44,8 @@ class NFSePHPGinfesPDF extends FPDF {
     protected $gif_logo_empresa;
     protected $aParser;
     
-    public function NFSePHPGinfesPDF($orientation='P', $unit='mm', $format='A4', $arquivo_xml_origem='', $gif_brasao_prefeitura = '', $gif_logo_empresa='', $aParser=false){
+    public function NFSePHPGinfesPDF($orientation='P', $unit='mm', $format='A4', $arquivo_xml_origem='', $gif_brasao_prefeitura = '', $gif_logo_empresa='', $aParser=false)
+    {
         
         parent::__construct($orientation, $unit, $format);
         
@@ -59,13 +60,14 @@ class NFSePHPGinfesPDF extends FPDF {
     /**
      * 
      */
-    public function Header() {
+    public function Header() 
+    {
 
-        $xml =  file_get_contents($this->arquivo_xml_origem) ;
+        $xml =  file_get_contents($this->arquivo_xml_origem);
 
         $doc = new DOMDocument();
-        $doc->formatOutput = FALSE;
-        $doc->preserveWhiteSpace = FALSE;
+        $doc->formatOutput = false;
+        $doc->preserveWhiteSpace = false;
         $doc->loadXML($xml, LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
 
         //DESENHA AS BORDAS DO HEADER
@@ -75,7 +77,7 @@ class NFSePHPGinfesPDF extends FPDF {
 
         // CABEÇALHO
         // LOGO
-        if (is_file($this->gif_brasao_prefeitura)){
+        if (is_file($this->gif_brasao_prefeitura)) {
             $this->Image($this->gif_brasao_prefeitura, 1.1, 1.2, 2);
         }
 
@@ -136,7 +138,7 @@ class NFSePHPGinfesPDF extends FPDF {
 
         // LOGO
         
-        if (is_file($this->gif_logo_empresa)){
+        if (is_file($this->gif_logo_empresa)) {
             $this->Image($this->gif_logo_empresa, 0.7, 5.2, 2.8);
         }
 
@@ -245,11 +247,12 @@ class NFSePHPGinfesPDF extends FPDF {
     /**
      * @param string $arquivo_pdf_destino
      */
-    public function printNFSe($arquivo_pdf_destino='') {
+    public function printNFSe($arquivo_pdf_destino='') 
+    {
         $xml = file_get_contents($this->arquivo_xml_origem);
         $doc = new DOMDocument();
-        $doc->formatOutput = FALSE;
-        $doc->preserveWhiteSpace = FALSE;
+        $doc->formatOutput = false;
+        $doc->preserveWhiteSpace = false;
         $doc->loadXML($xml, LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
         $numNfse = $doc->getElementsByTagName("NumeroLote")->item(0)->nodeValue;        
         // Instanciation of inherited class
@@ -425,32 +428,34 @@ class NFSePHPGinfesPDF extends FPDF {
         $y = $this->getY();
         $this->Line(0.5, $y, 20.5, $y);
         $this->Line(20.5, $y - 3, 20.5, $y);
-        $this->Output($arquivo_pdf_destino,'F');
+        $this->Output($arquivo_pdf_destino, 'F');
     } //fim printNFSe
 
     /**
      * @param $w
      * @param $h
      * @param $txt
-     * @param int $border
+     * @param int    $border
      * @param string $align
-     * @param bool $fill
+     * @param bool   $fill
      */
-    public function MultiCell($w, $h, $txt, $border=0, $align='J', $fill=false){
+    public function MultiCell($w, $h, $txt, $border=0, $align='J', $fill=false)
+    {
         parent::MultiCell($w, $h, utf8_decode($txt), $border, $align, $fill);
     }
 
     /**
-     * @param int $w
-     * @param int $h
+     * @param int    $w
+     * @param int    $h
      * @param string $txt
-     * @param int $border
-     * @param int $ln
+     * @param int    $border
+     * @param int    $ln
      * @param string $align
-     * @param bool $fill
+     * @param bool   $fill
      * @param string $link
      */
-    public function Cell($w, $h=0, $txt='', $border=0, $ln=0, $align='', $fill=false, $link=''){
+    public function Cell($w, $h=0, $txt='', $border=0, $ln=0, $align='', $fill=false, $link='')
+    {
          parent::Cell($w, $h, utf8_decode($txt), $border, $ln, $align, $fill, $link);
     }    
 
@@ -458,10 +463,11 @@ class NFSePHPGinfesPDF extends FPDF {
     /**
      * 
      * @param float $angle
-     * @param int $x
-     * @param int $y
+     * @param int   $x
+     * @param int   $y
      */
-    protected function Rotate($angle, $x = -1, $y = -1) {
+    protected function Rotate($angle, $x = -1, $y = -1) 
+    {
         if ($x == -1) {
             $x = $this->x;
         }

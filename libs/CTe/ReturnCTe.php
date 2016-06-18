@@ -4,12 +4,13 @@ namespace NFePHP\CTe;
 
 /**
  * Classe auxiliar com funções de DOM extendidas
- * @category   NFePHP
- * @package    NFePHP\Common\Dom\ReturnCTe
- * @copyright  Copyright (c) 2008-2015
- * @license    http://www.gnu.org/licenses/lesser.html LGPL v3
- * @author     Roberto L. Machado <linux.rlm at gmail dot com>
- * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
+ *
+ * @category  NFePHP
+ * @package   NFePHP\Common\Dom\ReturnCTe
+ * @copyright Copyright (c) 2008-2015
+ * @license   http://www.gnu.org/licenses/lesser.html LGPL v3
+ * @author    Roberto L. Machado <linux.rlm at gmail dot com>
+ * @link      http://github.com/nfephp-org/nfephp for the canonical source repository
  */
 
 use \DOMDocument;
@@ -19,9 +20,10 @@ class ReturnCTe
     /**
      * readReturnSefaz
      * Trata o retorno da SEFAZ devolvendo o resultado em um array
-     * @param string $method
-     * @param string $xmlResp
-     * @param mixed $parametro
+     *
+     * @param  string $method
+     * @param  string $xmlResp
+     * @param  mixed  $parametro
      * @return array
      */
     public static function readReturnSefaz($method, $xmlResp)
@@ -60,7 +62,8 @@ class ReturnCTe
 
     /**
      * zReadConsultaCadastro2
-     * @param DOMDocument $dom
+     *
+     * @param  DOMDocument $dom
      * @return array
      */
     protected static function zReadConsultaCadastro2($dom)
@@ -130,7 +133,8 @@ class ReturnCTe
     
     /**
      * zReadRecepcaoLote
-     * @param DOMDocument $dom
+     *
+     * @param  DOMDocument $dom
      * @return boolean
      */
     protected static function zReadRecepcaoLote($dom)
@@ -178,7 +182,8 @@ class ReturnCTe
     
     /**
      * zReadRetRecepcao
-     * @param DOMDocument $dom
+     *
+     * @param  DOMDocument $dom
      * @return array
      */
     protected static function zReadRetRecepcao($dom)
@@ -215,7 +220,8 @@ class ReturnCTe
     
     /**
      * zReadConsultaCT
-     * @param DOMDocument $dom
+     *
+     * @param  DOMDocument $dom
      * @return string
      */
     protected static function zReadConsultaCT($dom)
@@ -261,7 +267,8 @@ class ReturnCTe
     
     /**
      * zReadInutilizacaoCT
-     * @param DOMDocument $dom
+     *
+     * @param  DOMDocument $dom
      * @return array
      */
     protected static function zReadInutilizacaoCT($dom)
@@ -310,7 +317,8 @@ class ReturnCTe
     
     /**
      * zReadStatusServico
-     * @param DOMDocument $dom
+     *
+     * @param  DOMDocument $dom
      * @return string|boolean
      */
     protected static function zReadStatusServico($dom)
@@ -349,7 +357,8 @@ class ReturnCTe
     
     /**
      * zReadRecepcaoEvento
-     * @param DOMDocument $dom
+     *
+     * @param  DOMDocument $dom
      * @return string
      */
     protected static function zReadRecepcaoEvento($dom)
@@ -386,7 +395,8 @@ class ReturnCTe
     
     /**
      * zGetProt
-     * @param DOMDocument $tag
+     *
+     * @param  DOMDocument $tag
      * @return type
      */
     private static function zGetProt($tag)
@@ -408,7 +418,8 @@ class ReturnCTe
     
     /**
      * zGetEvent
-     * @param DOMDocument $tag
+     *
+     * @param  DOMDocument $tag
      * @return array
      */
     private static function zGetEvent($tag)
@@ -430,7 +441,8 @@ class ReturnCTe
 
     /**
      * zGetCanc
-     * @param DOMDocument $tag
+     *
+     * @param  DOMDocument $tag
      * @return type
      */
     private static function zGetCanc($tag)

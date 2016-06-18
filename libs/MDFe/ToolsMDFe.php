@@ -4,12 +4,13 @@ namespace NFePHP\MDFe;
 
 /**
  * Classe principal para a comunicação com a SEFAZ
- * @category   NFePHP
- * @package    NFePHP\MDFe\ToolsMDFe
- * @copyright  Copyright (c) 2008-2015
- * @license    http://www.gnu.org/licenses/lesser.html LGPL v3
- * @author     Roberto L. Machado <linux.rlm at gmail dot com>
- * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
+ *
+ * @category  NFePHP
+ * @package   NFePHP\MDFe\ToolsMDFe
+ * @copyright Copyright (c) 2008-2015
+ * @license   http://www.gnu.org/licenses/lesser.html LGPL v3
+ * @author    Roberto L. Machado <linux.rlm at gmail dot com>
+ * @link      http://github.com/nfephp-org/nfephp for the canonical source repository
  */
 
 use NFePHP\Common\Base\BaseTools;
@@ -32,22 +33,26 @@ class ToolsMDFe extends BaseTools
 {
     /**
      * errrors
+     *
      * @var string
      */
     public $errors = array();
     /**
      * soapDebug
+     *
      * @var string
      */
     public $soapDebug = '';
     /**
      * urlPortal
      * Instância do WebService
+     *
      * @var string
      */
     protected $urlPortal = 'http://www.portalfiscal.inf.br/mdfe';
     /**
      * aLastRetEvent
+     *
      * @var array
      */
     private $aLastRetEvent = array();
@@ -56,9 +61,10 @@ class ToolsMDFe extends BaseTools
     /**
      * imprime
      * Imprime o documento eletrônico (MDFe, CCe, Inut.)
-     * @param string $pathXml
-     * @param string $pathDestino
-     * @param string $printer
+     *
+     * @param  string $pathXml
+     * @param  string $pathDestino
+     * @param  string $printer
      * @return string
      */
     public function imprime($pathXml = '', $pathDestino = '', $printer = '')
@@ -73,10 +79,11 @@ class ToolsMDFe extends BaseTools
      * Envia a MDFe por email aos destinatários
      * Caso $aMails esteja vazio serão obtidos os email do destinatário  e
      * os emails que estiverem registrados nos campos obsCont do xml
-     * @param string $pathXml
-     * @param array $aMails
-     * @param string $templateFile path completo ao arquivo template html do corpo do email
-     * @param boolean $comPdf se true o sistema irá renderizar o DANFE e anexa-lo a mensagem
+     *
+     * @param  string  $pathXml
+     * @param  array   $aMails
+     * @param  string  $templateFile path completo ao arquivo template html do corpo do email
+     * @param  boolean $comPdf       se true o sistema irá renderizar o DANFE e anexa-lo a mensagem
      * @return boolean
      */
     public function enviaMail($pathXml = '', $aMails = array(), $templateFile = '', $comPdf = false)
@@ -92,9 +99,10 @@ class ToolsMDFe extends BaseTools
      * addProtocolo
      * Adiciona o protocolo de autorização de uso da MDFe
      * NOTA: exigência da SEFAZ, a MDFe somente é válida com o seu respectivo protocolo
-     * @param string $pathMDFefile
-     * @param string $pathProtfile
-     * @param boolean $saveFile
+     *
+     * @param  string  $pathMDFefile
+     * @param  string  $pathProtfile
+     * @param  boolean $saveFile
      * @return string
      * @throws Exception\RuntimeException
      */
@@ -198,9 +206,10 @@ class ToolsMDFe extends BaseTools
      * addCancelamento
      * Adiciona a tga de cancelamento a uma MDFe já autorizada
      * NOTA: não é requisito da SEFAZ, mas auxilia na identificação das MDFe que foram canceladas
-     * @param string $pathMDFefile
-     * @param string $pathCancfile
-     * @param bool $saveFile
+     *
+     * @param  string $pathMDFefile
+     * @param  string $pathCancfile
+     * @param  bool   $saveFile
      * @return string
      * @throws Exception\RuntimeException
      */
@@ -244,9 +253,9 @@ class ToolsMDFe extends BaseTools
             //tpEvento = 110111 ==> Cancelamento
             //chave do evento == chave da NFe
             //protocolo do evneto ==  protocolo da NFe
-            if ($cStat == '135' &&
-                $tpEvento == '110111' &&
-                $chaveEvento == $chaveMDFe
+            if ($cStat == '135'
+                && $tpEvento == '110111'
+                && $chaveEvento == $chaveMDFe
             ) {
                 $proMDFe->getElementsByTagName('cStat')->item(0)->nodeValue = '101';
                 $proMDFe->getElementsByTagName('xMotivo')->item(0)->nodeValue = 'Cancelamento de NF-e homologado';
@@ -273,8 +282,9 @@ class ToolsMDFe extends BaseTools
     
     /**
      * verificaValidade
-     * @param string $pathXmlFile
-     * @param array $aRetorno
+     *
+     * @param  string $pathXmlFile
+     * @param  array  $aRetorno
      * @return boolean
      * @throws Exception\InvalidArgumentException
      */
@@ -302,8 +312,9 @@ class ToolsMDFe extends BaseTools
 
     /**
      * assina
-     * @param string $xml
-     * @param boolean $saveFile
+     *
+     * @param  string  $xml
+     * @param  boolean $saveFile
      * @return string
      * @throws Exception\RuntimeException
      */
@@ -314,13 +325,14 @@ class ToolsMDFe extends BaseTools
 
     /**
      * sefazEnviaLote
-     * @param string $xml
-     * @param string $tpAmb
-     * @param string $idLote
-     * @param array $aRetorno
-     * @return string
-     * @throws Exception\InvalidArgumentException
-     * @throws Exception\RuntimeException
+     *
+     * @param    string $xml
+     * @param    string $tpAmb
+     * @param    string $idLote
+     * @param    array  $aRetorno
+     * @return   string
+     * @throws   Exception\InvalidArgumentException
+     * @throws   Exception\RuntimeException
      * @internal function zLoadServico (Common\Base\BaseTools)
      */
     public function sefazEnviaLote(
@@ -379,12 +391,13 @@ class ToolsMDFe extends BaseTools
     
     /**
      * sefazConsultaRecibo
-     * @param string $recibo
-     * @param string $tpAmb
-     * @param array $aRetorno
-     * @return string
-     * @throws Exception\InvalidArgumentException
-     * @throws Exception\RuntimeException
+     *
+     * @param    string $recibo
+     * @param    string $tpAmb
+     * @param    array  $aRetorno
+     * @return   string
+     * @throws   Exception\InvalidArgumentException
+     * @throws   Exception\RuntimeException
      * @internal function zLoadServico (Common\Base\BaseTools)
      */
     public function sefazConsultaRecibo($recibo = '', $tpAmb = '2', &$aRetorno = array())
@@ -443,12 +456,13 @@ class ToolsMDFe extends BaseTools
     /**
      * sefazConsultaChave
      * Consulta o status da MDFe pela chave de 44 digitos
-     * @param string $chave
-     * @param string $tpAmb
-     * @param array $aRetorno
-     * @return string
-     * @throws Exception\InvalidArgumentException
-     * @throws Exception\RuntimeException
+     *
+     * @param    string $chave
+     * @param    string $tpAmb
+     * @param    array  $aRetorno
+     * @return   string
+     * @throws   Exception\InvalidArgumentException
+     * @throws   Exception\RuntimeException
      * @internal function zLoadServico (Common\Base\BaseTools)
      */
     public function sefazConsultaChave($chave = '', $tpAmb = '2', &$aRetorno = array())
@@ -512,11 +526,12 @@ class ToolsMDFe extends BaseTools
      * Verifica o status do serviço da SEFAZ
      * NOTA : Este serviço será removido no futuro, segundo da Receita/SEFAZ devido
      * ao excesso de mau uso !!!
-     * @param  string $siglaUF sigla da unidade da Federação
-     * @param string $tpAmb tipo de ambiente 1-produção e 2-homologação
-     * @param  array $aRetorno parametro passado por referencia contendo a resposta da consulta em um array
-     * @return mixed string XML do retorno do webservice, ou false se ocorreu algum erro
-     * @throws Exception\RuntimeException
+     *
+     * @param    string $siglaUF  sigla da unidade da Federação
+     * @param    string $tpAmb    tipo de ambiente 1-produção e 2-homologação
+     * @param    array  $aRetorno parametro passado por referencia contendo a resposta da consulta em um array
+     * @return   mixed string XML do retorno do webservice, ou false se ocorreu algum erro
+     * @throws   Exception\RuntimeException
      * @internal function zLoadServico (Common\Base\BaseTools)
      */
     public function sefazStatus($siglaUF = '', $tpAmb = '2', &$aRetorno = array())
@@ -571,11 +586,12 @@ class ToolsMDFe extends BaseTools
     
     /**
      * sefazCancela
-     * @param string $chave
-     * @param string $tpAmb
-     * @param string $xJust
-     * @param string $nProt
-     * @param array $aRetorno
+     *
+     * @param  string $chave
+     * @param  string $tpAmb
+     * @param  string $xJust
+     * @param  string $nProt
+     * @param  array  $aRetorno
      * @return string
      * @throws Exception\InvalidArgumentException
      */
@@ -620,12 +636,13 @@ class ToolsMDFe extends BaseTools
     
     /**
      * sefazEncerra
-     * @param string $chave
-     * @param string $tpAmb
-     * @param string $nProt
-     * @param string $cUF
-     * @param string $cMun
-     * @param array $aRetorno
+     *
+     * @param  string $chave
+     * @param  string $tpAmb
+     * @param  string $nProt
+     * @param  string $cUF
+     * @param  string $cMun
+     * @param  array  $aRetorno
      * @return string
      * @throws Exception\InvalidArgumentException
      */
@@ -668,12 +685,13 @@ class ToolsMDFe extends BaseTools
     
     /**
      * sefazIncluiCondutor
-     * @param string $chave
-     * @param string $tpAmb
-     * @param string $nSeqEvento
-     * @param string $xNome
-     * @param string $cpf
-     * @param array $aRetorno
+     *
+     * @param  string $chave
+     * @param  string $tpAmb
+     * @param  string $nSeqEvento
+     * @param  string $xNome
+     * @param  string $cpf
+     * @param  array  $aRetorno
      * @return string
      * @throws Exception\InvalidArgumentException
      */
@@ -714,9 +732,10 @@ class ToolsMDFe extends BaseTools
     
     /**
      * sefazConsultaNaoEncerrados
-     * @param string $tpAmb
-     * @param string $cnpj
-     * @param array $aRetorno
+     *
+     * @param  string $tpAmb
+     * @param  string $cnpj
+     * @param  array  $aRetorno
      * @return string
      * @throws Exception\RuntimeException
      */
@@ -773,14 +792,15 @@ class ToolsMDFe extends BaseTools
     
     /**
      * zSefazEvento
-     * @param string $siglaUF
-     * @param string $chave
-     * @param string $tpAmb
-     * @param string $tpEvento
-     * @param string $nSeqEvento
-     * @param string $tagAdic
-     * @return string
-     * @throws Exception\RuntimeException
+     *
+     * @param    string $siglaUF
+     * @param    string $chave
+     * @param    string $tpAmb
+     * @param    string $tpEvento
+     * @param    string $nSeqEvento
+     * @param    string $tagAdic
+     * @return   string
+     * @throws   Exception\RuntimeException
      * @internal function zLoadServico (Common\Base\BaseTools)
      */
     protected function zSefazEvento(
@@ -864,7 +884,8 @@ class ToolsMDFe extends BaseTools
     
     /**
      * zTpEv
-     * @param string $tpEvento
+     *
+     * @param  string $tpEvento
      * @return array
      * @throws Exception\RuntimeException
      */
@@ -889,7 +910,7 @@ class ToolsMDFe extends BaseTools
                 break;
             default:
                 $msg = "O código do tipo de evento informado não corresponde a "
-                   . "nenhum evento estabelecido.";
+                . "nenhum evento estabelecido.";
                 throw new Exception\RuntimeException($msg);
         }
         return array('alias' => $aliasEvento, 'desc' => $descEvento);

@@ -20,7 +20,6 @@
  * Caso contrário consulte <http://www.fsfla.org/svnwiki/trad/GPLv3> ou
  * <http://www.fsfla.org/svnwiki/trad/LGPLv3>. 
  *
- *
  * @package   NFePHP
  * @name      NFSeSEGinfes
  * @version   0.0.1
@@ -46,23 +45,24 @@
  * - CADA LOTE PODE POSSUIR VÁRIAS NFS-e
  * - CADA LOTE PODE POSSUIR VÁRIOS RPS
  * - CADA NOTA ESTÁ VINCULADA A UM UNICO RPS E VICE-VERSA
- * 
  */
 
 if (!defined('PATH_ROOT')) {
-   define('PATH_ROOT', dirname(dirname( __FILE__ )) . DIRECTORY_SEPARATOR);
+    define('PATH_ROOT', dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR);
 }
-include_once 'NuSOAP/nusoap.php';
+require_once 'NuSOAP/nusoap.php';
 require_once "../NFe/ToolsNFePHP.class.php";
 require_once "NFSePHPGinfesData.class.php";
 require_once "NFSePHPGinfesPDF.class.php";
 
 
-class NFSePHPGinfes extends ToolsNFePHP {
+class NFSePHPGinfes extends ToolsNFePHP
+{
     
     /**
      * URLxsi
      * Instância do WebService
+     *
      * @var string
      */
     private $URLxsi='http://www.w3.org/2001/XMLSchema-instance';
@@ -70,59 +70,69 @@ class NFSePHPGinfes extends ToolsNFePHP {
     /**
      * URLxsd
      * Instância do WebService
+     *
      * @var string
      */
     private $URLxsd='http://www.w3.org/2001/XMLSchema';
     /**
      * URLnfe
      * Instância do WebService
+     *
      * @var string
      */
     private $URLnfe='http://www.portalfiscal.inf.br/nfe';
     /**
      * URLdsig
      * Instância do WebService
+     *
      * @var string
      */
     private $URLdsig='http://www.w3.org/2000/09/xmldsig#';
     /**
      * URLCanonMeth
      * Instância do WebService
+     *
      * @var string
      */
     private $URLCanonMeth='http://www.w3.org/TR/2001/REC-xml-c14n-20010315';
     /**
      * URLSigMeth
      * Instância do WebService
+     *
      * @var string
      */
     private $URLSigMeth='http://www.w3.org/2000/09/xmldsig#rsa-sha1';
     /**
      * URLTransfMeth_1
      * Instância do WebService
+     *
      * @var string
      */
     private $URLTransfMeth_1='http://www.w3.org/2000/09/xmldsig#enveloped-signature';
     /**
      * URLTransfMeth_2
      * Instância do WebService
+     *
      * @var string
      */
     private $URLTransfMeth_2='http://www.w3.org/TR/2001/REC-xml-c14n-20010315';
     /**
      * URLDigestMeth
      * Instância do WebService
+     *
      * @var string
      */
     private $URLDigestMeth='http://www.w3.org/2000/09/xmldsig#sha1';
     
     /**
      * urlXmlns
+     *
      * @var string
      */
     protected $urlXmlns = "http://www.ginfes.com.br/";
     /**
      * urlXsdTipos
+     *
      * @var string
      */    
     protected $urlXsdTipos = "http://www.ginfes.com.br/tipos_v03.xsd";
@@ -166,12 +176,14 @@ class NFSePHPGinfes extends ToolsNFePHP {
 
     /**
      * __contruct
-     * @param array $aConfig
-     * @param int $mododebug
+     *
+     * @param array   $aConfig
+     * @param int     $mododebug
      * @param boolean $exceptions
      * @param boolean $save_files : atributo que visa o salvamento automático das informações
      */
-    public function __construct($aConfig = '', $mododebug = 2, $exceptions = false, $save_files = true) {
+    public function __construct($aConfig = '', $mododebug = 2, $exceptions = false, $save_files = true) 
+    {
         
         parent::__construct($aConfig, $mododebug, $exceptions);
 
@@ -234,12 +246,13 @@ class NFSePHPGinfes extends ToolsNFePHP {
     /**
      * Método responsável pela montagem do lote de serviços RPS. Cada nota lote pode ter "n" notas.
      * 
-     * @param int $idLote : código sequencial para numeração do lote. Entretando, o lote definitivo passado ao Ginfes será 
+     * @param  int   $idLote    : código sequencial para numeração do lote. Entretando, o lote definitivo passado ao Ginfes será  composto por [ date("ym") . sprintf("%011s", $idLote) ] ; composto por [ date("ym") . sprintf("%011s", $idLote) ] ;
      *      composto por [ date("ym") . sprintf("%011s", $idLote) ] ;
-     * @param array $aNFSeLote : array contendo objetos  NFSePHPGinfesData() 
+     * @param  array $aNFSeLote : array contendo objetos  NFSePHPGinfesData() 
      * @return string contendo xml já assinado
      */
-    public function montarLoteRps($idLote = "", $aNFSeLote = false) {
+    public function montarLoteRps($idLote = "", $aNFSeLote = false) 
+    {
 
         $this->numeroLote = date("ym") . sprintf("%011s", $idLote);
 
@@ -417,11 +430,11 @@ class NFSePHPGinfes extends ToolsNFePHP {
     /**
      * Método para sanitizar o xml conforme formato aceito pelo webservice
      * 
-     * @param string $xml : contém string com xml a ser sanitizado
+     * @param  string $xml : contém string com xml a ser sanitizado
      * @return string com o xml sanitizado
-     * 
      */
-    private function limparXML($xml) {
+    private function limparXML($xml) 
+    {
         $xml = str_replace('<?xml version="1.0" encoding="UTF-8"?>', '<?xml version="1.0" encoding="UTF-8" standalone="no"?>', $xml);
         $xml = str_replace('<?xml version="1.0" encoding="UTF-8" standalone="no"?>', '', $xml);
         $xml = str_replace('<?xml version="1.0" encoding="UTF-8"?>', '', $xml);
@@ -440,10 +453,12 @@ class NFSePHPGinfes extends ToolsNFePHP {
     
     /**
      * Método que formata e sanitiza os retornos soap, é chamado após qualquer chamada ao método __sendSOAPNFSe()
-     * @param string $soap : string contendo retorno da chamada __sendSOAPNFSe()
+     *
+     * @param  string $soap : string contendo retorno da chamada __sendSOAPNFSe()
      * @return string contendo o retorno soap sanitizado
      */
-    private function limparRetornoSOAP($soap = '') {
+    private function limparRetornoSOAP($soap = '') 
+    {
         $soap = str_replace('&lt;', '<', $soap);
         $soap = str_replace('&gt;', '>', $soap);
         $soap = str_replace('<?xml version="1.0" encoding="utf-8"?>', '', $soap);
@@ -455,23 +470,23 @@ class NFSePHPGinfes extends ToolsNFePHP {
     /**
      * Método que verifica o sucesso ou fracasso da chamada ao webservice 
      * 
-     * @param string $soap
+     * @param  string $soap
      * @return boolean : true para sucesso / false caso haja alguma mensagem de erro armazenando-a no atrbibuto "errMsg".
-     * 
      */
-    private function verificarProcessamentoOk($soap) {
+    private function verificarProcessamentoOk($soap) 
+    {
         $this->errStatus = false;
         $this->errMsg = "";
 
         if ($soap == '') {
             //houve uma falha na comunicação SOAP
-            $this->errStatus = TRUE;
+            $this->errStatus = true;
             $this->errMsg = 'Houve uma falha na comunicação SOAP!!';
-            return FALSE;
+            return false;
         }
         $doc = new DOMDocument(); //cria objeto DOM
-        $doc->formatOutput = FALSE;
-        $doc->preserveWhiteSpace = FALSE;
+        $doc->formatOutput = false;
+        $doc->preserveWhiteSpace = false;
         $doc->loadXML($soap, LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
         //status do recebimento ou mensagem de erro
         //$aRet['Numero'] = $doc->getElementsByTagName('Numero')->item(0)->nodeValue;
@@ -494,15 +509,16 @@ class NFSePHPGinfes extends ToolsNFePHP {
     /**
      * Retorna valor de uma tag conforme parametros passados 
      *
-     * @param string $tag : tag a ser procurada
-     * @param string $xml : xml do conteúdo a ser extraído
-     * @param string $i   : ordem da tag dentro do xml
+     * @param  string $tag : tag a ser procurada
+     * @param  string $xml : xml do conteúdo a ser extraído
+     * @param  string $i   : ordem da tag dentro do xml
      * @return string contendo o valor da tag requerida
      */
-    public function getTagValue($tag, $xml, $i = 0) {
+    public function getTagValue($tag, $xml, $i = 0) 
+    {
         $doc = new DOMDocument();
-        $doc->formatOutput = FALSE;
-        $doc->preserveWhiteSpace = FALSE;
+        $doc->formatOutput = false;
+        $doc->preserveWhiteSpace = false;
         $doc->loadXML($xml, LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
 
         return $doc->getElementsByTagName($tag)->item($i)->nodeValue;
@@ -511,10 +527,12 @@ class NFSePHPGinfes extends ToolsNFePHP {
     
     /**
      * Retorna string após remoção de acentos e caracteres que possam causar problemas na chamada soap.
-     * @param string $texto
+     *
+     * @param  string $texto
      * @return type : string limpa
      */
-    private function limparString($texto) {
+    private function limparString($texto) 
+    {
         $aFind = array('&', 'á', 'à', 'ã', 'â', 'é', 'ê', 'í', 'ó', 'ô', 'õ', 'ú', 'ü', 'ç', 'Á', 'À', 'Ã', 'Â', 'É', 'Ê', 'Í', 'Ó', 'Ô', 'Õ', 'Ú', 'Ü', 'Ç');
         $aSubs = array('e', 'a', 'a', 'a', 'a', 'e', 'e', 'i', 'o', 'o', 'o', 'u', 'u', 'c', 'A', 'A', 'A', 'A', 'E', 'E', 'I', 'O', 'O', 'O', 'U', 'U', 'C');
         $novoTexto = str_replace($aFind, $aSubs, $texto);
@@ -526,12 +544,12 @@ class NFSePHPGinfes extends ToolsNFePHP {
     /**
      * Valida XMl de acordo como serviço chamado
      * 
-     * @param string $xml = xml a ser validado
-     * @param string $servico = serviço para extração do xsd
+     * @param  string $xml     = xml a ser validado
+     * @param  string $servico = serviço para extração do xsd
      * @return boolean : true para validado com sucesso, false caso contrário
-     * 
      */
-    public function validarXML($xml, $servico) {
+    public function validarXML($xml, $servico) 
+    {
         $schema = $this->mURL[$servico]['xsd'];
         $version = $this->mURL[$servico]['version'];
         //$schema = (empty($schema)) ? $this->NFeSschema : $schema;
@@ -544,10 +562,11 @@ class NFSePHPGinfes extends ToolsNFePHP {
     /**
      * Envia lote RPS 
      * 
-     * @param string $xmlLote : xml montado a partir do método montarLoteRps() ou xml conforme especificado pelo manual ginfes
+     * @param  string $xmlLote : xml montado a partir do método montarLoteRps() ou xml conforme especificado pelo manual ginfes
      * @return string/boolean : false caso tenha havido falha / xml contendo a resposta soap caso tudo tenha dado certo neste retorno haverá o número do protocolo necessário para a consulta de situação do mesmo através do método consultarSituacaoLoteRps()
      */
-    public function enviarLoteRps($xmlLote = false) {
+    public function enviarLoteRps($xmlLote = false) 
+    {
 
         if (!$xmlLote) {
             $xmlLote = $this->nfsexml;
@@ -615,15 +634,15 @@ class NFSePHPGinfes extends ToolsNFePHP {
      
          
      /**
-      * 
       * Retorna xml todoas as notas pertencentes ao lote consultado através do protocolo obtido após o EnviarLoteRps  
       * 
-      * @param string $protocolo : obtido após o envio
-      * @param string $cnpj : cnpj do emissor
-      * @param string $im : inscrição municipal do emissor
+      * @param  string $protocolo : obtido após o envio
+      * @param  string $cnpj      : cnpj do emissor
+      * @param  string $im        : inscrição municipal do emissor
       * @return boolean ou string : retorna falso caso haja problemas ou xml contendo as NFS-e
       */    
-    public function consultarLoteRps($protocolo, $cnpj = false, $im = false) {
+    public function consultarLoteRps($protocolo, $cnpj = false, $im = false) 
+    {
 
         if (!$cnpj) {
             $cnpj = $this->CNPJ;
@@ -676,7 +695,6 @@ class NFSePHPGinfes extends ToolsNFePHP {
     }
 
     /**
-     * 
      * Retorna xml contendo a situação do lote consultado através do protocolo obtido após o EnviarLoteRps 
      * As situações podem ser: 
                 "1": Não recebido
@@ -687,9 +705,9 @@ class NFSePHPGinfes extends ToolsNFePHP {
      * @param string $protocolo : obtido após o envio do lote
      * @param string $cnpj
      * @param string $im
-     * 
      */
-    public function consultarSituacaoLoteRps($protocolo, $cnpj = false, $im = false) {
+    public function consultarSituacaoLoteRps($protocolo, $cnpj = false, $im = false) 
+    {
 
         if (!$cnpj) {
             $cnpj = $this->CNPJ;
@@ -737,15 +755,15 @@ class NFSePHPGinfes extends ToolsNFePHP {
 
             $this->__save_xml_file("{$numeroLote}-{$protocolo}-sit-resp.xml", $retorno, "temp");
             switch ($situacao) {
-                case "1": //Não recebido
-                case "2": //Não Processado                    
-                    break;
-                case "3": //Processado com erro
-                    $this->__save_lote_reprovado($numeroLote);
-                    break;
-                case "4": //Processado com sucesso
-                    $this->__save_lote_aprovado($numeroLote);
-                    break;
+            case "1": //Não recebido
+            case "2": //Não Processado                    
+                break;
+            case "3": //Processado com erro
+                $this->__save_lote_reprovado($numeroLote);
+                break;
+            case "4": //Processado com sucesso
+                $this->__save_lote_aprovado($numeroLote);
+                break;
             }
         } else {
 
@@ -758,7 +776,6 @@ class NFSePHPGinfes extends ToolsNFePHP {
     }
 
     /**
-     * 
      * Retorna apenas uma nota mediante ao número do rps.
      * 
      * @param string $numrps
@@ -766,10 +783,9 @@ class NFSePHPGinfes extends ToolsNFePHP {
      * @param string $serie
      * @param string $cnpj
      * @param string $im
-     * 
-     * 
      */
-    public function consultarNfseRps($numrps, $tipo, $serie, $cnpj = false, $im = false) {
+    public function consultarNfseRps($numrps, $tipo, $serie, $cnpj = false, $im = false) 
+    {
 
         if (!$cnpj) {
             $cnpj = $this->CNPJ;
@@ -824,19 +840,19 @@ class NFSePHPGinfes extends ToolsNFePHP {
     
     
     /**
-     * 
      * Método que retorna xml contendo um lote de NFS-e de acordo com os parametros passados.
      * 
-     * @param string $numNFSe : numero da NFS-e específica que deseja buscar, pode ser omitido caso deseja buscar por data
-     * @param string $cnpj : cnpj do emissor
-     * @param string $im : inscrição municipal do emissor
-     * @param string $dtinicial : data inicial para filtragem de notas por periodo (pode ser omitido)
-     * @param string $dtfinal : data final do periodo (pode ser omitido caso a primeira data tbm seja)
-     * @param string $cpfcnpj_tomador : para pequisar pelo cnpj do tomador (ainda não implementado)
-     * @param string $im_tomador : para pesquisar pela inscrição municipal do tomador (ainda não implementado)
+     * @param  string $numNFSe         : numero da NFS-e específica que deseja buscar, pode ser omitido caso deseja buscar por data
+     * @param  string $cnpj            : cnpj do emissor
+     * @param  string $im              : inscrição municipal do emissor
+     * @param  string $dtinicial       : data inicial para filtragem de notas por periodo (pode ser omitido)
+     * @param  string $dtfinal         : data final do periodo (pode ser omitido caso a primeira data tbm seja)
+     * @param  string $cpfcnpj_tomador : para pequisar pelo cnpj do tomador (ainda não implementado)
+     * @param  string $im_tomador      : para pesquisar pela inscrição municipal do tomador (ainda não implementado)
      * @return boolean
      */
-    public function consultarNfse($numNFSe = false, $cnpj = false, $im = false, $dtinicial = false, $dtfinal = false, $cpfcnpj_tomador = false, $im_tomador = false) {
+    public function consultarNfse($numNFSe = false, $cnpj = false, $im = false, $dtinicial = false, $dtfinal = false, $cpfcnpj_tomador = false, $im_tomador = false) 
+    {
 
         if (!$cnpj) {
             $cnpj = $this->CNPJ;
@@ -904,16 +920,16 @@ class NFSePHPGinfes extends ToolsNFePHP {
     
     
     /**
-     * 
      * Cancelamento de uma NFS-e especifica. Funciona exclusivamente com a versão anterior dos schemas (v02).
      * 
-     * @param string $numNFSe
-     * @param string $cnpj
-     * @param string $im
-     * @param string $cMun
+     * @param  string $numNFSe
+     * @param  string $cnpj
+     * @param  string $im
+     * @param  string $cMun
      * @return boolean
      */
-    public function cancelarNfse($numNFSe, $cnpj = false, $im = false, $cMun = false) {
+    public function cancelarNfse($numNFSe, $cnpj = false, $im = false, $cMun = false) 
+    {
 
         if (!$cnpj) {
             $cnpj = $this->CNPJ;
@@ -979,10 +995,12 @@ class NFSePHPGinfes extends ToolsNFePHP {
 
     /**
      * Método que recebe o xml de resposta das consultas de NFS-e e as separar, uma a uma, no diretório "aprovadas" o nome do arquivo é formado pelo número do rps + número da nota.
-     * @param string $xml : contém os métodos xml 
+     *
+     * @param string $xml     : contém os métodos xml 
      * @param string $servico : serviço no qual foi baseado a consulta
      */
-    function extractNfse($xml, $servico) {
+    function extractNfse($xml, $servico) 
+    {
         if ($this->save_files) {
             $servico = str_replace("Envio", "Resposta", $servico);
 
@@ -991,8 +1009,8 @@ class NFSePHPGinfes extends ToolsNFePHP {
             //$xml = file_get_contents("20121214175758__consultarNfse-20121214175756-resp-varios.xml");
 
             $doc = new DOMDocument();
-            $doc->formatOutput = FALSE;
-            $doc->preserveWhiteSpace = FALSE;
+            $doc->formatOutput = false;
+            $doc->preserveWhiteSpace = false;
             $doc->loadXML($xml, LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
 
             $nfse = explode("<ns3:CompNfse>", $xml);
@@ -1031,10 +1049,12 @@ class NFSePHPGinfes extends ToolsNFePHP {
 
     /**
      * gerarPDF
+     *
      * @param string $numNFSe : número da nfs-e a ser emitida em pdf
      * @param string $aParser : array contendo valores para substituição de informações que não constam no xml
      */
-    public function gerarPDF($numNFSe, $aParser = false) {
+    public function gerarPDF($numNFSe, $aParser = false) 
+    {
         $aFile = $this->listDir($this->nfseDir . "aprovadas/", '*' . $numNFSe . '.xml', true);
         $arquivo_xml_origem = $aFile[0];
         $gif_brasao_prefeitura = $this->nfseDir . "logo_prefeitura.gif";
@@ -1055,13 +1075,14 @@ class NFSePHPGinfes extends ToolsNFePHP {
      * usando as chaves publica e privada parametrizadas na contrução da classe, utiliza-se da classe NuSOAP. 
      * (ainda enfrentando problemas ao tentar fazer via curl e soap nativo)
      * 
-     * @param string $urlwebservice
-     * @param string $cabecalho
-     * @param string $dados
-     * @param string $metodo
+     * @param  string $urlwebservice
+     * @param  string $cabecalho
+     * @param  string $dados
+     * @param  string $metodo
      * @return type
      */   
-    private function __sendSOAPNFSe($urlwebservice, $cabecalho = '', $dados, $metodo) {
+    private function __sendSOAPNFSe($urlwebservice, $cabecalho = '', $dados, $metodo) 
+    {
         if ($this->tpAmb == 1) {
             $ambiente = 'producao';
             $wsdl = $urlwebservice . '?wsdl';
@@ -1072,7 +1093,7 @@ class NFSePHPGinfes extends ToolsNFePHP {
         if (empty($cabecalho)) {
             $cabecalho = '<ns2:cabecalho versao="3" xmlns:ns2="http://www.ginfes.com.br/cabecalho_v03.xsd" ><versaoDados>3</versaoDados></ns2:cabecalho>';
         }
-        $client = new nusoap_client($wsdl, True);
+        $client = new nusoap_client($wsdl, true);
         $client->soap_defencoding = 'UTF-8';
         $client->authtype = 'certificate';
         $client->certRequest['sslcertfile'] = $this->certKEY;
@@ -1094,13 +1115,14 @@ class NFSePHPGinfes extends ToolsNFePHP {
      * este assinador somente utiliza comandos nativos do PHP para assinar
      * os arquivos XML
      *
-     * @param	string $docxml String contendo o arquivo XML a ser assinado
-     * @param   string $tagid TAG do XML que devera ser assinada
-     * @param   string $appendTag : tag onde será "pendurada" a assinatura
-     * @param   string $ns : namespace utilizado, normalmente "p1"
-     * @return	mixed false se houve erro ou string com o XML assinado
+     * @param  string $docxml    String contendo o arquivo XML a ser assinado
+     * @param  string $tagid     TAG do XML que devera ser assinada
+     * @param  string $appendTag : tag onde será "pendurada" a assinatura
+     * @param  string $ns        : namespace utilizado, normalmente "p1"
+     * @return mixed false se houve erro ou string com o XML assinado
      */
-    public function signXML($docxml, $tagid = '', $appendTag = false, $ns = '') {
+    public function signXML($docxml, $tagid = '', $appendTag = false, $ns = '') 
+    {
         if ($tagid == '') {
             $msg = "Uma tag deve ser indicada para que seja assinada!!";
             $this->__setError($msg);
@@ -1147,7 +1169,7 @@ class NFSePHPGinfes extends ToolsNFePHP {
         $id = trim($node->getAttribute("Id"));
         $idnome = preg_replace('/[^0-9]/', '', $id);
         //extrai os dados da tag para uma string
-        $dados = $node->C14N(false, false, NULL, NULL);
+        $dados = $node->C14N(false, false, null, null);
         //calcular o hash dos dados
         $hashValue = hash('sha1', $dados, true);
         //converte o valor para base64 para serem colocados no xml
@@ -1197,7 +1219,7 @@ class NFSePHPGinfes extends ToolsNFePHP {
         $newNode = $xmldoc->createElement($ns . 'DigestValue', $digValue);
         $Reference->appendChild($newNode);
         // extrai os dados a serem assinados para uma string
-        $dados = $SignedInfo->C14N(false, false, NULL, NULL);
+        $dados = $SignedInfo->C14N(false, false, null, null);
         //inicializa a variavel que irá receber a assinatura
         $signature = '';
         //executa a assinatura digital usando o resource da chave privada
@@ -1231,25 +1253,27 @@ class NFSePHPGinfes extends ToolsNFePHP {
     /**
      * __cria_estrutura_diretorios
      * cria toda a estrutura de diretórios necessarira à NFS-e
+     *
      * @return void
      */
-    private function __cria_estrutura_diretorios(){
+    private function __cria_estrutura_diretorios()
+    {
         
         if (!is_dir($this->nfseDir)) {
             mkdir($this->nfseDir, 0777);
         }
         
         $aSubDirs = array(
-			"aprovadas",
-			"canceladas",
-        	"lotes",
-			"lotes/assinados",  
-			"lotes/enviados", 
-			"lotes/enviados/aprovados",
-			"lotes/enviados/reprovados",
-			"lotes/validados",
-			"pdf",
-			"temp"
+        "aprovadas",
+        "canceladas",
+            "lotes",
+        "lotes/assinados",  
+        "lotes/enviados", 
+        "lotes/enviados/aprovados",
+        "lotes/enviados/reprovados",
+        "lotes/validados",
+        "pdf",
+        "temp"
         );
         
         $count = count($aSubDirs);
@@ -1270,7 +1294,8 @@ class NFSePHPGinfes extends ToolsNFePHP {
      * @param string $content
      * @param string $local
      */
-    private function __save_xml_file($file, $content = '', $local = 'temp') {
+    private function __save_xml_file($file, $content = '', $local = 'temp') 
+    {
 
         if ($this->save_files) {
             if (!is_dir($this->nfseDir . $local)) {
@@ -1294,7 +1319,8 @@ class NFSePHPGinfes extends ToolsNFePHP {
      * @param string $arquivo
      * @param string $conteudo
      */
-    private function __save_xml_assinado($arquivo, $conteudo) {
+    private function __save_xml_assinado($arquivo, $conteudo) 
+    {
         $this->__save_xml_file($arquivo, $conteudo, "lotes/assinados");
     } //fim __save_xml_assinado
     
@@ -1305,7 +1331,8 @@ class NFSePHPGinfes extends ToolsNFePHP {
      * @param string $arquivo
      * @param string $conteudo
      */
-    private function __save_xml_validado($arquivo, $conteudo) {
+    private function __save_xml_validado($arquivo, $conteudo) 
+    {
         $this->__save_xml_file($arquivo, $conteudo, "lotes/validados");
         @unlink($this->nfseDir . 'lotes/assinados' . DIRECTORY_SEPARATOR . $arquivo);
     } //fim __save_xml_validado
@@ -1317,7 +1344,8 @@ class NFSePHPGinfes extends ToolsNFePHP {
      * @param string $arquivo
      * @param string $conteudo
      */
-    function __save_xml_enviado($arquivo, $conteudo) {
+    function __save_xml_enviado($arquivo, $conteudo) 
+    {
         $this->__save_xml_file($arquivo, $conteudo, "lotes/enviados");
         @unlink($this->nfseDir . 'lotes/validados' . DIRECTORY_SEPARATOR . $arquivo);
     } //fim __save_xml_enviado
@@ -1326,11 +1354,12 @@ class NFSePHPGinfes extends ToolsNFePHP {
      * __get_xml_file
      * retorna string contendo xml de um arquivo especificado
      * 
-     * @param string $file
-     * @param string $local
+     * @param  string $file
+     * @param  string $local
      * @return mixed String com o conteudo do arquivo ou false
      */
-    private function __get_xml_file($file, $local = '') {
+    private function __get_xml_file($file, $local = '') 
+    {
 
         if (is_file($this->nfseDir . $local . DIRECTORY_SEPARATOR . $file)) {
             $file = $this->nfseDir . $local . DIRECTORY_SEPARATOR . $file;
@@ -1345,10 +1374,11 @@ class NFSePHPGinfes extends ToolsNFePHP {
      * __save_lote_aprovado
      * salva arquivo de lote no diretorio de aprovados
      * 
-     * @param string $numero
+     * @param  string $numero
      * @return void
      */
-    private function __save_lote_aprovado($numero) {
+    private function __save_lote_aprovado($numero) 
+    {
         $from = $this->nfseDir . "lotes/enviados" . DIRECTORY_SEPARATOR;
         $to = $this->nfseDir . "lotes/enviados/aprovados" . DIRECTORY_SEPARATOR;
         @rename($from . $numero . ".xml", $to . $numero . ".xml");
@@ -1360,7 +1390,8 @@ class NFSePHPGinfes extends ToolsNFePHP {
      * 
      * @param string $numero
      */
-    private function __save_lote_reprovado($numero) {
+    private function __save_lote_reprovado($numero) 
+    {
         $from = $this->nfseDir . "lotes/enviados" . DIRECTORY_SEPARATOR;
         $to = $this->nfseDir . "lotes/enviados/reprovados" . DIRECTORY_SEPARATOR;
 
@@ -1370,10 +1401,12 @@ class NFSePHPGinfes extends ToolsNFePHP {
 
     /**
      * __view_xml_file
-     * @param string $conteudo
+     *
+     * @param  string $conteudo
      * @return header text/xml
      */
-    private function __view_xml_file($conteudo) {
+    private function __view_xml_file($conteudo) 
+    {
         header("Content-Type:text/xml");
         die($conteudo);
     }//__view_xml_file

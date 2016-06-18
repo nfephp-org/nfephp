@@ -4,12 +4,13 @@ namespace NFePHP\MDFe;
 
 /**
  * Classe para envio dos emails aos interessados
- * @category   NFePHP
- * @package    NFePHP\MDFe\MailMDFe
- * @copyright  Copyright (c) 2008-2015
- * @license    http://www.gnu.org/licenses/lesser.html LGPL v3
- * @author     Roberto L. Machado <linux.rlm at gmail dot com>
- * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
+ *
+ * @category  NFePHP
+ * @package   NFePHP\MDFe\MailMDFe
+ * @copyright Copyright (c) 2008-2015
+ * @license   http://www.gnu.org/licenses/lesser.html LGPL v3
+ * @author    Roberto L. Machado <linux.rlm at gmail dot com>
+ * @link      http://github.com/nfephp-org/nfephp for the canonical source repository
  *
  * NOTA: O envio de email's pelo sistema de MDFe não é necessário pois não
  * envolve clientes ou fornecedores é apenas uma forma de comunicar o transporte de
@@ -33,9 +34,10 @@ class MailMDFe
     
     /**
      * enviaMail
-     * @param string $pathFile
-     * @param array $aMail
-     * @param boolean $comPdf
+     *
+     * @param  string  $pathFile
+     * @param  array   $aMail
+     * @param  boolean $comPdf
      * @return boolean
      */
     public function envia($pathFile = '', $aMail = array(), $comPdf = false)
@@ -59,6 +61,7 @@ class MailMDFe
     
     /**
      * zMontaMessagem
+     *
      * @param string $pathFile
      */
     protected function zMontaMessagem($pathFile)
@@ -85,12 +88,13 @@ class MailMDFe
     
     /**
      * zRenderTemplate
-     * @param string $xNome
-     * @param string $data
-     * @param string $nNF
-     * @param string $serie
-     * @param string $vNF
-     * @param string $razao
+     *
+     * @param  string $xNome
+     * @param  string $data
+     * @param  string $nNF
+     * @param  string $serie
+     * @param  string $vNF
+     * @param  string $razao
      * @return string
      */
     protected function zRenderTemplate($xNome, $data, $nMDF, $serie, $vCarga, $razao)

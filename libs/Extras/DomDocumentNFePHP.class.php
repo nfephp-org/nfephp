@@ -11,7 +11,8 @@ class DomDocumentNFePHP extends DOMDocument
      * construtor
      * Executa o construtor-pai do DOMDocument e por padrão define o XML sem espaços
      * e sem identação
-     * @param string $sXml Conteúdo XML opcional a ser carregado no DOM Document.
+     *
+     * @param  string $sXml Conteúdo XML opcional a ser carregado no DOM Document.
      * @return void
      */
     public function __construct($sXml = null)

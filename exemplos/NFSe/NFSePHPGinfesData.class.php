@@ -20,7 +20,6 @@
  * Caso contrário consulte <http://www.fsfla.org/svnwiki/trad/GPLv3> ou
  * <http://www.fsfla.org/svnwiki/trad/LGPLv3>. 
  *
- *
  * @package   NFePHP
  * @name      NFSeSEGinfesData
  * @version   0.0.1
@@ -31,10 +30,10 @@
  *
  *        CONTRIBUIDORES (em ordem alfabetica):
  *            Roberto Leite Machado <linux dot rlm at gamil dot com>
- * 
  */
 
-class NFSePHPGinfesData {
+class NFSePHPGinfesData
+{
 
     // número do rps (recibo provisório de serviços) que identificará a NFS-e.
     private $numrps = "";
@@ -110,9 +109,7 @@ class NFSePHPGinfesData {
      * 
      * *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  * */
     /**
-     *
      * DADOS DO TOMADOR
-     * 
      */
     private $tomaCPF = '';
     private $tomaCNPJ = '';
@@ -133,16 +130,18 @@ class NFSePHPGinfesData {
      * 
      * @param string $rps
      */
-    public function __construct($rps) {
+    public function __construct($rps) 
+    {
         $this->numrps = date("ym") . sprintf('%011s', $rps);
     }
 
     /**
      * 
      * @param string $campo
-     * @param mixed $valor
+     * @param mixed  $valor
      */
-    public function set($campo, $valor) {
+    public function set($campo, $valor) 
+    {
         $this->{$campo} = $valor;
     }
 
@@ -151,7 +150,8 @@ class NFSePHPGinfesData {
      * @param string $campo
      * @return array
      */
-    public function get($campo) {
+    public function get($campo) 
+    {
         return $this->{$campo};
     }
 
@@ -160,7 +160,8 @@ class NFSePHPGinfesData {
      * @param string $campo
      * @param string $valor
      */
-    public function setItem($campo, $valor) {
+    public function setItem($campo, $valor) 
+    {
         $this->Item[$campo] = $valor;
         $this->Item['baseCalculo']      = $this->Item['valorServicos'] - $this->Item['descontoIncondicionado'] - $this->Item['valorDeducoes'] ;
         $this->Item['valorLiquidoNfse'] = $this->Item['valorServicos'] - $this->Item['valorPis'] - $this->Item['valorCofins'] - $this->Item['valorInss'] - $this->Item['valorCsll'] - $this->Item['outrasRetencoes'] - $this->Item['valorIss'] - $this->Item['descontoIncondicionado'] - $this->Item['descontoCondicionado'];
@@ -170,7 +171,8 @@ class NFSePHPGinfesData {
      * 
      * @return array
      */
-    public function getArrayItem(){
+    public function getArrayItem()
+    {
         return $this->Item;
     }
 
@@ -179,7 +181,8 @@ class NFSePHPGinfesData {
      * @param string $campo
      * @return array
      */
-    public function getItem($campo) {
+    public function getItem($campo) 
+    {
         return $this->Item[$campo];
     }
 
@@ -190,7 +193,8 @@ class NFSePHPGinfesData {
      * @param type $cnpj
      * @param type $im
      */
-    public function setEmitente($razao, $fantasia, $cnpj, $im) {
+    public function setEmitente($razao, $fantasia, $cnpj, $im) 
+    {
         $this->razaoSocial = $razao;
         $this->nomeFantasia = $fantasia;
         $this->CNPJ = $cnpj;

@@ -26,7 +26,6 @@ namespace NFePHP\MDFe;
  * Está atualizada para :
  *      PHP 5.4
  *
- *
  * @package   NFePHP
  * @name      MDFeNFePHP
  * @version   1.0.1
@@ -36,8 +35,6 @@ namespace NFePHP\MDFe;
  * @author    Roberto L. Machado <linux.rlm at gmail dot com>
  * @author    Leandro C. Lopez <leandro dot castoldi at gmail dot com>
  *        CONTRIBUIDORES (em ordem alfabetica):
- *
- *
  */
 //define o caminho base da instalação do sistema
 if (!defined('PATH_ROOT')) {
@@ -52,6 +49,7 @@ class MDFeNFePHP
     /**
      * exceptions
      * Ativa ou desativa o uso de exceções para transporte de erros
+     *
      * @var boolean
      */
     protected $exceptions = false;
@@ -67,108 +65,126 @@ class MDFeNFePHP
     /**
      * raizDir
      * Diretorio raiz da API
+     *
      * @var string
      */
     public $raizDir = '';
     /**
      * pdfDir
      * Diretorio onde são armazenados temporariamente as notas em pdf
+     *
      * @var string
      */
     public $pdfDir = '';
     /**
      * entDir
      * Diretorio onde são armazenados temporariamente as MDFe criadas (em txt ou xml)
+     *
      * @var string
      */
     public $entDir = '';
     /**
      * valDir
      * Diretorio onde são armazenados temporariamente as MDFe já validadas pela API
+     *
      * @var string
      */
     public $valDir = '';
     /**
      * repDir
      * Diretorio onde são armazenados as MDFe reprovadas na validação da API
+     *
      * @var string
      */
     public $repDir = '';
     /**
      * assDir
      * Diretorio onde são armazenados temporariamente as MDFe já assinadas
+     *
      * @var string
      */
     public $assDir = '';
     /**
      * envDir
      * Diretorio onde são armazenados temporariamente as MDFe enviadas
+     *
      * @var string
      */
     public $envDir = '';
     /**
      * aprDir
      * Diretorio onde são armazenados temporariamente as MDFe aprovadas
+     *
      * @var string
      */
     public $aprDir = '';
     /**
      * denDir
      * Diretorio onde são armazenados as MDFe denegadas
+     *
      * @var string
      */
     public $denDir = '';
     /**
      * rejDir
      * Diretorio onde são armazenados os retornos e as MDFe com as rejeitadas após o envio do lote
+     *
      * @var string
      */
     public $rejDir = '';
     /**
      * canDir
      * Diretorio onde são armazenados os pedidos e respostas de cancelamento
+     *
      * @var string
      */
     public $canDir = '';
     /**
      * inuDir
      * Diretorio onde são armazenados os pedidos de inutilização de numeros de notas
+     *
      * @var string
      */
     public $inuDir = '';
     /**
      * tempDir
      * Diretorio de arquivos temporarios ou não significativos para a operação do sistema
+     *
      * @var string
      */
     public $temDir = '';
     /**
      * recDir
      * Diretorio de arquivos temporarios das MDFe recebidas de terceiros
+     *
      * @var string
      */
     public $recDir = '';
     /**
      * conDir
      * Diretorio de arquivos das MDFe recebidas de terceiros e já validadas
+     *
      * @var string
      */
     public $conDir = '';
     /**
      * libsDir
      * Diretorios onde estão as bibliotecas e outras classes
+     *
      * @var string
      */
     public $libsDir = '';
     /**
      * certsDir
      * Diretorio onde estão os certificados
+     *
      * @var string
      */
     public $certsDir = '';
     /**
      * imgDir
      * Diretorios com a imagens, fortos, logos, etc..
+     *
      * @var string
      */
     public $imgDir = '';
@@ -176,42 +192,49 @@ class MDFeNFePHP
      * xsdDir
      * diretorio que contem os esquemas de validação
      * estes esquemas devem ser mantidos atualizados
+     *
      * @var string
      */
     public $xsdDir = '';
     /**
      * evtDir
      * Diretorio de arquivos dos eventos como as Manuifetações do Destinatário
+     *
      * @var string
      */
     public $evtDir='';
     /**
      * enableSCAN
      * Habilita o acesso ao serviço SCAN ao invés do webservice estadual
+     *
      * @var boolean
      */
     public $enableSCAN = false;
     /**
      * enableSVAN
      * Indica o acesso ao serviço SVAN
+     *
      * @var boolean
      */
     public $enableSVAN = false;
     /**
      * xmlURLfile
      * Arquivo xml com as URL do SEFAZ de todos dos Estados
+     *
      * @var string
      */
     public $xmlURLfile='';
     /**
      * modSOAP
      * Indica o metodo SOAP a usar 1-SOAP Nativo ou 2-cURL
+     *
      * @var string
      */
     public $modSOAP = '2';
     /**
      * tpAmb
      * Tipo de ambiente 1-produção 2-homologação
+     *
      * @var string
      */
     public $tpAmb = '';
@@ -219,12 +242,14 @@ class MDFeNFePHP
      * schemeVer
      * String com o nome do subdiretorio onde se encontram os schemas
      * atenção é case sensitive
+     *
      * @var string
      */
     public $mdfeSchemeVer;
     /**
      * aProxy
      * Matriz com as informações sobre o proxy da rede para uso pelo SOAP
+     *
      * @var array IP PORT USER PASS
      */
     public $aProxy = '';
@@ -232,78 +257,91 @@ class MDFeNFePHP
      * aMail
      * Matiz com os dados para envio de emails
      * FROM  HOST USER PASS
+     *
      * @var array
      */
     public $aMail = '';
     /**
      * keyPass
      * Senha de acesso a chave privada
+     *
      * @var string
      */
     private $keyPass = '';
     /**
      * passPhrase
      * palavra passe para acessar o certificado (normalmente não usada)
+     *
      * @var string
      */
     private $passPhrase = '';
     /**
      * certName
      * Nome do certificado digital
+     *
      * @var string
      */
     private $certName = '';
     /**
      * certMonthsToExpire
      * Meses que faltam para o certificado expirar
+     *
      * @var integer
      */
     public $certMonthsToExpire = 0;
     /**
      * certDaysToExpire
      * Dias que faltam para o certificado expirar
+     *
      * @var integer
      */
     public $certDaysToExpire = 0;
     /**
      * priKEY
      * Path completo para a chave privada em formato pem
+     *
      * @var string
      */
     private $priKEY = '';
     /**
      * pubKEY
      * Path completo para a chave public em formato pem
+     *
      * @var string
      */
     private $pubKEY = '';
     /**
      * certKEY
      * Path completo para o certificado (chave privada e publica) em formato pem
+     *
      * @var string
      */
     private $certKEY = '';
     /**
      * empName
      * Razão social da Empresa
+     *
      * @var string
      */
     private $empName = '';
     /**
      * cnpj
      * CNPJ do emitente
+     *
      * @var string
      */
     private $cnpj = '';
     /**
      * cUF
      * Código da unidade da Federação IBGE
+     *
      * @var string
      */
     private $cUF = '';
     /**
      * UF
      * Sigla da Unidade da Federação
+     *
      * @var string
      */
     private $UF = '';
@@ -315,6 +353,7 @@ class MDFeNFePHP
     /**
      * daMDFelogopath
      * Variável que contem o path completo para a logo a ser impressa na DAMDFe
+     *
      * @var string $logopath
      */
     public $damdfelogopath = '';
@@ -322,6 +361,7 @@ class MDFeNFePHP
      * daMDFelogopos
      * Estabelece a posição do logo no DAMDFE
      * L-Esquerda C-Centro e R-Direita
+     *
      * @var string
      */
     public $damdfelogopos = 'C';
@@ -329,6 +369,7 @@ class MDFeNFePHP
      * daMDFeform
      * Estabelece o formato do DAMDFE
      * P-Retrato L-Paisagem (NOTA: somente o formato P é funcional, por ora)
+     *
      * @var string P-retrato ou L-Paisagem
      */
     public $damdfeform = 'P';
@@ -336,12 +377,14 @@ class MDFeNFePHP
      * damdfepaper
      * Estabelece o tamanho da página
      * NOTA: somente o A4 pode ser utilizado de acordo com a ISO
+     *
      * @var string
      */
     public $damdfepaper = 'A4';
     /**
      * damdfecanhoto
      * Estabelece se o canhoto será impresso ou não
+     *
      * @var boolean
      */
     public $damdfecanhoto = true;
@@ -349,12 +392,14 @@ class MDFeNFePHP
      * damdfefont
      * Estabelece a fonte padrão a ser utilizada no damdfe
      * de acordo com o Manual da SEFAZ usar somente Times
+     *
      * @var string
      */
     public $damdfefont = 'Times';
-   /**
+    /**
      * damdfeprinter
      * Estabelece a printer padrão a ser utilizada na impressão da damdfe
+    *
      * @var string
      */
     public $damdfeprinter = '';
@@ -362,119 +407,139 @@ class MDFeNFePHP
      * anoMes
      * Variável que contem o ano com 4 digitos e o mes com 2 digitos
      * Ex. 201003
+     *
      * @var string
      */
     private $anoMes = '';
     /**
      * aURL
      * Array com as url dos webservices
+     *
      * @var array
      */
     public $aURL = '';
     /**
      * aCabec
+     *
      * @var array
      */
     public $aCabec = '';
     /**
      * errMsg
      * Mensagens de erro do API
+     *
      * @var string
      */
     public $errMsg = '';
     /**
      * errStatus
      * Status de erro
+     *
      * @var boolean
      */
     public $errStatus = false;
     /**
      * URLbase
      * Base da API
+     *
      * @var string
      */
     public $URLbase = '';
     /**
      * soapDebug
      * Mensagens de debug da comunicação SOAP
+     *
      * @var string
      */
     public $soapDebug = '';
     /**
      * debugMode
      * Ativa ou desativa as mensagens de debug da classe
+     *
      * @var string
      */
     protected $debugMode=2;
     /**
      * classDebug
      * Mensagens de debug da classe
+     *
      * @var string
      */
     public $classDebug = '';
     /**
      * URLxsi
      * Instãncia do WebService
+     *
      * @var string
      */
     private $URLxsi = 'http://www.w3.org/2001/XMLSchema-instance';
     /**
      * URLxsd
      * Instância do WebService
+     *
      * @var string
      */
     private $URLxsd = 'http://www.w3.org/2001/XMLSchema';
     /**
      * URLMDFe
      * Instância do WebService
+     *
      * @var string
      */
     private $URLMDFe = 'http://www.portalfiscal.inf.br/mdfe';
     /**
      * URLdsig
      * Instância do WebService
+     *
      * @var string
      */
     private $URLdsig = 'http://www.w3.org/2000/09/xmldsig#';
     /**
      * URLCanonMeth
      * Instância do WebService
+     *
      * @var string
      */
     private $URLCanonMeth = 'http://www.w3.org/TR/2001/REC-xml-c14n-20010315';
     /**
      * URLSigMeth
      * Instância do WebService
+     *
      * @var string
      */
     private $URLSigMeth = 'http://www.w3.org/2000/09/xmldsig#rsa-sha1';
     /**
      * URLTransfMeth_1
      * Instância do WebService
+     *
      * @var string
      */
     private $URLTransfMeth_1 = 'http://www.w3.org/2000/09/xmldsig#enveloped-signature';
     /**
      * URLTransfMeth_2
      * Instância do WebService
+     *
      * @var string
      */
     private $URLTransfMeth_2 = 'http://www.w3.org/TR/2001/REC-xml-c14n-20010315';
     /**
      * URLDigestMeth
      * Instância do WebService
+     *
      * @var string
      */
     private $URLDigestMeth = 'http://www.w3.org/2000/09/xmldsig#sha1';
     /**
      * URLPortal
      * Instância do WebService
+     *
      * @var string
      */
     private $URLPortal = 'http://www.portalfiscal.inf.br/mdfe';
     /**
      * aliaslist
      * Lista dos aliases para os estados que usam o SEFAZ VIRTUAL
+     *
      * @var array
      */
     private $aliaslist = array(
@@ -511,6 +576,7 @@ class MDFeNFePHP
     /**
      * cUFlist
      * Lista dos numeros identificadores dos estados
+     *
      * @var array
      */
     private $cUFlist = array(
@@ -546,6 +612,7 @@ class MDFeNFePHP
     /**
      * cUFlist
      * Lista dos numeros identificadores dos estados
+     *
      * @var array
      */
     private $UFList = array (
@@ -659,7 +726,7 @@ class MDFeNFePHP
             // Testa a existencia do arquivo de configuração
             if (is_file($this->raizDir . 'config' . DIRECTORY_SEPARATOR . 'config.php')) {
                 // Carrega o arquivo de configuração
-                include($this->raizDir . 'config' . DIRECTORY_SEPARATOR . 'config.php');
+                include $this->raizDir . 'config' . DIRECTORY_SEPARATOR . 'config.php';
                 // Carrega propriedades da classe com os dados de configuração
                 // a sring $sAmb será utilizada para a construção dos diretorios
                 // dos arquivos de operação do sistema
@@ -806,12 +873,13 @@ class MDFeNFePHP
         //estados que participam do horario de verão
         $aUFhv = array('BA','ES','GO','MG','MS','PR','RJ','RS','SP','SC','TO');
         //corrigir o timeZone
-        if ($this->UF == 'AC' ||
-            $this->UF == 'AM' ||
-            $this->UF == 'MT' ||
-            $this->UF == 'MS' ||
-            $this->UF == 'RO' ||
-            $this->UF == 'RR') {
+        if ($this->UF == 'AC'
+            || $this->UF == 'AM'
+            || $this->UF == 'MT'
+            || $this->UF == 'MS'
+            || $this->UF == 'RO'
+            || $this->UF == 'RR'
+        ) {
             $this->timeZone = '-04:00';
         }
         //verificar se estamos no horário de verão *** depende da configuração do servidor ***
@@ -837,10 +905,10 @@ class MDFeNFePHP
      * uso de uma marcação no arquivo tiposBasico_v1.02.xsd
      * onde se le {0 , } substituir por *
      *
-     * @name validXML
-     * @param    string  $docxml  string contendo o arquivo xml a ser validado
-     * @param    string  $xsdfile Path completo para o arquivo xsd
-     * @return   array   ['status','error']
+     * @name   validXML
+     * @param  string $docxml  string contendo o arquivo xml a ser validado
+     * @param  string $xsdfile Path completo para o arquivo xsd
+     * @return array   ['status','error']
      */
     public function validXML($xml = '', $xsdFile = '', &$aError)
     {
@@ -1059,7 +1127,7 @@ class MDFeNFePHP
                 if ($passa == 0) {
                     $msg .= str_replace($en, $pt, $intError->message);
                 
-                  //echo "\n $msg ___ \n";
+                    //echo "\n $msg ___ \n";
                 }
             }
         } else {
@@ -1214,10 +1282,10 @@ class MDFeNFePHP
      * este assinador somente utiliza comandos nativos do PHP para assinar
      * os arquivos XML
      *
-     * @name signXML
-     * @param    string $docxml String contendo o arquivo XML a ser assinado
-     * @param   string $tagid TAG do XML que devera ser assinada
-     * @return    mixed false se houve erro ou string com o XML assinado
+     * @name   signXML
+     * @param  string $docxml String contendo o arquivo XML a ser assinado
+     * @param  string $tagid  TAG do XML que devera ser assinada
+     * @return mixed false se houve erro ou string com o XML assinado
      */
     public function signXML($docxml, $tagid = '')
     {
@@ -1335,11 +1403,12 @@ class MDFeNFePHP
      *        cStat = 108 sistema paralizado momentaneamente, aguardar retorno
      *        cStat = 109 sistema parado sem previsao de retorno, verificar status SCAN
      *                    se SCAN estiver ativado usar, caso contrário aguardar pacientemente.
-     * @name statusServico
-     * @param string $UF sigla da Unidade da Federação
-     * @param integer $tpAmb tipo de ambiente 1-produção e 2-homologação
-     * @param integer 1 usa o __sendSOAP e 2 usa o __sendSOAP2
-     * @return    mixed false ou array conforme exemplo abaixo:
+     *
+     * @name   statusServico
+     * @param  string                                           $UF    sigla da Unidade da Federação
+     * @param  integer                                          $tpAmb tipo de ambiente 1-produção e 2-homologação
+     * @param  integer 1 usa o __sendSOAP e 2 usa o __sendSOAP2
+     * @return mixed false ou array conforme exemplo abaixo:
      * array(10) {
      * ["bStat"]     =>  bool(true),
      * ["cStat"]     =>  string(3)  "107",
@@ -1436,9 +1505,10 @@ class MDFeNFePHP
         /**
      * verifySignatureXML
      * Verifica correção da assinatura no xml
-     * @name verifySignatureXML
-     * @param string $conteudoXML xml a ser verificado
-     * @param string $tag tag que é assinada
+         *
+     * @name   verifySignatureXML
+     * @param  string $conteudoXML xml a ser verificado
+     * @param  string $tag         tag que é assinada
      * @return boolean false se não confere e true se confere
      */
     public function verifySignatureXML($conteudoXML, $tag)
@@ -1451,7 +1521,7 @@ class MDFeNFePHP
         $dom->formatOutput = false;
         $dom->loadXML($conteudoXML);
         $tagBase = $dom->getElementsByTagName($tag)->item(0);
-    // validar digest value
+        // validar digest value
         $tagInf = $tagBase->C14N(false, false, null, null);
         $tagInf = str_replace(' xmlns:ds="http://www.w3.org/2000/09/xmldsig#"', '', $tagInf);
         $digestCalculado = base64_encode(sha1($tagInf, true));
@@ -1461,7 +1531,7 @@ class MDFeNFePHP
             $this->errMsg = "O conteúdo do XML não confere com o Digest Value.\nDigest calculado [{$digestCalculado}], informado no XML [{$digestInformado}].\nO arquivo pode estar corrompido ou ter sido adulterado.";
             return false;
         }
-    // Remontando o certificado
+        // Remontando o certificado
         $X509Certificate = $dom->getElementsByTagName('X509Certificate')->item(0)->nodeValue;
         $X509Certificate =  "-----BEGIN CERTIFICATE-----\n".
         $this->__splitLines($X509Certificate)."\n-----END CERTIFICATE-----\n";
@@ -1471,10 +1541,10 @@ class MDFeNFePHP
             $this->errMsg = 'Ocorreram problemas ao remontar a chave pública. Certificado incorreto ou corrompido!!';
             return false;
         }
-    // remontando conteudo que foi assinado
+        // remontando conteudo que foi assinado
         $conteudoAssinado = $dom->getElementsByTagName('SignedInfo')->item(0)->C14N(false, false, null, null);
         $conteudoAssinado = str_replace(array('xmlns:ds="http://www.w3.org/2000/09/xmldsig#"',' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"'), '', $conteudoAssinado);
-    // validando assinatura do conteudo
+        // validando assinatura do conteudo
         $conteudoAssinadoNoXML = $dom->getElementsByTagName('SignatureValue')->item(0)->nodeValue;
         $conteudoAssinadoNoXML = base64_decode(str_replace(array("\r", "\n"), '', $conteudoAssinadoNoXML));
         $ok = openssl_verify($conteudoAssinado, $conteudoAssinadoNoXML, $pubKey);
@@ -1492,8 +1562,8 @@ class MDFeNFePHP
      * verifyMDFe
      * Verifica a validade da MDFe recebida de terceiros
      *
-     * @name verifyMDFe
-     * @param string $file Path completo para o arquivo xml a ser verificado
+     * @name   verifyMDFe
+     * @param  string $file Path completo para o arquivo xml a ser verificado
      * @return boolean false se nao confere e true se confere
      */
     public function verifyMDFe($file)
@@ -1582,12 +1652,12 @@ class MDFeNFePHP
      * o tamanho do arquivo de envio não ultrapasse 500kBytes
      * Este processo enviará somente até 50 MDFe em cada Lote
      *
-     * @name sendLot
-     * @param    array   $aMDFe conhecimento de transporte em xml uma em cada campo do array unidimensional MAX 50
-     * @param   integer $id     id do lote e um numero que deve ser gerado pelo sistema
+     * @name   sendLot
+     * @param  array   $aMDFe   conhecimento de transporte em xml uma em cada campo do array unidimensional MAX 50
+     * @param  integer $id      id do lote e um numero que deve ser gerado pelo sistema a cada envio mesmo que seja de apenas uma MDFe
      *                          a cada envio mesmo que seja de apenas uma MDFe
-     * @param   integer $modSOAP 1 usa __sendSOP e 2 usa __sendSOAP2
-     * @return    mixed    false ou array ['bStat'=>false,'cStat'=>'','xMotivo'=>'','dhRecbto'=>'','nRec'=>'']
+     * @param  integer $modSOAP 1 usa __sendSOP e 2 usa __sendSOAP2
+     * @return mixed    false ou array ['bStat'=>false,'cStat'=>'','xMotivo'=>'','dhRecbto'=>'','nRec'=>'']
      * @todo
     **/
     public function sendLot($aMDFe, $id, $modSOAP = '2')
@@ -1675,12 +1745,12 @@ class MDFeNFePHP
      * autorização da MDFe $tpAmb = $this->tpAmb;
      * Caso $this->cStat == 105 Tentar novamente mais tarde
      *
-     * @name getProtocol
-     * @param    string   $recibo numero do recibo do envio do lote
-     * @param    string   $chave  numero da chave da MDFe de 44 digitos
-     * @param   string   $tpAmb  numero do ambiente 1 - producao e 2 - homologação
-     * @param   integer   $modSOAP 1 usa __sendSOAP e 2 usa __sendSOAP2
-     * @return    mixed     false ou array
+     * @name   getProtocol
+     * @param  string  $recibo  numero do recibo do envio do lote
+     * @param  string  $chave   numero da chave da MDFe de 44 digitos
+     * @param  string  $tpAmb   numero do ambiente 1 - producao e 2 - homologação
+     * @param  integer $modSOAP 1 usa __sendSOAP e 2 usa __sendSOAP2
+     * @return mixed     false ou array
     **/
     public function getProtocol($recibo = '', $chave = '', $tpAmb = '', $modSOAP = '2')
     {
@@ -1894,10 +1964,10 @@ class MDFeNFePHP
      * Este método adiciona a tag do protocolo o MDFe, preparando a mesma
      * para impressão e envio ao destinatário.
      *
-     * @name addProt
-     * @param   string $ctefile path completo para o arquivo contendo a MDFe
-     * @param   string $protfile path completo para o arquivo contendo o protocolo
-     * @return  mixed false se erro ou string Retorna a MDFe com o protocolo
+     * @name   addProt
+     * @param  string $ctefile  path completo para o arquivo contendo a MDFe
+     * @param  string $protfile path completo para o arquivo contendo o protocolo
+     * @return mixed false se erro ou string Retorna a MDFe com o protocolo
      */
     public function addProt($mdfefile = '', $protfile = '')
     {
@@ -1996,13 +2066,13 @@ class MDFeNFePHP
      *   310620 - Registro de Passagem
      *   510620 - Registro de Passagem BRId
      *
-     * @name manifDest
-     * @param   string $chMDFe Chave da MDFe
-     * @param   string $tpEvento Tipo do evento pode conter 2 ou 6 digitos ex. 00 ou 210200
-     * @param   integer $tpAmb Tipo de ambiente
-     * @param   integer $modSOAP 1 usa __sendSOP e 2 usa __sendSOAP2
-     * @param   mixed  $resp variável passada como referencia e irá conter o retorno da função em um array
-     * @param   string $xJust Justificativa do Cancelamento
+     * @name   manifDest
+     * @param  string  $chMDFe   Chave da MDFe
+     * @param  string  $tpEvento Tipo do evento pode conter 2 ou 6 digitos ex. 00 ou 210200
+     * @param  integer $tpAmb    Tipo de ambiente
+     * @param  integer $modSOAP  1 usa __sendSOP e 2 usa __sendSOAP2
+     * @param  mixed   $resp     variável passada como referencia e irá conter o retorno da função em um array
+     * @param  string  $xJust    Justificativa do Cancelamento
      * @return mixed false
      *
      * TODO : terminar o código não funcional e não testado
@@ -2251,11 +2321,11 @@ class MDFeNFePHP
      * Serviço destinado à consulta de MDFes não encerrados de acordo com o CNPJ fornecido.
      * Processo: síncrono.
      *
-     * @name MDFeConsNaoEnc
-     * @version 1.0
-     * @package NFePHP
-     * @author Pedro A. Saraiva Jr. <pedroantoniosaraivajr at gmail dot com>
-     * @param integer 1 usa o __sendSOAP e 2 usa o __sendSOAP2
+     * @name        MDFeConsNaoEnc
+     * @version     1.0
+     * @package     NFePHP
+     * @author      Pedro A. Saraiva Jr. <pedroantoniosaraivajr at gmail dot com>
+     * @param       integer 1 usa o __sendSOAP e 2 usa o __sendSOAP2
      * @returnmixed false ou array conforme exemplo abaixo:
      * [tpAmb] => 2
      * [verAplic] => RS20150102093257
@@ -2398,8 +2468,9 @@ class MDFeNFePHP
     /**
      * __splitLines
      * Divide a string do certificado publico em linhas com 76 caracteres (padrão original)
-     * @name __splitLines
-     * @param string $cnt certificado
+     *
+     * @name   __splitLines
+     * @param  string $cnt certificado
      * @return string certificado reformatado
      */
     private function __splitLines($cnt)
@@ -2407,7 +2478,7 @@ class MDFeNFePHP
         return rtrim(chunk_split(str_replace(array("\r", "\n"), '', $cnt), 76, "\n"));
     } // Fim __splitLines
 
-   /**
+    /**
     * loadSEFAZ
     * Função para extrair o URL, nome do serviço e versão dos webservices das SEFAZ de
     * todos os Estados da Federação do arquivo urlWebServicesMDFe.xml
@@ -2429,10 +2500,10 @@ class MDFeNFePHP
     *      ....
     * </ws>
     *
-    * @name loadSEFAZ
-    * @param  string $spathXML  Caminho completo para o arquivo xml
-    * @param  string $tpAmb  Pode ser "2-homologacao" ou "1-producao"
-    * @param  string $sUF       Sigla da Unidade da Federação (ex. SP, RS, etc..)
+    * @name   loadSEFAZ
+    * @param  string $spathXML Caminho completo para o arquivo xml
+    * @param  string $tpAmb    Pode ser "2-homologacao" ou "1-producao"
+    * @param  string $sUF      Sigla da Unidade da Federação (ex. SP, RS, etc..)
     * @return mixed             false se houve erro ou array com os dado do URLs das SEFAZ
     */
     public function loadSEFAZ($spathXML, $tpAmb = '', $sUF)
@@ -2505,9 +2576,9 @@ class MDFeNFePHP
      *   $this->nameCert
      *   $this->passKey
      *
-     * @name __loadCerts
-     * @param   none
-     * @return    boolean true se o certificado foi carregado e false se nao
+     * @name   __loadCerts
+     * @param  none
+     * @return boolean true se o certificado foi carregado e false se nao
      **/
     protected function __loadCerts()
     {
@@ -2597,7 +2668,7 @@ class MDFeNFePHP
     } //Fim loadCerts
 
 
-   /**
+    /**
     * __validCerts
     * Validaçao do cerificado digital, além de indicar
     * a validade, este metodo carrega a propriedade
@@ -2606,9 +2677,9 @@ class MDFeNFePHP
     * esta informacao pode ser utilizada para a gestao dos
     * certificados de forma a garantir que sempre estejam validos
     *
-    * @name __validCerts
-    * @param    string  $cert Certificado digital no formato pem
-    * @return    array ['status'=>true,'meses'=>8,'dias'=>245]
+    * @name   __validCerts
+    * @param  string $cert Certificado digital no formato pem
+    * @return array ['status'=>true,'meses'=>8,'dias'=>245]
     */
     protected function __validCerts($cert)
     {
@@ -2660,10 +2731,10 @@ class MDFeNFePHP
      * Retira as chaves de inicio e fim do certificado digital
      * para inclusão do mesmo na tag assinatura do xml
      *
-     * @name __cleanCerts
-     * @param    $certFile
-     * @return   string contendo a chave digital limpa
-     * @access   private
+     * @name   __cleanCerts
+     * @param  $certFile
+     * @return string contendo a chave digital limpa
+     * @access private
      **/
     protected function __cleanCerts($certFile)
     {
@@ -2689,9 +2760,10 @@ class MDFeNFePHP
      * listDir
      * Método para obter todo o conteúdo de um diretorio, e
      * que atendam ao critério indicado.
-     * @param string $dir Diretorio a ser pesquisado
-     * @param string $fileMatch Critério de seleção pode ser usados coringas como *-mdfe.xml
-     * @param boolean $retpath se true retorna o path completo dos arquivos se false so retorna o nome dos arquivos
+     *
+     * @param  string  $dir       Diretorio a ser pesquisado
+     * @param  string  $fileMatch Critério de seleção pode ser usados coringas como *-mdfe.xml
+     * @param  boolean $retpath   se true retorna o path completo dos arquivos se false so retorna o nome dos arquivos
      * @return mixed Matriz com os nome dos arquivos que atendem ao critério estabelecido ou false
      */
     public function listDir($dir, $fileMatch, $retpath = false)
@@ -2749,14 +2821,14 @@ class MDFeNFePHP
      * usando as chaves publica e privada parametrizadas na contrução da classe.
      * Conforme Manual de Integração Versão 4.0.1
      *
-     * @name __sendSOAP
-     * @param string $urlsefaz
-     * @param string $namespace
-     * @param string $cabecalho
-     * @param string $dados
-     * @param string $metodo
-     * @param numeric $ambiente  tipo de ambiente 1 - produção e 2 - homologação
-     * @param string $UF unidade da federação, necessário para diferenciar AM, MT e PR
+     * @name   __sendSOAP
+     * @param  string  $urlsefaz
+     * @param  string  $namespace
+     * @param  string  $cabecalho
+     * @param  string  $dados
+     * @param  string  $metodo
+     * @param  numeric $ambiente  tipo de ambiente 1 - produção e 2 - homologação
+     * @param  string  $UF        unidade da federação, necessário para diferenciar AM, MT e PR
      * @return mixed false se houve falha ou o retorno em xml do SEFAZ
      */
     protected function __sendSOAP($urlsefaz, $namespace, $cabecalho, $dados, $metodo, $ambiente, $UF = '')
@@ -2799,7 +2871,7 @@ class MDFeNFePHP
         if ($UF=='AM' || $UF=='MT' || $UF=='PR') {
             $urlsefaz = "$this->URLbase/wsdl/2.00/$ambiente/$UF$usef";
         }
-       if ($this->enableSVAN) {
+        if ($this->enableSVAN) {
             //se for SVAN montar o URL baseado no metodo e ambiente
             $urlsefaz = "$this->URLbase/wsdl/2.00/$ambiente/SVAN$usef";
         }
@@ -2853,14 +2925,14 @@ class MDFeNFePHP
      * usando as chaves publica e privada parametrizadas na contrução da classe.
      * Conforme Manual de Integração Versão 4.0.1 Utilizando cURL e não o SOAP nativo
      *
-     * @name __sendSOAP2
-     * @param string $urlsefaz
-     * @param string $namespace
-     * @param string $cabecalho
-     * @param string $dados
-     * @param string $metodo
-     * @param numeric $ambiente
-     * @param string $UF sem uso mantido apenas para compatibilidade com __sendSOAP
+     * @name   __sendSOAP2
+     * @param  string  $urlsefaz
+     * @param  string  $namespace
+     * @param  string  $cabecalho
+     * @param  string  $dados
+     * @param  string  $metodo
+     * @param  numeric $ambiente
+     * @param  string  $UF        sem uso mantido apenas para compatibilidade com __sendSOAP
      * @return mixed false se houve falha ou o retorno em xml do SEFAZ
      */
     protected function __sendSOAP2($urlsefaz, $namespace, $cabecalho, $dados, $metodo, $ambiente, $UF = '')
@@ -3010,7 +3082,7 @@ class MDFeNFePHP
         $txtInfo .= "Upload Content Length=$info[upload_content_length]\n";
         $txtInfo .= "Start Transfer Time=$info[starttransfer_time]\n";
         $txtInfo .= "Redirect Time=$info[redirect_time]\n";
-//        $txtInfo .= "Certinfo=$info[certinfo]\n";
+        //        $txtInfo .= "Certinfo=$info[certinfo]\n";
         $n = strlen($__xml);
         $x = stripos($__xml, "<");
         $xml = substr($__xml, $x, $n-$x);
@@ -3028,15 +3100,15 @@ class MDFeNFePHP
         return $xml;
     } //fim __sendSOAP2
 
-   /**
+    /**
     * __convertTime
     * Converte o campo data time retornado pelo webservice
     * em um timestamp unix
     *
-    * @name __convertTime
-    * @param    string   $DH
-    * @return   timestamp
-    * @access   private
+    * @name   __convertTime
+    * @param  string $DH
+    * @return timestamp
+    * @access private
     **/
     protected function __convertTime($DH)
     {
@@ -3053,8 +3125,8 @@ class MDFeNFePHP
      * __getNumLot
      * Obtêm o numero do último lote de envio
      *
-     * @name __getNumLot
-     * @param none
+     * @name   __getNumLot
+     * @param  none
      * @return numeric Numero do Lote
      */
     protected function __getNumLot()
@@ -3075,8 +3147,8 @@ class MDFeNFePHP
      * __putNumLot
      * Grava o numero do lote de envio usado
      *
-     * @name __putNumLot
-     * @param numeric $num Inteiro com o numero do lote enviado
+     * @name   __putNumLot
+     * @param  numeric $num Inteiro com o numero do lote enviado
      * @return boolean true sucesso ou FALSO erro
      */
     protected function __putNumLot($num)
@@ -3097,9 +3169,9 @@ class MDFeNFePHP
      * __setError
      * Adiciona descrição do erro ao contenedor dos erros
      *
-     * @name __setError
-     * @param   string $msg Descrição do erro
-     * @return  none
+     * @name   __setError
+     * @param  string $msg Descrição do erro
+     * @return none
      */
     private function __setError($msg)
     {
@@ -3116,7 +3188,6 @@ class MDFeNFePHP
  * @version 1.0
  * @package MDFePHP
  * @author  Roberto L. Machado <linux.rlm at gmail dot com>
- *
  */
 if (class_exists("SoapClient")) {
     class NFeSOAP2Client extends SoapClient
@@ -3136,9 +3207,9 @@ if (class_exists("SoapClient")) {
  * Classe complementar
  * necessária para extender a classe base Exception
  * Usada no tratamento de erros da API
+ *
  * @version 1.0.0
  * @package NFePHP
- *
  */
 if (!class_exists('nfephpException')) {
     class nfephpException extends Exception
