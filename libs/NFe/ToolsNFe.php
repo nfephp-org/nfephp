@@ -51,9 +51,13 @@ class ToolsNFe extends BaseTools
      * aLastRetEvent
      * @var array
      */
-    private $aLastRetEvent = array();
+    private $aLastRetEvent = array();      
     
-  
+    /**
+     * Define se salva as mensagens dos eventos em arquivo
+     * @var bool
+     */
+    private $bSalvarMensagensEvento  = true;      
     /**
      * setModelo
      *
@@ -665,7 +669,8 @@ class ToolsNFe extends BaseTools
         $idLote = '',
         &$aRetorno = array(),
         $indSinc = 0,
-        $compactarZip = false
+        $compactarZip = false,
+        $salvarMensagens = true    
     ) {
         $sxml = $aXml;
         if (empty($aXml)) {
@@ -720,14 +725,17 @@ class ToolsNFe extends BaseTools
             $method = $this->urlMethod."Zip";
         }
         //envia a solicitação via SOAP
-        $retorno = $this->oSoap->send($this->urlService, $this->urlNamespace, $this->urlHeader, $body, $method);
-        $lastMsg = $this->oSoap->lastMsg;
+        $retorno = $this->oSoap->send($this->urlService, $this->urlNamespace, $this->urlHeader, $body, $method);        
         $this->soapDebug = $this->oSoap->soapDebug;
         //salva mensagens
-        $filename = "$idLote-enviNFe.xml";
-        $this->zGravaFile('nfe', $tpAmb, $filename, $lastMsg);
-        $filename = "$idLote-retEnviNFe.xml";
-        $this->zGravaFile('nfe', $tpAmb, $filename, $retorno);
+        if($salvarMensagens){
+            $lastMsg = $this->oSoap->lastMsg;
+            $filename = "$idLote-enviNFe.xml";
+            $this->zGravaFile('nfe', $tpAmb, $filename, $lastMsg);
+            $filename = "$idLote-retEnviNFe.xml";
+            $this->zGravaFile('nfe', $tpAmb, $filename, $retorno);
+        }
+        
         //tratar dados de retorno
         $aRetorno = ReturnNFe::readReturnSefaz($servico, $retorno);
         //caso o envio seja recebido com sucesso mover a NFe da pasta
@@ -746,7 +754,7 @@ class ToolsNFe extends BaseTools
      * @throws Exception\RuntimeException
      * @internal function zLoadServico (Common\Base\BaseTools)
      */
-    public function sefazConsultaRecibo($recibo = '', $tpAmb = '2', &$aRetorno = array())
+    public function sefazConsultaRecibo($recibo = '', $tpAmb = '2', &$aRetorno = array(), $saveMensagens = true)
     {
         if ($recibo == '') {
             $msg = "Deve ser informado um recibo.";
@@ -786,14 +794,16 @@ class ToolsNFe extends BaseTools
             $this->urlHeader,
             $body,
             $this->urlMethod
-        );
-        $lastMsg = $this->oSoap->lastMsg;
-        $this->soapDebug = $this->oSoap->soapDebug;
+        );        
+        $this->soapDebug = $this->oSoap->soapDebug;        
         //salva mensagens
-        $filename = "$recibo-consReciNFe.xml";
-        $this->zGravaFile('nfe', $tpAmb, $filename, $lastMsg);
-        $filename = "$recibo-retConsReciNFe.xml";
-        $this->zGravaFile('nfe', $tpAmb, $filename, $retorno);
+        if($saveMensagens){
+            $lastMsg = $this->oSoap->lastMsg;
+            $filename = "$recibo-consReciNFe.xml";
+            $this->zGravaFile('nfe', $tpAmb, $filename, $lastMsg);
+            $filename = "$recibo-retConsReciNFe.xml";
+            $this->zGravaFile('nfe', $tpAmb, $filename, $retorno);
+        }
         //tratar dados de retorno
         $aRetorno = ReturnNFe::readReturnSefaz($servico, $retorno);
         //podem ser retornados nenhum, um ou vários protocolos
@@ -813,7 +823,7 @@ class ToolsNFe extends BaseTools
      * @throws Exception\RuntimeException
      * @internal function zLoadServico (Common\Base\BaseTools)
      */
-    public function sefazConsultaChave($chave = '', $tpAmb = '2', &$aRetorno = array())
+    public function sefazConsultaChave($chave = '', $tpAmb = '2', &$aRetorno = array(),$salvaMensagens = true)
     {
         $chNFe = preg_replace('/[^0-9]/', '', $chave);
         if (strlen($chNFe) != 44) {
@@ -860,10 +870,12 @@ class ToolsNFe extends BaseTools
         $lastMsg = $this->oSoap->lastMsg;
         $this->soapDebug = $this->oSoap->soapDebug;
         //salva mensagens
-        $filename = "$chNFe-consSitNFe.xml";
-        $this->zGravaFile('nfe', $tpAmb, $filename, $lastMsg);
-        $filename = "$chNFe-retConsSitNFe.xml";
-        $this->zGravaFile('nfe', $tpAmb, $filename, $retorno);
+        if($salvaMensagens){
+            $filename = "$chNFe-consSitNFe.xml";
+            $this->zGravaFile('nfe', $tpAmb, $filename, $lastMsg);
+            $filename = "$chNFe-retConsSitNFe.xml";
+            $this->zGravaFile('nfe', $tpAmb, $filename, $retorno);
+        }        
         //tratar dados de retorno
         $aRetorno = ReturnNFe::readReturnSefaz($servico, $retorno);
         return (string) $retorno;
@@ -889,7 +901,8 @@ class ToolsNFe extends BaseTools
         $nFin = 0,
         $xJust = '',
         $tpAmb = '2',
-        &$aRetorno = array()
+        &$aRetorno = array(),
+        $salvarMensagens = true
     ) {
         $xJust = Strings::cleanString($xJust);
         $nSerie = (integer) $nSerie;
@@ -956,16 +969,21 @@ class ToolsNFe extends BaseTools
         $lastMsg = $this->oSoap->lastMsg;
         $this->soapDebug = $this->oSoap->soapDebug;
         //salva mensagens
-        $filename = "$sAno-$this->modelo-$sSerie-".$sInicio."_".$sFinal."-inutNFe.xml";
-        $this->zGravaFile('nfe', $tpAmb, $filename, $lastMsg);
-        $filename = "$sAno-$this->modelo-$sSerie-".$sInicio."_".$sFinal."-retInutNFe.xml";
-        $this->zGravaFile('nfe', $tpAmb, $filename, $retorno);
+        if($salvarMensagens){
+            $filename = "$sAno-$this->modelo-$sSerie-".$sInicio."_".$sFinal."-inutNFe.xml";
+            $this->zGravaFile('nfe', $tpAmb, $filename, $lastMsg);
+            $filename = "$sAno-$this->modelo-$sSerie-".$sInicio."_".$sFinal."-retInutNFe.xml";
+            $this->zGravaFile('nfe', $tpAmb, $filename, $retorno);
+        }
+        
         //tratar dados de retorno
         $aRetorno = ReturnNFe::readReturnSefaz($servico, $retorno);
         if ($aRetorno['cStat'] == '102') {
             $retorno = $this->zAddProtMsg('ProcInutNFe', 'inutNFe', $signedMsg, 'retInutNFe', $retorno);
-            $filename = "$sAno-$this->modelo-$sSerie-".$sInicio."_".$sFinal."-procInutNFe.xml";
-            $this->zGravaFile('nfe', $tpAmb, $filename, $retorno, 'inutilizadas');
+            if($salvarMensagens){
+                $filename = "$sAno-$this->modelo-$sSerie-".$sInicio."_".$sFinal."-procInutNFe.xml";
+                $this->zGravaFile('nfe', $tpAmb, $filename, $retorno, 'inutilizadas');
+            }            
         }
         return (string) $retorno;
     }
@@ -1967,29 +1985,32 @@ class ToolsNFe extends BaseTools
         $lastMsg = $this->oSoap->lastMsg;
         $this->soapDebug = $this->oSoap->soapDebug;
         //salva mensagens
-        $filename = "$chNFe-$aliasEvento-envEvento.xml";
-        $this->zGravaFile('nfe', $tpAmb, $filename, $lastMsg);
-        $filename = "$chNFe-$aliasEvento-retEnvEvento.xml";
-        $this->zGravaFile('nfe', $tpAmb, $filename, $retorno);
         //tratar dados de retorno
         $this->aLastRetEvent = ReturnNFe::readReturnSefaz($servico, $retorno);
-        if ($this->aLastRetEvent['cStat'] == '128') {
-            if ($this->aLastRetEvent['evento'][0]['cStat'] == '135' ||
-                $this->aLastRetEvent['evento'][0]['cStat'] == '136' ||
-                $this->aLastRetEvent['evento'][0]['cStat'] == '155'
-            ) {
-                $pasta = 'eventos'; //default
-                if ($aliasEvento == 'CancNFe') {
-                    $pasta = 'canceladas';
-                    $filename = "$chNFe-$aliasEvento-procEvento.xml";
-                } elseif ($aliasEvento == 'CCe') {
-                    $pasta = 'cartacorrecao';
-                    $filename = "$chNFe-$aliasEvento-$nSeqEvento-procEvento.xml";
+        if($this->getSalvarMensagensEvento()){
+            $filename = "$chNFe-$aliasEvento-envEvento.xml";
+            $this->zGravaFile('nfe', $tpAmb, $filename, $lastMsg);
+            $filename = "$chNFe-$aliasEvento-retEnvEvento.xml";
+            $this->zGravaFile('nfe', $tpAmb, $filename, $retorno);            
+            if ($this->aLastRetEvent['cStat'] == '128') {
+                if ($this->aLastRetEvent['evento'][0]['cStat'] == '135' ||
+                    $this->aLastRetEvent['evento'][0]['cStat'] == '136' ||
+                    $this->aLastRetEvent['evento'][0]['cStat'] == '155'
+                ) {
+                    $pasta = 'eventos'; //default
+                    if ($aliasEvento == 'CancNFe') {
+                        $pasta = 'canceladas';
+                        $filename = "$chNFe-$aliasEvento-procEvento.xml";
+                    } elseif ($aliasEvento == 'CCe') {
+                        $pasta = 'cartacorrecao';
+                        $filename = "$chNFe-$aliasEvento-$nSeqEvento-procEvento.xml";
+                    }
+                    $retorno = $this->zAddProtMsg('procEventoNFe', 'evento', $signedMsg, 'retEvento', $retorno);
+                    $this->zGravaFile('nfe', $tpAmb, $filename, $retorno, $pasta);
                 }
-                $retorno = $this->zAddProtMsg('procEventoNFe', 'evento', $signedMsg, 'retEvento', $retorno);
-                $this->zGravaFile('nfe', $tpAmb, $filename, $retorno, $pasta);
             }
         }
+        
         return (string) $retorno;
     }
     
@@ -2183,4 +2204,24 @@ class ToolsNFe extends BaseTools
         } while ($iCount < strlen($str));
         return $hex;
     }
+    
+    public function getSalvarMensagensEvento()
+    {
+        return $this->bSalvarMensagensEvento;
+    }
+    
+    /**
+     * Se verdade gera os arquivos de logs do envio e resposta da requisição
+     * @param bool $salvarMensagensEvento
+     */
+    public function setSalvarMensagensEvento($salvarMensagensEvento)
+    {
+        $this->bSalvarMensagensEvento = $salvarMensagensEvento;
+    }
+    
+    public function getLastMsg(){
+       return $this->oSoap->lastMsg;
+    }
+
+
 }
