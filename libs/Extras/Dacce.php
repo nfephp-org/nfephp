@@ -21,14 +21,14 @@
  * ou
  * <http://www.fsfla.org/svnwiki/trad/LGPLv3>.
  *
- * @package     NFePHP
- * @name        Dacce.php
- * @version     0.1.4
- * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
- * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
- * @copyright   2009-2012 &copy; NFePHP
- * @link        http://www.nfephp.org/
- * @author      Roberto L. Machado <linux.rlm at gmail dot com>
+ * @package   NFePHP
+ * @name      Dacce.php
+ * @version   0.1.4
+ * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
+ * @license   http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
+ * @copyright 2009-2012 &copy; NFePHP
+ * @link      http://www.nfephp.org/
+ * @author    Roberto L. Machado <linux.rlm at gmail dot com>
  *
  *        CONTRIBUIDORES (por ordem alfabetica):
  *              Fernando Mertins <fernando dot mertins at gmail dot com>
@@ -97,15 +97,15 @@ class Dacce extends CommonNFePHP implements DocumentoNFePHP
     /**
      * __construct
      *
-     * @param string $docXML Arquivo XML (diretório ou string)
+     * @param string $docXML      Arquivo XML (diretório ou string)
      * @param string $sOrientacao (Opcional) Orientação da impressão P-retrato L-Paisagem
-     * @param string $sPapel Tamanho do papel (Ex. A4)
-     * @param string $sPathLogo Caminho para o arquivo do logo
-     * @param string $sDestino Destino do PDF I-browser D-download S-string F-salva
-     * @param array $aEnd array com o endereço do emitente
-     * @param string $sDirPDF Caminho para o diretorio de armazenamento dos arquivos PDF
-     * @param string $fonteDANFE Nome da fonte alternativa do DAnfe
-     * @param number $mododebug 0-Não 1-Sim e 2-nada (2 default)
+     * @param string $sPapel      Tamanho do papel (Ex. A4)
+     * @param string $sPathLogo   Caminho para o arquivo do logo
+     * @param string $sDestino    Destino do PDF I-browser D-download S-string F-salva
+     * @param array  $aEnd        array com o endereço do emitente
+     * @param string $sDirPDF     Caminho para o diretorio de armazenamento dos arquivos PDF
+     * @param string $fonteDANFE  Nome da fonte alternativa do DAnfe
+     * @param number $mododebug   0-Não 1-Sim e 2-nada (2 default)
      */
     public function __construct($docXML = '', $sOrientacao = '', $sPapel = '', $sPathLogo = '', $sDestino = 'I', $aEnd = '', $sDirPDF = '', $fontePDF = '', $mododebug = 0)
     {
@@ -262,9 +262,9 @@ class Dacce extends CommonNFePHP implements DocumentoNFePHP
     /**
      * pHeader
      *
-     * @param number $x
-     * @param number $y
-     * @param number $pag
+     * @param  number $x
+     * @param  number $y
+     * @param  number $pag
      * @return number
      */
     private function pHeader($x, $y, $pag)
@@ -575,9 +575,9 @@ class Dacce extends CommonNFePHP implements DocumentoNFePHP
     /**
      * printDocument
      *
-     * @param string $nome
-     * @param string $destino
-     * @param string $printer
+     * @param  string $nome
+     * @param  string $destino
+     * @param  string $printer
      * @return mixed
      */
     public function printDocument($nome = '', $destino = 'I', $printer = '')
@@ -588,9 +588,9 @@ class Dacce extends CommonNFePHP implements DocumentoNFePHP
     /**
      * printDACCE
      *
-     * @param string $nome
-     * @param string $destino
-     * @param string $printer
+     * @param  string $nome
+     * @param  string $destino
+     * @param  string $printer
      * @return mixed
      */
     public function printDACCE($nome = '', $destino = 'I', $printer = '')

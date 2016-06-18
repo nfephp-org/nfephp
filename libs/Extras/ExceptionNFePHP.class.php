@@ -9,8 +9,7 @@ namespace NFePHP\Extras;
  *
  * @version 1.0.0
  * @package NFePHP
- * @name nfephpException
- *
+ * @name    nfephpException
  */
 
 use Exception;

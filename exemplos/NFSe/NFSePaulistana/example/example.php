@@ -3,7 +3,7 @@
 require __DIR__ . '/../../../vendor/autoload.php';
 
 // Dto que carregará dados LoteRps com RPSs de São Paulo
-$prestador = new \NFSe\Model\Prestador( \NFSe\Model\City::SAO_PAULO );
+$prestador = new \NFSe\Model\Prestador(\NFSe\Model\City::SAO_PAULO);
 $tomador = new \NFSe\Model\Tomador();
 $atividadeMunicipal = new \NFSe\Layouts\NotaPaulistana\Model\AtividadeMunicipal('789567');
 $codigoMunicipio = \NFSe\Model\City::SAO_PAULO;

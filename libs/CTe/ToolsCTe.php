@@ -4,12 +4,13 @@ namespace NFePHP\CTe;
 
 /**
  * Classe principal para a comunicação com a SEFAZ
- * @category   NFePHP
- * @package    NFePHP\CTe\ToolsCTe
- * @copyright  Copyright (c) 2008-2015
- * @license    http://www.gnu.org/licenses/lesser.html LGPL v3
- * @author     Roberto L. Machado <linux.rlm at gmail dot com>
- * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
+ *
+ * @category  NFePHP
+ * @package   NFePHP\CTe\ToolsCTe
+ * @copyright Copyright (c) 2008-2015
+ * @license   http://www.gnu.org/licenses/lesser.html LGPL v3
+ * @author    Roberto L. Machado <linux.rlm at gmail dot com>
+ * @link      http://github.com/nfephp-org/nfephp for the canonical source repository
  */
 
 use NFePHP\Common\Base\BaseTools;
@@ -41,8 +42,9 @@ class ToolsCTe extends BaseTools
     
     /**
      * assina
-     * @param string $xml
-     * @param boolean $saveFile
+     *
+     * @param  string  $xml
+     * @param  boolean $saveFile
      * @return string
      * @throws Exception\RuntimeException
      */

@@ -5,12 +5,12 @@ namespace NFePHP\Extras;
 /**
  * Classe para a impressão em PDF do Docuimento Auxiliar de NFe Consumidor
  *
- * @category   NFePHP
- * @package    NFePHP\NFe\ConvertNFe
- * @copyright  Copyright (c) 2008-2015
- * @license    http://www.gnu.org/licenses/lesser.html LGPL v3
+ * @category  NFePHP
+ * @package   NFePHP\NFe\ConvertNFe
+ * @copyright Copyright (c) 2008-2015
+ * @license   http://www.gnu.org/licenses/lesser.html LGPL v3
  * @author    Roberto Spadim <roberto at spadim dot com dot br>
- * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
+ * @link      http://github.com/nfephp-org/nfephp for the canonical source repository
  *
  * CONTRIBUIDORES (por ordem alfabetica):
  *            Roberto L. Machado <linux dot rlm at gmail dot com>
@@ -67,6 +67,7 @@ class Danfce1 extends CommonNFePHP implements DocumentoNFePHP
     
     /**
      * __contruct
+     *
      * @param string $docXML
      * @param string $sPathLogo
      * @param string $mododebug
@@ -726,11 +727,11 @@ class Danfce1 extends CommonNFePHP implements DocumentoNFePHP
      * Para enviar o pdf diretamente para uma impressora indique o
      * nome da impressora e o destino deve ser 'S'.
      *
-     * @param string $nome Path completo com o nome do arquivo pdf
-     * @param string $destino Direção do envio do PDF
-     * @param string $printer Identificação da impressora no sistema
+     * @param  string $nome    Path completo com o nome do arquivo pdf
+     * @param  string $destino Direção do envio do PDF
+     * @param  string $printer Identificação da impressora no sistema
      * @return string Caso o destino seja S o pdf é retornado como uma string
-     * @todo Rotina de impressão direta do arquivo pdf criado
+     * @todo   Rotina de impressão direta do arquivo pdf criado
      */
     public function printDANFE($nome = '', $destino = 'I', $printer = '')
     {
@@ -746,7 +747,8 @@ class Danfce1 extends CommonNFePHP implements DocumentoNFePHP
     /**
      * str2Hex
      * Converte string para haxadecimal ASCII
-     * @param string $str
+     *
+     * @param  string $str
      * @return string
      */
     protected static function str2Hex($str)
@@ -766,20 +768,20 @@ class Danfce1 extends CommonNFePHP implements DocumentoNFePHP
     protected static function getCardName($tBand)
     {
         switch ($tBand) {
-            case '01':
-                $tBandNome = 'VISA';
-                break;
-            case '02':
-                $tBandNome = 'MASTERCARD';
-                break;
-            case '03':
-                $tBandNome = 'AMERICAM EXPRESS';
-                break;
-            case '04':
-                $tBandNome = 'SOROCRED';
-                break;
-            case '99':
-                $tBandNome = 'OUTROS';
+        case '01':
+            $tBandNome = 'VISA';
+            break;
+        case '02':
+            $tBandNome = 'MASTERCARD';
+            break;
+        case '03':
+            $tBandNome = 'AMERICAM EXPRESS';
+            break;
+        case '04':
+            $tBandNome = 'SOROCRED';
+            break;
+        case '99':
+            $tBandNome = 'OUTROS';
         }
         return $tBandNome;
     }//fim getCardName
@@ -787,35 +789,35 @@ class Danfce1 extends CommonNFePHP implements DocumentoNFePHP
     protected function tipoPag($tPag)
     {
         switch ($tPag) {
-            case '01':
-                $tPagNome = 'Dinheiro';
-                break;
-            case '02':
-                $tPagNome = 'Cheque';
-                break;
-            case '03':
-                $tPagNome = 'Cartão de Crédito';
-                break;
-            case '04':
-                $tPagNome = 'Cartão de Débito';
-                break;
-            case '05':
-                $tPagNome = 'Crédito Loja';
-                break;
-            case '10':
-                $tPagNome = 'Vale Alimentação';
-                break;
-            case '11':
-                $tPagNome = 'Vale Refeição';
-                break;
-            case '12':
-                $tPagNome = 'Vale Presente';
-                break;
-            case '13':
-                $tPagNome = 'Vale Combustível';
-                break;
-            case '99':
-                $tPagNome = 'Outros';
+        case '01':
+            $tPagNome = 'Dinheiro';
+            break;
+        case '02':
+            $tPagNome = 'Cheque';
+            break;
+        case '03':
+            $tPagNome = 'Cartão de Crédito';
+            break;
+        case '04':
+            $tPagNome = 'Cartão de Débito';
+            break;
+        case '05':
+            $tPagNome = 'Crédito Loja';
+            break;
+        case '10':
+            $tPagNome = 'Vale Alimentação';
+            break;
+        case '11':
+            $tPagNome = 'Vale Refeição';
+            break;
+        case '12':
+            $tPagNome = 'Vale Presente';
+            break;
+        case '13':
+            $tPagNome = 'Vale Combustível';
+            break;
+        case '99':
+            $tPagNome = 'Outros';
         }
         return $tPagNome;
     }
@@ -823,7 +825,8 @@ class Danfce1 extends CommonNFePHP implements DocumentoNFePHP
     /**
      * hex2Str
      * Converte hexadecimal ASCII para string
-     * @param string $str
+     *
+     * @param  string $str
      * @return string
      */
     protected static function hex2Str($str)

@@ -6,7 +6,7 @@
 
 error_reporting(E_ALL);
 ini_set('display_errors', 'On');
-include_once '../../bootstrap.php';
+require_once '../../bootstrap.php';
 
 use NFePHP\NFe\ToolsNFe;
 use NFePHP\Extras\Danfe;

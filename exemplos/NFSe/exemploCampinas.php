@@ -7,7 +7,7 @@
  * em 12/12/2014
  */
 
-include('libs/NFe/ToolsNFePHP.class.php');
+require 'libs/NFe/ToolsNFePHP.class.php';
 $tools = new ToolsNFePHP();
 
 
@@ -33,7 +33,7 @@ $body = '<ns1:ReqEnvioLoteRPS xmlns:ns1="http://localhost:8080/WsNFe2/lote" xmln
 
 
 
-	$body .= '
+    $body .= '
 	<Cabecalho>
 		<CodCidade>6291</CodCidade>
 		<CPFCNPJRemetente>'.$CPFCNPJRemetente.'</CPFCNPJRemetente>
@@ -49,56 +49,58 @@ $body = '<ns1:ReqEnvioLoteRPS xmlns:ns1="http://localhost:8080/WsNFe2/lote" xmln
 	</Cabecalho>
 	
 	<Lote Id="lote:1">';
-		
-		/* Dados Tomador Editaveis */
-		$NumeroRPS_ = 1;
-		$CpfCnpjTomador_ = '25475485423';
-		$RazaoSocialTomador = 'RENAN HENRIQUE FERREIRA';
-		$EmailTomador = 'rhfphp@gmail.com';
-		$DDDTomador = '19';
-		$TelefoneTomador = '91240092';
-		$TipoLogradouroTomador = 'R';
-		$LogradouroTomador = 'Luiz Teste,';
-		$NumeroEnderecoTomador = '1000';
-		$TipoBairroTomador = 'BAIRRO';
-		$BairroTomador = 'Castelo';
-		$CidadeTomador = '0007225';
-		$CEPTomador = '13070727';
-		
-		
-		$Tributacao_ = 'H';
-		$CodAtividade_ = '951180000';
-		$AliquotaAtividade = '2.79';
-		/* Fim Dados Tomador Editaveis */
-		
-		
-		/* Montagem de assinatura Não mexer */
-		$CpfCnpjTomador = str_pad($CpfCnpjTomador_, 14, "0", STR_PAD_LEFT);
-		$NumeroRPS = str_pad($NumeroRPS_, 12, "0", STR_PAD_LEFT);
-		$CodAtividade = str_pad($CodAtividade_, 10, "0", STR_PAD_LEFT);
-		$Tributacao = str_pad($Tributacao_, 2, " ", STR_PAD_RIGHT);
-		$InscricaoMunicipalPrestador = str_pad($InscricaoMunicipalPrestador_, 11, "0", STR_PAD_LEFT);
-		$SerieRPS = str_pad('NF', 5, " ", STR_PAD_RIGHT);
-		$DataEmissao = date('Ymd');
-		$SituacaoRPS = 'N';
-		$TipoRecolhimento = 'N';
-		$ValorServicoSubtraindoDeducao = str_pad(str_replace('.', ''￼, $ValorServicoSubtraindoDeducao), 15, "0", STR_PAD_LEFT);
-		$ValorDeducao = str_pad(str_replace('.', ''￼, $ValorDeducao), 15, "0", STR_PAD_LEFT);
-		$assinatura = sha1($InscricaoMunicipalPrestador
-						.$SerieRPS
-						.$NumeroRPS
-						.$DataEmissao
-						.$Tributacao
-						.$SituacaoRPS
-						.$TipoRecolhimento
-						.$ValorServicoSubtraindoDeducao
-						.$ValorDeducao
-						.$CodAtividade
-						.$CpfCnpjTomador);
-		/* Fim Montagem de assinatura Não mexer */
-		
-				
-		$body .= '
+        
+        /* Dados Tomador Editaveis */
+        $NumeroRPS_ = 1;
+        $CpfCnpjTomador_ = '25475485423';
+        $RazaoSocialTomador = 'RENAN HENRIQUE FERREIRA';
+        $EmailTomador = 'rhfphp@gmail.com';
+        $DDDTomador = '19';
+        $TelefoneTomador = '91240092';
+        $TipoLogradouroTomador = 'R';
+        $LogradouroTomador = 'Luiz Teste,';
+        $NumeroEnderecoTomador = '1000';
+        $TipoBairroTomador = 'BAIRRO';
+        $BairroTomador = 'Castelo';
+        $CidadeTomador = '0007225';
+        $CEPTomador = '13070727';
+        
+        
+        $Tributacao_ = 'H';
+        $CodAtividade_ = '951180000';
+        $AliquotaAtividade = '2.79';
+        /* Fim Dados Tomador Editaveis */
+        
+        
+        /* Montagem de assinatura Não mexer */
+        $CpfCnpjTomador = str_pad($CpfCnpjTomador_, 14, "0", STR_PAD_LEFT);
+        $NumeroRPS = str_pad($NumeroRPS_, 12, "0", STR_PAD_LEFT);
+        $CodAtividade = str_pad($CodAtividade_, 10, "0", STR_PAD_LEFT);
+        $Tributacao = str_pad($Tributacao_, 2, " ", STR_PAD_RIGHT);
+        $InscricaoMunicipalPrestador = str_pad($InscricaoMunicipalPrestador_, 11, "0", STR_PAD_LEFT);
+        $SerieRPS = str_pad('NF', 5, " ", STR_PAD_RIGHT);
+        $DataEmissao = date('Ymd');
+        $SituacaoRPS = 'N';
+        $TipoRecolhimento = 'N';
+        $ValorServicoSubtraindoDeducao = str_pad(str_replace('.', ''￼, $ValorServicoSubtraindoDeducao), 15, "0", STR_PAD_LEFT);
+        $ValorDeducao = str_pad(str_replace('.', ''￼, $ValorDeducao), 15, "0", STR_PAD_LEFT);
+        $assinatura = sha1(
+            $InscricaoMunicipalPrestador
+                        .$SerieRPS
+                        .$NumeroRPS
+                        .$DataEmissao
+                        .$Tributacao
+                        .$SituacaoRPS
+                        .$TipoRecolhimento
+                        .$ValorServicoSubtraindoDeducao
+                        .$ValorDeducao
+                        .$CodAtividade
+                        .$CpfCnpjTomador
+        );
+        /* Fim Montagem de assinatura Não mexer */
+        
+                
+        $body .= '
 		<RPS Id="rps:'.$NumeroRPS_.'">
 	
 		<Assinatura>'.$assinatura.'</Assinatura>
@@ -166,10 +168,10 @@ $body = '<ns1:ReqEnvioLoteRPS xmlns:ns1="http://localhost:8080/WsNFe2/lote" xmln
 	';
 
 
-$body .='</ns1:ReqEnvioLoteRPS>';
-$sXmlAssinado = $tools->signXML($body, 'Lote');
+        $body .='</ns1:ReqEnvioLoteRPS>';
+        $sXmlAssinado = $tools->signXML($body, 'Lote');
 
-$client = new SoapClient('http://issdigital.campinas.sp.gov.br/WsNFe2/LoteRps.jws?wsdl'); 
-$result = $client->__soapCall('enviar', array($sXmlAssinado));
+        $client = new SoapClient('http://issdigital.campinas.sp.gov.br/WsNFe2/LoteRps.jws?wsdl'); 
+        $result = $client->__soapCall('enviar', array($sXmlAssinado));
  
-print_r($result);
+        print_r($result);

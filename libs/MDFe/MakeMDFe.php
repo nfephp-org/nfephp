@@ -4,12 +4,13 @@ namespace NFePHP\MDFe;
 
 /**
  * Classe a construção do xml do Manifesto Eletrônico de Documentos Fiscais (MDF-e)
- * @category   NFePHP
- * @package    NFePHP\MDFe\MakeMDFe
- * @copyright  Copyright (c) 2008-2015
- * @license    http://www.gnu.org/licenses/lesser.html LGPL v3
- * @author     Roberto L. Machado <linux.rlm at gmail dot com>
- * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
+ *
+ * @category  NFePHP
+ * @package   NFePHP\MDFe\MakeMDFe
+ * @copyright Copyright (c) 2008-2015
+ * @license   http://www.gnu.org/licenses/lesser.html LGPL v3
+ * @author    Roberto L. Machado <linux.rlm at gmail dot com>
+ * @link      http://github.com/nfephp-org/nfephp for the canonical source repository
  *
  * NOTA: Esta classe foi construida conforme estabelecido no
  * Manual de Orientação do Contribuinte
@@ -27,17 +28,20 @@ class MakeMDFe extends BaseMake
     /**
      * versao
      * numero da versão do xml da MDFe
+     *
      * @var string
      */
     public $versao = '1.00';
     /**
      * mod
      * modelo da MDFe 58
+     *
      * @var integer
      */
     public $mod = '58';
     /**
      * chave da MDFe
+     *
      * @var string
      */
     public $chMDFe = '';
@@ -120,8 +124,9 @@ class MakeMDFe extends BaseMake
      * taginfMDFe
      * Informações da MDFe 1 pai MDFe
      * tag MDFe/infMDFe
-     * @param string $chave
-     * @param string $versao
+     *
+     * @param  string $chave
+     * @param  string $versao
      * @return DOMElement
      */
     public function taginfMDFe($chave = '', $versao = '')
@@ -139,21 +144,21 @@ class MakeMDFe extends BaseMake
      * Informações de identificação da MDFe 4 pai 1
      * tag MDFe/infMDFe/ide
      *
-     * @param string $cUF
-     * @param string $tbAmb
-     * @param string $tpEmit
-     * @param string $mod
-     * @param string $serie
-     * @param string $nMDF
-     * @param string $cMDF
-     * @param string $cDV
-     * @param string $modal
-     * @param string $dhEmi
-     * @param string $tpEmis
-     * @param string $procEmi
-     * @param string $verProc
-     * @param string $ufIni
-     * @param string $ufFim
+     * @param  string $cUF
+     * @param  string $tbAmb
+     * @param  string $tpEmit
+     * @param  string $mod
+     * @param  string $serie
+     * @param  string $nMDF
+     * @param  string $cMDF
+     * @param  string $cDV
+     * @param  string $modal
+     * @param  string $dhEmi
+     * @param  string $tpEmis
+     * @param  string $procEmi
+     * @param  string $verProc
+     * @param  string $ufIni
+     * @param  string $ufFim
      * @return DOMElement
      */
     public function tagide(
@@ -293,8 +298,9 @@ class MakeMDFe extends BaseMake
      * tagInfMunCarrega
      *
      * tag MDFe/infMDFe/ide/infMunCarrega
-     * @param string $cMunCarrega
-     * @param string $xMunCarrega
+     *
+     * @param  string $cMunCarrega
+     * @param  string $xMunCarrega
      * @return DOMElement
      */
     public function tagInfMunCarrega(
@@ -324,7 +330,8 @@ class MakeMDFe extends BaseMake
      * tagInfPercurso
      *
      * tag MDFe/infMDFe/ide/infPercurso
-     * @param string $ufPer
+     *
+     * @param  string $ufPer
      * @return DOMElement
      */
     public function tagInfPercurso($ufPer = '')
@@ -345,15 +352,16 @@ class MakeMDFe extends BaseMake
      * tagemit
      * Identificação do emitente da MDFe [25] pai 1
      * tag MDFe/infMDFe/emit
-     * @param string $cnpj
-     * @param string $cpf
-     * @param string $xNome
-     * @param string $xFant
-     * @param string $numIE
-     * @param string $numIEST
-     * @param string $numIM
-     * @param string $cnae
-     * @param string $crt
+     *
+     * @param  string $cnpj
+     * @param  string $cpf
+     * @param  string $xNome
+     * @param  string $xFant
+     * @param  string $numIE
+     * @param  string $numIEST
+     * @param  string $numIM
+     * @param  string $cnae
+     * @param  string $crt
      * @return DOMElement
      */
     public function tagemit(
@@ -375,16 +383,17 @@ class MakeMDFe extends BaseMake
      * tagenderEmit
      * Endereço do emitente [30] pai [25]
      * tag MDFe/infMDFe/emit/endEmit
-     * @param string $xLgr
-     * @param string $nro
-     * @param string $xCpl
-     * @param string $xBairro
-     * @param string $cMun
-     * @param string $xMun
-     * @param string $cep
-     * @param string $siglaUF
-     * @param string $fone
-     * @param string $email
+     *
+     * @param  string $xLgr
+     * @param  string $nro
+     * @param  string $xCpl
+     * @param  string $xBairro
+     * @param  string $cMun
+     * @param  string $xMun
+     * @param  string $cep
+     * @param  string $siglaUF
+     * @param  string $fone
+     * @param  string $email
      * @return DOMElement
      */
     public function tagenderEmit(
@@ -477,9 +486,10 @@ class MakeMDFe extends BaseMake
     /**
      * tagInfMunDescarga
      * tag MDFe/infMDFe/infDoc/infMunDescarga
-     * @param integer $item
-     * @param string $cMunDescarga
-     * @param string $xMunDescarga
+     *
+     * @param  integer $item
+     * @param  string  $cMunDescarga
+     * @param  string  $xMunDescarga
      * @return DOMElement
      */
     public function tagInfMunDescarga(
@@ -509,9 +519,10 @@ class MakeMDFe extends BaseMake
     /**
      * tagInfCTe
      * tag MDFe/infMDFe/infDoc/infMunDescarga/infCTe
-     * @param integer $nItem
-     * @param string $chCTe
-     * @param string $segCodBarra
+     *
+     * @param  integer $nItem
+     * @param  string  $chCTe
+     * @param  string  $segCodBarra
      * @return DOMElement
      */
     public function tagInfCTe(
@@ -541,12 +552,13 @@ class MakeMDFe extends BaseMake
     /**
      * tagInfCT
      * tag MDFe/infMDFe/infDoc/infMunDescarga/infCT
-     * @param string $nItem
-     * @param string $nCT
-     * @param string $serie
-     * @param string $subser
-     * @param string $dEmi
-     * @param string $vCarga
+     *
+     * @param  string $nItem
+     * @param  string $nCT
+     * @param  string $serie
+     * @param  string $subser
+     * @param  string $dEmi
+     * @param  string $vCarga
      * @return string
      */
     public function tagInfCT(
@@ -600,9 +612,10 @@ class MakeMDFe extends BaseMake
     /**
      * tagInfNFe
      * tag MDFe/infMDFe/infDoc/infMunDescarga/infNFe
-     * @param integer $nItem
-     * @param string $chCTe
-     * @param string $segCodBarra
+     *
+     * @param  integer $nItem
+     * @param  string  $chCTe
+     * @param  string  $segCodBarra
      * @return DOMElement
      */
     public function tagInfNFe(
@@ -632,14 +645,15 @@ class MakeMDFe extends BaseMake
     /**
      * tagInfNFe
      * tag MDFe/infMDFe/infDoc/infMunDescarga/infNF
-     * @param string $nItem
-     * @param string $cnpj
-     * @param string $siglaUF
-     * @param string $nNF
-     * @param string $serie
-     * @param string $dEmi
-     * @param string $vNF
-     * @param string $pin
+     *
+     * @param  string $nItem
+     * @param  string $cnpj
+     * @param  string $siglaUF
+     * @param  string $nNF
+     * @param  string $serie
+     * @param  string $dEmi
+     * @param  string $vNF
+     * @param  string $pin
      * @return DOMElement
      */
     public function tagInfNF(
@@ -709,13 +723,14 @@ class MakeMDFe extends BaseMake
     /**
      * tagTot
      * tag MDFe/infMDFe/tot
-     * @param string $qCTe
-     * @param string $qCT
-     * @param string $qNFe
-     * @param string $qNF
-     * @param string $vCarga
-     * @param string $cUnid
-     * @param string $qCarga
+     *
+     * @param  string $qCTe
+     * @param  string $qCT
+     * @param  string $qNFe
+     * @param  string $qNF
+     * @param  string $vCarga
+     * @param  string $cUnid
+     * @param  string $qCarga
      * @return DOMElement
      */
     public function tagTot(
@@ -784,7 +799,8 @@ class MakeMDFe extends BaseMake
     /**
      * tagLacres
      * tag MDFe/infMDFe/lacres
-     * @param string $nLacre
+     *
+     * @param  string $nLacre
      * @return DOMElement
      */
     public function tagLacres(
@@ -806,8 +822,9 @@ class MakeMDFe extends BaseMake
      * taginfAdic
      * Grupo de Informações Adicionais Z01 pai A01
      * tag MDFe/infMDFe/infAdic (opcional)
-     * @param string $infAdFisco
-     * @param string $infCpl
+     *
+     * @param  string $infAdFisco
+     * @param  string $infCpl
      * @return DOMElement
      */
     public function taginfAdic(
@@ -836,7 +853,8 @@ class MakeMDFe extends BaseMake
     /**
      * tagInfModal
      * tag MDFe/infMDFe/infModal
-     * @param type $versaoModal
+     *
+     * @param  type $versaoModal
      * @return DOMElement
      */
     public function tagInfModal($versaoModal = '')
@@ -856,12 +874,13 @@ class MakeMDFe extends BaseMake
     /**
      * tagAereo
      * tag MDFe/infMDFe/infModal/aereo
-     * @param string $nac
-     * @param string $matr
-     * @param string $nVoo
-     * @param string $cAerEmb
-     * @param string $cAerDes
-     * @param string $dVoo
+     *
+     * @param  string $nac
+     * @param  string $matr
+     * @param  string $nVoo
+     * @param  string $cAerEmb
+     * @param  string $cAerDes
+     * @param  string $dVoo
      * @return DOMElement
      */
     public function tagAereo(
@@ -922,11 +941,12 @@ class MakeMDFe extends BaseMake
     /**
      * tagTrem
      * tag MDFe/infMDFe/infModal/ferrov/trem
-     * @param string $xPref
-     * @param string $dhTrem
-     * @param string $xOri
-     * @param string $xDest
-     * @param string $qVag
+     *
+     * @param  string $xPref
+     * @param  string $dhTrem
+     * @param  string $xOri
+     * @param  string $xDest
+     * @param  string $qVag
      * @return DOMElement
      */
     public function tagTrem(
@@ -979,10 +999,11 @@ class MakeMDFe extends BaseMake
     /**
      * tagVag
      * tag MDFe/infMDFe/infModal/ferrov/trem/vag
-     * @param string $serie
-     * @param string $nVag
-     * @param string $nSeq
-     * @param string $tUtil
+     *
+     * @param  string $serie
+     * @param  string $nVag
+     * @param  string $nSeq
+     * @param  string $tUtil
      * @return DOMElement
      */
     public function tagVag(
@@ -1027,12 +1048,13 @@ class MakeMDFe extends BaseMake
     /**
      * tagAqua
      * tag MDFe/infMDFe/infModal/Aqua
-     * @param string $cnpjAgeNav
-     * @param string $tpEmb
-     * @param string $cEmbar
-     * @param string $nViagem
-     * @param string $cPrtEmb
-     * @param string $cPrtDest
+     *
+     * @param  string $cnpjAgeNav
+     * @param  string $tpEmb
+     * @param  string $cEmbar
+     * @param  string $nViagem
+     * @param  string $cPrtEmb
+     * @param  string $cPrtDest
      * @return DOMElement
      */
     public function tagAqua(
@@ -1093,7 +1115,8 @@ class MakeMDFe extends BaseMake
     /**
      * tagInfTermCarreg
      * tag MDFe/infMDFe/infModal/Aqua/infTermCarreg
-     * @param string $cTermCarreg
+     *
+     * @param  string $cTermCarreg
      * @return DOMElement
      */
     public function tagInfTermCarreg(
@@ -1114,7 +1137,8 @@ class MakeMDFe extends BaseMake
     /**
      * tagInfTermDescarreg
      * tag MDFe/infMDFe/infModal/Aqua/infTermDescarreg
-     * @param string $cTermDescarreg
+     *
+     * @param  string $cTermDescarreg
      * @return DOMElement
      */
     public function tagInfTermDescarreg(
@@ -1135,7 +1159,8 @@ class MakeMDFe extends BaseMake
     /**
      * tagInfEmbComb
      * tag MDFe/infMDFe/infModal/Aqua/infEmbComb
-     * @param string $$cEmbComb
+     *
+     * @param  string $$cEmbComb
      * @return DOMElement
      */
     public function tagInfEmbComb(
@@ -1156,8 +1181,9 @@ class MakeMDFe extends BaseMake
     /**
      * tagRodo
      * tag MDFe/infMDFe/infModal/rodo
-     * @param string $rntrc
-     * @param string $ciot
+     *
+     * @param  string $rntrc
+     * @param  string $ciot
      * @return DOMElement
      */
     public function tagRodo(
@@ -1186,12 +1212,13 @@ class MakeMDFe extends BaseMake
     /**
      * tagVeicPrincipal
      * tag MDFe/infMDFe/infModal/rodo/veicPrincipal
-     * @param string $cInt
-     * @param string $placa
-     * @param string $tara
-     * @param string $capKG
-     * @param string $capM3
-     * @param string $propRNTRC
+     *
+     * @param  string $cInt
+     * @param  string $placa
+     * @param  string $tara
+     * @param  string $capKG
+     * @param  string $capM3
+     * @param  string $propRNTRC
      * @return DOMElement
      */
     public function tagVeicPrincipal(
@@ -1210,8 +1237,9 @@ class MakeMDFe extends BaseMake
     /**
      * tagCondutor
      * tag MDFe/infMDFe/infModal/rodo/veicPrincipal/condutor
-     * @param string $xNome
-     * @param string $cpf
+     *
+     * @param  string $xNome
+     * @param  string $cpf
      * @return DOMElement
      */
     public function tagCondutor(
@@ -1240,12 +1268,13 @@ class MakeMDFe extends BaseMake
     /**
      * tagVeicReboque
      * tag MDFe/infMDFe/infModal/rodo/reboque
-     * @param type $cInt
-     * @param type $placa
-     * @param type $tara
-     * @param type $capKG
-     * @param type $capM3
-     * @param type $propRNTRC
+     *
+     * @param  type $cInt
+     * @param  type $placa
+     * @param  type $tara
+     * @param  type $capKG
+     * @param  type $capM3
+     * @param  type $propRNTRC
      * @return DOMElement
      */
     public function tagVeicReboque(
@@ -1264,9 +1293,10 @@ class MakeMDFe extends BaseMake
     /**
      * tagValePed
      * tag MDFe/infMDFe/infModal/rodo/valePed
-     * @param type $cnpjForn
-     * @param type $cnpjPg
-     * @param type $nCompra
+     *
+     * @param  type $cnpjForn
+     * @param  type $cnpjPg
+     * @param  type $nCompra
      * @return DOMElement
      */
     public function tagValePed(
@@ -1302,12 +1332,13 @@ class MakeMDFe extends BaseMake
     
     /**
      * zTagVeiculo
-     * @param string $cInt
-     * @param string $placa
-     * @param string $tara
-     * @param string $capKG
-     * @param string $capM3
-     * @param string $propRNTRC
+     *
+     * @param  string $cInt
+     * @param  string $placa
+     * @param  string $tara
+     * @param  string $capKG
+     * @param  string $capM3
+     * @param  string $propRNTRC
      * @return DOMElement
      */
     protected function zTagVeiculo(
@@ -1374,6 +1405,7 @@ class MakeMDFe extends BaseMake
      * Tag raiz da MDFe
      * tag MDFe DOMNode
      * Função chamada pelo método [ monta ]
+     *
      * @return DOMElement
      */
     protected function zTagMDFe()
@@ -1489,6 +1521,7 @@ class MakeMDFe extends BaseMake
      * Remonta a chave da NFe de 44 digitos com base em seus dados
      * Isso é útil no caso da chave informada estar errada
      * se a chave estiver errada a mesma é substituida
+     *
      * @param object $dom
      */
     private function zTestaChaveXML($dom)
