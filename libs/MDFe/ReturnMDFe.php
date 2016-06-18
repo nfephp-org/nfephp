@@ -32,23 +32,23 @@ class ReturnMDFe
         $dom->loadXMLString($xmlResp);
         //para cada $method tem um formato de retorno especifico
         switch ($method) {
-        case 'MDFeRecepcao':
-            return self::zReadRecepcaoLote($dom);
+            case 'MDFeRecepcao':
+                return self::zReadRecepcaoLote($dom);
                 break;
-        case 'MDFeRetRecepcao':
-            return self::zReadRetRecepcao($dom);
+            case 'MDFeRetRecepcao':
+                return self::zReadRetRecepcao($dom);
                 break;
-        case 'MDFeConsultaSituacao':
-            return self::zReadConsultaMDF($dom);
+            case 'MDFeConsultaSituacao':
+                return self::zReadConsultaMDF($dom);
                 break;
-        case 'MDFeStatusServico':
-            return self::zReadStatusServico($dom);
+            case 'MDFeStatusServico':
+                return self::zReadStatusServico($dom);
                 break;
-        case 'MDFeRecepcaoEvento':
-            return self::zReadRecepcaoEvento($dom);
+            case 'MDFeRecepcaoEvento':
+                return self::zReadRecepcaoEvento($dom);
                 break;
-        case 'MDFeConsNaoEnc':
-            return self::zReadConsNaoEnc($dom);
+            case 'MDFeConsNaoEnc':
+                return self::zReadConsNaoEnc($dom);
                 break;
         }
         return array();

@@ -34,27 +34,27 @@ class ReturnCTe
         $dom->loadXML($xmlResp);
         //para cada $method tem um formato de retorno especifico
         switch ($method) {
-        case 'cteRecepcaoLote':
-            return self::zReadRecepcaoLote($dom);
+            case 'cteRecepcaoLote':
+                return self::zReadRecepcaoLote($dom);
                 break;
-        case 'cteRetRecepcao':
-            return self::zReadRetRecepcao($dom);
+            case 'cteRetRecepcao':
+                return self::zReadRetRecepcao($dom);
                 break;
-        case 'consultaCadastro2':
-            return self::zReadConsultaCadastro2($dom);
+            case 'consultaCadastro2':
+                return self::zReadConsultaCadastro2($dom);
                 break;
-        case 'cteConsultaCT':
-            return self::zReadConsultaCT($dom);
+            case 'cteConsultaCT':
+                return self::zReadConsultaCT($dom);
                 break;
-        case 'cteInutilizacaoCT':
-            return self::zReadInutilizacaoCT($dom);
+            case 'cteInutilizacaoCT':
+                return self::zReadInutilizacaoCT($dom);
                 break;
-        case 'cteStatusServicoCT':
-            //NOTA: irá ser desativado
-            return self::zReadStatusServico($dom);
+            case 'cteStatusServicoCT':
+                //NOTA: irá ser desativado
+                return self::zReadStatusServico($dom);
                 break;
-        case 'cteRecepcaoEvento':
-            return self::zReadRecepcaoEvento($dom);
+            case 'cteRecepcaoEvento':
+                return self::zReadRecepcaoEvento($dom);
                 break;
         }
         return array();

@@ -178,14 +178,14 @@ class FilesZip
         $data = "";
         if ($bodylen > 0) {
             switch ($method) {
-            case 8:
-                // Por hora somente é suportado esse metodo de compressão
-                $data = gzinflate($body, null);
-                break;
-            default:
-                throw new Exception\RuntimeException(
-                    "Método de compressão desconhecido (não suportado)."
-                );
+                case 8:
+                    // Por hora somente é suportado esse metodo de compressão
+                    $data = gzinflate($body, null);
+                    break;
+                default:
+                    throw new Exception\RuntimeException(
+                        "Método de compressão desconhecido (não suportado)."
+                    );
             }
         }
         // conteudo zero-byte é permitido

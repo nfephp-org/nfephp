@@ -64,15 +64,15 @@ class Identify
         $dhEmi = '';
         if ($schId == 'nfe' || $schId == 'cte' || $schId == 'mdfe') {
             switch ($schId) {
-            case 'nfe':
-                $tag = 'infNFe';
-                break;
-            case 'cte':
-                $tag = 'infCTe';
-                break;
-            case 'mdfe':
-                $tag = 'infMDFe';
-                break;
+                case 'nfe':
+                    $tag = 'infNFe';
+                    break;
+                case 'cte':
+                    $tag = 'infCTe';
+                    break;
+                case 'mdfe':
+                    $tag = 'infMDFe';
+                    break;
             }
             $chave = $dom->getChave($tag);
             $tpAmb = $dom->getNodeValue('tpAmb');

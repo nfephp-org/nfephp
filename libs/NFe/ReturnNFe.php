@@ -34,37 +34,37 @@ class ReturnNFe
         }
         //para cada $method tem um formato de retorno especifico
         switch ($method) {
-        case 'NfeAutorizacao':
-            return self::zReadAutorizacaoLote($dom);
+            case 'NfeAutorizacao':
+                return self::zReadAutorizacaoLote($dom);
                 break;
-        case 'NfeRetAutorizacao':
-            return self::zReadRetAutorizacaoLote($dom);
+            case 'NfeRetAutorizacao':
+                return self::zReadRetAutorizacaoLote($dom);
                 break;
-        case 'NfeConsultaCadastro':
-            return self::zReadConsultaCadastro2($dom);
+            case 'NfeConsultaCadastro':
+                return self::zReadConsultaCadastro2($dom);
                 break;
-        case 'NfeConsultaProtocolo':
-            return self::zReadConsultaNF2($dom);
+            case 'NfeConsultaProtocolo':
+                return self::zReadConsultaNF2($dom);
                 break;
-        case 'NfeInutilizacao':
-            return self::zReadInutilizacaoNF2($dom);
+            case 'NfeInutilizacao':
+                return self::zReadInutilizacaoNF2($dom);
                 break;
-        case 'NfeStatusServico':
-            //NOTA: irá ser desativado
-            return self::zReadStatusServico($dom);
+            case 'NfeStatusServico':
+                //NOTA: irá ser desativado
+                return self::zReadStatusServico($dom);
                 break;
-        case 'RecepcaoEPEC':
-        case 'RecepcaoEvento':
-            return self::zReadRecepcaoEvento($dom);
+            case 'RecepcaoEPEC':
+            case 'RecepcaoEvento':
+                return self::zReadRecepcaoEvento($dom);
                 break;
-        case 'NfeDistribuicaoDFe':
-            return self::zReadDistDFeInteresse($dom);
+            case 'NfeDistribuicaoDFe':
+                return self::zReadDistDFeInteresse($dom);
                 break;
-        case 'NfeDownloadNF':
-            return self::zReadDownloadNF($dom);
+            case 'NfeDownloadNF':
+                return self::zReadDownloadNF($dom);
                 break;
-        case 'CscNFCe':
-            return self::zReadCscNFCe($dom);
+            case 'CscNFCe':
+                return self::zReadCscNFCe($dom);
                 break;
         }
         return array();

@@ -56,14 +56,14 @@ class ToolsNFe extends BaseTools
      *
      * @var array
      */
-    private $aLastRetEvent = array();      
+    private $aLastRetEvent = array();
     
     /**
      * Define se salva as mensagens dos eventos em arquivo
      *
      * @var bool
      */
-    private $bSalvarMensagensEvento  = true;      
+    private $bSalvarMensagensEvento  = true;
     /**
      * setModelo
      *
@@ -480,8 +480,8 @@ class ToolsNFe extends BaseTools
             //tpEvento = 110111 ==> Cancelamento
             //chave do evento == chave da NFe
             //protocolo do evneto ==  protocolo da NFe
-            if (($cStat == '135' || $cStat == '136' || $cStat == '155') 
-                && $tpEvento == '110111' 
+            if (($cStat == '135' || $cStat == '136' || $cStat == '155')
+                && $tpEvento == '110111'
                 && $chaveEvento == $chaveNFe
             ) {
                 $proNFe->getElementsByTagName('cStat')->item(0)->nodeValue = '101';
@@ -688,7 +688,7 @@ class ToolsNFe extends BaseTools
         &$aRetorno = array(),
         $indSinc = 0,
         $compactarZip = false,
-        $salvarMensagens = true    
+        $salvarMensagens = true
     ) {
         $sxml = $aXml;
         if (empty($aXml)) {
@@ -743,10 +743,10 @@ class ToolsNFe extends BaseTools
             $method = $this->urlMethod."Zip";
         }
         //envia a solicitação via SOAP
-        $retorno = $this->oSoap->send($this->urlService, $this->urlNamespace, $this->urlHeader, $body, $method);        
+        $retorno = $this->oSoap->send($this->urlService, $this->urlNamespace, $this->urlHeader, $body, $method);
         $this->soapDebug = $this->oSoap->soapDebug;
         //salva mensagens
-        if($salvarMensagens) {
+        if ($salvarMensagens) {
             $lastMsg = $this->oSoap->lastMsg;
             $filename = "$idLote-enviNFe.xml";
             $this->zGravaFile('nfe', $tpAmb, $filename, $lastMsg);
@@ -813,10 +813,10 @@ class ToolsNFe extends BaseTools
             $this->urlHeader,
             $body,
             $this->urlMethod
-        );        
-        $this->soapDebug = $this->oSoap->soapDebug;        
+        );
+        $this->soapDebug = $this->oSoap->soapDebug;
         //salva mensagens
-        if($saveMensagens) {
+        if ($saveMensagens) {
             $lastMsg = $this->oSoap->lastMsg;
             $filename = "$recibo-consReciNFe.xml";
             $this->zGravaFile('nfe', $tpAmb, $filename, $lastMsg);
@@ -843,7 +843,7 @@ class ToolsNFe extends BaseTools
      * @throws   Exception\RuntimeException
      * @internal function zLoadServico (Common\Base\BaseTools)
      */
-    public function sefazConsultaChave($chave = '', $tpAmb = '2', &$aRetorno = array(),$salvaMensagens = true)
+    public function sefazConsultaChave($chave = '', $tpAmb = '2', &$aRetorno = array(), $salvaMensagens = true)
     {
         $chNFe = preg_replace('/[^0-9]/', '', $chave);
         if (strlen($chNFe) != 44) {
@@ -890,12 +890,12 @@ class ToolsNFe extends BaseTools
         $lastMsg = $this->oSoap->lastMsg;
         $this->soapDebug = $this->oSoap->soapDebug;
         //salva mensagens
-        if($salvaMensagens) {
+        if ($salvaMensagens) {
             $filename = "$chNFe-consSitNFe.xml";
             $this->zGravaFile('nfe', $tpAmb, $filename, $lastMsg);
             $filename = "$chNFe-retConsSitNFe.xml";
             $this->zGravaFile('nfe', $tpAmb, $filename, $retorno);
-        }        
+        }
         //tratar dados de retorno
         $aRetorno = ReturnNFe::readReturnSefaz($servico, $retorno);
         return (string) $retorno;
@@ -990,7 +990,7 @@ class ToolsNFe extends BaseTools
         $lastMsg = $this->oSoap->lastMsg;
         $this->soapDebug = $this->oSoap->soapDebug;
         //salva mensagens
-        if($salvarMensagens) {
+        if ($salvarMensagens) {
             $filename = "$sAno-$this->modelo-$sSerie-".$sInicio."_".$sFinal."-inutNFe.xml";
             $this->zGravaFile('nfe', $tpAmb, $filename, $lastMsg);
             $filename = "$sAno-$this->modelo-$sSerie-".$sInicio."_".$sFinal."-retInutNFe.xml";
@@ -1001,10 +1001,10 @@ class ToolsNFe extends BaseTools
         $aRetorno = ReturnNFe::readReturnSefaz($servico, $retorno);
         if ($aRetorno['cStat'] == '102') {
             $retorno = $this->zAddProtMsg('ProcInutNFe', 'inutNFe', $signedMsg, 'retInutNFe', $retorno);
-            if($salvarMensagens) {
+            if ($salvarMensagens) {
                 $filename = "$sAno-$this->modelo-$sSerie-".$sInicio."_".$sFinal."-procInutNFe.xml";
                 $this->zGravaFile('nfe', $tpAmb, $filename, $retorno, 'inutilizadas');
-            }            
+            }
         }
         return (string) $retorno;
     }
@@ -1703,27 +1703,27 @@ class ToolsNFe extends BaseTools
         $tpEvento = preg_replace('/[^0-9]/', '', $tpEvento);
         $tagAdic = '';
         switch ($tpEvento) {
-        case '210200':
-            //210200 – Confirmação da Operação
-            break;
-        case '210210':
-            //210210 – Ciência da Operação
-            break;
-        case '210220':
-            //210220 – Desconhecimento da Operação
-            break;
-        case '210240':
-            //210240 – Operação não Realizada
-            if (strlen($xJust) < 15 ||  strlen($xJust) > 255) {
-                $msg = "É obrigatória uma justificativa com 15 até 255 caracteres!!";
+            case '210200':
+                //210200 – Confirmação da Operação
+                break;
+            case '210210':
+                //210210 – Ciência da Operação
+                break;
+            case '210220':
+                //210220 – Desconhecimento da Operação
+                break;
+            case '210240':
+                //210240 – Operação não Realizada
+                if (strlen($xJust) < 15 ||  strlen($xJust) > 255) {
+                    $msg = "É obrigatória uma justificativa com 15 até 255 caracteres!!";
+                    throw new Exception\InvalidArgumentException($msg);
+                }
+                $xJust = Strings::cleanString($xJust);
+                $tagAdic = "<xJust>$xJust</xJust>";
+                break;
+            default:
+                $msg = "Esse código de tipo de evento não consta!! $tpEvento";
                 throw new Exception\InvalidArgumentException($msg);
-            }
-            $xJust = Strings::cleanString($xJust);
-            $tagAdic = "<xJust>$xJust</xJust>";
-            break;
-        default:
-            $msg = "Esse código de tipo de evento não consta!! $tpEvento";
-            throw new Exception\InvalidArgumentException($msg);
         }
         $siglaUF = 'AN';
         $nSeqEvento = '1';
@@ -2024,14 +2024,14 @@ class ToolsNFe extends BaseTools
         //salva mensagens
         //tratar dados de retorno
         $this->aLastRetEvent = ReturnNFe::readReturnSefaz($servico, $retorno);
-        if($this->getSalvarMensagensEvento()) {
+        if ($this->getSalvarMensagensEvento()) {
             $filename = "$chNFe-$aliasEvento-envEvento.xml";
             $this->zGravaFile('nfe', $tpAmb, $filename, $lastMsg);
             $filename = "$chNFe-$aliasEvento-retEnvEvento.xml";
-            $this->zGravaFile('nfe', $tpAmb, $filename, $retorno);            
+            $this->zGravaFile('nfe', $tpAmb, $filename, $retorno);
             if ($this->aLastRetEvent['cStat'] == '128') {
-                if ($this->aLastRetEvent['evento'][0]['cStat'] == '135' 
-                    || $this->aLastRetEvent['evento'][0]['cStat'] == '136' 
+                if ($this->aLastRetEvent['evento'][0]['cStat'] == '135'
+                    || $this->aLastRetEvent['evento'][0]['cStat'] == '136'
                     || $this->aLastRetEvent['evento'][0]['cStat'] == '155'
                 ) {
                     $pasta = 'eventos'; //default
@@ -2062,60 +2062,60 @@ class ToolsNFe extends BaseTools
     {
         //montagem dos dados da mensagem SOAP
         switch ($tpEvento) {
-        case '110110':
-            //CCe
-            $aliasEvento = 'CCe';
-            $descEvento = 'Carta de Correcao';
-            break;
-        case '110111':
-            //cancelamento
-            $aliasEvento = 'CancNFe';
-            $descEvento = 'Cancelamento';
-            break;
-        case '110140':
-            //EPEC
-            //emissão em contingência EPEC
-            $aliasEvento = 'EPEC';
-            $descEvento = 'EPEC';
-            break;
-        case '111500':
-        case '111501':
-            //EPP
-            //Pedido de prorrogação
-            $aliasEvento = 'EPP';
-            $descEvento = 'Pedido de Prorrogacao';
-            break;
-        case '111502':
-        case '111503':
-            //ECPP
-            //Cancelamento do Pedido de prorrogação
-            $aliasEvento = 'ECPP';
-            $descEvento = 'Cancelamento de Pedido de Prorrogacao';
-            break;
-        case '210200':
-            //Confirmacao da Operacao
-            $aliasEvento = 'EvConfirma';
-            $descEvento = 'Confirmacao da Operacao';
-            break;
-        case '210210':
-            //Ciencia da Operacao
-            $aliasEvento = 'EvCiencia';
-            $descEvento = 'Ciencia da Operacao';
-            break;
-        case '210220':
-            //Desconhecimento da Operacao
-            $aliasEvento = 'EvDesconh';
-            $descEvento = 'Desconhecimento da Operacao';
-            break;
-        case '210240':
-            //Operacao não Realizada
-            $aliasEvento = 'EvNaoRealizada';
-            $descEvento = 'Operacao nao Realizada';
-            break;
-        default:
-            $msg = "O código do tipo de evento informado não corresponde a "
-            . "nenhum evento estabelecido.";
-            throw new Exception\RuntimeException($msg);
+            case '110110':
+                //CCe
+                $aliasEvento = 'CCe';
+                $descEvento = 'Carta de Correcao';
+                break;
+            case '110111':
+                //cancelamento
+                $aliasEvento = 'CancNFe';
+                $descEvento = 'Cancelamento';
+                break;
+            case '110140':
+                //EPEC
+                //emissão em contingência EPEC
+                $aliasEvento = 'EPEC';
+                $descEvento = 'EPEC';
+                break;
+            case '111500':
+            case '111501':
+                //EPP
+                //Pedido de prorrogação
+                $aliasEvento = 'EPP';
+                $descEvento = 'Pedido de Prorrogacao';
+                break;
+            case '111502':
+            case '111503':
+                //ECPP
+                //Cancelamento do Pedido de prorrogação
+                $aliasEvento = 'ECPP';
+                $descEvento = 'Cancelamento de Pedido de Prorrogacao';
+                break;
+            case '210200':
+                //Confirmacao da Operacao
+                $aliasEvento = 'EvConfirma';
+                $descEvento = 'Confirmacao da Operacao';
+                break;
+            case '210210':
+                //Ciencia da Operacao
+                $aliasEvento = 'EvCiencia';
+                $descEvento = 'Ciencia da Operacao';
+                break;
+            case '210220':
+                //Desconhecimento da Operacao
+                $aliasEvento = 'EvDesconh';
+                $descEvento = 'Desconhecimento da Operacao';
+                break;
+            case '210240':
+                //Operacao não Realizada
+                $aliasEvento = 'EvNaoRealizada';
+                $descEvento = 'Operacao nao Realizada';
+                break;
+            default:
+                $msg = "O código do tipo de evento informado não corresponde a "
+                . "nenhum evento estabelecido.";
+                throw new Exception\RuntimeException($msg);
         }
         return array('alias' => $aliasEvento, 'desc' => $descEvento);
     }
@@ -2266,6 +2266,4 @@ class ToolsNFe extends BaseTools
     {
         return $this->oSoap->lastMsg;
     }
-
-
 }

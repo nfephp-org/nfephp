@@ -115,85 +115,85 @@ class Asn extends Base
         while (strlen($data) > 1) {
             $class = ord($data[0]);
             switch ($class) {
-            case 0x30:
-                // Sequence
-                self::parseSequence($data, $result);
-                break;
-            case 0x31:
-                self::parseSetOf($data, $result);
-                break;
-            case 0x01:
-                // Boolean type
-                self::parseBooleanType($data, $result);
-                break;
-            case 0x02:
-                // Integer type
-                self::parseIntegerType($data, $result);
-                break;
-            case 0x03:
-                self::parseBitString($data, $result);
-                break;
-            case 0x04:
-                self::parseOctetSting($data, $result, $contextEspecific);
-                break;
-            case 0x0C:
-                self::parseUtf8String($data, $result, $contextEspecific);
-                break;
-            case 0x05:
-                // Null type
-                $data = substr($data, 2);
-                $result[] = array('null', null);
-                break;
-            case 0x06:
-                self::parseOIDtype($data, $result);
-                break;
-            case 0x16:
-                self::parseIA5String($data, $result);
-                break;
-            case 0x12:
-            case 0x14:
-            case 0x15:
-            case 0x81:
-                self::parseString($data, $result);
-                break;
-            case 0x80:
-                // Character string type
-                self::parseCharString($data, $result);
-                break;
-            case 0x13:
-            case 0x86:
-                // Printable string type
-                self::parsePrintableString($data, $result);
-                break;
-            case 0x17:
-                // Time types
-                self::parseTimesType($data, $result);
-                break;
-            case 0x82:
-                // X509v3 extensions?
-                self::parseExtensions($data, $result, 'extension : X509v3 extensions');
-                break;
-            case 0xa0:
-                // Extensions Context Especific
-                self::parseExtensions($data, $result, 'Context Especific');
-                break;
-            case 0xa3:
-                // Extensions
-                self::parseExtensions($data, $result, 'extension (0xA3)');
-                break;
-            case 0xe6:
-                // Hex Extensions extension (0xE6)
-                self::parseHexExtensions($data, $result, 'extension (0xE6)');
-                break;
-            case 0xa1:
-                // Hex Extensions extension (0xA1)
-                self::parseHexExtensions($data, $result, 'extension (0xA1)');
-                break;
-            default:
-                // Unknown
-                $result[] = 'UNKNOWN' .  $data;
-                $data = '';
-                break;
+                case 0x30:
+                    // Sequence
+                    self::parseSequence($data, $result);
+                    break;
+                case 0x31:
+                    self::parseSetOf($data, $result);
+                    break;
+                case 0x01:
+                    // Boolean type
+                    self::parseBooleanType($data, $result);
+                    break;
+                case 0x02:
+                    // Integer type
+                    self::parseIntegerType($data, $result);
+                    break;
+                case 0x03:
+                    self::parseBitString($data, $result);
+                    break;
+                case 0x04:
+                    self::parseOctetSting($data, $result, $contextEspecific);
+                    break;
+                case 0x0C:
+                    self::parseUtf8String($data, $result, $contextEspecific);
+                    break;
+                case 0x05:
+                    // Null type
+                    $data = substr($data, 2);
+                    $result[] = array('null', null);
+                    break;
+                case 0x06:
+                    self::parseOIDtype($data, $result);
+                    break;
+                case 0x16:
+                    self::parseIA5String($data, $result);
+                    break;
+                case 0x12:
+                case 0x14:
+                case 0x15:
+                case 0x81:
+                    self::parseString($data, $result);
+                    break;
+                case 0x80:
+                    // Character string type
+                    self::parseCharString($data, $result);
+                    break;
+                case 0x13:
+                case 0x86:
+                    // Printable string type
+                    self::parsePrintableString($data, $result);
+                    break;
+                case 0x17:
+                    // Time types
+                    self::parseTimesType($data, $result);
+                    break;
+                case 0x82:
+                    // X509v3 extensions?
+                    self::parseExtensions($data, $result, 'extension : X509v3 extensions');
+                    break;
+                case 0xa0:
+                    // Extensions Context Especific
+                    self::parseExtensions($data, $result, 'Context Especific');
+                    break;
+                case 0xa3:
+                    // Extensions
+                    self::parseExtensions($data, $result, 'extension (0xA3)');
+                    break;
+                case 0xe6:
+                    // Hex Extensions extension (0xE6)
+                    self::parseHexExtensions($data, $result, 'extension (0xE6)');
+                    break;
+                case 0xa1:
+                    // Hex Extensions extension (0xA1)
+                    self::parseHexExtensions($data, $result, 'extension (0xA1)');
+                    break;
+                default:
+                    // Unknown
+                    $result[] = 'UNKNOWN' .  $data;
+                    $data = '';
+                    break;
             }
         }
         if (count($result) > 1) {

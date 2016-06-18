@@ -607,22 +607,22 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
     protected static function getCardName($tBand)
     {
         switch ($tBand) {
-        case '01':
-            $tBandNome = 'Visa';
-            break;
-        case '02':
-            $tBandNome = 'MasterCard';
-            break;
-        case '03':
-            $tBandNome = 'American Express';
-            break;
-        case '04':
-            $tBandNome = 'Sorocred';
-            break;
-        case '99':
-            $tBandNome = 'Outros';
-        default:
-            $tBandNome = 'Outros';
+            case '01':
+                $tBandNome = 'Visa';
+                break;
+            case '02':
+                $tBandNome = 'MasterCard';
+                break;
+            case '03':
+                $tBandNome = 'American Express';
+                break;
+            case '04':
+                $tBandNome = 'Sorocred';
+                break;
+            case '99':
+                $tBandNome = 'Outros';
+            default:
+                $tBandNome = 'Outros';
         }
         return $tBandNome;
     }
@@ -636,35 +636,35 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
     protected function tipoPag($tPag)
     {
         switch ($tPag) {
-        case '01':
-            $tPagNome = 'Dinheiro';
-            break;
-        case '02':
-            $tPagNome = 'Cheque';
-            break;
-        case '03':
-            $tPagNome = 'Cartão de Crédito';
-            break;
-        case '04':
-            $tPagNome = 'Cartão de Débito';
-            break;
-        case '05':
-            $tPagNome = 'Crédito Loja';
-            break;
-        case '10':
-            $tPagNome = 'Vale Alimentação';
-            break;
-        case '11':
-            $tPagNome = 'Vale Refeição';
-            break;
-        case '12':
-            $tPagNome = 'Vale Presente';
-            break;
-        case '13':
-            $tPagNome = 'Vale Combustível';
-            break;
-        case '99':
-            $tPagNome = 'Outros';
+            case '01':
+                $tPagNome = 'Dinheiro';
+                break;
+            case '02':
+                $tPagNome = 'Cheque';
+                break;
+            case '03':
+                $tPagNome = 'Cartão de Crédito';
+                break;
+            case '04':
+                $tPagNome = 'Cartão de Débito';
+                break;
+            case '05':
+                $tPagNome = 'Crédito Loja';
+                break;
+            case '10':
+                $tPagNome = 'Vale Alimentação';
+                break;
+            case '11':
+                $tPagNome = 'Vale Refeição';
+                break;
+            case '12':
+                $tPagNome = 'Vale Presente';
+                break;
+            case '13':
+                $tPagNome = 'Vale Combustível';
+                break;
+            case '99':
+                $tPagNome = 'Outros';
         }
         return $tPagNome;
     }

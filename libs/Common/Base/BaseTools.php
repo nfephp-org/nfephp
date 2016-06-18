@@ -292,26 +292,26 @@ class BaseTools
     {
         if (! empty($protocol)) {
             switch ($protocol) {
-            case 'TLSv1':
-                $this->sslProtocol = 1;
-                break;
-            case 'SSLv2':
-                $this->sslProtocol = 2;
-                break;
-            case 'SSLv3':
-                $this->sslProtocol = 3;
-                break;
-            case 'TLSv1.0':
-                $this->sslProtocol = 4;
-                break;
-            case 'TLSv1.1':
-                $this->sslProtocol = 5;
-                break;
-            case 'TLSv1.2':
-                $this->sslProtocol = 6;
-                break;
-            default:
-                $this->sslProtocol = 0;
+                case 'TLSv1':
+                    $this->sslProtocol = 1;
+                    break;
+                case 'SSLv2':
+                    $this->sslProtocol = 2;
+                    break;
+                case 'SSLv3':
+                    $this->sslProtocol = 3;
+                    break;
+                case 'TLSv1.0':
+                    $this->sslProtocol = 4;
+                    break;
+                case 'TLSv1.1':
+                    $this->sslProtocol = 5;
+                    break;
+                case 'TLSv1.2':
+                    $this->sslProtocol = 6;
+                    break;
+                default:
+                    $this->sslProtocol = 0;
             }
             $this->zLoadSoapClass();
         }

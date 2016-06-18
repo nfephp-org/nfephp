@@ -2033,147 +2033,147 @@ class MakeNFe extends BaseMake
     ) {
         $identificador = 'N01 <ICMSxx> - ';
         switch ($cst) {
-        case '00':
-            $icms = $this->dom->createElement("ICMS00");
-            $this->dom->addChild($icms, 'orig', $orig, true, "$identificador [item $nItem] Origem da mercadoria");
-            $this->dom->addChild($icms, 'CST', $cst, true, "$identificador [item $nItem] Tributação do ICMS = 00");
-            $this->dom->addChild($icms, 'modBC', $modBC, true, "$identificador [item $nItem] Modalidade de determinação da BC do ICMS");
-            $this->dom->addChild($icms, 'vBC', $vBC, true, "$identificador [item $nItem] Valor da BC do ICMS");
-            $this->dom->addChild($icms, 'pICMS', $pICMS, true, "$identificador [item $nItem] Alíquota do imposto");
-            $this->dom->addChild($icms, 'vICMS', $vICMS, true, "$identificador [item $nItem] Valor do ICMS");
-            break;
-        case '10':
-            $icms = $this->dom->createElement("ICMS10");
-            $this->dom->addChild($icms, 'orig', $orig, true, "$identificador [item $nItem] Origem da mercadoria");
-            $this->dom->addChild($icms, 'CST', $cst, true, "$identificador [item $nItem] Tributação do ICMS = 10");
-            $this->dom->addChild($icms, 'modBC', $modBC, true, "$identificador [item $nItem] Modalidade de determinação da BC do ICMS");
-            $this->dom->addChild($icms, 'vBC', $vBC, true, "$identificador [item $nItem] Valor da BC do ICMS");
-            $this->dom->addChild($icms, 'pICMS', $pICMS, true, "$identificador [item $nItem] Alíquota do imposto");
-            $this->dom->addChild($icms, 'vICMS', $vICMS, true, "$identificador [item $nItem] Valor do ICMS");
-            $this->dom->addChild($icms, 'modBCST', $modBCST, true, "$identificador [item $nItem] Modalidade de determinação da BC do ICMS ST");
-            $this->dom->addChild(
-                $icms,
-                'pMVAST',
-                $pMVAST,
-                false,
-                "$identificador [item $nItem] Percentual da margem de valor Adicionado do ICMS ST"
-            );
-            $this->dom->addChild($icms, 'pRedBCST', $pRedBCST, false, "$identificador [item $nItem] Percentual da Redução de BC do ICMS ST");
-            $this->dom->addChild($icms, 'vBCST', $vBCST, true, "$identificador [item $nItem] Valor da BC do ICMS ST");
-            $this->dom->addChild($icms, 'pICMSST', $pICMSST, true, "$identificador [item $nItem] Alíquota do imposto do ICMS ST");
-            $this->dom->addChild($icms, 'vICMSST', $vICMSST, true, "$identificador [item $nItem] Valor do ICMS ST");
-            break;
-        case '20':
-            $icms = $this->dom->createElement("ICMS20");
-            $this->dom->addChild($icms, 'orig', $orig, true, "$identificador [item $nItem] Origem da mercadoria");
-            $this->dom->addChild($icms, 'CST', $cst, true, "$identificador [item $nItem] Tributação do ICMS = 20");
-            $this->dom->addChild($icms, 'modBC', $modBC, true, "$identificador [item $nItem] Modalidade de determinação da BC do ICMS");
-            $this->dom->addChild($icms, 'pRedBC', $pRedBC, true, "$identificador [item $nItem] Percentual da Redução de BC");
-            $this->dom->addChild($icms, 'vBC', $vBC, true, "$identificador [item $nItem] Valor da BC do ICMS");
-            $this->dom->addChild($icms, 'pICMS', $pICMS, true, "$identificador [item $nItem] Alíquota do imposto");
-            $this->dom->addChild($icms, 'vICMS', $vICMS, true, "$identificador [item $nItem] Valor do ICMS");
-            $this->dom->addChild($icms, 'vICMSDeson', $vICMSDeson, false, "$identificador [item $nItem] Valor do ICMS desonerado");
-            $this->dom->addChild($icms, 'motDesICMS', $motDesICMS, false, "$identificador [item $nItem] Motivo da desoneração do ICMS");
-            break;
-        case '30':
-            $icms = $this->dom->createElement("ICMS30");
-            $this->dom->addChild($icms, 'orig', $orig, true, "$identificador [item $nItem] Origem da mercadoria");
-            $this->dom->addChild($icms, 'CST', $cst, true, "$identificador [item $nItem] Tributação do ICMS = 30");
-            $this->dom->addChild($icms, 'modBCST', $modBCST, true, "$identificador [item $nItem] Modalidade de determinação da BC do ICMS ST");
-            $this->dom->addChild(
-                $icms,
-                'pMVAST',
-                $pMVAST,
-                false,
-                "$identificador [item $nItem] Percentual da margem de valor Adicionado do ICMS ST"
-            );
-            $this->dom->addChild($icms, 'pRedBCST', $pRedBCST, false, "$identificador [item $nItem] Percentual da Redução de BC do ICMS ST");
-            $this->dom->addChild($icms, 'vBCST', $vBCST, true, "$identificador [item $nItem] Valor da BC do ICMS ST");
-            $this->dom->addChild($icms, 'pICMSST', $pICMSST, true, "$identificador [item $nItem] Alíquota do imposto do ICMS ST");
-            $this->dom->addChild($icms, 'vICMSST', $vICMSST, true, "$identificador [item $nItem] Valor do ICMS ST");
-            $this->dom->addChild($icms, 'vICMSDeson', $vICMSDeson, false, "$identificador [item $nItem] Valor do ICMS desonerado");
-            $this->dom->addChild($icms, 'motDesICMS', $motDesICMS, false, "$identificador [item $nItem] Motivo da desoneração do ICMS");
-            break;
-        case '40':
-        case '41':
-        case '50':
-            $icms = $this->dom->createElement("ICMS40");
-            $this->dom->addChild($icms, 'orig', $orig, true, "$identificador [item $nItem] Origem da mercadoria");
-            $this->dom->addChild($icms, 'CST', $cst, true, "$identificador [item $nItem] Tributação do ICMS $cst");
-            $this->dom->addChild($icms, 'vICMSDeson', $vICMSDeson, false, "$identificador [item $nItem] Valor do ICMS desonerado");
-            $this->dom->addChild($icms, 'motDesICMS', $motDesICMS, false, "$identificador [item $nItem] Motivo da desoneração do ICMS");
-            break;
-        case '51':
-            $icms = $this->dom->createElement("ICMS51");
-            $this->dom->addChild($icms, 'orig', $orig, true, "$identificador [item $nItem] Origem da mercadoria");
-            $this->dom->addChild($icms, 'CST', $cst, true, "$identificador [item $nItem] Tributação do ICMS = 51");
-            $this->dom->addChild($icms, 'modBC', $modBC, false, "$identificador [item $nItem] Modalidade de determinação da BC do ICMS");
-            $this->dom->addChild($icms, 'pRedBC', $pRedBC, false, "$identificador [item $nItem] Percentual da Redução de BC");
-            $this->dom->addChild($icms, 'vBC', $vBC, false, "$identificador [item $nItem] Valor da BC do ICMS");
-            $this->dom->addChild($icms, 'pICMS', $pICMS, false, "$identificador [item $nItem] Alíquota do imposto");
-            $this->dom->addChild($icms, 'vICMSOp', $vICMSOp, false, "$identificador [item $nItem] Valor do ICMS da Operação");
-            $this->dom->addChild($icms, 'pDif', $pDif, false, "$identificador [item $nItem] Percentual do diferimento");
-            $this->dom->addChild($icms, 'vICMSDif', $vICMSDif, false, "$identificador [item $nItem] Valor do ICMS diferido");
-            $this->dom->addChild($icms, 'vICMS', $vICMS, false, "$identificador [item $nItem] Valor do ICMS realmente devido");
-            break;
-        case '60':
-            $icms = $this->dom->createElement("ICMS60");
-            $this->dom->addChild($icms, 'orig', $orig, true, "$identificador [item $nItem] Origem da mercadoria");
-            $this->dom->addChild($icms, 'CST', $cst, true, "$identificador [item $nItem] Tributação do ICMS = 60");
-            $this->dom->addChild($icms, 'vBCSTRet', $vBCSTRet, false, "$identificador [item $nItem] Valor da BC do ICMS ST retido");
-            $this->dom->addChild($icms, 'vICMSSTRet', $vICMSSTRet, false, "$identificador [item $nItem] Valor do ICMS ST retido");
-            break;
-        case '70':
-            $icms = $this->dom->createElement("ICMS70");
-            $this->dom->addChild($icms, 'orig', $orig, true, "$identificador [item $nItem] Origem da mercadoria");
-            $this->dom->addChild($icms, 'CST', $cst, true, "$identificador [item $nItem] Tributação do ICMS = 70");
-            $this->dom->addChild($icms, 'modBC', $modBC, true, "$identificador [item $nItem] Modalidade de determinação da BC do ICMS");
-            $this->dom->addChild($icms, 'pRedBC', $pRedBC, true, "$identificador [item $nItem] Percentual da Redução de BC");
-            $this->dom->addChild($icms, 'vBC', $vBC, true, "$identificador [item $nItem] Valor da BC do ICMS");
-            $this->dom->addChild($icms, 'pICMS', $pICMS, true, "$identificador [item $nItem] Alíquota do imposto");
-            $this->dom->addChild($icms, 'vICMS', $vICMS, true, "$identificador [item $nItem] Valor do ICMS");
-            $this->dom->addChild($icms, 'modBCST', $modBCST, true, "$identificador [item $nItem] Modalidade de determinação da BC do ICMS ST");
-            $this->dom->addChild(
-                $icms,
-                'pMVAST',
-                $pMVAST,
-                false,
-                "$identificador [item $nItem] Percentual da margem de valor Adicionado do ICMS ST"
-            );
-            $this->dom->addChild($icms, 'pRedBCST', $pRedBCST, false, "$identificador [item $nItem] Percentual da Redução de BC do ICMS ST");
-            $this->dom->addChild($icms, 'vBCST', $vBCST, true, "$identificador [item $nItem] Valor da BC do ICMS ST");
-            $this->dom->addChild($icms, 'pICMSST', $pICMSST, true, "$identificador [item $nItem] Alíquota do imposto do ICMS ST");
-            $this->dom->addChild($icms, 'vICMSST', $vICMSST, true, "$identificador [item $nItem] Valor do ICMS ST");
-            $this->dom->addChild($icms, 'vICMSDeson', $vICMSDeson, false, "$identificador [item $nItem] Valor do ICMS desonerado");
-            $this->dom->addChild($icms, 'motDesICMS', $motDesICMS, false, "$identificador [item $nItem] Motivo da desoneração do ICMS");
-            break;
-        case '90':
-            $icms = $this->dom->createElement("ICMS90");
-            $this->dom->addChild($icms, 'orig', $orig, true, "$identificador [item $nItem] Origem da mercadoria");
-            $this->dom->addChild($icms, 'CST', $cst, true, "$identificador [item $nItem] Tributação do ICMS = 90");
-            $this->dom->addChild($icms, 'modBC', $modBC, true, "$identificador [item $nItem] Modalidade de determinação da BC do ICMS");
-            $this->dom->addChild($icms, 'vBC', $vBC, true, "$identificador [item $nItem] Valor da BC do ICMS");
-            $this->dom->addChild($icms, 'pRedBC', $pRedBC, false, "$identificador [item $nItem] Percentual da Redução de BC");
-            $this->dom->addChild($icms, 'pICMS', $pICMS, true, "$identificador [item $nItem] Alíquota do imposto");
-            $this->dom->addChild($icms, 'vICMS', $vICMS, true, "$identificador [item $nItem] Valor do ICMS");
-            $this->dom->addChild($icms, 'modBCST', $modBCST, true, "$identificador [item $nItem] Modalidade de determinação da BC do ICMS ST");
-            $this->dom->addChild(
-                $icms,
-                'pMVAST',
-                $pMVAST,
-                false,
-                "$identificador [item $nItem] Percentual da margem de valor Adicionado do ICMS ST"
-            );
-            $this->dom->addChild($icms, 'pRedBCST', $pRedBCST, false, "$identificador [item $nItem] Percentual da Redução de BC do ICMS ST");
-            $this->dom->addChild($icms, 'vBCST', $vBCST, true, "$identificador [item $nItem] Valor da BC do ICMS ST");
-            $this->dom->addChild($icms, 'pICMSST', $pICMSST, true, "$identificador [item $nItem] Alíquota do imposto do ICMS ST");
-            $this->dom->addChild($icms, 'vICMSST', $vICMSST, true, "$identificador [item $nItem] Valor do ICMS ST");
-            $this->dom->addChild($icms, 'vICMSDeson', $vICMSDeson, false, "$identificador [item $nItem] Valor do ICMS desonerado");
-            $this->dom->addChild($icms, 'motDesICMS', $motDesICMS, false, "$identificador [item $nItem] Motivo da desoneração do ICMS");
-            break;
+            case '00':
+                $icms = $this->dom->createElement("ICMS00");
+                $this->dom->addChild($icms, 'orig', $orig, true, "$identificador [item $nItem] Origem da mercadoria");
+                $this->dom->addChild($icms, 'CST', $cst, true, "$identificador [item $nItem] Tributação do ICMS = 00");
+                $this->dom->addChild($icms, 'modBC', $modBC, true, "$identificador [item $nItem] Modalidade de determinação da BC do ICMS");
+                $this->dom->addChild($icms, 'vBC', $vBC, true, "$identificador [item $nItem] Valor da BC do ICMS");
+                $this->dom->addChild($icms, 'pICMS', $pICMS, true, "$identificador [item $nItem] Alíquota do imposto");
+                $this->dom->addChild($icms, 'vICMS', $vICMS, true, "$identificador [item $nItem] Valor do ICMS");
+                break;
+            case '10':
+                $icms = $this->dom->createElement("ICMS10");
+                $this->dom->addChild($icms, 'orig', $orig, true, "$identificador [item $nItem] Origem da mercadoria");
+                $this->dom->addChild($icms, 'CST', $cst, true, "$identificador [item $nItem] Tributação do ICMS = 10");
+                $this->dom->addChild($icms, 'modBC', $modBC, true, "$identificador [item $nItem] Modalidade de determinação da BC do ICMS");
+                $this->dom->addChild($icms, 'vBC', $vBC, true, "$identificador [item $nItem] Valor da BC do ICMS");
+                $this->dom->addChild($icms, 'pICMS', $pICMS, true, "$identificador [item $nItem] Alíquota do imposto");
+                $this->dom->addChild($icms, 'vICMS', $vICMS, true, "$identificador [item $nItem] Valor do ICMS");
+                $this->dom->addChild($icms, 'modBCST', $modBCST, true, "$identificador [item $nItem] Modalidade de determinação da BC do ICMS ST");
+                $this->dom->addChild(
+                    $icms,
+                    'pMVAST',
+                    $pMVAST,
+                    false,
+                    "$identificador [item $nItem] Percentual da margem de valor Adicionado do ICMS ST"
+                );
+                    $this->dom->addChild($icms, 'pRedBCST', $pRedBCST, false, "$identificador [item $nItem] Percentual da Redução de BC do ICMS ST");
+                    $this->dom->addChild($icms, 'vBCST', $vBCST, true, "$identificador [item $nItem] Valor da BC do ICMS ST");
+                    $this->dom->addChild($icms, 'pICMSST', $pICMSST, true, "$identificador [item $nItem] Alíquota do imposto do ICMS ST");
+                    $this->dom->addChild($icms, 'vICMSST', $vICMSST, true, "$identificador [item $nItem] Valor do ICMS ST");
+                break;
+            case '20':
+                $icms = $this->dom->createElement("ICMS20");
+                $this->dom->addChild($icms, 'orig', $orig, true, "$identificador [item $nItem] Origem da mercadoria");
+                $this->dom->addChild($icms, 'CST', $cst, true, "$identificador [item $nItem] Tributação do ICMS = 20");
+                $this->dom->addChild($icms, 'modBC', $modBC, true, "$identificador [item $nItem] Modalidade de determinação da BC do ICMS");
+                $this->dom->addChild($icms, 'pRedBC', $pRedBC, true, "$identificador [item $nItem] Percentual da Redução de BC");
+                $this->dom->addChild($icms, 'vBC', $vBC, true, "$identificador [item $nItem] Valor da BC do ICMS");
+                $this->dom->addChild($icms, 'pICMS', $pICMS, true, "$identificador [item $nItem] Alíquota do imposto");
+                $this->dom->addChild($icms, 'vICMS', $vICMS, true, "$identificador [item $nItem] Valor do ICMS");
+                $this->dom->addChild($icms, 'vICMSDeson', $vICMSDeson, false, "$identificador [item $nItem] Valor do ICMS desonerado");
+                $this->dom->addChild($icms, 'motDesICMS', $motDesICMS, false, "$identificador [item $nItem] Motivo da desoneração do ICMS");
+                break;
+            case '30':
+                $icms = $this->dom->createElement("ICMS30");
+                $this->dom->addChild($icms, 'orig', $orig, true, "$identificador [item $nItem] Origem da mercadoria");
+                $this->dom->addChild($icms, 'CST', $cst, true, "$identificador [item $nItem] Tributação do ICMS = 30");
+                $this->dom->addChild($icms, 'modBCST', $modBCST, true, "$identificador [item $nItem] Modalidade de determinação da BC do ICMS ST");
+                $this->dom->addChild(
+                    $icms,
+                    'pMVAST',
+                    $pMVAST,
+                    false,
+                    "$identificador [item $nItem] Percentual da margem de valor Adicionado do ICMS ST"
+                );
+                    $this->dom->addChild($icms, 'pRedBCST', $pRedBCST, false, "$identificador [item $nItem] Percentual da Redução de BC do ICMS ST");
+                    $this->dom->addChild($icms, 'vBCST', $vBCST, true, "$identificador [item $nItem] Valor da BC do ICMS ST");
+                    $this->dom->addChild($icms, 'pICMSST', $pICMSST, true, "$identificador [item $nItem] Alíquota do imposto do ICMS ST");
+                    $this->dom->addChild($icms, 'vICMSST', $vICMSST, true, "$identificador [item $nItem] Valor do ICMS ST");
+                    $this->dom->addChild($icms, 'vICMSDeson', $vICMSDeson, false, "$identificador [item $nItem] Valor do ICMS desonerado");
+                    $this->dom->addChild($icms, 'motDesICMS', $motDesICMS, false, "$identificador [item $nItem] Motivo da desoneração do ICMS");
+                break;
+            case '40':
+            case '41':
+            case '50':
+                $icms = $this->dom->createElement("ICMS40");
+                $this->dom->addChild($icms, 'orig', $orig, true, "$identificador [item $nItem] Origem da mercadoria");
+                $this->dom->addChild($icms, 'CST', $cst, true, "$identificador [item $nItem] Tributação do ICMS $cst");
+                $this->dom->addChild($icms, 'vICMSDeson', $vICMSDeson, false, "$identificador [item $nItem] Valor do ICMS desonerado");
+                $this->dom->addChild($icms, 'motDesICMS', $motDesICMS, false, "$identificador [item $nItem] Motivo da desoneração do ICMS");
+                break;
+            case '51':
+                $icms = $this->dom->createElement("ICMS51");
+                $this->dom->addChild($icms, 'orig', $orig, true, "$identificador [item $nItem] Origem da mercadoria");
+                $this->dom->addChild($icms, 'CST', $cst, true, "$identificador [item $nItem] Tributação do ICMS = 51");
+                $this->dom->addChild($icms, 'modBC', $modBC, false, "$identificador [item $nItem] Modalidade de determinação da BC do ICMS");
+                $this->dom->addChild($icms, 'pRedBC', $pRedBC, false, "$identificador [item $nItem] Percentual da Redução de BC");
+                $this->dom->addChild($icms, 'vBC', $vBC, false, "$identificador [item $nItem] Valor da BC do ICMS");
+                $this->dom->addChild($icms, 'pICMS', $pICMS, false, "$identificador [item $nItem] Alíquota do imposto");
+                $this->dom->addChild($icms, 'vICMSOp', $vICMSOp, false, "$identificador [item $nItem] Valor do ICMS da Operação");
+                $this->dom->addChild($icms, 'pDif', $pDif, false, "$identificador [item $nItem] Percentual do diferimento");
+                $this->dom->addChild($icms, 'vICMSDif', $vICMSDif, false, "$identificador [item $nItem] Valor do ICMS diferido");
+                $this->dom->addChild($icms, 'vICMS', $vICMS, false, "$identificador [item $nItem] Valor do ICMS realmente devido");
+                break;
+            case '60':
+                $icms = $this->dom->createElement("ICMS60");
+                $this->dom->addChild($icms, 'orig', $orig, true, "$identificador [item $nItem] Origem da mercadoria");
+                $this->dom->addChild($icms, 'CST', $cst, true, "$identificador [item $nItem] Tributação do ICMS = 60");
+                $this->dom->addChild($icms, 'vBCSTRet', $vBCSTRet, false, "$identificador [item $nItem] Valor da BC do ICMS ST retido");
+                $this->dom->addChild($icms, 'vICMSSTRet', $vICMSSTRet, false, "$identificador [item $nItem] Valor do ICMS ST retido");
+                break;
+            case '70':
+                $icms = $this->dom->createElement("ICMS70");
+                $this->dom->addChild($icms, 'orig', $orig, true, "$identificador [item $nItem] Origem da mercadoria");
+                $this->dom->addChild($icms, 'CST', $cst, true, "$identificador [item $nItem] Tributação do ICMS = 70");
+                $this->dom->addChild($icms, 'modBC', $modBC, true, "$identificador [item $nItem] Modalidade de determinação da BC do ICMS");
+                $this->dom->addChild($icms, 'pRedBC', $pRedBC, true, "$identificador [item $nItem] Percentual da Redução de BC");
+                $this->dom->addChild($icms, 'vBC', $vBC, true, "$identificador [item $nItem] Valor da BC do ICMS");
+                $this->dom->addChild($icms, 'pICMS', $pICMS, true, "$identificador [item $nItem] Alíquota do imposto");
+                $this->dom->addChild($icms, 'vICMS', $vICMS, true, "$identificador [item $nItem] Valor do ICMS");
+                $this->dom->addChild($icms, 'modBCST', $modBCST, true, "$identificador [item $nItem] Modalidade de determinação da BC do ICMS ST");
+                $this->dom->addChild(
+                    $icms,
+                    'pMVAST',
+                    $pMVAST,
+                    false,
+                    "$identificador [item $nItem] Percentual da margem de valor Adicionado do ICMS ST"
+                );
+                    $this->dom->addChild($icms, 'pRedBCST', $pRedBCST, false, "$identificador [item $nItem] Percentual da Redução de BC do ICMS ST");
+                    $this->dom->addChild($icms, 'vBCST', $vBCST, true, "$identificador [item $nItem] Valor da BC do ICMS ST");
+                    $this->dom->addChild($icms, 'pICMSST', $pICMSST, true, "$identificador [item $nItem] Alíquota do imposto do ICMS ST");
+                    $this->dom->addChild($icms, 'vICMSST', $vICMSST, true, "$identificador [item $nItem] Valor do ICMS ST");
+                    $this->dom->addChild($icms, 'vICMSDeson', $vICMSDeson, false, "$identificador [item $nItem] Valor do ICMS desonerado");
+                    $this->dom->addChild($icms, 'motDesICMS', $motDesICMS, false, "$identificador [item $nItem] Motivo da desoneração do ICMS");
+                break;
+            case '90':
+                $icms = $this->dom->createElement("ICMS90");
+                $this->dom->addChild($icms, 'orig', $orig, true, "$identificador [item $nItem] Origem da mercadoria");
+                $this->dom->addChild($icms, 'CST', $cst, true, "$identificador [item $nItem] Tributação do ICMS = 90");
+                $this->dom->addChild($icms, 'modBC', $modBC, true, "$identificador [item $nItem] Modalidade de determinação da BC do ICMS");
+                $this->dom->addChild($icms, 'vBC', $vBC, true, "$identificador [item $nItem] Valor da BC do ICMS");
+                $this->dom->addChild($icms, 'pRedBC', $pRedBC, false, "$identificador [item $nItem] Percentual da Redução de BC");
+                $this->dom->addChild($icms, 'pICMS', $pICMS, true, "$identificador [item $nItem] Alíquota do imposto");
+                $this->dom->addChild($icms, 'vICMS', $vICMS, true, "$identificador [item $nItem] Valor do ICMS");
+                $this->dom->addChild($icms, 'modBCST', $modBCST, true, "$identificador [item $nItem] Modalidade de determinação da BC do ICMS ST");
+                $this->dom->addChild(
+                    $icms,
+                    'pMVAST',
+                    $pMVAST,
+                    false,
+                    "$identificador [item $nItem] Percentual da margem de valor Adicionado do ICMS ST"
+                );
+                    $this->dom->addChild($icms, 'pRedBCST', $pRedBCST, false, "$identificador [item $nItem] Percentual da Redução de BC do ICMS ST");
+                    $this->dom->addChild($icms, 'vBCST', $vBCST, true, "$identificador [item $nItem] Valor da BC do ICMS ST");
+                    $this->dom->addChild($icms, 'pICMSST', $pICMSST, true, "$identificador [item $nItem] Alíquota do imposto do ICMS ST");
+                    $this->dom->addChild($icms, 'vICMSST', $vICMSST, true, "$identificador [item $nItem] Valor do ICMS ST");
+                    $this->dom->addChild($icms, 'vICMSDeson', $vICMSDeson, false, "$identificador [item $nItem] Valor do ICMS desonerado");
+                    $this->dom->addChild($icms, 'motDesICMS', $motDesICMS, false, "$identificador [item $nItem] Motivo da desoneração do ICMS");
+                break;
         }
         $tagIcms = $this->dom->createElement('ICMS');
-        if(isset($icms)) {
+        if (isset($icms)) {
             $tagIcms->appendChild($icms);
         }
         $this->aICMS[$nItem] = $tagIcms;
@@ -2341,167 +2341,167 @@ class MakeNFe extends BaseMake
         $vICMSSTRet = ''
     ) {
         switch ($csosn) {
-        case '101':
-            $icmsSN = $this->dom->createElement("ICMSSN101");
-            $this->dom->addChild($icmsSN, 'orig', $orig, true, "[item $nItem] Origem da mercadoria");
-            $this->dom->addChild(
-                $icmsSN,
-                'CSOSN',
-                $csosn,
-                true,
-                "[item $nItem] Código de Situação da Operação Simples Nacional"
-            );
-            $this->dom->addChild(
-                $icmsSN,
-                'pCredSN',
-                $pCredSN,
-                true,
-                "[item $nItem] Alíquota aplicável de cálculo do crédito (Simples Nacional)."
-            );
-            $this->dom->addChild(
-                $icmsSN,
-                'vCredICMSSN',
-                $vCredICMSSN,
-                true,
-                "[item $nItem] Valor crédito do ICMS que pode ser aproveitado nos termos do art. 23 da LC 123 (Simples Nacional)"
-            );
-            break;
-        case '102':
-        case '103':
-        case '300':
-        case '400':
-            $icmsSN = $this->dom->createElement("ICMSSN102");
-            $this->dom->addChild($icmsSN, 'orig', $orig, true, "[item $nItem] Origem da mercadoria");
-            $this->dom->addChild(
-                $icmsSN,
-                'CSOSN',
-                $csosn,
-                true,
-                "[item $nItem] Código de Situação da Operação Simples Nacional"
-            );
-            break;
-        case '201':
-            $icmsSN = $this->dom->createElement("ICMSSN201");
-            $this->dom->addChild($icmsSN, 'orig', $orig, true, "[item $nItem] Origem da mercadoria");
-            $this->dom->addChild(
-                $icmsSN,
-                'CSOSN',
-                $csosn,
-                true,
-                "[item $nItem] Código de Situação da Operação Simples Nacional"
-            );
-            $this->dom->addChild(
-                $icmsSN,
-                'modBCST',
-                $modBCST,
-                true,
-                "[item $nItem] Alíquota aplicável de cálculo do crédito (Simples Nacional)."
-            );
-            $this->dom->addChild(
-                $icmsSN,
-                'pMVAST',
-                $pMVAST,
-                false,
-                "[item $nItem] Percentual da margem de valor Adicionado do ICMS ST"
-            );
-            $this->dom->addChild($icmsSN, 'pRedBCST', $pRedBCST, false, "[item $nItem] Percentual da Redução de BC do ICMS ST");
-            $this->dom->addChild($icmsSN, 'vBCST', $vBCST, true, "[item $nItem] Valor da BC do ICMS ST");
-            $this->dom->addChild($icmsSN, 'pICMSST', $pICMSST, true, "[item $nItem] Alíquota do imposto do ICMS ST");
-            $this->dom->addChild($icmsSN, 'vICMSST', $vICMSST, true, "[item $nItem] Valor do ICMS ST");
-            $this->dom->addChild(
-                $icmsSN,
-                'pCredSN',
-                $pCredSN,
-                true,
-                "[item $nItem] Alíquota aplicável de cálculo do crédito (Simples Nacional)."
-            );
-            $this->dom->addChild(
-                $icmsSN,
-                'vCredICMSSN',
-                $vCredICMSSN,
-                true,
-                "[item $nItem] Valor crédito do ICMS que pode ser aproveitado nos termos do art. 23 da LC 123 (Simples Nacional)"
-            );
-            break;
-        case '202':
-        case '203':
-            $icmsSN = $this->dom->createElement("ICMSSN202");
-            $this->dom->addChild($icmsSN, 'orig', $orig, true, "[item $nItem] Origem da mercadoria");
-            $this->dom->addChild($icmsSN, 'CSOSN', $csosn, true, "[item $nItem] Código de Situação da Operação Simples Nacional");
-            $this->dom->addChild(
-                $icmsSN,
-                'modBCST',
-                $modBCST,
-                true,
-                "[item $nItem] Alíquota aplicável de cálculo do crédito (Simples Nacional)."
-            );
-            $this->dom->addChild(
-                $icmsSN,
-                'pMVAST',
-                $pMVAST,
-                false,
-                "[item $nItem] Percentual da margem de valor Adicionado do ICMS ST"
-            );
-            $this->dom->addChild($icmsSN, 'pRedBCST', $pRedBCST, false, "[item $nItem] Percentual da Redução de BC do ICMS ST");
-            $this->dom->addChild($icmsSN, 'vBCST', $vBCST, true, "[item $nItem] Valor da BC do ICMS ST");
-            $this->dom->addChild($icmsSN, 'pICMSST', $pICMSST, true, "[item $nItem] Alíquota do imposto do ICMS ST");
-            $this->dom->addChild($icmsSN, 'vICMSST', $vICMSST, true, "[item $nItem] Valor do ICMS ST");
-            break;
-        case '500':
-            $icmsSN = $this->dom->createElement("ICMSSN500");
-            $this->dom->addChild($icmsSN, 'orig', $orig, true, "[item $nItem] Origem da mercadoria");
-            $this->dom->addChild(
-                $icmsSN,
-                'CSOSN',
-                $csosn,
-                true,
-                "[item $nItem] Código de Situação da Operação Simples Nacional"
-            );
-            $this->dom->addChild($icmsSN, 'vBCSTRet', $vBCSTRet, false, "[item $nItem] Valor da BC do ICMS ST retido");
-            $this->dom->addChild($icmsSN, 'vICMSSTRet', $vICMSSTRet, false, "[item $nItem] Valor do ICMS ST retido");
-            break;
-        case '900':
-            $icmsSN = $this->dom->createElement("ICMSSN900");
-            $this->dom->addChild($icmsSN, 'orig', $orig, true, "[item $nItem] Origem da mercadoria");
-            $this->dom->addChild($icmsSN, 'CSOSN', $csosn, true, "[item $nItem] Código de Situação da Operação Simples Nacional");
-            $this->dom->addChild($icmsSN, 'modBC', $modBC, false, "[item $nItem] Modalidade de determinação da BC do ICMS");
-            $this->dom->addChild($icmsSN, 'vBC', $vBC, false, "[item $nItem] Valor da BC do ICMS");
-            $this->dom->addChild($icmsSN, 'pRedBC', $pRedBC, false, "[item $nItem] Percentual da Redução de BC");
-            $this->dom->addChild($icmsSN, 'pICMS', $pICMS, false, "[item $nItem] Alíquota do imposto");
-            $this->dom->addChild($icmsSN, 'vICMS', $vICMS, false, "[item $nItem] Valor do ICMS");
-            $this->dom->addChild(
-                $icmsSN,
-                'modBCST',
-                $modBCST,
-                false,
-                "[item $nItem] Alíquota aplicável de cálculo do crédito (Simples Nacional)."
-            );
-            $this->dom->addChild(
-                $icmsSN,
-                'pMVAST',
-                $pMVAST,
-                false,
-                "[item $nItem] Percentual da margem de valor Adicionado do ICMS ST"
-            );
-            $this->dom->addChild($icmsSN, 'pRedBCST', $pRedBCST, false, "[item $nItem] Percentual da Redução de BC do ICMS ST");
-            $this->dom->addChild($icmsSN, 'vBCST', $vBCST, false, "[item $nItem] Valor da BC do ICMS ST");
-            $this->dom->addChild($icmsSN, 'pICMSST', $pICMSST, false, "[item $nItem] Alíquota do imposto do ICMS ST");
-            $this->dom->addChild($icmsSN, 'vICMSST', $vICMSST, false, "[item $nItem] Valor do ICMS ST");
-            $this->dom->addChild(
-                $icmsSN,
-                'pCredSN',
-                $pCredSN,
-                false,
-                "[item $nItem] Alíquota aplicável de cálculo do crédito (Simples Nacional)."
-            );
-            $this->dom->addChild(
-                $icmsSN,
-                'vCredICMSSN',
-                $vCredICMSSN,
-                false,
-                "[item $nItem] Valor crédito do ICMS que pode ser aproveitado nos termos do art. 23 da LC 123 (Simples Nacional)"
-            );
-            break;
+            case '101':
+                $icmsSN = $this->dom->createElement("ICMSSN101");
+                $this->dom->addChild($icmsSN, 'orig', $orig, true, "[item $nItem] Origem da mercadoria");
+                $this->dom->addChild(
+                    $icmsSN,
+                    'CSOSN',
+                    $csosn,
+                    true,
+                    "[item $nItem] Código de Situação da Operação Simples Nacional"
+                );
+                    $this->dom->addChild(
+                        $icmsSN,
+                        'pCredSN',
+                        $pCredSN,
+                        true,
+                        "[item $nItem] Alíquota aplicável de cálculo do crédito (Simples Nacional)."
+                    );
+                    $this->dom->addChild(
+                        $icmsSN,
+                        'vCredICMSSN',
+                        $vCredICMSSN,
+                        true,
+                        "[item $nItem] Valor crédito do ICMS que pode ser aproveitado nos termos do art. 23 da LC 123 (Simples Nacional)"
+                    );
+                break;
+            case '102':
+            case '103':
+            case '300':
+            case '400':
+                $icmsSN = $this->dom->createElement("ICMSSN102");
+                $this->dom->addChild($icmsSN, 'orig', $orig, true, "[item $nItem] Origem da mercadoria");
+                $this->dom->addChild(
+                    $icmsSN,
+                    'CSOSN',
+                    $csosn,
+                    true,
+                    "[item $nItem] Código de Situação da Operação Simples Nacional"
+                );
+                break;
+            case '201':
+                $icmsSN = $this->dom->createElement("ICMSSN201");
+                $this->dom->addChild($icmsSN, 'orig', $orig, true, "[item $nItem] Origem da mercadoria");
+                $this->dom->addChild(
+                    $icmsSN,
+                    'CSOSN',
+                    $csosn,
+                    true,
+                    "[item $nItem] Código de Situação da Operação Simples Nacional"
+                );
+                    $this->dom->addChild(
+                        $icmsSN,
+                        'modBCST',
+                        $modBCST,
+                        true,
+                        "[item $nItem] Alíquota aplicável de cálculo do crédito (Simples Nacional)."
+                    );
+                    $this->dom->addChild(
+                        $icmsSN,
+                        'pMVAST',
+                        $pMVAST,
+                        false,
+                        "[item $nItem] Percentual da margem de valor Adicionado do ICMS ST"
+                    );
+                    $this->dom->addChild($icmsSN, 'pRedBCST', $pRedBCST, false, "[item $nItem] Percentual da Redução de BC do ICMS ST");
+                    $this->dom->addChild($icmsSN, 'vBCST', $vBCST, true, "[item $nItem] Valor da BC do ICMS ST");
+                    $this->dom->addChild($icmsSN, 'pICMSST', $pICMSST, true, "[item $nItem] Alíquota do imposto do ICMS ST");
+                    $this->dom->addChild($icmsSN, 'vICMSST', $vICMSST, true, "[item $nItem] Valor do ICMS ST");
+                    $this->dom->addChild(
+                        $icmsSN,
+                        'pCredSN',
+                        $pCredSN,
+                        true,
+                        "[item $nItem] Alíquota aplicável de cálculo do crédito (Simples Nacional)."
+                    );
+                    $this->dom->addChild(
+                        $icmsSN,
+                        'vCredICMSSN',
+                        $vCredICMSSN,
+                        true,
+                        "[item $nItem] Valor crédito do ICMS que pode ser aproveitado nos termos do art. 23 da LC 123 (Simples Nacional)"
+                    );
+                break;
+            case '202':
+            case '203':
+                $icmsSN = $this->dom->createElement("ICMSSN202");
+                $this->dom->addChild($icmsSN, 'orig', $orig, true, "[item $nItem] Origem da mercadoria");
+                $this->dom->addChild($icmsSN, 'CSOSN', $csosn, true, "[item $nItem] Código de Situação da Operação Simples Nacional");
+                $this->dom->addChild(
+                    $icmsSN,
+                    'modBCST',
+                    $modBCST,
+                    true,
+                    "[item $nItem] Alíquota aplicável de cálculo do crédito (Simples Nacional)."
+                );
+                    $this->dom->addChild(
+                        $icmsSN,
+                        'pMVAST',
+                        $pMVAST,
+                        false,
+                        "[item $nItem] Percentual da margem de valor Adicionado do ICMS ST"
+                    );
+                    $this->dom->addChild($icmsSN, 'pRedBCST', $pRedBCST, false, "[item $nItem] Percentual da Redução de BC do ICMS ST");
+                    $this->dom->addChild($icmsSN, 'vBCST', $vBCST, true, "[item $nItem] Valor da BC do ICMS ST");
+                    $this->dom->addChild($icmsSN, 'pICMSST', $pICMSST, true, "[item $nItem] Alíquota do imposto do ICMS ST");
+                    $this->dom->addChild($icmsSN, 'vICMSST', $vICMSST, true, "[item $nItem] Valor do ICMS ST");
+                break;
+            case '500':
+                $icmsSN = $this->dom->createElement("ICMSSN500");
+                $this->dom->addChild($icmsSN, 'orig', $orig, true, "[item $nItem] Origem da mercadoria");
+                $this->dom->addChild(
+                    $icmsSN,
+                    'CSOSN',
+                    $csosn,
+                    true,
+                    "[item $nItem] Código de Situação da Operação Simples Nacional"
+                );
+                    $this->dom->addChild($icmsSN, 'vBCSTRet', $vBCSTRet, false, "[item $nItem] Valor da BC do ICMS ST retido");
+                    $this->dom->addChild($icmsSN, 'vICMSSTRet', $vICMSSTRet, false, "[item $nItem] Valor do ICMS ST retido");
+                break;
+            case '900':
+                $icmsSN = $this->dom->createElement("ICMSSN900");
+                $this->dom->addChild($icmsSN, 'orig', $orig, true, "[item $nItem] Origem da mercadoria");
+                $this->dom->addChild($icmsSN, 'CSOSN', $csosn, true, "[item $nItem] Código de Situação da Operação Simples Nacional");
+                $this->dom->addChild($icmsSN, 'modBC', $modBC, false, "[item $nItem] Modalidade de determinação da BC do ICMS");
+                $this->dom->addChild($icmsSN, 'vBC', $vBC, false, "[item $nItem] Valor da BC do ICMS");
+                $this->dom->addChild($icmsSN, 'pRedBC', $pRedBC, false, "[item $nItem] Percentual da Redução de BC");
+                $this->dom->addChild($icmsSN, 'pICMS', $pICMS, false, "[item $nItem] Alíquota do imposto");
+                $this->dom->addChild($icmsSN, 'vICMS', $vICMS, false, "[item $nItem] Valor do ICMS");
+                $this->dom->addChild(
+                    $icmsSN,
+                    'modBCST',
+                    $modBCST,
+                    false,
+                    "[item $nItem] Alíquota aplicável de cálculo do crédito (Simples Nacional)."
+                );
+                    $this->dom->addChild(
+                        $icmsSN,
+                        'pMVAST',
+                        $pMVAST,
+                        false,
+                        "[item $nItem] Percentual da margem de valor Adicionado do ICMS ST"
+                    );
+                    $this->dom->addChild($icmsSN, 'pRedBCST', $pRedBCST, false, "[item $nItem] Percentual da Redução de BC do ICMS ST");
+                    $this->dom->addChild($icmsSN, 'vBCST', $vBCST, false, "[item $nItem] Valor da BC do ICMS ST");
+                    $this->dom->addChild($icmsSN, 'pICMSST', $pICMSST, false, "[item $nItem] Alíquota do imposto do ICMS ST");
+                    $this->dom->addChild($icmsSN, 'vICMSST', $vICMSST, false, "[item $nItem] Valor do ICMS ST");
+                    $this->dom->addChild(
+                        $icmsSN,
+                        'pCredSN',
+                        $pCredSN,
+                        false,
+                        "[item $nItem] Alíquota aplicável de cálculo do crédito (Simples Nacional)."
+                    );
+                    $this->dom->addChild(
+                        $icmsSN,
+                        'vCredICMSSN',
+                        $vCredICMSSN,
+                        false,
+                        "[item $nItem] Valor crédito do ICMS que pode ser aproveitado nos termos do art. 23 da LC 123 (Simples Nacional)"
+                    );
+                break;
         }
         //caso exista a tag aICMS[$nItem] inserir nela caso contrario criar
         if (!empty($this->aICMS[$nItem])) {
@@ -2509,7 +2509,7 @@ class MakeNFe extends BaseMake
         } else {
             $tagIcms = $this->dom->createElement('ICMS');
         }
-        if(isset($icmsSN)) {
+        if (isset($icmsSN)) {
             $this->dom->appChild($tagIcms, $icmsSN, "Inserindo ICMSST em ICMS[$nItem]");
         }
         $this->aICMS[$nItem] = $tagIcms;
@@ -2720,65 +2720,65 @@ class MakeNFe extends BaseMake
         $vAliqProd = ''
     ) {
         switch ($cst) {
-        case '01':
-        case '02':
-            $pisItem = $this->dom->createElement('PISAliq');
-            $this->dom->addChild($pisItem, 'CST', $cst, true, "[item $nItem] Código de Situação Tributária do PIS");
-            $this->dom->addChild($pisItem, 'vBC', $vBC, true, "[item $nItem] Valor da Base de Cálculo do PIS");
-            $this->dom->addChild($pisItem, 'pPIS', $pPIS, true, "[item $nItem] Alíquota do PIS (em percentual)");
-            $this->dom->addChild($pisItem, 'vPIS', $vPIS, true, "[item $nItem] Valor do PIS");
-            break;
-        case '03':
-            $pisItem = $this->dom->createElement('PISQtde');
-            $this->dom->addChild($pisItem, 'CST', $cst, true, "[item $nItem] Código de Situação Tributária do PIS");
-            $this->dom->addChild($pisItem, 'qBCProd', $qBCProd, true, "[item $nItem] Quantidade Vendida");
-            $this->dom->addChild($pisItem, 'vAliqProd', $vAliqProd, true, "[item $nItem] Alíquota do PIS (em reais)");
-            $this->dom->addChild($pisItem, 'vPIS', $vPIS, true, "[item $nItem] Valor do PIS");
-            break;
-        case '04':
-        case '05':
-        case '06':
-        case '07':
-        case '08':
-        case '09':
-            $pisItem = $this->dom->createElement('PISNT');
-            $this->dom->addChild($pisItem, 'CST', $cst, true, "[item $nItem] Código de Situação Tributária do PIS");
-            break;
-        case '49':
-        case '50':
-        case '51':
-        case '52':
-        case '53':
-        case '54':
-        case '55':
-        case '56':
-        case '60':
-        case '61':
-        case '62':
-        case '63':
-        case '64':
-        case '65':
-        case '66':
-        case '67':
-        case '70':
-        case '71':
-        case '72':
-        case '73':
-        case '74':
-        case '75':
-        case '98':
-        case '99':
-            $pisItem = $this->dom->createElement('PISOutr');
-            $this->dom->addChild($pisItem, 'CST', $cst, true, "[item $nItem] Código de Situação Tributária do PIS");
-            $this->dom->addChild($pisItem, 'vBC', $vBC, false, "[item $nItem] Valor da Base de Cálculo do PIS");
-            $this->dom->addChild($pisItem, 'pPIS', $pPIS, false, "[item $nItem] Alíquota do PIS (em percentual)");
-            $this->dom->addChild($pisItem, 'qBCProd', $qBCProd, false, "[item $nItem] Quantidade Vendida");
-            $this->dom->addChild($pisItem, 'vAliqProd', $vAliqProd, false, "[item $nItem] Alíquota do PIS (em reais)");
-            $this->dom->addChild($pisItem, 'vPIS', $vPIS, true, "[item $nItem] Valor do PIS");
-            break;
+            case '01':
+            case '02':
+                $pisItem = $this->dom->createElement('PISAliq');
+                $this->dom->addChild($pisItem, 'CST', $cst, true, "[item $nItem] Código de Situação Tributária do PIS");
+                $this->dom->addChild($pisItem, 'vBC', $vBC, true, "[item $nItem] Valor da Base de Cálculo do PIS");
+                $this->dom->addChild($pisItem, 'pPIS', $pPIS, true, "[item $nItem] Alíquota do PIS (em percentual)");
+                $this->dom->addChild($pisItem, 'vPIS', $vPIS, true, "[item $nItem] Valor do PIS");
+                break;
+            case '03':
+                $pisItem = $this->dom->createElement('PISQtde');
+                $this->dom->addChild($pisItem, 'CST', $cst, true, "[item $nItem] Código de Situação Tributária do PIS");
+                $this->dom->addChild($pisItem, 'qBCProd', $qBCProd, true, "[item $nItem] Quantidade Vendida");
+                $this->dom->addChild($pisItem, 'vAliqProd', $vAliqProd, true, "[item $nItem] Alíquota do PIS (em reais)");
+                $this->dom->addChild($pisItem, 'vPIS', $vPIS, true, "[item $nItem] Valor do PIS");
+                break;
+            case '04':
+            case '05':
+            case '06':
+            case '07':
+            case '08':
+            case '09':
+                $pisItem = $this->dom->createElement('PISNT');
+                $this->dom->addChild($pisItem, 'CST', $cst, true, "[item $nItem] Código de Situação Tributária do PIS");
+                break;
+            case '49':
+            case '50':
+            case '51':
+            case '52':
+            case '53':
+            case '54':
+            case '55':
+            case '56':
+            case '60':
+            case '61':
+            case '62':
+            case '63':
+            case '64':
+            case '65':
+            case '66':
+            case '67':
+            case '70':
+            case '71':
+            case '72':
+            case '73':
+            case '74':
+            case '75':
+            case '98':
+            case '99':
+                $pisItem = $this->dom->createElement('PISOutr');
+                $this->dom->addChild($pisItem, 'CST', $cst, true, "[item $nItem] Código de Situação Tributária do PIS");
+                $this->dom->addChild($pisItem, 'vBC', $vBC, false, "[item $nItem] Valor da Base de Cálculo do PIS");
+                $this->dom->addChild($pisItem, 'pPIS', $pPIS, false, "[item $nItem] Alíquota do PIS (em percentual)");
+                $this->dom->addChild($pisItem, 'qBCProd', $qBCProd, false, "[item $nItem] Quantidade Vendida");
+                $this->dom->addChild($pisItem, 'vAliqProd', $vAliqProd, false, "[item $nItem] Alíquota do PIS (em reais)");
+                $this->dom->addChild($pisItem, 'vPIS', $vPIS, true, "[item $nItem] Valor do PIS");
+                break;
         }
         $pis = $this->dom->createElement('PIS');
-        if(isset($pisItem)) {
+        if (isset($pisItem)) {
             $pis->appendChild($pisItem);
         }
         $this->aPIS[$nItem] = $pis;
@@ -2840,54 +2840,54 @@ class MakeNFe extends BaseMake
         $vAliqProd = ''
     ) {
         switch ($cst) {
-        case '01':
-        case '02':
-            $confinsItem = $this->zTagCOFINSAliq($cst, $vBC, $pCOFINS, $vCOFINS);
-            break;
-        case '03':
-            $confinsItem = $this->dom->createElement('COFINSQtde');
-            $this->dom->addChild($confinsItem, 'CST', $cst, true, "[item $nItem] Código de Situação Tributária da COFINS");
-            $this->dom->addChild($confinsItem, 'qBCProd', $qBCProd, true, "[item $nItem] Quantidade Vendida");
-            $this->dom->addChild($confinsItem, 'vAliqProd', $vAliqProd, true, "[item $nItem] Alíquota do COFINS (em reais)");
-            $this->dom->addChild($confinsItem, 'vCOFINS', $vCOFINS, true, "[item $nItem] Valor do COFINS");
-            break;
-        case '04':
-        case '05':
-        case '06':
-        case '07':
-        case '08':
-        case '09':
-            $confinsItem = $this->zTagCOFINSNT($cst);
-            break;
-        case '49':
-        case '50':
-        case '51':
-        case '52':
-        case '53':
-        case '54':
-        case '55':
-        case '56':
-        case '60':
-        case '61':
-        case '62':
-        case '63':
-        case '64':
-        case '65':
-        case '66':
-        case '67':
-        case '70':
-        case '71':
-        case '72':
-        case '73':
-        case '74':
-        case '75':
-        case '98':
-        case '99':
-            $confinsItem = $this->zTagCOFINSoutr($cst, $vBC, $pCOFINS, $qBCProd, $vAliqProd, $vCOFINS);
-            break;
+            case '01':
+            case '02':
+                $confinsItem = $this->zTagCOFINSAliq($cst, $vBC, $pCOFINS, $vCOFINS);
+                break;
+            case '03':
+                $confinsItem = $this->dom->createElement('COFINSQtde');
+                $this->dom->addChild($confinsItem, 'CST', $cst, true, "[item $nItem] Código de Situação Tributária da COFINS");
+                $this->dom->addChild($confinsItem, 'qBCProd', $qBCProd, true, "[item $nItem] Quantidade Vendida");
+                $this->dom->addChild($confinsItem, 'vAliqProd', $vAliqProd, true, "[item $nItem] Alíquota do COFINS (em reais)");
+                $this->dom->addChild($confinsItem, 'vCOFINS', $vCOFINS, true, "[item $nItem] Valor do COFINS");
+                break;
+            case '04':
+            case '05':
+            case '06':
+            case '07':
+            case '08':
+            case '09':
+                $confinsItem = $this->zTagCOFINSNT($cst);
+                break;
+            case '49':
+            case '50':
+            case '51':
+            case '52':
+            case '53':
+            case '54':
+            case '55':
+            case '56':
+            case '60':
+            case '61':
+            case '62':
+            case '63':
+            case '64':
+            case '65':
+            case '66':
+            case '67':
+            case '70':
+            case '71':
+            case '72':
+            case '73':
+            case '74':
+            case '75':
+            case '98':
+            case '99':
+                $confinsItem = $this->zTagCOFINSoutr($cst, $vBC, $pCOFINS, $qBCProd, $vAliqProd, $vCOFINS);
+                break;
         }
         $confins = $this->dom->createElement('COFINS');
-        if(isset($confinsItem)) {
+        if (isset($confinsItem)) {
             $confins->appendChild($confinsItem);
         }
         $this->aCOFINS[$nItem] = $confins;

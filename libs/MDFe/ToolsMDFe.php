@@ -253,8 +253,8 @@ class ToolsMDFe extends BaseTools
             //tpEvento = 110111 ==> Cancelamento
             //chave do evento == chave da NFe
             //protocolo do evneto ==  protocolo da NFe
-            if ($cStat == '135' 
-                && $tpEvento == '110111' 
+            if ($cStat == '135'
+                && $tpEvento == '110111'
                 && $chaveEvento == $chaveMDFe
             ) {
                 $proMDFe->getElementsByTagName('cStat')->item(0)->nodeValue = '101';
@@ -893,25 +893,25 @@ class ToolsMDFe extends BaseTools
     {
         //montagem dos dados da mensagem SOAP
         switch ($tpEvento) {
-        case '110111':
-            //cancelamento
-            $aliasEvento = 'CancMDFe';
-            $descEvento = 'Cancelamento';
-            break;
-        case '110112':
-            //encerramento
-            $aliasEvento = 'EncMDFe';
-            $descEvento = 'Encerramento';
-            break;
-        case '110114':
-            //inclusao do condutor
-            $aliasEvento = 'EvIncCondut';
-            $descEvento = 'Inclusao Condutor';
-            break;
-        default:
-            $msg = "O código do tipo de evento informado não corresponde a "
-            . "nenhum evento estabelecido.";
-            throw new Exception\RuntimeException($msg);
+            case '110111':
+                //cancelamento
+                $aliasEvento = 'CancMDFe';
+                $descEvento = 'Cancelamento';
+                break;
+            case '110112':
+                //encerramento
+                $aliasEvento = 'EncMDFe';
+                $descEvento = 'Encerramento';
+                break;
+            case '110114':
+                //inclusao do condutor
+                $aliasEvento = 'EvIncCondut';
+                $descEvento = 'Inclusao Condutor';
+                break;
+            default:
+                $msg = "O código do tipo de evento informado não corresponde a "
+                . "nenhum evento estabelecido.";
+                throw new Exception\RuntimeException($msg);
         }
         return array('alias' => $aliasEvento, 'desc' => $descEvento);
     }

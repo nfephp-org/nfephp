@@ -38,7 +38,7 @@
 
 namespace NFePHP\Extras;
 
-use NFePHP\Extras\nfephpException;
+use NFePHP\Extras\NfephpException;
 use NFePHP\Extras\PdfNFePHP;
 use NFePHP\Extras\CommonNFePHP;
 use NFePHP\Extras\DocumentoNFePHP;

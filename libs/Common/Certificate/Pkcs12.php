@@ -729,8 +729,8 @@ class Pkcs12
         $arCert = explode("\n", $pubKey);
         foreach ($arCert as $curData) {
             //remove a tag de inicio e fim do certificado
-            if (strncmp($curData, '-----BEGIN CERTIFICATE', 22) != 0 
-                && strncmp($curData, '-----END CERTIFICATE', 20) != 0 
+            if (strncmp($curData, '-----BEGIN CERTIFICATE', 22) != 0
+                && strncmp($curData, '-----END CERTIFICATE', 20) != 0
             ) {
                 //carrega o resultado numa string
                 $data .= trim($curData);

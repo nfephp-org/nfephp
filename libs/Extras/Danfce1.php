@@ -17,8 +17,6 @@ namespace NFePHP\Extras;
  *            Mario Almeida <mario at grupopmz dot com dot br>
  */
 
-
-
 //ajuste do tempo limite de resposta do processo
 set_time_limit(100);
 
@@ -254,7 +252,8 @@ class Danfce1 extends CommonNFePHP implements DocumentoNFePHP
         $y = $this->pConsumidorDANFE($x, $y, $hcliente);
         
         //COLOCA QRCODE
-        $y = $xInic + $hcabecalho + $hcabecalhoSecundario + $hprodutos + $hTotal + $hpagamentos + $hmsgfiscal + $hcliente;
+        $y = $xInic + $hcabecalho + $hcabecalhoSecundario + $hprodutos
+            + $hTotal + $hpagamentos + $hmsgfiscal + $hcliente;
         $y = $this->pQRDANFE($x, $y, $hQRCode);
 
         //retorna o ID na NFe
@@ -322,7 +321,8 @@ class Danfce1 extends CommonNFePHP implements DocumentoNFePHP
         if (!empty($emitIM)) {
             $texto = $texto . " - IM:" . $emitIM;
         }
-        $texto = $texto . "\n" . $emitLgr . "," . $emitNro . " " . $emitCpl . "," . $emitBairro . ". CEP:" . $emitCEP . ". " . $emitMun . "-" . $emitUF . $emitFone;
+        $texto = $texto . "\n" . $emitLgr . "," . $emitNro . " " . $emitCpl . "," . $emitBairro
+                . ". CEP:" . $emitCEP . ". " . $emitMun . "-" . $emitUF . $emitFone;
         $this->pTextBox($xRs, $y, $wRs, $h, $texto, $aFont, 'C', $alignEmit, 0, '', false);
 
     }
@@ -370,7 +370,19 @@ class Danfce1 extends CommonNFePHP implements DocumentoNFePHP
         $wBoxDescricao = $w*0.43;
         $xBoxDescricao = $wBoxCod + $x;
         $texto = "DESCRICÃO";
-        $this->pTextBox($xBoxDescricao, $y, $wBoxDescricao, $hLinha, $texto, $aFontCabProdutos, 'T', 'L', 0, '', false);
+        $this->pTextBox(
+            $xBoxDescricao,
+            $y,
+            $wBoxDescricao,
+            $hLinha,
+            $texto,
+            $aFontCabProdutos,
+            'T',
+            'L',
+            0,
+            '',
+            false
+        );
         
         //COLOCA QUANTIDADE
         $wBoxQt = $w*0.08;
@@ -426,37 +438,95 @@ class Danfce1 extends CommonNFePHP implements DocumentoNFePHP
                 $wBoxDescricao = $w*0.43;
                 $xBoxDescricao = $wBoxCod + $x;
                 $texto = $xProd;
-                $this->pTextBox($xBoxDescricao, $yBoxProd, $wBoxDescricao, $hMaxLinha, $texto, $aFontProdutos, 'C', 'L', 0, '', false);
+                $this->pTextBox(
+                    $xBoxDescricao,
+                    $yBoxProd,
+                    $wBoxDescricao,
+                    $hMaxLinha,
+                    $texto,
+                    $aFontProdutos,
+                    'C',
+                    'L',
+                    0,
+                    '',
+                    false
+                );
 
                 //COLOCA PRODUTO QUANTIDADE
                 $wBoxQt = $w*0.08;
                 $xBoxQt = $wBoxDescricao + $xBoxDescricao;
                 $texto = $qCom;
-                $this->pTextBox($xBoxQt, $yBoxProd, $wBoxQt, $hMaxLinha, $texto, $aFontProdutos, 'C', 'C', 0, '', false);
+                $this->pTextBox(
+                    $xBoxQt,
+                    $yBoxProd,
+                    $wBoxQt,
+                    $hMaxLinha,
+                    $texto,
+                    $aFontProdutos,
+                    'C',
+                    'C',
+                    0,
+                    '',
+                    false
+                );
 
                 //COLOCA PRODUTO UNIDADE
                 $wBoxUn = $w*0.06;
                 $xBoxUn = $wBoxQt + $xBoxQt;
                 $texto = $uCom;
-                $this->pTextBox($xBoxUn, $yBoxProd, $wBoxUn, $hMaxLinha, $texto, $aFontProdutos, 'C', 'C', 0, '', false);
+                $this->pTextBox(
+                    $xBoxUn,
+                    $yBoxProd,
+                    $wBoxUn,
+                    $hMaxLinha,
+                    $texto,
+                    $aFontProdutos,
+                    'C',
+                    'C',
+                    0,
+                    '',
+                    false
+                );
 
                 //COLOCA PRODUTO VL UNITÁRIO
                 $wBoxVl = $w*0.13;
                 $xBoxVl = $wBoxUn + $xBoxUn;
                 $texto = $vUnCom;
-                $this->pTextBox($xBoxVl, $yBoxProd, $wBoxVl, $hMaxLinha, $texto, $aFontProdutos, 'C', 'R', 0, '', false);
+                $this->pTextBox(
+                    $xBoxVl,
+                    $yBoxProd,
+                    $wBoxVl,
+                    $hMaxLinha,
+                    $texto,
+                    $aFontProdutos,
+                    'C',
+                    'R',
+                    0,
+                    '',
+                    false
+                );
 
                 //COLOCA PRODUTO VL TOTAL
                 $wBoxTotal = $w*0.13;
                 $xBoxTotal = $wBoxVl + $xBoxVl;
                 $texto = $vProd;
-                $this->pTextBox($xBoxTotal, $yBoxProd, $wBoxTotal, $hMaxLinha, $texto, $aFontProdutos, 'C', 'R', 0, '', false);
+                $this->pTextBox(
+                    $xBoxTotal,
+                    $yBoxProd,
+                    $wBoxTotal,
+                    $hMaxLinha,
+                    $texto,
+                    $aFontProdutos,
+                    'C',
+                    'R',
+                    0,
+                    '',
+                    false
+                );
                 
                 $cont++;
             }
         }
-
-        
     }
     
     protected function pTotalDANFE($x = 0, $y = 0, $h = 0)
@@ -581,13 +651,23 @@ class Danfce1 extends CommonNFePHP implements DocumentoNFePHP
                 //COLOCA PRODUTO DESCRIÇÃO
                 $xBoxDescricao = $wBoxEsq + $x;
                 $texto = "R$ " . $vPag;
-                $this->pTextBox($xBoxDescricao, $yBoxProd, $wBoxDir, $hLinha, $texto, $aFontProdutos, 'C', 'R', 0, '', false);
+                $this->pTextBox(
+                    $xBoxDescricao,
+                    $yBoxProd,
+                    $wBoxDir,
+                    $hLinha,
+                    $texto,
+                    $aFontProdutos,
+                    'C',
+                    'R',
+                    0,
+                    '',
+                    false
+                );
 
                 $cont++;
             }
         }
-
-        
     }
     
     protected function pFiscalDANFE($x = 0, $y = 0, $h = 0)
@@ -679,7 +759,8 @@ class Danfce1 extends CommonNFePHP implements DocumentoNFePHP
             $consDoc = $consCPF.$consCNPJ.$considEstrangeiro; //documentos do consumidor
             
             $yTex1 = $y + $hLinha;
-            $texto = $consNome ." - ". $consDoc . "\n" . $consLgr . "," . $consNro . " " . $consCpl . "," . $consBairro . ". CEP:" . $consCEP . ". " . $consMun . "-" . $consUF;
+            $texto = $consNome ." - ". $consDoc . "\n" . $consLgr . "," . $consNro . " "
+                    . $consCpl . "," . $consBairro . ". CEP:" . $consCEP . ". " . $consMun . "-" . $consUF;
             $this->pTextBox($x, $yTex1, $w, $hLinha*3, $texto, $aFontTex, 'C', 'C', 0, '', false);
         } else {
             //COLOCA TITULO
@@ -713,7 +794,8 @@ class Danfce1 extends CommonNFePHP implements DocumentoNFePHP
         $xQr = ($w/2) - ($wQr/2);
         $qrcode->displayFPDF($this->pdf, $xQr, $yQr, $wQr);
         $yQr = ($yQr+$hQr+$margemInterna);
-        $this->pTextBox($x, $yQr, $w, $hBoxLinha, "Protocolo de Autorização: " . $nProt . "\n" . $dhRecbto, $aFontTex, 'C', 'C', 0, '', false);
+        $this->pTextBox($x, $yQr, $w, $hBoxLinha, "Protocolo de Autorização: " . $nProt . "\n"
+                . $dhRecbto, $aFontTex, 'C', 'C', 0, '', false);
     }
    
     /**
@@ -768,20 +850,20 @@ class Danfce1 extends CommonNFePHP implements DocumentoNFePHP
     protected static function getCardName($tBand)
     {
         switch ($tBand) {
-        case '01':
-            $tBandNome = 'VISA';
-            break;
-        case '02':
-            $tBandNome = 'MASTERCARD';
-            break;
-        case '03':
-            $tBandNome = 'AMERICAM EXPRESS';
-            break;
-        case '04':
-            $tBandNome = 'SOROCRED';
-            break;
-        case '99':
-            $tBandNome = 'OUTROS';
+            case '01':
+                $tBandNome = 'VISA';
+                break;
+            case '02':
+                $tBandNome = 'MASTERCARD';
+                break;
+            case '03':
+                $tBandNome = 'AMERICAM EXPRESS';
+                break;
+            case '04':
+                $tBandNome = 'SOROCRED';
+                break;
+            case '99':
+                $tBandNome = 'OUTROS';
         }
         return $tBandNome;
     }//fim getCardName
@@ -789,35 +871,35 @@ class Danfce1 extends CommonNFePHP implements DocumentoNFePHP
     protected function tipoPag($tPag)
     {
         switch ($tPag) {
-        case '01':
-            $tPagNome = 'Dinheiro';
-            break;
-        case '02':
-            $tPagNome = 'Cheque';
-            break;
-        case '03':
-            $tPagNome = 'Cartão de Crédito';
-            break;
-        case '04':
-            $tPagNome = 'Cartão de Débito';
-            break;
-        case '05':
-            $tPagNome = 'Crédito Loja';
-            break;
-        case '10':
-            $tPagNome = 'Vale Alimentação';
-            break;
-        case '11':
-            $tPagNome = 'Vale Refeição';
-            break;
-        case '12':
-            $tPagNome = 'Vale Presente';
-            break;
-        case '13':
-            $tPagNome = 'Vale Combustível';
-            break;
-        case '99':
-            $tPagNome = 'Outros';
+            case '01':
+                $tPagNome = 'Dinheiro';
+                break;
+            case '02':
+                $tPagNome = 'Cheque';
+                break;
+            case '03':
+                $tPagNome = 'Cartão de Crédito';
+                break;
+            case '04':
+                $tPagNome = 'Cartão de Débito';
+                break;
+            case '05':
+                $tPagNome = 'Crédito Loja';
+                break;
+            case '10':
+                $tPagNome = 'Vale Alimentação';
+                break;
+            case '11':
+                $tPagNome = 'Vale Refeição';
+                break;
+            case '12':
+                $tPagNome = 'Vale Presente';
+                break;
+            case '13':
+                $tPagNome = 'Vale Combustível';
+                break;
+            case '99':
+                $tPagNome = 'Outros';
         }
         return $tPagNome;
     }

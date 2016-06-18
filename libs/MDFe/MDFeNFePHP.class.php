@@ -873,11 +873,11 @@ class MDFeNFePHP
         //estados que participam do horario de verão
         $aUFhv = array('BA','ES','GO','MG','MS','PR','RJ','RS','SP','SC','TO');
         //corrigir o timeZone
-        if ($this->UF == 'AC' 
-            || $this->UF == 'AM' 
-            || $this->UF == 'MT' 
-            || $this->UF == 'MS' 
-            || $this->UF == 'RO' 
+        if ($this->UF == 'AC'
+            || $this->UF == 'AM'
+            || $this->UF == 'MT'
+            || $this->UF == 'MS'
+            || $this->UF == 'RO'
             || $this->UF == 'RR'
         ) {
             $this->timeZone = '-04:00';
@@ -944,20 +944,20 @@ class MDFeNFePHP
             $msg = 'O dado informado não é um XML ou não foi encontrado. Você deve passar o conteudo de um arquivo xml assinado como parâmetro.';
             foreach ($errors as $k => $intError) {
                 switch ($intError->level) {
-                case LIBXML_ERR_WARNING:
-                    $aError[] = " Atençao $intError->code: " . $intError->message;
-                    break;
-                case LIBXML_ERR_ERROR:
-                    //echo "\n".$intError->code." codigo do erro \n";
-                    if ($intError->code != 1845) {
-                        $aError[] = " Erro $intError->code: " . $intError->message;
-                    } else {
-                        $passa = 1;
-                    }
-                    break;
-                case LIBXML_ERR_FATAL:
-                    $aError[] = " Erro Fatal $intError->code: " . $intError->message;
-                    break;
+                    case LIBXML_ERR_WARNING:
+                        $aError[] = " Atençao $intError->code: " . $intError->message;
+                        break;
+                    case LIBXML_ERR_ERROR:
+                        //echo "\n".$intError->code." codigo do erro \n";
+                        if ($intError->code != 1845) {
+                            $aError[] = " Erro $intError->code: " . $intError->message;
+                        } else {
+                            $passa = 1;
+                        }
+                        break;
+                    case LIBXML_ERR_FATAL:
+                        $aError[] = " Erro Fatal $intError->code: " . $intError->message;
+                        break;
                 }
                 if ($passa == 0) {
                     $msg .= $intError->message;
@@ -1109,20 +1109,20 @@ class MDFeNFePHP
                             ,"não é um dos seguintes possiveis");
 
                 switch ($intError->level) {
-                case LIBXML_ERR_WARNING:
-                    $aError[] = " Atençao $intError->code: " . str_replace($en, $pt, $intError->message);
-                    break;
-                case LIBXML_ERR_ERROR:
-                    if ($intError->code != 1845) {
-                        $aError[] = " Erro $intError->code: " . str_replace($en, $pt, $intError->message);
-                    } else {
-                        $passa = 1;
-                        $flagOK = true;
-                    }
-                    break;
-                case LIBXML_ERR_FATAL:
-                    $aError[] = " Erro Fatal $intError->code: " . str_replace($en, $pt, $intError->message);
-                    break;
+                    case LIBXML_ERR_WARNING:
+                        $aError[] = " Atençao $intError->code: " . str_replace($en, $pt, $intError->message);
+                        break;
+                    case LIBXML_ERR_ERROR:
+                        if ($intError->code != 1845) {
+                            $aError[] = " Erro $intError->code: " . str_replace($en, $pt, $intError->message);
+                        } else {
+                            $passa = 1;
+                            $flagOK = true;
+                        }
+                        break;
+                    case LIBXML_ERR_FATAL:
+                        $aError[] = " Erro Fatal $intError->code: " . str_replace($en, $pt, $intError->message);
+                        break;
                 }
                 if ($passa == 0) {
                     $msg .= str_replace($en, $pt, $intError->message);
@@ -1240,20 +1240,20 @@ class MDFeNFePHP
                               ,"não é um dos seguintes possiveis");
 
                     switch ($intError->level) {
-                    case LIBXML_ERR_WARNING:
-                        $aError[] = " Atençao $intError->code: " . str_replace($en, $pt, $intError->message);
-                        break;
-                    case LIBXML_ERR_ERROR:
-                        if ($intError->code != 1845) {
-                            $aError[] = " Erro $intError->code: " . str_replace($en, $pt, $intError->message);
-                        } else {
-                            $passa = 1;
-                            $flagOK = true;
-                        }
-                        break;
-                    case LIBXML_ERR_FATAL:
-                        $aError[] = " Erro Fatal $intError->code: " . str_replace($en, $pt, $intError->message);
-                        break;
+                        case LIBXML_ERR_WARNING:
+                            $aError[] = " Atençao $intError->code: " . str_replace($en, $pt, $intError->message);
+                            break;
+                        case LIBXML_ERR_ERROR:
+                            if ($intError->code != 1845) {
+                                $aError[] = " Erro $intError->code: " . str_replace($en, $pt, $intError->message);
+                            } else {
+                                $passa = 1;
+                                $flagOK = true;
+                            }
+                            break;
+                        case LIBXML_ERR_FATAL:
+                            $aError[] = " Erro Fatal $intError->code: " . str_replace($en, $pt, $intError->message);
+                            break;
                     }
                     if ($passa == 0) {
                         $msg .= str_replace($en, $pt, $intError->message);
@@ -2115,32 +2115,32 @@ class MDFeNFePHP
             }
             $cOrgao='43';
             switch ($tpEvento) {
-            case '110111':
-                $descEvento = 'Cancelamento';
+                case '110111':
+                    $descEvento = 'Cancelamento';
                     
-                $xml_ev = '<evCancMDFe>';
-                $xml_ev .= '<descEvento>'.$descEvento.'</descEvento>';
-                $xml_ev .= '<nProt>'.$nProt.'</nProt>';
-                $xml_ev .= '<xJust>'.$xJust.'</xJust>';
-                $xml_ev .= '</evCancMDFe>';
-                break;
-            case '110112':
-                $descEvento = 'Encerramento';
+                    $xml_ev = '<evCancMDFe>';
+                    $xml_ev .= '<descEvento>'.$descEvento.'</descEvento>';
+                    $xml_ev .= '<nProt>'.$nProt.'</nProt>';
+                    $xml_ev .= '<xJust>'.$xJust.'</xJust>';
+                    $xml_ev .= '</evCancMDFe>';
+                    break;
+                case '110112':
+                    $descEvento = 'Encerramento';
                     
-                $xml_ev = '<evEncMDFe>';
-                $xml_ev .= '<descEvento>'.$descEvento.'</descEvento>';
-                $xml_ev .= '<nProt>'.$nProt.'</nProt>';
-                $xml_ev .= '<dtEnc>'.date("Y-m-d").'</dtEnc>';
-                $xml_ev .= '<cUF>'.$cOrgao.'</cUF>';
-                $xml_ev .= '<cMun>'.$cMun.'</cMun>';
-                $xml_ev .= '</evEncMDFe>';
-                break;
-            case '110114':
-                $descEvento = 'Inclusão de Condutor';
-                break;
-            default:
-                $msg = "O código do tipo de evento informado não corresponde a nenhum evento de manifestação de destinatário.";
-                throw new nfephpException($msg);
+                    $xml_ev = '<evEncMDFe>';
+                    $xml_ev .= '<descEvento>'.$descEvento.'</descEvento>';
+                    $xml_ev .= '<nProt>'.$nProt.'</nProt>';
+                    $xml_ev .= '<dtEnc>'.date("Y-m-d").'</dtEnc>';
+                    $xml_ev .= '<cUF>'.$cOrgao.'</cUF>';
+                    $xml_ev .= '<cMun>'.$cMun.'</cMun>';
+                    $xml_ev .= '</evEncMDFe>';
+                    break;
+                case '110114':
+                    $descEvento = 'Inclusão de Condutor';
+                    break;
+                default:
+                    $msg = "O código do tipo de evento informado não corresponde a nenhum evento de manifestação de destinatário.";
+                    throw new nfephpException($msg);
             }
             $resp = array('bStat'=>false,'cStat'=>'','xMotivo'=>'','arquivo'=>'');
             //ajusta ambiente
@@ -2844,27 +2844,27 @@ class MDFeNFePHP
         }
         //monta a terminação do URL
         switch ($metodo) {
-        case 'mdfeRecepcaoLote':
-            $usef = "MDFeRecepcao";
-            break;
-        case 'mdfeRetRecepcao':
-            $usef = "MDFeRetRecepcao";
-            break;
+            case 'mdfeRecepcaoLote':
+                $usef = "MDFeRecepcao";
+                break;
+            case 'mdfeRetRecepcao':
+                $usef = "MDFeRetRecepcao";
+                break;
             /*case 'MDFeCancelamento':
                 $usef = "CteCancelamento";
                 break;
             case 'MDFeInutilizacao':
                 $usef = "CteInutilizacao";
                 break;*/
-        case 'mdfeRecepcaoEvento':
-            $usef = "MDFeRecepcaoEvento";
-            break;
-        case 'mdfeConsultaMDF':
-            $usef = "MDFeConsulta";
-            break;
-        case 'mdfeStatusServicoMDF':
-            $usef = "MDFeStatusServico";
-            break;
+            case 'mdfeRecepcaoEvento':
+                $usef = "MDFeRecepcaoEvento";
+                break;
+            case 'mdfeConsultaMDF':
+                $usef = "MDFeConsulta";
+                break;
+            case 'mdfeStatusServicoMDF':
+                $usef = "MDFeStatusServico";
+                break;
         }
 
         /*//para os estados de AM, MT e PR é necessário usar wsdl baixado para acesso ao webservice
@@ -3008,27 +3008,27 @@ class MDFeNFePHP
         if ($this->enableSCAN) {
             //monta a terminação do URL
             switch ($metodo) {
-            case 'mdfeRecepcaoLote':
-                $usef = "MDFeRecepcao";
-                break;
-            case 'mdfeRetRecepcao':
-                $usef = "MDFeRetRecepcao";
-                break;
+                case 'mdfeRecepcaoLote':
+                    $usef = "MDFeRecepcao";
+                    break;
+                case 'mdfeRetRecepcao':
+                    $usef = "MDFeRetRecepcao";
+                    break;
             /*case 'MDFeCancelamento':
                 $usef = "CteCancelamento";
                 break;
             case 'MDFeInutilizacao':
                 $usef = "CteInutilizacao";
                 break;*/
-            case 'mdfeRecepcaoEvento':
-                $usef = "MDFeRecepcaoEvento";
-                break;
-            case 'mdfeConsultaMDF':
-                $usef = "MDFeConsulta";
-                break;
-            case 'mdfeStatusServicoMDF':
-                $usef = "MDFeStatusServico";
-                break;
+                case 'mdfeRecepcaoEvento':
+                    $usef = "MDFeRecepcaoEvento";
+                    break;
+                case 'mdfeConsultaMDF':
+                    $usef = "MDFeConsulta";
+                    break;
+                case 'mdfeStatusServicoMDF':
+                    $usef = "MDFeStatusServico";
+                    break;
             }
             $aURL = $this->loadSEFAZ($this->raizDir . 'config' . DIRECTORY_SEPARATOR . "mdfe_ws1.xml", $ambiente, 'SCAN');
             $urlsefaz = $aURL[$servico]['URL'];

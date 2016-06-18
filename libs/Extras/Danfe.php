@@ -2,7 +2,7 @@
 
 namespace NFePHP\Extras;
 
-use NFePHP\Extras\nfephpException;
+use NFePHP\Extras\NfephpException;
 use NFePHP\Extras\PdfNFePHP;
 use NFePHP\Extras\CommonNFePHP;
 use NFePHP\Extras\DocumentoNFePHP;
@@ -388,7 +388,7 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
         //a classe com 9 parâmetros, pois o "$exibirPIS" foi removido em 20/08/2014
         // e parametrizado como atributo público para simplificar o construtor
         if (func_num_args() == 9) {
-            throw new nfephpException("ATENCAO: o construtor da classe DanfeNFePHP nao possui mais 9 parametros");
+            throw new NfephpException("ATENCAO: o construtor da classe DanfeNFePHP nao possui mais 9 parametros");
         }
         if (is_numeric($mododebug)) {
             $this->debugMode = $mododebug;
@@ -445,7 +445,7 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
             $this->infProt    = $this->dom->getElementsByTagName("infProt")->item(0);
             //valida se o XML é uma NF-e modelo 55, pois não pode ser 65 (NFC-e)
             if ($this->pSimpleGetValue($this->ide, "mod") != '55') {
-                throw new nfephpException("O xml do DANFE deve ser uma NF-e modelo 55");
+                throw new NfephpException("O xml do DANFE deve ser uma NF-e modelo 55");
             }
         }
     } //fim __construct
@@ -602,7 +602,10 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
             $linhasDup = 2;
         } elseif (($this->dup->length > 14) && ($this->dup->length <= 21)) {
             $linhasDup = 3;
-        } elseif ($this->dup->length > 21) {   // chinnonsantos 11/05/2016: Limite máximo de impressão de duplicatas na NFe, só vai ser exibito as 21 primeiras duplicatas (parcelas de pagamento), se não oculpa espaço d+, cada linha comporta até 7 duplicatas.
+        } elseif ($this->dup->length > 21) {
+            // chinnonsantos 11/05/2016: Limite máximo de impressão de duplicatas na NFe,
+            // só vai ser exibito as 21 primeiras duplicatas (parcelas de pagamento),
+            // se não oculpa espaço d+, cada linha comporta até 7 duplicatas.
             $linhasDup = 3;
         }
         //verifica se será impressa a linha dos serviços ISSQN
@@ -1187,7 +1190,9 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
             //endereço
             $y1 = $y1+5;
             $aFont = array('font'=>$this->fontePadrao, 'size'=>8, 'style'=>'');
-            $fone = ! empty($this->enderEmit->getElementsByTagName("fone")->item(0)->nodeValue) ? $this->enderEmit->getElementsByTagName("fone")->item(0)->nodeValue : '';
+            $fone = ! empty($this->enderEmit->getElementsByTagName("fone")->item(0)->nodeValue)
+                 ? $this->enderEmit->getElementsByTagName("fone")->item(0)->nodeValue
+                 : '';
             $lgr = $this->pSimpleGetValue($this->enderEmit, "xLgr");
             $nro = $this->pSimpleGetValue($this->enderEmit, "nro");
             $cpl = $this->pSimpleGetValue($this->enderEmit, "xCpl", " - ");
@@ -1378,7 +1383,9 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
         $texto = 'INSCRIÇÃO ESTADUAL DO SUBST. TRIBUT.';
         $aFont = array('font'=>$this->fontePadrao, 'size'=>6, 'style'=>'');
         $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 1, '');
-        $texto = ! empty($this->emit->getElementsByTagName("IEST")->item(0)->nodeValue) ? $this->emit->getElementsByTagName("IEST")->item(0)->nodeValue : '';
+        $texto = ! empty($this->emit->getElementsByTagName("IEST")->item(0)->nodeValue)
+             ? $this->emit->getElementsByTagName("IEST")->item(0)->nodeValue
+             : '';
         $aFont = array('font'=>$this->fontePadrao, 'size'=>10, 'style'=>'B');
         $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'B', 'C', 0, '');
         //CNPJ
@@ -1947,7 +1954,7 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
 
         $x = $this->pImpostoDanfeHelper($x, $y, $w, $h, "V. TOTAL PRODUTOS", "vProd");
 
-        // 
+        //
 
         $y += $h;
         $x = $x_inicial;
@@ -2018,18 +2025,18 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
         $tipoFrete = ! empty($this->transp->getElementsByTagName("modFrete")->item(0)->nodeValue) ?
                 $this->transp->getElementsByTagName("modFrete")->item(0)->nodeValue : '0';
         switch ($tipoFrete) {
-        case 0:
-            $texto = "(0) Emitente";
-            break;
-        case 1:
-            $texto = "(1) Dest/Rem";
-            break;
-        case 2:
-            $texto = "(2) Terceiros";
-            break;
-        case 9:
-            $texto = "(9) Sem Frete";
-            break;
+            case 0:
+                $texto = "(0) Emitente";
+                break;
+            case 1:
+                $texto = "(1) Dest/Rem";
+                break;
+            case 2:
+                $texto = "(2) Terceiros";
+                break;
+            case 9:
+                $texto = "(9) Sem Frete";
+                break;
         }
         $aFont = array('font'=>$this->fontePadrao, 'size'=>10, 'style'=>'B');
         $this->pTextBox($x, $y, $w2, $h, $texto, $aFont, 'C', 'C', 1, '');
@@ -2767,7 +2774,8 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
         // 1 - Normal - emissão normal;
         // 2 - Contingência FS - emissão em contingência com impressão do DANFE em Formulário de Segurança;
         // 3 - Contingência SCAN - emissão em contingência no Sistema de Contingência do Ambiente Nacional;
-        // 4 - Contingência DPEC - emissão em contingência com envio da Declaração Prévia de Emissão em Contingência;
+        // 4 - Contingência DPEC - emissão em contingência com envio da Declaração
+        //     Prévia de Emissão em Contingência;
         // 5 - Contingência FS-DA - emissão em contingência com impressão do DANFE em Formulário de
         //     Segurança para Impressão de Documento Auxiliar de Documento Fiscal Eletrônico (FS-DA);
         // 6 - Contingência SVC-AN
@@ -2776,24 +2784,24 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
         $dhCont = $this->pSimpleGetValue($this->ide, 'dhCont', ' Entrada em contingência : ');
         $texto = '';
         switch ($this->tpEmis) {
-        case 2:
-            $texto = 'CONTINGÊNCIA FS' . $dhCont . $xJust;
-            break;
-        case 3:
-            $texto = 'CONTINGÊNCIA SCAN' . $dhCont . $xJust;
-            break;
-        case 4:
-            $texto = 'CONTINGÊNCIA DPEC' . $dhCont . $xJust;
-            break;
-        case 5:
-            $texto = 'CONTINGÊNCIA FSDA' . $dhCont . $xJust;
-            break;
-        case 6:
-            $texto = 'CONTINGÊNCIA SVC-AN' . $dhCont . $xJust;
-            break;
-        case 7:
-            $texto = 'CONTINGÊNCIA SVC-RS' . $dhCont . $xJust;
-            break;
+            case 2:
+                $texto = 'CONTINGÊNCIA FS' . $dhCont . $xJust;
+                break;
+            case 3:
+                $texto = 'CONTINGÊNCIA SCAN' . $dhCont . $xJust;
+                break;
+            case 4:
+                $texto = 'CONTINGÊNCIA DPEC' . $dhCont . $xJust;
+                break;
+            case 5:
+                $texto = 'CONTINGÊNCIA FSDA' . $dhCont . $xJust;
+                break;
+            case 6:
+                $texto = 'CONTINGÊNCIA SVC-AN' . $dhCont . $xJust;
+                break;
+            case 7:
+                $texto = 'CONTINGÊNCIA SVC-RS' . $dhCont . $xJust;
+                break;
         }
         $y += 2;
         $aFont = array('font'=>$this->fontePadrao, 'size'=>7, 'style'=>'');

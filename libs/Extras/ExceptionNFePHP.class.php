@@ -14,7 +14,7 @@ namespace NFePHP\Extras;
 
 use Exception;
 
-class nfephpException extends Exception
+class NfephpException extends Exception
 {
     public function errorMessage()
     {
