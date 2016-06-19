@@ -105,7 +105,7 @@ class ToolsCTe extends BaseTools
 
         // Montagem do cabeçalho da comunicação SOAP
         $cabec = "<cteCabecMsg xmlns=\"$this->urlNamespace\">"
-            . "<cUF> $cUF </cUF>"
+            . "<cUF>$cUF</cUF>"
             . "<versaoDados>$this->urlVersion</versaoDados>"
             . "</cteCabecMsg>";
 
