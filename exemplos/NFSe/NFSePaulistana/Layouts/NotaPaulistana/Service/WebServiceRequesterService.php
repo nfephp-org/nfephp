@@ -10,12 +10,12 @@ use NFSe\Service\WebServiceRequesterServiceInterface;
 /**
  * Classe que faz requisições para a Nota Paulistana
  *
- * @category   NFePHP
- * @package    NFSe\Layouts\NotaPaulistana\Service\WebServiceRequesterService
- * @copyright  Copyright (c) 2008-2015
- * @license    http://www.gnu.org/licenses/lesser.html LGPL v3
- * @author     Thiago Colares <thicolares at gmail dot com>
- * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
+ * @category  NFePHP
+ * @package   NFSe\Layouts\NotaPaulistana\Service\WebServiceRequesterService
+ * @copyright Copyright (c) 2008-2015
+ * @license   http://www.gnu.org/licenses/lesser.html LGPL v3
+ * @author    Thiago Colares <thicolares at gmail dot com>
+ * @link      http://github.com/nfephp-org/nfephp for the canonical source repository
  */
 class WebServiceRequesterService implements WebServiceRequesterServiceInterface
 {
@@ -55,9 +55,9 @@ class WebServiceRequesterService implements WebServiceRequesterServiceInterface
     /**
      * Consulta NFS-es de um prestador dado um período
      *
-     * @param Prestador $prestador
-     * @param \DateTime $dataEmissaoInicio
-     * @param \DateTime $dataEmissaoFim
+     * @param  Prestador $prestador
+     * @param  \DateTime $dataEmissaoInicio
+     * @param  \DateTime $dataEmissaoFim
      * @return mixed
      */
     public function consultarNfses(Prestador $prestador, \DateTime $dataEmissaoInicio, \DateTime $dataEmissaoFim)

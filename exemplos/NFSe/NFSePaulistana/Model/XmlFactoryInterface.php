@@ -19,19 +19,19 @@ interface XmlFactoryInterface
      * ConsultarLoteRps
      * ConsultarSituacaoLoteRps
      * ConsultarNfsePeriodo
-     *
      */
 
     /**
      * Cria XML para consulta de NFS-es por período
      *
-     * @param \NFSe\Model\Prestador $prestador
-     * @param \DateTime $dataEmissaoInicial
-     * @param \DateTime $dataEmissaoFinal
+     * @param  \NFSe\Model\Prestador $prestador
+     * @param  \DateTime             $dataEmissaoInicial
+     * @param  \DateTime             $dataEmissaoFinal
      * @return mixed
      */
     public function createConsultarNfsePeriod(
-        \NFSe\Model\Prestador $prestador, \DateTime $dataEmissaoInicial, \DateTime $dataEmissaoFinal);
+        \NFSe\Model\Prestador $prestador, \DateTime $dataEmissaoInicial, \DateTime $dataEmissaoFinal
+    );
 
 }
 

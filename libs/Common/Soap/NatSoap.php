@@ -4,12 +4,13 @@ namespace NFePHP\Common\Soap;
 
 /**
  * Classe auxiliar para envio das mensagens SOAP usando SOAP nativo do PHP
- * @category   NFePHP
- * @package    NFePHP\Common\Soap
- * @copyright  Copyright (c) 2008-2014
- * @license    http://www.gnu.org/licenses/lesser.html LGPL v3
- * @author     Roberto L. Machado <linux dot rlm at gmail dot com>
- * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
+ *
+ * @category  NFePHP
+ * @package   NFePHP\Common\Soap
+ * @copyright Copyright (c) 2008-2014
+ * @license   http://www.gnu.org/licenses/lesser.html LGPL v3
+ * @author    Roberto L. Machado <linux dot rlm at gmail dot com>
+ * @link      http://github.com/nfephp-org/nfephp for the canonical source repository
  */
 
 use NFePHP\Common\Soap\CorrectedSoapClient;
@@ -24,17 +25,17 @@ class NatSoap
     public $soapDebug = '';
     /**
      *
-     * @var integer 
+     * @var integer
      */
     public $soapTimeout = 10;
     /**
      *
-     * @var array 
+     * @var array
      */
     public $aError = array();
     /**
      *
-     * @var string 
+     * @var string
      */
     public $pathWsdl = '';
     
@@ -49,11 +50,11 @@ class NatSoap
     private $priKEY;
        
     /**
-     * 
-     * @param string $publicKey
-     * @param string $privateKey
-     * @param string $certificateKey
-     * @param string $pathWsdl
+     *
+     * @param string  $publicKey
+     * @param string  $privateKey
+     * @param string  $certificateKey
+     * @param string  $pathWsdl
      * @param integer $timeout
      * @return boolean
      */
@@ -82,15 +83,15 @@ class NatSoap
     /**
      * Estabelece comunicaçao com servidor SOAP 1.1 ou 1.2 da SEFAZ,
      * usando as chaves publica e privada parametrizadas na contrução da classe.
-     * Conforme Manual de Integração Versão 4.0.1 
+     * Conforme Manual de Integração Versão 4.0.1
      *
-     * @param string $urlsefaz
-     * @param string $namespace
-     * @param string $cabecalho
-     * @param string $dados
-     * @param string $metodo
-     * @param integer $ambiente  tipo de ambiente 1 - produção e 2 - homologação
-     * @param string $UF unidade da federação, necessário para diferenciar AM, MT e PR
+     * @param  string  $urlsefaz
+     * @param  string  $namespace
+     * @param  string  $cabecalho
+     * @param  string  $dados
+     * @param  string  $metodo
+     * @param  integer $ambiente  tipo de ambiente 1 - produção e 2 - homologação
+     * @param  string  $UF        unidade da federação, necessário para diferenciar AM, MT e PR
      * @return mixed false se houve falha ou o retorno em xml do SEFAZ
      */
     public function send(

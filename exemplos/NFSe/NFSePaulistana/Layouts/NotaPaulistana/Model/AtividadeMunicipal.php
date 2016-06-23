@@ -21,6 +21,7 @@ class AtividadeMunicipal extends AbstractAtividadeMunicipal
 
     /**
      * AtividadeMunicipal constructor.
+     *
      * @param string $codigoServico
      */
     public function __construct($codigoServico)

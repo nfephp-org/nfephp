@@ -4,12 +4,13 @@ namespace NFePHP\MDFe;
 
 /**
  * Classe auxiliar com funções de DOM extendidas
- * @category   NFePHP
- * @package    NFePHP\Common\Dom\ReturnMDfe
- * @copyright  Copyright (c) 2008-2015
- * @license    http://www.gnu.org/licenses/lesser.html LGPL v3
- * @author     Roberto L. Machado <linux.rlm at gmail dot com>
- * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
+ *
+ * @category  NFePHP
+ * @package   NFePHP\Common\Dom\ReturnMDfe
+ * @copyright Copyright (c) 2008-2015
+ * @license   http://www.gnu.org/licenses/lesser.html LGPL v3
+ * @author    Roberto L. Machado <linux.rlm at gmail dot com>
+ * @link      http://github.com/nfephp-org/nfephp for the canonical source repository
  */
 
 use NFePHP\Common\Dom\Dom;
@@ -19,9 +20,10 @@ class ReturnMDFe
     /**
      * readReturnSefaz
      * Trata o retorno da SEFAZ devolvendo o resultado em um array
-     * @param string $method
-     * @param string $xmlResp
-     * @param mixed $parametro
+     *
+     * @param  string $method
+     * @param  string $xmlResp
+     * @param  mixed  $parametro
      * @return array
      */
     public static function readReturnSefaz($method, $xmlResp)
@@ -54,7 +56,8 @@ class ReturnMDFe
     
     /**
      * zReadRecepcaoLote
-     * @param DOMDocument $dom
+     *
+     * @param  DOMDocument $dom
      * @return boolean
      */
     protected static function zReadRecepcaoLote($dom)
@@ -94,7 +97,8 @@ class ReturnMDFe
     
     /**
      * zReadRetRecepcao
-     * @param DOMDocument $dom
+     *
+     * @param  DOMDocument $dom
      * @return array
      */
     protected static function zReadRetRecepcao($dom)
@@ -131,7 +135,8 @@ class ReturnMDFe
     
     /**
      * zReadConsultaMDF
-     * @param DOMDocument $dom
+     *
+     * @param  DOMDocument $dom
      * @return string
      */
     protected static function zReadConsultaMDF($dom)
@@ -175,7 +180,8 @@ class ReturnMDFe
     
     /**
      * zReadStatusServico
-     * @param DOMDocument $dom
+     *
+     * @param  DOMDocument $dom
      * @return string|boolean
      */
     protected static function zReadStatusServico($dom)
@@ -214,7 +220,8 @@ class ReturnMDFe
     
     /**
      * zReadRecepcaoEvento
-     * @param DOMDocument $dom
+     *
+     * @param  DOMDocument $dom
      * @return string
      */
     protected static function zReadRecepcaoEvento($dom)
@@ -251,7 +258,8 @@ class ReturnMDFe
     
     /**
      * zReadConsNaoEnc
-     * @param DOMDocument $dom
+     *
+     * @param  DOMDocument $dom
      * @return boolean
      */
     protected static function zReadConsNaoEnc($dom)
@@ -296,8 +304,9 @@ class ReturnMDFe
 
     /**
      * zGetProt
-     * @param DOMDocument $dom
-     * @param DOMDocument $tag
+     *
+     * @param  DOMDocument $dom
+     * @param  DOMDocument $tag
      * @return array
      */
     private static function zGetProt($dom, $tag)
@@ -324,8 +333,9 @@ class ReturnMDFe
     
     /**
      * zGetEvent
-     * @param DOMDocument $dom
-     * @param DOMDocument $tag
+     *
+     * @param  DOMDocument $dom
+     * @param  DOMDocument $tag
      * @return array
      */
     private static function zGetEvent($dom, $tag)

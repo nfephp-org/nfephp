@@ -2,7 +2,7 @@
 
 namespace NFePHP\Extras;
 
-use NFePHP\Extras\nfephpException;
+use NFePHP\Extras\NfephpException;
 use NFePHP\Extras\PdfNFePHP;
 use NFePHP\Extras\CommonNFePHP;
 use NFePHP\Extras\DocumentoNFePHP;
@@ -27,26 +27,31 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
 
     /**
      * alinhamento padrão do logo (C-Center)
+     *
      * @var string
      */
     public $logoAlign='C';
     /**
      * Posição
+     *
      * @var float
      */
     public $yDados=0;
     /**
      * Situação
+     *
      * @var integer
      */
     public $situacaoExterna=0;
     /**
      * Numero DPEC
+     *
      * @var string
      */
     public $numero_registro_dpec='';
     /**
      * quantidade de canhotos a serem montados, geralmente 1 ou 2
+     *
      * @var integer
      */
     public $qCanhoto=1;
@@ -54,6 +59,7 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
     // INÍCIO ATRIBUTOS DE PARÂMETROS DE EXIBIÇÃO
     /**
      * Parâmetro para exibir ou ocultar os valores do PIS/COFINS.
+     *
      * @var boolean
      */
     public $exibirPIS=true;
@@ -61,6 +67,7 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
     // INÍCIO ATRIBUTOS DE PARÂMETROS DE EXIBIÇÃO
     /**
      * Parâmetro para exibir ou ocultar os valores do ICMS Interestadual e Valor Total dos Impostos.
+     *
      * @var boolean
      */
     public $exibirIcmsInterestadual=true;
@@ -68,23 +75,27 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
 
     /**
      * Parâmetro para exibir ou ocultar o texto sobre valor aproximado dos tributos.
+     *
      * @var boolean
      */
     public $exibirValorTributos=true;
     /**
      * Parâmetro para exibir ou ocultar o texto adicional sobre a forma de pagamento
      * e as informações de fatura/duplicata.
+     *
      * @var boolean
      */
     public $exibirTextoFatura=false;
     /**
      * Parâmetro do controle se deve concatenar automaticamente informações complementares
      * na descrição do produto, como por exemplo, informações sobre impostos.
+     *
      * @var boolean
      */
     public $descProdInfoComplemento=true;
     /**
      * Parâmetro do controle se deve gerar quebras de linha com "\n" a partir de ";" na descrição do produto.
+     *
      * @var boolean
      */
     public $descProdQuebraLinha=true;
@@ -92,26 +103,31 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
 
     /**
      * objeto fpdf()
+     *
      * @var object
      */
     protected $pdf;
     /**
      * XML NFe
+     *
      * @var string
      */
     protected $xml;
     /**
      * path para logomarca em jpg
+     *
      * @var string
      */
     protected $logomarca='';
     /**
      * mesagens de erro
+     *
      * @var string
      */
     protected $errMsg='';
     /**
      * status de erro true um erro ocorreu false sem erros
+     *
      * @var boolean
      */
     protected $errStatus=false;
@@ -119,11 +135,13 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
      * orientação da DANFE
      * P-Retrato ou
      * L-Paisagem
+     *
      * @var string
      */
     protected $orientacao='P';
     /**
      * formato do papel
+     *
      * @var string
      */
     protected $papel='A4';
@@ -133,192 +151,228 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
      * S-retorna o arquivo,
      * D-força download,
      * F-salva em arquivo local
+     *
      * @var string
      */
     protected $destino = 'I';
     /**
      * diretorio para salvar o pdf com a opção de destino = F
+     *
      * @var string
      */
     protected $pdfDir='';
     /**
      * Nome da Fonte para gerar o DANFE
+     *
      * @var string
      */
     protected $fontePadrao='Times';
     /**
      * versão
+     *
      * @var string
      */
     protected $version = '2.2.8';
     /**
      * Texto
+     *
      * @var string
      */
     protected $textoAdic = '';
     /**
      * Largura
+     *
      * @var float
      */
     protected $wAdic = 0;
     /**
      * largura imprimivel, em milímetros
+     *
      * @var float
      */
     protected $wPrint;
     /**
      * Comprimento (altura) imprimivel, em milímetros
+     *
      * @var float
      */
     protected $hPrint;
     /**
      * largura do canhoto (25mm) apenas para a formatação paisagem
+     *
      * @var float
      */
     protected $wCanhoto=25;
     /**
      * Formato chave
+     *
      * @var string
      */
     protected $formatoChave="#### #### #### #### #### #### #### #### #### #### ####";
     /**
      * quantidade de itens já processados na montagem do DANFE
+     *
      * @var integer
      */
     protected $qtdeItensProc;
 
     /**
      * Document
+     *
      * @var DOMDocument
      */
     protected $dom;
     /**
      * Node
+     *
      * @var DOMNode
      */
     protected $infNFe;
     /**
      * Node
+     *
      * @var DOMNode
      */
     protected $ide;
     /**
      * Node
+     *
      * @var DOMNode
      */
     protected $entrega;
     /**
      * Node
+     *
      * @var DOMNode
      */
     protected $retirada;
     /**
      * Node
+     *
      * @var DOMNode
      */
     protected $emit;
     /**
      * Node
+     *
      * @var DOMNode
      */
     protected $dest;
     /**
      * Node
+     *
      * @var DOMNode
      */
     protected $enderEmit;
     /**
      * Node
+     *
      * @var DOMNode
      */
     protected $enderDest;
     /**
      * Node
+     *
      * @var DOMNode
      */
     protected $det;
     /**
      * Node
+     *
      * @var DOMNode
      */
     protected $cobr;
     /**
      * Node
+     *
      * @var DOMNode
      */
     protected $dup;
     /**
      * Node
+     *
      * @var DOMNode
      */
     protected $ICMSTot;
     /**
      * Node
+     *
      * @var DOMNode
      */
     protected $ISSQNtot;
     /**
      * Node
+     *
      * @var DOMNode
      */
     protected $transp;
     /**
      * Node
+     *
      * @var DOMNode
      */
     protected $transporta;
     /**
      * Node
+     *
      * @var DOMNode
      */
     protected $veicTransp;
     /**
      * Node reboque
+     *
      * @var DOMNode
      */
     protected $reboque;
     /**
      * Node infAdic
+     *
      * @var DOMNode
      */
     protected $infAdic;
     /**
      * Tipo de emissão
+     *
      * @var integer
      */
     protected $tpEmis;
     /**
      * Node infProt
+     *
      * @var DOMNode
      */
     protected $infProt;
     /**
      * 1-Retrato/ 2-Paisagem
+     *
      * @var integer
      */
     protected $tpImp;
     /**
      * Node compra
+     *
      * @var DOMNode
      */
     protected $compra;
     /**
      * ativa ou desativa o modo de debug
+     *
      * @var integer
      */
     protected $debugMode=2;
 
     /**
      * __construct
-     * @name __construct
-     * @param string $docXML Conteúdo XML da NF-e (com ou sem a tag nfeProc)
-     * @param string $sOrientacao (Opcional) Orientação da impressão P-retrato L-Paisagem
-     * @param string $sPapel Tamanho do papel (Ex. A4)
-     * @param string $sPathLogo Caminho para o arquivo do logo
-     * @param string $sDestino Estabelece a direção do envio do documento PDF I-browser D-browser com download S-
-     * @param string $sDirPDF Caminho para o diretorio de armazenamento dos arquivos PDF
-     * @param string $fonteDANFE Nome da fonte alternativa do DAnfe
-     * @param integer $mododebug 0-Não 1-Sim e 2-nada (2 default)
+     *
+     * @name  __construct
+     * @param string  $docXML      Conteúdo XML da NF-e (com ou sem a tag nfeProc)
+     * @param string  $sOrientacao (Opcional) Orientação da impressão P-retrato L-Paisagem
+     * @param string  $sPapel      Tamanho do papel (Ex. A4)
+     * @param string  $sPathLogo   Caminho para o arquivo do logo
+     * @param string  $sDestino    Estabelece a direção do envio do documento PDF I-browser D-browser com download S-
+     * @param string  $sDirPDF     Caminho para o diretorio de armazenamento dos arquivos PDF
+     * @param string  $fonteDANFE  Nome da fonte alternativa do DAnfe
+     * @param integer $mododebug   0-Não 1-Sim e 2-nada (2 default)
      */
     public function __construct(
         $docXML = '',
@@ -334,7 +388,7 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
         //a classe com 9 parâmetros, pois o "$exibirPIS" foi removido em 20/08/2014
         // e parametrizado como atributo público para simplificar o construtor
         if (func_num_args() == 9) {
-            throw new nfephpException("ATENCAO: o construtor da classe DanfeNFePHP nao possui mais 9 parametros");
+            throw new NfephpException("ATENCAO: o construtor da classe DanfeNFePHP nao possui mais 9 parametros");
         }
         if (is_numeric($mododebug)) {
             $this->debugMode = $mododebug;
@@ -391,13 +445,14 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
             $this->infProt    = $this->dom->getElementsByTagName("infProt")->item(0);
             //valida se o XML é uma NF-e modelo 55, pois não pode ser 65 (NFC-e)
             if ($this->pSimpleGetValue($this->ide, "mod") != '55') {
-                throw new nfephpException("O xml do DANFE deve ser uma NF-e modelo 55");
+                throw new NfephpException("O xml do DANFE deve ser uma NF-e modelo 55");
             }
         }
     } //fim __construct
 
     /**
      * simpleConsistencyCheck
+     *
      * @return bool Retorna se o documento se parece com um DANFE (condicao necessaria porem nao suficiente)
     */
     public function simpleConsistencyCheck()
@@ -411,10 +466,10 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
     /**
      * monta
      *
-     * @name monta
-     * @param string $orientacao
-     * @param string $papel
-     * @param string $logoAlign
+     * @name   monta
+     * @param  string $orientacao
+     * @param  string $papel
+     * @param  string $logoAlign
      * @return string
      */
     public function monta(
@@ -423,7 +478,10 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
         $logoAlign = 'C',
         $situacaoExterna = NFEPHP_SITUACAO_EXTERNA_NONE,
         $classPdf = false,
-        $dpecNumReg = ''
+        $dpecNumReg = '',
+        $margSup = 2,
+        $margEsq = 2,
+        $margInf = 2
     ) {
         return $this->montaDANFE(
             $orientacao,
@@ -431,16 +489,19 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
             $logoAlign,
             $situacaoExterna,
             $classPdf,
-            $dpecNumReg
+            $dpecNumReg,
+            $margSup,
+            $margEsq,
+            $margInf
         );
     }//fim monta
 
     /**
      * printDocument
      *
-     * @param string $nome
-     * @param string $destino
-     * @param string $printer
+     * @param  string $nome
+     * @param  string $destino
+     * @param  string $printer
      * @return object pdf
      */
     public function printDocument($nome = '', $destino = 'I', $printer = '')
@@ -454,9 +515,10 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
      * construção. Constroi DANFEs com até 3 páginas podendo conter até 56 itens.
      * A definição de margens e posições iniciais para a impressão são estabelecidas
      * pelo conteúdo da funçao e podem ser modificados.
-     * @param string $orientacao (Opcional) Estabelece a orientação da impressão
+     *
+     * @param  string $orientacao (Opcional) Estabelece a orientação da impressão
      *  (ex. P-retrato), se nada for fornecido será usado o padrão da NFe
-     * @param string $papel (Opcional) Estabelece o tamanho do papel (ex. A4)
+     * @param  string $papel      (Opcional) Estabelece o tamanho do papel (ex. A4)
      * @return string O ID da NFe numero de 44 digitos extraido do arquivo XML
      */
     public function montaDANFE(
@@ -465,7 +527,10 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
         $logoAlign = 'C',
         $situacaoExterna = NFEPHP_SITUACAO_EXTERNA_NONE,
         $classPdf = false,
-        $depecNumReg = ''
+        $depecNumReg = '',
+        $margSup = 2,
+        $margEsq = 2,
+        $margInf = 2
     ) {
         //se a orientação estiver em branco utilizar o padrão estabelecido na NF
         if ($orientacao == '') {
@@ -490,9 +555,6 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
         //margens do PDF, em milímetros. Obs.: a margem direita é sempre igual à
         //margem esquerda. A margem inferior *não* existe na FPDF, é definida aqui
         //apenas para controle se necessário ser maior do que a margem superior
-        $margSup = 2;
-        $margEsq = 2;
-        $margInf = 2;
         // posição inicial do conteúdo, a partir do canto superior esquerdo da página
         $xInic = $margEsq;
         $yInic = $margSup;
@@ -540,7 +602,10 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
             $linhasDup = 2;
         } elseif (($this->dup->length > 14) && ($this->dup->length <= 21)) {
             $linhasDup = 3;
-        } elseif ($this->dup->length > 21) {   // TODO fmertins 20/08/14: mudar para "else" apenas? E acho que a variavel deveria receber outro valor, ja que esta igual a 3 que dá na mesma da condição anterior, parece ser bug? Talvez atribuir 4 ao inves de 3?
+        } elseif ($this->dup->length > 21) {
+            // chinnonsantos 11/05/2016: Limite máximo de impressão de duplicatas na NFe,
+            // só vai ser exibito as 21 primeiras duplicatas (parcelas de pagamento),
+            // se não oculpa espaço d+, cada linha comporta até 7 duplicatas.
             $linhasDup = 3;
         }
         //verifica se será impressa a linha dos serviços ISSQN
@@ -683,8 +748,10 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
             $this->pSizeExtraTextoFatura());
         if ($this->orientacao == 'P') {
             $hDispo1 -= 23 * $this->qCanhoto;//para canhoto
+            $w = $this->wPrint;
         } else {
             $hcanhoto = $this->hPrint;//para canhoto
+            $w = $this->wPrint - $this->wCanhoto;
         }
         $hDispo2 = $this->hPrint - 10 - ($hcabecalho + $hfooter + $hCabecItens)-4;
         //Contagem da altura ocupada para impressão dos itens
@@ -692,7 +759,7 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
         $i = 0;
         $numlinhas = 0;
         $hUsado = $hCabecItens;
-        $w2 = round($this->wPrint*0.31, 0);
+        $w2 = round($w*0.28, 0);
         $hDispo = $hDispo1;
         $totPag = 1;
         while ($i < $this->det->length) {
@@ -702,7 +769,9 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
             if ($hUsado > $hDispo) {
                 $totPag++;
                 $hDispo = $hDispo2;
-                $hUsado = 7;
+                $hUsado = $hCabecItens;
+                // Remove canhoto para páginas secundárias em modo paisagem ('L')
+                $w2 = round($this->wPrint*0.28, 0);
                 $i--; // decrementa para readicionar o item que não coube nessa pagina na outra.
             }
             $i++;
@@ -735,7 +804,7 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
         $y = $this->pTransporteDANFE($x, $y+1);
         //itens da DANFE
         $nInicial = 0;
-        $y = $this->pItensDANFE($x, $y+1, $nInicial, $hDispo1, $pag, $totPag);
+        $y = $this->pItensDANFE($x, $y+1, $nInicial, $hDispo1, $pag, $totPag, $hCabecItens);
         //coloca os dados do ISSQN
         if ($linhaISSQN == 1) {
             $y = $this->pIssqnDANFE($x, $y+4);
@@ -766,7 +835,7 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
             //coloca o cabeçalho na página adicional
             $y = $this->pCabecalhoDANFE($x, $y, $n, $totPag);
             //coloca os itens na página adicional
-            $y = $this->pItensDANFE($x, $y+1, $nInicial, $hDispo2, $pag, $totPag);
+            $y = $this->pItensDANFE($x, $y+1, $nInicial, $hDispo2, $n, $totPag, $hCabecItens);
             //coloca o rodapé da página
             if ($this->orientacao == 'P') {
                 $this->pRodape($xInic, $y + 4);
@@ -793,7 +862,8 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
      * anfavea
      * Função para transformar o campo cdata do padrão ANFAVEA para
      * texto imprimível
-     * @param string $cdata campo CDATA
+     *
+     * @param  string $cdata campo CDATA
      * @return string conteúdo do campo CDATA como string
      */
     private function pAnfavea($cdata = '')
@@ -945,11 +1015,11 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
      * Para enviar o pdf diretamente para uma impressora indique o
      * nome da impressora e o destino deve ser 'S'.
      *
-     * @param string $nome Path completo com o nome do arquivo pdf
-     * @param string $destino Direção do envio do PDF
-     * @param string $printer Identificação da impressora no sistema
+     * @param  string $nome    Path completo com o nome do arquivo pdf
+     * @param  string $destino Direção do envio do PDF
+     * @param  string $printer Identificação da impressora no sistema
      * @return string Caso o destino seja S o pdf é retornado como uma string
-     * @todo Rotina de impressão direta do arquivo pdf criado
+     * @todo   Rotina de impressão direta do arquivo pdf criado
      */
     public function printDANFE($nome = '', $destino = 'I', $printer = '')
     {
@@ -1024,10 +1094,10 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
      *cabecalhoDANFE
      * Monta o cabelhalho da DANFE (retrato e paisagem)
      *
-     * @param number $x Posição horizontal inicial, canto esquerdo
-     * @param number $y Posição vertical inicial, canto superior
-     * @param number $pag Número da Página
-     * @param number$totPag Total de páginas
+     * @param  number $x      Posição horizontal inicial, canto esquerdo
+     * @param  number $y      Posição vertical inicial, canto superior
+     * @param  number $pag    Número da Página
+     * @param  number $totPag Total de páginas
      * @return number Posição vertical final
      */
     protected function pCabecalhoDANFE($x = 0, $y = 0, $pag = '1', $totPag = '1')
@@ -1120,7 +1190,9 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
             //endereço
             $y1 = $y1+5;
             $aFont = array('font'=>$this->fontePadrao, 'size'=>8, 'style'=>'');
-            $fone = ! empty($this->enderEmit->getElementsByTagName("fone")->item(0)->nodeValue) ? $this->enderEmit->getElementsByTagName("fone")->item(0)->nodeValue : '';
+            $fone = ! empty($this->enderEmit->getElementsByTagName("fone")->item(0)->nodeValue)
+                 ? $this->enderEmit->getElementsByTagName("fone")->item(0)->nodeValue
+                 : '';
             $lgr = $this->pSimpleGetValue($this->enderEmit, "xLgr");
             $nro = $this->pSimpleGetValue($this->enderEmit, "nro");
             $cpl = $this->pSimpleGetValue($this->enderEmit, "xCpl", " - ");
@@ -1311,7 +1383,9 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
         $texto = 'INSCRIÇÃO ESTADUAL DO SUBST. TRIBUT.';
         $aFont = array('font'=>$this->fontePadrao, 'size'=>6, 'style'=>'');
         $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 1, '');
-        $texto = ! empty($this->emit->getElementsByTagName("IEST")->item(0)->nodeValue) ? $this->emit->getElementsByTagName("IEST")->item(0)->nodeValue : '';
+        $texto = ! empty($this->emit->getElementsByTagName("IEST")->item(0)->nodeValue)
+             ? $this->emit->getElementsByTagName("IEST")->item(0)->nodeValue
+             : '';
         $aFont = array('font'=>$this->fontePadrao, 'size'=>10, 'style'=>'B');
         $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'B', 'C', 0, '');
         //CNPJ
@@ -1440,9 +1514,10 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
     /**
      * destinatarioDANFE
      * Monta o campo com os dados do destinatário na DANFE. (retrato e paisagem)
-     * @name destinatarioDANFE
-     * @param number $x Posição horizontal canto esquerdo
-     * @param number $y Posição vertical canto superior
+     *
+     * @name   destinatarioDANFE
+     * @param  number $x Posição horizontal canto esquerdo
+     * @param  number $y Posição vertical canto superior
      * @return number Posição vertical final
      */
     protected function pDestinatarioDANFE($x = 0, $y = 0)
@@ -1640,7 +1715,8 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
      /**
      * pGetTextoFatura
      * Gera a String do Texto da Fatura
-     * @name getTextoFatura
+      *
+     * @name   getTextoFatura
      * @return a String com o texto ou "";
      */
     protected function pGetTextoFatura()
@@ -1669,7 +1745,8 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
      /**
      * pSizeExtraTextoFatura
      * Calcula o espaço ocupado pelo texto da fatura. Este espaço só é utilizado quando não houver duplicata.
-     * @name pSizeExtraTextoFatura
+      *
+     * @name   pSizeExtraTextoFatura
      * @return integer
      */
     protected function pSizeExtraTextoFatura()
@@ -1685,9 +1762,10 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
     /**
      * faturaDANFE
      * Monta o campo de duplicatas da DANFE (retrato e paisagem)
-     * @name faturaDANFE
-     * @param number $x Posição horizontal canto esquerdo
-     * @param number $y Posição vertical canto superior
+     *
+     * @name   faturaDANFE
+     * @param  number $x Posição horizontal canto esquerdo
+     * @param  number $y Posição vertical canto superior
      * @return number Posição vertical final
      */
     protected function pFaturaDANFE($x, $y)
@@ -1792,22 +1870,23 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
     /**
      * impostoDanfeHelper
      * Auxilia a montagem dos campos de impostos e totais da DANFE
-     * @name impostoDanfeHelper
-     * @param float $x Posição horizontal canto esquerdo
-     * @param float $y Posição vertical canto superior
-     * @param float $w Largura do campo
-     * @param float $h Altura do campo
-     * @param float $h Título do campo
-     * @param float $h Valor do imposto
+     *
+     * @name   impostoDanfeHelper
+     * @param  float $x Posição horizontal canto esquerdo
+     * @param  float $y Posição vertical canto superior
+     * @param  float $w Largura do campo
+     * @param  float $h Altura do campo
+     * @param  float $h Título do campo
+     * @param  float $h Valor do imposto
      * @return float Sugestão do $x do próximo imposto
      */
     protected function pImpostoDanfeHelper($x, $y, $w, $h, $titulo, $campoImposto)
     {
         $valorImposto = '0, 00';
         $the_field = $this->ICMSTot->getElementsByTagName($campoImposto)->item(0);
-        if( isset($the_field) ){
+        if (isset($the_field)) {
             $the_value = $the_field->nodeValue;
-            if(!empty($the_value)){
+            if (!empty($the_value)) {
                 $valorImposto = number_format($the_value, 2, ",", ".");
             }
         }
@@ -1824,8 +1903,9 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
     /**
      * impostoDANFE
      * Monta o campo de impostos e totais da DANFE (retrato e paisagem)
-     * @param number $x Posição horizontal canto esquerdo
-     * @param number $y Posição vertical canto superior
+     *
+     * @param  number $x Posição horizontal canto esquerdo
+     * @param  number $y Posição vertical canto superior
      * @return number Posição vertical final
      */
     protected function pImpostoDANFE($x, $y)
@@ -1835,11 +1915,11 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
 
 
         $campos_por_linha = 9;
-        if(!$this->exibirPIS){
-           $campos_por_linha--;
+        if (!$this->exibirPIS) {
+            $campos_por_linha--;
         }
-        if(!$this->exibirIcmsInterestadual){
-           $campos_por_linha -= 2;
+        if (!$this->exibirIcmsInterestadual) {
+            $campos_por_linha -= 2;
         }
 
         if ($this->orientacao == 'P') {
@@ -1863,7 +1943,7 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
         $x = $this->pImpostoDanfeHelper($x, $y, $w, $h, "VALOR DO ICMS SUBST.", "vST");
         $x = $this->pImpostoDanfeHelper($x, $y, $w, $h, "V. IMP. IMPORTAÇÃO", "vII");
 
-        if( $this->exibirIcmsInterestadual){
+        if ($this->exibirIcmsInterestadual) {
             $x = $this->pImpostoDanfeHelper($x, $y, $w, $h, "V. ICMS UF REMET.", "vICMSUFRemet");
             $x = $this->pImpostoDanfeHelper($x, $y, $w, $h, "VALOR DO FCP", "vFCPUFDest");
         }
@@ -1874,7 +1954,7 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
 
         $x = $this->pImpostoDanfeHelper($x, $y, $w, $h, "V. TOTAL PRODUTOS", "vProd");
 
-        #####################################################
+        //
 
         $y += $h;
         $x = $x_inicial;
@@ -1885,7 +1965,7 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
         $x = $this->pImpostoDanfeHelper($x, $y, $w, $h, "OUTRAS DESPESAS", "vOutro");
         $x = $this->pImpostoDanfeHelper($x, $y, $w, $h, "VALOR TOTAL IPI", "vIPI");
 
-        if( $this->exibirIcmsInterestadual){
+        if ($this->exibirIcmsInterestadual) {
             $x = $this->pImpostoDanfeHelper($x, $y, $w, $h, "V. ICMS UF DEST.", "vICMSUFDest");
             $x = $this->pImpostoDanfeHelper($x, $y, $w, $h, "V. TOT. TRIB.", "vTotTrib");
         }
@@ -1901,9 +1981,10 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
     /**
      * transporteDANFE
      * Monta o campo de transportes da DANFE (retrato e paisagem)
-     * @name transporteDANFE
-     * @param float $x Posição horizontal canto esquerdo
-     * @param float $y Posição vertical canto superior
+     *
+     * @name   transporteDANFE
+     * @param  float $x Posição horizontal canto esquerdo
+     * @param  float $y Posição vertical canto superior
      * @return float Posição vertical final
      */
     protected function pTransporteDANFE($x, $y)
@@ -1943,7 +2024,7 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
         $this->pTextBox($x, $y, $w2, $h, $texto, $aFont, 'T', 'L', 1, '');
         $tipoFrete = ! empty($this->transp->getElementsByTagName("modFrete")->item(0)->nodeValue) ?
                 $this->transp->getElementsByTagName("modFrete")->item(0)->nodeValue : '0';
-        switch($tipoFrete) {
+        switch ($tipoFrete) {
             case 0:
                 $texto = "(0) Emitente";
                 break;
@@ -2139,7 +2220,7 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
         $texto = 'QUANTIDADE';
         $aFont = array('font'=>$this->fontePadrao, 'size'=>6, 'style'=>'');
         $this->pTextBox($x, $y, $w1, $h, $texto, $aFont, 'T', 'L', 1, '');
-        if(!empty($quantidade)){
+        if (!empty($quantidade)) {
             $texto = $quantidade;
             $aFont = array('font'=>$this->fontePadrao, 'size'=>10, 'style'=>'B');
             $this->pTextBox($x, $y, $w1, $h, $texto, $aFont, 'B', 'C', 0, '');
@@ -2201,15 +2282,16 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
 
 
 
-    protected function pDescricaoProdutoHelper($origem, $campo, $formato){
+    protected function pDescricaoProdutoHelper($origem, $campo, $formato)
+    {
         $valor_original = $origem->getElementsByTagName($campo)->item(0);
-        if( !isset( $valor_original )){
+        if (!isset($valor_original)) {
             return "";
         }
         $valor_original = $valor_original->nodeValue;
-        $valor = ! empty( $valor_original ) ? number_format( $valor_original, 2, ",", ".") : '';
+        $valor = ! empty($valor_original) ? number_format($valor_original, 2, ",", ".") : '';
 
-        if($valor != ""){
+        if ($valor != "") {
             return sprintf($formato, $valor);
         }
         return "";
@@ -2218,8 +2300,9 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
     /**
      * descricaoProduto
      * Monta a string de descrição de cada Produto
-     * @name descricaoProduto
-     * @param DOMNode itemProd
+     *
+     * @name   descricaoProduto
+     * @param  DOMNode itemProd
      * @return string descricao do produto
      */
     protected function pDescricaoProduto($itemProd)
@@ -2229,22 +2312,20 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
         $ICMSUFDest = $itemProd->getElementsByTagName("ICMSUFDest")->item(0);
         $impostos = '';
 
-        if ( !empty($ICMS)) {
+        if (!empty($ICMS)) {
             $impostos .= $this->pDescricaoProdutoHelper($ICMS, "pRedBC", " pRedBC=%s%%");
             $impostos .= $this->pDescricaoProdutoHelper($ICMS, "pMVAST", " IVA=%s%%");
             $impostos .= $this->pDescricaoProdutoHelper($ICMS, "pICMSST", " pIcmsSt=%s%%");
             $impostos .= $this->pDescricaoProdutoHelper($ICMS, "vBCST", " BcIcmsSt=%s");
             $impostos .= $this->pDescricaoProdutoHelper($ICMS, "vICMSST", " vIcmsSt=%s");
         }
-        if( !empty($ICMSUFDest)){
-
+        if (!empty($ICMSUFDest)) {
             $impostos .= $this->pDescricaoProdutoHelper($ICMSUFDest, "pFCPUFDest", " pFCPUFDest=%s%%");
             $impostos .= $this->pDescricaoProdutoHelper($ICMSUFDest, "pICMSUFDest", " pICMSUFDest=%s%%");
             $impostos .= $this->pDescricaoProdutoHelper($ICMSUFDest, "pICMSInterPart", " pICMSInterPart=%s%%");
             $impostos .= $this->pDescricaoProdutoHelper($ICMSUFDest, "vFCPUFDest", " vFCPUFDest=%s");
             $impostos .= $this->pDescricaoProdutoHelper($ICMSUFDest, "vICMSUFDest", " vICMSUFDest=%s");
             $impostos .= $this->pDescricaoProdutoHelper($ICMSUFDest, "vICMSUFRemet", " vICMSUFRemet=%s");
-
         }
         $infAdProd = ! empty($itemProd->getElementsByTagName('infAdProd')->item(0)->nodeValue) ?
                 substr($this->pAnfavea($itemProd->getElementsByTagName('infAdProd')->item(0)->nodeValue), 0, 500) : '';
@@ -2282,15 +2363,16 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
     /**
      * itensDANFE
      * Monta o campo de itens da DANFE (retrato e paisagem)
-     * @name itensDANFE
-     * @param float $x Posição horizontal canto esquerdo
-     * @param float $y Posição vertical canto superior
-     * @param float $nInicio Número do item inicial
-     * @param float $max Número do item final
-     * @param float $hmax Altura máxima do campo de itens em mm
+     *
+     * @name   itensDANFE
+     * @param  float $x       Posição horizontal canto esquerdo
+     * @param  float $y       Posição vertical canto superior
+     * @param  float $nInicio Número do item inicial
+     * @param  float $max     Número do item final
+     * @param  float $hmax    Altura máxima do campo de itens em mm
      * @return float Posição vertical final
      */
-    protected function pItensDANFE($x, $y, &$nInicio, $hmax, $pag = 0, $totpag = 0)
+    protected function pItensDANFE($x, $y, &$nInicio, $hmax, $pag = 0, $totpag = 0, $hCabecItens = 7)
     {
         $oldX = $x;
         $oldY = $y;
@@ -2326,7 +2408,7 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
         $this->pdf->Line($x+$w1, $y, $x+$w1, $y+$hmax);
         //DESCRIÇÃO DO PRODUTO / SERVIÇO
         $x += $w1;
-        $w2 = round($w*0.31, 0);
+        $w2 = round($w*0.28, 0);
         $texto = 'DESCRIÇÃO DO PRODUTO / SERVIÇO';
         $aFont = array('font'=>$this->fontePadrao, 'size'=>6, 'style'=>'');
         $this->pTextBox($x, $y, $w2, $h, $texto, $aFont, 'C', 'C', 0, '', false);
@@ -2418,7 +2500,7 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
         //##################################################################################
         // LOOP COM OS DADOS DOS PRODUTOS
         $i = 0;
-        $hUsado = 4;
+        $hUsado = $hCabecItens;
         $aFont = array('font'=>$this->fontePadrao, 'size'=>7, 'style'=>'');
         foreach ($this->det as $d) {
             if ($i >= $nInicio) {
@@ -2493,7 +2575,7 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
                 $x += $w8;
                 // Valor do Produto
                 $texto = "";
-                if(is_numeric($prod->getElementsByTagName("vProd")->item(0)->nodeValue) ){
+                if (is_numeric($prod->getElementsByTagName("vProd")->item(0)->nodeValue)) {
                     $texto = number_format($prod->getElementsByTagName("vProd")->item(0)->nodeValue, 2, ",", ".");
                 }
                 $this->pTextBox($x, $y, $w9, $h, $texto, $aFont, 'T', $alinhamento, 0, '');
@@ -2565,9 +2647,10 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
     /**
      * issqnDANFE
      * Monta o campo de serviços do DANFE
-     * @name issqnDANFE (retrato e paisagem)
-     * @param float $x Posição horizontal canto esquerdo
-     * @param float $y Posição vertical canto superior
+     *
+     * @name   issqnDANFE (retrato e paisagem)
+     * @param  float $x Posição horizontal canto esquerdo
+     * @param  float $y Posição vertical canto superior
      * @return float Posição vertical final
      */
     protected function pIssqnDANFE($x, $y)
@@ -2644,10 +2727,11 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
     /**
      *dadosAdicionaisDANFE
      * Coloca o grupo de dados adicionais da NFe. (retrato e paisagem)
-     * @name dadosAdicionaisDANFE
-     * @param float $x Posição horizontal canto esquerdo
-     * @param float $y Posição vertical canto superior
-     * @param float $h altura do campo
+     *
+     * @name   dadosAdicionaisDANFE
+     * @param  float $x Posição horizontal canto esquerdo
+     * @param  float $y Posição vertical canto superior
+     * @param  float $h altura do campo
      * @return float Posição vertical final (eixo Y)
      */
     protected function pDadosAdicionaisDANFE($x, $y, $h)
@@ -2690,7 +2774,8 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
         // 1 - Normal - emissão normal;
         // 2 - Contingência FS - emissão em contingência com impressão do DANFE em Formulário de Segurança;
         // 3 - Contingência SCAN - emissão em contingência no Sistema de Contingência do Ambiente Nacional;
-        // 4 - Contingência DPEC - emissão em contingência com envio da Declaração Prévia de Emissão em Contingência;
+        // 4 - Contingência DPEC - emissão em contingência com envio da Declaração
+        //     Prévia de Emissão em Contingência;
         // 5 - Contingência FS-DA - emissão em contingência com impressão do DANFE em Formulário de
         //     Segurança para Impressão de Documento Auxiliar de Documento Fiscal Eletrônico (FS-DA);
         // 6 - Contingência SVC-AN
@@ -2698,7 +2783,7 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
         $xJust = $this->pSimpleGetValue($this->ide, 'xJust', 'Justificativa: ');
         $dhCont = $this->pSimpleGetValue($this->ide, 'dhCont', ' Entrada em contingência : ');
         $texto = '';
-        switch($this->tpEmis) {
+        switch ($this->tpEmis) {
             case 2:
                 $texto = 'CONTINGÊNCIA FS' . $dhCont . $xJust;
                 break;
@@ -2728,9 +2813,10 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
      * pRodape
      * Monta o rodapé no final da DANFE com a data/hora de impressão e informações
      * sobre a API NfePHP
-     * @name pRodape
-     * @param float $xInic Posição horizontal canto esquerdo
-     * @param float $yFinal Posição vertical final para impressão
+     *
+     * @name   pRodape
+     * @param  float $xInic  Posição horizontal canto esquerdo
+     * @param  float $yFinal Posição vertical final para impressão
      * @return void
      */
     protected function pRodape($x, $y)
@@ -2751,13 +2837,13 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
     /**
      * pCcanhotoDANFE
      * Monta o canhoto da DANFE (retrato e paisagem)
-     * @name canhotoDANFE
-     * @param number $x Posição horizontal canto esquerdo
-     * @param number $y Posição vertical canto superior
+     *
+     * @name   canhotoDANFE
+     * @param  number $x Posição horizontal canto esquerdo
+     * @param  number $y Posição vertical canto superior
      * @return number Posição vertical final
      *
      * TODO 21/07/14 fmertins: quando orientação L-paisagem, o canhoto está sendo gerado incorretamente
-     *
      */
     protected function pCanhoto($x, $y)
     {
@@ -2899,7 +2985,7 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
      * Devolve uma string contendo informação sobre as tag <compra><xNEmp>, <xPed> e <xCont> ou string vazia.
      * Aviso: Esta função não leva em consideração dados na tag xPed do item.
      *
-     * @name pGeraInformacoesDaTagCompra
+     * @name   pGeraInformacoesDaTagCompra
      * @return string com as informacoes dos pedidos.
      */
     protected function pGeraInformacoesDaTagCompra()
@@ -2922,7 +3008,7 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
     /**
      * pGeraChaveAdicionalDeContingencia
      *
-     * @name pGeraChaveAdicionalDeContingencia
+     * @name   pGeraChaveAdicionalDeContingencia
      * @return string chave
      */
     protected function pGeraChaveAdicionalDeContingencia()
@@ -3015,9 +3101,9 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
             }
             $refECF = $nfRef->getElementsByTagName('refECF');
             foreach ($refECF as $umaRefNFe) {
-                $mod	= $umaRefNFe->getElementsByTagName('mod')->item(0)->nodeValue;
-                $nECF	= $umaRefNFe->getElementsByTagName('nECF')->item(0)->nodeValue;
-                $nCOO	= $umaRefNFe->getElementsByTagName('nCOO')->item(0)->nodeValue;
+                $mod    = $umaRefNFe->getElementsByTagName('mod')->item(0)->nodeValue;
+                $nECF   = $umaRefNFe->getElementsByTagName('nECF')->item(0)->nodeValue;
+                $nCOO   = $umaRefNFe->getElementsByTagName('nCOO')->item(0)->nodeValue;
                 $saida .= sprintf($formaECFRef, $mod, $nECF, $nCOO);
             }
             $refNFP = $nfRef->getElementsByTagName('refNFP');

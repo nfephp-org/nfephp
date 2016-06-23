@@ -21,14 +21,14 @@
  * ou
  * <http://www.fsfla.org/svnwiki/trad/LGPLv3>.
  *
- * @package     NFePHP
- * @name        Dacce.php
- * @version     0.1.4
- * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
- * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
- * @copyright   2009-2012 &copy; NFePHP
- * @link        http://www.nfephp.org/
- * @author      Roberto L. Machado <linux.rlm at gmail dot com>
+ * @package   NFePHP
+ * @name      Dacce.php
+ * @version   0.1.4
+ * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
+ * @license   http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
+ * @copyright 2009-2012 &copy; NFePHP
+ * @link      http://www.nfephp.org/
+ * @author    Roberto L. Machado <linux.rlm at gmail dot com>
  *
  *        CONTRIBUIDORES (por ordem alfabetica):
  *              Fernando Mertins <fernando dot mertins at gmail dot com>
@@ -38,7 +38,7 @@
 
 namespace NFePHP\Extras;
 
-use NFePHP\Extras\nfephpException;
+use NFePHP\Extras\NfephpException;
 use NFePHP\Extras\PdfNFePHP;
 use NFePHP\Extras\CommonNFePHP;
 use NFePHP\Extras\DocumentoNFePHP;
@@ -60,10 +60,11 @@ class Dacce extends CommonNFePHP implements DocumentoNFePHP
     protected $xml; // string XML NFe
     protected $logomarca = ''; // path para logomarca em jpg
     protected $errMsg = ''; // mesagens de erro
-    protected $errStatus = FALSE; // status de erro TRUE um erro ocorreu FALSE sem erros
+    protected $errStatus = false; // status de erro TRUE um erro ocorreu FALSE sem erros
     protected $orientacao = 'P'; // orientação da DANFE P-Retrato ou L-Paisagem
     protected $papel = 'A4'; // formato do papel
-    protected $destino = 'I'; // destivo do arquivo pdf I-borwser, S-retorna o arquivo, D-força download, F-salva em arquivo local
+    protected $destino = 'I'; // destino do arquivo pdf I-borwser, S-retorna o arquivo,
+                              //D-força download, F-salva em arquivo local
     protected $pdfDir = ''; // diretorio para salvar o pdf com a opção de destino = F
     protected $fontePadrao = 'Times'; // Nome da Fonte para gerar o DANFE
     protected $version = '0.1.1';
@@ -97,18 +98,27 @@ class Dacce extends CommonNFePHP implements DocumentoNFePHP
     /**
      * __construct
      *
-     * @param string $docXML Arquivo XML (diretório ou string)
+     * @param string $docXML      Arquivo XML (diretório ou string)
      * @param string $sOrientacao (Opcional) Orientação da impressão P-retrato L-Paisagem
-     * @param string $sPapel Tamanho do papel (Ex. A4)
-     * @param string $sPathLogo Caminho para o arquivo do logo
-     * @param string $sDestino Destino do PDF I-browser D-download S-string F-salva
-     * @param array $aEnd array com o endereço do emitente
-     * @param string $sDirPDF Caminho para o diretorio de armazenamento dos arquivos PDF
-     * @param string $fonteDANFE Nome da fonte alternativa do DAnfe
-     * @param number $mododebug 0-Não 1-Sim e 2-nada (2 default)
+     * @param string $sPapel      Tamanho do papel (Ex. A4)
+     * @param string $sPathLogo   Caminho para o arquivo do logo
+     * @param string $sDestino    Destino do PDF I-browser D-download S-string F-salva
+     * @param array  $aEnd        array com o endereço do emitente
+     * @param string $sDirPDF     Caminho para o diretorio de armazenamento dos arquivos PDF
+     * @param string $fonteDANFE  Nome da fonte alternativa do DAnfe
+     * @param number $mododebug   0-Não 1-Sim e 2-nada (2 default)
      */
-    public function __construct($docXML = '', $sOrientacao = '', $sPapel = '', $sPathLogo = '', $sDestino = 'I', $aEnd = '', $sDirPDF = '', $fontePDF = '', $mododebug = 0)
-    {
+    public function __construct(
+        $docXML = '',
+        $sOrientacao = '',
+        $sPapel = '',
+        $sPathLogo = '',
+        $sDestino = 'I',
+        $aEnd = '',
+        $sDirPDF = '',
+        $fontePDF = '',
+        $mododebug = 0
+    ) {
         if (is_numeric($mododebug)) {
             $this->debugMode = (int) $mododebug;
         }
@@ -116,7 +126,7 @@ class Dacce extends CommonNFePHP implements DocumentoNFePHP
             // ativar modo debug
             error_reporting(E_ALL);
             ini_set('display_errors', 'On');
-        } else if ($this->debugMode === 0) {
+        } elseif ($this->debugMode === 0) {
             // desativar modo debug
             error_reporting(0);
             ini_set('display_errors', 'Off');
@@ -153,7 +163,7 @@ class Dacce extends CommonNFePHP implements DocumentoNFePHP
             if ($tpEvento != '110110') {
                 $this->errMsg = 'Um evento de CC-e deve ser passado.';
                 $this->errStatus = true;
-                throw new nfephpException($this->errMsg);
+                throw new NfephpException($this->errMsg);
             }
             $this->id = str_replace('ID', '', $this->infEvento->getAttribute("Id"));
             $this->chNFe = $this->infEvento->getElementsByTagName("chNFe")->item(0)->nodeValue;
@@ -164,8 +174,12 @@ class Dacce extends CommonNFePHP implements DocumentoNFePHP
             $this->dhEvento = $this->infEvento->getElementsByTagName("dhEvento")->item(0)->nodeValue;
             $this->cStat = $this->retInfEvento->getElementsByTagName("cStat")->item(0)->nodeValue;
             $this->xMotivo = $this->retInfEvento->getElementsByTagName("xMotivo")->item(0)->nodeValue;
-            $this->CNPJDest = !empty($this->retInfEvento->getElementsByTagName("CNPJDest")->item(0)->nodeValue) ? $this->retInfEvento->getElementsByTagName("CNPJDest")->item(0)->nodeValue : '';
-            $this->CPFDest = !empty($this->retInfEvento->getElementsByTagName("CPFDest")->item(0)->nodeValue) ? $this->retInfEvento->getElementsByTagName("CPFDest")->item(0)->nodeValue : '';
+            $this->CNPJDest = !empty($this->retInfEvento->getElementsByTagName("CNPJDest")->item(0)->nodeValue)
+                ? $this->retInfEvento->getElementsByTagName("CNPJDest")->item(0)->nodeValue
+                : '';
+            $this->CPFDest = !empty($this->retInfEvento->getElementsByTagName("CPFDest")->item(0)->nodeValue)
+                ? $this->retInfEvento->getElementsByTagName("CPFDest")->item(0)->nodeValue
+                : '';
             $this->dhRegEvento = $this->retInfEvento->getElementsByTagName("dhRegEvento")->item(0)->nodeValue;
             $this->nProt = $this->retInfEvento->getElementsByTagName("nProt")->item(0)->nodeValue;
         }
@@ -262,9 +276,9 @@ class Dacce extends CommonNFePHP implements DocumentoNFePHP
     /**
      * pHeader
      *
-     * @param number $x
-     * @param number $y
-     * @param number $pag
+     * @param  number $x
+     * @param  number $y
+     * @param  number $pag
      * @return number
      */
     private function pHeader($x, $y, $pag)
@@ -373,7 +387,8 @@ class Dacce extends CommonNFePHP implements DocumentoNFePHP
         if ($email != '') {
             $email = 'Email: ' . $email;
         }
-        $texto = $lgr . ", " . $nro . $cpl . "\n" . $bairro . " - " . $CEP . "\n" . $mun . " - " . $UF . " " . $fone . "\n" . $email;
+        $texto = $lgr . ", " . $nro . $cpl . "\n" . $bairro . " - " . $CEP . "\n"
+            . $mun . " - " . $UF . " " . $fone . "\n" . $email;
         $this->pTextBox($x1, $y1 - 2, $tw, 8, $texto, $aFont, 'T', 'C', 0, '');
 
         // ##################################################
@@ -420,7 +435,10 @@ class Dacce extends CommonNFePHP implements DocumentoNFePHP
         $x = $oldX;
         $this->pTextBox($x, $y1, $maxW, 40);
         $sY = $y1 + 40;
-        $texto = 'De acordo com as determinações legais vigentes, vimos por meio desta comunicar-lhe que a Nota Fiscal, abaixo referenciada, contêm irregularidades que estão destacadas e suas respectivas correções, solicitamos que sejam aplicadas essas correções ao executar seus lançamentos fiscais.';
+        $texto = 'De acordo com as determinações legais vigentes, vimos por meio desta comunicar-lhe'.
+            ' que a Nota Fiscal, abaixo referenciada, contêm irregularidades que estão destacadas e' .
+            ' suas respectivas correções, solicitamos que sejam aplicadas essas correções ao executar'.
+            ' seus lançamentos fiscais.';
         $aFont = array(
             'font' => $this->fontePadrao,
             'size' => 10,
@@ -545,7 +563,9 @@ class Dacce extends CommonNFePHP implements DocumentoNFePHP
     protected function pFooter($x, $y)
     {
         $w = $this->wPrint;
-        $texto = "Este documento é uma representação gráfica da CC-e e foi impresso apenas para sua informação e não possue validade fiscal.\n A CC-e deve ser recebida e mantida em arquivo eletrônico XML e pode ser consultada através dos Portais das SEFAZ.";
+        $texto = "Este documento é uma representação gráfica da CC-e e foi impresso apenas para sua"
+            . " informação e não possue validade fiscal.\n A CC-e deve ser recebida e mantida em"
+            . " arquivo eletrônico XML e pode ser consultada através dos Portais das SEFAZ.";
         $aFont = array(
             'font' => $this->fontePadrao,
             'size' => 10,
@@ -575,9 +595,9 @@ class Dacce extends CommonNFePHP implements DocumentoNFePHP
     /**
      * printDocument
      *
-     * @param string $nome
-     * @param string $destino
-     * @param string $printer
+     * @param  string $nome
+     * @param  string $destino
+     * @param  string $printer
      * @return mixed
      */
     public function printDocument($nome = '', $destino = 'I', $printer = '')
@@ -588,9 +608,9 @@ class Dacce extends CommonNFePHP implements DocumentoNFePHP
     /**
      * printDACCE
      *
-     * @param string $nome
-     * @param string $destino
-     * @param string $printer
+     * @param  string $nome
+     * @param  string $destino
+     * @param  string $printer
      * @return mixed
      */
     public function printDACCE($nome = '', $destino = 'I', $printer = '')

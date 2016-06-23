@@ -7,12 +7,12 @@ use NFSe\Model\Prestador;
 /**
  * Usa o DTO LoteRps para fazer requisições ao webservice e retorna XML (por enquanto)
  *
- * @category   NFePHP
- * @package    NFSe\Service
- * @copyright  Copyright (c) 2008-2015
- * @license    http://www.gnu.org/licenses/lesser.html LGPL v3
- * @author     Thiago Colares <thicolares at gmail dot com>
- * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
+ * @category  NFePHP
+ * @package   NFSe\Service
+ * @copyright Copyright (c) 2008-2015
+ * @license   http://www.gnu.org/licenses/lesser.html LGPL v3
+ * @author    Thiago Colares <thicolares at gmail dot com>
+ * @link      http://github.com/nfephp-org/nfephp for the canonical source repository
  */
 
 class WebServiceRequesterService implements WebServiceRequesterServiceInterface
@@ -25,18 +25,18 @@ class WebServiceRequesterService implements WebServiceRequesterServiceInterface
     /**
      * MakeWebServiceRequest init
      *
-     * @param $codigoMunicipio
+     * @param  $codigoMunicipio
      * @return void
      * @throws \Exception
      */
     private function init( $codigoMunicipio )
     {
         switch($codigoMunicipio) {
-            case City::SAO_PAULO:
-                $this->webServiceRequesterService = new \NFSe\Layouts\NotaPaulistana\Service\WebServiceRequesterService();
-                break;
-            default:
-                throw new \Exception("Layout não implementado para o município $codigoMunicipio ou vazio.", 1439599943);
+        case City::SAO_PAULO:
+            $this->webServiceRequesterService = new \NFSe\Layouts\NotaPaulistana\Service\WebServiceRequesterService();
+            break;
+        default:
+            throw new \Exception("Layout não implementado para o município $codigoMunicipio ou vazio.", 1439599943);
         }
     }
 
@@ -47,8 +47,8 @@ class WebServiceRequesterService implements WebServiceRequesterServiceInterface
      */
     public function enviarLoteRps( LoteRps $loteRps )
     {
-        $this->init( $loteRps->getCodigoMunicipo() );
-        return $this->webServiceRequesterService->enviarLoteRps( $loteRps );
+        $this->init($loteRps->getCodigoMunicipo());
+        return $this->webServiceRequesterService->enviarLoteRps($loteRps);
     }
 
     /**
@@ -58,8 +58,8 @@ class WebServiceRequesterService implements WebServiceRequesterServiceInterface
      */
     public function consultarSituacaoLoteRps( LoteRps $loteRps )
     {
-        $this->init( $loteRps->getCodigoMunicipo() );
-        return $this->webServiceRequesterService->consultarSituacaoLoteRps( $loteRps );
+        $this->init($loteRps->getCodigoMunicipo());
+        return $this->webServiceRequesterService->consultarSituacaoLoteRps($loteRps);
     }
 
     /**
@@ -69,7 +69,7 @@ class WebServiceRequesterService implements WebServiceRequesterServiceInterface
      */
     public function consultarLoteRps(LoteRps $loteRps)
     {
-        $this->init( $loteRps->getCodigoMunicipo() );
+        $this->init($loteRps->getCodigoMunicipo());
         return $this->webServiceRequesterService->consultarSituacaoLoteRps($loteRps);
     }
 
@@ -77,14 +77,14 @@ class WebServiceRequesterService implements WebServiceRequesterServiceInterface
     /**
      * Consulta NFS-es de um prestador dado um período
      *
-     * @param Prestador $prestador
-     * @param \DateTime $dataEmissaoInicio
-     * @param \DateTime $dataEmissaoFim
+     * @param  Prestador $prestador
+     * @param  \DateTime $dataEmissaoInicio
+     * @param  \DateTime $dataEmissaoFim
      * @return mixed
      */
     public function consultarNfses(Prestador $prestador, \DateTime $dataEmissaoInicio, \DateTime $dataEmissaoFim)
     {
-        $this->init( $prestador->getCodigoMunicipio() );
+        $this->init($prestador->getCodigoMunicipio());
         return $this->webServiceRequesterService->consultarNfses($prestador, $dataEmissaoInicio, $dataEmissaoFim);
     }
 }

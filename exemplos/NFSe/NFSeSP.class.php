@@ -93,7 +93,7 @@ class NFSeSP
     /**
      * Load given configuration
      *
-     * @param array $config
+     * @param  array $config
      * @return void
      */
     private function loadConfiguration(array $config)
@@ -108,7 +108,7 @@ class NFSeSP
     /**
      * Validate if certificate is expired.
      *
-     * @param string $cert
+     * @param  string $cert
      * @return void
      */
     private function validateCert($cert)
@@ -174,8 +174,8 @@ class NFSeSP
     /**
      * Call method from webservice.
      *
-     * @param string $operation Method's name to call.
-     * @param DOMDocument $xmlDoc Message to be sent.
+     * @param  string      $operation Method's name to call.
+     * @param  DOMDocument $xmlDoc    Message to be sent.
      * @return bool|SimpleXMLElement Returns a XML when communication is successful, otherwise false when get error.
      */
     private function send($operation, DOMDocument $xmlDoc)
@@ -200,7 +200,7 @@ class NFSeSP
     /**
      * Create a XML Header Message
      *
-     * @param string $operation Method's name
+     * @param  string $operation Method's name
      * @return DOMDocument Returns a XML based on $operation.xsd schema
      */
     private function makeXmlHeader($operation)
@@ -223,7 +223,7 @@ class NFSeSP
     /**
      * Create a XML Header Message
      *
-     * @param string $operation Method's name
+     * @param  string $operation Method's name
      * @return DOMDocument Returns a XML based on $operation.xsd schema
      */
     private function createXMLp1($operation)
@@ -245,6 +245,7 @@ class NFSeSP
 
     /**
      * Sign XML with certificate.
+     *
      * @param DOMDocument $xmlDoc Returns Signature node based on xmldsig-core-schema.xsd schema
      */
     private function signXML(DOMDocument $xmlDoc)
@@ -297,7 +298,8 @@ class NFSeSP
 
     /**
      * Sign XML with certificate.
-     * @param NFeRPS $rps RPS Document
+     *
+     * @param NFeRPS     $rps     RPS Document
      * @param DOMElement $rpsNode Returns Assinatura node based on $operation.xsd schema
      */
     private function signRPS(NFeRPS $rps, DOMElement $rpsNode)
@@ -324,7 +326,8 @@ class NFSeSP
 
     /**
      * Makes a XML Object based on given RPS.
-     * @param NFeRPS $rps RPS Document
+     *
+     * @param NFeRPS      $rps    RPS Document
      * @param DOMDocument $xmlDoc Returns xml based on RetornoEnvioRPS.xsd schema
      */
     private function makeRPSXml(NFeRPS $rps, DOMDocument $xmlDoc)
@@ -387,7 +390,7 @@ class NFSeSP
      * Send a RPS to replace for NF-e
      * Message is based on PedidoEnvioRPS.xsd schema
      *
-     * @param NFeRPS $rps
+     * @param  NFeRPS $rps
      * @return bool|\SimpleXMLElement Returns xml based on RetornoEnvioRPS.xsd schema
      */
     public function sendRPS(NFeRPS $rps)
@@ -403,9 +406,9 @@ class NFSeSP
      * Send a batch of RPSs to replace for NF-e
      * Message is based on PedidoEnvioLoteRPS.xsd schema
      *
-     * @param array $rangeDate ('start' => start date of RPSs, 'end' => end date of RPSs)
-     * @param array $valorTotal ('servicos' => total value of RPSs, 'deducoes' => total deductions on values of RPSs)
-     * @param array $rps Collection of NFeRPS
+     * @param  array $rangeDate  ('start' => start date of RPSs, 'end' => end date of RPSs)
+     * @param  array $valorTotal ('servicos' => total value of RPSs, 'deducoes' => total deductions on values of RPSs)
+     * @param  array $rps        Collection of NFeRPS
      * @return bool|\SimpleXMLElement Returns xml based on RetornoEnvioLoteRPS.xsd schema
      */
     public function sendRPSBatch($rangeDate, $valorTotal, $rps)
@@ -418,9 +421,9 @@ class NFSeSP
      * Send a batch of RPSs to replace for NF-e for test only.
      * Message is based on PedidoEnvioLoteRPS.xsd schema
      *
-     * @param array $rangeDate ('start' => start date of RPSs, 'end' => end date of RPSs)
-     * @param array $valorTotal ('servicos' => total value of RPSs, 'deducoes' => total deductions on values of RPSs)
-     * @param array $rps Collection of NFeRPS
+     * @param  array $rangeDate  ('start' => start date of RPSs, 'end' => end date of RPSs)
+     * @param  array $valorTotal ('servicos' => total value of RPSs, 'deducoes' => total deductions on values of RPSs)
+     * @param  array $rps        Collection of NFeRPS
      * @return bool|\SimpleXMLElement Returns xml based on RetornoEnvioLoteRPS.xsd schema
      */
     public function sendRPSBatchTest(array $rangeDate, array $valorTotal, array $rps)
@@ -432,9 +435,10 @@ class NFSeSP
 
     /**
      * Makes xml batch message.
-     * @param array $rangeDate
-     * @param array $valorTotal
-     * @param array $rps
+     *
+     * @param  array $rangeDate
+     * @param  array $valorTotal
+     * @param  array $rps
      * @return DOMDocument
      */
     private function makeBatchMessage(array $rangeDate, array $valorTotal, array $rps)
@@ -457,7 +461,7 @@ class NFSeSP
      * Has responsible to cancel NFe numbers created from sendRPSBatch method
      * Message is based on PedidoConsultaNFe.xsd schema
      *
-     * @param array $nfeNumbers Array of NFe numbers
+     * @param  array $nfeNumbers Array of NFe numbers
      * @return bool|\SimpleXMLElement Returns xml based on RetornoCancelamentoNFe.xsd schema
      */
     public function cancelNFe(array $nfeNumbers)
@@ -490,9 +494,9 @@ class NFSeSP
      * RPS document when given $rpsNumber and $rpsSerie
      * Message is based on PedidoConsultaNFe.xsd schema
      *
-     * @param string $nfeNumber NFe Number
-     * @param string $rpsNumber RPS Number
-     * @param string $rpsSerie RPS Serie
+     * @param  string $nfeNumber NFe Number
+     * @param  string $rpsNumber RPS Number
+     * @param  string $rpsSerie  RPS Serie
      * @return bool|SimpleXMLElement Returns a XML based on RetornoConsulta.xsd schema.
      */
     public function queryNFe($nfeNumber, $rpsNumber, $rpsSerie)
@@ -525,11 +529,11 @@ class NFSeSP
      * queryNFeReceived and queryNFeIssued have the same XML request model
      * Message is based on PedidoConsultaNFePeriodo.xsd schema
      *
-     * @param string $cnpj CNPJ to find
-     * @param string $ccm State Registration
-     * @param string $startDate YYYY-MM-DD
-     * @param string $endDate YYYY-MM-DD
-     * @param int $pageNumber Number of page to query results, by default the webservice given 50 documents per page
+     * @param  string $cnpj       CNPJ to find
+     * @param  string $ccm        State Registration
+     * @param  string $startDate  YYYY-MM-DD
+     * @param  string $endDate    YYYY-MM-DD
+     * @param  int    $pageNumber Number of page to query results, by default the webservice given 50 documents per page
      * @return \DOMDocument Returns xml based on RetornoConsulta.xsd schema
      */
     private function queryNFeWithDateRange($cnpj, $ccm, $startDate, $endDate, $pageNumber = 1)
@@ -555,11 +559,11 @@ class NFSeSP
      * Query NF-e's that CNPJ/CCM company received from other companies
      * Message is based on PedidoConsultaNFePeriodo.xsd schema
      *
-     * @param string $cnpj CNPJ to find
-     * @param string $ccm State Registration
-     * @param string $startDate YYYY-MM-DD
-     * @param string $endDate YYYY-MM-DD
-     * @param int $pageNumber
+     * @param  string $cnpj       CNPJ to find
+     * @param  string $ccm        State Registration
+     * @param  string $startDate  YYYY-MM-DD
+     * @param  string $endDate    YYYY-MM-DD
+     * @param  int    $pageNumber
      * @return bool|\SimpleXMLElement Returns xml based on RetornoConsulta.xsd schema
      */
     public function queryNFeReceived($cnpj, $ccm, $startDate, $endDate, $pageNumber = 1)
@@ -573,11 +577,11 @@ class NFSeSP
      * Query NF-e's that CNPJ/CCM company issued to other companies
      * Message is based on PedidoConsultaNFePeriodo.xsd schema
      *
-     * @param string $cnpj
-     * @param string $ccm
-     * @param string $startDate YYYY-MM-DD
-     * @param string $endDate YYYY-MM-DD
-     * @param int $pageNumber
+     * @param  string $cnpj
+     * @param  string $ccm
+     * @param  string $startDate  YYYY-MM-DD
+     * @param  string $endDate    YYYY-MM-DD
+     * @param  int    $pageNumber
      * @return bool|\SimpleXMLElement Returns xml based on RetornoConsulta.xsd schema
      */
     public function queryNFeIssued($cnpj, $ccm, $startDate, $endDate, $pageNumber = 1)
@@ -591,7 +595,7 @@ class NFSeSP
      * Get NF-e's with this batch number
      * Message is based on PedidoConsultaLote.xsd schema
      *
-     * @param $batchNumber
+     * @param  $batchNumber
      * @return bool|SimpleXMLElement Returns xml based on schema RetornoConsulta.xsd
      */
     public function queryBatch($batchNumber)
@@ -607,7 +611,7 @@ class NFSeSP
      * If $batchNumber param is null, last match info will be returned
      * Message is based on PedidoInformacoesLote.xsd schema
      *
-     * @param integer $batchNumber
+     * @param  integer $batchNumber
      * @return bool|SimpleXMLElement Returns xml based on schema RetornoInformacoesLote.xsd
      */
     public function queryBatchInfo($batchNumber = null)
@@ -627,7 +631,7 @@ class NFSeSP
      * Message is based on PedidoConsultaCNPJ.xsd schema and
      * response is based on RetornoConsultaCNPJ.xsd schema
      *
-     * @param string $cnpj
+     * @param  string $cnpj
      * @return bool|string Returns the taxpayer register number for given CNPJ
      */
     public function queryCNPJ($cnpj)
@@ -660,7 +664,7 @@ class NFSeSP
      * Message is based on PedidoConsultaCNPJ.xsd schema and
      * response is based on RetornoConsultaCNPJ.xsd schema
      *
-     * @param string $cnpj
+     * @param  string $cnpj
      * @return bool|string Returns the taxpayer register number for given CNPJ
      */
     public function queryCPF($cnpj)
@@ -681,7 +685,7 @@ class NFSeSP
     /**
      * Gets Taxpayer register.
      *
-     * @param SimpleXMLElement $xmlResponse
+     * @param  SimpleXMLElement $xmlResponse
      * @return string Returns
      */
     private function getIncricaoMunicipal(SimpleXMLElement $xmlResponse)
@@ -698,8 +702,8 @@ class NFSeSP
     /**
      * Create a line with RPS description for batch file
      *
-     * @param NFeRPS $rps
-     * @param string $body
+     * @param  NFeRPS $rps
+     * @param  string $body
      * @return string
      */
     private function insertTextRPS(NFeRPS $rps, $body)
@@ -739,9 +743,9 @@ class NFSeSP
     /**
      * Create a batch file with NF-e text layout
      *
-     * @param array $rangeDate
-     * @param array $valorTotal
-     * @param array $rps
+     * @param  array $rangeDate
+     * @param  array $valorTotal
+     * @param  array $rps
      * @return bool|string
      */
     public function textFile($rangeDate, $valorTotal, $rps)

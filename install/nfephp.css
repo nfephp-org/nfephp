@@ -12,7 +12,6 @@ label {
     font-style: italic;
     line-height: normal;
 }
-
 span {
     font-size: 10px;
     font-style: italic;
@@ -52,3 +51,11 @@ td {
 #esquerda { width: 50%; float: left; }
 
 #tabs input {width: 95%;}
+.logoList {
+    float:left;
+    margin-right:10px;
+    text-align:center;
+}
+.logoList img {
+    border:none;
+}

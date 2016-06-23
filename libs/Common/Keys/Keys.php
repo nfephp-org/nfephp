@@ -4,12 +4,13 @@ namespace NFePHP\Common\Keys;
 
 /**
  * Classe auxiliar para criar, listar e testar os diretórios utilizados pela API
- * @category   NFePHP
- * @package    NFePHP\Common\Keys
- * @copyright  Copyright (c) 2008-2015
- * @license    http://www.gnu.org/licenses/lesser.html LGPL v3
- * @author     Roberto L. Machado <linux.rlm at gmail dot com>
- * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
+ *
+ * @category  NFePHP
+ * @package   NFePHP\Common\Keys
+ * @copyright Copyright (c) 2008-2015
+ * @license   http://www.gnu.org/licenses/lesser.html LGPL v3
+ * @author    Roberto L. Machado <linux.rlm at gmail dot com>
+ * @link      http://github.com/nfephp-org/nfephp for the canonical source repository
  */
 
 
@@ -18,16 +19,16 @@ class Keys
     /**
      * buildKey
      * Monta as chaves de 44 digitos para NFe, NFCe, CTe e MDFe
-     * 
-     * @param string $cUF
-     * @param string $ano
-     * @param string $mes
-     * @param string $cnpj
-     * @param string $mod
-     * @param string $serie
-     * @param string $numero
-     * @param string $tpEmis
-     * @param string $codigo
+     *
+     * @param  string $cUF
+     * @param  string $ano
+     * @param  string $mes
+     * @param  string $cnpj
+     * @param  string $mod
+     * @param  string $serie
+     * @param  string $numero
+     * @param  string $tpEmis
+     * @param  string $codigo
      * @return string
      */
     public static function buildKey($cUF, $ano, $mes, $cnpj, $mod, $serie, $numero, $tpEmis, $codigo = '')
@@ -54,8 +55,8 @@ class Keys
     /**
      * testaChave
      * Testa a chave com o digito verificador no final
-     * 
-     * @param string $chave
+     *
+     * @param  string $chave
      * @return boolean
      */
     public static function testaChave($chave = '')
@@ -74,9 +75,9 @@ class Keys
     /**
      * calculaDV
      * Função para o calculo o digito verificador da chave da NFe
-     * 
-     * @param string $chave43
-     * @return string 
+     *
+     * @param  string $chave43
+     * @return string
      */
     public static function calculaDV($chave43)
     {

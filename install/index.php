@@ -48,9 +48,9 @@ $htmod = Configure::chkModules();
 
 //variaveis da configuração
 $tpAmb = 2;
-$pathXmlUrlFileNFe = PATH_NFEPHP .'/config/nfe_ws3_mod55.xml';
-$pathXmlUrlFileCTe = PATH_NFEPHP .'/config/cte_ws2.xml';
-$pathXmlUrlFileMDFe = PATH_NFEPHP .'/config/mdf2_ws1.xml';
+$pathXmlUrlFileNFe = 'nfe_ws3_mod55.xml';
+$pathXmlUrlFileCTe = 'cte_ws2.xml';
+$pathXmlUrlFileMDFe = 'mdf2_ws1.xml';
 $pathXmlUrlFileCLe = '';
 $pathXmlUrlFileNFSe = '';
 $pathNFeFiles = '';
@@ -58,17 +58,23 @@ $pathCTeFiles = '';
 $pathMDFeFiles = '';
 $pathCLeFiles = '';
 $pathNFSeFiles = '';
-$pathCertsFiles = PATH_NFEPHP .'/certs/';
+$pathCertsFiles = PATH_NFEPHP . DIRECTORY_SEPARATOR . 'certs' . DIRECTORY_SEPARATOR;
 $siteUrl = str_replace('index.php', '', 'http://'.$_SERVER["SERVER_NAME"].$_SERVER["SCRIPT_NAME"]);
-$schemesNFe = 'PL_008f';
+$schemesNFe = 'PL_008i2';
 $schemesCTe = 'PL_CTe_200';
 $schemesMDFe = 'PL_MDFe_100';
 $schemesCLe = '';
 $schemesNFSe = '';
 
 $razaosocial = '';
+$nomefantasia = '';
 $siglaUF = 'SP';
 $cnpj = '';
+$ie = 'ISENTO';
+$im = '';
+$iest = '';
+$cnae = '';
+$regime = '1';
 $tokenIBPT = '';
 $tokenNFCe = '';
 $tokenNFCeId = '';
@@ -79,7 +85,9 @@ $certPhrase = '';
 $format = 'P';
 $paper = 'A4';
 $southpaw = true;
-$pathLogoFile = '';
+$pathLogoFile = PATH_NFEPHP . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'logo.jpg';
+$pathLogoNFe = PATH_NFEPHP . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'logo-nfe.png';
+$pathLogoNFCe = PATH_NFEPHP . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'logo-nfce.png';
 $logoPosition = 'L';
 $font = 'Times';
 $printer = '';
@@ -106,8 +114,8 @@ $proxyPort = '';
 $proxyUser = '';
 $proxyPass = '';
 
-$configfolder = PATH_NFEPHP .'/config';
-$pathConfig =  $configfolder .'/config.json';
+$configfolder = PATH_NFEPHP  . DIRECTORY_SEPARATOR . 'config';
+$pathConfig =  $configfolder . DIRECTORY_SEPARATOR . 'config.json';
 
 $configureVer = '4.0';
 
@@ -134,8 +142,14 @@ if (is_file($pathConfig)) {
     $schemesCLe = isset($installConfig->schemesCLe) ? $installConfig->schemesCLe : '';
     $schemesNFSe = isset($installConfig->schemesNFSe) ? $installConfig->schemesNFSe : '';
     $razaosocial = isset($installConfig->razaosocial) ? $installConfig->razaosocial : '';
+    $nomefantasia = isset($installConfig->nomefantasia) ? $installConfig->nomefantasia : '';
     $siglaUF = isset($installConfig->siglaUF) ? $installConfig->siglaUF : 'SP';
     $cnpj = isset($installConfig->cnpj) ? $installConfig->cnpj : '';
+    $ie = isset($installConfig->ie) ? $installConfig->ie : '';
+    $im = isset($installConfig->im) ? $installConfig->im : '';
+    $iest = isset($installConfig->iest) ? $installConfig->iest : '';
+    $cnae = isset($installConfig->cnae) ? $installConfig->cnae : '';
+    $regime = isset($installConfig->regime) ? $installConfig->regime : '1';
     $tokenIBPT = isset($installConfig->tokenIBPT) ? $installConfig->tokenIBPT : '';
     $tokenNFCe = isset($installConfig->tokenNFCe) ? $installConfig->tokenNFCe : '';
     $tokenNFCeId = isset($installConfig->tokenNFCeId) ? $installConfig->tokenNFCeId : '';
@@ -148,6 +162,8 @@ if (is_file($pathConfig)) {
     $paper = isset($installConfig->aDocFormat->paper) ? $installConfig->aDocFormat->paper : 'A4';
     $southpaw = isset($installConfig->aDocFormat->southpaw) ? $installConfig->aDocFormat->southpaw : true;
     $pathLogoFile = isset($installConfig->aDocFormat->pathLogoFile) ? $installConfig->aDocFormat->pathLogoFile : '';
+    $pathLogoNFe = isset($installConfig->aDocFormat->pathLogoNFe) ? $installConfig->aDocFormat->pathLogoNFe : '';
+    $pathLogoNFCe = isset($installConfig->aDocFormat->pathLogoNFCe) ? $installConfig->aDocFormat->pathLogoNFCe : '';
     $logoPosition = isset($installConfig->aDocFormat->logoPosition) ? $installConfig->aDocFormat->logoPosition : 'L';
     $font = isset($installConfig->aDocFormat->font) ? $installConfig->aDocFormat->font : 'Times';
     $printer = isset($installConfig->aDocFormat->printer) ? $installConfig->aDocFormat->printer : '';
@@ -204,6 +220,22 @@ $aUF = array(
     'SP',
     'TO'
 );
+
+$selRegime = "<select id=\"regime\" name=\"regime\" size=\"1\">";
+if ($regime == 1) {
+    $selRegime .= "<option value=\"1\" selected>Simples Nacional</option>";
+    $selRegime .= "<option value=\"2\">Simples Nacional - Excesso Sublimite de Receita Bruta</option>";
+    $selRegime .= "<option value=\"3\">Regime Normal</option>";
+} elseif ($regime == 2) {
+    $selRegime .= "<option value=\"1\">Simples Nacional</option>";
+    $selRegime .= "<option value=\"2\" selected>Simples Nacional - Excesso Sublimite de Receita Bruta</option>";
+    $selRegime .= "<option value=\"3\">Regime Normal</option>";
+} elseif ($regime == 3) {
+    $selRegime .= "<option value=\"1\">Simples Nacional</option>";
+    $selRegime .= "<option value=\"2\">Simples Nacional - Excesso Sublimite de Receita Bruta</option>";
+    $selRegime .= "<option value=\"3\" selected>Regime Normal</option>";
+}
+$selRegime .= "</select>";
 
 $selUF = "<select id=\"siglaUF\" name=\"siglaUF\" size=\"1\">";
 foreach ($aUF as $sigla) {
@@ -412,11 +444,23 @@ function changeAlerts(key, flag, msg) {
     <span title="Indique o ambiente padrão (1-Produção ou 2-Homologação)">Ambiente</span><br>
     <?php echo $selAmb;?><br>
     <span title="Indique a Razão Social Completa do Emitente">Razão Social do Emitente</span><br>
-    <input type="text" id="razaosocial" name="razaosocial" placeholder="Nome completo do emitente"  value="<?php echo $razaosocial;?>" required /><br>
+    <input type="text" id="razaosocial" name="razaosocial" placeholder="Nome completo do emitente" maxlength="60" value="<?php echo $razaosocial;?>" required /><br>
+    <span title="Indique o Nome Fantasia Completo do Emitente">Nome Fantasia</span><br>
+    <input type="text" id="nomefantasia" name="nomefantasia" placeholder="Nome fantasia do emitente" maxlength="60" value="<?php echo $nomefantasia;?>" required /><br>
     <span title="Indique o CNPJ do emitente SEM FORMATAÇÃO">CNPJ do Emitente</span><br>
-    <input type="text" id="cnpj" name="cnpj" placeholder="CNPJ sem formatação" size="25" value="<?php echo $cnpj;?>" required /><br>
+    <input type="text" id="cnpj" name="cnpj" placeholder="CNPJ sem formatação" maxlength="14" value="<?php echo $cnpj;?>" required /><br>
+    <span title="Indique a Inscrição Estadual do emitente SEM FORMATAÇÃO">IE do Emitente</span><br>
+    <input type="text" id="ie" name="ie" placeholder="IE sem formatação ou o literal 'ISENTO'" maxlength="14" value="<?php echo $ie;?>" required /><br>
+    <span title="Indique a Inscrição Municipal do emitente SEM FORMATAÇÃO">IM do Emitente</span><br>
+    <input type="text" id="im" name="im" placeholder="IM sem formatação" maxlength="15" value="<?php echo $im;?>" /><br>
+    <span title="Indique a Inscrição Estadual (Subst. Tributário)">IE (Subst. Tributário)</span><br>
+    <input type="text" id="iest" name="iest" placeholder="IE (Subst. Tributário)" maxlength="14" value="<?php echo $iest;?>"/><br>
+    <span title="Indique o Código Nacional de Atividade Econômica do emitente SEM FORMATAÇÃO">CNAE do Emitente</span><br>
+    <input type="text" id="cnae" name="cnae" placeholder="CNAE Principal sem formatação" maxlength="7" value="<?php echo $cnae;?>" /><br>
     <span title="Selecione o estado do Emitente">Unidade da Federação</span><br>
     <?php echo $selUF;?><br>
+    <span title="Indique o Regime Tributário (1-Simples Nacional;2-Simples Nacional, excesso sublimite de receita bruta;3-Regime Normal.)">Regime Tributário</span><br>
+    <?php echo $selRegime;?><br>
     <span title="Indique o path real para a pasta dos certificados. Esta pasta deve ter permissões de escrita pelo usuário do servidor web. Ex. www-data">Path dos Certificados</span><br>
     <input type="text" id="pathCertsFiles" name="pathCertsFiles" placeholder="Caminho para a pasta"  value="<?php echo $pathCertsFiles;?>" required /><label id="lblCerts"></label><br>
     <span title="Indique o nome do certificado que foi salvo na pasta dos certificados">Nome do arquivo pfx (Certificado)</span><br>
@@ -429,21 +473,23 @@ function changeAlerts(key, flag, msg) {
     <input type="text" id="siteUrl" name="siteUrl" placeholder="Site url"  value="<?php echo $siteUrl;?>" required /><br>
     <span title="Indique o token para pesquisa no IBPT, requer cadastramento prévio">Token IBPT</span><br>
     <input type="text" id="tokenIBPT" name="tokenIBPT" placeholder="token para IBPT"  value="<?php echo $tokenIBPT;?>" /><br>
-    <span title="Indique o token para montagem do QRCode nas NFCe, requer cadastramento prévio na SEFAZ">Token NFCe</span><br>
-    <input type="text" id="tokenNFCe" name="tokenNFCe" placeholder="toke para NFCe"  value="<?php echo $tokenNFCe;?>" /><br>
-    <span title="Indique o ID do token NFCe, 6 digitos numericos com zeros a esquerda">Token Id NFCe</span><br>
-    <input type="text" id="tokenNFCeId" name="tokenNFCeId" placeholder="000000" size="8" value="<?php echo $tokenNFCeId;?>" /><br>
+    <span title="Indique o Código de Segurança do Contribuinte (antigo Token) para montagem do QRCode nas NFCe, requer cadastramento prévio na SEFAZ">CSC - Código de Segurança do Contribuinte (antigo Token)</span><br>
+    <input type="text" id="tokenNFCe" name="tokenNFCe" placeholder="Código de Segurança do Contribuinte (antigo Token) para NFCe"  value="<?php echo $tokenNFCe;?>" /><br>
+    <span title="Indique o Identificador do CSC – Código de Segurança do Contribuinte no Banco de Dados da SEFAZ para NFCe, 6 digitos numericos com zeros a esquerda">Identificador do CSC NFCe</span><br>
+    <input type="text" id="tokenNFCeId" name="tokenNFCeId" placeholder="Identificador do CSC, necessário para validar o CSC." size="8" value="<?php echo $tokenNFCeId;?>" /><br>
     </div>
     <div id="direita">
         <h3>Estes campos referen-se a os dados principais do emitente e todos os campos em amarelo são OBRIGATÓRIOS.</h3>
-        <h3>Razão Social - indicar a razão social do emitente exatamente igual ao seu registro na SEFAZ, alguns simbolos poderão ser substituidos por seus equivalentes em entidades html (ex. &amp;)</h3>
+        <h3>Razão Social - indicar a Razão Social do emitente exatamente igual ao seu registro na SEFAZ, alguns simbolos poderão ser substituidos por seus equivalentes em entidades html (ex. &amp;)</h3>
+        <h3>Nome Fantasia - indicar o Nome Fantasia do emitente exatamente igual ao seu registro na SEFAZ, alguns simbolos poderão ser substituidos por seus equivalentes em entidades html (ex. &amp;)</h3>
+        <h3>Inscrição Estadual - indicar o número de <u>Cadastrado de Contribuintes do ICMS</u>, pode ser informado o literal “ISENTO” para os contribuintes do ICMS isentos de inscrição no Cadastro de Contribuintes de ICMS.</h3>
+        <h3>Inscrição Municipal - inidicar o número de <u>Cadastro de Contribuintes do ISSQN</u>, necessário para emissão de NF-e conjugada, com itens de produtos sujeitos ao ICMS e itens de serviços sujeitos ao ISSQN.</h3>
+        <h3>Inscrição Estadual do Substituto Tributário - indicar o número de <u>Cadastrado de Contribuintes do ICMS</u> do estado de Destino (Substituto), para quem pretender efetuar vendas interestaduais de mercadorias sujeitas à substituição tributária.</h3>
+        <h3>Regime Tributário - selecione a opção de regime tributário em que o emissor atua (MEI - Microempreendedor Individual atua no regime 'Simples Nacional').</h3>
+        <h3>CNAE - indicar o <u>Código Nacional de Atividade Econômica</u> principal do emitente, necessário quando a Inscrição Municipal for informada.</h3>
+        <h3>CSC - <u>Código de Segurança do Contribuinte</u>, é obrigatório informar para quem deseja emitir NFC-e, é fornecido pelas SEFAZ (ou pode ser gerado através da API se sua SEFAZ possui o serviço por WebService).</h3>
         <h3></h3>
-        <h3></h3>
-        <h3></h3>
-        <h3></h3>
-        <h3></h3>
-        <h3></h3>
-        <h3></h3>
+        <h3>Dica: Utilize o site da Receita Federal para verificar os dados cadastrais do CNPJ, <a href="http://www.receita.fazenda.gov.br/PessoaJuridica/CNPJ/cnpjreva/Cnpjreva_Solicitacao.asp" title="Emissão de Comprovante de Inscrição e de Situação Cadastral - Receita Federal" target="_blank">clique aqui</a>.</h3>
     </div>
     <div class="clear"> </div>
   </div>
@@ -490,14 +536,18 @@ function changeAlerts(key, flag, msg) {
     <input type="text" id="font" name="font" size="10" value="<?php echo $font;?>" readonly /><br>
     <span title="Normalmente não usado mas teria que complementar o script para permitir a impressão direta. Pois esse recurso depende do sistema operacional.">Impressora</span><br>
     <input type="text" id="printer" name="printer" placeholder="Nome da Impressora" size="30" value="<?php echo $printer;?>" /><br>
-    <span title="Imagem com a logomarca, deverá ser um aquivo JPEG ou PNG">Logo</span><br>
-    <input type="text" id="pathLogoFile" name="pathLogoFile" placeholder="Path completo para o arquivo com o logo"  value="<?php echo $pathLogoFile;?>" /><br>
+    <span title="Imagem com a logomarca, deverá ser um aquivo JPEG ou PNG">Logo (80x80px ou 160x50px jpg, gif ou png)</span><br>
+    <input type="text" id="pathLogoFile" name="pathLogoFile" placeholder="Path completo para o arquivo com o logo" value="<?php echo $pathLogoFile;?>" />
+    <input type="hidden" name="pathLogoNFe" value="<?php echo $pathLogoNFe;?>" readonly />
+    <input type="hidden" name="pathLogoNFCe" value="<?php echo $pathLogoNFCe;?>" readonly />
+    <br>
     </div>
     <div id="direita">
         <h3>Para a impressão dos documentos auxiliares seja para NFe, CTe, MDFe ou CLe, está definido em documentação oficial o uso obrigatório de papel A4 e do tipo de letras "Times" (serifados), isso é fixo e não pode ser mudado.</h3>
         <h3>O formato de impressão seja ele "Portraite" ou "Landscape" é definido também pelo campo &lt;tpImp&gt; do XML, portanto essa definição aqui estabelecida NÃO sobrepõe a especificação contida no XML, e nem é válida para qualquer documento auxiliar.</h3>
-        <h3>Para a impressão dos documentos auxiliares da NFCe as regras são diferentes tendo em vista que se trata de um substitudo do cupom fiscal. Nesses casos é usual havem impressoras termicas não-fiscais, especificas para a impressão desses cupons.</h3>
-        <h3>Dito isso, a impressão desses cupons (DANFCE) pode ser mais complexa pois algumas dessas impressoras para serem eficientes dependem do envio de comandos diretos no padrão ESC/POS ou similar (ex. Epson TM T20). Nesse momento ainda não temos na nossa API este recurso e portanto a DANFCE por enquato é gerada apenas em PDF.</h3>
+        <h3>A impressão de documentos auxiliares da NFC-e deve ser feita em impressoras comum (não fiscal) térmicas, laser ou deskjet de 80 colunas.</h3>
+        <h3>Por enquanto a API não envia os dados direto para impressora, e por tanto a DANFCE só é impressa em PDF ou HTML.</h3>
+        <h3>Caso não seja informado uma imagem para logo, será usado as imagens padrão para cada tipo de documento NF-e e NFC-e.</h3>
     </div>
     <div class="clear"> </div>
 
@@ -546,14 +596,20 @@ function changeAlerts(key, flag, msg) {
     <div id="esquerda">
     <span title="Indique se é necessária a autenticação ">Autenticação</span><br>
     <?php echo $selMailAuth;?><br>
-    <span title="Indique o endereço de email que será usado para envio dos documentos eletrônicos. Ex. nfe@seudominio.com.br">Endereço de Email</span><br>
-    <input type="text" id="mailUser" name="mailUser" placeholder="Nome do usuário do email" size="50" value="<?php echo $mailUser;?>" /><br>
-    <span title="Indique a senha de acesso da caixa postal do endereço de email">Senha de Email</span><br>
+    <span title="Indique o endereço de email que será usado para envio dos documentos eletrônicos. Ex. nfe@seudominio.com.br">Endereço de E-mail</span><br>
+    <input type="text" id="mailUser" name="mailUser" placeholder="Nome do usuário do e-mail" size="250" value="<?php echo $mailUser;?>" /><br>
+    <span title="Indique a senha de acesso da caixa postal do endereço de e-mail">Senha de E-mail</span><br>
     <input type="password" id="mailPass" name="mailPass" placeholder="Senha do usuário" size="12" value="<?php echo $mailPass;?>" /><br>
     <span title="Indique o URL do Servidor SMTP Ex. smtp.seudominio.com.br">SMTP Server</span><br>
     <input type="text" id="mailSmtp" name="mailSmtp" placeholder="Servidor SMTP" size="50" value="<?php echo $mailSmtp;?>" /><br>
-    <span title="Indique ">From</span><br>
-    <input type="text" id="mailFrom" name="mailFrom" placeholder="from" size="50" value="<?php echo $mailFrom;?>" /><br>
+    <span title="Indique ">From (E-mail)</span><br>
+    <input type="text" id="mailFromMail" name="mailFromMail" placeholder="E-mail de identificação (Geralmente o mesmo utilizado para o envio)" size="250" value="<?php echo $mailFromMail;?>" /><br>
+    <span title="Indique ">From (Nome)</span><br>
+    <input type="text" id="mailFromName" name="mailFromName" placeholder="Nome de identificação do E-mail" size="50" value="<?php echo $mailFromName;?>" /><br>
+    <span title="Indique ">Reply (E-mail)</span><br>
+    <input type="text" id="mailReplayToMail" name="mailReplayToMail" placeholder="E-mail especifico para respostas (Se vazio, será utilizado o From)" size="250" value="<?php echo $mailReplayToMail;?>" /><br>
+    <span title="Indique ">Reply (Nome)</span><br>
+    <input type="text" id="mailReplayToName" name="mailReplayToName" placeholder="Nome de identificação do e-mail de respostas" size="50" value="<?php echo $mailReplayToName;?>" /><br>
     <span title="Indique ">Protocol</span><br>
     <?php echo $selMailProt;?><br>
     <span title="Indique ">Port</span><br>

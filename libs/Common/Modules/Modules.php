@@ -4,12 +4,13 @@ namespace NFePHP\Common\Modules;
 
 /**
  * Classe auxiliar para obter informações dos modulos instalados no PHP
- * @category   NFePHP
- * @package    NFePHP\Common\Modules
- * @copyright  Copyright (c) 2008-2014
- * @license    http://www.gnu.org/licenses/lesser.html LGPL v3
- * @author     Roberto L. Machado <linux.rlm at gmail dot com>
- * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
+ *
+ * @category  NFePHP
+ * @package   NFePHP\Common\Modules
+ * @copyright Copyright (c) 2008-2014
+ * @license   http://www.gnu.org/licenses/lesser.html LGPL v3
+ * @author    Roberto L. Machado <linux.rlm at gmail dot com>
+ * @link      http://github.com/nfephp-org/nfephp for the canonical source repository
  */
 
 class Modules
@@ -53,7 +54,8 @@ class Modules
     /**
      * verifyRequiredModules
      * Verifica se os modulos requeridos pela API estão instalados
-     * @param string $lista
+     *
+     * @param  string $lista
      * @return bool
      */
     public static function verifyRequiredModules(&$lista = '')
@@ -89,7 +91,8 @@ class Modules
     /**
      * Checagem rápida se o modulo está carregadp
      * true se carregado ou false se não
-     * @param string $moduleName
+     *
+     * @param  string $moduleName
      * @return boolean
      */
     public function isLoaded($moduleName)
@@ -102,10 +105,11 @@ class Modules
 
     /**
      * Obtêm os parâmetros do modulo carregado
-     * Pode ser uma simples configuração especificada por $setting 
+     * Pode ser uma simples configuração especificada por $setting
      * ou todos os valores caso nada seja passado no parâmetro
-     * @param string $moduleName
-     * @param string $setting
+     *
+     * @param  string $moduleName
+     * @param  string $setting
      * @return string
      */
     public function getModuleSetting($moduleName, $setting = '')
@@ -123,8 +127,9 @@ class Modules
     }
     
     /**
-     * Lista todos os modulos php instalados sem seus 
+     * Lista todos os modulos php instalados sem seus
      * parametros
+     *
      * @return array
      */
     public function listModules()
@@ -136,8 +141,9 @@ class Modules
     }
     
     /**
-     * Função para padronização do numero de versões de 2.7.2 para 020702 
-     * @param string $ver
+     * Função para padronização do numero de versões de 2.7.2 para 020702
+     *
+     * @param  string $ver
      * @return string
      */
     public function convVer($ver)
@@ -152,7 +158,8 @@ class Modules
     
     /**
      * testPHP
-     * @param string $limit
+     *
+     * @param  string $limit
      * @return string
      */
     public function testPHP($limit = '5.4')
@@ -172,14 +179,15 @@ class Modules
     }
     
     /**
-     * Rotina de teste dos molulos instalados 
+     * Rotina de teste dos molulos instalados
      * se a versão é suficiente e se estão habilitados
-     * @param string $name
-     * @param string $alias
-     * @param string $param1
-     * @param string $param2
-     * @param string $limit
-     * @param string $coment
+     *
+     * @param  string $name
+     * @param  string $alias
+     * @param  string $param1
+     * @param  string $param2
+     * @param  string $limit
+     * @param  string $coment
      * @return string
      */
     public function testModule(
