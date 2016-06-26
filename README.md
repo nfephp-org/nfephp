@@ -14,6 +14,21 @@ Para começar veja [nossas páginas Wiki](https://github.com/nfephp-org/nfephp/w
 
 Não deixe de se cadastrar no [grupo de discussão do NFePHP](http://groups.google.com/group/nfephp)!
 
+**As estruturas de CTe, MDFe e outrras foram removidas destes repositório e levadas a seus novos repositórios veja:**
+
+[SPED CTe](https://github.com/nfephp-org/sped-cte) Novo repositório das classes de CTe
+
+[SPED MDFe](https://github.com/nfephp-org/sped-mdfe) Novo repositório das classes de MDFe
+>Todas as contribuições em código devem ser direcionadas para esses novos repositórios pois não mais existirão no repositorio do nfephp original.
+
+
+Os demais componentes também terão reopsitorios novos, ma spor ora ainda permanecem neste.
+[SPED COMMON](https://github.com/nfephp-org/sped-common) Novo repositório das classes comuns usadas por todos ou varios projetos. 
+
+[SPED NFe](https://github.com/nfephp-org/sped-nfe) Novo repositório da classes paa NFe
+
+[SPED DA](https://github.com/nfephp-org/sped-da) Novo repositório das classes que gerama impressão dos documentos. 
+
 CONTRIBUINDO
 =============
 
