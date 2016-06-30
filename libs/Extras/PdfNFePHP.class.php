@@ -4,7 +4,8 @@ namespace NFePHP\Extras;
 
 use NFePHP\Extras\FPDF\FPDF;
 
-class PdfNFePHP extends FPDF {
+class PdfNFePHP extends FPDF
+{
     
     private $T128;                                             // tabela de codigos 128
     private $ABCset="";                                        // conjunto de caracteres legiveis em 128
@@ -163,10 +164,11 @@ class PdfNFePHP extends FPDF {
     /**
      * Code128
      * Imprime barcode 128
-     * @package     FPDF
-     * @name        Code128
-     * @version     1.0
-     * @author      Roland Gautier
+     *
+     * @package FPDF
+     * @name    Code128
+     * @version 1.0
+     * @author  Roland Gautier
      */
     public function Code128($x, $y, $code, $w, $h)
     {
@@ -188,18 +190,29 @@ class PdfNFePHP extends FPDF {
                 $Aguid [$i] = "N";
                 $Bguid [$i] = "N";
             }
-            if (substr($Cguid, 0, $IminiC) == $SminiC) { 
+            if (substr($Cguid, 0, $IminiC) == $SminiC) {
                 $crypt .= chr(($crypt > "") ? $this->JSwap["C"] : $this->JStart["C"]);
                 $made = strpos($Cguid, "N");
-                if ($made === false) $made = strlen($Cguid);
-                if (fmod($made, 2)==1) $made--;
-                for ($i=0; $i < $made; $i += 2) $crypt .= chr(strval(substr($code, $i, 2)));
+                if ($made === false) {
+                    $made = strlen($Cguid);
+                }
+                if (fmod($made, 2)==1) {
+                    $made--;
+                }
+                for ($i=0; $i < $made;
+                $i += 2) {
+                    $crypt .= chr(strval(substr($code, $i, 2)));
+                }
                     $jeu = "C";
             } else {
-                $madeA = strpos($Aguid,"N");
-                if ($madeA === false) $madeA = strlen($Aguid);
-                $madeB = strpos($Bguid,"N");
-                if ($madeB === false) $madeB = strlen($Bguid);
+                $madeA = strpos($Aguid, "N");
+                if ($madeA === false) {
+                    $madeA = strlen($Aguid);
+                }
+                $madeB = strpos($Bguid, "N");
+                if ($madeB === false) {
+                    $madeB = strlen($Bguid);
+                }
                 $made = (($madeA < $madeB) ? $madeB : $madeA );
                 $jeu = (($madeA < $madeB) ? "B" : "A" );
                 $jeuguid = $jeu . "guid";
@@ -222,163 +235,170 @@ class PdfNFePHP extends FPDF {
         for ($i=0; $i<strlen($crypt); $i++) {
             $c = $this->T128[ord($crypt[$i])];
             for ($j=0; $j<count($c); $j++) {
-                $this->Rect($x,$y,$c[$j]*$modul,$h,"F");
+                $this->Rect($x, $y, $c[$j]*$modul, $h, "F");
                 $x += ($c[$j++]+$c[$j])*$modul;
             }
         }
     } //fim Code128
 
-    /** 
+    /**
      * Rotate
      * Rotaciona para impressão paisagem (landscape)
-     * @package     FPDF
-     * @name        Rotate
-     * @version     1.0
-     * @author      Oliver
-     * @param number $angle 
-     * @param number $x
-     * @param number $y
+     *
+     * @package FPDF
+     * @name    Rotate
+     * @version 1.0
+     * @author  Oliver
+     * @param   number $angle
+     * @param   number $x
+     * @param   number $y
      */
-    public function Rotate($angle,$x=-1,$y=-1) {
-        if($x==-1){
+    public function Rotate($angle, $x = -1, $y = -1)
+    {
+        if ($x==-1) {
             $x=$this->x;
         }
-        if($y==-1){
+        if ($y==-1) {
             $y=$this->y;
-       }
-       if( isset( $this->angle ) && $this->angle != 0){
+        }
+        if (isset($this->angle) && $this->angle != 0) {
             $this->_out('Q');
-       }
+        }
         $this->angle=$angle;
-        if($angle!=0){
+        if ($angle!=0) {
             $angle*=M_PI/180;
             $c=cos($angle);
             $s=sin($angle);
             $cx=$x*$this->k;
             $cy=($this->h-$y)*$this->k;
-            $this->_out(sprintf('q %.5F %.5F %.5F %.5F %.2F %.2F cm 1 0 0 1 %.2F %.2F cm',$c,$s,-$s,$c,$cx,$cy,-$cx,-$cy));
+            $this->_out(sprintf('q %.5F %.5F %.5F %.5F %.2F %.2F cm 1 0 0 1 %.2F %.2F cm', $c, $s, -$s, $c, $cx, $cy, -$cx, -$cy));
         }
     } //fim função rotate
 
     /**
      * RoundedRect
      * Desenha um retangulo com cantos arredondados
-     * @package     FPDF
-     * @name        RoundedRect
-     * @version     1.0
-     * @author      Maxime Delorme & Christophe Prugnaud
-     * @param number $x
-     * @param number $y
-     * @param number $w
-     * @param number $h
-     * @param number $r
-     * @param string $corners
-     * @param string $style 
+     *
+     * @package FPDF
+     * @name    RoundedRect
+     * @version 1.0
+     * @author  Maxime Delorme & Christophe Prugnaud
+     * @param   number $x
+     * @param   number $y
+     * @param   number $w
+     * @param   number $h
+     * @param   number $r
+     * @param   string $corners
+     * @param   string $style
      */
-    public function RoundedRect($x, $y, $w, $h, $r, $corners = '1234', $style = '') {
+    public function RoundedRect($x, $y, $w, $h, $r, $corners = '1234', $style = '')
+    {
         $k = $this->k;
         $hp = $this->h;
-        if($style=='F'){
+        if ($style=='F') {
             $op='f';
-        } elseif($style=='FD' || $style=='DF') {
+        } elseif ($style=='FD' || $style=='DF') {
             $op='B';
         } else {
             $op='S';
-        }    
+        }
         $MyArc = 4/3 * (sqrt(2) - 1);
-        $this->_out(sprintf('%.2F %.2F m',($x+$r)*$k,($hp-$y)*$k ));
+        $this->_out(sprintf('%.2F %.2F m', ($x+$r)*$k, ($hp-$y)*$k));
         $xc = $x+$w-$r;
         $yc = $y+$r;
-        $this->_out(sprintf('%.2F %.2F l', $xc*$k,($hp-$y)*$k ));
-        if (strpos($corners, '2')===false){
-            $this->_out(sprintf('%.2F %.2F l', ($x+$w)*$k,($hp-$y)*$k ));
+        $this->_out(sprintf('%.2F %.2F l', $xc*$k, ($hp-$y)*$k));
+        if (strpos($corners, '2')===false) {
+            $this->_out(sprintf('%.2F %.2F l', ($x+$w)*$k, ($hp-$y)*$k));
         } else {
             $this->_arc($xc + $r*$MyArc, $yc - $r, $xc + $r, $yc - $r*$MyArc, $xc + $r, $yc);
-        }    
+        }
         $xc = $x+$w-$r;
         $yc = $y+$h-$r;
-        $this->_out(sprintf('%.2F %.2F l',($x+$w)*$k,($hp-$yc)*$k));
-        if (strpos($corners, '3')===false){
-            $this->_out(sprintf('%.2F %.2F l',($x+$w)*$k,($hp-($y+$h))*$k));
+        $this->_out(sprintf('%.2F %.2F l', ($x+$w)*$k, ($hp-$yc)*$k));
+        if (strpos($corners, '3')===false) {
+            $this->_out(sprintf('%.2F %.2F l', ($x+$w)*$k, ($hp-($y+$h))*$k));
         } else {
             $this->_arc($xc + $r, $yc + $r*$MyArc, $xc + $r*$MyArc, $yc + $r, $xc, $yc + $r);
-        }    
+        }
         $xc = $x+$r;
         $yc = $y+$h-$r;
-        $this->_out(sprintf('%.2F %.2F l',$xc*$k,($hp-($y+$h))*$k));
-        if (strpos($corners, '4')===false){
-            $this->_out(sprintf('%.2F %.2F l',($x)*$k,($hp-($y+$h))*$k));
+        $this->_out(sprintf('%.2F %.2F l', $xc*$k, ($hp-($y+$h))*$k));
+        if (strpos($corners, '4')===false) {
+            $this->_out(sprintf('%.2F %.2F l', ($x)*$k, ($hp-($y+$h))*$k));
         } else {
             $this->_arc($xc - $r*$MyArc, $yc + $r, $xc - $r, $yc + $r*$MyArc, $xc - $r, $yc);
-        }    
+        }
         $xc = $x+$r ;
         $yc = $y+$r;
-        $this->_out(sprintf('%.2F %.2F l',($x)*$k,($hp-$yc)*$k ));
-        if (strpos($corners, '1')===false){
-            $this->_out(sprintf('%.2F %.2F l',($x)*$k,($hp-$y)*$k ));
-            $this->_out(sprintf('%.2F %.2F l',($x+$r)*$k,($hp-$y)*$k ));
-        }else{
+        $this->_out(sprintf('%.2F %.2F l', ($x)*$k, ($hp-$yc)*$k));
+        if (strpos($corners, '1')===false) {
+            $this->_out(sprintf('%.2F %.2F l', ($x)*$k, ($hp-$y)*$k));
+            $this->_out(sprintf('%.2F %.2F l', ($x+$r)*$k, ($hp-$y)*$k));
+        } else {
             $this->_arc($xc - $r, $yc - $r*$MyArc, $xc - $r*$MyArc, $yc - $r, $xc, $yc - $r);
-        }    
+        }
         $this->_out($op);
     }//fim RoundedRect
     
     /**
      * _arc
      * Desenha o arco para arredondar o canto do retangulo
-     * @package     FPDF
-     * @name        _arc
-     * @version     1.0
-     * @author      Maxime Delorme & Christophe Prugnaud
-     * @param number $x1
-     * @param number $y1
-     * @param number $x2
-     * @param number $y2
-     * @param number $x3
-     * @param number $y3 
+     *
+     * @package FPDF
+     * @name    _arc
+     * @version 1.0
+     * @author  Maxime Delorme & Christophe Prugnaud
+     * @param   number $x1
+     * @param   number $y1
+     * @param   number $x2
+     * @param   number $y2
+     * @param   number $x3
+     * @param   number $y3
      */
-    private function _arc($x1, $y1, $x2, $y2, $x3, $y3){
+    private function _arc($x1, $y1, $x2, $y2, $x3, $y3)
+    {
         $h = $this->h;
-        $this->_out(sprintf('%.2F %.2F %.2F %.2F %.2F %.2F c ', $x1*$this->k, ($h-$y1)*$this->k,$x2*$this->k, ($h-$y2)*$this->k, $x3*$this->k, ($h-$y3)*$this->k));
+        $this->_out(sprintf('%.2F %.2F %.2F %.2F %.2F %.2F c ', $x1*$this->k, ($h-$y1)*$this->k, $x2*$this->k, ($h-$y2)*$this->k, $x3*$this->k, ($h-$y3)*$this->k));
     } // fim _Arc
     
     /**
      * DashedRect
      * Desenha um retangulo com linhas tracejadas
-     * @package     FPDF
-     * @name        DashedRect
-     * @version     1.0
-     * @author      Antoine Michéa
-     * @param number $x1
-     * @param number $y1
-     * @param number $x2
-     * @param number $y2
-     * @param number $width
-     * @param number $nb 
+     *
+     * @package FPDF
+     * @name    DashedRect
+     * @version 1.0
+     * @author  Antoine Michéa
+     * @param   number $x1
+     * @param   number $y1
+     * @param   number $x2
+     * @param   number $y2
+     * @param   number $width
+     * @param   number $nb
      */
-    public function DashedRect($x1, $y1, $x2, $y2, $width=1, $nb=15) {
+    public function DashedRect($x1, $y1, $x2, $y2, $width = 1, $nb = 15)
+    {
         $this->SetLineWidth($width);
         $longueur=abs($x1-$x2);
         $hauteur=abs($y1-$y2);
-        if($longueur>$hauteur) {
+        if ($longueur>$hauteur) {
             $Pointilles=($longueur/$nb)/2;
-        }
-        else {
+        } else {
             $Pointilles=($hauteur/$nb)/2;
         }
-        for($i=$x1;$i<=$x2;$i+=$Pointilles+$Pointilles) {
-            for($j=$i;$j<=($i+$Pointilles);$j++) {
-                if($j<=($x2-1)) {
-                    $this->Line($j,$y1,$j+1,$y1);
-                    $this->Line($j,$y2,$j+1,$y2);
+        for ($i=$x1; $i<=$x2; $i+=$Pointilles+$Pointilles) {
+            for ($j=$i; $j<=($i+$Pointilles); $j++) {
+                if ($j<=($x2-1)) {
+                    $this->Line($j, $y1, $j+1, $y1);
+                    $this->Line($j, $y2, $j+1, $y2);
                 }
             }
         }
-        for($i=$y1;$i<=$y2;$i+=$Pointilles+$Pointilles) {
-            for($j=$i;$j<=($i+$Pointilles);$j++) {
-                if($j<=($y2-1)) {
-                    $this->Line($x1,$j,$x1,$j+1);
-                    $this->Line($x2,$j,$x2,$j+1);
+        for ($i=$y1; $i<=$y2; $i+=$Pointilles+$Pointilles) {
+            for ($j=$i; $j<=($i+$Pointilles); $j++) {
+                if ($j<=($y2-1)) {
+                    $this->Line($x1, $j, $x1, $j+1);
+                    $this->Line($x2, $j, $x2, $j+1);
                 }
             }
         }
@@ -387,82 +407,86 @@ class PdfNFePHP extends FPDF {
     /**
      * drawTextBox
      * Monta uma caixa de texto
-     * @package     FPDF
-     * @name        drawTextBox
-     * @version     1.0
-     * @author      Darren Gates & Adrian Tufa
-     * @param string $strText
-     * @param number $w
-     * @param number $h
-     * @param string $align
-     * @param string $valign
-     * @param boolean $border 
+     *
+     * @package FPDF
+     * @name    drawTextBox
+     * @version 1.0
+     * @author  Darren Gates & Adrian Tufa
+     * @param   string  $strText
+     * @param   number  $w
+     * @param   number  $h
+     * @param   string  $align
+     * @param   string  $valign
+     * @param   boolean $border
      */
-    public function drawTextBox($strText, $w, $h, $align='L', $valign='T', $border=true) {
+    public function drawTextBox($strText, $w, $h, $align = 'L', $valign = 'T', $border = true)
+    {
         $xi=$this->GetX();
         $yi=$this->GetY();
         $hrow=$this->FontSize;
-        $textrows=$this->_drawRows($w,$hrow,$strText,0,$align,0,0,0);
+        $textrows=$this->_drawRows($w, $hrow, $strText, 0, $align, 0, 0, 0);
         $maxrows=floor($h/$this->FontSize);
-        $rows=min($textrows,$maxrows);
+        $rows=min($textrows, $maxrows);
         $dy=0;
-        if (strtoupper($valign)=='M'){
+        if (strtoupper($valign)=='M') {
             $dy=($h-$rows*$this->FontSize)/2;
-        }    
-        if (strtoupper($valign)=='B'){
+        }
+        if (strtoupper($valign)=='B') {
             $dy=$h-$rows*$this->FontSize;
-        }    
+        }
         $this->SetY($yi+$dy);
         $this->SetX($xi);
-        $this->_drawRows($w,$hrow,$strText,0,$align,false,$rows,1);
-        if ($border){
-            $this->Rect($xi,$yi,$w,$h);
-        }    
+        $this->_drawRows($w, $hrow, $strText, 0, $align, false, $rows, 1);
+        if ($border) {
+            $this->Rect($xi, $yi, $w, $h);
+        }
     }// fim drawTextBox
     
     /**
      * _drawRows
      * Insere linhas de texto na caixa
-     * @package     FPDF
-     * @name        _drawRows
-     * @version     1.0
-     * @author      Darren Gates & Adrian Tufa
-     * @param number $w
-     * @param number $h
-     * @param string $txt
-     * @param string $border
-     * @param string $align
-     * @param boolean $fill
-     * @param number $maxline
-     * @param number $prn
-     * @return int 
+     *
+     * @package FPDF
+     * @name    _drawRows
+     * @version 1.0
+     * @author  Darren Gates & Adrian Tufa
+     * @param   number  $w
+     * @param   number  $h
+     * @param   string  $txt
+     * @param   string  $border
+     * @param   string  $align
+     * @param   boolean $fill
+     * @param   number  $maxline
+     * @param   number  $prn
+     * @return  int
      */
-    private function _drawRows($w, $h, $txt, $border=0, $align='J', $fill=false, $maxline=0, $prn=0){
+    private function _drawRows($w, $h, $txt, $border = 0, $align = 'J', $fill = false, $maxline = 0, $prn = 0)
+    {
         $cw=&$this->CurrentFont['cw'];
-        if($w==0){
+        if ($w==0) {
             $w=$this->w-$this->rMargin-$this->x;
-        }    
+        }
         $wmax=($w-2*$this->cMargin)*1000/$this->FontSize;
-        $s=str_replace("\r",'',$txt);
+        $s=str_replace("\r", '', $txt);
         $nb=strlen($s);
-        if($nb>0 && $s[$nb-1]=="\n"){
+        if ($nb>0 && $s[$nb-1]=="\n") {
             $nb--;
-        }    
+        }
         $b=0;
-        if($border){
-            if($border==1){
+        if ($border) {
+            if ($border==1) {
                 $border='LTRB';
                 $b='LRT';
                 $b2='LR';
-            } else{
+            } else {
                 $b2='';
-                if(is_int(strpos($border,'L'))){
+                if (is_int(strpos($border, 'L'))) {
                     $b2.='L';
-                }    
-                if(is_int(strpos($border,'R'))){
+                }
+                if (is_int(strpos($border, 'R'))) {
                     $b2.='R';
-                }    
-                $b=is_int(strpos($border,'T')) ? $b2.'T' : $b2;
+                }
+                $b=is_int(strpos($border, 'T')) ? $b2.'T' : $b2;
             }
         }
         $sep=-1;
@@ -471,17 +495,17 @@ class PdfNFePHP extends FPDF {
         $l=0;
         $ns=0;
         $nl=1;
-        while($i<$nb){
+        while ($i<$nb) {
             $c=$s[$i];
-            if($c=="\n"){
-                if($this->ws>0){
+            if ($c=="\n") {
+                if ($this->ws>0) {
                     $this->ws=0;
-                    if ($prn==1){
+                    if ($prn==1) {
                         $this->_out('0 Tw');
                     }
                 }
                 if ($prn==1) {
-                    $this->Cell($w,$h,substr($s,$j,$i-$j),$b,2,$align,$fill);
+                    $this->Cell($w, $h, substr($s, $j, $i-$j), $b, 2, $align, $fill);
                 }
                 $i++;
                 $sep=-1;
@@ -489,43 +513,43 @@ class PdfNFePHP extends FPDF {
                 $l=0;
                 $ns=0;
                 $nl++;
-                if($border && $nl==2){
+                if ($border && $nl==2) {
                     $b=$b2;
-                }    
-                if ( $maxline && $nl > $maxline ){
-                    return substr($s,$i);
-                }    
+                }
+                if ($maxline && $nl > $maxline) {
+                    return substr($s, $i);
+                }
                 continue;
             }
-            if($c==' '){
+            if ($c==' ') {
                 $sep=$i;
                 $ls=$l;
                 $ns++;
             }
             $l+=$cw[$c];
-            if($l>$wmax){
-                if($sep==-1){
-                    if($i==$j){
+            if ($l>$wmax) {
+                if ($sep==-1) {
+                    if ($i==$j) {
                         $i++;
-                    }    
-                    if($this->ws>0){
+                    }
+                    if ($this->ws>0) {
                         $this->ws=0;
-                        if ($prn==1){
+                        if ($prn==1) {
                             $this->_out('0 Tw');
                         }
                     }
                     if ($prn==1) {
-                        $this->Cell($w,$h,substr($s,$j,$i-$j),$b,2,$align,$fill);
+                        $this->Cell($w, $h, substr($s, $j, $i-$j), $b, 2, $align, $fill);
                     }
                 } else {
-                    if($align=='J') {
+                    if ($align=='J') {
                         $this->ws=($ns>1) ? ($wmax-$ls)/1000*$this->FontSize/($ns-1) : 0;
-                        if ($prn==1){
-                            $this->_out(sprintf('%.3F Tw',$this->ws*$this->k));
-                        }    
+                        if ($prn==1) {
+                            $this->_out(sprintf('%.3F Tw', $this->ws*$this->k));
+                        }
                     }
-                    if ($prn==1){
-                        $this->Cell($w,$h,substr($s,$j,$sep-$j),$b,2,$align,$fill);
+                    if ($prn==1) {
+                        $this->Cell($w, $h, substr($s, $j, $sep-$j), $b, 2, $align, $fill);
                     }
                     $i=$sep+1;
                 }
@@ -534,27 +558,27 @@ class PdfNFePHP extends FPDF {
                 $l=0;
                 $ns=0;
                 $nl++;
-                if($border && $nl==2){
+                if ($border && $nl==2) {
                     $b=$b2;
-                }    
-                if ( $maxline && $nl > $maxline ){
-                    return substr($s,$i);
-                }    
+                }
+                if ($maxline && $nl > $maxline) {
+                    return substr($s, $i);
+                }
             } else {
                 $i++;
-            }    
+            }
         }
-        if($this->ws>0) {
+        if ($this->ws>0) {
             $this->ws=0;
-            if ($prn==1){
+            if ($prn==1) {
                 $this->_out('0 Tw');
             }
         }
-        if($border && is_int(strpos($border,'B'))){
+        if ($border && is_int(strpos($border, 'B'))) {
             $b.='B';
-        }    
+        }
         if ($prn==1) {
-            $this->Cell($w,$h,substr($s,$j,$i-$j),$b,2,$align,$fill);
+            $this->Cell($w, $h, substr($s, $j, $i-$j), $b, 2, $align, $fill);
         }
         $this->x=$this->lMargin;
         return $nl;
@@ -563,19 +587,21 @@ class PdfNFePHP extends FPDF {
     /**
      * WordWrap
      * Quebra o texto para caber na caixa
-     * @package     FPDF
-     * @name        WordWrap
-     * @version     1.0
-     * @author      Ron Korving
-     * @param type $text
-     * @param type $maxwidth
-     * @return int 
+     *
+     * @package FPDF
+     * @name    WordWrap
+     * @version 1.0
+     * @author  Ron Korving
+     * @param   type $text
+     * @param   type $maxwidth
+     * @return  int
      */
-    public function WordWrap(&$text, $maxwidth){
+    public function WordWrap(&$text, $maxwidth)
+    {
         $text = trim($text);
-        if ($text===''){
+        if ($text==='') {
             return 0;
-        }    
+        }
         $space = $this->GetStringWidth(' ');
         $lines = explode("\n", $text);
         $text = '';
@@ -585,11 +611,11 @@ class PdfNFePHP extends FPDF {
             $width = 0;
             foreach ($words as $word) {
                 $wordwidth = $this->GetStringWidth($word);
-                if ($wordwidth > $maxwidth){
+                if ($wordwidth > $maxwidth) {
                     // Word is too long, we cut it
-                    for($i=0; $i<strlen($word); $i++){
+                    for ($i=0; $i<strlen($word); $i++) {
                         $wordwidth = $this->GetStringWidth(substr($word, $i, 1));
-                        if($width + $wordwidth <= $maxwidth){
+                        if ($width + $wordwidth <= $maxwidth) {
                             $width += $wordwidth;
                             $text .= substr($word, $i, 1);
                         } else {
@@ -598,7 +624,7 @@ class PdfNFePHP extends FPDF {
                             $count++;
                         }
                     }
-                } elseif($width + $wordwidth <= $maxwidth) {
+                } elseif ($width + $wordwidth <= $maxwidth) {
                     $width += $wordwidth + $space;
                     $text .= $word.' ';
                 } else {
@@ -617,147 +643,159 @@ class PdfNFePHP extends FPDF {
     /**
      * CellFit
      * Celula com escala horizontal caso o texto seja muito largo
-     * @package     FPDF
-     * @name        CellFit
-     * @version     1.0
-     * @author      Patrick Benny
-     * @param number $w
-     * @param number $h
-     * @param string $txt
-     * @param number $border
-     * @param number $ln
-     * @param string $align
-     * @param boolean $fill
-     * @param string $link
-     * @param boolean $scale
-     * @param boolean $force 
+     *
+     * @package FPDF
+     * @name    CellFit
+     * @version 1.0
+     * @author  Patrick Benny
+     * @param   number  $w
+     * @param   number  $h
+     * @param   string  $txt
+     * @param   number  $border
+     * @param   number  $ln
+     * @param   string  $align
+     * @param   boolean $fill
+     * @param   string  $link
+     * @param   boolean $scale
+     * @param   boolean $force
      */
-    public function CellFit($w, $h=0, $txt='', $border=0, $ln=0, $align='', $fill=false, $link='', $scale=false, $force=true){
+    public function CellFit($w, $h = 0, $txt = '', $border = 0, $ln = 0, $align = '', $fill = false, $link = '', $scale = false, $force = true)
+    {
         $str_width=$this->GetStringWidth($txt);
-        if($w==0){
+        if ($w==0) {
             $w = $this->w-$this->rMargin-$this->x;
-        }    
+        }
         $ratio = ($w-$this->cMargin*2)/$str_width;
         $fit = ($ratio < 1 || ($ratio > 1 && $force));
-        if ($fit){
-            if ($scale){
+        if ($fit) {
+            if ($scale) {
                 //Calcula a escala horizontal
                 $horiz_scale=$ratio*100.0;
                 //Ajusta a escala horizontal
-                $this->_out(sprintf('BT %.2F Tz ET',$horiz_scale));
+                $this->_out(sprintf('BT %.2F Tz ET', $horiz_scale));
             } else {
                 //Calcula o espaçamento de caracteres em pontos
-                $char_space=($w-$this->cMargin*2-$str_width)/max($this->_MBGetStringLength($txt)-1,1)*$this->k;
+                $char_space=($w-$this->cMargin*2-$str_width)/max($this->_MBGetStringLength($txt)-1, 1)*$this->k;
                 //Ajusta o espaçamento de caracteres
-                $this->_out(sprintf('BT %.2F Tc ET',$char_space));
+                $this->_out(sprintf('BT %.2F Tc ET', $char_space));
             }
             //Sobrescreve o alinhamento informado (desde que o texto caiba na celula)
             $align='';
         }
         //Passa para o método cell
-        $this->Cell($w,$h,$txt,$border,$ln,$align,$fill,$link);
+        $this->Cell($w, $h, $txt, $border, $ln, $align, $fill, $link);
         //Reseta o espaçamento de caracteres e a escala horizontal
-        if ($fit){
+        if ($fit) {
             $this->_out('BT '.($scale ? '100 Tz' : '0 Tc').' ET');
-        }    
+        }
     }//fim CellFit
 
     /**
      * CellFitScale
      * Celula com escalamento horizontal somente se necessário
-     * @package     FPDF
-     * @name        CellFitScale
-     * @version     1.0
-     * @author      Patrick Benny
-     * @param number $w
-     * @param number $h
-     * @param string $txt
-     * @param number $border
-     * @param number $ln
-     * @param string $align
-     * @param boolean $fill
-     * @param string $link 
+     *
+     * @package FPDF
+     * @name    CellFitScale
+     * @version 1.0
+     * @author  Patrick Benny
+     * @param   number  $w
+     * @param   number  $h
+     * @param   string  $txt
+     * @param   number  $border
+     * @param   number  $ln
+     * @param   string  $align
+     * @param   boolean $fill
+     * @param   string  $link
      */
-    public function CellFitScale($w, $h=0, $txt='', $border=0, $ln=0, $align='', $fill=false, $link=''){
-        $this->CellFit($w,$h,$txt,$border,$ln,$align,$fill,$link,true,false);
+    public function CellFitScale($w, $h = 0, $txt = '', $border = 0, $ln = 0, $align = '', $fill = false, $link = '')
+    {
+        $this->CellFit($w, $h, $txt, $border, $ln, $align, $fill, $link, true, false);
     }
 
     /**
      * CellFitScaleForce
      * Celula com escalamento forçado
-     * @package     FPDF
-     * @name        CellFitScaleForce
-     * @version     1.0
-     * @author      Patrick Benny
-     * @param number $w
-     * @param number $h
-     * @param string $txt
-     * @param number $border
-     * @param number $ln
-     * @param string $align
-     * @param boolean $fill
-     * @param string $link 
+     *
+     * @package FPDF
+     * @name    CellFitScaleForce
+     * @version 1.0
+     * @author  Patrick Benny
+     * @param   number  $w
+     * @param   number  $h
+     * @param   string  $txt
+     * @param   number  $border
+     * @param   number  $ln
+     * @param   string  $align
+     * @param   boolean $fill
+     * @param   string  $link
      */
-    public function CellFitScaleForce($w, $h=0, $txt='', $border=0, $ln=0, $align='', $fill=false, $link=''){
-        $this->CellFit($w,$h,$txt,$border,$ln,$align,$fill,$link,true,true);
+    public function CellFitScaleForce($w, $h = 0, $txt = '', $border = 0, $ln = 0, $align = '', $fill = false, $link = '')
+    {
+        $this->CellFit($w, $h, $txt, $border, $ln, $align, $fill, $link, true, true);
     }
 
     /**
      * CellFitSpace
      * Celula com espaçamento de caracteres somente se necessário
-     * @package     FPDF
-     * @name        CellFitSpace
-     * @version     1.0
-     * @author      Patrick Benny
-     * @param number $w
-     * @param number $h
-     * @param string $txt
-     * @param number $border
-     * @param number $ln
-     * @param string $align
-     * @param boolean $fill
-     * @param string $link 
+     *
+     * @package FPDF
+     * @name    CellFitSpace
+     * @version 1.0
+     * @author  Patrick Benny
+     * @param   number  $w
+     * @param   number  $h
+     * @param   string  $txt
+     * @param   number  $border
+     * @param   number  $ln
+     * @param   string  $align
+     * @param   boolean $fill
+     * @param   string  $link
      */
-    public function CellFitSpace($w, $h=0, $txt='', $border=0, $ln=0, $align='', $fill=false, $link=''){
-        $this->CellFit($w,$h,$txt,$border,$ln,$align,$fill,$link,false,false);
+    public function CellFitSpace($w, $h = 0, $txt = '', $border = 0, $ln = 0, $align = '', $fill = false, $link = '')
+    {
+        $this->CellFit($w, $h, $txt, $border, $ln, $align, $fill, $link, false, false);
     }
     
     /**
      * CellFitSpaceForce
      * Celula com espaçamento de caracteres forçado
-     * @package     FPDF
-     * @name        CellFitSpaceForce
-     * @version     1.0
-     * @author      Patrick Benny
-     * @param number $w
-     * @param number $h
-     * @param string $txt
-     * @param number $border
-     * @param number $ln
-     * @param string $align
-     * @param boolean $fill
-     * @param string $link 
+     *
+     * @package FPDF
+     * @name    CellFitSpaceForce
+     * @version 1.0
+     * @author  Patrick Benny
+     * @param   number  $w
+     * @param   number  $h
+     * @param   string  $txt
+     * @param   number  $border
+     * @param   number  $ln
+     * @param   string  $align
+     * @param   boolean $fill
+     * @param   string  $link
      */
-    public function CellFitSpaceForce($w, $h=0, $txt='', $border=0, $ln=0, $align='', $fill=false, $link=''){
-        $this->CellFit($w,$h,$txt,$border,$ln,$align,$fill,$link,false,true);
+    public function CellFitSpaceForce($w, $h = 0, $txt = '', $border = 0, $ln = 0, $align = '', $fill = false, $link = '')
+    {
+        $this->CellFit($w, $h, $txt, $border, $ln, $align, $fill, $link, false, true);
     }
     
     /**
      * _MBGetStringLength
      * Patch para trabalhar com textos de duplo byte CJK
-     * @package     FPDF
-     * @name        _MBGetStringLength
-     * @version     1.0
-     * @author      Patrick Benny
-     * @param string $s
-     * @return int 
+     *
+     * @package FPDF
+     * @name    _MBGetStringLength
+     * @version 1.0
+     * @author  Patrick Benny
+     * @param   string $s
+     * @return  int
      */
-    private function _MBGetStringLength($s){
-        if($this->CurrentFont['type']=='Type0'){
+    private function _MBGetStringLength($s)
+    {
+        if ($this->CurrentFont['type']=='Type0') {
             $len = 0;
             $nbbytes = strlen($s);
-            for ($i = 0; $i < $nbbytes; $i++){
-                if (ord($s[$i])<128){
+            for ($i = 0; $i < $nbbytes; $i++) {
+                if (ord($s[$i])<128) {
                     $len++;
                 } else {
                     $len++;
@@ -767,63 +805,67 @@ class PdfNFePHP extends FPDF {
             return $len;
         } else {
             return strlen($s);
-        }    
+        }
     }
 
 
     /**
      * DashedLine
      * Desenha uma linha horizontal tracejada com o FPDF
+     *
      * @package NFePHP
-     * @name DashedHLine
+     * @name    DashedHLine
      * @version 1.0.1
-     * @author Roberto L. Machado <linux.rlm at gmail dot com>
-     * @param number $x Posição horizontal inicial, em mm
-     * @param number $y Posição vertical inicial, em mm
-     * @param number $w Comprimento da linha, em mm
-     * @param number $h Espessura da linha, em mm
-     * @param number $n Numero de traços na seção da linha com o comprimento $w
-     * @return none
+     * @author  Roberto L. Machado <linux.rlm at gmail dot com>
+     * @param   number $x Posição horizontal inicial, em mm
+     * @param   number $y Posição vertical inicial, em mm
+     * @param   number $w Comprimento da linha, em mm
+     * @param   number $h Espessura da linha, em mm
+     * @param   number $n Numero de traços na seção da linha com o comprimento $w
+     * @return  none
      */
-    public function DashedHLine($x,$y,$w,$h,$n) {
+    public function DashedHLine($x, $y, $w, $h, $n)
+    {
         $this->SetDrawColor(110);
         $this->SetLineWidth($h);
         $wDash=($w/$n)/2; // comprimento dos traços
-        for( $i=$x; $i<=$x+$w; $i += $wDash+$wDash ) {
-            for( $j=$i; $j<= ($i+$wDash); $j++ ) {
-                if( $j <= ($x+$w-1) ) {
-                    $this->Line($j,$y,$j+1,$y);
+        for ($i=$x; $i<=$x+$w; $i += $wDash+$wDash) {
+            for ($j=$i; $j<= ($i+$wDash); $j++) {
+                if ($j <= ($x+$w-1)) {
+                    $this->Line($j, $y, $j+1, $y);
                 }
             }
         }
         $this->SetDrawColor(0);
     } //fim função DashedHLine
 
-   /**
+    /**
     * DashedVLine
     * Desenha uma linha vertical tracejada com o FPDF
+    *
     * @package NFePHP
-    * @name DashedVLine
+    * @name    DashedVLine
     * @version 1.0
-    * @author Roberto L. Machado <linux.rlm at gmail dot com>
-    * @author Guilherme Calabria Filho <guiga86 at gmail dot com>
-    * @param number $x Posição horizontal inicial, em mm
-    * @param number $y Posição vertical inicial, em mm
-    * @param number $w Comprimento da linha, em mm
-    * @param number $yfinal Espessura da linha, em mm
-    * @param number $n Numero de traços na seção da linha com o comprimento $w
-    * @return none
+    * @author  Roberto L. Machado <linux.rlm at gmail dot com>
+    * @author  Guilherme Calabria Filho <guiga86 at gmail dot com>
+    * @param   number $x      Posição horizontal inicial, em mm
+    * @param   number $y      Posição vertical inicial, em mm
+    * @param   number $w      Comprimento da linha, em mm
+    * @param   number $yfinal Espessura da linha, em mm
+    * @param   number $n      Numero de traços na seção da linha com o comprimento $w
+    * @return  none
     */
-    public function DashedVLine($x,$y,$w,$yfinal,$n) {
+    public function DashedVLine($x, $y, $w, $yfinal, $n)
+    {
         $this->SetLineWidth($w);
         //Organizando valores
-        if($y>$yfinal) {
+        if ($y>$yfinal) {
             $aux = $yfinal;
             $yfinal = $y;
             $y = $aux;
         }
-        while($y<$yfinal&&$n>0){
-            $this->Line($x,$y,$x,$y+1);
+        while ($y<$yfinal&&$n>0) {
+            $this->Line($x, $y, $x, $y+1);
             $y += 3;
             $n--;
         }

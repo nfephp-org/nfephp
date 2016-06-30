@@ -4,17 +4,19 @@ namespace NFePHP\NFe;
 
 /**
  * Classe para envio dos emails aos interessados
- * @category   NFePHP
- * @package    NFePHP\NFe\MailNFe
- * @copyright  Copyright (c) 2008-2015
- * @license    http://www.gnu.org/licenses/lesser.html LGPL v3
- * @author     Roberto L. Machado <linux.rlm at gmail dot com>
- * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
+ *
+ * @category  NFePHP
+ * @package   NFePHP\NFe\MailNFe
+ * @copyright Copyright (c) 2008-2015
+ * @license   http://www.gnu.org/licenses/lesser.html LGPL v3
+ * @author    Roberto L. Machado <linux.rlm at gmail dot com>
+ * @link      http://github.com/nfephp-org/nfephp for the canonical source repository
  */
 
 use NFePHP\Common\Dom\Dom;
 use NFePHP\Common\DateTime\DateTime;
 use NFePHP\Common\Base\BaseMail;
+use NFePHP\Common\Exception;
 use Html2Text\Html2Text;
 use \DOMDocument;
 
@@ -26,23 +28,17 @@ class MailNFe extends BaseMail
     protected $aMail = array();
     
     /**
-     * enviaMail
-     * @param string $pathFile
-     * @param array $aMail
-     * @param boolean $comPdf
-     * @param string $pathPdf
-     * @return boolean
+     * envia
+     *
+     * @param  string $pathFile
+     * @param  array  $aMail
+     * @param  bool   $comPdf
+     * @param  string $pathPdf
+     * @return bool
      */
     public function envia($pathFile = '', $aMail = array(), $comPdf = false, $pathPdf = '')
     {
-        if ($comPdf) {
-            if ($pathPdf == '') {
-                //se $comPdf é verdadeiro então é criado o DANFE
-                //com seu path na variável $pathPdf
-                //então é anexado ao email
-                //TODO : renderizar o pdf
-            }
-            //cria o anexo do pdf
+        if ($comPdf && $pathPdf != '') {
             $this->addAttachment($pathPdf, '');
         }
         $assunto = $this->zMontaMessagem($pathFile);
@@ -50,10 +46,12 @@ class MailNFe extends BaseMail
         $this->addAttachment($pathFile, '');
         //constroi a mensagem
         $this->buildMessage($this->msgHtml, $this->msgTxt);
-        //se $aMail está vazio então pega o endereço de email do destinatário no xml
-        if (! empty($aMail)) {
-            //se $aMail não é vazio então envia o email para todos os endereços do array
+        if (sizeof($aMail)) {
+            // Se for informado um ou mais e-mails no $aMail, utiliza eles
             $this->aMail = $aMail;
+        } elseif (!sizeof($this->aMail)) {
+            // Caso não seja informado nenhum e-mail e não tenha sido recuperado qualquer e-mail do xml
+            throw new Exception\RuntimeException('Nenhum e-mail informado ou recuperado do XML.');
         }
         $err = $this->sendMail($assunto, $this->aMail);
         if ($err === true) {
@@ -67,6 +65,7 @@ class MailNFe extends BaseMail
     
     /**
      * zMontaMessagem
+     *
      * @param string $pathFile
      */
     protected function zMontaMessagem($pathFile)
@@ -87,8 +86,10 @@ class MailNFe extends BaseMail
                 $ide->getElementsByTagName('dEmi')->item(0)->nodeValue;
         $data = date('d/m/Y', DateTime::convertSefazTimeToTimestamp($dhEmi));
         $vNF = $icmsTot->getElementsByTagName('vNF')->item(0)->nodeValue;
-        $this->aMail[] = $dest->getElementsByTagName('email')->item(0)->nodeValue;
-        //peagar os emails que existirem em obsCont
+        $this->aMail[] = !empty($dest->getElementsByTagName('email')->item(0)->nodeValue) ?
+                $dest->getElementsByTagName('email')->item(0)->nodeValue :
+                '';
+        //pega os emails que existirem em obsCont
         $infAdic = $infNFe->getElementsByTagName('infAdic')->item(0);
         if (!empty($infAdic)) {
             $obsConts = $infAdic->getElementsByTagName('obsCont');
@@ -105,12 +106,13 @@ class MailNFe extends BaseMail
     
     /**
      * zRenderTemplate
-     * @param string $xNome
-     * @param string $data
-     * @param string $nNF
-     * @param string $serie
-     * @param string $vNF
-     * @param string $razao
+     *
+     * @param  string $xNome
+     * @param  string $data
+     * @param  string $nNF
+     * @param  string $serie
+     * @param  string $vNF
+     * @param  string $razao
      * @return string
      */
     protected function zRenderTemplate($xNome, $data, $nNF, $serie, $vNF, $razao)

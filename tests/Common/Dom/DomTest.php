@@ -40,7 +40,7 @@ class DomTest extends PHPUnit_Framework_TestCase
     
     public function testLoadXMLFile()
     {
-        $filePath = dirname(dirname(dirname(__FILE__))) . '/fixtures/xml/35101158716523000119550010000000011003000000-nfeSigned.xml';
+        $filePath = dirname(dirname(dirname(__FILE__))) . '/fixtures/xml/NFe/35101158716523000119550010000000011003000000-nfeSigned.xml';
         $xml = file_get_contents($filePath);
         $dom = new \DOMDocument('1.0', 'utf-8');
         $dom->formatOutput = false;
@@ -55,7 +55,7 @@ class DomTest extends PHPUnit_Framework_TestCase
     public function testGetChave()
     {
         $chave = '35101158716523000119550010000000011003000000';
-        $filePath = dirname(dirname(dirname(__FILE__))) . '/fixtures/xml/35101158716523000119550010000000011003000000-nfeSigned.xml';
+        $filePath = dirname(dirname(dirname(__FILE__))) . '/fixtures/xml/NFe/35101158716523000119550010000000011003000000-nfeSigned.xml';
         $this->dom->loadXMLFile($filePath);
         $chave1 = $this->dom->getChave('infNFe');
         $this->assertEquals($chave, $chave1);
@@ -64,7 +64,7 @@ class DomTest extends PHPUnit_Framework_TestCase
     public function testGetNodeValue()
     {
         $nodevalue = 'EMITIDO NOS TERMOS DO ARTIGO 400-C DO DECRETO 48042/03 SAIDA COM SUSPENSAO DO IPI CONFORME ART 29 DA LEI 10.637';
-        $filePath = dirname(dirname(dirname(__FILE__))) . '/fixtures/xml/35101158716523000119550010000000011003000000-nfeSigned.xml';
+        $filePath = dirname(dirname(dirname(__FILE__))) . '/fixtures/xml/NFe/35101158716523000119550010000000011003000000-nfeSigned.xml';
         $this->dom->loadXMLFile($filePath);
         $nodevalue1 = $this->dom->getNodeValue('infAdFisco');
         $this->assertEquals($nodevalue, $nodevalue1);
@@ -73,7 +73,7 @@ class DomTest extends PHPUnit_Framework_TestCase
     public function testGetNode()
     {
         $node = '<ide><cUF>35</cUF><cNF>00300000</cNF><natOp>VENDA</natOp><indPag>0</indPag><mod>55</mod><serie>1</serie><nNF>1</nNF><dEmi>2010-11-02</dEmi><tpNF>1</tpNF><cMunFG>3550308</cMunFG><tpImp>1</tpImp><tpEmis>1</tpEmis><cDV>0</cDV><tpAmb>2</tpAmb><finNFe>1</finNFe><procEmi>3</procEmi><verProc>2.0.3</verProc></ide>';
-        $filePath = dirname(dirname(dirname(__FILE__))) . '/fixtures/xml/35101158716523000119550010000000011003000000-nfeSigned.xml';
+        $filePath = dirname(dirname(dirname(__FILE__))) . '/fixtures/xml/NFe/35101158716523000119550010000000011003000000-nfeSigned.xml';
         $this->dom->loadXMLFile($filePath);
         $node1 = $this->dom->saveXML($this->dom->getNode('ide'));
         $this->assertEquals($node, $node1);

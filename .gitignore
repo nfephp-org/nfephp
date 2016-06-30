@@ -2,6 +2,8 @@ nbproject
 *~
 *.pfx
 *.pem
+/config/*.json
+composer.lock
 vendor
 local
 /.DS_Store
@@ -12,4 +14,5 @@ local
 /build
 /phpunit.xml
 /tests/folder
-
+.coverage
+xmls

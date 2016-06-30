@@ -4,12 +4,13 @@ namespace NFePHP\Common\Files;
 
 /**
  * Classe auxiliar para criar, listar e testar os diretórios utilizados pela API
- * @category   NFePHP
- * @package    NFePHP\Common\Files
- * @copyright  Copyright (c) 2008-2014
- * @license    http://www.gnu.org/licenses/lesser.html LGPL v3
- * @author     Roberto L. Machado <linux.rlm at gmail dot com>
- * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
+ *
+ * @category  NFePHP
+ * @package   NFePHP\Common\Files
+ * @copyright Copyright (c) 2008-2014
+ * @license   http://www.gnu.org/licenses/lesser.html LGPL v3
+ * @author    Roberto L. Machado <linux.rlm at gmail dot com>
+ * @link      http://github.com/nfephp-org/nfephp for the canonical source repository
  */
 
 use NFePHP\Common\Exception;
@@ -19,7 +20,8 @@ class FilesZip
     /**
      * unZipTmpFile
      * Descompacta strings GZIP usando arquivo temporário e SO
-     * @param string $datazip Dados compactados com gzip
+     *
+     * @param  string $datazip Dados compactados com gzip
      * @return string arquivo descompactado
      * @throws Exception
      */
@@ -64,7 +66,8 @@ class FilesZip
     /**
      * unGZip
      * Descompacta dados compactados GZIP via PHP
-     * @param string $data Dados compactados com gzip em uma string
+     *
+     * @param  string $data Dados compactados com gzip em uma string
      * @return mixed
      */
     public static function unGZip($data = '')
@@ -201,7 +204,8 @@ class FilesZip
     
     /**
      * compacta uma string usando Gzip
-     * @param string $data
+     *
+     * @param  string $data
      * @return string
      */
     public static function gZipString($data = '')
@@ -211,7 +215,8 @@ class FilesZip
     
     /**
      * descompacta uma string usando Gzip
-     * @param string $data
+     *
+     * @param  string $data
      * @return string
      */
     public static function unGZipString($data = '')
@@ -221,7 +226,8 @@ class FilesZip
     
     /**
      * compacta uma string usando ZLIB
-     * @param string $data
+     *
+     * @param  string $data
      * @return string
      */
     public static function zipString($data = '')

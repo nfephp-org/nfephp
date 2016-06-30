@@ -1,0 +1,61 @@
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 10px;
+    font-style: normal;
+    line-height: normal;
+}
+
+.clear { clear: both; }
+
+label {
+    font-size: 10px;
+    font-style: italic;
+    line-height: normal;
+}
+span {
+    font-size: 10px;
+    font-style: italic;
+    line-height: normal;
+}
+
+input {
+    font-style: normal;
+    background-color: lightyellow;
+}
+
+input:required {
+  font-style: bold;
+  background-color: yellow;
+}
+
+select {
+    font-style: bold;
+    background-color: yellow;
+}
+
+#content {
+   width: 80%;
+   margin-left: auto;
+   margin-right: auto;
+}
+
+
+td {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    font-style: normal;
+    line-height: normal;
+}
+
+#direita { width: 50%; float: right; }
+#esquerda { width: 50%; float: left; }
+
+#tabs input {width: 95%;}
+.logoList {
+    float:left;
+    margin-right:10px;
+    text-align:center;
+}
+.logoList img {
+    border:none;
+}

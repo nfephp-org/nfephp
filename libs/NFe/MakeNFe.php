@@ -4,27 +4,28 @@ namespace NFePHP\NFe;
 
 /**
  * Classe a construção do xml da NFe modelo 55 e modelo 65
- * @category   NFePHP
- * @package    NFePHP\NFe\MakeNFe
- * @copyright  Copyright (c) 2008-2015
- * @license    http://www.gnu.org/licenses/lesser.html LGPL v3
- * @author     Roberto L. Machado <linux.rlm at gmail dot com>
- * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
- * 
+ *
+ * @category  NFePHP
+ * @package   NFePHP\NFe\MakeNFe
+ * @copyright Copyright (c) 2008-2015
+ * @license   http://www.gnu.org/licenses/lesser.html LGPL v3
+ * @author    Roberto L. Machado <linux.rlm at gmail dot com>
+ * @link      http://github.com/nfephp-org/nfephp for the canonical source repository
+ *
  *        CONTRIBUIDORES (em ordem alfabetica):
  *
  *              Cleiton Perin <cperin20 at gmail dot com>
  *              Elias Müller <elias at oxigennio dot com dot br>
  *              Marcos Vinicios Balbi <marcusbalbi at hotmail dot com>
- * 
- * NOTA: Esta classe atende os padrões estabelecidos pela 
- * NOTA TÉCNICA 2013.005 Versão 1.21 de Novembro 2014
+ *
+ * NOTA: Esta classe atende os padrões estabelecidos pela
+ * NOTA TÉCNICA 2013.005 Versão 1.22 de Março 2015
+ * E pelas NT 2015.001, 2015.002, 2015.003
  */
-
-
 
 use NFePHP\Common\DateTime\DateTime;
 use NFePHP\Common\Base\BaseMake;
+use NFePHP\Common\Exception\RuntimeException;
 use \DOMDocument;
 use \DOMElement;
 
@@ -33,21 +34,24 @@ class MakeNFe extends BaseMake
     /**
      * versao
      * numero da versão do xml da NFe
-     * @var double
+     *
+     * @var string
      */
-    public $versao = 3.10;
+    public $versao = '3.10';
     /**
      * mod
      * modelo da nfe por ser 55-NFe ou 65-NFCe
+     *
      * @var integer
      */
     public $mod = 55;
     /**
      * chave da NFe
+     *
      * @var string
      */
     public $chNFe = '';
-    
+      
     //propriedades privadas utilizadas internamente pela classe
     private $NFe = ''; //DOMNode
     private $infNFe = ''; //DOMNode
@@ -59,7 +63,6 @@ class MakeNFe extends BaseMake
     private $retirada = ''; //DOMNode
     private $entrega = ''; //DOMNode
     private $total = ''; //DOMNode
-    private $pag = ''; //DOMNode
     private $cobr = ''; //DOMNode
     private $transp = ''; //DOMNode
     private $infAdic = ''; //DOMNode
@@ -67,14 +70,17 @@ class MakeNFe extends BaseMake
     private $compra = ''; //DOMNode
     private $cana = ''; //DOMNode
     // Arrays
+    private $aTotICMSUFDest = array('vFCPUFDest' => '', 'vICMSUFDest' => '', 'vICMSUFRemet' => '');
     private $aNFref = array(); //array de DOMNode
     private $aDup = array(); //array de DOMNodes
+    private $aPag = array(); //array de DOMNodes
     private $aReboque = array(); //array de DOMNodes
     private $aVol = array(); //array de DOMNodes
     private $aAutXML = array(); //array de DOMNodes
     private $aDet = array(); //array de DOMNodes
     private $aProd = array(); //array de DOMNodes
     private $aNVE = array(); //array de DOMNodes
+    private $aCest = array(); //array de DOMNodes
     private $aRECOPI = array(); //array de DOMNodes
     private $aDetExport = array(); //array de DOMNodes
     private $aDI = array(); //array de DOMNodes
@@ -83,8 +89,10 @@ class MakeNFe extends BaseMake
     private $aMed = array(); //array de DOMNodes
     private $aArma = array(); //array de DOMNodes
     private $aComb = array(); //array de DOMNodes
+    private $aEncerrante = array(); //array de DOMNodes
     private $aImposto = array(); //array de DOMNodes
     private $aICMS = array(); //array de DOMNodes
+    private $aICMSUFDest = array(); //array de DOMNodes
     private $aIPI = array(); //array de DOMNodes
     private $aII = array(); //array de DOMNodes
     private $aISSQN = array(); //array de DOMNodes
@@ -102,10 +110,11 @@ class MakeNFe extends BaseMake
   
     /**
      * montaNFe
-     * Método de montagem do xml da NFe 
+     * Método de montagem do xml da NFe
      * essa função retorna TRUE em caso de sucesso ou FALSE se houve erro
      * O xml da NFe deve ser recuperado pela funçao getXML() ou diretamente pela
      * propriedade publica $xml
+     *
      * @return boolean
      */
     public function montaNFe()
@@ -146,7 +155,10 @@ class MakeNFe extends BaseMake
         //[39a] tag cobr (389 Y01)
         $this->dom->appChild($this->infNFe, $this->cobr, 'Falta tag "infNFe"');
         //[42] tag pag (398a YA01)
-        $this->dom->appChild($this->infNFe, $this->pag, 'Falta tag "infNFe"');
+        //processa aPag e coloca as tags na tag pag
+        foreach ($this->aPag as $pag) {
+            $this->dom->appChild($this->infNFe, $pag, 'Falta tag "infNFe"');
+        }
         //[44] tag infAdic (399 Z01)
         $this->dom->appChild($this->infNFe, $this->infAdic, 'Falta tag "infNFe"');
         //[48] tag exporta (402 ZA01)
@@ -170,8 +182,9 @@ class MakeNFe extends BaseMake
      * taginfNFe
      * Informações da NF-e A01 pai NFe
      * tag NFe/infNFe
-     * @param string $chave
-     * @param string $versao
+     *
+     * @param  string $chave
+     * @param  string $versao
      * @return DOMElement
      */
     public function taginfNFe($chave = '', $versao = '')
@@ -180,7 +193,7 @@ class MakeNFe extends BaseMake
         $this->infNFe->setAttribute("Id", 'NFe'.$chave);
         $this->infNFe->setAttribute("versao", $versao);
         //$this->infNFe->setAttribute("pk_nItem",'');
-        $this->versao = (int) $versao;
+        $this->versao = $versao;
         $this->chNFe = $chave;
         return $this->infNFe;
     }
@@ -189,29 +202,30 @@ class MakeNFe extends BaseMake
      * tgaide
      * Informações de identificação da NF-e B01 pai A01
      * tag NFe/infNFe/ide
-     * @param string $cUF
-     * @param string $cNF
-     * @param string $natOp
-     * @param string $indPag
-     * @param string $mod
-     * @param string $serie
-     * @param string $nNF
-     * @param string $dhEmi
-     * @param string $dhSaiEnt
-     * @param string $tpNF
-     * @param string $idDest
-     * @param string $cMunFG
-     * @param string $tpImp
-     * @param string $tpEmis
-     * @param string $cDV
-     * @param string $tpAmb
-     * @param string $finNFe
-     * @param string $indFinal
-     * @param string $indPres
-     * @param string $procEmi
-     * @param string $verProc
-     * @param string $dhCont
-     * @param string $xJust
+     *
+     * @param  string $cUF
+     * @param  string $cNF
+     * @param  string $natOp
+     * @param  string $indPag
+     * @param  string $mod
+     * @param  string $serie
+     * @param  string $nNF
+     * @param  string $dhEmi
+     * @param  string $dhSaiEnt
+     * @param  string $tpNF
+     * @param  string $idDest
+     * @param  string $cMunFG
+     * @param  string $tpImp
+     * @param  string $tpEmis
+     * @param  string $cDV
+     * @param  string $tpAmb
+     * @param  string $finNFe
+     * @param  string $indFinal
+     * @param  string $indPres
+     * @param  string $procEmi
+     * @param  string $verProc
+     * @param  string $dhCont
+     * @param  string $xJust
      * @return DOMElement
      */
     public function tagide(
@@ -232,7 +246,7 @@ class MakeNFe extends BaseMake
         $cDV = '',
         $tpAmb = '',
         $finNFe = '',
-        $indFinal = '',
+        $indFinal = '0',
         $indPres = '',
         $procEmi = '',
         $verProc = '',
@@ -420,7 +434,8 @@ class MakeNFe extends BaseMake
      * tagrefNFe
      * Chave de acesso da NF-e referenciada BA02 pai BA01
      * tag NFe/infNFe/ide/NFref/refNFe
-     * @param string $refNFe
+     *
+     * @param  string $refNFe
      * @return DOMElement
      */
     public function tagrefNFe($refNFe = '')
@@ -435,12 +450,13 @@ class MakeNFe extends BaseMake
      * tagrefNF
      * Informação da NF modelo 1/1A referenciada BA03 pai BA01
      * tag NFe/infNFe/ide/NFref/NF DOMNode
-     * @param string $cUF
-     * @param string $aamm
-     * @param string $cnpj
-     * @param string $mod
-     * @param string $serie
-     * @param string $nNF
+     *
+     * @param  string $cUF
+     * @param  string $aamm
+     * @param  string $cnpj
+     * @param  string $mod
+     * @param  string $serie
+     * @param  string $nNF
      * @return DOMElement
      */
     public function tagrefNF(
@@ -468,14 +484,15 @@ class MakeNFe extends BaseMake
      * tagrefNFP
      * Informações da NF de produtor rural referenciada BA10 pai BA01
      * tag NFe/infNFe/ide/NFref/refNFP
-     * @param string $cUF
-     * @param string $aamm
-     * @param string $cnpj
-     * @param string $cpf
-     * @param string $numIE
-     * @param string $mod
-     * @param string $serie
-     * @param string $nNF
+     *
+     * @param  string $cUF
+     * @param  string $aamm
+     * @param  string $cnpj
+     * @param  string $cpf
+     * @param  string $numIE
+     * @param  string $mod
+     * @param  string $serie
+     * @param  string $nNF
      * @return DOMElement
      */
     public function tagrefNFP(
@@ -525,7 +542,8 @@ class MakeNFe extends BaseMake
      * tagrefCTe
      * Chave de acesso do CT-e referenciada BA19 pai BA01
      * tag NFe/infNFe/ide/NFref/refCTe
-     * @param string $refCTe
+     *
+     * @param  string $refCTe
      * @return DOMElement
      */
     public function tagrefCTe($refCTe = '')
@@ -540,9 +558,10 @@ class MakeNFe extends BaseMake
      * tagrefECF
      * Informações do Cupom Fiscal referenciado BA20 pai BA01
      * tag NFe/infNFe/ide/NFref/refECF
-     * @param string $mod
-     * @param string $nECF
-     * @param string $nCOO
+     *
+     * @param  string $mod
+     * @param  string $nECF
+     * @param  string $nCOO
      * @return DOMElement
      */
     public function tagrefECF(
@@ -570,15 +589,16 @@ class MakeNFe extends BaseMake
      * tagemit
      * Identificação do emitente da NF-e C01 pai A01
      * tag NFe/infNFe/emit
-     * @param string $cnpj
-     * @param string $cpf
-     * @param string $xNome
-     * @param string $xFant
-     * @param string $numIE
-     * @param string $numIEST
-     * @param string $numIM
-     * @param string $cnae
-     * @param string $crt
+     *
+     * @param  string $cnpj
+     * @param  string $cpf
+     * @param  string $xNome
+     * @param  string $xFant
+     * @param  string $numIE
+     * @param  string $numIEST
+     * @param  string $numIM
+     * @param  string $cnae
+     * @param  string $crt
      * @return DOMElement
      */
     public function tagemit(
@@ -637,17 +657,18 @@ class MakeNFe extends BaseMake
      * tagenderEmit
      * Endereço do emitente C05 pai C01
      * tag NFe/infNFe/emit/endEmit
-     * @param string $xLgr
-     * @param string $nro
-     * @param string $xCpl
-     * @param string $xBairro
-     * @param string $cMun
-     * @param string $xMun
-     * @param string $siglaUF
-     * @param string $cep
-     * @param string $cPais
-     * @param string $xPais
-     * @param string $fone
+     *
+     * @param  string $xLgr
+     * @param  string $nro
+     * @param  string $xCpl
+     * @param  string $xBairro
+     * @param  string $cMun
+     * @param  string $xMun
+     * @param  string $siglaUF
+     * @param  string $cep
+     * @param  string $cPais
+     * @param  string $xPais
+     * @param  string $fone
      * @return DOMElement
      */
     public function tagenderEmit(
@@ -745,15 +766,16 @@ class MakeNFe extends BaseMake
      * tagdest
      * Identificação do Destinatário da NF-e E01 pai A01
      * tag NFe/infNFe/dest (opcional para modelo 65)
-     * @param string $cnpj
-     * @param string $cpf
-     * @param string $idEstrangeiro
-     * @param string $xNome
-     * @param string $indIEDest
-     * @param string $numIE
-     * @param string $isUF
-     * @param string $numIM
-     * @param string $email
+     *
+     * @param  string $cnpj
+     * @param  string $cpf
+     * @param  string $idEstrangeiro
+     * @param  string $xNome
+     * @param  string $indIEDest
+     * @param  string $numIE
+     * @param  string $isUF
+     * @param  string $numIM
+     * @param  string $email
      * @return DOMElement
      */
     public function tagdest(
@@ -768,80 +790,61 @@ class MakeNFe extends BaseMake
         $email = ''
     ) {
         $identificador = 'E01 <dest> - ';
-        if ($numIE == 'ISENTO') {
-            if ($indIEDest == '1') {
-                $indIEDest = '2';
-            }
-        }
+        $flagNome = true;//marca se xNome é ou não obrigatório
         $this->dest = $this->dom->createElement("dest");
-        if ($this->tpAmb == '2') {
-            $this->dom->addChild(
-                $this->dest,
-                "CNPJ",
-                '99999999000191',
-                true,
-                $identificador . "CNPJ do destinatário"
-            );
-            $this->dom->addChild(
-                $this->dest,
-                "xNome",
-                'NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL',
-                true,
-                $identificador . "Razão Social ou nome do destinatário"
-            );
-        } else {
-            if ($cnpj != '') {
-                $this->dom->addChild(
-                    $this->dest,
-                    "CNPJ",
-                    $cnpj,
-                    true,
-                    $identificador . "CNPJ do destinatário"
-                );
-            } elseif ($cpf != '') {
-                $this->dom->addChild(
-                    $this->dest,
-                    "CPF",
-                    $cpf,
-                    true,
-                    $identificador . "CPF do destinatário"
-                );
-            } else {
-                $this->dom->addChild(
-                    $this->dest,
-                    "idEstrangeiro",
-                    $idEstrangeiro,
-                    true,
-                    $identificador . "Identificação do destinatário no caso de comprador estrangeiro"
-                );
-                $indIEDest = '9';
-            }
-            $this->dom->addChild(
-                $this->dest,
-                "xNome",
-                $xNome,
-                true,
-                $identificador . "Razão Social ou nome do destinatário"
-            );
+        if (($numIE == 'ISENTO' || $numIE == '') && $indIEDest == '1') {
+            $indIEDest = '2';
         }
         if ($this->mod == '65') {
             $indIEDest = '9';
+            if ($xNome == '') {
+                $flagNome = false;//marca se xNome é ou não obrigatório
+            }
+        }
+        if ($this->tpAmb == '2' && $this->mod == '55') {
+            $xNome = 'NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL';
+            //a exigência do CNPJ 99999999000191 não existe mais
+        }
+        if ($cnpj != '') {
             $this->dom->addChild(
                 $this->dest,
-                "indIEDest",
-                $indIEDest,
+                "CNPJ",
+                $cnpj,
                 true,
-                $identificador . "Indicador da IE do Destinatário"
+                $identificador . "CNPJ do destinatário"
+            );
+        } elseif ($cpf != '') {
+            $this->dom->addChild(
+                $this->dest,
+                "CPF",
+                $cpf,
+                true,
+                $identificador . "CPF do destinatário"
             );
         } else {
             $this->dom->addChild(
                 $this->dest,
-                "indIEDest",
-                $indIEDest,
+                "idEstrangeiro",
+                $idEstrangeiro,
                 true,
-                $identificador . "Indicador da IE do Destinatário"
+                $identificador . "Identificação do destinatário no caso de comprador estrangeiro"
             );
+            $indIEDest = '9';
         }
+        $this->dom->addChild(
+            $this->dest,
+            "xNome",
+            $xNome,
+            $flagNome, //se mod 55 true ou mod 65 false
+            $identificador . "Razão Social ou nome do destinatário"
+        );
+        $this->dom->addChild(
+            $this->dest,
+            "indIEDest",
+            $indIEDest,
+            true,
+            $identificador . "Indicador da IE do Destinatário"
+        );
         if ($numIE != '' && $numIE != 'ISENTO') {
             $this->dom->addChild(
                 $this->dest,
@@ -877,20 +880,21 @@ class MakeNFe extends BaseMake
     
     /**
      * tagenderDest
-     * Endereço do Destinatário da NF-e E05 pai E01 
+     * Endereço do Destinatário da NF-e E05 pai E01
      * tag NFe/infNFe/dest/enderDest  (opcional para modelo 65)
      * Os dados do destinatário devem ser inseridos antes deste método
-     * @param string $xLgr
-     * @param string $nro
-     * @param string $xCpl
-     * @param string $xBairro
-     * @param string $cMun
-     * @param string $xMun
-     * @param string $siglaUF
-     * @param string $cep
-     * @param string $cPais
-     * @param string $xPais
-     * @param string $fone
+     *
+     * @param  string $xLgr
+     * @param  string $nro
+     * @param  string $xCpl
+     * @param  string $xBairro
+     * @param  string $cMun
+     * @param  string $xMun
+     * @param  string $siglaUF
+     * @param  string $cep
+     * @param  string $cPais
+     * @param  string $xPais
+     * @param  string $fone
      * @return DOMElement
      */
     public function tagenderDest(
@@ -908,7 +912,7 @@ class MakeNFe extends BaseMake
     ) {
         $identificador = 'E05 <enderDest> - ';
         if (empty($this->dest)) {
-            throw new Exception('A TAG dest deve ser criada antes do endereço do mesmo.');
+            throw new RuntimeException('A TAG dest deve ser criada antes do endereço do mesmo.');
         }
         $this->enderDest = $this->dom->createElement("enderDest");
         $this->dom->addChild(
@@ -1000,15 +1004,16 @@ class MakeNFe extends BaseMake
      * tagretirada
      * Identificação do Local de retirada F01 pai A01
      * tag NFe/infNFe/retirada (opcional)
-     * @param string $cnpj
-     * @param string $cpf
-     * @param string $xLgr
-     * @param string $nro
-     * @param string $xCpl
-     * @param string $xBairro
-     * @param string $cMun
-     * @param string $xMun
-     * @param string $siglaUF
+     *
+     * @param  string $cnpj
+     * @param  string $cpf
+     * @param  string $xLgr
+     * @param  string $nro
+     * @param  string $xCpl
+     * @param  string $xBairro
+     * @param  string $cMun
+     * @param  string $xMun
+     * @param  string $siglaUF
      * @return DOMElement
      */
     public function tagretirada(
@@ -1085,15 +1090,16 @@ class MakeNFe extends BaseMake
      * tagentrega
      * Identificação do Local de entrega G01 pai A01
      * tag NFe/infNFe/entrega (opcional)
-     * @param string $cnpj
-     * @param string $cpf
-     * @param string $xLgr
-     * @param string $nro
-     * @param string $xCpl
-     * @param string $xBairro
-     * @param string $cMun
-     * @param string $xMun
-     * @param string $siglaUF
+     *
+     * @param  string $cnpj
+     * @param  string $cpf
+     * @param  string $xLgr
+     * @param  string $nro
+     * @param  string $xCpl
+     * @param  string $xBairro
+     * @param  string $cMun
+     * @param  string $xMun
+     * @param  string $siglaUF
      * @return DOMElement
      */
     public function tagentrega(
@@ -1170,14 +1176,15 @@ class MakeNFe extends BaseMake
      * tagautXML
      * Pessoas autorizadas para o download do XML da NF-e G50 pai A01
      * tag NFe/infNFe/autXML (somente versão 3.1)
-     * @param string $cnpj
-     * @param string $cpf
+     *
+     * @param  string $cnpj
+     * @param  string $cpf
      * @return array
      */
     public function tagautXML($cnpj = '', $cpf = '')
     {
         $identificador = 'G50 <autXML> - ';
-        if ($this->versao > 2) {
+        if (intval($this->versao, 10) > 2) {
             $autXML = $this->dom->createElement("autXML");
             if ($cnpj != '') {
                 $this->dom->addChild($autXML, "CNPJ", $cnpj, true, $identificador . "CNPJ do Cliente Autorizado");
@@ -1195,30 +1202,31 @@ class MakeNFe extends BaseMake
      * tagprod
      * Detalhamento de Produtos e Serviços I01 pai H01
      * tag NFe/infNFe/det[]/prod
-     * @param string $nItem
-     * @param string $cProd
-     * @param string $cEAN
-     * @param string $xProd
-     * @param string $NCM
-     * @param string $EXTIPI
-     * @param string $CFOP
-     * @param string $uCom
-     * @param string $qCom
-     * @param string $vUnCom
-     * @param string $vProd
-     * @param string $cEANTrib
-     * @param string $uTrib
-     * @param string $qTrib
-     * @param string $vUnTrib
-     * @param string $vFrete
-     * @param string $vSeg
-     * @param string $vDesc
-     * @param string $vOutro
-     * @param string $indTot
-     * @param string $xPed
-     * @param string $nItemPed
-     * @param string $nFCI
-     * @param string $nRECOPI
+     *
+     * @param  string $nItem
+     * @param  string $cProd
+     * @param  string $cEAN
+     * @param  string $xProd
+     * @param  string $NCM
+     * @param  string $EXTIPI
+     * @param  string $CFOP
+     * @param  string $uCom
+     * @param  string $qCom
+     * @param  string $vUnCom
+     * @param  string $vProd
+     * @param  string $cEANTrib
+     * @param  string $uTrib
+     * @param  string $qTrib
+     * @param  string $vUnTrib
+     * @param  string $vFrete
+     * @param  string $vSeg
+     * @param  string $vDesc
+     * @param  string $vOutro
+     * @param  string $indTot
+     * @param  string $xPed
+     * @param  string $nItemPed
+     * @param  string $nFCI
+     * @param  string $nRECOPI
      * @return DOMElement
      */
     public function tagprod(
@@ -1227,6 +1235,8 @@ class MakeNFe extends BaseMake
         $cEAN = '',
         $xProd = '',
         $NCM = '',
+        $NVE = '',
+        $CEST = '',
         $EXTIPI = '',
         $CFOP = '',
         $uCom = '',
@@ -1277,6 +1287,20 @@ class MakeNFe extends BaseMake
             $NCM,
             true,
             $identificador . "[item $nItem] Código NCM com 8 dígitos ou 2 dígitos (gênero)"
+        );
+        $this->dom->addChild(
+            $prod,
+            "NVE",
+            $NVE,
+            false,
+            $identificador . "[item $nItem] Código NVE com 2 letras maiúsculas e 4 dígitos"
+        );
+        $this->dom->addChild(
+            $prod,
+            "CEST",
+            $CEST,
+            false,
+            $identificador . "[item $nItem] Código CEST com 7 dígitos"
         );
         $this->dom->addChild(
             $prod,
@@ -1414,8 +1438,9 @@ class MakeNFe extends BaseMake
      * tagNVE
      * NVE NOMENCLATURA DE VALOR ADUANEIRO E ESTATÍSTICA
      * Podem ser até 8 NVE's por item
-     * @param string $nItem
-     * @param string $texto
+     *
+     * @param  string $nItem
+     * @param  string $texto
      * @return DOMElement
      */
     public function tagNVE($nItem = '', $texto = '')
@@ -1426,9 +1451,28 @@ class MakeNFe extends BaseMake
     }
     
     /**
+     * tagCEST
+     * Código Especificador da Substituição Tributária – CEST,
+     * que identifica a mercadoria sujeita aos regimes de substituição
+     * tributária e de antecipação do recolhimento do imposto.
+     * vide NT2015.003
+     *
+     * @param  string $nItem
+     * @param  string $texto
+     * @return DOMElement
+     */
+    public function tagCEST($nItem = '', $texto = '')
+    {
+        $cest = $this->dom->createElement("CEST", $texto);
+        $this->aCest[$nItem][] = $cest;
+        return $cest;
+    }
+    
+    /**
      * tagRECOPI
-     * @param string $nItem
-     * @param string $texto
+     *
+     * @param  string $nItem
+     * @param  string $texto
      * @return DOMElement
      */
     public function tagRECOPI($nItem = '', $texto = '')
@@ -1440,10 +1484,11 @@ class MakeNFe extends BaseMake
     
     /**
      * taginfAdProd
-     * Informações adicionais do produto 
+     * Informações adicionais do produto
      * tag NFe/infNFe/det[]/infAdProd
-     * @param string $nItem
-     * @param string $texto
+     *
+     * @param  string $nItem
+     * @param  string $texto
      * @return DOMElement
      */
     public function taginfAdProd($nItem = '', $texto = '')
@@ -1457,18 +1502,19 @@ class MakeNFe extends BaseMake
      * tagDI
      * Declaração de Importação I8 pai I01
      * tag NFe/infNFe/det[]/prod/DI
-     * @param string $nItem
-     * @param string $nDI
-     * @param string $dDI
-     * @param string $xLocDesemb
-     * @param string $UFDesemb
-     * @param string $dDesemb
-     * @param string $tpViaTransp
-     * @param string $vAFRMM
-     * @param string $tpIntermedio
-     * @param string $CNPJ
-     * @param string $UFTerceiro
-     * @param string $cExportador
+     *
+     * @param  string $nItem
+     * @param  string $nDI
+     * @param  string $dDI
+     * @param  string $xLocDesemb
+     * @param  string $UFDesemb
+     * @param  string $dDesemb
+     * @param  string $tpViaTransp
+     * @param  string $vAFRMM
+     * @param  string $tpIntermedio
+     * @param  string $CNPJ
+     * @param  string $UFTerceiro
+     * @param  string $cExportador
      * @return DOMELEment
      */
     public function tagDI(
@@ -1530,13 +1576,14 @@ class MakeNFe extends BaseMake
      * tagadi
      * Adições I25 pai I18
      * tag NFe/infNFe/det[]/prod/DI/adi
-     * @param string $nItem
-     * @param string $nDI
-     * @param string $nAdicao
-     * @param string $nSeqAdic
-     * @param string $cFabricante
-     * @param string $vDescDI
-     * @param string $nDraw
+     *
+     * @param  string $nItem
+     * @param  string $nDI
+     * @param  string $nAdicao
+     * @param  string $nSeqAdic
+     * @param  string $cFabricante
+     * @param  string $vDescDI
+     * @param  string $nDraw
      * @return DOMElement
      */
     public function tagadi(
@@ -1597,12 +1644,13 @@ class MakeNFe extends BaseMake
      * tagdetExport
      * Grupo de informações de exportação para o item I50 pai I01
      * tag NFe/infNFe/det[]/prod/detExport
-     * @param string $nItem
-     * @param string $nDraw
-     * @param string $exportInd
-     * @param string $nRE
-     * @param string $chNFe
-     * @param string $qExport
+     *
+     * @param  string $nItem
+     * @param  string $nDraw
+     * @param  string $exportInd
+     * @param  string $nRE
+     * @param  string $chNFe
+     * @param  string $qExport
      * @return DOMElement
      */
     public function tagdetExport(
@@ -1628,31 +1676,32 @@ class MakeNFe extends BaseMake
      * tagveicProd
      * Detalhamento de Veículos novos J01 pai I90
      * tag NFe/infNFe/det[]/prod/veicProd (opcional)
-     * @param string $nItem
-     * @param string $tpOp
-     * @param string $chassi
-     * @param string $cCor
-     * @param string $xCor
-     * @param string $pot
-     * @param string $cilin
-     * @param string $pesoL
-     * @param string $pesoB
-     * @param string $nSerie
-     * @param string $tpComb
-     * @param string $nMotor
-     * @param string $CMT
-     * @param string $dist
-     * @param string $anoMod
-     * @param string $anoFab
-     * @param string $tpPint
-     * @param string $tpVeic
-     * @param string $espVeic
-     * @param string $VIN
-     * @param string $condVeic
-     * @param string $cMod
-     * @param string $cCorDENATRAN
-     * @param string $lota
-     * @param string $tpRest
+     *
+     * @param  string $nItem
+     * @param  string $tpOp
+     * @param  string $chassi
+     * @param  string $cCor
+     * @param  string $xCor
+     * @param  string $pot
+     * @param  string $cilin
+     * @param  string $pesoL
+     * @param  string $pesoB
+     * @param  string $nSerie
+     * @param  string $tpComb
+     * @param  string $nMotor
+     * @param  string $CMT
+     * @param  string $dist
+     * @param  string $anoMod
+     * @param  string $anoFab
+     * @param  string $tpPint
+     * @param  string $tpVeic
+     * @param  string $espVeic
+     * @param  string $VIN
+     * @param  string $condVeic
+     * @param  string $cMod
+     * @param  string $cCorDENATRAN
+     * @param  string $lota
+     * @param  string $tpRest
      * @return DOMElement
      */
     public function tagveicProd(
@@ -1716,12 +1765,13 @@ class MakeNFe extends BaseMake
      * tagmed
      * Detalhamento de medicamentos K01 pai I90
      * tag NFe/infNFe/det[]/prod/med (opcional)
-     * @param string $nItem
-     * @param string $nLote
-     * @param string $qLote
-     * @param string $dFab
-     * @param string $dVal
-     * @param string $vPMC
+     *
+     * @param  string $nItem
+     * @param  string $nLote
+     * @param  string $qLote
+     * @param  string $dFab
+     * @param  string $dVal
+     * @param  string $vPMC
      * @return DOMElement
      */
     public function tagmed(
@@ -1759,11 +1809,12 @@ class MakeNFe extends BaseMake
      * tagarma
      * Detalhamento de armas L01 pai I90
      * tag NFe/infNFe/det[]/prod/arma (opcional)
-     * @param type $nItem
-     * @param type $tpArma
-     * @param type $nSerie
-     * @param type $nCano
-     * @param type $descr
+     *
+     * @param  type $nItem
+     * @param  type $tpArma
+     * @param  type $nSerie
+     * @param  type $nCano
+     * @param  type $descr
      * @return DOMElement
      */
     public function tagarma(
@@ -1795,15 +1846,16 @@ class MakeNFe extends BaseMake
      * tagcomb
      * Detalhamento de combustiveis L101 pai I90
      * tag NFe/infNFe/det[]/prod/comb (opcional)
-     * @param string $nItem
-     * @param string $cProdANP
-     * @param string $pMixGN
-     * @param string $codif
-     * @param string $qTemp
-     * @param string $ufCons
-     * @param string $qBCProd
-     * @param string $vAliqProd
-     * @param string $vCIDE
+     *
+     * @param  string $nItem
+     * @param  string $cProdANP
+     * @param  string $pMixGN
+     * @param  string $codif
+     * @param  string $qTemp
+     * @param  string $ufCons
+     * @param  string $qBCProd
+     * @param  string $vAliqProd
+     * @param  string $vCIDE
      * @return DOMElement
      */
     public function tagcomb(
@@ -1848,11 +1900,70 @@ class MakeNFe extends BaseMake
     }
     
     /**
+     * tagencerrante
+     * informações relacionadas com as operações de combustíveis, subgrupo de
+     * encerrante que permite o controle sobre as operações de venda de combustíveis
+     * LA11 pai LA01
+     * tag NFe/infNFe/det[]/prod/comb/encerrante (opcional)
+     *
+     * @param  string $nItem
+     * @param  string $nBico
+     * @param  string $nBomba
+     * @param  string $nTanque
+     * @param  string $vEncIni
+     * @param  string $vEncFin
+     * @return DOMElement
+     */
+    public function tagencerrante($nItem = '', $nBico = '', $nBomba = '', $nTanque = '', $vEncIni = '', $vEncFin = '')
+    {
+        $identificador = 'LA11 <encerrante> - ';
+        $encerrante = $this->dom->createElement("encerrante");
+        $this->dom->addChild(
+            $encerrante,
+            "nBico",
+            $nBico,
+            true,
+            "$identificador [item $nItem] Número de identificação do bico utilizado no abastecimento"
+        );
+        $this->dom->addChild(
+            $encerrante,
+            "nBomba",
+            $nBomba,
+            false,
+            "$identificador [item $nItem] Número de identificação da bomba ao qual o bico está interligado"
+        );
+        $this->dom->addChild(
+            $encerrante,
+            "nTanque",
+            $nTanque,
+            true,
+            "$identificador [item $nItem] Número de identificação do tanque ao qual o bico está interligado"
+        );
+        $this->dom->addChild(
+            $encerrante,
+            "vEncIni",
+            $vEncIni,
+            true,
+            "$identificador [item $nItem] Valor do Encerrante no início do abastecimento"
+        );
+        $this->dom->addChild(
+            $encerrante,
+            "vEncFin",
+            $vEncFin,
+            true,
+            "$identificador [item $nItem] Valor do Encerrante no final do abastecimento"
+        );
+        $this->aEncerrante[$nItem] = $encerrante;
+        return $encerrante;
+    }
+    
+    /**
      * tagimposto
      * M01 pai H01
      * tag NFe/infNFe/det[]/imposto
-     * @param string $nItem
-     * @param string $vTotTrib
+     *
+     * @param  string $nItem
+     * @param  string $vTotTrib
      * @return DOMElement
      */
     public function tagimposto($nItem = '', $vTotTrib = '')
@@ -1874,26 +1985,27 @@ class MakeNFe extends BaseMake
      * tagICMS
      * Informações do ICMS da Operação própria e ST N01 pai M01
      * tag NFe/infNFe/det[]/imposto/ICMS
-     * @param string $nItem
-     * @param string $orig
-     * @param string $CST
-     * @param string $modBC
-     * @param string $vBC
-     * @param string $pICMS
-     * @param string $vICMS
-     * @param string $vICMSDeson
-     * @param string $motDesICMS
-     * @param string $modBCST
-     * @param string $pMVAST
-     * @param string $pRedBCST
-     * @param string $vBCST
-     * @param string $pICMSST
-     * @param string $vICMSST
-     * @param string $pDif
-     * @param string $vICMSDif
-     * @param string $vICMSOp
-     * @param string $vBCSTRet
-     * @param string $vICMSSTRet
+     *
+     * @param  string $nItem
+     * @param  string $orig
+     * @param  string $CST
+     * @param  string $modBC
+     * @param  string $vBC
+     * @param  string $pICMS
+     * @param  string $vICMS
+     * @param  string $vICMSDeson
+     * @param  string $motDesICMS
+     * @param  string $modBCST
+     * @param  string $pMVAST
+     * @param  string $pRedBCST
+     * @param  string $vBCST
+     * @param  string $pICMSST
+     * @param  string $vICMSST
+     * @param  string $pDif
+     * @param  string $vICMSDif
+     * @param  string $vICMSOp
+     * @param  string $vBCSTRet
+     * @param  string $vICMSSTRet
      * @return DOMElement
      */
     public function tagICMS(
@@ -1946,10 +2058,10 @@ class MakeNFe extends BaseMake
                     false,
                     "$identificador [item $nItem] Percentual da margem de valor Adicionado do ICMS ST"
                 );
-                $this->dom->addChild($icms, 'pRedBCST', $pRedBCST, false, "$identificador [item $nItem] Percentual da Redução de BC do ICMS ST");
-                $this->dom->addChild($icms, 'vBCST', $vBCST, true, "$identificador [item $nItem] Valor da BC do ICMS ST");
-                $this->dom->addChild($icms, 'pICMSST', $pICMSST, true, "$identificador [item $nItem] Alíquota do imposto do ICMS ST");
-                $this->dom->addChild($icms, 'vICMSST', $vICMSST, true, "$identificador [item $nItem] Valor do ICMS ST");
+                    $this->dom->addChild($icms, 'pRedBCST', $pRedBCST, false, "$identificador [item $nItem] Percentual da Redução de BC do ICMS ST");
+                    $this->dom->addChild($icms, 'vBCST', $vBCST, true, "$identificador [item $nItem] Valor da BC do ICMS ST");
+                    $this->dom->addChild($icms, 'pICMSST', $pICMSST, true, "$identificador [item $nItem] Alíquota do imposto do ICMS ST");
+                    $this->dom->addChild($icms, 'vICMSST', $vICMSST, true, "$identificador [item $nItem] Valor do ICMS ST");
                 break;
             case '20':
                 $icms = $this->dom->createElement("ICMS20");
@@ -1975,12 +2087,12 @@ class MakeNFe extends BaseMake
                     false,
                     "$identificador [item $nItem] Percentual da margem de valor Adicionado do ICMS ST"
                 );
-                $this->dom->addChild($icms, 'pRedBCST', $pRedBCST, false, "$identificador [item $nItem] Percentual da Redução de BC do ICMS ST");
-                $this->dom->addChild($icms, 'vBCST', $vBCST, true, "$identificador [item $nItem] Valor da BC do ICMS ST");
-                $this->dom->addChild($icms, 'pICMSST', $pICMSST, true, "$identificador [item $nItem] Alíquota do imposto do ICMS ST");
-                $this->dom->addChild($icms, 'vICMSST', $vICMSST, true, "$identificador [item $nItem] Valor do ICMS ST");
-                $this->dom->addChild($icms, 'vICMSDeson', $vICMSDeson, false, "$identificador [item $nItem] Valor do ICMS desonerado");
-                $this->dom->addChild($icms, 'motDesICMS', $motDesICMS, false, "$identificador [item $nItem] Motivo da desoneração do ICMS");
+                    $this->dom->addChild($icms, 'pRedBCST', $pRedBCST, false, "$identificador [item $nItem] Percentual da Redução de BC do ICMS ST");
+                    $this->dom->addChild($icms, 'vBCST', $vBCST, true, "$identificador [item $nItem] Valor da BC do ICMS ST");
+                    $this->dom->addChild($icms, 'pICMSST', $pICMSST, true, "$identificador [item $nItem] Alíquota do imposto do ICMS ST");
+                    $this->dom->addChild($icms, 'vICMSST', $vICMSST, true, "$identificador [item $nItem] Valor do ICMS ST");
+                    $this->dom->addChild($icms, 'vICMSDeson', $vICMSDeson, false, "$identificador [item $nItem] Valor do ICMS desonerado");
+                    $this->dom->addChild($icms, 'motDesICMS', $motDesICMS, false, "$identificador [item $nItem] Motivo da desoneração do ICMS");
                 break;
             case '40':
             case '41':
@@ -2002,6 +2114,7 @@ class MakeNFe extends BaseMake
                 $this->dom->addChild($icms, 'vICMSOp', $vICMSOp, false, "$identificador [item $nItem] Valor do ICMS da Operação");
                 $this->dom->addChild($icms, 'pDif', $pDif, false, "$identificador [item $nItem] Percentual do diferimento");
                 $this->dom->addChild($icms, 'vICMSDif', $vICMSDif, false, "$identificador [item $nItem] Valor do ICMS diferido");
+                $this->dom->addChild($icms, 'vICMS', $vICMS, false, "$identificador [item $nItem] Valor do ICMS realmente devido");
                 break;
             case '60':
                 $icms = $this->dom->createElement("ICMS60");
@@ -2027,12 +2140,12 @@ class MakeNFe extends BaseMake
                     false,
                     "$identificador [item $nItem] Percentual da margem de valor Adicionado do ICMS ST"
                 );
-                $this->dom->addChild($icms, 'pRedBCST', $pRedBCST, false, "$identificador [item $nItem] Percentual da Redução de BC do ICMS ST");
-                $this->dom->addChild($icms, 'vBCST', $vBCST, true, "$identificador [item $nItem] Valor da BC do ICMS ST");
-                $this->dom->addChild($icms, 'pICMSST', $pICMSST, true, "$identificador [item $nItem] Alíquota do imposto do ICMS ST");
-                $this->dom->addChild($icms, 'vICMSST', $vICMSST, true, "$identificador [item $nItem] Valor do ICMS ST");
-                $this->dom->addChild($icms, 'vICMSDeson', $vICMSDeson, false, "$identificador [item $nItem] Valor do ICMS desonerado");
-                $this->dom->addChild($icms, 'motDesICMS', $motDesICMS, false, "$identificador [item $nItem] Motivo da desoneração do ICMS");
+                    $this->dom->addChild($icms, 'pRedBCST', $pRedBCST, false, "$identificador [item $nItem] Percentual da Redução de BC do ICMS ST");
+                    $this->dom->addChild($icms, 'vBCST', $vBCST, true, "$identificador [item $nItem] Valor da BC do ICMS ST");
+                    $this->dom->addChild($icms, 'pICMSST', $pICMSST, true, "$identificador [item $nItem] Alíquota do imposto do ICMS ST");
+                    $this->dom->addChild($icms, 'vICMSST', $vICMSST, true, "$identificador [item $nItem] Valor do ICMS ST");
+                    $this->dom->addChild($icms, 'vICMSDeson', $vICMSDeson, false, "$identificador [item $nItem] Valor do ICMS desonerado");
+                    $this->dom->addChild($icms, 'motDesICMS', $motDesICMS, false, "$identificador [item $nItem] Motivo da desoneração do ICMS");
                 break;
             case '90':
                 $icms = $this->dom->createElement("ICMS90");
@@ -2051,41 +2164,44 @@ class MakeNFe extends BaseMake
                     false,
                     "$identificador [item $nItem] Percentual da margem de valor Adicionado do ICMS ST"
                 );
-                $this->dom->addChild($icms, 'pRedBCST', $pRedBCST, false, "$identificador [item $nItem] Percentual da Redução de BC do ICMS ST");
-                $this->dom->addChild($icms, 'vBCST', $vBCST, true, "$identificador [item $nItem] Valor da BC do ICMS ST");
-                $this->dom->addChild($icms, 'pICMSST', $pICMSST, true, "$identificador [item $nItem] Alíquota do imposto do ICMS ST");
-                $this->dom->addChild($icms, 'vICMSST', $vICMSST, true, "$identificador [item $nItem] Valor do ICMS ST");
-                $this->dom->addChild($icms, 'vICMSDeson', $vICMSDeson, false, "$identificador [item $nItem] Valor do ICMS desonerado");
-                $this->dom->addChild($icms, 'motDesICMS', $motDesICMS, false, "$identificador [item $nItem] Motivo da desoneração do ICMS");
+                    $this->dom->addChild($icms, 'pRedBCST', $pRedBCST, false, "$identificador [item $nItem] Percentual da Redução de BC do ICMS ST");
+                    $this->dom->addChild($icms, 'vBCST', $vBCST, true, "$identificador [item $nItem] Valor da BC do ICMS ST");
+                    $this->dom->addChild($icms, 'pICMSST', $pICMSST, true, "$identificador [item $nItem] Alíquota do imposto do ICMS ST");
+                    $this->dom->addChild($icms, 'vICMSST', $vICMSST, true, "$identificador [item $nItem] Valor do ICMS ST");
+                    $this->dom->addChild($icms, 'vICMSDeson', $vICMSDeson, false, "$identificador [item $nItem] Valor do ICMS desonerado");
+                    $this->dom->addChild($icms, 'motDesICMS', $motDesICMS, false, "$identificador [item $nItem] Motivo da desoneração do ICMS");
                 break;
         }
         $tagIcms = $this->dom->createElement('ICMS');
-        $tagIcms->appendChild($icms);
+        if (isset($icms)) {
+            $tagIcms->appendChild($icms);
+        }
         $this->aICMS[$nItem] = $tagIcms;
         return $tagIcms;
     }
     
     /**
      * tagICMSPart
-     * Grupo de Partilha do ICMS entre a UF de origem e UF de destino ou 
-     * a UF definida na legislação. N10a pai N01 
+     * Grupo de Partilha do ICMS entre a UF de origem e UF de destino ou
+     * a UF definida na legislação. N10a pai N01
      * tag NFe/infNFe/det[]/imposto/ICMS/ICMSPart
-     * @param string $nItem
-     * @param string $orig
-     * @param string $cst
-     * @param string $modBC
-     * @param string $vBC
-     * @param string $pRedBC
-     * @param string $pICMS
-     * @param string $vICMS
-     * @param string $modBCST
-     * @param string $pMVAST
-     * @param string $pRedBCST
-     * @param string $vBCST
-     * @param string $pICMSST
-     * @param string $vICMSST
-     * @param string $pBCOp
-     * @param string $ufST
+     *
+     * @param  string $nItem
+     * @param  string $orig
+     * @param  string $cst
+     * @param  string $modBC
+     * @param  string $vBC
+     * @param  string $pRedBC
+     * @param  string $pICMS
+     * @param  string $vICMS
+     * @param  string $modBCST
+     * @param  string $pMVAST
+     * @param  string $pRedBCST
+     * @param  string $vBCST
+     * @param  string $pICMSST
+     * @param  string $vICMSST
+     * @param  string $pBCOp
+     * @param  string $ufST
      * @return DOMElement
      */
     public function tagICMSPart(
@@ -2143,13 +2259,14 @@ class MakeNFe extends BaseMake
      * tagICMSST N10b pai N01
      * Grupo de Repasse de ICMS ST retido anteriormente em operações
      * interestaduais com repasses através do Substituto Tributário
-     * @param string $nItem
-     * @param string $orig
-     * @param string $cst
-     * @param string $vBCSTRet
-     * @param string $vICMSSTRet
-     * @param string $vBCSTDest
-     * @param string $vICMSSTDest
+     *
+     * @param  string $nItem
+     * @param  string $orig
+     * @param  string $cst
+     * @param  string $vBCSTRet
+     * @param  string $vICMSSTRet
+     * @param  string $vBCSTDest
+     * @param  string $vICMSSTDest
      * @return DOMElement
      */
     public function tagICMSST(
@@ -2182,24 +2299,25 @@ class MakeNFe extends BaseMake
     /**
      * tagICMSSN
      * Tributação ICMS pelo Simples Nacional N10c pai N01
-     * @param type $nItem
-     * @param type $orig
-     * @param type $csosn
-     * @param type $modBC
-     * @param type $vBC
-     * @param type $pRedBC
-     * @param type $pICMS
-     * @param type $vICMS
-     * @param type $pCredSN
-     * @param type $vCredICMSSN
-     * @param type $modBCST
-     * @param type $pMVAST
-     * @param type $pRedBCST
-     * @param type $vBCST
-     * @param type $pICMSST
-     * @param type $vICMSST
-     * @param type $vBCSTRet
-     * @param type $vICMSSTRet
+     *
+     * @param  type $nItem
+     * @param  type $orig
+     * @param  type $csosn
+     * @param  type $modBC
+     * @param  type $vBC
+     * @param  type $pRedBC
+     * @param  type $pICMS
+     * @param  type $vICMS
+     * @param  type $pCredSN
+     * @param  type $vCredICMSSN
+     * @param  type $modBCST
+     * @param  type $pMVAST
+     * @param  type $pRedBCST
+     * @param  type $vBCST
+     * @param  type $pICMSST
+     * @param  type $vICMSST
+     * @param  type $vBCSTRet
+     * @param  type $vICMSSTRet
      * @return DOMElement
      */
     public function tagICMSSN(
@@ -2233,20 +2351,20 @@ class MakeNFe extends BaseMake
                     true,
                     "[item $nItem] Código de Situação da Operação Simples Nacional"
                 );
-                $this->dom->addChild(
-                    $icmsSN,
-                    'pCredSN',
-                    $pCredSN,
-                    true,
-                    "[item $nItem] Alíquota aplicável de cálculo do crédito (Simples Nacional)."
-                );
-                $this->dom->addChild(
-                    $icmsSN,
-                    'vCredICMSSN',
-                    $vCredICMSSN,
-                    true,
-                    "[item $nItem] Valor crédito do ICMS que pode ser aproveitado nos termos do art. 23 da LC 123 (Simples Nacional)"
-                );
+                    $this->dom->addChild(
+                        $icmsSN,
+                        'pCredSN',
+                        $pCredSN,
+                        true,
+                        "[item $nItem] Alíquota aplicável de cálculo do crédito (Simples Nacional)."
+                    );
+                    $this->dom->addChild(
+                        $icmsSN,
+                        'vCredICMSSN',
+                        $vCredICMSSN,
+                        true,
+                        "[item $nItem] Valor crédito do ICMS que pode ser aproveitado nos termos do art. 23 da LC 123 (Simples Nacional)"
+                    );
                 break;
             case '102':
             case '103':
@@ -2272,38 +2390,38 @@ class MakeNFe extends BaseMake
                     true,
                     "[item $nItem] Código de Situação da Operação Simples Nacional"
                 );
-                $this->dom->addChild(
-                    $icmsSN,
-                    'modBCST',
-                    $modBCST,
-                    true,
-                    "[item $nItem] Alíquota aplicável de cálculo do crédito (Simples Nacional)."
-                );
-                $this->dom->addChild(
-                    $icmsSN,
-                    'pMVAST',
-                    $pMVAST,
-                    false,
-                    "[item $nItem] Percentual da margem de valor Adicionado do ICMS ST"
-                );
-                $this->dom->addChild($icmsSN, 'pRedBCST', $pRedBCST, false, "[item $nItem] Percentual da Redução de BC do ICMS ST");
-                $this->dom->addChild($icmsSN, 'vBCST', $vBCST, true, "[item $nItem] Valor da BC do ICMS ST");
-                $this->dom->addChild($icmsSN, 'pICMSST', $pICMSST, true, "[item $nItem] Alíquota do imposto do ICMS ST");
-                $this->dom->addChild($icmsSN, 'vICMSST', $vICMSST, true, "[item $nItem] Valor do ICMS ST");
-                $this->dom->addChild(
-                    $icmsSN,
-                    'pCredSN',
-                    $pCredSN,
-                    true,
-                    "[item $nItem] Alíquota aplicável de cálculo do crédito (Simples Nacional)."
-                );
-                $this->dom->addChild(
-                    $icmsSN,
-                    'vCredICMSSN',
-                    $vCredICMSSN,
-                    true,
-                    "[item $nItem] Valor crédito do ICMS que pode ser aproveitado nos termos do art. 23 da LC 123 (Simples Nacional)"
-                );
+                    $this->dom->addChild(
+                        $icmsSN,
+                        'modBCST',
+                        $modBCST,
+                        true,
+                        "[item $nItem] Alíquota aplicável de cálculo do crédito (Simples Nacional)."
+                    );
+                    $this->dom->addChild(
+                        $icmsSN,
+                        'pMVAST',
+                        $pMVAST,
+                        false,
+                        "[item $nItem] Percentual da margem de valor Adicionado do ICMS ST"
+                    );
+                    $this->dom->addChild($icmsSN, 'pRedBCST', $pRedBCST, false, "[item $nItem] Percentual da Redução de BC do ICMS ST");
+                    $this->dom->addChild($icmsSN, 'vBCST', $vBCST, true, "[item $nItem] Valor da BC do ICMS ST");
+                    $this->dom->addChild($icmsSN, 'pICMSST', $pICMSST, true, "[item $nItem] Alíquota do imposto do ICMS ST");
+                    $this->dom->addChild($icmsSN, 'vICMSST', $vICMSST, true, "[item $nItem] Valor do ICMS ST");
+                    $this->dom->addChild(
+                        $icmsSN,
+                        'pCredSN',
+                        $pCredSN,
+                        true,
+                        "[item $nItem] Alíquota aplicável de cálculo do crédito (Simples Nacional)."
+                    );
+                    $this->dom->addChild(
+                        $icmsSN,
+                        'vCredICMSSN',
+                        $vCredICMSSN,
+                        true,
+                        "[item $nItem] Valor crédito do ICMS que pode ser aproveitado nos termos do art. 23 da LC 123 (Simples Nacional)"
+                    );
                 break;
             case '202':
             case '203':
@@ -2317,17 +2435,17 @@ class MakeNFe extends BaseMake
                     true,
                     "[item $nItem] Alíquota aplicável de cálculo do crédito (Simples Nacional)."
                 );
-                $this->dom->addChild(
-                    $icmsSN,
-                    'pMVAST',
-                    $pMVAST,
-                    false,
-                    "[item $nItem] Percentual da margem de valor Adicionado do ICMS ST"
-                );
-                $this->dom->addChild($icmsSN, 'pRedBCST', $pRedBCST, false, "[item $nItem] Percentual da Redução de BC do ICMS ST");
-                $this->dom->addChild($icmsSN, 'vBCST', $vBCST, true, "[item $nItem] Valor da BC do ICMS ST");
-                $this->dom->addChild($icmsSN, 'pICMSST', $pICMSST, true, "[item $nItem] Alíquota do imposto do ICMS ST");
-                $this->dom->addChild($icmsSN, 'vICMSST', $vICMSST, true, "[item $nItem] Valor do ICMS ST");
+                    $this->dom->addChild(
+                        $icmsSN,
+                        'pMVAST',
+                        $pMVAST,
+                        false,
+                        "[item $nItem] Percentual da margem de valor Adicionado do ICMS ST"
+                    );
+                    $this->dom->addChild($icmsSN, 'pRedBCST', $pRedBCST, false, "[item $nItem] Percentual da Redução de BC do ICMS ST");
+                    $this->dom->addChild($icmsSN, 'vBCST', $vBCST, true, "[item $nItem] Valor da BC do ICMS ST");
+                    $this->dom->addChild($icmsSN, 'pICMSST', $pICMSST, true, "[item $nItem] Alíquota do imposto do ICMS ST");
+                    $this->dom->addChild($icmsSN, 'vICMSST', $vICMSST, true, "[item $nItem] Valor do ICMS ST");
                 break;
             case '500':
                 $icmsSN = $this->dom->createElement("ICMSSN500");
@@ -2339,50 +2457,50 @@ class MakeNFe extends BaseMake
                     true,
                     "[item $nItem] Código de Situação da Operação Simples Nacional"
                 );
-                $this->dom->addChild($icmsSN, 'vBCSTRet', $vBCSTRet, false, "[item $nItem] Valor da BC do ICMS ST retido");
-                $this->dom->addChild($icmsSN, 'vICMSSTRet', $vICMSSTRet, false, "[item $nItem] Valor do ICMS ST retido");
+                    $this->dom->addChild($icmsSN, 'vBCSTRet', $vBCSTRet, false, "[item $nItem] Valor da BC do ICMS ST retido");
+                    $this->dom->addChild($icmsSN, 'vICMSSTRet', $vICMSSTRet, false, "[item $nItem] Valor do ICMS ST retido");
                 break;
             case '900':
                 $icmsSN = $this->dom->createElement("ICMSSN900");
                 $this->dom->addChild($icmsSN, 'orig', $orig, true, "[item $nItem] Origem da mercadoria");
                 $this->dom->addChild($icmsSN, 'CSOSN', $csosn, true, "[item $nItem] Código de Situação da Operação Simples Nacional");
-                $this->dom->addChild($icmsSN, 'modBC', $modBC, true, "[item $nItem] Modalidade de determinação da BC do ICMS");
-                $this->dom->addChild($icmsSN, 'vBC', $vBC, true, "[item $nItem] Valor da BC do ICMS");
+                $this->dom->addChild($icmsSN, 'modBC', $modBC, false, "[item $nItem] Modalidade de determinação da BC do ICMS");
+                $this->dom->addChild($icmsSN, 'vBC', $vBC, false, "[item $nItem] Valor da BC do ICMS");
                 $this->dom->addChild($icmsSN, 'pRedBC', $pRedBC, false, "[item $nItem] Percentual da Redução de BC");
-                $this->dom->addChild($icmsSN, 'pICMS', $pICMS, true, "[item $nItem] Alíquota do imposto");
-                $this->dom->addChild($icmsSN, 'vICMS', $vICMS, true, "[item $nItem] Valor do ICMS");
+                $this->dom->addChild($icmsSN, 'pICMS', $pICMS, false, "[item $nItem] Alíquota do imposto");
+                $this->dom->addChild($icmsSN, 'vICMS', $vICMS, false, "[item $nItem] Valor do ICMS");
                 $this->dom->addChild(
                     $icmsSN,
                     'modBCST',
                     $modBCST,
-                    true,
-                    "[item $nItem] Alíquota aplicável de cálculo do crédito (Simples Nacional)."
-                );
-                $this->dom->addChild(
-                    $icmsSN,
-                    'pMVAST',
-                    $pMVAST,
                     false,
-                    "[item $nItem] Percentual da margem de valor Adicionado do ICMS ST"
-                );
-                $this->dom->addChild($icmsSN, 'pRedBCST', $pRedBCST, false, "[item $nItem] Percentual da Redução de BC do ICMS ST");
-                $this->dom->addChild($icmsSN, 'vBCST', $vBCST, true, "[item $nItem] Valor da BC do ICMS ST");
-                $this->dom->addChild($icmsSN, 'pICMSST', $pICMSST, true, "[item $nItem] Alíquota do imposto do ICMS ST");
-                $this->dom->addChild($icmsSN, 'vICMSST', $vICMSST, true, "[item $nItem] Valor do ICMS ST");
-                $this->dom->addChild(
-                    $icmsSN,
-                    'pCredSN',
-                    $pCredSN,
-                    true,
                     "[item $nItem] Alíquota aplicável de cálculo do crédito (Simples Nacional)."
                 );
-                $this->dom->addChild(
-                    $icmsSN,
-                    'vCredICMSSN',
-                    $vCredICMSSN,
-                    true,
-                    "[item $nItem] Valor crédito do ICMS que pode ser aproveitado nos termos do art. 23 da LC 123 (Simples Nacional)"
-                );
+                    $this->dom->addChild(
+                        $icmsSN,
+                        'pMVAST',
+                        $pMVAST,
+                        false,
+                        "[item $nItem] Percentual da margem de valor Adicionado do ICMS ST"
+                    );
+                    $this->dom->addChild($icmsSN, 'pRedBCST', $pRedBCST, false, "[item $nItem] Percentual da Redução de BC do ICMS ST");
+                    $this->dom->addChild($icmsSN, 'vBCST', $vBCST, false, "[item $nItem] Valor da BC do ICMS ST");
+                    $this->dom->addChild($icmsSN, 'pICMSST', $pICMSST, false, "[item $nItem] Alíquota do imposto do ICMS ST");
+                    $this->dom->addChild($icmsSN, 'vICMSST', $vICMSST, false, "[item $nItem] Valor do ICMS ST");
+                    $this->dom->addChild(
+                        $icmsSN,
+                        'pCredSN',
+                        $pCredSN,
+                        false,
+                        "[item $nItem] Alíquota aplicável de cálculo do crédito (Simples Nacional)."
+                    );
+                    $this->dom->addChild(
+                        $icmsSN,
+                        'vCredICMSSN',
+                        $vCredICMSSN,
+                        false,
+                        "[item $nItem] Valor crédito do ICMS que pode ser aproveitado nos termos do art. 23 da LC 123 (Simples Nacional)"
+                    );
                 break;
         }
         //caso exista a tag aICMS[$nItem] inserir nela caso contrario criar
@@ -2391,27 +2509,123 @@ class MakeNFe extends BaseMake
         } else {
             $tagIcms = $this->dom->createElement('ICMS');
         }
-        $this->dom->appChild($tagIcms, $icmsSN, "Inserindo ICMSST em ICMS[$nItem]");
+        if (isset($icmsSN)) {
+            $this->dom->appChild($tagIcms, $icmsSN, "Inserindo ICMSST em ICMS[$nItem]");
+        }
         $this->aICMS[$nItem] = $tagIcms;
         return $tagIcms;
+    }
+    
+    /**
+     * tagICMSUFDest
+     * Grupo ICMSUFDest NA01 pai M01
+     * tag NFe/infNFe/det[]/imposto/ICMSUFDest (opcional)
+     * Grupo a ser informado nas vendas interestaduais para consumidor final,
+     * não contribuinte do ICMS
+     *
+     * @param  string $nItem
+     * @param  string $vBCUFDest
+     * @param  string $pFCPUFDest
+     * @param  string $pICMSUFDest
+     * @param  string $pICMSInter
+     * @param  string $pICMSInterPart
+     * @param  string $vFCPUFDest
+     * @param  string $vICMSUFDest
+     * @param  string $vICMSUFRemet
+     * @return DOMElement
+     */
+    public function tagICMSUFDest(
+        $nItem = '',
+        $vBCUFDest = '',
+        $pFCPUFDest = '',
+        $pICMSUFDest = '',
+        $pICMSInter = '',
+        $pICMSInterPart = '',
+        $vFCPUFDest = '',
+        $vICMSUFDest = '',
+        $vICMSUFRemet = ''
+    ) {
+        $icmsUFDest = $this->dom->createElement('ICMSUFDest');
+        $this->dom->addChild(
+            $icmsUFDest,
+            "vBCUFDest",
+            $vBCUFDest,
+            true,
+            "[item $nItem] Valor da BC do ICMS na UF do destinatário"
+        );
+        $this->dom->addChild(
+            $icmsUFDest,
+            "pFCPUFDest",
+            $pFCPUFDest,
+            true,
+            "[item $nItem] Percentual do ICMS relativo ao Fundo de Combate à Pobreza (FCP) na UF de destino"
+        );
+        $this->dom->addChild(
+            $icmsUFDest,
+            "pICMSUFDest",
+            $pICMSUFDest,
+            true,
+            "[item $nItem] Alíquota interna da UF do destinatário"
+        );
+        $this->dom->addChild(
+            $icmsUFDest,
+            "pICMSInter",
+            $pICMSInter,
+            true,
+            "[item $nItem] Alíquota interestadual das UF envolvidas"
+        );
+        $this->dom->addChild(
+            $icmsUFDest,
+            "pICMSInterPart",
+            $pICMSInterPart,
+            true,
+            "[item $nItem] Percentual provisório de partilha entre os Estados"
+        );
+        $this->dom->addChild(
+            $icmsUFDest,
+            "vFCPUFDest",
+            $vFCPUFDest,
+            true,
+            "[item $nItem] Valor do ICMS relativo ao Fundo de Combate à Pobreza (FCP) da UF de destino"
+        );
+        $this->dom->addChild(
+            $icmsUFDest,
+            "vICMSUFDest",
+            $vICMSUFDest,
+            true,
+            "[item $nItem] Valor do ICMS de partilha para a UF do destinatário"
+        );
+        $this->dom->addChild(
+            $icmsUFDest,
+            "vICMSUFRemet",
+            $vICMSUFRemet,
+            true,
+            "[item $nItem] Valor do ICMS de partilha para a UF do remetente"
+        );
+        $this->aICMSUFDest[$nItem] = $icmsUFDest;
+        $this->aTotICMSUFDest['vICMSUFDest'] += $vICMSUFDest;
+        $this->aTotICMSUFDest['vFCPUFDest'] += $vFCPUFDest;
+        $this->aTotICMSUFDest['vICMSUFRemet'] += $vICMSUFRemet;
+        return $icmsUFDest;
     }
     
     /**
      * tagIPI
      * Grupo IPI O01 pai M01
      * tag NFe/infNFe/det[]/imposto/IPI (opcional)
-     * @param string $nItem
-     * @param string $cst
-     * @param string $clEnq
-     * @param string $cnpjProd
-     * @param string $cSelo
-     * @param string $qSelo
-     * @param string $cEnq
-     * @param string $vBC
-     * @param string $pIPI
-     * @param string $qUnid
-     * @param string $vUnid
-     * @param string $vIPI
+     *
+     * @param  string $nItem
+     * @param  string $cst
+     * @param  string $clEnq
+     * @param  string $cnpjProd
+     * @param  string $cSelo
+     * @param  string $qSelo
+     * @param  string $cEnq
+     * @param  string $vBC
+     * @param  string $pIPI
+     * @param  string $qUnid
+     * @param  string $vUnid
+     * @param  string $vIPI
      * @return DOMElement
      */
     public function tagIPI(
@@ -2446,20 +2660,13 @@ class MakeNFe extends BaseMake
             $this->dom->addChild($ipiTrib, "CST", $cst, true, "[item $nItem] Código da situação tributária do IPI");
             $this->dom->addChild($ipiTrib, "vBC", $vBC, false, "[item $nItem] Valor da BC do IPI");
             $this->dom->addChild($ipiTrib, "pIPI", $pIPI, false, "[item $nItem] Alíquota do IPI");
-            $this->dom->addChild(
-                $ipiTrib,
-                "qUnid",
-                $qUnid,
-                false,
-                "[item $nItem] Quantidade total na unidade padrão para tributação "
-                . "(somente para os produtos tributados por unidade)"
-            );
+            $this->dom->addChild($ipiTrib, "qUnid", $qUnid, false, "[item $nItem] Quantidade total na unidade padrão para tributação (somente para os produtos tributados por unidade)");
             $this->dom->addChild($ipiTrib, "vUnid", $vUnid, false, "[item $nItem] Valor por Unidade Tributável");
             $this->dom->addChild($ipiTrib, "vIPI", $vIPI, true, "[item $nItem] Valor do IPI");
             $ipi->appendChild($ipiTrib);
         } else {
             $ipINT = $this->dom->createElement('IPINT');
-            $this->dom->addChild($ipINT, "CST", $cst, true, "[item $nItem] Código da situação tributária do IPI");
+            $this->dom->addChild($ipINT, "CST", $cst, true, "[item $nItem] Código da situação tributária do IPINT");
             $ipi->appendChild($ipINT);
         }
         $this->aIPI[$nItem] = $ipi;
@@ -2470,11 +2677,12 @@ class MakeNFe extends BaseMake
      * tagII
      * Grupo Imposto de Importação P01 pai M01
      * tag NFe/infNFe/det[]/imposto/II
-     * @param string $nItem
-     * @param string $vBC
-     * @param string $vDespAdu
-     * @param string $vII
-     * @param string $vIOF
+     *
+     * @param  string $nItem
+     * @param  string $vBC
+     * @param  string $vDespAdu
+     * @param  string $vII
+     * @param  string $vIOF
      * @return DOMElement
      */
     public function tagII($nItem = '', $vBC = '', $vDespAdu = '', $vII = '', $vIOF = '')
@@ -2492,13 +2700,14 @@ class MakeNFe extends BaseMake
      * tagPIS
      * Grupo PIS Q01 pai M01
      * tag NFe/infNFe/det[]/imposto/PIS
-     * @param type $nItem
-     * @param string $cst
-     * @param string $vBC
-     * @param string $pPIS
-     * @param string $vPIS
-     * @param string $qBCProd
-     * @param string $vAliqProd
+     *
+     * @param  type   $nItem
+     * @param  string $cst
+     * @param  string $vBC
+     * @param  string $pPIS
+     * @param  string $vPIS
+     * @param  string $qBCProd
+     * @param  string $vAliqProd
      * @return DOMElement
      */
     public function tagPIS(
@@ -2569,21 +2778,24 @@ class MakeNFe extends BaseMake
                 break;
         }
         $pis = $this->dom->createElement('PIS');
-        $pis->appendChild($pisItem);
+        if (isset($pisItem)) {
+            $pis->appendChild($pisItem);
+        }
         $this->aPIS[$nItem] = $pis;
         return $pis;
     }
     
     /**
      * tagPISST
-     * Grupo PIS Substituição Tributária R01 pai M01 
+     * Grupo PIS Substituição Tributária R01 pai M01
      * tag NFe/infNFe/det[]/imposto/PISST (opcional)
-     * @param string $nItem
-     * @param string $vBC
-     * @param string $pPIS
-     * @param string $qBCProd
-     * @param string $vAliqProd
-     * @param string $vPIS
+     *
+     * @param  string $nItem
+     * @param  string $vBC
+     * @param  string $pPIS
+     * @param  string $qBCProd
+     * @param  string $vAliqProd
+     * @param  string $vPIS
      * @return DOMElement
      */
     public function tagPISST(
@@ -2608,13 +2820,14 @@ class MakeNFe extends BaseMake
      * tagCOFINS
      * Grupo COFINS S01 pai M01
      * tag det/imposto/COFINS (opcional)
-     * @param string $nItem
-     * @param string $cst
-     * @param string $vBC
-     * @param string $pCOFINS
-     * @param string $vCOFINS
-     * @param string $qBCProd
-     * @param string $vAliqProd
+     *
+     * @param  string $nItem
+     * @param  string $cst
+     * @param  string $vBC
+     * @param  string $pCOFINS
+     * @param  string $vCOFINS
+     * @param  string $qBCProd
+     * @param  string $vAliqProd
      * @return DOMElement
      */
     public function tagCOFINS(
@@ -2674,7 +2887,9 @@ class MakeNFe extends BaseMake
                 break;
         }
         $confins = $this->dom->createElement('COFINS');
-        $confins->appendChild($confinsItem);
+        if (isset($confinsItem)) {
+            $confins->appendChild($confinsItem);
+        }
         $this->aCOFINS[$nItem] = $confins;
         return $confins;
     }
@@ -2683,12 +2898,13 @@ class MakeNFe extends BaseMake
      * tagCOFINSST
      * Grupo COFINS Substituição Tributária T01 pai M01
      * tag NFe/infNFe/det[]/imposto/COFINSST (opcional)
-     * @param string $nItem
-     * @param string $vBC
-     * @param string $pCOFINS
-     * @param string $qBCProd
-     * @param string $vAliqProd
-     * @param string $vCOFINS
+     *
+     * @param  string $nItem
+     * @param  string $vBC
+     * @param  string $pCOFINS
+     * @param  string $qBCProd
+     * @param  string $vAliqProd
+     * @param  string $vCOFINS
      * @return DOMElement
      */
     public function tagCOFINSST(
@@ -2713,23 +2929,24 @@ class MakeNFe extends BaseMake
      * tagISSQN
      * Grupo ISSQN U01 pai M01
      * tag NFe/infNFe/det[]/imposto/ISSQN (opcional)
-     * @param string $nItem
-     * @param string $vBC
-     * @param string $vAliq
-     * @param string $vISSQN
-     * @param string $cMunFG
-     * @param string $cListServ
-     * @param string $vDeducao
-     * @param string $vOutro
-     * @param string $vDescIncond
-     * @param string $vDescCond
-     * @param string $vISSRet
-     * @param string $indISS
-     * @param string $cServico
-     * @param string $cMun
-     * @param string $cPais
-     * @param string $nProcesso
-     * @param string $indIncentivo
+     *
+     * @param  string $nItem
+     * @param  string $vBC
+     * @param  string $vAliq
+     * @param  string $vISSQN
+     * @param  string $cMunFG
+     * @param  string $cListServ
+     * @param  string $vDeducao
+     * @param  string $vOutro
+     * @param  string $vDescIncond
+     * @param  string $vDescCond
+     * @param  string $vISSRet
+     * @param  string $indISS
+     * @param  string $cServico
+     * @param  string $cMun
+     * @param  string $cPais
+     * @param  string $nProcesso
+     * @param  string $indIncentivo
      * @return DOMElement
      */
     public function tagISSQN(
@@ -2794,8 +3011,9 @@ class MakeNFe extends BaseMake
      * tagimpostoDevol
      * Informação do Imposto devolvido U50 pai H01
      * tag NFe/infNFe/det[]/impostoDevol (opcional)
-     * @param string $pDevol
-     * @param string $vIPIDevol
+     *
+     * @param  string $pDevol
+     * @param  string $vIPIDevol
      * @return DOMElement
      */
     public function tagimpostoDevol($nItem = '', $pDevol = '', $vIPIDevol = '')
@@ -2825,22 +3043,23 @@ class MakeNFe extends BaseMake
      * tagICMSTot
      * Grupo Totais referentes ao ICMS W02 pai W01
      * tag NFe/infNFe/total/ICMSTot
-     * @param string $vBC
-     * @param string $vICMS
-     * @param string $vICMSDeson
-     * @param string $vBCST
-     * @param string $vST
-     * @param string $vProd
-     * @param string $vFrete
-     * @param string $vSeg
-     * @param string $vDesc
-     * @param string $vII
-     * @param string $vIPI
-     * @param string $vPIS
-     * @param string $vCOFINS
-     * @param string $vOutro
-     * @param string $vNF
-     * @param string $vTotTrib
+     *
+     * @param  string $vBC
+     * @param  string $vICMS
+     * @param  string $vICMSDeson
+     * @param  string $vBCST
+     * @param  string $vST
+     * @param  string $vProd
+     * @param  string $vFrete
+     * @param  string $vSeg
+     * @param  string $vDesc
+     * @param  string $vII
+     * @param  string $vIPI
+     * @param  string $vPIS
+     * @param  string $vCOFINS
+     * @param  string $vOutro
+     * @param  string $vNF
+     * @param  string $vTotTrib
      * @return DOMElement
      */
     public function tagICMSTot(
@@ -2866,9 +3085,12 @@ class MakeNFe extends BaseMake
         $this->dom->addChild($ICMSTot, "vBC", $vBC, true, "Base de Cálculo do ICMS");
         $this->dom->addChild($ICMSTot, "vICMS", $vICMS, true, "Valor Total do ICMS");
         $this->dom->addChild($ICMSTot, "vICMSDeson", $vICMSDeson, true, "Valor Total do ICMS desonerado");
+        $this->dom->addChild($ICMSTot, "vFCPUFDest", $this->aTotICMSUFDest['vFCPUFDest'], false, "Valor total do ICMS relativo ao Fundo de Combate à Pobreza(FCP) para a UF de destino");
+        $this->dom->addChild($ICMSTot, "vICMSUFDest", $this->aTotICMSUFDest['vICMSUFDest'], false, "Valor total do ICMS de partilha para a UF do destinatário");
+        $this->dom->addChild($ICMSTot, "vICMSUFRemet", $this->aTotICMSUFDest['vICMSUFRemet'], false, "Valor total do ICMS de partilha para a UF do remetente");
         $this->dom->addChild($ICMSTot, "vBCST", $vBCST, true, "Base de Cálculo do ICMS ST");
         $this->dom->addChild($ICMSTot, "vST", $vST, true, "Valor Total do ICMS ST");
-        $this->dom->addChild($ICMSTot, "vProd", $vProd, true, "Valor Total dos produtos e servi�os");
+        $this->dom->addChild($ICMSTot, "vProd", $vProd, true, "Valor Total dos produtos e serviços");
         $this->dom->addChild($ICMSTot, "vFrete", $vFrete, true, "Valor Total do Frete");
         $this->dom->addChild($ICMSTot, "vSeg", $vSeg, true, "Valor Total do Seguro");
         $this->dom->addChild($ICMSTot, "vDesc", $vDesc, true, "Valor Total do Desconto");
@@ -2893,23 +3115,24 @@ class MakeNFe extends BaseMake
      * tagISSQNTot
      * Grupo Totais referentes ao ISSQN W17 pai W01
      * tag NFe/infNFe/total/ISSQNTot (opcional)
-     * @param string $vServ
-     * @param string $vBC
-     * @param string $vISS
-     * @param string $vPIS
-     * @param string $vCOFINS
-     * @param string $dCompet
-     * @param string $vDeducao
-     * @param string $vOutro
-     * @param string $vDescIncond
-     * @param string $vDescCond
-     * @param string $vISSRet
-     * @param string $cRegTrib
-     * @param string $vOutro
-     * @param string $vDescIncond
-     * @param string $vDescCond
-     * @param string $vISSRet
-     * @param string $cRegTrib
+     *
+     * @param  string $vServ
+     * @param  string $vBC
+     * @param  string $vISS
+     * @param  string $vPIS
+     * @param  string $vCOFINS
+     * @param  string $dCompet
+     * @param  string $vDeducao
+     * @param  string $vOutro
+     * @param  string $vDescIncond
+     * @param  string $vDescCond
+     * @param  string $vISSRet
+     * @param  string $cRegTrib
+     * @param  string $vOutro
+     * @param  string $vDescIncond
+     * @param  string $vDescCond
+     * @param  string $vISSRet
+     * @param  string $cRegTrib
      * @return DOMElement
      */
     public function tagISSQNTot(
@@ -3020,13 +3243,14 @@ class MakeNFe extends BaseMake
      * tagretTrib
      * Grupo Retenções de Tributos W23 pai W01
      * tag NFe/infNFe/total/reTrib (opcional)
-     * @param string $vRetPIS
-     * @param string $vRetCOFINS
-     * @param string $vRetCSLL
-     * @param string $vBCIRRF
-     * @param string $vIRRF
-     * @param string $vBCRetPrev
-     * @param string $vRetPrev
+     *
+     * @param  string $vRetPIS
+     * @param  string $vRetCOFINS
+     * @param  string $vRetCSLL
+     * @param  string $vBCIRRF
+     * @param  string $vIRRF
+     * @param  string $vBCRetPrev
+     * @param  string $vRetPrev
      * @return DOMElement
      */
     public function tagretTrib(
@@ -3096,7 +3320,8 @@ class MakeNFe extends BaseMake
      * tagtransp
      * Grupo Informações do Transporte X01 pai A01
      * tag NFe/infNFe/transp (obrigatório)
-     * @param string $modFrete
+     *
+     * @param  string $modFrete
      * @return DOMElement
      */
     public function tagtransp($modFrete = '')
@@ -3110,13 +3335,14 @@ class MakeNFe extends BaseMake
      * tagtransporta
      * Grupo Transportador X03 pai X01
      * tag NFe/infNFe/transp/tranporta (opcional)
-     * @param string $numCNPJ
-     * @param string $numCPF
-     * @param string $xNome
-     * @param string $numIE
-     * @param string $xEnder
-     * @param string $xMun
-     * @param string $siglaUF
+     *
+     * @param  string $numCNPJ
+     * @param  string $numCPF
+     * @param  string $xNome
+     * @param  string $numIE
+     * @param  string $xEnder
+     * @param  string $xMun
+     * @param  string $siglaUF
      * @return DOMElement
      */
     public function tagtransporta(
@@ -3144,9 +3370,10 @@ class MakeNFe extends BaseMake
      * tagveicTransp
      * Grupo Veículo Transporte X18 pai X17.1
      * tag NFe/infNFe/transp/veicTransp (opcional)
-     * @param string $placa
-     * @param string $siglaUF
-     * @param string $rntc
+     *
+     * @param  string $placa
+     * @param  string $siglaUF
+     * @param  string $rntc
      * @return DOMElement
      */
     public function tagveicTransp(
@@ -3172,11 +3399,12 @@ class MakeNFe extends BaseMake
      * tagreboque
      * Grupo Reboque X22 pai X17.1
      * tag NFe/infNFe/transp/reboque (opcional)
-     * @param string $placa
-     * @param string $siglaUF
-     * @param string $rntc
-     * @param string $vagao
-     * @param string $balsa
+     *
+     * @param  string $placa
+     * @param  string $siglaUF
+     * @param  string $rntc
+     * @param  string $vagao
+     * @param  string $balsa
      * @return DOMElement
      */
     public function tagreboque(
@@ -3207,12 +3435,13 @@ class MakeNFe extends BaseMake
      * tagretTransp
      * Grupo Retenção ICMS transporte X11 pai X01
      * tag NFe/infNFe/transp/retTransp (opcional)
-     * @param string $vServ
-     * @param string $vBCRet
-     * @param string $pICMSRet
-     * @param string $vICMSRet
-     * @param string $cfop
-     * @param string $cMunFG
+     *
+     * @param  string $vServ
+     * @param  string $vBCRet
+     * @param  string $pICMSRet
+     * @param  string $vICMSRet
+     * @param  string $cfop
+     * @param  string $cMunFG
      * @return DOMElement
      */
     public function tagretTransp(
@@ -3244,13 +3473,14 @@ class MakeNFe extends BaseMake
      * tagvol
      * Grupo Volumes X26 pai X01
      * tag NFe/infNFe/transp/vol (opcional)
-     * @param string $qVol
-     * @param string $esp
-     * @param string $marca
-     * @param string $nVol
-     * @param string $pesoL
-     * @param string $pesoB
-     * @param array $aLacres
+     *
+     * @param  string $qVol
+     * @param  string $esp
+     * @param  string $marca
+     * @param  string $nVol
+     * @param  string $pesoL
+     * @param  string $pesoB
+     * @param  array  $aLacres
      * @return DOMElement
      */
     public function tagvol(
@@ -3286,10 +3516,11 @@ class MakeNFe extends BaseMake
      * tagfat
      * Grupo Fatura Y02 pai Y01
      * tag NFe/infNFe/cobr/fat (opcional)
-     * @param string $nFat
-     * @param string $vOrig
-     * @param string $vDesc
-     * @param string $vLiq
+     *
+     * @param  string $nFat
+     * @param  string $vOrig
+     * @param  string $vDesc
+     * @param  string $vLiq
      * @return DOMElement
      */
     public function tagfat(
@@ -3313,9 +3544,10 @@ class MakeNFe extends BaseMake
      * Grupo Duplicata Y07 pai Y02
      * tag NFe/infNFe/cobr/fat/dup (opcional)
      * É necessário criar a tag fat antes de criar as duplicatas
-     * @param string $nDup
-     * @param string $dVenc
-     * @param string $vDup
+     *
+     * @param  string $nDup
+     * @param  string $dVenc
+     * @param  string $vDup
      * @return DOMElement
      */
     public function tagdup(
@@ -3337,38 +3569,50 @@ class MakeNFe extends BaseMake
      * tagpag
      * Grupo de Formas de Pagamento YA01 pai A01
      * tag NFe/infNFe/pag (opcional)
-     * Apenas par amodelo 65 NFCe
-     * @param string $tPag
-     * @param string $vPag
+     * Apenas para o modelo 65 NFCe
+     *
+     * @param  string $tPag
+     * @param  string $vPag
      * @return DOMElement
      */
     public function tagpag(
         $tPag = '',
         $vPag = ''
     ) {
-        $this->pag = $this->dom->createElement("pag");
-        $this->dom->addChild($this->pag, "tPag", $tPag, true, "Forma de pagamento");
-        $this->dom->addChild($this->pag, "vPag", $vPag, true, "Valor do Pagamento");
-        return $this->pag;
+        $num = $this->zTagPag();
+        $pag = $this->dom->createElement("pag");
+        $this->dom->addChild($this->aPag[$num-1], "tPag", $tPag, true, "Forma de pagamento");
+        $this->dom->addChild($this->aPag[$num-1], "vPag", $vPag, true, "Valor do Pagamento");
+        return $pag;
     }
     
     /**
      * tagcard
      * Grupo de Cartões YA04 pai YA01
      * tag NFe/infNFe/pag/card
-     * @param string $cnpj
-     * @param string $tBand
-     * @param string $cAut
+     *
+     * @param  string $tpintrega
+     * @param  string $cnpj
+     * @param  string $tBand
+     * @param  string $cAut
      * @return DOMElement
      */
     public function tagcard(
         $cnpj = '',
         $tBand = '',
-        $cAut = ''
+        $cAut = '',
+        $tpIntegra = ''
     ) {
         //apenas para modelo 65
         if ($this->mod == '65' && $tBand != '') {
             $card = $this->dom->createElement("card");
+            $this->dom->addChild(
+                $card,
+                "tpIntegra",
+                $tpIntegra,
+                false,
+                "Tipo de Integração para pagamento"
+            );
             $this->dom->addChild(
                 $card,
                 "CNPJ",
@@ -3390,7 +3634,7 @@ class MakeNFe extends BaseMake
                 true,
                 "Número de autorização da operação cartão de crédito e/ou débito"
             );
-            $this->dom->appChild($this->pag, $card, '');
+            $this->dom->appChild($this->aPag[count($this->aPag)-1], $card, '');
             return $card;
         }
     }
@@ -3399,8 +3643,9 @@ class MakeNFe extends BaseMake
      * taginfAdic
      * Grupo de Informações Adicionais Z01 pai A01
      * tag NFe/infNFe/infAdic (opcional)
-     * @param string $infAdFisco
-     * @param string $infCpl
+     *
+     * @param  string $infAdFisco
+     * @param  string $infCpl
      * @return DOMElement
      */
     public function taginfAdic(
@@ -3430,8 +3675,9 @@ class MakeNFe extends BaseMake
      * Grupo Campo de uso livre do contribuinte Z04 pai Z01
      * tag NFe/infNFe/infAdic/obsCont (opcional)
      * O método taginfAdic deve ter sido carregado antes
-     * @param string $xCampo
-     * @param string $xTexto
+     *
+     * @param  string $xCampo
+     * @param  string $xTexto
      * @return DOMElement
      */
     public function tagobsCont(
@@ -3452,8 +3698,9 @@ class MakeNFe extends BaseMake
      * Grupo Campo de uso livre do Fisco Z07 pai Z01
      * tag NFe/infNFe/infAdic/obsFisco (opcional)
      * O método taginfAdic deve ter sido carregado antes
-     * @param string $xCampo
-     * @param string $xTexto
+     *
+     * @param  string $xCampo
+     * @param  string $xTexto
      * @return DOMElement
      */
     public function tagobsFisco(
@@ -3474,8 +3721,9 @@ class MakeNFe extends BaseMake
      * Grupo Processo referenciado Z10 pai Z01 (NT2012.003)
      * tag NFe/infNFe/procRef (opcional)
      * O método taginfAdic deve ter sido carregado antes
-     * @param string $nProc
-     * @param string $indProc
+     *
+     * @param  string $nProc
+     * @param  string $indProc
      * @return DOMElement
      */
     public function tagprocRef(
@@ -3495,9 +3743,10 @@ class MakeNFe extends BaseMake
      * tagexporta
      * Grupo Exportação ZA01 pai A01
      * tag NFe/infNFe/exporta (opcional)
-     * @param string $ufSaidaPais
-     * @param string $xLocExporta
-     * @param string $xLocDespacho
+     *
+     * @param  string $ufSaidaPais
+     * @param  string $xLocExporta
+     * @param  string $xLocDespacho
      * @return DOMElement
      */
     public function tagexporta(
@@ -3528,9 +3777,10 @@ class MakeNFe extends BaseMake
      * tagcompra
      * Grupo Compra ZB01 pai A01
      * tag NFe/infNFe/compra (opcional)
-     * @param string $xNEmp
-     * @param string $xPed
-     * @param string $xCont
+     *
+     * @param  string $xNEmp
+     * @param  string $xPed
+     * @param  string $xCont
      * @return DOMElement
      */
     public function tagcompra(
@@ -3549,8 +3799,9 @@ class MakeNFe extends BaseMake
      * tagcana
      * Grupo Cana ZC01 pai A01
      * tag NFe/infNFe/cana (opcional)
-     * @param string $safra
-     * @param string $ref
+     *
+     * @param  string $safra
+     * @param  string $ref
      * @return DOMELEment
      */
     public function tagcana(
@@ -3567,11 +3818,12 @@ class MakeNFe extends BaseMake
      * tagforDia
      * Grupo Fornecimento diário de cana ZC04 pai ZC01
      * tag NFe/infNFe/cana/forDia
-     * @param string $dia
-     * @param string $qtde
-     * @param string $qTotMes
-     * @param string $qTotAnt
-     * @param string $qTotGer
+     *
+     * @param  string $dia
+     * @param  string $qtde
+     * @param  string $qTotMes
+     * @param  string $qTotAnt
+     * @param  string $qTotGer
      * @return DOMElement
      */
     public function tagforDia(
@@ -3596,11 +3848,12 @@ class MakeNFe extends BaseMake
      * tagdeduc
      * Grupo Deduções – Taxas e Contribuições ZC10 pai ZC01
      * tag NFe/infNFe/cana/deduc (opcional)
-     * @param string $xDed
-     * @param string $vDed
-     * @param string $vFor
-     * @param string $vTotDed
-     * @param string $vLiqFor
+     *
+     * @param  string $xDed
+     * @param  string $vDed
+     * @param  string $vFor
+     * @param  string $vTotDed
+     * @param  string $vLiqFor
      * @return DOMElement
      */
     public function tagdeduc(
@@ -3626,6 +3879,7 @@ class MakeNFe extends BaseMake
      * Tag raiz da NFe
      * tag NFe DOMNode
      * Função chamada pelo método [ monta ]
+     *
      * @return DOMElement
      */
     private function zTagNFe()
@@ -3642,7 +3896,7 @@ class MakeNFe extends BaseMake
      * Informação de Documentos Fiscais referenciados BA01 pai B01
      * tag NFe/infNFe/ide/NFref
      * Podem ser criados até 500 desses Nodes por NFe
-     * Função chamada pelos métodos 
+     * Função chamada pelos métodos
      * [tagrefNFe] [tagrefNF] [tagrefNFP]  [tagCTeref] [tagrefECF]
      */
     private function zTagNFref()
@@ -3652,9 +3906,25 @@ class MakeNFe extends BaseMake
     }
     
     /**
+     * zTagPag
+     * Informação de pagamentos
+     * tag NFe/infNFe/pag
+     * Podem ser criados até 100 desses Nodes por NFe
+     * Função chamada pelo método [tagPag]
+     *
+     * @return total registros
+     */
+    private function zTagPag()
+    {
+        $this->aPag[] = $this->dom->createElement("pag");
+        return count($this->aPag);
+    }
+    
+    /**
      * zTagImp
      * Insere dentro dentro das tags imposto o ICMS IPI II PIS COFINS ISSQN
      * tag NFe/infNFe/det[]/imposto
+     *
      * @return void
      */
     private function zTagImp()
@@ -3669,6 +3939,9 @@ class MakeNFe extends BaseMake
             if (!empty($this->aII[$nItem])) {
                 $this->dom->appChild($imposto, $this->aII[$nItem], "Inclusão do node II");
             }
+            if (!empty($this->aISSQN[$nItem])) {
+                $this->dom->appChild($imposto, $this->aISSQN[$nItem], "Inclusão do node ISSQN");
+            }
             if (!empty($this->aPIS[$nItem])) {
                 $this->dom->appChild($imposto, $this->aPIS[$nItem], "Inclusão do node PIS");
             }
@@ -3681,8 +3954,8 @@ class MakeNFe extends BaseMake
             if (!empty($this->aCOFINSST[$nItem])) {
                 $this->dom->appChild($imposto, $this->aCOFINSST[$nItem], "Inclusão do node COFINSST");
             }
-            if (!empty($this->aISSQN[$nItem])) {
-                $this->dom->appChild($imposto, $this->aISSQN[$nItem], "Inclusão do node ISSQN");
+            if (!empty($this->aICMSUFDest[$nItem])) {
+                $this->dom->appChild($imposto, $this->aICMSUFDest[$nItem], "Inclusão do node ICMSUFDest");
             }
             $this->aImposto[$nItem] = $imposto;
         }
@@ -3693,10 +3966,11 @@ class MakeNFe extends BaseMake
      * Grupo COFINS tributado pela alíquota S02 pai S01
      * tag det/imposto/COFINS/COFINSAliq (opcional)
      * Função chamada pelo método [ tagCOFINS ]
-     * @param string $cst
-     * @param string $vBC
-     * @param string $pCOFINS
-     * @param string $vCOFINS
+     *
+     * @param  string $cst
+     * @param  string $vBC
+     * @param  string $pCOFINS
+     * @param  string $vCOFINS
      * @return DOMElement
      */
     private function zTagCOFINSAliq($cst = '', $vBC = '', $pCOFINS = '', $vCOFINS = '')
@@ -3714,7 +3988,8 @@ class MakeNFe extends BaseMake
      * Grupo COFINS não tributado S04 pai S01
      * tag NFe/infNFe/det[]/imposto/COFINS/COFINSNT (opcional)
      * Função chamada pelo método [ tagCOFINS ]
-     * @param string $cst
+     *
+     * @param  string $cst
      * @return DOMElement
      */
     private function zTagCOFINSNT($cst = '')
@@ -3729,12 +4004,13 @@ class MakeNFe extends BaseMake
      * Grupo COFINS Outras Operações S05 pai S01
      * tag NFe/infNFe/det[]/imposto/COFINS/COFINSoutr (opcional)
      * Função chamada pelo método [ tagCOFINS ]
-     * @param string $cst
-     * @param string $vBC
-     * @param string $pCOFINS
-     * @param string $qBCProd
-     * @param string $vAliqProd
-     * @param string $vCOFINS
+     *
+     * @param  string $cst
+     * @param  string $vBC
+     * @param  string $pCOFINS
+     * @param  string $qBCProd
+     * @param  string $vAliqProd
+     * @param  string $vCOFINS
      * @return DOMElement
      */
     private function zTagCOFINSoutr($cst = '', $vBC = '', $pCOFINS = '', $qBCProd = '', $vAliqProd = '', $vCOFINS = '')
@@ -3763,6 +4039,19 @@ class MakeNFe extends BaseMake
             foreach ($this->aNVE as $nItem => $nve) {
                 $prod = $this->aProd[$nItem];
                 foreach ($nve as $child) {
+                    $node = $prod->getElementsByTagName("EXTIPI")->item(0);
+                    if (empty($node)) {
+                        $node = $prod->getElementsByTagName("CFOP")->item(0);
+                    }
+                    $prod->insertBefore($child, $node);
+                }
+            }
+        }
+        //insere CEST
+        if (! empty($this->aCest)) {
+            foreach ($this->aCest as $nItem => $cest) {
+                $prod = $this->aProd[$nItem];
+                foreach ($cest as $child) {
                     $node = $prod->getElementsByTagName("EXTIPI")->item(0);
                     if (empty($node)) {
                         $node = $prod->getElementsByTagName("CFOP")->item(0);
@@ -3822,6 +4111,12 @@ class MakeNFe extends BaseMake
         if (!empty($this->aComb)) {
             foreach ($this->aComb as $nItem => $child) {
                 $prod = $this->aProd[$nItem];
+                if (! empty($this->aEncerrante)) {
+                    $encerrante = $this->aEncerrante[$nItem];
+                    if (! empty($encerrante)) {
+                        $this->dom->appChild($child, $encerrante, "inclusão do node encerrante na tag comb");
+                    }
+                }
                 $this->dom->appChild($prod, $child, "Inclusão do node combustivel");
                 $this->aProd[$nItem] = $prod;
             }
@@ -3871,13 +4166,20 @@ class MakeNFe extends BaseMake
         if (empty($this->total)) {
             $this->total = $this->dom->createElement("total");
         }
+        //ajuste de digitos dos campos totalizados
+        if ($this->aTotICMSUFDest['vICMSUFDest'] != '') {
+            $this->aTotICMSUFDest['vICMSUFDest'] = number_format($this->aTotICMSUFDest['vICMSUFDest'], 2, '.', '');
+            $this->aTotICMSUFDest['vICMSUFRemet'] = number_format($this->aTotICMSUFDest['vICMSUFRemet'], 2, '.', '');
+            $this->aTotICMSUFDest['vFCPUFDest'] = number_format($this->aTotICMSUFDest['vFCPUFDest'], 2, '.', '');
+        }
     }
     
     /**
      * zTaglacres
      * Grupo Lacres X33 pai X26
      * tag NFe/infNFe/transp/vol/lacres (opcional)
-     * @param string $nLacre
+     *
+     * @param  string $nLacre
      * @return DOMElement
      */
     protected function zTaglacres($nLacre = '')
@@ -3904,9 +4206,9 @@ class MakeNFe extends BaseMake
      * zTaginfAdic
      * Grupo de Informações Adicionais Z01 pai A01
      * tag NFe/infNFe/infAdic (opcional)
-     * Função chamada pelos metodos 
+     * Função chamada pelos metodos
      * [taginfAdic] [tagobsCont] [tagobsFisco] [tagprocRef]
-     * 
+     *
      * @return DOMElement
      */
     private function zTaginfAdic()
@@ -3922,6 +4224,7 @@ class MakeNFe extends BaseMake
      * Remonta a chave da NFe de 44 digitos com base em seus dados
      * Isso é útil no caso da chave informada estar errada
      * se a chave estiver errada a mesma é substituida
+     *
      * @param object $dom
      */
     private function zTestaChaveXML($dom)

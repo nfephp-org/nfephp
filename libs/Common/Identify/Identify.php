@@ -4,12 +4,13 @@ namespace NFePHP\Common\Identify;
 
 /**
  * Classe auxiliar para a identificação dos documentos eletrônicos
- * @category   NFePHP
- * @package    NFePHP\Common\Identify
- * @copyright  Copyright (c) 2008-2015
- * @license    http://www.gnu.org/licenses/lesser.html LGPL v3
- * @author     Roberto L. Machado <linux.rlm at gmail dot com>
- * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
+ *
+ * @category  NFePHP
+ * @package   NFePHP\Common\Identify
+ * @copyright Copyright (c) 2008-2015
+ * @license   http://www.gnu.org/licenses/lesser.html LGPL v3
+ * @author    Roberto L. Machado <linux.rlm at gmail dot com>
+ * @link      http://github.com/nfephp-org/nfephp for the canonical source repository
  */
 
 use NFePHP\Common\Dom\Dom;
@@ -20,12 +21,14 @@ class Identify
     /**
      * Lista com a identificação das TAGs principais que identificam o documento
      * e o respectivo arquivo xsd
-     * @var array 
+     *
+     * @var array
      */
     protected static $schemesId = array();
     
     /**
      * setListSchemesId
+     *
      * @param array $aList
      */
     public static function setListSchemesId($aList = array())
@@ -37,8 +40,9 @@ class Identify
     
     /**
      * identificacao
-     * Identifica o documento 
-     * @param type $xml
+     * Identifica o documento
+     *
+     * @param  type $xml
      * @return string
      */
     public static function identificacao($xml = '', &$aResp = array())
@@ -85,7 +89,8 @@ class Identify
     
     /**
      * zSearchNode
-     * @param DOMDocument $dom
+     *
+     * @param  DOMDocument $dom
      * @return string
      */
     protected static function zSearchNode($dom, &$key)

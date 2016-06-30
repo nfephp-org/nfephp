@@ -4,13 +4,13 @@ namespace NFePHP\Common\Base;
 
 /**
  * Classe base para o envio de emails tanto para NFe, NFCe, CTe e MDFe
- *  
- * @category   NFePHP
- * @package    NFePHP\Common\Base\BaseMail
- * @copyright  Copyright (c) 2008-2015
- * @license    http://www.gnu.org/licenses/lesser.html LGPL v3
- * @author     Roberto L. Machado <linux.rlm at gmail dot com>
- * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
+ *
+ * @category  NFePHP
+ * @package   NFePHP\Common\Base\BaseMail
+ * @copyright Copyright (c) 2008-2015
+ * @license   http://www.gnu.org/licenses/lesser.html LGPL v3
+ * @author    Roberto L. Machado <linux.rlm at gmail dot com>
+ * @link      http://github.com/nfephp-org/nfephp for the canonical source repository
  */
 
 use Zend\Mail\Message;
@@ -28,16 +28,42 @@ if (!defined('NFEPHP_ROOT')) {
 
 class BaseMail
 {
+    /**
+     * $template
+     *
+     * @var string
+     */
     protected $template = '';
+    /**
+     * $aMailConf
+     *
+     * @var array
+     */
     protected $aMailConf = array();
+    /**
+     * $transport
+     *
+     * @var Zend\Mail\Transport\Smtp
+     */
     protected $transport = '';
+    /**
+     * $aAttachments
+     *
+     * @var array
+     */
     protected $aAttachments = array();
+    /**
+     * $content
+     *
+     * @var Zend\Mime\Message
+     */
     protected $content = '';
     
     /**
      * __construct
      * Método construtor configura o transporte do email
-     * @param type $aMailConf
+     *
+     * @param  type $aMailConf
      * @throws Exception\InvalidArgumentException
      */
     public function __construct($aMailConf = array())
@@ -50,7 +76,7 @@ class BaseMail
         //configura a forma de transporte no envio dos emails
         $aMuser = explode('@', $this->aMailConf['mailUser']);
         $domain = $aMuser[1];
-        
+        $connConfig = array();
         $connConfig['username'] = $this->aMailConf['mailUser'];
         $connConfig['password'] = $this->aMailConf['mailPass'];
         if ($this->aMailConf['mailProtocol'] != '') {
@@ -72,6 +98,7 @@ class BaseMail
     /**
      * setTemplate
      * Carrega o arquivo html do template do email em um parametro da classe
+     *
      * @param type $pathFile
      */
     public function setTemplate($pathFile = '')
@@ -83,6 +110,7 @@ class BaseMail
     
     /**
      * addAttachment
+     *
      * @param string $pathFile
      * @param string $filename
      */
@@ -101,6 +129,7 @@ class BaseMail
    
     /**
      * buildMessage
+     *
      * @param string $msgHtml
      * @param string $msgTxt
      */
@@ -122,8 +151,9 @@ class BaseMail
 
     /**
      * sendMail
+     *
      * @param string $subject
-     * @param array $aMail
+     * @param array  $aMail
      */
     public function sendMail($subject = '', $aMail = array())
     {
@@ -154,7 +184,6 @@ class BaseMail
         $message->setBody($body);
         $message->getHeaders()->get('content-type')->setType($messageType);
         //enviar
-        $this->transport->send($message);
         try {
             $this->transport->send($message);
         } catch (\Zend\Mail\Protocol\Exception\RuntimeException $e) {
@@ -165,10 +194,11 @@ class BaseMail
     
     /**
      * zRemakeFilename
-     * Caso não seja passado um nome de arquivo então 
+     * Caso não seja passado um nome de arquivo então
      * pega o nome do arquivo do path
-     * @param string $pathFile
-     * @param string $filename
+     *
+     * @param  string $pathFile
+     * @param  string $filename
      * @return string
      */
     private static function zRemakeFilename($pathFile = '', $filename = '')

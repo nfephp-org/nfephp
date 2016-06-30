@@ -262,9 +262,9 @@ VURh6kJDAMVhhB5URXSnHhuGrKGi
         $pathCerts = '';
         $ignoreValidCert = true;
         $pkcs = new Pkcs12($pathCerts, $cnpj, $this->pubPem, $this->priPem, '', $ignoreValidCert);
-        $xmlpath = dirname(dirname(dirname(__FILE__))) . '/fixtures/xml/35101158716523000119550010000000011003000000-nfe.xml';
+        $xmlpath = dirname(dirname(dirname(__FILE__))) . '/fixtures/xml/NFe/35101158716523000119550010000000011003000000-nfe.xml';
         $docxml = file_get_contents($xmlpath);
-        $signedxmlpath = dirname(dirname(dirname(__FILE__))) . '/fixtures/xml/signed-nfe.xml';
+        $signedxmlpath = dirname(dirname(dirname(__FILE__))) . '/fixtures/xml/NFe/signed-nfe.xml';
         $docsigned= file_get_contents($signedxmlpath);
         $doc = $pkcs->signXML($docxml, 'infNFe');
         $this->assertEquals($doc, $docsigned);
@@ -274,7 +274,7 @@ VURh6kJDAMVhhB5URXSnHhuGrKGi
     {
         $cnpj = '99999090910270';
         $pkcs = new Pkcs12('', $cnpj, '', '', '', true);
-        $signedxmlpath = dirname(dirname(dirname(__FILE__))) . '/fixtures/xml/signed-nfe.xml';
+        $signedxmlpath = dirname(dirname(dirname(__FILE__))) . '/fixtures/xml/NFe/signed-nfe.xml';
         $ret = $pkcs->verifySignature($signedxmlpath, 'infNFe');
         $this->assertTrue($ret);
     }

@@ -4,22 +4,24 @@ namespace NFePHP\Common\DateTime;
 
 /**
  * Classe auxiliar para tratar datas
- * @category   NFePHP
- * @package    NFePHP\Common\DateTime
- * @copyright  Copyright (c) 2008-2015
- * @license    http://www.gnu.org/licenses/lesser.html LGPL v3
- * @author     Roberto L. Machado <linux.rlm at gmail dot com>
- * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
+ *
+ * @category  NFePHP
+ * @package   NFePHP\Common\DateTime
+ * @copyright Copyright (c) 2008-2015
+ * @license   http://www.gnu.org/licenses/lesser.html LGPL v3
+ * @author    Roberto L. Machado <linux.rlm at gmail dot com>
+ * @link      http://github.com/nfephp-org/nfephp for the canonical source repository
  */
 
 class DateTime
 {
     /**
      * tzdBR
-     * Para esta função funcionar corretamente é importante 
+     * Para esta função funcionar corretamente é importante
      * que os pacotes referentes ao Horario de verão estejam
      * atualizados instalados e ativos no sistema operacional
-     * @param string $siglaUF
+     *
+     * @param  string $siglaUF
      * @return string com o TZD (Time Zone Designator)
      */
     public static function tzdBR($siglaUF = '')
@@ -67,8 +69,8 @@ class DateTime
     /**
      * convertSefazTimeToTimestamp
      * Converte a imformação de data e tempo contida na NFe
-     * 
-     * @param string $DH Informação de data e tempo extraida da NFe
+     *
+     * @param  string $DH Informação de data e tempo extraida da NFe
      * @return timestamp UNIX Para uso com a funçao date do php
      */
     public static function convertSefazTimeToTimestamp($dataHora = '')
@@ -76,6 +78,9 @@ class DateTime
         if ($dataHora == '') {
             return '';
         }
+        //inserido devido a casos de má formação do xml com
+        //TZD +00:00 por exemplo
+        $dataHora = str_replace('+', '-', $dataHora);
         $aDH = explode('T', $dataHora);
         $adDH = explode('-', $aDH[0]);
         $atDH = array('0','0','0');
@@ -91,13 +96,15 @@ class DateTime
      * convertTimestampToSefazTime
      * Converte um timestamp php em data/hora no formato usado
      * pela SEFAZ 2014-12-17T13:22:33-02:00
-     * @param int $timestamp
+     *
+     * @param  int $timestamp
      * @return string
      */
-    public static function convertTimestampToSefazTime($timestamp = 0)
+    public static function convertTimestampToSefazTime($timestamp = 0, \DateTime $dateTime = null)
     {
         if ($timestamp == 0) {
-            return (string) str_replace(' ', 'T', date('Y-m-d H:i:sP'));
+            return (string) str_replace(' ', 'T', $dateTime->format('Y-m-d H:i:sP'));
+            //return (string) $dateTime->format(\DateTime::W3C);
         }
         return (string) str_replace(' ', 'T', date('Y-m-d H:i:sP', $timestamp));
     }

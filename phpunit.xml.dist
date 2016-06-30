@@ -19,13 +19,15 @@
         <whitelist>
             <directory suffix=".php">./libs</directory>
             <exclude>
-                <directory>./libs/External</directory>
+                <directory>./libs/Extras</directory>
             </exclude>
         </whitelist>
         <blacklist>
             <directory>./vendor</directory>
             <directory>./certs</directory>
             <directory>./config</directory>
+            <directory>./images</directory>
+            <directory>./install</directory>
             <directory>./exemplos</directory>
             <directory>./schemes</directory>
             <directory>./tests</directory>

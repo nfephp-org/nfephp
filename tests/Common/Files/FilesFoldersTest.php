@@ -42,7 +42,7 @@ class FilesFoldersTest extends PHPUnit_Framework_TestCase
     
     /**
      * @expectedException NFePHP\Common\Exception\InvalidArgumentException
-     * @expectedExceptionMessage O diretório não existe!!!
+     * @expectedExceptionMessage O diretório não existe /qualquercoisa !!!
      */
     public function testListDirFail()
     {
@@ -66,5 +66,30 @@ class FilesFoldersTest extends PHPUnit_Framework_TestCase
         $resp = FilesFolders::writeTest($folderBase, 'Test', $respHtml);
         $this->assertTrue($resp);
         $this->assertEquals($htmlStandard, $respHtml);
+    }
+    
+    public function testDeveRetornarAmbienteDeHomologacaoCasoNaoForInformadoNenhumParametro()
+    {
+        $files = new FilesFolders();
+        $this->assertEquals('homologacao', $files->getAmbiente());
+    }
+    
+    
+    /**
+     * @dataProvider ambientes
+     */
+    public function testDeveRetornarSempreAmbienteDeProducaoCasoNaoForInformadoUmParametroValido($ambientes)
+    {
+        $files = new FilesFolders();
+        $this->assertEquals('producao', $files->getAmbiente($ambientes));
+    }
+    
+    public function ambientes()
+    {
+        return array(
+            array('3'),
+            array('4'),
+            array('nenhum ambiente'),
+        );
     }
 }

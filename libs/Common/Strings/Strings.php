@@ -4,12 +4,13 @@ namespace NFePHP\Common\Strings;
 
 /**
  * Classe auxiliar para o tratamento de strings
- * @category   NFePHP
- * @package    NFePHP\Common\Strings
- * @copyright  Copyright (c) 2008-2015
- * @license    http://www.gnu.org/licenses/lesser.html LGPL v3
- * @author     Roberto L. Machado <linux dot rlm at gmail dot com>
- * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
+ *
+ * @category  NFePHP
+ * @package   NFePHP\Common\Strings
+ * @copyright Copyright (c) 2008-2015
+ * @license   http://www.gnu.org/licenses/lesser.html LGPL v3
+ * @author    Roberto L. Machado <linux dot rlm at gmail dot com>
+ * @link      http://github.com/nfephp-org/nfephp for the canonical source repository
  */
 
 class Strings
@@ -17,8 +18,9 @@ class Strings
     /**
      * cleanString
      * Remove todos dos caracteres especiais do texto e os acentos
-     * @param string $texto
-     * @return  string Texto sem caractere especiais
+     *
+     * @param  string $texto
+     * @return string Texto sem caractere especiais
      */
     public static function cleanString($texto = '')
     {
@@ -34,9 +36,10 @@ class Strings
     
     /**
      * clearXml
-     * Remove \r \n \s \t 
-     * @param string $xml
-     * @param boolean $remEnc remover encoding do xml
+     * Remove \r \n \s \t
+     *
+     * @param  string  $xml
+     * @param  boolean $remEnc remover encoding do xml
      * @return string
      */
     public static function clearXml($xml = '', $remEnc = false)
@@ -65,7 +68,8 @@ class Strings
     /**
      * clearProt
      * Limpa o xml após adição do protocolo
-     * @param string $procXML
+     *
+     * @param  string $procXML
      * @return string
      */
     public static function clearProt($procXML = '')
@@ -84,7 +88,8 @@ class Strings
     
     /**
      * clearMsg
-     * @param string $msg
+     *
+     * @param  string $msg
      * @return string
      */
     public static function clearMsg($msg)
