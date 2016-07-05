@@ -416,10 +416,15 @@ class ToolsNFe extends BaseTools
 
     /**
      * addCancelamento
+     *
      * Adiciona a tga de cancelamento a uma NFe já autorizada
-     * NOTA: não é requisito da SEFAZ, mas auxilia na identificação das NFe que foram canceladas
-     * @param string $pathNFefile
-     * @param string $pathCancfile
+     * NOTA: não é requisito da SEFAZ, mas auxilia na identificação 
+     * das NFe que foram canceladas
+     *
+     * @param string $pathNFefile Caminho do arquivo XML autorizado 
+     * da NF-e ou conteúdo do XML em String
+     * @param string $pathCancfile Caminho do arquivo XML do 
+     * protocolo de cancelamento ou conteúdo do XML em String
      * @param bool $saveFile
      * @return string
      * @throws Exception\RuntimeException
@@ -429,7 +434,13 @@ class ToolsNFe extends BaseTools
         $procXML = '';
         //carrega a NFe
         $docnfe = new Dom();
-        $docnfe->loadXMLFile($pathNFefile);
+        if (is_file($pathNFefile)) {
+            //carrega o XML pelo caminho do arquivo informado
+            $docnfe->loadXMLFile($pathNFefile);
+        } else {
+            //carrega o XML pelo conteúdo
+            $docnfe->loadXMLString($pathNFefile);
+        }
         $nodenfe = $docnfe->getNode('NFe', 0);
         if ($nodenfe == '') {
             $msg = "O arquivo indicado como NFe não é um xml de NFe!";
@@ -450,7 +461,13 @@ class ToolsNFe extends BaseTools
         //carrega o cancelamento
         //pode ser um evento ou resultado de uma consulta com multiplos eventos
         $doccanc = new Dom();
-        $doccanc->loadXMLFile($pathCancfile);
+        if (is_file($pathCancfile)) {
+            //carrega o XML pelo caminho do arquivo informado
+            $doccanc->loadXMLFile($pathCancfile);
+        } else {
+            //carrega o XML pelo conteúdo
+            $doccanc->loadXMLString($pathCancfile);
+        }
         $retEvento = $doccanc->getElementsByTagName('retEvento')->item(0);
         $eventos = $retEvento->getElementsByTagName('infEvento');
         foreach ($eventos as $evento) {
