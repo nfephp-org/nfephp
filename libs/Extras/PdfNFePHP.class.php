@@ -164,10 +164,11 @@ class PdfNFePHP extends FPDF
     /**
      * Code128
      * Imprime barcode 128
-     * @package     FPDF
-     * @name        Code128
-     * @version     1.0
-     * @author      Roland Gautier
+     *
+     * @package FPDF
+     * @name    Code128
+     * @version 1.0
+     * @author  Roland Gautier
      */
     public function Code128($x, $y, $code, $w, $h)
     {
@@ -243,13 +244,14 @@ class PdfNFePHP extends FPDF
     /**
      * Rotate
      * Rotaciona para impressão paisagem (landscape)
-     * @package     FPDF
-     * @name        Rotate
-     * @version     1.0
-     * @author      Oliver
-     * @param number $angle
-     * @param number $x
-     * @param number $y
+     *
+     * @package FPDF
+     * @name    Rotate
+     * @version 1.0
+     * @author  Oliver
+     * @param   number $angle
+     * @param   number $x
+     * @param   number $y
      */
     public function Rotate($angle, $x = -1, $y = -1)
     {
@@ -276,17 +278,18 @@ class PdfNFePHP extends FPDF
     /**
      * RoundedRect
      * Desenha um retangulo com cantos arredondados
-     * @package     FPDF
-     * @name        RoundedRect
-     * @version     1.0
-     * @author      Maxime Delorme & Christophe Prugnaud
-     * @param number $x
-     * @param number $y
-     * @param number $w
-     * @param number $h
-     * @param number $r
-     * @param string $corners
-     * @param string $style
+     *
+     * @package FPDF
+     * @name    RoundedRect
+     * @version 1.0
+     * @author  Maxime Delorme & Christophe Prugnaud
+     * @param   number $x
+     * @param   number $y
+     * @param   number $w
+     * @param   number $h
+     * @param   number $r
+     * @param   string $corners
+     * @param   string $style
      */
     public function RoundedRect($x, $y, $w, $h, $r, $corners = '1234', $style = '')
     {
@@ -340,16 +343,17 @@ class PdfNFePHP extends FPDF
     /**
      * _arc
      * Desenha o arco para arredondar o canto do retangulo
-     * @package     FPDF
-     * @name        _arc
-     * @version     1.0
-     * @author      Maxime Delorme & Christophe Prugnaud
-     * @param number $x1
-     * @param number $y1
-     * @param number $x2
-     * @param number $y2
-     * @param number $x3
-     * @param number $y3
+     *
+     * @package FPDF
+     * @name    _arc
+     * @version 1.0
+     * @author  Maxime Delorme & Christophe Prugnaud
+     * @param   number $x1
+     * @param   number $y1
+     * @param   number $x2
+     * @param   number $y2
+     * @param   number $x3
+     * @param   number $y3
      */
     private function _arc($x1, $y1, $x2, $y2, $x3, $y3)
     {
@@ -360,16 +364,17 @@ class PdfNFePHP extends FPDF
     /**
      * DashedRect
      * Desenha um retangulo com linhas tracejadas
-     * @package     FPDF
-     * @name        DashedRect
-     * @version     1.0
-     * @author      Antoine Michéa
-     * @param number $x1
-     * @param number $y1
-     * @param number $x2
-     * @param number $y2
-     * @param number $width
-     * @param number $nb
+     *
+     * @package FPDF
+     * @name    DashedRect
+     * @version 1.0
+     * @author  Antoine Michéa
+     * @param   number $x1
+     * @param   number $y1
+     * @param   number $x2
+     * @param   number $y2
+     * @param   number $width
+     * @param   number $nb
      */
     public function DashedRect($x1, $y1, $x2, $y2, $width = 1, $nb = 15)
     {
@@ -402,16 +407,17 @@ class PdfNFePHP extends FPDF
     /**
      * drawTextBox
      * Monta uma caixa de texto
-     * @package     FPDF
-     * @name        drawTextBox
-     * @version     1.0
-     * @author      Darren Gates & Adrian Tufa
-     * @param string $strText
-     * @param number $w
-     * @param number $h
-     * @param string $align
-     * @param string $valign
-     * @param boolean $border
+     *
+     * @package FPDF
+     * @name    drawTextBox
+     * @version 1.0
+     * @author  Darren Gates & Adrian Tufa
+     * @param   string  $strText
+     * @param   number  $w
+     * @param   number  $h
+     * @param   string  $align
+     * @param   string  $valign
+     * @param   boolean $border
      */
     public function drawTextBox($strText, $w, $h, $align = 'L', $valign = 'T', $border = true)
     {
@@ -439,19 +445,20 @@ class PdfNFePHP extends FPDF
     /**
      * _drawRows
      * Insere linhas de texto na caixa
-     * @package     FPDF
-     * @name        _drawRows
-     * @version     1.0
-     * @author      Darren Gates & Adrian Tufa
-     * @param number $w
-     * @param number $h
-     * @param string $txt
-     * @param string $border
-     * @param string $align
-     * @param boolean $fill
-     * @param number $maxline
-     * @param number $prn
-     * @return int
+     *
+     * @package FPDF
+     * @name    _drawRows
+     * @version 1.0
+     * @author  Darren Gates & Adrian Tufa
+     * @param   number  $w
+     * @param   number  $h
+     * @param   string  $txt
+     * @param   string  $border
+     * @param   string  $align
+     * @param   boolean $fill
+     * @param   number  $maxline
+     * @param   number  $prn
+     * @return  int
      */
     private function _drawRows($w, $h, $txt, $border = 0, $align = 'J', $fill = false, $maxline = 0, $prn = 0)
     {
@@ -580,13 +587,14 @@ class PdfNFePHP extends FPDF
     /**
      * WordWrap
      * Quebra o texto para caber na caixa
-     * @package     FPDF
-     * @name        WordWrap
-     * @version     1.0
-     * @author      Ron Korving
-     * @param type $text
-     * @param type $maxwidth
-     * @return int
+     *
+     * @package FPDF
+     * @name    WordWrap
+     * @version 1.0
+     * @author  Ron Korving
+     * @param   type $text
+     * @param   type $maxwidth
+     * @return  int
      */
     public function WordWrap(&$text, $maxwidth)
     {
@@ -635,20 +643,21 @@ class PdfNFePHP extends FPDF
     /**
      * CellFit
      * Celula com escala horizontal caso o texto seja muito largo
-     * @package     FPDF
-     * @name        CellFit
-     * @version     1.0
-     * @author      Patrick Benny
-     * @param number $w
-     * @param number $h
-     * @param string $txt
-     * @param number $border
-     * @param number $ln
-     * @param string $align
-     * @param boolean $fill
-     * @param string $link
-     * @param boolean $scale
-     * @param boolean $force
+     *
+     * @package FPDF
+     * @name    CellFit
+     * @version 1.0
+     * @author  Patrick Benny
+     * @param   number  $w
+     * @param   number  $h
+     * @param   string  $txt
+     * @param   number  $border
+     * @param   number  $ln
+     * @param   string  $align
+     * @param   boolean $fill
+     * @param   string  $link
+     * @param   boolean $scale
+     * @param   boolean $force
      */
     public function CellFit($w, $h = 0, $txt = '', $border = 0, $ln = 0, $align = '', $fill = false, $link = '', $scale = false, $force = true)
     {
@@ -684,18 +693,19 @@ class PdfNFePHP extends FPDF
     /**
      * CellFitScale
      * Celula com escalamento horizontal somente se necessário
-     * @package     FPDF
-     * @name        CellFitScale
-     * @version     1.0
-     * @author      Patrick Benny
-     * @param number $w
-     * @param number $h
-     * @param string $txt
-     * @param number $border
-     * @param number $ln
-     * @param string $align
-     * @param boolean $fill
-     * @param string $link
+     *
+     * @package FPDF
+     * @name    CellFitScale
+     * @version 1.0
+     * @author  Patrick Benny
+     * @param   number  $w
+     * @param   number  $h
+     * @param   string  $txt
+     * @param   number  $border
+     * @param   number  $ln
+     * @param   string  $align
+     * @param   boolean $fill
+     * @param   string  $link
      */
     public function CellFitScale($w, $h = 0, $txt = '', $border = 0, $ln = 0, $align = '', $fill = false, $link = '')
     {
@@ -705,18 +715,19 @@ class PdfNFePHP extends FPDF
     /**
      * CellFitScaleForce
      * Celula com escalamento forçado
-     * @package     FPDF
-     * @name        CellFitScaleForce
-     * @version     1.0
-     * @author      Patrick Benny
-     * @param number $w
-     * @param number $h
-     * @param string $txt
-     * @param number $border
-     * @param number $ln
-     * @param string $align
-     * @param boolean $fill
-     * @param string $link
+     *
+     * @package FPDF
+     * @name    CellFitScaleForce
+     * @version 1.0
+     * @author  Patrick Benny
+     * @param   number  $w
+     * @param   number  $h
+     * @param   string  $txt
+     * @param   number  $border
+     * @param   number  $ln
+     * @param   string  $align
+     * @param   boolean $fill
+     * @param   string  $link
      */
     public function CellFitScaleForce($w, $h = 0, $txt = '', $border = 0, $ln = 0, $align = '', $fill = false, $link = '')
     {
@@ -726,18 +737,19 @@ class PdfNFePHP extends FPDF
     /**
      * CellFitSpace
      * Celula com espaçamento de caracteres somente se necessário
-     * @package     FPDF
-     * @name        CellFitSpace
-     * @version     1.0
-     * @author      Patrick Benny
-     * @param number $w
-     * @param number $h
-     * @param string $txt
-     * @param number $border
-     * @param number $ln
-     * @param string $align
-     * @param boolean $fill
-     * @param string $link
+     *
+     * @package FPDF
+     * @name    CellFitSpace
+     * @version 1.0
+     * @author  Patrick Benny
+     * @param   number  $w
+     * @param   number  $h
+     * @param   string  $txt
+     * @param   number  $border
+     * @param   number  $ln
+     * @param   string  $align
+     * @param   boolean $fill
+     * @param   string  $link
      */
     public function CellFitSpace($w, $h = 0, $txt = '', $border = 0, $ln = 0, $align = '', $fill = false, $link = '')
     {
@@ -747,18 +759,19 @@ class PdfNFePHP extends FPDF
     /**
      * CellFitSpaceForce
      * Celula com espaçamento de caracteres forçado
-     * @package     FPDF
-     * @name        CellFitSpaceForce
-     * @version     1.0
-     * @author      Patrick Benny
-     * @param number $w
-     * @param number $h
-     * @param string $txt
-     * @param number $border
-     * @param number $ln
-     * @param string $align
-     * @param boolean $fill
-     * @param string $link
+     *
+     * @package FPDF
+     * @name    CellFitSpaceForce
+     * @version 1.0
+     * @author  Patrick Benny
+     * @param   number  $w
+     * @param   number  $h
+     * @param   string  $txt
+     * @param   number  $border
+     * @param   number  $ln
+     * @param   string  $align
+     * @param   boolean $fill
+     * @param   string  $link
      */
     public function CellFitSpaceForce($w, $h = 0, $txt = '', $border = 0, $ln = 0, $align = '', $fill = false, $link = '')
     {
@@ -768,12 +781,13 @@ class PdfNFePHP extends FPDF
     /**
      * _MBGetStringLength
      * Patch para trabalhar com textos de duplo byte CJK
-     * @package     FPDF
-     * @name        _MBGetStringLength
-     * @version     1.0
-     * @author      Patrick Benny
-     * @param string $s
-     * @return int
+     *
+     * @package FPDF
+     * @name    _MBGetStringLength
+     * @version 1.0
+     * @author  Patrick Benny
+     * @param   string $s
+     * @return  int
      */
     private function _MBGetStringLength($s)
     {
@@ -798,16 +812,17 @@ class PdfNFePHP extends FPDF
     /**
      * DashedLine
      * Desenha uma linha horizontal tracejada com o FPDF
+     *
      * @package NFePHP
-     * @name DashedHLine
+     * @name    DashedHLine
      * @version 1.0.1
-     * @author Roberto L. Machado <linux.rlm at gmail dot com>
-     * @param number $x Posição horizontal inicial, em mm
-     * @param number $y Posição vertical inicial, em mm
-     * @param number $w Comprimento da linha, em mm
-     * @param number $h Espessura da linha, em mm
-     * @param number $n Numero de traços na seção da linha com o comprimento $w
-     * @return none
+     * @author  Roberto L. Machado <linux.rlm at gmail dot com>
+     * @param   number $x Posição horizontal inicial, em mm
+     * @param   number $y Posição vertical inicial, em mm
+     * @param   number $w Comprimento da linha, em mm
+     * @param   number $h Espessura da linha, em mm
+     * @param   number $n Numero de traços na seção da linha com o comprimento $w
+     * @return  none
      */
     public function DashedHLine($x, $y, $w, $h, $n)
     {
@@ -824,20 +839,21 @@ class PdfNFePHP extends FPDF
         $this->SetDrawColor(0);
     } //fim função DashedHLine
 
-   /**
+    /**
     * DashedVLine
     * Desenha uma linha vertical tracejada com o FPDF
+    *
     * @package NFePHP
-    * @name DashedVLine
+    * @name    DashedVLine
     * @version 1.0
-    * @author Roberto L. Machado <linux.rlm at gmail dot com>
-    * @author Guilherme Calabria Filho <guiga86 at gmail dot com>
-    * @param number $x Posição horizontal inicial, em mm
-    * @param number $y Posição vertical inicial, em mm
-    * @param number $w Comprimento da linha, em mm
-    * @param number $yfinal Espessura da linha, em mm
-    * @param number $n Numero de traços na seção da linha com o comprimento $w
-    * @return none
+    * @author  Roberto L. Machado <linux.rlm at gmail dot com>
+    * @author  Guilherme Calabria Filho <guiga86 at gmail dot com>
+    * @param   number $x      Posição horizontal inicial, em mm
+    * @param   number $y      Posição vertical inicial, em mm
+    * @param   number $w      Comprimento da linha, em mm
+    * @param   number $yfinal Espessura da linha, em mm
+    * @param   number $n      Numero de traços na seção da linha com o comprimento $w
+    * @return  none
     */
     public function DashedVLine($x, $y, $w, $yfinal, $n)
     {

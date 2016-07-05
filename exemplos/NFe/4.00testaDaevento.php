@@ -5,7 +5,7 @@
  */
 error_reporting(E_ALL);
 ini_set('display_errors', 'On');
-include_once '../../bootstrap.php';
+require_once '../../bootstrap.php';
 
 use NFePHP\Extras\Daevento;
 use NFePHP\Common\Files\FilesFolders;
@@ -26,6 +26,6 @@ $aEnd = array(
 );
 
 $docxml = FilesFolders::readFile($xml);
-$daevento = new Daevento($docxml, 'P', 'A4', '../../images/logo.jpg', 'I','','',$aEnd);
+$daevento = new Daevento($docxml, 'P', 'A4', '../../images/logo.jpg', 'I', '', '', $aEnd);
 $id = $daevento->chNFe . '';
 $teste = $daevento->printDocument($id.'.pdf', 'I');

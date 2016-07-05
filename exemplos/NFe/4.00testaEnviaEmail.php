@@ -2,7 +2,7 @@
 
 error_reporting(E_ALL);
 ini_set('display_errors', 'On');
-include_once '../../bootstrap.php';
+require_once '../../bootstrap.php';
 
 //NOTA: o envio de email com o DANFE somente funciona para modelo 55
 //      o modelo 65 nunca requer o envio do DANFCE por email

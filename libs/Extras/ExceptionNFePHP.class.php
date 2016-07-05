@@ -9,13 +9,12 @@ namespace NFePHP\Extras;
  *
  * @version 1.0.0
  * @package NFePHP
- * @name nfephpException
- *
+ * @name    nfephpException
  */
 
 use Exception;
 
-class nfephpException extends Exception
+class NfephpException extends Exception
 {
     public function errorMessage()
     {

@@ -5,19 +5,17 @@ namespace NFePHP\Extras;
 /**
  * Classe para a impressão em PDF do Docuimento Auxiliar de NFe Consumidor
  *
- * @category   NFePHP
- * @package    NFePHP\NFe\ConvertNFe
- * @copyright  Copyright (c) 2008-2015
- * @license    http://www.gnu.org/licenses/lesser.html LGPL v3
+ * @category  NFePHP
+ * @package   NFePHP\NFe\ConvertNFe
+ * @copyright Copyright (c) 2008-2015
+ * @license   http://www.gnu.org/licenses/lesser.html LGPL v3
  * @author    Roberto Spadim <roberto at spadim dot com dot br>
- * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
+ * @link      http://github.com/nfephp-org/nfephp for the canonical source repository
  *
  * CONTRIBUIDORES (por ordem alfabetica):
  *            Roberto L. Machado <linux dot rlm at gmail dot com>
  *            Mario Almeida <mario at grupopmz dot com dot br>
  */
-
-
 
 //ajuste do tempo limite de resposta do processo
 set_time_limit(100);
@@ -67,6 +65,7 @@ class Danfce1 extends CommonNFePHP implements DocumentoNFePHP
     
     /**
      * __contruct
+     *
      * @param string $docXML
      * @param string $sPathLogo
      * @param string $mododebug
@@ -253,7 +252,8 @@ class Danfce1 extends CommonNFePHP implements DocumentoNFePHP
         $y = $this->pConsumidorDANFE($x, $y, $hcliente);
         
         //COLOCA QRCODE
-        $y = $xInic + $hcabecalho + $hcabecalhoSecundario + $hprodutos + $hTotal + $hpagamentos + $hmsgfiscal + $hcliente;
+        $y = $xInic + $hcabecalho + $hcabecalhoSecundario + $hprodutos
+            + $hTotal + $hpagamentos + $hmsgfiscal + $hcliente;
         $y = $this->pQRDANFE($x, $y, $hQRCode);
 
         //retorna o ID na NFe
@@ -321,7 +321,8 @@ class Danfce1 extends CommonNFePHP implements DocumentoNFePHP
         if (!empty($emitIM)) {
             $texto = $texto . " - IM:" . $emitIM;
         }
-        $texto = $texto . "\n" . $emitLgr . "," . $emitNro . " " . $emitCpl . "," . $emitBairro . ". CEP:" . $emitCEP . ". " . $emitMun . "-" . $emitUF . $emitFone;
+        $texto = $texto . "\n" . $emitLgr . "," . $emitNro . " " . $emitCpl . "," . $emitBairro
+                . ". CEP:" . $emitCEP . ". " . $emitMun . "-" . $emitUF . $emitFone;
         $this->pTextBox($xRs, $y, $wRs, $h, $texto, $aFont, 'C', $alignEmit, 0, '', false);
 
     }
@@ -369,7 +370,19 @@ class Danfce1 extends CommonNFePHP implements DocumentoNFePHP
         $wBoxDescricao = $w*0.43;
         $xBoxDescricao = $wBoxCod + $x;
         $texto = "DESCRICÃO";
-        $this->pTextBox($xBoxDescricao, $y, $wBoxDescricao, $hLinha, $texto, $aFontCabProdutos, 'T', 'L', 0, '', false);
+        $this->pTextBox(
+            $xBoxDescricao,
+            $y,
+            $wBoxDescricao,
+            $hLinha,
+            $texto,
+            $aFontCabProdutos,
+            'T',
+            'L',
+            0,
+            '',
+            false
+        );
         
         //COLOCA QUANTIDADE
         $wBoxQt = $w*0.08;
@@ -425,37 +438,95 @@ class Danfce1 extends CommonNFePHP implements DocumentoNFePHP
                 $wBoxDescricao = $w*0.43;
                 $xBoxDescricao = $wBoxCod + $x;
                 $texto = $xProd;
-                $this->pTextBox($xBoxDescricao, $yBoxProd, $wBoxDescricao, $hMaxLinha, $texto, $aFontProdutos, 'C', 'L', 0, '', false);
+                $this->pTextBox(
+                    $xBoxDescricao,
+                    $yBoxProd,
+                    $wBoxDescricao,
+                    $hMaxLinha,
+                    $texto,
+                    $aFontProdutos,
+                    'C',
+                    'L',
+                    0,
+                    '',
+                    false
+                );
 
                 //COLOCA PRODUTO QUANTIDADE
                 $wBoxQt = $w*0.08;
                 $xBoxQt = $wBoxDescricao + $xBoxDescricao;
                 $texto = $qCom;
-                $this->pTextBox($xBoxQt, $yBoxProd, $wBoxQt, $hMaxLinha, $texto, $aFontProdutos, 'C', 'C', 0, '', false);
+                $this->pTextBox(
+                    $xBoxQt,
+                    $yBoxProd,
+                    $wBoxQt,
+                    $hMaxLinha,
+                    $texto,
+                    $aFontProdutos,
+                    'C',
+                    'C',
+                    0,
+                    '',
+                    false
+                );
 
                 //COLOCA PRODUTO UNIDADE
                 $wBoxUn = $w*0.06;
                 $xBoxUn = $wBoxQt + $xBoxQt;
                 $texto = $uCom;
-                $this->pTextBox($xBoxUn, $yBoxProd, $wBoxUn, $hMaxLinha, $texto, $aFontProdutos, 'C', 'C', 0, '', false);
+                $this->pTextBox(
+                    $xBoxUn,
+                    $yBoxProd,
+                    $wBoxUn,
+                    $hMaxLinha,
+                    $texto,
+                    $aFontProdutos,
+                    'C',
+                    'C',
+                    0,
+                    '',
+                    false
+                );
 
                 //COLOCA PRODUTO VL UNITÁRIO
                 $wBoxVl = $w*0.13;
                 $xBoxVl = $wBoxUn + $xBoxUn;
                 $texto = $vUnCom;
-                $this->pTextBox($xBoxVl, $yBoxProd, $wBoxVl, $hMaxLinha, $texto, $aFontProdutos, 'C', 'R', 0, '', false);
+                $this->pTextBox(
+                    $xBoxVl,
+                    $yBoxProd,
+                    $wBoxVl,
+                    $hMaxLinha,
+                    $texto,
+                    $aFontProdutos,
+                    'C',
+                    'R',
+                    0,
+                    '',
+                    false
+                );
 
                 //COLOCA PRODUTO VL TOTAL
                 $wBoxTotal = $w*0.13;
                 $xBoxTotal = $wBoxVl + $xBoxVl;
                 $texto = $vProd;
-                $this->pTextBox($xBoxTotal, $yBoxProd, $wBoxTotal, $hMaxLinha, $texto, $aFontProdutos, 'C', 'R', 0, '', false);
+                $this->pTextBox(
+                    $xBoxTotal,
+                    $yBoxProd,
+                    $wBoxTotal,
+                    $hMaxLinha,
+                    $texto,
+                    $aFontProdutos,
+                    'C',
+                    'R',
+                    0,
+                    '',
+                    false
+                );
                 
                 $cont++;
             }
         }
-
-        
     }
     
     protected function pTotalDANFE($x = 0, $y = 0, $h = 0)
@@ -580,13 +651,23 @@ class Danfce1 extends CommonNFePHP implements DocumentoNFePHP
                 //COLOCA PRODUTO DESCRIÇÃO
                 $xBoxDescricao = $wBoxEsq + $x;
                 $texto = "R$ " . $vPag;
-                $this->pTextBox($xBoxDescricao, $yBoxProd, $wBoxDir, $hLinha, $texto, $aFontProdutos, 'C', 'R', 0, '', false);
+                $this->pTextBox(
+                    $xBoxDescricao,
+                    $yBoxProd,
+                    $wBoxDir,
+                    $hLinha,
+                    $texto,
+                    $aFontProdutos,
+                    'C',
+                    'R',
+                    0,
+                    '',
+                    false
+                );
 
                 $cont++;
             }
         }
-
-        
     }
     
     protected function pFiscalDANFE($x = 0, $y = 0, $h = 0)
@@ -678,7 +759,8 @@ class Danfce1 extends CommonNFePHP implements DocumentoNFePHP
             $consDoc = $consCPF.$consCNPJ.$considEstrangeiro; //documentos do consumidor
             
             $yTex1 = $y + $hLinha;
-            $texto = $consNome ." - ". $consDoc . "\n" . $consLgr . "," . $consNro . " " . $consCpl . "," . $consBairro . ". CEP:" . $consCEP . ". " . $consMun . "-" . $consUF;
+            $texto = $consNome ." - ". $consDoc . "\n" . $consLgr . "," . $consNro . " "
+                    . $consCpl . "," . $consBairro . ". CEP:" . $consCEP . ". " . $consMun . "-" . $consUF;
             $this->pTextBox($x, $yTex1, $w, $hLinha*3, $texto, $aFontTex, 'C', 'C', 0, '', false);
         } else {
             //COLOCA TITULO
@@ -712,7 +794,8 @@ class Danfce1 extends CommonNFePHP implements DocumentoNFePHP
         $xQr = ($w/2) - ($wQr/2);
         $qrcode->displayFPDF($this->pdf, $xQr, $yQr, $wQr);
         $yQr = ($yQr+$hQr+$margemInterna);
-        $this->pTextBox($x, $yQr, $w, $hBoxLinha, "Protocolo de Autorização: " . $nProt . "\n" . $dhRecbto, $aFontTex, 'C', 'C', 0, '', false);
+        $this->pTextBox($x, $yQr, $w, $hBoxLinha, "Protocolo de Autorização: " . $nProt . "\n"
+                . $dhRecbto, $aFontTex, 'C', 'C', 0, '', false);
     }
    
     /**
@@ -726,11 +809,11 @@ class Danfce1 extends CommonNFePHP implements DocumentoNFePHP
      * Para enviar o pdf diretamente para uma impressora indique o
      * nome da impressora e o destino deve ser 'S'.
      *
-     * @param string $nome Path completo com o nome do arquivo pdf
-     * @param string $destino Direção do envio do PDF
-     * @param string $printer Identificação da impressora no sistema
+     * @param  string $nome    Path completo com o nome do arquivo pdf
+     * @param  string $destino Direção do envio do PDF
+     * @param  string $printer Identificação da impressora no sistema
      * @return string Caso o destino seja S o pdf é retornado como uma string
-     * @todo Rotina de impressão direta do arquivo pdf criado
+     * @todo   Rotina de impressão direta do arquivo pdf criado
      */
     public function printDANFE($nome = '', $destino = 'I', $printer = '')
     {
@@ -746,7 +829,8 @@ class Danfce1 extends CommonNFePHP implements DocumentoNFePHP
     /**
      * str2Hex
      * Converte string para haxadecimal ASCII
-     * @param string $str
+     *
+     * @param  string $str
      * @return string
      */
     protected static function str2Hex($str)
@@ -823,7 +907,8 @@ class Danfce1 extends CommonNFePHP implements DocumentoNFePHP
     /**
      * hex2Str
      * Converte hexadecimal ASCII para string
-     * @param string $str
+     *
+     * @param  string $str
      * @return string
      */
     protected static function hex2Str($str)

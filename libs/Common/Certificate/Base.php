@@ -6,12 +6,12 @@ namespace NFePHP\Common\Certificate;
  * Classe auxiliar para obter informações dos certificados digitais A1 (PKCS12)
  * Base para a classe ASN
  *
- * @category   NFePHP
- * @package    NFePHP\Common\Certificate
- * @copyright  Copyright (c) 2008-2014
- * @license    http://www.gnu.org/licenses/lesser.html LGPL v3
- * @author     Roberto L. Machado <linux.rlm at gmail dot com>
- * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
+ * @category  NFePHP
+ * @package   NFePHP\Common\Certificate
+ * @copyright Copyright (c) 2008-2014
+ * @license   http://www.gnu.org/licenses/lesser.html LGPL v3
+ * @author    Roberto L. Machado <linux.rlm at gmail dot com>
+ * @link      http://github.com/nfephp-org/nfephp for the canonical source repository
  */
 
 class Base
@@ -20,7 +20,7 @@ class Base
      * pem2Der
      * Transforma o certificado do formato PEM para o formato DER
      *
-     * @param string $pem_data
+     * @param  string $pem_data
      * @return string
      */
     protected static function pem2Der($pemData)
@@ -40,7 +40,7 @@ class Base
      * Converte o numero de identificação do OID em uma representação asc,
      * coerente com o formato do certificado
      *
-     * @param string $oid numero OID (com os pontos de separação)
+     * @param  string $oid numero OID (com os pontos de separação)
      * @return string sequencia em hexadecimal
      */
     protected static function oidtoHex($oid)
@@ -75,9 +75,9 @@ class Base
      * xBase128
      * Retorna o dado convertido em asc
      *
-     * @param array $abIn
-     * @param integer $qIn
-     * @param boolean $flag
+     * @param  array   $abIn
+     * @param  integer $qIn
+     * @param  boolean $flag
      * @return integer
      */
     protected static function xBase128($abIn, $qIn, $flag)
@@ -98,7 +98,7 @@ class Base
     /**
      * Retorna o valor em caracteres hexadecimais
      *
-     * @param string $value
+     * @param  string $value
      * @return string
      * @return void
      */
@@ -119,9 +119,9 @@ class Base
     /**
      * Obtêm o comprimento do conteúdo de uma sequência de dados do certificado
      *
-     * @param integer $len variável passada por referência
-     * @param integer $bytes variável passada por referência
-     * @param string $data campo a
+     * @param  integer $len   variável passada por referência
+     * @param  integer $bytes variável passada por referência
+     * @param  string  $data  campo a
      * @return void
      */
     protected static function getLength(&$len, &$bytes, $data)

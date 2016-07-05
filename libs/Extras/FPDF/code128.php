@@ -15,7 +15,7 @@
 *
 * Commutation des jeux ABC automatique et optimis�e.
 *******************************************************************************/
-require_once('fpdf.php');
+require_once 'fpdf.php';
 
 class PDF_Code128 extends FPDF
 {
@@ -30,7 +30,7 @@ class PDF_Code128 extends FPDF
     var $JStart = array("A"=>103, "B"=>104, "C"=>105);     // Caract�res de s�lection de jeu au d�but du C128
     var $JSwap = array("A"=>101, "B"=>100, "C"=>99);       // Caract�res de changement de jeu
 
-//____________________________ Extension du constructeur _______________________
+    //____________________________ Extension du constructeur _______________________
     function PDF_Code128($orientation = 'P', $unit = 'mm', $format = 'A4')
     {
 
@@ -168,7 +168,7 @@ class PDF_Code128 extends FPDF
         }
     }
 
-//________________ Fonction encodage et dessin du code 128 _____________________
+    //________________ Fonction encodage et dessin du code 128 _____________________
     function Code128($x, $y, $code, $w, $h)
     {
         $Aguid="";                                                                      // Cr�ation des guides de choix ABC
@@ -284,15 +284,17 @@ class PDF_Code128 extends FPDF
     function _Arc($x1, $y1, $x2, $y2, $x3, $y3)
     {
         $h = $this->h;
-        $this->_out(sprintf(
-            '%.2F %.2F %.2F %.2F %.2F %.2F c ',
-            $x1*$this->k,
-            ($h-$y1)*$this->k,
-            $x2*$this->k,
-            ($h-$y2)*$this->k,
-            $x3*$this->k,
-            ($h-$y3)*$this->k
-        ));
+        $this->_out(
+            sprintf(
+                '%.2F %.2F %.2F %.2F %.2F %.2F c ',
+                $x1*$this->k,
+                ($h-$y1)*$this->k,
+                $x2*$this->k,
+                ($h-$y2)*$this->k,
+                $x3*$this->k,
+                ($h-$y3)*$this->k
+            )
+        );
     }
 
 
@@ -388,10 +390,10 @@ class PDF_Code128 extends FPDF
         $ns=0;
         $nl=1;
         while ($i<$nb) {
-        //Get next character
+            //Get next character
             $c=$s[$i];
             if ($c=="\n") {
-            //Explicit line break
+                //Explicit line break
                 if ($this->ws>0) {
                     $this->ws=0;
                     if ($prn==1) {
@@ -422,7 +424,7 @@ class PDF_Code128 extends FPDF
             }
             $l+=$cw[$c];
             if ($l>$wmax) {
-            //Automatic line break
+                //Automatic line break
                 if ($sep==-1) {
                     if ($i==$j) {
                         $i++;
@@ -499,7 +501,7 @@ class PDF_Code128 extends FPDF
             foreach ($words as $word) {
                 $wordwidth = $this->GetStringWidth($word);
                 if ($wordwidth > $maxwidth) {
-                // Word is too long, we cut it
+                    // Word is too long, we cut it
                     for ($i=0; $i<strlen($word); $i++) {
                         $wordwidth = $this->GetStringWidth(substr($word, $i, 1));
                         if ($width + $wordwidth <= $maxwidth) {

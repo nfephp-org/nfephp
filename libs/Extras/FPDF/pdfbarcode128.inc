@@ -17,8 +17,8 @@ For any suggestions or bug report please contact me : guinux@cosmoplazza.com
 !*/
 
     //define('FPDF_FONTPATH','font/');
-    require_once('barcode128.inc');
-    require_once('fpdf.php');
+    require_once 'barcode128.inc';
+    require_once 'fpdf.php';
 
 class pdfbarcode128 extends barcode128
 {

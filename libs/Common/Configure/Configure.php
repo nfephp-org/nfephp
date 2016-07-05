@@ -12,18 +12,21 @@ class Configure
 {
     /**
      * $cRed
+     *
      * @var hex
      */
     protected static $cRed = '#FF0000';
     
     /**
      *$cGreen
+     *
      * @var hex
      */
     protected static $cGreen = '#00CC00';
     
     /**
      * $aRequirements
+     *
      * @var array
      */
     public static $aRequirements = array(
@@ -38,6 +41,7 @@ class Configure
     
     /**
      * chkModules
+     *
      * @return string
      */
     public static function chkModules()
@@ -78,10 +82,11 @@ class Configure
     
     /**
      * checkCerts
-     * @param string $cnpj
-     * @param string $pathCertsFiles
-     * @param string $certPfxName
-     * @param string $certPassword
+     *
+     * @param  string $cnpj
+     * @param  string $pathCertsFiles
+     * @param  string $certPfxName
+     * @param  string $certPassword
      * @return array
      */
     public static function checkCerts($cnpj = '', $pathCertsFiles = '', $certPfxName = '', $certPassword = '')
@@ -117,12 +122,13 @@ class Configure
     
     /**
      * checkFolders
-     * @param string $pathnfe
-     * @param string $pathcte
-     * @param string $pathmdfe
-     * @param string $pathcle
-     * @param string $pathnfse
-     * @param string $pathcerts
+     *
+     * @param  string $pathnfe
+     * @param  string $pathcte
+     * @param  string $pathmdfe
+     * @param  string $pathcle
+     * @param  string $pathnfse
+     * @param  string $pathcerts
      * @return array
      */
     public static function checkFolders(
@@ -162,7 +168,8 @@ class Configure
     
     /**
      * zFolderMTest
-     * @param string $path
+     *
+     * @param  string $path
      * @return array
      */
     protected static function zFolderMTest($path = '')

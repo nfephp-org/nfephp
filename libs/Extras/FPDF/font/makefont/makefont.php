@@ -57,7 +57,7 @@ function ReadAFM($file, &$map)
         $code=$e[0];
         $param=$e[1];
         if ($code=='C') {
-        //Character metrics
+            //Character metrics
             $cc=(int)$e[1];
             $w=$e[4];
             $gn=$e[7];
@@ -65,7 +65,7 @@ function ReadAFM($file, &$map)
                 $gn='Euro';
             }
             if (isset($fix[$gn])) {
-            //Fix incorrect glyph name
+                //Fix incorrect glyph name
                 foreach ($map as $c => $n) {
                     if ($n==$fix[$gn]) {
                         $map[$c]=$gn;
@@ -73,7 +73,7 @@ function ReadAFM($file, &$map)
                 }
             }
             if (empty($map)) {
-            //Symbolic font: use built-in encoding
+                //Symbolic font: use built-in encoding
                 $widths[$cc]=$w;
             } else {
                 $widths[$gn]=$w;
@@ -363,7 +363,7 @@ function MakeFont($fontfile, $afmfile, $enc = 'cp1252', $patch = array(), $type 
     $s.='$diff=\''.$diff."';\n";
     $basename=substr(basename($afmfile), 0, -4);
     if ($fontfile) {
-    //Embedded font
+        //Embedded font
         if (!file_exists($fontfile)) {
             die('<b>Error:</b> font file not found: '.$fontfile);
         }
@@ -377,10 +377,10 @@ function MakeFont($fontfile, $afmfile, $enc = 'cp1252', $patch = array(), $type 
         $file=fread($f, filesize($fontfile));
         fclose($f);
         if ($type=='Type1') {
-        //Find first two sections and discard third one
+            //Find first two sections and discard third one
             $header=(ord($file[0])==128);
             if ($header) {
-            //Strip first binary header
+                //Strip first binary header
                 $file=substr($file, 6);
             }
             $pos=strpos($file, 'eexec');
@@ -389,7 +389,7 @@ function MakeFont($fontfile, $afmfile, $enc = 'cp1252', $patch = array(), $type 
             }
             $size1=$pos+6;
             if ($header && ord($file[$size1])==128) {
-            //Strip second binary header
+                //Strip second binary header
                 $file=substr($file, 0, $size1).substr($file, $size1+6);
             }
             $pos=strpos($file, '00000000');

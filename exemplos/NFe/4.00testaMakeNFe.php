@@ -1,7 +1,7 @@
 <?php
 error_reporting(E_ALL);
 ini_set('display_errors', 'On');
-include_once '../../bootstrap.php';
+require_once '../../bootstrap.php';
 
 use NFePHP\NFe\MakeNFe;
 use NFePHP\NFe\ToolsNFe;
@@ -54,8 +54,8 @@ $dhCont = ''; //entrada em contingência AAAA-MM-DDThh:mm:ssTZD
 $xJust = ''; //Justificativa da entrada em contingência
 
 //Numero e versão da NFe (infNFe)
-$ano = date('y',strtotime($dhEmi));
-$mes = date('m',strtotime($dhEmi));
+$ano = date('y', strtotime($dhEmi));
+$mes = date('m', strtotime($dhEmi));
 $cnpj = $nfeTools->aConfig['cnpj'];
 $chave = $nfe->montaChave($cUF, $ano, $mes, $cnpj, $mod, $serie, $nNF, $tpEmis, $cNF);
 $versao = '3.10';
@@ -513,8 +513,8 @@ $vIPI = '50.40';
 $vPIS = '41.70';
 $vCOFINS = '92.64';
 $vOutro = '0.00';
-$vNF = number_format($vProd-$vDesc-$vICMSDeson+$vST+$vFrete+$vSeg+$vOutro+$vII+$vIPI,2,'.','');
-$vTotTrib = number_format($vICMS+$vST+$vII+$vIPI+$vPIS+$vCOFINS+$vIOF+$vISS,2,'.','');
+$vNF = number_format($vProd-$vDesc-$vICMSDeson+$vST+$vFrete+$vSeg+$vOutro+$vII+$vIPI, 2, '.', '');
+$vTotTrib = number_format($vICMS+$vST+$vII+$vIPI+$vPIS+$vCOFINS+$vIOF+$vISS, 2, '.', '');
 $resp = $nfe->tagICMSTot($vBC, $vICMS, $vICMSDeson, $vBCST, $vST, $vProd, $vFrete, $vSeg, $vDesc, $vII, $vIPI, $vPIS, $vCOFINS, $vOutro, $vNF, $vTotTrib);
 
 //frete
@@ -612,10 +612,10 @@ foreach ($aDup as $dup) {
 //**************************************************************
 
 // Calculo de carga tributária similar ao IBPT - Lei 12.741/12
-$federal = number_format($vII+$vIPI+$vIOF+$vPIS+$vCOFINS,2,',','.');
-$estadual = number_format($vICMS+$vST,2,',','.');
-$municipal = number_format($vISS,2,',','.');
-$totalT = number_format($federal+$estadual+$municipal,2,',','.');
+$federal = number_format($vII+$vIPI+$vIOF+$vPIS+$vCOFINS, 2, ',', '.');
+$estadual = number_format($vICMS+$vST, 2, ',', '.');
+$municipal = number_format($vISS, 2, ',', '.');
+$totalT = number_format($federal+$estadual+$municipal, 2, ',', '.');
 $textoIBPT = "Valor Aprox. Tributos R$ {$totalT} - {$federal} Federal, {$estadual} Estadual e {$municipal} Municipal.";
 
 //Informações Adicionais
