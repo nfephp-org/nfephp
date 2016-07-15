@@ -824,24 +824,26 @@ class ConvertNFe
             $aCampos[2], //cEAN
             $aCampos[3], //xProd
             $aCampos[4], //NCM
-            $aCampos[5], //EXTIPI
-            $aCampos[6], //CFOP
-            $aCampos[7], //uCom
-            $aCampos[8], //qCom
-            $aCampos[9], //vUnCom
-            $aCampos[10], //vProd
-            $aCampos[11], //cEANTrib
-            $aCampos[12], //uTrib
-            $aCampos[13], //qTrib
-            $aCampos[14], //vUnTrib
-            $aCampos[15], //vFrete
-            $aCampos[16], //vSeg
-            $aCampos[17], //vDesc
-            $aCampos[18], //vOutro
-            $aCampos[19], //indTot
-            $aCampos[20], //xPed
-            $aCampos[21], //nItemPed
-            $aCampos[22] //nFCI
+            $aCampos[5], // NVE
+            $aCampos[6], // CEST
+            $aCampos[7], //EXTIPI
+            $aCampos[8], //CFOP
+            $aCampos[9], //uCom
+            $aCampos[10], //qCom
+            $aCampos[11], //vUnCom
+            $aCampos[12], //vProd
+            $aCampos[13], //cEANTrib
+            $aCampos[14], //uTrib
+            $aCampos[15], //qTrib
+            $aCampos[16], //vUnTrib
+            $aCampos[17], //vFrete
+            $aCampos[18], //vSeg
+            $aCampos[19], //vDesc
+            $aCampos[20], //vOutro
+            $aCampos[21], //indTot
+            $aCampos[22], //xPed
+            $aCampos[23], //nItemPed
+            $aCampos[24]//nFCI
         );
     }
     
@@ -957,10 +959,10 @@ class ConvertNFe
         //I50xx|nDraw|nRE|chNFe|qExport|
         $this->make->tagdetExport(
             $this->nItem,
-            $aCampos[1], //nDraw
-            $aCampos[2], //nRE
-            $aCampos[3], //chNFe
-            $aCampos[4] //qExport
+            $aCampos[0], //nDraw
+            $aCampos[1], //nRE
+            $aCampos[2], //chNFe
+            $aCampos[3] //qExport
         );
     }
 
