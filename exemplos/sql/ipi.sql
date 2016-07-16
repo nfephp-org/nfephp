@@ -10,29 +10,31 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
-CREATE  TABLE IF NOT EXISTS `ipi` (
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE IF NOT EXISTS `ipi` (
   `id_ipi` INT(16) NOT NULL AUTO_INCREMENT ,
   `codigo_ipi` VARCHAR(16) NOT NULL ,
   `desc_ipi` TEXT NOT NULL ,
   PRIMARY KEY (`id_ipi`) )
 ENGINE = InnoDB;
 
-TRUNCATE TABLE ipi;
+TRUNCATE TABLE `ipi`;
 
-INSERT INTO ipi (codigo_ipi, desc_ipi) VALUES ('00', '00: Entrada com recuperação de crédito');
-INSERT INTO ipi (codigo_ipi, desc_ipi) VALUES ('01', '01: Entrada tributada com alíquota zero');
-INSERT INTO ipi (codigo_ipi, desc_ipi) VALUES ('02', '02: Entrada isenta');
-INSERT INTO ipi (codigo_ipi, desc_ipi) VALUES ('03', '03: Entrada não-tributada');
-INSERT INTO ipi (codigo_ipi, desc_ipi) VALUES ('04', '04: Entrada imune');
-INSERT INTO ipi (codigo_ipi, desc_ipi) VALUES ('05', '05: Entrada com suspensão');
-INSERT INTO ipi (codigo_ipi, desc_ipi) VALUES ('49', '49: Outras entradas');
-INSERT INTO ipi (codigo_ipi, desc_ipi) VALUES ('50', '50: Saída tributada');
-INSERT INTO ipi (codigo_ipi, desc_ipi) VALUES ('51', '51: Saída tributada com alíquota zero');
-INSERT INTO ipi (codigo_ipi, desc_ipi) VALUES ('52', '52: Saída isenta');
-INSERT INTO ipi (codigo_ipi, desc_ipi) VALUES ('53', '53: Saída não-tributada');
-INSERT INTO ipi (codigo_ipi, desc_ipi) VALUES ('54', '54: Saída imune');
-INSERT INTO ipi (codigo_ipi, desc_ipi) VALUES ('55', '55: Saída com suspensão');
-INSERT INTO ipi (codigo_ipi, desc_ipi) VALUES ('99', '99: Outras saídas');
+INSERT INTO `ipi` (codigo_ipi, desc_ipi) VALUES ('00', '00: Entrada com recuperação de crédito');
+INSERT INTO `ipi` (codigo_ipi, desc_ipi) VALUES ('01', '01: Entrada tributada com alíquota zero');
+INSERT INTO `ipi` (codigo_ipi, desc_ipi) VALUES ('02', '02: Entrada isenta');
+INSERT INTO `ipi` (codigo_ipi, desc_ipi) VALUES ('03', '03: Entrada não-tributada');
+INSERT INTO `ipi` (codigo_ipi, desc_ipi) VALUES ('04', '04: Entrada imune');
+INSERT INTO `ipi` (codigo_ipi, desc_ipi) VALUES ('05', '05: Entrada com suspensão');
+INSERT INTO `ipi` (codigo_ipi, desc_ipi) VALUES ('49', '49: Outras entradas');
+INSERT INTO `ipi` (codigo_ipi, desc_ipi) VALUES ('50', '50: Saída tributada');
+INSERT INTO `ipi` (codigo_ipi, desc_ipi) VALUES ('51', '51: Saída tributada com alíquota zero');
+INSERT INTO `ipi` (codigo_ipi, desc_ipi) VALUES ('52', '52: Saída isenta');
+INSERT INTO `ipi` (codigo_ipi, desc_ipi) VALUES ('53', '53: Saída não-tributada');
+INSERT INTO `ipi` (codigo_ipi, desc_ipi) VALUES ('54', '54: Saída imune');
+INSERT INTO `ipi` (codigo_ipi, desc_ipi) VALUES ('55', '55: Saída com suspensão');
+INSERT INTO `ipi` (codigo_ipi, desc_ipi) VALUES ('99', '99: Outras saídas');
 
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 

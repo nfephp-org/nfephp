@@ -21,7 +21,7 @@ COLLATE = utf8_general_ci;
 
 CREATE INDEX `descricao` ON `ncm` (`nome_ncm` ASC) ;
 
-TRUNCATE TABLE ncm;
+TRUNCATE TABLE `ncm`;
 
 INSERT INTO `ncm` VALUES ('1', '99910000', 'ENCOMENDAS POSTAIS');
 INSERT INTO `ncm` VALUES ('2', '99920000', 'AMOSTRAS');
