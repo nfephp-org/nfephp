@@ -753,15 +753,15 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
             
             //CNPJ, CPF ou ID Estrageiro
             if (!empty($consCNPJ)) {
-                $consCNPJ = $this->pFormat($consCNPJ, "###.###.###-##");
-                $consHtml .= "<tr><td colspan=\"3\">CONSUMIDOR CNPJ: {consCNPJ} ".
+                $consCNPJ = $this->pFormat($consCNPJ, "##.###.###/####-##");
+                $consHtml .= "<tr><td colspan=\"3\">CONSUMIDOR CNPJ: {$consCNPJ} ".
                         htmlspecialchars($consNome)."</td></tr>\n";
             } elseif (!empty($consCPF)) {
-                $consCPF = $this->pFormat($consCPF, "##.###.###/####-##");
-                $consHtml .= "<tr><td colspan=\"3\">CONSUMIDOR CPF: {consCPF} ".
+                $consCPF = $this->pFormat($consCPF, "###.###.###-##");
+                $consHtml .= "<tr><td colspan=\"3\">CONSUMIDOR CPF: {$consCPF} ".
                         htmlspecialchars($consNome)."</td></tr>\n";
             } elseif (!empty($considEstrangeiro)) {
-                $consHtml .= "<tr><td colspan=\"3\">CONSUMIDOR Id. Estrangeiro: {considEstrangeiro} ".
+                $consHtml .= "<tr><td colspan=\"3\">CONSUMIDOR Id. Estrangeiro: {$considEstrangeiro} ".
                         htmlspecialchars($consNome)."</td></tr>\n";
             }
             if (!empty($consLgr)&&!empty($consBairro)&&!empty($consMun)&&!empty($consUF)) {
