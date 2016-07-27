@@ -4079,7 +4079,12 @@ class MakeNFe extends BaseMake
         if (!empty($this->aDetExport)) {
             foreach ($this->aDetExport as $nItem => $child) {
                 $prod = $this->aProd[$nItem];
-                $this->dom->appChild($prod, $child, "Inclusão do node detExport");
+                $node = $prod->getElementsByTagName("xPed")->item(0);
+                if (!empty($node)) {
+                    $prod->insertBefore($child, $node);
+                } else {
+                    $this->dom->appChild($prod, $child, "Inclusão do node detExport");
+                }
                 $this->aProd[$nItem] = $prod;
             }
         }
