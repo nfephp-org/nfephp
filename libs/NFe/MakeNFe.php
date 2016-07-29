@@ -1235,8 +1235,6 @@ class MakeNFe extends BaseMake
         $cEAN = '',
         $xProd = '',
         $NCM = '',
-        $NVE = '',
-        $CEST = '',
         $EXTIPI = '',
         $CFOP = '',
         $uCom = '',
@@ -1287,20 +1285,6 @@ class MakeNFe extends BaseMake
             $NCM,
             true,
             $identificador . "[item $nItem] Código NCM com 8 dígitos ou 2 dígitos (gênero)"
-        );
-        $this->dom->addChild(
-            $prod,
-            "NVE",
-            $NVE,
-            false,
-            $identificador . "[item $nItem] Código NVE com 2 letras maiúsculas e 4 dígitos"
-        );
-        $this->dom->addChild(
-            $prod,
-            "CEST",
-            $CEST,
-            false,
-            $identificador . "[item $nItem] Código CEST com 7 dígitos"
         );
         $this->dom->addChild(
             $prod,
