@@ -1760,10 +1760,11 @@ class ToolsNFe extends BaseTools
      * @param  string $tpAmb
      * @param  string $cnpj
      * @param  array  $aRetorno
+     * @param  bool   $saveXml Define se salva o Log da conexão em arquivo
      * @return string
      * @throws Exception\RuntimeException
      */
-    public function sefazDownload($chNFe = '', $tpAmb = '', $cnpj = '', &$aRetorno = array())
+    public function sefazDownload($chNFe = '', $tpAmb = '', $cnpj = '', &$aRetorno = array(), $saveXml = true)
     {
         if ($tpAmb == '') {
             $tpAmb = $this->aConfig['tpAmb'];
@@ -1806,10 +1807,15 @@ class ToolsNFe extends BaseTools
         );
         $lastMsg = $this->oSoap->lastMsg;
         $this->soapDebug = $this->oSoap->soapDebug;
-        $filename = "$chNFe-downnfe.xml";
-        $this->zGravaFile('nfe', $tpAmb, $filename, $lastMsg);
-        $filename = "$chNFe-retDownnfe.xml";
-        $this->zGravaFile('nfe', $tpAmb, $filename, $retorno);
+        
+        //salva mensagens
+        if ($saveXml) {
+            $filename = "$chNFe-downnfe.xml";
+            $this->zGravaFile('nfe', $tpAmb, $filename, $lastMsg);
+            $filename = "$chNFe-retDownnfe.xml";
+            $this->zGravaFile('nfe', $tpAmb, $filename, $retorno);
+        }
+        
         //tratar dados de retorno
         $aRetorno = ReturnNFe::readReturnSefaz($servico, $retorno);
         return (string) $retorno;
@@ -1824,13 +1830,14 @@ class ToolsNFe extends BaseTools
      * @param    string $raizCNPJ
      * @param    string $idCsc
      * @param    string $codigoCsc
+     * @param    bool   $saveXml Define se salva o Log da conexão em arquivo
      * @param    array  $aRetorno
      * @return   string
      * @throws   Exception\InvalidArgumentException
      * @throws   Exception\RuntimeException
      * @internal function zLoadServico (Common\Base\BaseTools)
      */
-    public function sefazManutencaoCsc($indOp = '', $tpAmb = '2', $raizCNPJ = '', $idCsc = '', $codigoCsc = '', $saveXml = false, &$aRetorno = array())
+    public function sefazManutencaoCsc($indOp = '', $tpAmb = '2', $raizCNPJ = '', $idCsc = '', $codigoCsc = '', $saveXml = true, &$aRetorno = array())
     {
         if ($codigoCsc == '') {
             $codigoCsc = $this->aConfig['tokenNFCe'];
