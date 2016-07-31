@@ -13,6 +13,16 @@ Para começar veja [nossas páginas Wiki](https://github.com/nfephp-org/nfephp/w
 
 Não deixe de se cadastrar no [grupo de discussão do NFePHP](http://groups.google.com/group/nfephp)!
 
+## PULL REQUESTS
+**Srs. neste repositório somente serão aceitos "PULL REQUESTS" relativos a BUGS e correções derivadas de mudanças promovidas pelas SEFAZ.**
+
+Não mais serão aceitas alterações, melhorias no código ou inclusões de novos recursos ou de novos serviços, todas essas melhorias deverão ser encaminhadas para o novo repositório SPED-XXX.
+
+>Em breve (até meados de 2017), este repositório deixará de receber qualquer contribuição e será descontinuado, em favor dos novos repositórios !!!
+>Para manter a integridade da API nessa nova versão (4.1.x-dev), estão sendo mantidos os "namespaces", as chamadas de métodos e seus parametros, que não deverão ser alterados a não ser por motivo de "força maior", como mudanças da SEFAZ que forcem essa situação.
+>No uso da nova versão, atenção deve ser dedicada a nomenclatura de classes, que foi simplificada, e nos recursos como impressão que foram deslocados para outro repositório.  
+
+
 ## REESTRUTURAÇÃO DE REPOSITÓRIOS
 
 **As estruturas de CTe, MDFe e outras foram removidas deste repositório e levadas a seus novos repositórios veja:**
