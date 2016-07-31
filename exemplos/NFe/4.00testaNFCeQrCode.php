@@ -13,12 +13,12 @@ $nfeTools = new ToolsNFe('../../config/config.json');
 
 //Dados da NFCe - infNFe
 $cUF = '52';
-$cNF = '00000200';
+$cNF = '00000201';
 $natOp = 'Venda ao consumidor';
 $indPag = '0';
 $mod  = '65';
 $serie = '1';
-$nNF = '200';
+$nNF = '201';
 $dhEmi = date("Y-m-d\TH:i:sP");//Formato: “AAAA-MM-DDThh:mm:ssTZD” (UTC - Universal Coordinated Time).
 $dhSaiEnt = '';//Não informar este campo para a NFC-e.
 $tpNF = '1';
@@ -127,7 +127,8 @@ $resp = $nfe->tagenderDest($xLgr, $nro, $xCpl, $xBairro, $cMun, $xMun, $UF, $CEP
 $nItem = 1;
 $cProd = '142';
 $cEAN = '97899072659522';
-$xProd = 'Chopp Originale 330ml';
+//$xProd = 'Chopp Originale 330ml';
+$xProd = 'NOTA FISCAL EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL';
 $NCM = '22030000';
 $NVE = '';
 $CEST = '0302300'; // Convênio ICMS 92/15
@@ -157,7 +158,7 @@ $vTotTrib = '0.16';
 $resp = $nfe->tagimposto($nItem, $vTotTrib);
 
 //ICMS
-/*$nItem = 1;
+$nItem = 1;
 $orig = '0';
 $cst = '60';//Simples nacional
 $modBC = '3';
@@ -178,10 +179,10 @@ $vICMSDif = '';
 $vICMSOp = '';
 $vBCSTRet = '';
 $vICMSSTRet = '';
-$resp = $nfe->tagICMS($nItem, $orig, $cst, $modBC, $pRedBC, $vBC, $pICMS, $vICMS, $vICMSDeson, $motDesICMS, $modBCST, $pMVAST, $pRedBCST, $vBCST, $pICMSST, $vICMSST, $pDif, $vICMSDif, $vICMSOp, $vBCSTRet, $vICMSSTRet);*/
+$resp = $nfe->tagICMS($nItem, $orig, $cst, $modBC, $pRedBC, $vBC, $pICMS, $vICMS, $vICMSDeson, $motDesICMS, $modBCST, $pMVAST, $pRedBCST, $vBCST, $pICMSST, $vICMSST, $pDif, $vICMSDif, $vICMSOp, $vBCSTRet, $vICMSSTRet);
 
 //ICMSSN - Tributação ICMS pelo Simples Nacional - CSOSN 500
-$nItem = 1;
+/*$nItem = 1;
 $orig = '0';
 $csosn = '500'; //ICMS cobrado anteriormente por substituição tributária (substituído) ou por antecipação
 $modBC = '1';
@@ -199,7 +200,7 @@ $pICMSST = ''; //27.00 = GO para GO
 $vICMSST = '';
 $vBCSTRet = '12.00'; // Pauta do Chope Claro 1000ml em GO R$ 8,59 x 0.660 Litros
 $vICMSSTRet = '0.96'; // = (Valor da Pauta * Alíquota ICMS ST) - Valor ICMS Próprio
-$resp = $nfe->tagICMSSN($nItem, $orig, $csosn, $modBC, $vBC, $pRedBC, $pICMS, $vICMS, $pCredSN, $vCredICMSSN, $modBCST, $pMVAST, $pRedBCST, $vBCST, $pICMSST, $vICMSST, $vBCSTRet, $vICMSSTRet);
+$resp = $nfe->tagICMSSN($nItem, $orig, $csosn, $modBC, $vBC, $pRedBC, $pICMS, $vICMS, $pCredSN, $vCredICMSSN, $modBCST, $pMVAST, $pRedBCST, $vBCST, $pICMSST, $vICMSST, $vBCSTRet, $vICMSSTRet);*/
 
 //PIS
 $nItem = 1;

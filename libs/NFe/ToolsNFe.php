@@ -213,19 +213,23 @@ class ToolsNFe extends BaseTools
     
     /**
      * enviaMail
+     *
      * Envia a NFe por email aos destinatários
      * Caso $aMails esteja vazio serão obtidos os email do destinatário  e
      * os emails que estiverem registrados nos campos obsCont do xml
      *
-     * @param  string  $pathXml
-     * @param  array   $aMails
-     * @param  string  $templateFile path completo ao arquivo template html do corpo do email
-     * @param  boolean $comPdf       se true o sistema irá renderizar o DANFE e anexa-lo a mensagem
-     * @param  string  $pathPdf
+     * @param string $pathXml Caminho do arquivo XML
+     * @param array $aMail Lista de e-mail de destinatários
+     * @param string $templateFile Caminho do template html
+     * @param bool $comPdf Se true, anexa a DANFE PDF no e-mail
+     * @param string $pathPdf Caminho do arquivo PDF caso $comPdf = true,
+     * se não for informado será renderizado a DANFE através do arquivo XML
+     * @param string $nameXml Nome para o anexo do XML
+     * @param string $namePdf Nome para o anexo do PDF
      * @return boolean
      * @throws Exception\RuntimeException
      */
-    public function enviaMail($pathXml = '', $aMails = array(), $templateFile = '', $comPdf = false, $pathPdf = '')
+    public function enviaMail($pathXml = '', $aMails = array(), $templateFile = '', $comPdf = false, $pathPdf = '', $nameXml = '', $namePdf = '')
     {
         $mail = new MailNFe($this->aMailConf);
         // Se não for informado o caminho do PDF, monta um através do XML
@@ -242,7 +246,7 @@ class ToolsNFe extends BaseTools
                 . $id . '-danfe.pdf';
             $pdf = $danfe->printDANFE($pathPdf, 'F');
         }
-        if ($mail->envia($pathXml, $aMails, $comPdf, $pathPdf) === false) {
+        if ($mail->envia($pathXml, $aMails, $comPdf, $pathPdf, $nameXml, $namePdf) === false) {
             throw new Exception\RuntimeException('Email não enviado. '.$mail->error);
         }
         return true;
@@ -428,12 +432,16 @@ class ToolsNFe extends BaseTools
 
     /**
      * addCancelamento
-     * Adiciona a tga de cancelamento a uma NFe já autorizada
-     * NOTA: não é requisito da SEFAZ, mas auxilia na identificação das NFe que foram canceladas
      *
-     * @param  string $pathNFefile
-     * @param  string $pathCancfile
-     * @param  bool   $saveFile
+     * Adiciona a tga de cancelamento a uma NFe já autorizada
+     * NOTA: não é requisito da SEFAZ, mas auxilia na identificação 
+     * das NFe que foram canceladas
+     *
+     * @param string $pathNFefile Caminho do arquivo XML autorizado 
+     * da NF-e ou conteúdo do XML em String
+     * @param string $pathCancfile Caminho do arquivo XML do 
+     * protocolo de cancelamento ou conteúdo do XML em String
+     * @param bool $saveFile
      * @return string
      * @throws Exception\RuntimeException
      */
@@ -442,7 +450,13 @@ class ToolsNFe extends BaseTools
         $procXML = '';
         //carrega a NFe
         $docnfe = new Dom();
-        $docnfe->loadXMLFile($pathNFefile);
+        if (is_file($pathNFefile)) {
+            //carrega o XML pelo caminho do arquivo informado
+            $docnfe->loadXMLFile($pathNFefile);
+        } else {
+            //carrega o XML pelo conteúdo
+            $docnfe->loadXMLString($pathNFefile);
+        }
         $nodenfe = $docnfe->getNode('NFe', 0);
         if ($nodenfe == '') {
             $msg = "O arquivo indicado como NFe não é um xml de NFe!";
@@ -463,7 +477,13 @@ class ToolsNFe extends BaseTools
         //carrega o cancelamento
         //pode ser um evento ou resultado de uma consulta com multiplos eventos
         $doccanc = new Dom();
-        $doccanc->loadXMLFile($pathCancfile);
+        if (is_file($pathCancfile)) {
+            //carrega o XML pelo caminho do arquivo informado
+            $doccanc->loadXMLFile($pathCancfile);
+        } else {
+            //carrega o XML pelo conteúdo
+            $doccanc->loadXMLString($pathCancfile);
+        }
         $retEvento = $doccanc->getElementsByTagName('retEvento')->item(0);
         $eventos = $retEvento->getElementsByTagName('infEvento');
         foreach ($eventos as $evento) {
@@ -1740,10 +1760,11 @@ class ToolsNFe extends BaseTools
      * @param  string $tpAmb
      * @param  string $cnpj
      * @param  array  $aRetorno
+     * @param  bool   $saveXml Define se salva o Log da conexão em arquivo
      * @return string
      * @throws Exception\RuntimeException
      */
-    public function sefazDownload($chNFe = '', $tpAmb = '', $cnpj = '', &$aRetorno = array())
+    public function sefazDownload($chNFe = '', $tpAmb = '', $cnpj = '', &$aRetorno = array(), $saveXml = true)
     {
         if ($tpAmb == '') {
             $tpAmb = $this->aConfig['tpAmb'];
@@ -1786,10 +1807,15 @@ class ToolsNFe extends BaseTools
         );
         $lastMsg = $this->oSoap->lastMsg;
         $this->soapDebug = $this->oSoap->soapDebug;
-        $filename = "$chNFe-downnfe.xml";
-        $this->zGravaFile('nfe', $tpAmb, $filename, $lastMsg);
-        $filename = "$chNFe-retDownnfe.xml";
-        $this->zGravaFile('nfe', $tpAmb, $filename, $retorno);
+        
+        //salva mensagens
+        if ($saveXml) {
+            $filename = "$chNFe-downnfe.xml";
+            $this->zGravaFile('nfe', $tpAmb, $filename, $lastMsg);
+            $filename = "$chNFe-retDownnfe.xml";
+            $this->zGravaFile('nfe', $tpAmb, $filename, $retorno);
+        }
+        
         //tratar dados de retorno
         $aRetorno = ReturnNFe::readReturnSefaz($servico, $retorno);
         return (string) $retorno;
@@ -1804,13 +1830,14 @@ class ToolsNFe extends BaseTools
      * @param    string $raizCNPJ
      * @param    string $idCsc
      * @param    string $codigoCsc
+     * @param    bool   $saveXml Define se salva o Log da conexão em arquivo
      * @param    array  $aRetorno
      * @return   string
      * @throws   Exception\InvalidArgumentException
      * @throws   Exception\RuntimeException
      * @internal function zLoadServico (Common\Base\BaseTools)
      */
-    public function sefazManutencaoCsc($indOp = '', $tpAmb = '2', $raizCNPJ = '', $idCsc = '', $codigoCsc = '', $saveXml = false, &$aRetorno = array())
+    public function sefazManutencaoCsc($indOp = '', $tpAmb = '2', $raizCNPJ = '', $idCsc = '', $codigoCsc = '', $saveXml = true, &$aRetorno = array())
     {
         if ($codigoCsc == '') {
             $codigoCsc = $this->aConfig['tokenNFCe'];

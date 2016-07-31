@@ -30,20 +30,23 @@ class MailNFe extends BaseMail
     /**
      * envia
      *
-     * @param  string $pathFile
-     * @param  array  $aMail
-     * @param  bool   $comPdf
-     * @param  string $pathPdf
+     * @param string $pathFile Caminho do arquivo XML
+     * @param array $aMail Lista de e-mail de destinatários
+     * @param bool $comPdf Se true, anexa a DANFE PDF no e-mail
+     * @param string $pathPdf Caminho do arquivo PDF caso $comPdf = true,
+     * se não for informado será renderizado a DANFE através do arquivo XML
+     * @param string $nameXml Nome para o anexo do XML
+     * @param string $namePdf Nome para o anexo do PDF
      * @return bool
      */
-    public function envia($pathFile = '', $aMail = array(), $comPdf = false, $pathPdf = '')
+    public function envia($pathFile = '', $aMail = array(), $comPdf = false, $pathPdf = '', $nameXml = '', $namePdf = '')
     {
         if ($comPdf && $pathPdf != '') {
-            $this->addAttachment($pathPdf, '');
+            $this->addAttachment($pathPdf, $namePdf);
         }
         $assunto = $this->zMontaMessagem($pathFile);
         //cria o anexo do xml
-        $this->addAttachment($pathFile, '');
+        $this->addAttachment($pathFile, $nameXml);
         //constroi a mensagem
         $this->buildMessage($this->msgHtml, $this->msgTxt);
         if (sizeof($aMail)) {

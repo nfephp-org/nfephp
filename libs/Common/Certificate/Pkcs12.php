@@ -677,8 +677,7 @@ class Pkcs12
      * e compara com a data de hoje.
      * Caso o certificado tenha expirado o mesmo será removido das
      * pastas e o método irá retornar false.
-     *
-     * @param  string $pubKey chave publica
+     * @param string $pubKey chave publica
      * @return boolean
      */
     protected function zValidCerts($pubKey)
@@ -687,7 +686,7 @@ class Pkcs12
                 //o dado não é uma chave válida
                 $this->zRemovePemFiles();
                 $this->zLeaveParam();
-                $this->error = "A chave passada está corrompida ou não é uma chave. Obtenha s chaves corretas!!";
+                $this->error = "A chave passada está corrompida ou não é uma chave. Obtenha as chaves corretas!!";
                 return false;
         }
         $certData = openssl_x509_parse($data);
@@ -701,14 +700,38 @@ class Pkcs12
         $dHoje = gmmktime(0, 0, 0, date("m"), date("d"), date("Y"));
         // compara a data de validade com a data atual
         $this->expireTimestamp = $dValid;
-        if ($dHoje > $dValid) {
+        if ($dHoje >= $dValid) {
             $this->zRemovePemFiles();
             $this->zLeaveParam();
-            $msg = "Data de validade vencida! [Valido até $dia/$mes/$ano]";
+            $msg = "Data de validade do Certificado Digital está vencida! [Valido até $dia/$mes/$ano]";
             $this->error = $msg;
             return false;
         }
         return true;
+    }
+    
+    /**
+     * zGetValidCerts
+     * Retorna a validade do certificado digital
+     * no formato Y-m-d
+     *
+     * @return boolean
+     */
+    public function zGetValidCerts()
+    {
+        if (! $data = openssl_x509_read($this->pubKey)) {
+                //o dado não é uma chave válida
+                $this->zRemovePemFiles();
+                $this->zLeaveParam();
+                $this->error = "A chave passada está corrompida ou não é uma chave. Obtenha s chaves corretas!!";
+                return false;
+        }
+        $certData = openssl_x509_parse($data);
+        // reformata a data de validade;
+        $ano = substr($certData['validTo'], 0, 2);
+        $mes = substr($certData['validTo'], 2, 2);
+        $dia = substr($certData['validTo'], 4, 2);
+        return "{$ano}-{$mes}-{$dia}";
     }
     
     /**

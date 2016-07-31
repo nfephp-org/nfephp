@@ -183,9 +183,7 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
         }
         $this->idToken = $idToken;
         $this->emitToken = $emitToken;
-        if ($urlQR != '') {
-            $this->urlQR = $urlQR;
-        }
+        $this->urlQR = $urlQR;
         $this->qrCode = $this->dom->getElementsByTagName('qrCode')->item(0)->nodeValue;
         $this->infCpl = $this->dom->getElementsByTagName("infCpl")->item(0)->nodeValue;
         if (isset($this->dom->getElementsByTagName("infAdFisco")->item(0)->nodeValue)) {
@@ -301,7 +299,6 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
      */
     public function montaDANFCE($ecoNFCe = true)
     {
-        $toolsNFe = new ToolsNFe('../../config/config.json');
         //DADOS DA NF
         $dhRecbto = $nProt = '';
         if (isset($this->nfeProc)) {
@@ -324,17 +321,13 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
         $vOutro = $this->pSimpleGetValue($this->ICMSTot, "vOutro");
         $vNF = $this->pSimpleGetValue($this->ICMSTot, "vNF");
         $qtdItens = $this->det->length;
-        if ($this->urlQR == '') {
-            //Busca no XML a URL da Consulta
-            $urlQR = $toolsNFe->zGetUrlQR($cUF, $tpAmb);
-        } else {
-            $urlQR = $this->urlQR;
-        }
+        $urlQR = $this->urlQR;
+        
         //DADOS DO EMITENTE
-        if (empty($this->logomarca)) {
-            $image = $toolsNFe->aConfig['aDocFormat']->pathLogoNFCe;
-            $imageData = base64_encode(file_get_contents($image));
-            $this->logomarca = "data: ".mime_content_type($image).";base64,{$imageData}";
+        if (!empty($this->logomarca)) {
+            //Converte a imagem em base64 para correta exibição tanto em PDF quanto HTML
+            $imageData = base64_encode(file_get_contents($this->logomarca));
+            $this->logomarca = "data: ".mime_content_type($this->logomarca).";base64,{$imageData}";
         }
         $emitRazao  = $this->pSimpleGetValue($this->emit, "xNome");
         $emitCnpj   = $this->pSimpleGetValue($this->emit, "CNPJ");
