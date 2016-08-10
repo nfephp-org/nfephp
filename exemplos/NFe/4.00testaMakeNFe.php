@@ -193,8 +193,6 @@ $aP[] = array(
         'cEAN' => '97899072659522',
         'xProd' => 'Chopp Pilsen - Barril 30 Lts',
         'NCM' => '22030000',
-        'NVE' => '',
-        'CEST' => '0302300', // Convênio ICMS 92/15
         'EXTIPI' => '',
         'CFOP' => '5101',
         'uCom' => 'Un',
@@ -220,8 +218,6 @@ $aP[] = array(
         'cEAN' => '7896030801822',
         'xProd' => 'Copo Personalizado Klima 300ml',
         'NCM' => '39241000',
-        'NVE' => '',
-        'CEST' => '',
         'EXTIPI' => '',
         'CFOP' => '5102',
         'uCom' => 'Cx',
@@ -247,8 +243,6 @@ foreach ($aP as $prod) {
     $cEAN = $prod['cEAN'];
     $xProd = $prod['xProd'];
     $NCM = $prod['NCM'];
-    $NVE = $prod['NVE'];
-    $CEST = $prod['CEST'];
     $EXTIPI = $prod['EXTIPI'];
     $CFOP = $prod['CFOP'];
     $uCom = $prod['uCom'];
@@ -267,7 +261,7 @@ foreach ($aP as $prod) {
     $xPed = $prod['xPed'];
     $nItemPed = $prod['nItemPed'];
     $nFCI = $prod['nFCI'];
-    $resp = $nfe->tagprod($nItem, $cProd, $cEAN, $xProd, $NCM, $NVE, $CEST, $EXTIPI, $CFOP, $uCom, $qCom, $vUnCom, $vProd, $cEANTrib, $uTrib, $qTrib, $vUnTrib, $vFrete, $vSeg, $vDesc, $vOutro, $indTot, $xPed, $nItemPed, $nFCI);
+    $resp = $nfe->tagprod($nItem, $cProd, $cEAN, $xProd, $NCM, $EXTIPI, $CFOP, $uCom, $qCom, $vUnCom, $vProd, $cEANTrib, $uTrib, $qTrib, $vUnTrib, $vFrete, $vSeg, $vDesc, $vOutro, $indTot, $xPed, $nItemPed, $nFCI);
 }
 
 // Informações adicionais na linha do Produto
