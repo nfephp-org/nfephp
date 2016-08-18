@@ -242,6 +242,9 @@ class ToolsNFe extends BaseTools
                 . $id . '-danfe.pdf';
             $pdf = $danfe->printDANFE($pathPdf, 'F');
         }
+		if ($templateFile != '') {
+            $mail->setTemplate($templateFile);
+        }
         if ($mail->envia($pathXml, $aMails, $comPdf, $pathPdf) === false) {
             throw new Exception\RuntimeException('Email não enviado. '.$mail->error);
         }
