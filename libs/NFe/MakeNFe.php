@@ -1429,6 +1429,9 @@ class MakeNFe extends BaseMake
      */
     public function tagNVE($nItem = '', $texto = '')
     {
+        if ($texto == '') {
+            return '';
+        }
         $nve = $this->dom->createElement("NVE", $texto);
         $this->aNVE[$nItem][] = $nve;
         return $nve;
@@ -1447,6 +1450,9 @@ class MakeNFe extends BaseMake
      */
     public function tagCEST($nItem = '', $texto = '')
     {
+        if ($texto == '') {
+            return '';
+        }
         $cest = $this->dom->createElement("CEST", $texto);
         $this->aCest[$nItem][] = $cest;
         return $cest;
