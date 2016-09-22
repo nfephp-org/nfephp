@@ -46,7 +46,7 @@ Além desses outros repositórios estão em construção ou já dispõem de bibl
 
 [SPED eFINANCEIRA](https://github.com/nfephp-org/sped-efinanceira) Repositório da classes de eFinanceira (versão estável)
 
-[SPED EFD](https://github.com/nfephp-org/sped-efinanceira) Repositório da classes de Sped EFD fiscal (disponível)
+[SPED EFD](https://github.com/nfephp-org/sped-efd) Repositório da classes de Sped EFD fiscal (disponível)
 
 [SPED GNRE](https://github.com/nfephp-org/sped-gnre) Repositório da classes de GNRE (versão estável)
 
