@@ -46,7 +46,7 @@ Além desses outros repositórios estão em construção ou já dispõem de bibl
 
 [SPED eFINANCEIRA](https://github.com/nfephp-org/sped-efinanceira) Repositório da classes de eFinanceira (versão estável)
 
-[SPED EFD](https://github.com/nfephp-org/sped-efinanceira) Repositório da classes de Sped EFD fiscal (disponível)
+[SPED EFD](https://github.com/nfephp-org/sped-efd) Repositório da classes de Sped EFD fiscal (disponível)
 
 [SPED GNRE](https://github.com/nfephp-org/sped-gnre) Repositório da classes de GNRE (versão estável)
 
@@ -168,8 +168,8 @@ Para mais informações, por favor visite <http://semver.org/>.
 ## Desenvolvimento
 
 Para todo o desenvolvimento, correções de bugs, inclusões e testes deverá ser usada branch `develop`. 
-Na branch `master`estarão os coódigos considerados como estáveis.
-Novas branchs poderão surgir em função das necessidades que se apresentarem, seja para manter versionamentos anteriores seja para estabelecer correções de bugs. Mas apenas essas duas branchs estabelecidas é que serão permanentente mantidas. 
+Na branch `master`estarão os códigos considerados como estáveis.
+Novas branches poderão surgir em função das necessidades que se apresentarem, seja para manter versionamentos anteriores seja para estabelecer correções de bugs. Mas apenas essas duas branches estabelecidas é que serão permanentente mantidas. 
 
 ## Bug tracker
 
