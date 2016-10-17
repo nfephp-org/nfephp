@@ -4,12 +4,13 @@ namespace NFePHP\Common\Dom;
 
 /**
  * Classe auxiliar com funções de DOM extendidas
- * @category   NFePHP
- * @package    NFePHP\Common\DomDocument
- * @copyright  Copyright (c) 2008-2015
- * @license    http://www.gnu.org/licenses/lesser.html LGPL v3
- * @author     Roberto L. Machado <linux.rlm at gmail dot com>
- * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
+ *
+ * @category  NFePHP
+ * @package   NFePHP\Common\DomDocument
+ * @copyright Copyright (c) 2008-2015
+ * @license   http://www.gnu.org/licenses/lesser.html LGPL v3
+ * @author    Roberto L. Machado <linux.rlm at gmail dot com>
+ * @link      http://github.com/nfephp-org/nfephp for the canonical source repository
  */
 
 use \DOMDocument;
@@ -20,6 +21,7 @@ class Dom extends DOMDocument
 {
     /**
      * __construct
+     *
      * @param string $version
      * @param string $charset
      */
@@ -47,10 +49,11 @@ class Dom extends DOMDocument
     /**
      * getNodeValue
      * Extrai o valor do node DOM
-     * @param string $nodeName identificador da TAG do xml
-     * @param int $itemNum numero do item a ser retornado
-     * @param string $extraTextBefore prefixo do retorno
-     * @param string $extraTextAfter sufixo do retorno
+     *
+     * @param  string $nodeName        identificador da TAG do xml
+     * @param  int    $itemNum         numero do item a ser retornado
+     * @param  string $extraTextBefore prefixo do retorno
+     * @param  string $extraTextAfter  sufixo do retorno
      * @return string
      */
     public function getNodeValue($nodeName, $itemNum = 0, $extraTextBefore = '', $extraTextAfter = '')
@@ -65,8 +68,9 @@ class Dom extends DOMDocument
     
     /**
      * getValue
-     * @param DOMElement $node
-     * @param string $name
+     *
+     * @param  DOMElement $node
+     * @param  string     $name
      * @return string
      */
     public function getValue($node, $name)
@@ -82,8 +86,9 @@ class Dom extends DOMDocument
     /**
      * getNode
      * Retorna o node solicitado
-     * @param string $nodeName
-     * @param integer $itemNum
+     *
+     * @param  string  $nodeName
+     * @param  integer $itemNum
      * @return DOMElement se existir ou string vazia se não
      */
     public function getNode($nodeName, $itemNum = 0)
@@ -97,7 +102,8 @@ class Dom extends DOMDocument
     
     /**
      * getChave
-     * @param string $nodeName
+     *
+     * @param  string $nodeName
      * @return string
      */
     public function getChave($nodeName = 'infNFe')
@@ -116,16 +122,18 @@ class Dom extends DOMDocument
      * Adiciona um elemento ao node xml passado como referencia
      * Serão inclusos erros na array $erros[] sempre que a tag for obrigatória e
      * nenhum parâmetro for passado na variável $content e $force for false
-     * @param \DOMElement $parent
-     * @param string $name
-     * @param string $content
-     * @param boolean $obrigatorio
-     * @param string $descricao
-     * @param boolean $force força a criação do elemento mesmo sem dados e não considera como erro
+     *
+     * @param  \DOMElement $parent
+     * @param  string      $name
+     * @param  string      $content
+     * @param  boolean     $obrigatorio
+     * @param  string      $descricao
+     * @param  boolean     $force       força a criação do elemento mesmo sem dados e não considera como erro
      * @return void
      */
     public function addChild(&$parent, $name, $content = '', $obrigatorio = false, $descricao = "", $force = false)
     {
+        $content = trim($content);
         if ($obrigatorio && $content === '' && !$force) {
             $this->erros[] = array(
                 "tag" => $name,
@@ -133,8 +141,7 @@ class Dom extends DOMDocument
                 "erro" => "Preenchimento Obrigatório!"
             );
         }
-        if ($obrigatorio || $content !== '') {
-            $content = trim($content);
+        if ($obrigatorio || $content !== '' || $force) {
             $content = htmlspecialchars($content, ENT_QUOTES);
             $temp = $this->createElement($name, $content);
             $parent->appendChild($temp);
@@ -146,9 +153,10 @@ class Dom extends DOMDocument
      * Acrescenta DOMElement a pai DOMElement
      * Caso o pai esteja vazio retorna uma exception com a mensagem
      * O parametro "child" pode ser vazio
-     * @param \DOMNode $parent
-     * @param \DOMNode $child
-     * @param string $msg
+     *
+     * @param  \DOMNode $parent
+     * @param  \DOMNode $child
+     * @param  string   $msg
      * @return void
      * @throws Exception\InvalidArgumentException
      */
@@ -165,8 +173,9 @@ class Dom extends DOMDocument
     /**
      * addArrayChild
      * Adiciona a um DOMNode parent, outros elementos passados em um array de DOMElements
-     * @param DOMElement $parent
-     * @param array $arr
+     *
+     * @param  DOMElement $parent
+     * @param  array      $arr
      * @return int
      */
     public function addArrayChild(&$parent, $arr)

@@ -4,12 +4,13 @@ namespace NFePHP\NFe;
 
 /**
  * Classe auxiliar com funções de DOM extendidas
- * @category   NFePHP
- * @package    NFePHP\Common\Dom\ReturnNFe
- * @copyright  Copyright (c) 2008-2015
- * @license    http://www.gnu.org/licenses/lesser.html LGPL v3
- * @author     Roberto L. Machado <linux.rlm at gmail dot com>
- * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
+ *
+ * @category  NFePHP
+ * @package   NFePHP\Common\Dom\ReturnNFe
+ * @copyright Copyright (c) 2008-2015
+ * @license   http://www.gnu.org/licenses/lesser.html LGPL v3
+ * @author    Roberto L. Machado <linux.rlm at gmail dot com>
+ * @link      http://github.com/nfephp-org/nfephp for the canonical source repository
  */
 
 use NFePHP\Common\Dom\Dom;
@@ -19,8 +20,9 @@ class ReturnNFe
     /**
      * readReturnSefaz
      * Trata o retorno da SEFAZ devolvendo o resultado em um array
-     * @param string $method
-     * @param string $xmlResp
+     *
+     * @param  string $method
+     * @param  string $xmlResp
      * @return array
      */
     public static function readReturnSefaz($method, $xmlResp)
@@ -73,7 +75,8 @@ class ReturnNFe
      * Verifica se a mensagem de retorno é uma FAULT
      * Normalmente essas falhas ocorrem devido a falhas internas
      * nos servidores da SEFAZ
-     * @param NFePHP\Common\Dom\Dom $dom
+     *
+     * @param  NFePHP\Common\Dom\Dom $dom
      * @return string
      */
     protected static function checkForFault($dom)
@@ -88,8 +91,9 @@ class ReturnNFe
     
     /**
      * zReadDownloadNF
-     * @param DOMDocument $dom
-     * @param boolean $parametro
+     *
+     * @param  DOMDocument $dom
+     * @param  boolean     $parametro
      * @return array
      */
     protected static function zReadDownloadNF($dom)
@@ -145,8 +149,9 @@ class ReturnNFe
     
     /**
      * zReadCscNFCe
-     * @param DOMDocument $dom
-     * @param boolean $parametro
+     *
+     * @param  DOMDocument $dom
+     * @param  boolean     $parametro
      * @return array
      */
     protected static function zReadCscNFCe($dom)
@@ -186,7 +191,8 @@ class ReturnNFe
     
     /**
      * zReadAutorizacaoLote
-     * @param DOMDocument $dom
+     *
+     * @param  DOMDocument $dom
      * @return array
      */
     protected static function zReadAutorizacaoLote($dom)
@@ -228,7 +234,8 @@ class ReturnNFe
     
     /**
      * zReadRetAutorizacaoLote
-     * @param DOMDocument $dom
+     *
+     * @param  DOMDocument $dom
      * @return array
      */
     protected static function zReadRetAutorizacaoLote($dom)
@@ -272,7 +279,8 @@ class ReturnNFe
     
     /**
      * zReadConsultaCadastro2
-     * @param DOMDocument $dom
+     *
+     * @param  DOMDocument $dom
      * @return array
      */
     protected static function zReadConsultaCadastro2($dom)
@@ -345,7 +353,8 @@ class ReturnNFe
 
     /**
      * zReadConsultaNF2
-     * @param DOMDocument $dom
+     *
+     * @param  DOMDocument $dom
      * @return array
      */
     protected static function zReadConsultaNF2($dom)
@@ -395,7 +404,8 @@ class ReturnNFe
     
     /**
      * zReadInutilizacaoNF2
-     * @param DOMDocument $dom
+     *
+     * @param  DOMDocument $dom
      * @return array
      */
     protected static function zReadInutilizacaoNF2($dom)
@@ -444,7 +454,8 @@ class ReturnNFe
     
     /**
      * zReadStatusServico
-     * @param DOMDocument $dom
+     *
+     * @param  DOMDocument $dom
      * @return array
      */
     protected static function zReadStatusServico($dom)
@@ -476,7 +487,7 @@ class ReturnNFe
             'xMotivo' => $dom->getValue($tag, 'xMotivo'),
             'cUF' => $dom->getValue($tag, 'cUF'),
             'dhRecbto' => $dom->getValue($tag, 'dhRecbto'),
-            'tMed' => $dom->getValue($tag, 'tMed'),            
+            'tMed' => $dom->getValue($tag, 'tMed'),
             'dhRetorno' => $dom->getValue($tag, 'dhRetorno'),
             'xObs' => $dom->getValue($tag, 'xObs')
         );
@@ -485,7 +496,8 @@ class ReturnNFe
 
     /**
      * zReadRecepcaoEvento
-     * @param DOMDocument $dom
+     *
+     * @param  DOMDocument $dom
      * @return array
      */
     protected static function zReadRecepcaoEvento($dom)
@@ -522,8 +534,9 @@ class ReturnNFe
     
     /**
      * zReadDistDFeInteresse
-     * @param DOMDocument $dom
-     * @param boolean $descompactar
+     *
+     * @param  DOMDocument $dom
+     * @param  boolean     $descompactar
      * @return array
      */
     protected static function zReadDistDFeInteresse($dom)
@@ -567,7 +580,8 @@ class ReturnNFe
     
     /**
      * zGetProt
-     * @param DOMDocument $tag
+     *
+     * @param  DOMDocument $tag
      * @return array
      */
     private static function zGetProt($dom, $tag)
@@ -589,7 +603,8 @@ class ReturnNFe
     
     /**
      * zGetEvent
-     * @param DOMDocument $tag
+     *
+     * @param  DOMDocument $tag
      * @return array
      */
     private static function zGetEvent($dom, $tag)
@@ -634,7 +649,8 @@ class ReturnNFe
     
     /**
      * zGetCanc
-     * @param DOMDocument $tag
+     *
+     * @param  DOMDocument $tag
      * @return array
      */
     private static function zGetCanc($dom, $tag)

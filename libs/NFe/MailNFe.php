@@ -4,12 +4,13 @@ namespace NFePHP\NFe;
 
 /**
  * Classe para envio dos emails aos interessados
- * @category   NFePHP
- * @package    NFePHP\NFe\MailNFe
- * @copyright  Copyright (c) 2008-2015
- * @license    http://www.gnu.org/licenses/lesser.html LGPL v3
- * @author     Roberto L. Machado <linux.rlm at gmail dot com>
- * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
+ *
+ * @category  NFePHP
+ * @package   NFePHP\NFe\MailNFe
+ * @copyright Copyright (c) 2008-2015
+ * @license   http://www.gnu.org/licenses/lesser.html LGPL v3
+ * @author    Roberto L. Machado <linux.rlm at gmail dot com>
+ * @link      http://github.com/nfephp-org/nfephp for the canonical source repository
  */
 
 use NFePHP\Common\Dom\Dom;
@@ -28,16 +29,17 @@ class MailNFe extends BaseMail
     
     /**
      * envia
-     * @param string $pathFile
-     * @param array $aMail
-     * @param bool $comPdf
-     * @param string $pathPdf
+     *
+     * @param  string $pathFile
+     * @param  array  $aMail
+     * @param  bool   $comPdf
+     * @param  string $pathPdf
      * @return bool
      */
     public function envia($pathFile = '', $aMail = array(), $comPdf = false, $pathPdf = '')
     {
         if ($comPdf && $pathPdf != '') {
-           $this->addAttachment($pathPdf, '');
+            $this->addAttachment($pathPdf, '');
         }
         $assunto = $this->zMontaMessagem($pathFile);
         //cria o anexo do xml
@@ -63,6 +65,7 @@ class MailNFe extends BaseMail
     
     /**
      * zMontaMessagem
+     *
      * @param string $pathFile
      */
     protected function zMontaMessagem($pathFile)
@@ -85,7 +88,7 @@ class MailNFe extends BaseMail
         $vNF = $icmsTot->getElementsByTagName('vNF')->item(0)->nodeValue;
         $this->aMail[] = !empty($dest->getElementsByTagName('email')->item(0)->nodeValue) ?
                 $dest->getElementsByTagName('email')->item(0)->nodeValue :
-                '';        
+                '';
         //pega os emails que existirem em obsCont
         $infAdic = $infNFe->getElementsByTagName('infAdic')->item(0);
         if (!empty($infAdic)) {
@@ -103,12 +106,13 @@ class MailNFe extends BaseMail
     
     /**
      * zRenderTemplate
-     * @param string $xNome
-     * @param string $data
-     * @param string $nNF
-     * @param string $serie
-     * @param string $vNF
-     * @param string $razao
+     *
+     * @param  string $xNome
+     * @param  string $data
+     * @param  string $nNF
+     * @param  string $serie
+     * @param  string $vNF
+     * @param  string $razao
      * @return string
      */
     protected function zRenderTemplate($xNome, $data, $nNF, $serie, $vNF, $razao)

@@ -4,13 +4,13 @@ namespace NFePHP\Common\Base;
 
 /**
  * Classe base das classes principais para a comunicação com a SEFAZ
- * 
- * @category   NFePHP
- * @package    NFePHP\Common\Base
- * @copyright  Copyright (c) 2008-2015
- * @license    http://www.gnu.org/licenses/lesser.html LGPL v3
- * @author     Roberto L. Machado <linux.rlm at gmail dot com>
- * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
+ *
+ * @category  NFePHP
+ * @package   NFePHP\Common\Base
+ * @copyright Copyright (c) 2008-2015
+ * @license   http://www.gnu.org/licenses/lesser.html LGPL v3
+ * @author    Roberto L. Machado <linux.rlm at gmail dot com>
+ * @link      http://github.com/nfephp-org/nfephp for the canonical source repository
  */
 
 use NFePHP\Common\Certificate\Pkcs12;
@@ -29,140 +29,166 @@ class BaseTools
     /**
      * enableSVCRS
      * Habilita contingência ao serviço SVC-RS: Sefaz Virtual de Contingência Rio Grande do Sul
+     *
      * @var boolean
      */
     public $enableSVCRS = false;
     /**
      * enableSVCAN
      * Habilita contingência ao serviço SVC-AN: Sefaz Virtual de Contingência Ambiente Nacional
+     *
      * @var boolean
      */
     public $enableSVCAN = false;
     /**
      * enableSVCAN
      * Habilita contingência ao serviço SVC-AN: Sefaz Virtual de Contingência Ambiente Nacional
+     *
      * @var boolean
      */
     public $enableEPEC = false;
     /**
      * motivoContingencia
      * Motivo por ter entrado em Contingencia
-     * @var string 
+     *
+     * @var string
      */
     public $motivoContingencia = '';
     /**
      * tsContingencia
      * Timestamp UNIX da data e hora de entrada em contingência
+     *
      * @var int
      */
     public $tsContingencia = '';
     /**
      * verAplic
      * Versão da aplicação
-     * @var string 
+     *
+     * @var string
      */
     public $verAplic = '';
     /**
      * certExpireTimestamp
      * TimeStamp com a data de vencimento do certificado
+     *
      * @var double
      */
     public $certExpireTimestamp = 0;
     /**
      * ambiente
+     *
      * @var string
      */
     public $ambiente = 'homologacao';
     /**
      * aConfig
+     *
      * @var array
      */
     public $aConfig = array();
     /**
      * sslProtocol
+     *
      * @var int
      */
     public $sslProtocol = 0;
     /**
      * soapTimeout
+     *
      * @var int
      */
     public $soapTimeout = 10;
     
     /**
      * oCertificate
+     *
      * @var Object Class
      */
     protected $oCertificate;
     /**
      * oSoap
-     * @var Object Class  
+     *
+     * @var Object Class
      */
     protected $oSoap;
     /**
      * aDocFormat
-     * @var array 
+     *
+     * @var array
      */
     protected $aDocFormat = array();
     /**
      * aProxyConf
+     *
      * @var array
      */
     protected $aProxyConf = array();
     /**
      * aMailConf
+     *
      * @var array
      */
     protected $aMailConf = array();
     /**
      * urlPortal
      * Instância do WebService
+     *
      * @var string
      */
     protected $urlPortal = '';
     /**
      * urlcUF
-     * @var string 
+     *
+     * @var string
      */
     protected $urlcUF = '';
     /**
      * urlVersion
-     * @var string 
+     *
+     * @var string
      */
     protected $urlVersion = '';
     /**
      * urlService
-     * @var string 
+     *
+     * @var string
      */
     protected $urlService = '';
     /**
      * urlMethod
+     *
      * @var string
      */
     protected $urlMethod = '';
     /**
      * urlOperation
-     * @var string 
+     *
+     * @var string
      */
     protected $urlOperation = '';
     /**
      * urlNamespace
-     * @var string 
+     *
+     * @var string
      */
     protected $urlNamespace = '';
     /**
      * urlHeader
-     * @var string 
+     *
+     * @var string
      */
     protected $urlHeader = '';
     /**
      * modelo da NFe 55 ou 65
+     *
      * @var string
      */
     protected $modelo = '55';
     
     /**
      * cUFlist
+     *
      * @var array
      */
     protected $cUFlist = array(
@@ -199,7 +225,8 @@ class BaseTools
     
     /**
      * __construct
-     * @param string $configJson
+     *
+     * @param  string $configJson
      * @throws Exception\InvalidArgumentException
      * @throws Exception\RuntimeException
      */
@@ -258,6 +285,7 @@ class BaseTools
      * na comunicação https com a SEFAZ usando cURL
      * Apenas é necessário quando a versão do PHP e do libssl não
      * consegue estabelecer o protocolo correto durante o handshake
+     *
      * @param string $protocol
      */
     public function setSSLProtocol($protocol = '')
@@ -292,6 +320,7 @@ class BaseTools
     /**
      * getSSLProtocol
      * Retrona o protocolo que está setado
+     *
      * @return string
      */
     public function getSSLProtocol()
@@ -302,6 +331,7 @@ class BaseTools
     
     /**
      * setSoapTimeOut
+     *
      * @param integer $segundos
      */
     public function setSoapTimeOut($segundos = 10)
@@ -314,6 +344,7 @@ class BaseTools
     
     /**
      * getSoapTimeOut
+     *
      * @return integer
      */
     public function getSoapTimeOut()
@@ -324,6 +355,7 @@ class BaseTools
     /**
      * setAmbiente
      * Seta a varável de ambiente
+     *
      * @param string $tpAmb
      */
     protected function setAmbiente($tpAmb = '2')
@@ -336,8 +368,9 @@ class BaseTools
     
     /**
      * atualizaCertificado
-     * @param string $certpfx certificado pfx em string ou o path para o certificado
-     * @param string $senha senha para abrir o certificado
+     *
+     * @param  string $certpfx certificado pfx em string ou o path para o certificado
+     * @param  string $senha   senha para abrir o certificado
      * @return boolean
      */
     public function atualizaCertificado($certpfx = '', $senha = '')
@@ -356,10 +389,11 @@ class BaseTools
     
     /**
      * assinaDoc
-     * @param string $xml
-     * @param string $tipo nfe, cte, ou mdfe
-     * @param string $tag Nome da tag a ser assinada 
-     * @param boolean $saveFile APENAS para salvar NFe, CTe ou MDFe
+     *
+     * @param  string  $xml
+     * @param  string  $tipo     nfe, cte, ou mdfe
+     * @param  string  $tag      Nome da tag a ser assinada
+     * @param  boolean $saveFile APENAS para salvar NFe, CTe ou MDFe
      * @return string
      * @throws Exception\InvalidArgumentException
      * @throws Exception\RuntimeException
@@ -398,6 +432,7 @@ class BaseTools
     
     /**
      * setVerAplic
+     *
      * @param string $versao
      */
     public function setVerAplic($versao = '')
@@ -423,11 +458,12 @@ class BaseTools
     /**
      * zLoadServico
      * Monta o namespace e o cabecalho da comunicação SOAP
-     * @param string $service
-     * @param string $siglaUF
-     * @param string $tpAmb
-     * @param string $tipo
-     * @return bool
+     *
+     * @param    string $service
+     * @param    string $siglaUF
+     * @param    string $tpAmb
+     * @param    string $tipo
+     * @return   bool
      * @internal param string $servico Identificação do Servico
      * @internal param array $aURL Dados das Urls do SEFAZ
      */
@@ -473,7 +509,8 @@ class BaseTools
     
     /**
      * zGetXmlUrlPath
-     * @param string $tipo
+     *
+     * @param  string $tipo
      * @return string
      */
     private function zGetXmlUrlPath($tipo)
@@ -505,10 +542,11 @@ class BaseTools
     
     /**
      * zMountHeader
-     * @param string $tipo
-     * @param string $namespace
-     * @param string $cUF
-     * @param string $version
+     *
+     * @param  string $tipo
+     * @param  string $namespace
+     * @param  string $cUF
+     * @param  string $version
      * @return string
      */
     private function zMountHeader($tipo, $namespace, $cUF, $version)
@@ -542,13 +580,14 @@ class BaseTools
      * todos os Estados da Federação, a partir do arquivo XML de configurações,
      * onde este é estruturado para os modelos 55 (NF-e) e 65 (NFC-e) já que
      * os endereços dos webservices podem ser diferentes.
-     * @param string $pathXmlUrlFile
-     * @param  string $tpAmb Pode ser "2-homologacao" ou "1-producao"
-     * @param string $siglaUF
-     * @param strign $tipo nfe, mdfe ou cte
-     * @return mixed false se houve erro ou array com os dados dos URLs da SEFAZ
+     *
+     * @param    string $pathXmlUrlFile
+     * @param    string $tpAmb          Pode ser "2-homologacao" ou "1-producao"
+     * @param    string $siglaUF
+     * @param    strign $tipo           nfe, mdfe ou cte
+     * @return   mixed false se houve erro ou array com os dados dos URLs da SEFAZ
      * @internal param string $sUF Sigla da Unidade da Federação (ex. SP, RS, SVRS, etc..)
-     * @see /config/nfe_ws3_modXX.xml
+     * @see      /config/nfe_ws3_modXX.xml
      */
     protected function zLoadSEFAZ($pathXmlUrlFile = '', $tpAmb = '2', $siglaUF = 'SP', $tipo = 'nfe')
     {
@@ -657,9 +696,10 @@ class BaseTools
     
     /**
      * zExtractUrl
-     * @param \SimpleXMLElement $xmlWS
-     * @param array $aUrl
-     * @param string $expression
+     *
+     * @param  \SimpleXMLElement $xmlWS
+     * @param  array             $aUrl
+     * @param  string            $expression
      * @return array
      */
     protected function zExtractUrl($xmlWS, $aUrl = array(), $expression = '')
@@ -683,11 +723,12 @@ class BaseTools
     /**
      * zGravaFile
      * Grava os dados no diretorio das NFe
-     * @param string $tpAmb ambiente
-     * @param string $filename nome do arquivo
-     * @param string $data dados a serem salvos
-     * @param string $subFolder 
-     * @param string $anomes 
+     *
+     * @param  string $tpAmb     ambiente
+     * @param  string $filename  nome do arquivo
+     * @param  string $data      dados a serem salvos
+     * @param  string $subFolder
+     * @param  string $anomes
      * @throws Exception\RuntimeException
      */
     protected function zGravaFile(
@@ -710,7 +751,7 @@ class BaseTools
             $path = $this->aConfig['pathMDFeFiles'];
         }
         $pathTemp = Files\FilesFolders::getFilePath($tpAmb, $path, $subFolder)
-            . DIRECTORY_SEPARATOR.$anomes;        
+            . DIRECTORY_SEPARATOR.$anomes;
         if (! Files\FilesFolders::saveFile($pathTemp, $filename, $data)) {
             $msg = 'Falha na gravação no diretório. '.$pathTemp;
             throw new Exception\RuntimeException($msg);
@@ -719,7 +760,8 @@ class BaseTools
 
     /**
      * getcUF
-     * @param string $siglaUF
+     *
+     * @param  string $siglaUF
      * @return string numero cUF
      */
     public function getcUF($siglaUF = '')
@@ -729,7 +771,8 @@ class BaseTools
     
     /**
      * zGetSigla
-     * @param string $cUF
+     *
+     * @param  string $cUF
      * @return string
      */
     protected function zGetSigla($cUF = '')
@@ -739,16 +782,17 @@ class BaseTools
     
     /**
      * zGetSigla
-     * @param string $cUF
-     * @param int $tpAmb
+     *
+     * @param  string $cUF
+     * @param  int    $tpAmb
      * @return string
      */
-    public function zGetUrlQR($cUF,$tpAmb)
+    public function zGetUrlQR($cUF, $tpAmb)
     {
         $siglaUF = $this->zGetSigla($cUF);
-        $this->zLoadServico('nfe','NfeConsultaQR',$siglaUF,$tpAmb);
+        $this->zLoadServico('nfe', 'NfeConsultaQR', $siglaUF, $tpAmb);
         if ($this->urlService == '') {
-            $url = "http://www.sefaz.".strtolower($siglaUF).".gov.br/";   
+            $url = "http://www.sefaz.".strtolower($siglaUF).".gov.br/";
         } else {
             $url = $this->urlService;
         }

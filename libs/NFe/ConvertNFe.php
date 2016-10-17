@@ -5,12 +5,13 @@ namespace NFePHP\NFe;
 /**
  * Classe para a conversão de notas fiscais do formato TXT conforme padrão
  * SEFAZ SP Manual_de_layout_TXT-NF-e_v3.1.0.pdf para o formato XML.
- * @category   NFePHP
- * @package    NFePHP\NFe\ConvertNFe
- * @copyright  Copyright (c) 2008-2015
- * @license    http://www.gnu.org/licenses/lesser.html LGPL v3
- * @author     Roberto L. Machado <linux.rlm at gmail dot com>
- * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
+ *
+ * @category  NFePHP
+ * @package   NFePHP\NFe\ConvertNFe
+ * @copyright Copyright (c) 2008-2015
+ * @license   http://www.gnu.org/licenses/lesser.html LGPL v3
+ * @author    Roberto L. Machado <linux.rlm at gmail dot com>
+ * @link      http://github.com/nfephp-org/nfephp for the canonical source repository
  */
 
 use NFePHP\Common\Strings\Strings;
@@ -24,6 +25,7 @@ class ConvertNFe
      * $limparString
      * Força a substituição dos caracteres especiais e acentuados
      * pelos seus substitutos normais
+     *
      * @var bool
      */
     protected $limparString = true;
@@ -31,108 +33,126 @@ class ConvertNFe
      * $version
      * versão do layout do xml da NFe
      * que esta classe cria
+     *
      * @var string
      */
     protected $version = '3.10';
     /**
      * $make
      * Instancia da classe MakeNFe
+     *
      * @var NFePHP\NFe\MakeNFe
      */
     protected $make;
     /**
      * $linhaBA10
      * refNFP
+     *
      * @var array
      */
     protected $linhaBA10 = array();
     /**
      * $linhaC
      * Dados do Emitente
-     * @var array 
+     *
+     * @var array
      */
     protected $linhaC = array();
     /**
      * $linhaE
      * Dados do destinatario
-     * @var array 
+     *
+     * @var array
      */
     protected $linhaE = array();
     /**
      * $linhaF
      * Local de retirada
-     * @var array 
+     *
+     * @var array
      */
     protected $linhaF = array();
     /**
      * $linhaG
      * Local de entrega
-     * @var array 
+     *
+     * @var array
      */
     protected $linhaG = array();
     /**
      * $nItem
      * numero do item da NFe
+     *
      * @var int
      */
     protected $nItem = 0;
     /**
      * $nDI
      * numero da DI
+     *
      * @var int
      */
-    protected $nDI = '0'; 
+    protected $nDI = '0';
     /**
      * $linhaI50
      * dados de exportação
+     *
      * @var array
      */
     protected $linhaI50 = array();
     /**
      * $linhaLA
      * dados de combustiveis
+     *
      * @var array
      */
     protected $linhaLA = array();
     /**
      * $linhaO
      * dados de IPI
+     *
      * @var array
      */
     protected $linhaO = array();
     /**
      * $linhaQ
      * dados do PIS
+     *
      * @var array
      */
     protected $linhaQ = array();
     /**
      * $linhaR
      * dados do PISST
+     *
      * @var array
      */
     protected $linhaR = array();
     /**
      * $linhaS
      * dados do COFINS
+     *
      * @var array
      */
     protected $linhaS = array();
     /**
      * $linhaT
      * dados de COFINSST
+     *
      * @var array
      */
     protected $linhaT = array();
     /**
      * $linhaX
      * dados de transporte
+     *
      * @var array
      */
     protected $linhaX = array();
     /**
      * $linhaX26
      * dados de volumes
+     *
      * @var array
      */
     protected $linhaX26 = array();
@@ -140,12 +160,14 @@ class ConvertNFe
     /**
      * $linhaZC
      * dados de cana
+     *
      * @var array
      */
     protected $linhaZC = array();
     /**
      * $aLacres
      * dados de lacres
+     *
      * @var array
      */
     protected $aLacres = array();
@@ -153,7 +175,8 @@ class ConvertNFe
     /**
      * contruct
      * Método contrutor da classe
-     * @param boolean $limparString Ativa flag para limpar os caracteres especiais
+     *
+     * @param  boolean $limparString Ativa flag para limpar os caracteres especiais
      *                e acentos
      * @return void
      */
@@ -165,7 +188,8 @@ class ConvertNFe
     /**
      * txt2xml
      * Converte uma ou multiplas NF em formato txt em xml
-     * @param mixed $txt Path para txt, txt ou array de txt
+     *
+     * @param  mixed $txt Path para txt, txt ou array de txt
      * @return array
      */
     public function txt2xml($txt)
@@ -203,6 +227,7 @@ class ConvertNFe
     /**
      * notafiscalEntity
      * Cria a entidade nota fiscal
+     *
      * @param array $aCampos
      */
     protected function notafiscalEntity($aCampos)
@@ -215,7 +240,8 @@ class ConvertNFe
     /**
      * aEntity
      * Cria a tag infNFe
-     * @param array $aCampos
+     *
+     * @param  array $aCampos
      * @throws Exception\RuntimeException
      */
     protected function aEntity($aCampos)
@@ -232,6 +258,7 @@ class ConvertNFe
     /**
      * bEntity
      * Cria a tag ide
+     *
      * @param array $aCampos
      */
     protected function bEntity($aCampos)
@@ -269,6 +296,7 @@ class ConvertNFe
     
     /**
      * baEntity
+     *
      * @param array $aCampos
      */
     protected function baEntity($aCampos)
@@ -281,6 +309,7 @@ class ConvertNFe
     /**
      * ba02Entity
      * Cria a tag refNFe
+     *
      * @param array $aCampos
      */
     protected function ba02Entity($aCampos)
@@ -292,6 +321,7 @@ class ConvertNFe
     /**
      * ba03Entity
      * Cria a tag refNF
+     *
      * @param array $aCampos
      */
     protected function ba03Entity($aCampos)
@@ -310,6 +340,7 @@ class ConvertNFe
     /**
      * ba10Entity
      * Cria a tag refNFP
+     *
      * @param array $aCampos
      */
     protected function ba10Entity($aCampos)
@@ -328,6 +359,7 @@ class ConvertNFe
     
     /**
      * ba13Entity
+     *
      * @param array $aCampos
      */
     protected function ba13Entity($aCampos)
@@ -339,6 +371,7 @@ class ConvertNFe
     
     /**
      * ba14Entity
+     *
      * @param array $aCampos
      */
     protected function ba14Entity($aCampos)
@@ -351,6 +384,7 @@ class ConvertNFe
     /**
      * zLinhaB10Entity
      * Cria a tag refNFP
+     *
      * @param array $aCampos
      */
     protected function zLinhaBA10Entity($aCampos)
@@ -371,6 +405,7 @@ class ConvertNFe
     /**
      * ba19Entity
      * Cria a tag refCTe
+     *
      * @param array $aCampos
      */
     protected function ba19Entity($aCampos)
@@ -382,6 +417,7 @@ class ConvertNFe
     /**
      * b20Entity
      * Cria a tag refECF
+     *
      * @param array $aCampos
      */
     protected function ba20Entity($aCampos)
@@ -396,6 +432,7 @@ class ConvertNFe
     
     /**
      * cEntity
+     *
      * @param array $aCampos
      */
     protected function cEntity($aCampos)
@@ -415,6 +452,7 @@ class ConvertNFe
     
     /**
      * c02Entity
+     *
      * @param array $aCampos
      */
     protected function c02Entity($aCampos)
@@ -426,6 +464,7 @@ class ConvertNFe
     
     /**
      * c02aEntity
+     *
      * @param array $aCampos
      */
     protected function c02aEntity($aCampos)
@@ -438,6 +477,7 @@ class ConvertNFe
     /**
      * zLinhaCEntity
      * Cria a tag emit
+     *
      * @param array $aCampos
      */
     protected function zLinhaCEntity($aCampos)
@@ -459,6 +499,7 @@ class ConvertNFe
     /**
      * c05Entity
      * Cria a tag enderEmit
+     *
      * @param array $aCampos
      */
     protected function c05Entity($aCampos)
@@ -481,6 +522,7 @@ class ConvertNFe
     
     /**
      * eEntity
+     *
      * @param array $aCampos
      */
     protected function eEntity($aCampos)
@@ -500,6 +542,7 @@ class ConvertNFe
     
     /**
      * e02Entity
+     *
      * @param array $aCampos
      */
     protected function e02Entity($aCampos)
@@ -511,6 +554,7 @@ class ConvertNFe
     
     /**
      * e03Entity
+     *
      * @param array $aCampos
      */
     protected function e03Entity($aCampos)
@@ -522,6 +566,7 @@ class ConvertNFe
     
     /**
      * e03aEntity
+     *
      * @param array $aCampos
      */
     protected function e03aEntity($aCampos)
@@ -534,6 +579,7 @@ class ConvertNFe
     /**
      * zLinhaEEntity
      * Cria a tag dest
+     *
      * @param array $aCampos
      */
     protected function zLinhaEEntity($aCampos)
@@ -555,6 +601,7 @@ class ConvertNFe
     /**
      * e05Entity
      * Cria a tag enderDest
+     *
      * @param array $aCampos
      */
     protected function e05Entity($aCampos)
@@ -578,6 +625,7 @@ class ConvertNFe
     /**
      * fEntity
      * Local de retirada
+     *
      * @param array $aCampos
      */
     protected function fEntity($aCampos)
@@ -597,6 +645,7 @@ class ConvertNFe
     
     /**
      * f02Entity
+     *
      * @param array $aCampos
      */
     protected function f02Entity($aCampos)
@@ -608,6 +657,7 @@ class ConvertNFe
     
     /**
      * f02aEntity
+     *
      * @param array $aCampos
      */
     protected function f02aEntity($aCampos)
@@ -620,6 +670,7 @@ class ConvertNFe
     /**
      * zLinhaFEntity
      * Cria a tag retirada
+     *
      * @param array $aCampos
      */
     protected function zLinhaFEntity($aCampos)
@@ -641,6 +692,7 @@ class ConvertNFe
     /**
      * gEntity
      * Local de entrega
+     *
      * @param array $aCampos
      */
     protected function gEntity($aCampos)
@@ -660,6 +712,7 @@ class ConvertNFe
         
     /**
      * g02Entity
+     *
      * @param array $aCampos
      */
     protected function g02Entity($aCampos)
@@ -671,6 +724,7 @@ class ConvertNFe
     
     /**
      * g02aEntity
+     *
      * @param array $aCampos
      */
     protected function g02aEntity($aCampos)
@@ -683,6 +737,7 @@ class ConvertNFe
     /**
      * zLinhaGEntity
      * Cria tag entrega
+     *
      * @param array $aCampos
      */
     protected function zLinhaGEntity($aCampos)
@@ -703,6 +758,7 @@ class ConvertNFe
     
     /**
      * gaEntity
+     *
      * @param array $aCampos
      */
     protected function gaEntity($aCampos)
@@ -715,6 +771,7 @@ class ConvertNFe
     /**
      * ga02Entity
      * Cria a tag autXML com CNPJ
+     *
      * @param array $aCampos
      */
     protected function ga02Entity($aCampos)
@@ -726,6 +783,7 @@ class ConvertNFe
     /**
      * ga03Entity
      * Cria a tag autXML com CPF
+     *
      * @param array $aCampos
      */
     protected function ga03Entity($aCampos)
@@ -737,6 +795,7 @@ class ConvertNFe
     /**
      * hEntity
      * Cria tag infAdProd
+     *
      * @param array $aCampos
      */
     protected function hEntity($aCampos)
@@ -751,6 +810,7 @@ class ConvertNFe
     /**
      * iEntity
      * Cria tag prod
+     *
      * @param array $aCampos
      */
     protected function iEntity($aCampos)
@@ -781,13 +841,14 @@ class ConvertNFe
             $aCampos[19], //indTot
             $aCampos[20], //xPed
             $aCampos[21], //nItemPed
-            $aCampos[22] //nFCI
+            $aCampos[22]//nFCI
         );
     }
     
     /**
      * i05aEntity
      * Cria a tag NVE
+     *
      * @param array $aCampos
      */
     protected function i05aEntity($aCampos)
@@ -799,6 +860,7 @@ class ConvertNFe
     /**
      * i05cEntity
      * Cria a tag CEST
+     *
      * @param array $aCampos
      */
     protected function i05cEntity($aCampos)
@@ -810,6 +872,7 @@ class ConvertNFe
     /**
      * i18Entity
      * Cria a tag DI
+     *
      * @param array $aCampos
      */
     protected function i18Entity($aCampos)
@@ -836,6 +899,7 @@ class ConvertNFe
     /**
      * i25Entity
      * Cria tag adi
+     *
      * @param array $aCampos
      */
     protected function i25Entity($aCampos)
@@ -854,6 +918,7 @@ class ConvertNFe
     
     /**
      * i50Entity
+     *
      * @param array $aCampos
      */
     protected function i50Entity($aCampos)
@@ -869,6 +934,7 @@ class ConvertNFe
     
     /**
      * i52Entity
+     *
      * @param array $aCampos
      */
     protected function i52Entity($aCampos)
@@ -883,6 +949,7 @@ class ConvertNFe
     /**
      * zLinhaI50Entity
      * Cria a tag detExport
+     *
      * @param array $aCampos
      */
     protected function zLinhaI50Entity($aCampos)
@@ -890,16 +957,17 @@ class ConvertNFe
         //I50xx|nDraw|nRE|chNFe|qExport|
         $this->make->tagdetExport(
             $this->nItem,
-            $aCampos[1], //nDraw
-            $aCampos[2], //nRE
-            $aCampos[3], //chNFe
-            $aCampos[4] //qExport
+            $aCampos[0], //nDraw
+            $aCampos[1], //nRE
+            $aCampos[2], //chNFe
+            $aCampos[3] //qExport
         );
     }
 
     /**
      * jaEntity
      * Cria tag veicProd
+     *
      * @param array $aCampos
      */
     protected function jaEntity($aCampos)
@@ -939,6 +1007,7 @@ class ConvertNFe
     /**
      * kEntity
      * Cria tag med
+     *
      * @param array $aCampos
      */
     protected function kEntity($aCampos)
@@ -957,6 +1026,7 @@ class ConvertNFe
     /**
      * lEntity
      * Cria a tag arma
+     *
      * @param array $aCampos
      */
     protected function lEntity($aCampos)
@@ -974,6 +1044,7 @@ class ConvertNFe
     
     /**
      * laEntity
+     *
      * @param arry $aCampos
      */
     protected function laEntity($aCampos)
@@ -988,6 +1059,7 @@ class ConvertNFe
         
     /**
      * la07Entity
+     *
      * @param array $aCampos
      */
     protected function la07Entity($aCampos)
@@ -1002,6 +1074,7 @@ class ConvertNFe
     /**
      * zLinhaLAEntity
      * Cria a tag comb
+     *
      * @param type $aCampos
      */
     protected function zLinhaLAEntity($aCampos)
@@ -1023,6 +1096,7 @@ class ConvertNFe
     /**
      * lbEntity
      * Cria a tag RECOPI
+     *
      * @param array $aCampos
      */
     protected function lbEntity($aCampos)
@@ -1034,6 +1108,7 @@ class ConvertNFe
     /**
      * mEntity
      * Cria a tag imposto
+     *
      * @param array $aCampos
      */
     protected function mEntity($aCampos)
@@ -1044,6 +1119,7 @@ class ConvertNFe
     
     /**
      * nEntity
+     *
      * @param array $aCampos
      */
     protected function nEntity($aCampos)
@@ -1055,6 +1131,7 @@ class ConvertNFe
     
     /**
      * n02Entity
+     *
      * @param array $aCampos
      */
     protected function n02Entity($aCampos)
@@ -1092,6 +1169,7 @@ class ConvertNFe
     
     /**
      * n03Entity
+     *
      * @param array $aCampos
      */
     protected function n03Entity($aCampos)
@@ -1129,6 +1207,7 @@ class ConvertNFe
     
     /**
      * n04Entity
+     *
      * @param array $aCampos
      */
     protected function n04Entity($aCampos)
@@ -1166,6 +1245,7 @@ class ConvertNFe
     
     /**
      * n05Entity
+     *
      * @param array $aCampos
      */
     protected function n05Entity($aCampos)
@@ -1203,6 +1283,7 @@ class ConvertNFe
     
     /**
      * n06Entity
+     *
      * @param array $aCampos
      */
     protected function n06Entity($aCampos)
@@ -1240,6 +1321,7 @@ class ConvertNFe
     
     /**
      * n07Entity
+     *
      * @param array $aCampos
      */
     protected function n07Entity($aCampos)
@@ -1277,6 +1359,7 @@ class ConvertNFe
     
     /**
      * n08Entity
+     *
      * @param array $aCampos
      */
     protected function n08Entity($aCampos)
@@ -1314,6 +1397,7 @@ class ConvertNFe
     
     /**
      * n09Entity
+     *
      * @param array $aCampos
      */
     protected function n09Entity($aCampos)
@@ -1351,6 +1435,7 @@ class ConvertNFe
     
     /**
      * n10Entity
+     *
      * @param array $aCampos
      */
     protected function n10Entity($aCampos)
@@ -1389,6 +1474,7 @@ class ConvertNFe
     /**
      * n10aEntity
      * Cria a tag ICMSPart
+     *
      * @param array $aCampos
      */
     protected function n10aEntity($aCampos)
@@ -1416,7 +1502,8 @@ class ConvertNFe
 
     /**
      * n10bEntity
-     * Cria tag ICMSST 
+     * Cria tag ICMSST
+     *
      * @param array $aCampos
      */
     protected function n10bEntity($aCampos)
@@ -1435,6 +1522,7 @@ class ConvertNFe
     
     /**
      * n10cEntity
+     *
      * @param type $aCampos
      */
     protected function n10cEntity($aCampos)
@@ -1465,6 +1553,7 @@ class ConvertNFe
     
     /**
      * n10dEntity
+     *
      * @param array $aCampos
      */
     protected function n10dEntity($aCampos)
@@ -1495,6 +1584,7 @@ class ConvertNFe
     
     /**
      * n10eEntity
+     *
      * @param array $aCampos
      */
     protected function n10eEntity($aCampos)
@@ -1525,6 +1615,7 @@ class ConvertNFe
     
     /**
      * n10fEntity
+     *
      * @param array $aCampos
      */
     protected function n10fEntity($aCampos)
@@ -1555,6 +1646,7 @@ class ConvertNFe
     
     /**
      * n10gEntity
+     *
      * @param array $aCampos
      */
     protected function n10gEntity($aCampos)
@@ -1585,6 +1677,7 @@ class ConvertNFe
     
     /**
      * n10hEntity
+     *
      * @param array $aCampos
      */
     protected function n10hEntity($aCampos)
@@ -1617,6 +1710,7 @@ class ConvertNFe
     /**
      * naEntity
      * Cria a tag ICMSUFDest
+     *
      * @param array $aCampos
      */
     protected function naEntity($aCampos)
@@ -1640,6 +1734,7 @@ class ConvertNFe
     /**
      * zLinhaNEntity
      * Cria a tag ICMS
+     *
      * @param array $aCampos
      */
     protected function zLinhaNEntity($aCampos)
@@ -1675,6 +1770,7 @@ class ConvertNFe
     /**
      * zLinhaNSNEntity
      * Cria a tag ICMSSN
+     *
      * @param array $aCampos
      */
     protected function zLinhaNSNEntity($aCampos)
@@ -1706,6 +1802,7 @@ class ConvertNFe
     
     /**
      * oEntity
+     *
      * @param array $aCampos
      */
     protected function oEntity($aCampos)
@@ -1727,6 +1824,7 @@ class ConvertNFe
     
     /**
      * o07Entity
+     *
      * @param array $aCampos
      */
     protected function o07Entity($aCampos)
@@ -1738,6 +1836,7 @@ class ConvertNFe
     
     /**
      * o10Entity
+     *
      * @param array $aCampos
      */
     protected function o10Entity($aCampos)
@@ -1750,6 +1849,7 @@ class ConvertNFe
     
     /**
      * o11Entity
+     *
      * @param array $aCampos
      */
     protected function o11Entity($aCampos)
@@ -1762,6 +1862,7 @@ class ConvertNFe
     
     /**
      * o08Entity
+     *
      * @param array $aCampos
      */
     protected function o08Entity($aCampos)
@@ -1774,6 +1875,7 @@ class ConvertNFe
     /**
      * zLinhaOEntity
      * Cria a tag IPI
+     *
      * @param array $aCampos
      */
     protected function zLinhaOEntity($aCampos)
@@ -1798,6 +1900,7 @@ class ConvertNFe
     /**
      * pEntity
      * Cria a tag II
+     *
      * @param array $aCampos
      */
     protected function pEntity($aCampos)
@@ -1814,6 +1917,7 @@ class ConvertNFe
     
     /**
      * qEntity
+     *
      * @param array $aCampos
      */
     protected function qEntity($aCampos)
@@ -1832,6 +1936,7 @@ class ConvertNFe
     
     /**
      * q02Entity
+     *
      * @param array $aCampos
      */
     protected function q02Entity($aCampos)
@@ -1846,6 +1951,7 @@ class ConvertNFe
     
     /**
      * q03Entity
+     *
      * @param array $aCampos
      */
     protected function q03Entity($aCampos)
@@ -1860,6 +1966,7 @@ class ConvertNFe
     
     /**
      * q04Entity
+     *
      * @param array $aCampos
      */
     protected function q04Entity($aCampos)
@@ -1871,6 +1978,7 @@ class ConvertNFe
     
     /**
      * q05Entity
+     *
      * @param array $aCampos
      */
     protected function q05Entity($aCampos)
@@ -1887,6 +1995,7 @@ class ConvertNFe
     
     /**
      * q07Entity
+     *
      * @param array $aCampos
      */
     protected function q07Entity($aCampos)
@@ -1900,6 +2009,7 @@ class ConvertNFe
     
     /**
      * q10Entity
+     *
      * @param array $aCampos
      */
     protected function q10Entity($aCampos)
@@ -1913,6 +2023,7 @@ class ConvertNFe
     /**
      * zLinhaQEntity
      * Cria a tag PIS
+     *
      * @param array $aCampos
      */
     protected function zLinhaQEntity($aCampos)
@@ -1931,6 +2042,7 @@ class ConvertNFe
     
     /**
      * rEntity
+     *
      * @param array $aCampos
      */
     protected function rEntity($aCampos)
@@ -1946,6 +2058,7 @@ class ConvertNFe
     
     /**
      * r02Entity
+     *
      * @param array $aCampos
      */
     protected function r02Entity($aCampos)
@@ -1958,6 +2071,7 @@ class ConvertNFe
     
     /**
      * r04Entity
+     *
      * @param array $aCampos
      */
     protected function r04Entity($aCampos)
@@ -1972,6 +2086,7 @@ class ConvertNFe
     /**
      * zLinhaREntity
      * Cria a tag PISST
+     *
      * @param array $aCampos
      */
     protected function zLinhaREntity($aCampos)
@@ -1989,6 +2104,7 @@ class ConvertNFe
 
     /**
      * sEntity
+     *
      * @param array $aCampos
      */
     protected function sEntity($aCampos)
@@ -2007,6 +2123,7 @@ class ConvertNFe
     
     /**
      * s02Entity
+     *
      * @param array $aCampos
      */
     protected function s02Entity($aCampos)
@@ -2024,6 +2141,7 @@ class ConvertNFe
         
     /**
      * s03Entity
+     *
      * @param array $aCampos
      */
     protected function s03Entity($aCampos)
@@ -2038,6 +2156,7 @@ class ConvertNFe
     
     /**
      * s04Entity
+     *
      * @param array $aCampos
      */
     protected function s04Entity($aCampos)
@@ -2049,6 +2168,7 @@ class ConvertNFe
     
     /**
      * s05Entity
+     *
      * @param array $aCampos
      */
     protected function s05Entity($aCampos)
@@ -2060,6 +2180,7 @@ class ConvertNFe
     
     /**
      * s07Entity
+     *
      * @param array $aCampos
      */
     protected function s07Entity($aCampos)
@@ -2072,6 +2193,7 @@ class ConvertNFe
     
     /**
      * s09Entity
+     *
      * @param array $aCampos
      */
     protected function s09Entity($aCampos)
@@ -2085,6 +2207,7 @@ class ConvertNFe
     /**
      * zLinhaSEntity
      * Cria a tag COFINS
+     *
      * @param array $aCampos
      */
     protected function zLinhaSEntity($aCampos)
@@ -2103,6 +2226,7 @@ class ConvertNFe
 
     /**
      * tEntity
+     *
      * @param array $aCampos
      */
     protected function tEntity($aCampos)
@@ -2118,6 +2242,7 @@ class ConvertNFe
     
     /**
      * t02Entity
+     *
      * @param array $aCampos
      */
     protected function t02Entity($aCampos)
@@ -2130,6 +2255,7 @@ class ConvertNFe
     
     /**
      * t04Entity
+     *
      * @param array $aCampos
      */
     protected function t04Entity($aCampos)
@@ -2143,6 +2269,7 @@ class ConvertNFe
     /**
      * zLinhaTEntity
      * Cria a tag COFINSST
+     *
      * @param array $aCampos
      */
     protected function zLinhaTEntity($aCampos)
@@ -2161,6 +2288,7 @@ class ConvertNFe
     /**
      * uEntity
      * Cria a tag ISSQN
+     *
      * @param array $aCampos
      */
     protected function uEntity($aCampos)
@@ -2191,6 +2319,7 @@ class ConvertNFe
     /**
      * uaEntity
      * Cria a tag tagimpostoDevol
+     *
      * @param array $aCampos
      */
     protected function uaEntity($aCampos)
@@ -2206,6 +2335,7 @@ class ConvertNFe
     
     /**
      * wEntity
+     *
      * @param array $aCampos
      */
     protected function wEntity($aCampos)
@@ -2218,6 +2348,7 @@ class ConvertNFe
     /**
      * w02Entity
      * Cria tag ICMSTot
+     *
      * @param array $aCampos
      */
     protected function w02Entity($aCampos)
@@ -2247,6 +2378,7 @@ class ConvertNFe
     /**
      * w17Entity
      * Cria a tag ISSQNTot
+     *
      * @param array $aCampos
      */
     protected function w17Entity($aCampos)
@@ -2273,6 +2405,7 @@ class ConvertNFe
     /**
      * w23Entity
      * Cria a tag retTrib
+     *
      * @param type $aCampos
      */
     protected function w23Entity($aCampos)
@@ -2292,6 +2425,7 @@ class ConvertNFe
     /**
      * xEntity
      * Cria a tag transp
+     *
      * @param array $aCampos
      */
     protected function xEntity($aCampos)
@@ -2303,6 +2437,7 @@ class ConvertNFe
     
     /**
      * x03Entity
+     *
      * @param array $aCampos
      */
     protected function x03Entity($aCampos)
@@ -2319,6 +2454,7 @@ class ConvertNFe
     }
     /**
      * x04Entity
+     *
      * @param array $aCampos
      */
     protected function x04Entity($aCampos)
@@ -2330,6 +2466,7 @@ class ConvertNFe
     
     /**
      * x05Entity
+     *
      * @param array $aCampos
      */
     protected function x05Entity($aCampos)
@@ -2342,6 +2479,7 @@ class ConvertNFe
     /**
      * zLinhaXEntity
      * Cria a tag transporta
+     *
      * @param array $aCampos
      */
     protected function zLinhaXEntity($aCampos)
@@ -2360,6 +2498,7 @@ class ConvertNFe
     
     /**
      * x11Entity
+     *
      * @param array $aCampos
      */
     protected function x11Entity($aCampos)
@@ -2378,6 +2517,7 @@ class ConvertNFe
     /**
      * x18Entity
      * Cria a tag veicTransp
+     *
      * @param array $aCampos
      */
     protected function x18Entity($aCampos)
@@ -2393,6 +2533,7 @@ class ConvertNFe
     /**
      * x22Entity
      * Cria a tag reboque
+     *
      * @param array $aCampos
      */
     protected function x22Entity($aCampos)
@@ -2409,6 +2550,7 @@ class ConvertNFe
     
     /**
      * x26Entity
+     *
      * @param array $aCampos
      */
     protected function x26Entity($aCampos)
@@ -2426,6 +2568,7 @@ class ConvertNFe
     
     /**
      * x33Entity
+     *
      * @param array $aCampos
      */
     protected function x33Entity($aCampos)
@@ -2437,6 +2580,7 @@ class ConvertNFe
     /**
      * zLinhaXVolEntity
      * Cria a tag vol
+     *
      * @param array $aCampos
      */
     protected function zLinhaXVolEntity($aCampos)
@@ -2458,6 +2602,7 @@ class ConvertNFe
     
     /**
      * yEntity
+     *
      * @param array $aCampos
      */
     protected function yEntity($aCampos)
@@ -2470,6 +2615,7 @@ class ConvertNFe
     /**
      * y02Entity
      * Cria a tag fat
+     *
      * @param array $aCampos
      */
     protected function y02Entity($aCampos)
@@ -2486,6 +2632,7 @@ class ConvertNFe
     /**
      * y07Entity
      * Cria a tag dup
+     *
      * @param array $aCampos
      */
     protected function y07Entity($aCampos)
@@ -2501,6 +2648,7 @@ class ConvertNFe
     /**
      * yaEntity
      * Cria as tags pag e card
+     *
      * @param array $aCampos
      */
     protected function yaEntity($aCampos)
@@ -2515,7 +2663,7 @@ class ConvertNFe
                 $aCampos[3], //$cnpj
                 $aCampos[4], //$tBand
                 $aCampos[5], //$cAut
-                $aCampos[6] //$tpIntegra    
+                $aCampos[6] //$tpIntegra
             );
         }
     }
@@ -2523,6 +2671,7 @@ class ConvertNFe
     /**
      * zEntity
      * Cria a a tag infAdic
+     *
      * @param array $aCampos
      */
     protected function zEntity($aCampos)
@@ -2537,6 +2686,7 @@ class ConvertNFe
     /**
      * z04Entity
      * Cria a tag obsCont
+     *
      * @param array $aCampos
      */
     protected function z04Entity($aCampos)
@@ -2551,6 +2701,7 @@ class ConvertNFe
     /**
      * z07Entity
      * Cria a tag obsFisco
+     *
      * @param array $aCampos
      */
     protected function z07Entity($aCampos)
@@ -2565,6 +2716,7 @@ class ConvertNFe
     /**
      * z10Entity
      * Cria a tag prcRef
+     *
      * @param array $aCampos
      */
     protected function z10Entity($aCampos)
@@ -2579,6 +2731,7 @@ class ConvertNFe
     /**
      * zaEntity
      * Cria a tag exporta
+     *
      * @param array $aCampos
      */
     protected function zaEntity($aCampos)
@@ -2594,6 +2747,7 @@ class ConvertNFe
     /**
      * zbEntity
      * Cria a tag compra
+     *
      * @param array $aCampos
      */
     protected function zbEntity($aCampos)
@@ -2609,6 +2763,7 @@ class ConvertNFe
     /**
      * zc01Entity
      * Cria a tag cana
+     *
      * @param array $aCampos
      */
     protected function zc01Entity($aCampos)
@@ -2629,6 +2784,7 @@ class ConvertNFe
     /**
      * zc04Entity
      * Cria a tag forDia
+     *
      * @param array $aCampos
      */
     protected function zc04Entity($aCampos)
@@ -2646,6 +2802,7 @@ class ConvertNFe
     /**
      * zc10Entity
      * Cria a tag deduc
+     *
      * @param array $aCampos
      */
     protected function zc10Entity($aCampos)
@@ -2663,6 +2820,7 @@ class ConvertNFe
     /**
      * zx01Entity
      * Cria a tag infNFeSupl com o qrCode para impressão da DANFCE
+     *
      * @param array $aCampos
      */
     protected function zx01Entity($aCampos)
@@ -2701,8 +2859,9 @@ class ConvertNFe
     
     /**
      * zSliceNotas
-     * Separa as notas em um array 
-     * @param array $array
+     * Separa as notas em um array
+     *
+     * @param  array $array
      * @return array
      */
     protected function zSliceNotas($array)
@@ -2731,7 +2890,8 @@ class ConvertNFe
     /**
      * zArray2xml
      * Converte uma Nota Fiscal em um array de txt em um xml
-     * @param array $aDados
+     *
+     * @param  array $aDados
      * @return string
      * @throws Exception\RuntimeException
      */
@@ -2751,7 +2911,8 @@ class ConvertNFe
     /**
      * zClean
      * Efetua limpeza dos campos
-     * @param array $aCampos
+     *
+     * @param  array $aCampos
      * @return array
      */
     protected function zClean($aCampos = array())

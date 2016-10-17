@@ -4,12 +4,13 @@ namespace NFePHP\Common\Files;
 
 /**
  * Classe auxiliar para criar, listar e testar os diretórios utilizados pela API
- * @category   NFePHP
- * @package    NFePHP\Common\Files
- * @copyright  Copyright (c) 2008-2015
- * @license    http://www.gnu.org/licenses/lesser.html LGPL v3
- * @author     Roberto L. Machado <linux.rlm at gmail dot com>
- * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
+ *
+ * @category  NFePHP
+ * @package   NFePHP\Common\Files
+ * @copyright Copyright (c) 2008-2015
+ * @license   http://www.gnu.org/licenses/lesser.html LGPL v3
+ * @author    Roberto L. Machado <linux.rlm at gmail dot com>
+ * @link      http://github.com/nfephp-org/nfephp for the canonical source repository
  */
 
 use NFePHP\Common\Exception;
@@ -42,7 +43,8 @@ class FilesFolders
     
     /**
      * getAmbiente
-     * @param string $tpAmb
+     *
+     * @param  string $tpAmb
      * @return string
      */
     public static function getAmbiente($tpAmb = '2')
@@ -55,9 +57,10 @@ class FilesFolders
     
     /**
      * getFilePath
-     * @param string $tpAmb
-     * @param string $dirbase
-     * @param string $subdir
+     *
+     * @param  string $tpAmb
+     * @param  string $dirbase
+     * @param  string $subdir
      * @return string
      * @throws Exception\RuntimeException
      */
@@ -78,8 +81,9 @@ class FilesFolders
     
     /**
      * createFolders
-     * Cria a estrutura de diretorios para a guarda dos arquivos 
-     * @param string $dirPath path do diretorio a ser criado
+     * Cria a estrutura de diretorios para a guarda dos arquivos
+     *
+     * @param  string $dirPath path do diretorio a ser criado
      * @return boolean
      * @throws Exception\RuntimeException
      */
@@ -100,7 +104,8 @@ class FilesFolders
     
     /**
      * createFolder
-     * @param string $folder
+     *
+     * @param  string $folder
      * @throws Exception\RuntimeException
      */
     public static function createFolder($folder = '')
@@ -116,9 +121,10 @@ class FilesFolders
     
     /**
      * saveFile
-     * @param string $path
-     * @param string $filename
-     * @param string $content
+     *
+     * @param  string $path
+     * @param  string $filename
+     * @param  string $content
      * @return boolean
      */
     public static function saveFile($path = '', $filename = '', $content = '')
@@ -137,9 +143,10 @@ class FilesFolders
     /**
      * listDir
      * Obtem todo o conteúdo de um diretorio, e que atendam ao critério indicado.
-     * @param string $dir Diretorio a ser pesquisado
-     * @param string $fileMatch Critério de seleção pode ser usados coringas como *-nfe.xml
-     * @param boolean $retpath se true retorna o path completo dos arquivos se false so retorna o nome dos arquivos
+     *
+     * @param  string  $dir       Diretorio a ser pesquisado
+     * @param  string  $fileMatch Critério de seleção pode ser usados coringas como *-nfe.xml
+     * @param  boolean $retpath   se true retorna o path completo dos arquivos se false so retorna o nome dos arquivos
      * @return array com os nome dos arquivos que atendem ao critério estabelecido ou false
      * @throws Exception\InvalidArgumentException
      */
@@ -175,9 +182,10 @@ class FilesFolders
     /**
      * Rotina para teste de escrita no path especificado
      * Usada na rotina de configuração (install.php)
-     * @param string $path
-     * @param string $message
-     * @param string $respHtml passado por referencia irá conter a resposta em html
+     *
+     * @param  string $path
+     * @param  string $message
+     * @param  string $respHtml passado por referencia irá conter a resposta em html
      * @return boolean
      */
     public static function writeTest($path = '', $message = '', &$respHtml = '')
@@ -207,7 +215,8 @@ class FilesFolders
     
     /**
      * Apaga um diretorio e todo o seu conteúdo
-     * @param string $dirPath
+     *
+     * @param  string $dirPath
      * @return boolean
      * @throws Exception\RuntimeException
      */
@@ -234,7 +243,8 @@ class FilesFolders
     
     /**
      * readFile
-     * @param string $pathFile
+     *
+     * @param  string $pathFile
      * @return string
      * @throws Exception\InvalidArgumentException
      * @throws Exception\RuntimeException
@@ -258,7 +268,8 @@ class FilesFolders
     
     /**
      * removeFile
-     * @param string $pathFile
+     *
+     * @param  string $pathFile
      * @return boolean
      */
     public static function removeFile($pathFile = '')

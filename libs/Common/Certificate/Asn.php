@@ -4,12 +4,13 @@ namespace NFePHP\Common\Certificate;
 
 /**
  * Classe auxiliar para obter informações dos certificados digitais A1 (PKCS12)
- * @category   NFePHP
- * @package    NFePHP\Common\Certificate
- * @copyright  Copyright (c) 2008-2014
- * @license    http://www.gnu.org/licenses/lesser.html LGPL v3
- * @author     Roberto L. Machado <linux.rlm at gmail dot com>
- * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
+ *
+ * @category  NFePHP
+ * @package   NFePHP\Common\Certificate
+ * @copyright Copyright (c) 2008-2014
+ * @license   http://www.gnu.org/licenses/lesser.html LGPL v3
+ * @author    Roberto L. Machado <linux.rlm at gmail dot com>
+ * @link      http://github.com/nfephp-org/nfephp for the canonical source repository
  */
 
 use NFePHP\Common\Certificate\Oids;
@@ -18,17 +19,17 @@ class Asn extends Base
 {
     /**
      * Comprimento do campo sendo usado
-     * 
-     * @var integer 
+     *
+     * @var integer
      */
     protected static $len = 0;
     
     /**
      * getCNPJCert
-     * 
+     *
      * Obtêm o numero de CNPJ da chave publica do Certificado (A1)
-     * 
-     * @param string $certpem conteúdo do certificado
+     *
+     * @param  string $certpem conteúdo do certificado
      * @return string CNPJ
      */
     public static function getCNPJCert($certPem)
@@ -43,8 +44,9 @@ class Asn extends Base
      * Recupera a informação referente ao OID contido no certificado
      * Este método assume que a OID está inserida dentro de uma estrutura do
      * tipo "sequencia", como primeiro elemento da estrutura
-     * @param string $certDer
-     * @param string $oidNumber
+     *
+     * @param  string $certDer
+     * @param  string $oidNumber
      * @return array
      */
     protected static function getOIDdata($certDer, $oidNumber)
@@ -102,8 +104,9 @@ class Asn extends Base
     /**
      * parseASN
      * Retorna a informação requerida do certificado
-     * @param string $data bloco de dados do certificado a ser traduzido
-     * @param boolean $contextEspecific
+     *
+     * @param  string  $data             bloco de dados do certificado a ser traduzido
+     * @param  boolean $contextEspecific
      * @return array com o dado do certificado já traduzido
      */
     protected static function parseASN($data, $contextEspecific = false)
@@ -202,8 +205,9 @@ class Asn extends Base
     
     /**
      * parseCommon
-     * @param string $data
-     * @param string $result
+     *
+     * @param  string $data
+     * @param  string $result
      * @return string
      */
     protected static function parseCommon($data, &$result)
@@ -217,8 +221,9 @@ class Asn extends Base
 
     /**
      * parseBooleanType
-     * @param string $data
-     * @param array $result
+     *
+     * @param  string $data
+     * @param  array  $result
      * @return void
      */
     protected static function parseBooleanType(&$data, &$result)
@@ -234,8 +239,9 @@ class Asn extends Base
 
     /**
      * parseIntegerType
-     * @param string $data
-     * @param array $result
+     *
+     * @param  string $data
+     * @param  array  $result
      * @return void
      */
     protected static function parseIntegerType(&$data, &$result)
@@ -269,9 +275,10 @@ class Asn extends Base
      
     /**
      * parseHexExtensions
-     * @param string $data
-     * @param array $result
-     * @param string $text
+     *
+     * @param  string $data
+     * @param  array  $result
+     * @param  string $text
      * @return void
      */
     protected static function parseHexExtensions(&$data, &$result, $text)
@@ -286,8 +293,9 @@ class Asn extends Base
 
     /**
      * parseTimesType
-     * @param string $data
-     * @param array $result
+     *
+     * @param  string $data
+     * @param  array  $result
      * @return void
      */
     protected static function parseTimesType(&$data, &$result)
@@ -302,8 +310,9 @@ class Asn extends Base
     
     /**
      * parsePrintableString
-     * @param string $data
-     * @param array $result
+     *
+     * @param  string $data
+     * @param  array  $result
      * @return void
      */
     protected static function parsePrintableString(&$data, &$result)
@@ -317,8 +326,9 @@ class Asn extends Base
     
     /**
      * parseCharString
-     * @param string $data
-     * @param array $result
+     *
+     * @param  string $data
+     * @param  array  $result
      * @return void
      */
     protected static function parseCharString(&$data, &$result)
@@ -332,9 +342,10 @@ class Asn extends Base
     
     /**
      * parseExtensions
-     * @param string $data
-     * @param array $result
-     * @param string $text
+     *
+     * @param  string $data
+     * @param  array  $result
+     * @param  string $text
      * @return void
      */
     protected static function parseExtensions(&$data, &$result, $text)
@@ -348,8 +359,9 @@ class Asn extends Base
     
     /**
      * parseSequence
-     * @param string $data
-     * @param array $result
+     *
+     * @param  string $data
+     * @param  array  $result
      * @return void
      */
     protected static function parseSequence(&$data, &$result)
@@ -367,8 +379,9 @@ class Asn extends Base
     
     /**
      * parseOIDtype
-     * @param string $data
-     * @param array $result
+     *
+     * @param  string $data
+     * @param  array  $result
      * @return void
      */
     protected static function parseOIDtype(&$data, &$result)
@@ -403,8 +416,9 @@ class Asn extends Base
     
     /**
      * parseSetOf
-     * @param string $data
-     * @param array $result
+     *
+     * @param  string $data
+     * @param  array  $result
      * @return void
      */
     protected static function parseSetOf(&$data, &$result)
@@ -417,9 +431,10 @@ class Asn extends Base
     
     /**
      * parseOctetSting
-     * @param string $data
-     * @param array $result
-     * @param boolean $contextEspecific
+     *
+     * @param  string  $data
+     * @param  array   $result
+     * @param  boolean $contextEspecific
      * @return void
      */
     protected static function parseOctetSting(&$data, &$result, $contextEspecific)
@@ -439,9 +454,10 @@ class Asn extends Base
     
     /**
      * parseUtf8String
-     * @param string $data
-     * @param array $result
-     * @param boolean $contextEspecific
+     *
+     * @param  string  $data
+     * @param  array   $result
+     * @param  boolean $contextEspecific
      * @return void
      */
     protected static function parseUtf8String(&$data, &$result, $contextEspecific)
@@ -461,8 +477,9 @@ class Asn extends Base
 
     /**
      * parseIA5String
-     * @param string $data
-     * @param array $result
+     *
+     * @param  string $data
+     * @param  array  $result
      * @return void
      */
     protected static function parseIA5String(&$data, &$result)
@@ -476,8 +493,9 @@ class Asn extends Base
     
     /**
      * parseString
-     * @param string $data
-     * @param array $result
+     *
+     * @param  string $data
+     * @param  array  $result
      * @return void
      */
     protected static function parseString(&$data, &$result)
@@ -491,8 +509,9 @@ class Asn extends Base
     
     /**
      * parseBitString
-     * @param string $data
-     * @param array $result
+     *
+     * @param  string $data
+     * @param  array  $result
      * @return void
      */
     protected static function parseBitString(&$data, &$result)

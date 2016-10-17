@@ -78,5 +78,5 @@ print_r($aConfig);
 echo "<BR><BR><BR>";
 
 $config = json_encode($aConfig);
-$filename = '../config/config.json';
+$filename = PATH_NFEPHP . '/config/config.json';
 file_put_contents($filename, $config);

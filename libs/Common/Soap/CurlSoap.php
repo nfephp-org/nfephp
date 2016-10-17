@@ -4,12 +4,13 @@ namespace NFePHP\Common\Soap;
 
 /**
  * Classe auxiliar para envio das mensagens SOAP usando cURL
- * @category   NFePHP
- * @package    NFePHP\Common\Soap
- * @copyright  Copyright (c) 2008-2015
- * @license    http://www.gnu.org/licenses/lesser.html LGPL v3
- * @author     Roberto L. Machado <linux dot rlm at gmail dot com>
- * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
+ *
+ * @category  NFePHP
+ * @package   NFePHP\Common\Soap
+ * @copyright Copyright (c) 2008-2015
+ * @license   http://www.gnu.org/licenses/lesser.html LGPL v3
+ * @author    Roberto L. Machado <linux dot rlm at gmail dot com>
+ * @link      http://github.com/nfephp-org/nfephp for the canonical source repository
  */
 
 use NFePHP\Common\Strings\Strings;
@@ -19,79 +20,92 @@ class CurlSoap
 {
     /**
      * soapDebug
+     *
      * @var string
      */
     public $soapDebug = '';
     /**
      * soapTimeout
+     *
      * @var integer
      */
     public $soapTimeout = 10;
     /**
      * lastMsg
+     *
      * @var string
      */
     public $lastMsg = '';
 
     /**
      * errorCurl
+     *
      * @var string
      */
     private $errorCurl = '';
     /**
      * infoCurl
+     *
      * @var array
      */
     protected $infoCurl = array();
     /**
      * pubKeyPath
-     * @var string 
+     *
+     * @var string
      */
     private $pubKeyPath = '';
     /**
      * priKeyPath
+     *
      * @var string
      */
     private $priKeyPath = '';
     /**
      * certKeyPath
+     *
      * @var string
      */
     private $certKeyPath = '';
     /**
      * proxyIP
+     *
      * @var string
      */
     private $proxyIP = '';
     /**
      * proxyPORT
+     *
      * @var string
      */
     private $proxyPORT = '';
     /**
      * proxyUSER
+     *
      * @var string
      */
     private $proxyUSER = '';
     /**
      * proxyPASS
-     * @var string 
+     *
+     * @var string
      */
     private $proxyPASS = '';
     /**
      * sslProtocol
-     * @var integer 
+     *
+     * @var integer
      */
     private $sslProtocol = 0;
     
     /**
      * __construct
-     * 
-     * @param string $priKeyPath path para a chave privada
-     * @param string $pubKeyPath path para a chave publica
-     * @param string $certKeyPath path para o certificado
-     * @param string $timeout tempo de espera da resposta do webservice
-     * @param integer $sslProtocol 
+     *
+     * @param string  $priKeyPath  path para a chave privada
+     * @param string  $pubKeyPath  path para a chave publica
+     * @param string  $certKeyPath path para o certificado
+     * @param string  $timeout     tempo de espera da resposta do webservice
+     * @param integer $sslProtocol
      */
     public function __construct($priKeyPath = '', $pubKeyPath = '', $certKeyPath = '', $timeout = 10, $sslProtocol = 0)
     {
@@ -113,10 +127,11 @@ class CurlSoap
     /**
      * setProxy
      * Seta o uso do proxy
-     * @param string $ipNumber numero IP do proxy server
-     * @param string $port numero da porta usada pelo proxy
-     * @param string $user nome do usuário do proxy
-     * @param string $pass senha de acesso ao proxy
+     *
+     * @param  string $ipNumber numero IP do proxy server
+     * @param  string $port     numero da porta usada pelo proxy
+     * @param  string $user     nome do usuário do proxy
+     * @param  string $pass     senha de acesso ao proxy
      * @return boolean
      */
     public function setProxy($ipNumber, $port, $user = '', $pass = '')
@@ -130,6 +145,7 @@ class CurlSoap
     /**
      * getProxy
      * Retorna os dados de configuração do Proxy em um array
+     *
      * @return array
      */
     public function getProxy()
@@ -143,11 +159,12 @@ class CurlSoap
     
     /**
      * Envia mensagem ao webservice
-     * @param string $urlsevice
-     * @param string $namespace
-     * @param string $header
-     * @param string $body
-     * @param string $method
+     *
+     * @param  string $urlsevice
+     * @param  string $namespace
+     * @param  string $header
+     * @param  string $body
+     * @param  string $method
      * @return boolean|string
      */
     public function send($urlservice, $namespace, $header, $body, $method)
@@ -216,7 +233,8 @@ class CurlSoap
     /**
      * getWsdl
      * Baixa o arquivo wsdl do webservice
-     * @param string $urlsefaz
+     *
+     * @param  string $urlsefaz
      * @return boolean|string
      */
     public function getWsdl($urlservice)
@@ -242,9 +260,10 @@ class CurlSoap
     /**
      * zCommCurl
      * Realiza da comunicação via cURL
-     * @param string $url
-     * @param string $data
-     * @param string $parametros
+     *
+     * @param  string $url
+     * @param  string $data
+     * @param  string $parametros
      * @return string
      */
     protected function zCommCurl($url, $data = '', $parametros = array(), $port = 443)
@@ -320,7 +339,8 @@ class CurlSoap
     
     /**
      * zDebug
-     * @param array $info
+     *
+     * @param array  $info
      * @param string $data
      * @param string $resposta
      */
@@ -359,13 +379,14 @@ class CurlSoap
     
     /**
      * getIBPTProd
-     * Consulta o serviço do IBPT para obter os impostos ao consumidor 
+     * Consulta o serviço do IBPT para obter os impostos ao consumidor
      * conforme Lei 12.741/2012
-     * @param string $cnpj
-     * @param string $tokenIBPT
-     * @param string $ncm
-     * @param string $siglaUF
-     * @param string $exTarif
+     *
+     * @param  string $cnpj
+     * @param  string $tokenIBPT
+     * @param  string $ncm
+     * @param  string $siglaUF
+     * @param  string $exTarif
      * @return array
      */
     public function getIBPTProd(

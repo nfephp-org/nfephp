@@ -3,17 +3,17 @@
 namespace NFePHP\Extras;
 
 /**
- * Classe para a impressão em PDF do Docuimento Auxiliar de NFe Consumidor 
- * 
- * @category   NFePHP
- * @package    NFePHP\NFe\ConvertNFe
- * @copyright  Copyright (c) 2008-2015
- * @license    http://www.gnu.org/licenses/lesser.html LGPL v3
+ * Classe para a impressão em PDF do Docuimento Auxiliar de NFe Consumidor
+ *
+ * @category  NFePHP
+ * @package   NFePHP\NFe\ConvertNFe
+ * @copyright Copyright (c) 2008-2015
+ * @license   http://www.gnu.org/licenses/lesser.html LGPL v3
  * @author    Roberto Spadim <roberto at spadim dot com dot br>
- * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
- * 
+ * @link      http://github.com/nfephp-org/nfephp for the canonical source repository
+ *
  * CONTRIBUIDORES (por ordem alfabetica):
- *            Roberto L. Machado <linux dot rlm at gmail dot com>   
+ *            Roberto L. Machado <linux dot rlm at gmail dot com>
  *            Mario Almeida <mario at grupopmz dot com dot br>
  */
 
@@ -141,6 +141,7 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
 
     /**
      * __contruct
+     *
      * @param string $docXML
      * @param string $sPathLogo
      * @param string $mododebug
@@ -194,6 +195,7 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
     
     /**
      * Returns idToken
+     *
      * @return string
      */
     public function getIdToken()
@@ -203,6 +205,7 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
     
     /**
      * Set idToken
+     *
      * @param string $str
      */
     public function setIdToken($str)
@@ -212,6 +215,7 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
     
     /**
      * Returns emitToken
+     *
      * @return string
      */
     public function getEmitToken()
@@ -221,6 +225,7 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
     
     /**
      * Set emitTokem
+     *
      * @param string $str
      */
     public function setEmitToken($str)
@@ -230,6 +235,7 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
     
     /**
      * Return paper size
+     *
      * @return string
      */
     public function getPapel()
@@ -239,6 +245,7 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
     
     /**
      * Set papaer size
+     *
      * @param string $aPap
      */
     public function setPapel($aPap)
@@ -248,6 +255,7 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
     
     /**
      * Check if exist data to print
+     *
      * @return boolean
      */
     public function simpleConsistencyCheck()
@@ -260,22 +268,24 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
     
     /**
      * monta
-     * @param string $orientacao
-     * @param string $papel
-     * @param string $logoAlign
-     * @param boolean $ecoNFCe false = Não (NFC-e Completa); true = Sim (NFC-e Simplificada)
+     *
+     * @param  string  $orientacao
+     * @param  string  $papel
+     * @param  string  $logoAlign
+     * @param  boolean $ecoNFCe    false = Não (NFC-e Completa); true = Sim (NFC-e Simplificada)
      * @return string
      */
-    public function monta ($orientacao = '', $papel = array(80, 'one-page'), $logoAlign = 'C', $ecoNFCe = true)
+    public function monta($orientacao = '', $papel = array(80, 'one-page'), $logoAlign = 'C', $ecoNFCe = true)
     {
         return $this->montaDANFCE($ecoNFCe);
     }
     
     /**
      * printDocument
-     * @param string $nome
-     * @param string $destino
-     * @param string $printer
+     *
+     * @param  string $nome
+     * @param  string $destino
+     * @param  string $printer
      * @return string
      */
     public function printDocument($nome = '', $destino = 'I', $printer = '')
@@ -285,7 +295,8 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
     
     /**
      * o objetivo desta função é ler o XML e gerar o DANFE NFC-e com auxilio de conversão HTML-PDF
-     * @param boolean $ecoNFCe false = Não (NFC-e Completa); true = Sim (NFC-e Simplificada)
+     *
+     * @param  boolean $ecoNFCe false = Não (NFC-e Completa); true = Sim (NFC-e Simplificada)
      * @return string
      */
     public function montaDANFCE($ecoNFCe = true)
@@ -315,7 +326,7 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
         $qtdItens = $this->det->length;
         if ($this->urlQR == '') {
             //Busca no XML a URL da Consulta
-            $urlQR = $toolsNFe->zGetUrlQR($cUF,$tpAmb);
+            $urlQR = $toolsNFe->zGetUrlQR($cUF, $tpAmb);
         } else {
             $urlQR = $this->urlQR;
         }
@@ -386,7 +397,7 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
         //$valorProdutos = number_format($vProd, 2, ",", ".");
         //$valorTotal = number_format($vNF, 2, ",", ".");
         
-        /* 
+        /*
          * Leiaute de Impressão DANFE NFC-e em acordo com 
          * Manual Padrões Técnicos do DANFE-NFC-e e QR Code
          * Versão 3.4
@@ -465,17 +476,17 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
             $this->html .= "<td class=\"tLeft\">".htmlspecialchars('Valor a Pagar R$')."</td>\n";
             $this->html .= "<td class=\"tRight\">".number_format($vOutro, 2, ',', '.')."</td>\n";
             $this->html .= "</tr>\n";
-        }        
+        }
         // Formas de Pagamentos
         $this->html .= "<tr>\n";
         $this->html .= "<th class=\"tLeft\">FORMA DE PAGAMENTO</th>\n";
         $this->html .= "<th class=\"tRight\">VALOR PAGO</th>\n";
         $this->html .= "</tr>\n";
-        $this->html .= self::pagamento($this->pag);        
+        $this->html .= self::pagamento($this->pag);
         $this->html .= "</table>\n";
         
         // -- Divisão V – Área de Mensagem Fiscal
-        $this->html .= "<table width=\"100%\">\n";        
+        $this->html .= "<table width=\"100%\">\n";
         if ($tpEmis != 1) {
             $this->html .= "<tr>\n";
             $this->html .= "<td colspan=\"3\"><strong>".
@@ -504,7 +515,7 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
             $this->html .= " ".htmlspecialchars('Emissão: ').date('d/m/y H:i:s', $tsHora)."</td>\n";
         } else {
             $this->html .= " ".htmlspecialchars('Emissão: ').date('d/m/y H:i:s', $tsHora);
-            $this->html .= "<br><strong>Via do Consumidor</strong></td>\n";   
+            $this->html .= "<br><strong>Via do Consumidor</strong></td>\n";
         }
         $this->html .= "</tr>\n";
         $this->html .= "<tr>\n";
@@ -535,17 +546,17 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
         $this->html .= "<tr>\n";
         $this->html .= "<td colspan=\"3\" class=\"menor tCenter\"><strong>{$this->infCpl}</strong></td>\n";
         $this->html .= "</tr>\n";
-        $this->html .= "</table>\n";     
+        $this->html .= "</table>\n";
                 
         // ***                                            ***//
         // *** Via do Estabelecimento em Modo Contigência ***//
         // ***                                            ***//
         
         if ($tpEmis != 1) {
-            $html2via    = str_replace('Via do Consumidor','Via do Estabelecimento',$this->html);
+            $html2via    = str_replace('Via do Consumidor', 'Via do Estabelecimento', $this->html);
             $this->html .= "<br><hr><br>\n";
             $this->html .= $html2via;
-        }        
+        }
         
         $this->html .= "</body>\n</html>\n";
         return $chNFe;
@@ -553,7 +564,8 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
     
     /**
      * Make pagamento block
-     * @param DomDocumentNFePHP $pag
+     *
+     * @param  DomDocumentNFePHP $pag
      * @return string
      */
     protected function pagamento($pag)
@@ -588,7 +600,8 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
     
     /**
      * Returns card operator name
-     * @param string $tBand
+     *
+     * @param  string $tBand
      * @return string
      */
     protected static function getCardName($tBand)
@@ -616,7 +629,8 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
     
     /**
      * Returns type of payment
-     * @param string $tPag
+     *
+     * @param  string $tPag
      * @return string
      */
     protected function tipoPag($tPag)
@@ -657,7 +671,8 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
     
     /**
      * Make itens block
-     * @param DomDocumentNFePHP $det
+     *
+     * @param  DomDocumentNFePHP $det
      * @return string
      */
     protected function itens($det)
@@ -704,7 +719,8 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
     
     /**
      * Make consumidor block
-     * @param DomDocumentNFePHP $dest
+     *
+     * @param  DomDocumentNFePHP $dest
      * @return string
      */
     protected function consumidor($dest)
@@ -737,15 +753,15 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
             
             //CNPJ, CPF ou ID Estrageiro
             if (!empty($consCNPJ)) {
-                $consCNPJ = $this->pFormat($consCNPJ, "###.###.###-##");
-                $consHtml .= "<tr><td colspan=\"3\">CONSUMIDOR CNPJ: {consCNPJ} ".
+                $consCNPJ = $this->pFormat($consCNPJ, "##.###.###/####-##");
+                $consHtml .= "<tr><td colspan=\"3\">CONSUMIDOR CNPJ: {$consCNPJ} ".
                         htmlspecialchars($consNome)."</td></tr>\n";
             } elseif (!empty($consCPF)) {
-                $consCPF = $this->pFormat($consCPF, "##.###.###/####-##");
-                $consHtml .= "<tr><td colspan=\"3\">CONSUMIDOR CPF: {consCPF} ".
+                $consCPF = $this->pFormat($consCPF, "###.###.###-##");
+                $consHtml .= "<tr><td colspan=\"3\">CONSUMIDOR CPF: {$consCPF} ".
                         htmlspecialchars($consNome)."</td></tr>\n";
             } elseif (!empty($considEstrangeiro)) {
-                $consHtml .= "<tr><td colspan=\"3\">CONSUMIDOR Id. Estrangeiro: {considEstrangeiro} ".
+                $consHtml .= "<tr><td colspan=\"3\">CONSUMIDOR Id. Estrangeiro: {$considEstrangeiro} ".
                         htmlspecialchars($consNome)."</td></tr>\n";
             }
             if (!empty($consLgr)&&!empty($consBairro)&&!empty($consMun)&&!empty($consUF)) {
@@ -764,8 +780,9 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
 
     /**
      * Print DANFCE
-     * @param string $nome
-     * @param string $destino
+     *
+     * @param  string $nome
+     * @param  string $destino
      * @return bool|string
      */
     public function printDANFCE($output = 'pdf', $nome = '', $destino = 'I')
@@ -791,7 +808,8 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
     /**
      * str2Hex
      * Converte string para haxadecimal ASCII
-     * @param string $str
+     *
+     * @param  string $str
      * @return string
      */
     protected static function str2Hex($str)
@@ -811,7 +829,8 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
     /**
      * hex2Str
      * Converte hexadecimal ASCII para string
-     * @param string $str
+     *
+     * @param  string $str
      * @return string
      */
     protected static function hex2Str($str)
@@ -830,16 +849,17 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
     
     /**
      * Mount QRCode URL
-     * @param string $chNFe
-     * @param string $url
-     * @param string $tpAmb
-     * @param string $cDest
-     * @param string $dhEmi
-     * @param string $vNF
-     * @param string $vICMS
-     * @param string $digVal
-     * @param string $idToken
-     * @param string $token
+     *
+     * @param  string $chNFe
+     * @param  string $url
+     * @param  string $tpAmb
+     * @param  string $cDest
+     * @param  string $dhEmi
+     * @param  string $vNF
+     * @param  string $vICMS
+     * @param  string $digVal
+     * @param  string $idToken
+     * @param  string $token
      * @return string
      */
     protected function makeQRCode(
@@ -882,23 +902,24 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
     
     /**
      * Save QRCode image and returns path to file
-     * @param string $seq
+     *
+     * @param  string $seq
      * @return string
      */
-    private function imgQR($seq,$dimensao=165)
+    private function imgQR($seq, $dimensao = 165)
     {
         $dimensao = $dimensao<100?100:$dimensao; //Dimensão mínima para leitura 100px = 26.4mm
         $dimensao = $dimensao>230?230:$dimensao; //Dimensão máxima para layout 230px = 60.8mm
         $quietZone = $dimensao<=100?12:$dimensao*0.10; // Acima de 25mm quiet zone de 10%
         $qrCode = new QrCode();
         $qrCode->setText($seq)
-               ->setSize($dimensao)
-               ->setPadding($quietZone)
-               ->setErrorCorrection('low')
-               ->setForegroundColor(array('r' => 0, 'g' => 0, 'b' => 0, 'a' => 0))
-               ->setBackgroundColor(array('r' => 255, 'g' => 255, 'b' => 255, 'a' => 0))
-               ->setLabel('')
-               ->setLabelFontSize(16);
+            ->setSize($dimensao)
+            ->setPadding($quietZone)
+            ->setErrorCorrection('low')
+            ->setForegroundColor(array('r' => 0, 'g' => 0, 'b' => 0, 'a' => 0))
+            ->setBackgroundColor(array('r' => 255, 'g' => 255, 'b' => 255, 'a' => 0))
+            ->setLabel('')
+            ->setLabelFontSize(16);
         $img = $qrCode->get();
         
         //Retorno src em Base64 para melhor utilização em ambos os formatos (PDF/HTML)

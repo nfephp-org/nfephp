@@ -2,16 +2,9 @@
     "name": "nfephp-org/nfephp",
     "type": "library",
     "description": "NFePHP é uma API para gerenciamento das comunicações entre o emitente de NFe e os serviços dos SEFAZ estaduais. Inteiramente construido em PHP para rodar sob qualquer sistema operacional.",
-    "keywords": [
-        "nfe",
-        "sped",
-        "nfephp"
-    ],
+    "keywords": ["nfe","sped","nfephp"],
     "homepage": "https://github.com/nfephp-org/nfephp",
-    "license": [
-        "GPL-3.0+",
-        "LGPL-3.0+"
-    ],
+    "license": ["GPL-3.0+","LGPL-3.0+"],
     "authors": [
         {
             "name": "Roberto L. Machado",
@@ -45,7 +38,9 @@
         "endroid/qrcode": "1.*@dev"
     },
     "require-dev": {
-        "phpunit/phpunit": "^4.8"
+        "phpunit/phpunit": "4.*",
+        "scrutinizer/ocular": "~1.1",
+        "squizlabs/php_codesniffer": "~2.3"
     },
     "autoload": {
         "psr-4": {
@@ -56,9 +51,6 @@
         },
         "classmap": [
             "./libs/NFe/",
-            "./libs/CTe/",
-            "./libs/MDFe/",
-            "./libs/NFSe/",
             "./libs/Common/",
             "./libs/Common/Base/",
             "./libs/Common/Certificate/",

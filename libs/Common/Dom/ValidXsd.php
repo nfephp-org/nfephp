@@ -4,12 +4,13 @@ namespace NFePHP\Common\Dom;
 
 /**
  * Classe auxiliar para validar documentos XML com o seu respecitvo XSD
- * @category   NFePHP
- * @package    NFePHP\Common\Dom\ValidXsd
- * @copyright  Copyright (c) 2008-2015
- * @license    http://www.gnu.org/licenses/lesser.html LGPL v3
- * @author     Roberto L. Machado <linux.rlm at gmail dot com>
- * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
+ *
+ * @category  NFePHP
+ * @package   NFePHP\Common\Dom\ValidXsd
+ * @copyright Copyright (c) 2008-2015
+ * @license   http://www.gnu.org/licenses/lesser.html LGPL v3
+ * @author    Roberto L. Machado <linux.rlm at gmail dot com>
+ * @link      http://github.com/nfephp-org/nfephp for the canonical source repository
  */
 
 use \DOMDocument;
@@ -28,7 +29,7 @@ class ValidXsd
         $dom->loadXML($xml, LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
         libxml_clear_errors();
         if (! $dom->schemaValidate($xsd)) {
-            $aIntErrors = libxml_get_errors();
+            $aIntErrors =   libxml_get_errors();
             foreach ($aIntErrors as $intError) {
                 self::$errors[] = self::zTranslateError($intError->message) . "\n";
             }
@@ -39,7 +40,8 @@ class ValidXsd
     
     /**
      * zTranslateError
-     * @param string $msg
+     *
+     * @param  string $msg
      * @return string
      */
     protected static function zTranslateError($msg)

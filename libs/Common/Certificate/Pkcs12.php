@@ -4,13 +4,13 @@ namespace NFePHP\Common\Certificate;
 
 /**
  * Classe para tratamento e uso dos certificados digitais modelo A1 (PKCS12)
- * 
- * @category   NFePHP
- * @package    NFePHP\Common\Certificate
- * @copyright  Copyright (c) 2008-2014
- * @license    http://www.gnu.org/licenses/lesser.html LGPL v3
- * @author     Roberto L. Machado <linux.rlm at gmail dot com>
- * @link       http://github.com/nfephp-org/nfephp for the canonical source repository
+ *
+ * @category  NFePHP
+ * @package   NFePHP\Common\Certificate
+ * @copyright Copyright (c) 2008-2014
+ * @license   http://www.gnu.org/licenses/lesser.html LGPL v3
+ * @author    Roberto L. Machado <linux.rlm at gmail dot com>
+ * @link      http://github.com/nfephp-org/nfephp for the canonical source repository
  */
 
 use NFePHP\Common\Certificate\Asn;
@@ -21,36 +21,42 @@ class Pkcs12
 {
     /**
      * Path para o diretorio onde o arquivo pfx está localizado
-     * @var string 
+     *
+     * @var string
      */
     public $pathCerts = '';
     
     /**
      * Path para o arquivo pfx (certificado digital em formato de transporte)
+     *
      * @var string
      */
     public $pfxFileName = '';
     
     /**
      * Conteudo do arquivo pfx
+     *
      * @var string
      */
     public $pfxCert = '';
     
     /**
      * Numero do CNPJ do emitente
+     *
      * @var string
      */
     public $cnpj = '';
     
     /**
      * String que contêm a chave publica em formato PEM
-     * @var string 
+     *
+     * @var string
      */
     public $pubKey = '';
     
     /**
      * String quem contêm a chave privada em formato PEM
+     *
      * @var string
      */
     public $priKey = '';
@@ -58,6 +64,7 @@ class Pkcs12
     /**
      * String que conten a combinação da chave publica e privada em formato PEM
      * e a cadeida completa de certificação caso exista
+     *
      * @var string
      */
     public $certKey = '';
@@ -65,54 +72,62 @@ class Pkcs12
     /**
      * Flag para ignorar testes de validade do certificado
      * isso é usado apenas para fins de testes
-     * @var boolean 
+     *
+     * @var boolean
      */
     public $ignoreValidCert = false;
     
     /**
      * Path para a chave publica em arquivo
+     *
      * @var string
      */
     public $pubKeyFile = '';
     
     /**
      * Path para a chave privada em arquivo
+     *
      * @var string
      */
     public $priKeyFile = '';
     
     /**
      * Path para o certificado em arquivo
+     *
      * @var string
      */
     public $certKeyFile = '';
     
     /**
      * Timestamp da data de validade do certificado
+     *
      * @var float
      */
     public $expireTimestamp = 0;
     
     /**
      * Mensagem de erro da classe
+     *
      * @var string
      */
     public $error = '';
     
     /**
      * Id do docimento sendo assinado
-     * @var string 
+     *
+     * @var string
      */
     public $docId = '';
 
     /**
      * Método de construção da classe
-     * @param string $pathCerts Path para a pasta que contêm os certificados digitais
-     * @param string $cnpj CNPJ do emitente, sem  ./-, apenas os numeros
-     * @param string $pubKey Chave publica em formato PEM, não o path mas a chave em si
-     * @param string $priKey Chave privada em formato PEM, não o path mas a chave em si
-     * @param string $certKey Certificado em formato PEM, não o path mas a chave em si
-     * @param bool $ignoreValidCert
+     *
+     * @param string  $pathCerts       Path para a pasta que contêm os certificados digitais
+     * @param string  $cnpj            CNPJ do emitente, sem  ./-, apenas os numeros
+     * @param string  $pubKey          Chave publica em formato PEM, não o path mas a chave em si
+     * @param string  $priKey          Chave privada em formato PEM, não o path mas a chave em si
+     * @param string  $certKey         Certificado em formato PEM, não o path mas a chave em si
+     * @param bool    $ignoreValidCert
      * @param boolean $ignoreValidCert Ignora a validade do certificado, mais usado para fins de teste
      */
     public function __construct(
@@ -156,13 +171,14 @@ class Pkcs12
     
     /**
      * zInit
-     * Método de inicialização da classe irá verificar 
+     * Método de inicialização da classe irá verificar
      * os parâmetros, arquivos e validade dos mesmos
      * Em caso de erro o motivo da falha será indicada na parâmetro
-     * error da classe, os outros parâmetros serão limpos e os 
+     * error da classe, os outros parâmetros serão limpos e os
      * arquivos inválidos serão removidos da pasta
-     * @param boolean $flagCert indica que as chaves já foram passas como strings
-     * @return boolean 
+     *
+     * @param  boolean $flagCert indica que as chaves já foram passas como strings
+     * @return boolean
      */
     private function zInit($flagCert = false)
     {
@@ -200,11 +216,12 @@ class Pkcs12
 
     /**
      * loadPfxFile
-     * @param string $pathPfx caminho completo para o arquivo pfx
-     * @param string $password senha para abrir o certificado pfx
-     * @param bool $createFiles
-     * @param bool $ignoreValidity
-     * @param bool $ignoreOwner
+     *
+     * @param  string $pathPfx        caminho completo para o arquivo pfx
+     * @param  string $password       senha para abrir o certificado pfx
+     * @param  bool   $createFiles
+     * @param  bool   $ignoreValidity
+     * @param  bool   $ignoreOwner
      * @return bool
      */
     public function loadPfxFile(
@@ -229,20 +246,21 @@ class Pkcs12
      * Isso deverá ocorrer a cada atualização do certificado digital, ou seja,
      * pelo menos uma vez por ano, uma vez que a validade do certificado
      * é anual.
-     * Será verificado também se o certificado pertence realmente ao CNPJ 
-     * Essa verificação checa apenas se o certificado pertence a matriz ou filial 
-     * comparando apenas os primeiros 8 digitos do CNPJ, dessa forma ambas a 
+     * Será verificado também se o certificado pertence realmente ao CNPJ
+     * Essa verificação checa apenas se o certificado pertence a matriz ou filial
+     * comparando apenas os primeiros 8 digitos do CNPJ, dessa forma ambas a
      * matriz e as filiais poderão usar o mesmo certificado indicado na instanciação
      * da classe, se não for um erro irá ocorrer e
      * o certificado não será convertido para o formato PEM.
      * Em caso de erros, será retornado false e o motivo será indicado no
      * parâmetro error da classe.
      * Os certificados serão armazenados como <CNPJ>-<tipo>.pem
-     * @param string $pfxContent arquivo PFX
-     * @param string $password Senha de acesso ao certificado PFX
-     * @param boolean $createFiles se true irá criar os arquivos pem das chaves digitais, caso contrario não
-     * @param bool $ignoreValidity
-     * @param bool $ignoreOwner
+     *
+     * @param  string  $pfxContent     arquivo PFX
+     * @param  string  $password       Senha de acesso ao certificado PFX
+     * @param  boolean $createFiles    se true irá criar os arquivos pem das chaves digitais, caso contrario não
+     * @param  bool    $ignoreValidity
+     * @param  bool    $ignoreOwner
      * @return bool
      */
     public function loadPfx(
@@ -297,7 +315,8 @@ class Pkcs12
     
     /**
      * zSavePemFiles
-     * @param array $x509certdata
+     *
+     * @param  array $x509certdata
      * @throws Exception\InvalidArgumentException
      * @throws Exception\RuntimeException
      */
@@ -325,9 +344,10 @@ class Pkcs12
     
     /**
      * aadChain
-     * @param array $aCerts Array com os caminhos completos para cada certificado da cadeia
+     *
+     * @param  array $aCerts Array com os caminhos completos para cada certificado da cadeia
      *                     ou um array com o conteúdo desses certificados
-     * @return void 
+     * @return void
      */
     public function aadChain($aCerts = array())
     {
@@ -348,8 +368,9 @@ class Pkcs12
     
     /**
      * signXML
-     * @param string $docxml
-     * @param string $tagid
+     *
+     * @param  string $docxml
+     * @param  string $tagid
      * @return string xml assinado
      * @throws Exception\InvalidArgumentException
      * @throws Exception\RuntimeException
@@ -408,11 +429,12 @@ class Pkcs12
     /**
      * zSignXML
      * Método que provê a assinatura do xml conforme padrão SEFAZ
-     * @param DOMDocument $xmldoc
-     * @param DOMElement $root
-     * @param DOMElement $node
-     * @param resource $objSSLPriKey
-     * @return string xml assinado
+     *
+     * @param    DOMDocument $xmldoc
+     * @param    DOMElement  $root
+     * @param    DOMElement  $node
+     * @param    resource    $objSSLPriKey
+     * @return   string xml assinado
      * @internal param DOMDocument $xmlDoc
      */
     private function zSignXML($xmldoc, $root, $node, $objSSLPriKey)
@@ -526,7 +548,8 @@ class Pkcs12
     /**
      * signatureExists
      * Check se o xml possi a tag Signature
-     * @param DOMDocument $dom
+     *
+     * @param  DOMDocument $dom
      * @return boolean
      */
     private function zSignatureExists($dom)
@@ -541,8 +564,9 @@ class Pkcs12
     /**
      * verifySignature
      * Verifica a validade da assinatura digital contida no xml
-     * @param string $docxml conteudo do xml a ser verificado ou o path completo
-     * @param string $tagid tag que foi assinada no documento xml
+     *
+     * @param  string $docxml conteudo do xml a ser verificado ou o path completo
+     * @param  string $tagid  tag que foi assinada no documento xml
      * @return boolean
      * @throws Exception\InvalidArgumentException
      * @throws Exception\RuntimeException
@@ -570,7 +594,8 @@ class Pkcs12
     
     /**
      * zSignCheck
-     * @param DOMDocument $dom
+     *
+     * @param  DOMDocument $dom
      * @return boolean
      * @throws Exception\RuntimeException
      */
@@ -610,8 +635,9 @@ class Pkcs12
     
     /**
      * zDigCheck
-     * @param DOMDocument $dom
-     * @param string $tagid
+     *
+     * @param  DOMDocument $dom
+     * @param  string      $tagid
      * @return boolean
      * @throws Exception\RuntimeException
      */
@@ -651,7 +677,8 @@ class Pkcs12
      * e compara com a data de hoje.
      * Caso o certificado tenha expirado o mesmo será removido das
      * pastas e o método irá retornar false.
-     * @param string $pubKey chave publica
+     *
+     * @param  string $pubKey chave publica
      * @return boolean
      */
     protected function zValidCerts($pubKey)
@@ -686,9 +713,10 @@ class Pkcs12
     
     /**
      * zCleanPubKey
-     * Remove a informação de inicio e fim do certificado 
+     * Remove a informação de inicio e fim do certificado
      * contido no formato PEM, deixando o certificado (chave publica) pronta para ser
      * anexada ao xml da NFe
+     *
      * @return string contendo o certificado limpo
      */
     protected function zCleanPubKey()
@@ -701,8 +729,9 @@ class Pkcs12
         $arCert = explode("\n", $pubKey);
         foreach ($arCert as $curData) {
             //remove a tag de inicio e fim do certificado
-            if (strncmp($curData, '-----BEGIN CERTIFICATE', 22) != 0 &&
-                    strncmp($curData, '-----END CERTIFICATE', 20) != 0 ) {
+            if (strncmp($curData, '-----BEGIN CERTIFICATE', 22) != 0
+                && strncmp($curData, '-----END CERTIFICATE', 20) != 0
+            ) {
                 //carrega o resultado numa string
                 $data .= trim($curData);
             }
@@ -714,8 +743,9 @@ class Pkcs12
      * zSplitLines
      * Divide a string do certificado publico em linhas
      * com 76 caracteres (padrão original)
-     * @param string $cntIn certificado
-     * @return string certificado reformatado 
+     *
+     * @param  string $cntIn certificado
+     * @return string certificado reformatado
      */
     protected function zSplitLines($cntIn = '')
     {
@@ -764,7 +794,8 @@ class Pkcs12
     
     /**
      * zGetOpenSSLError
-     * @param string $msg
+     *
+     * @param  string $msg
      * @return string
      */
     protected function zGetOpenSSLError($msg = '')
