@@ -3345,8 +3345,11 @@ class MakeNFe extends BaseMake
         $siglaUF = ''
     ) {
         $transporta = $this->dom->createElement("transporta");
-        $this->dom->addChild($transporta, "CNPJ", $numCNPJ, false, "CNPJ do Transportador");
-        $this->dom->addChild($transporta, "CPF", $numCPF, false, "CPF do Transportador");
+        if (!empty($numCNPJ)) {
+            $this->dom->addChild($transporta, "CNPJ", $numCNPJ, false, "CNPJ do Transportador");
+        } else {
+            $this->dom->addChild($transporta, "CPF", $numCPF, false, "CPF do Transportador");
+        }
         $this->dom->addChild($transporta, "xNome", $xNome, false, "Razão Social ou nome do Transportador");
         $this->dom->addChild($transporta, "IE", $numIE, false, "Inscrição Estadual do Transportador");
         $this->dom->addChild($transporta, "xEnder", $xEnder, false, "Endereço Completo do Transportador");
