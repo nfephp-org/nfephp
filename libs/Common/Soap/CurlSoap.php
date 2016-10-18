@@ -286,6 +286,7 @@ class CurlSoap
         //problemas no futuro quando os endereços IPV4 deixarem de ser usados
         curl_setopt($oCurl, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
         curl_setopt($oCurl, CURLOPT_CONNECTTIMEOUT, $this->soapTimeout);
+        curl_setopt($oCurl, CURLOPT_TIMEOUT, $this->soapTimeout * 6);
         curl_setopt($oCurl, CURLOPT_URL, $url);
         curl_setopt($oCurl, CURLOPT_VERBOSE, 1);
         curl_setopt($oCurl, CURLOPT_HEADER, 1);
