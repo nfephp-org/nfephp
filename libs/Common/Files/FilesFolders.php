@@ -57,12 +57,10 @@ class FilesFolders
     
     /**
      * getFilePath
-     *
      * @param  string $tpAmb
      * @param  string $dirbase
      * @param  string $subdir
      * @return string
-     * @throws Exception\RuntimeException
      */
     public static function getFilePath($tpAmb = '2', $dirbase = '', $subdir = '')
     {
@@ -71,11 +69,13 @@ class FilesFolders
             . self::getAmbiente($tpAmb)
             . DIRECTORY_SEPARATOR
             . $subdir;
-        
-        if (! is_dir($path)) {
-            $msg = "Não existe o diretorio $path !";
-            throw new Exception\RuntimeException($msg);
-        }
+        if (!is_dir($path)) {
+            if (!mkdir($path, 0777, true)) {
+                throw new Exception\RuntimeException(
+                    "Não foi possivel criar o diretorio $folder. Verifique as permissões"
+                );
+            }
+        }    
         return $path;
     }
     
@@ -87,7 +87,7 @@ class FilesFolders
      * @return boolean
      * @throws Exception\RuntimeException
      */
-    public static function createFolders($dirPath = '')
+    public static function createFolders($dirPath)
     {
         //monta a arvore de diretórios necessária e estabelece permissões de acesso
         self::createFolder($dirPath);
@@ -104,11 +104,10 @@ class FilesFolders
     
     /**
      * createFolder
-     *
      * @param  string $folder
      * @throws Exception\RuntimeException
      */
-    public static function createFolder($folder = '')
+    public static function createFolder($folder)
     {
         if (! is_dir($folder)) {
             if (! mkdir($folder, 0777)) {
@@ -121,7 +120,6 @@ class FilesFolders
     
     /**
      * saveFile
-     *
      * @param  string $path
      * @param  string $filename
      * @param  string $content
@@ -143,7 +141,6 @@ class FilesFolders
     /**
      * listDir
      * Obtem todo o conteúdo de um diretorio, e que atendam ao critério indicado.
-     *
      * @param  string  $dir       Diretorio a ser pesquisado
      * @param  string  $fileMatch Critério de seleção pode ser usados coringas como *-nfe.xml
      * @param  boolean $retpath   se true retorna o path completo dos arquivos se false so retorna o nome dos arquivos
