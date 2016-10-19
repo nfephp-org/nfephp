@@ -57,7 +57,6 @@ class FilesFolders
     
     /**
      * getFilePath
-     *
      * @param  string $tpAmb
      * @param  string $dirbase
      * @param  string $subdir
@@ -71,11 +70,13 @@ class FilesFolders
             . self::getAmbiente($tpAmb)
             . DIRECTORY_SEPARATOR
             . $subdir;
-        
-        if (! is_dir($path)) {
-            $msg = "Não existe o diretorio $path !";
-            throw new Exception\RuntimeException($msg);
-        }
+        if (!is_dir($path)) {
+            if (!mkdir($path, 0777, true)) {
+                throw new Exception\RuntimeException(
+                    "Não foi possivel criar o diretorio $folder. Verifique as permissões"
+                );
+            }
+        }    
         return $path;
     }
     
