@@ -45,11 +45,7 @@ Os demais componentes também terão repositórios novos, mas por ora ainda perm
 
 [SPED GNRE](https://github.com/nfephp-org/sped-gnre) Repositório da classes de GNRE (versão estável)
 
-<<<<<<< HEAD
-[SPED EFD](https://github.com/nfephp-org/sped-efd) Repositório da classes de Sped EFD fiscal (disponível)
-=======
 Além desses outros repositórios estão em construção ou já dispõem de bibliotecas
->>>>>>> 5dd534d... [UPD] README.md
 
 [SPED EFD](https://github.com/nfephp-org/sped-efinanceira) Repositório da classes de Sped EFD fiscal  (em desenvolvimento)
 
