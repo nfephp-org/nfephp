@@ -27,40 +27,45 @@ Não mais serão aceitas alterações, melhorias no código ou inclusões de nov
 
 **As estruturas de CTe, MDFe e outras foram removidas deste repositório e levadas a seus novos repositórios veja:**
 
-[SPED CTe](https://github.com/nfephp-org/sped-cte) Novo repositório das classes de CTe
+[SPED NFe](https://github.com/nfephp-org/sped-nfe) Novo repositório da classes de NFe (em fase de testes)
 
-[SPED MDFe](https://github.com/nfephp-org/sped-mdfe) Novo repositório das classes de MDFe
->Todas as contribuições em código devem ser direcionadas para esses novos repositórios pois não mais existirão no repositorio do nfephp original.
+[SPED CTe](https://github.com/nfephp-org/sped-cte) Novo repositório das classes de CTe (em desenvolvimento)
 
+[SPED MDFe](https://github.com/nfephp-org/sped-mdfe) Novo repositório das classes de MDFe (em desenvolvimento)
+
+[SPED NFSe](https://github.com/nfephp-org/sped-nfse) Novo repositório das classes de NFSe (em desenvolvimento)
 
 Os demais componentes também terão repositórios novos, mas por ora ainda permanecem neste.
 
 [SPED COMMON](https://github.com/nfephp-org/sped-common) Novo repositório das classes comuns usadas por todos ou vários projetos. 
 
-[SPED NFe](https://github.com/nfephp-org/sped-nfe) Novo repositório da classes de NFe
-
 [SPED DA](https://github.com/nfephp-org/sped-da) Novo repositório das classes que geram a impressão dos documentos. 
 
-
-Além desses outros repositórios estão em construção ou já dispõem de bibliotecas
-
-[SPED eFINANCEIRA](https://github.com/nfephp-org/sped-efinanceira) Repositório da classes de eFinanceira (versão estável)
-
-[SPED EFD](https://github.com/nfephp-org/sped-efinanceira) Repositório da classes de Sped EFD fiscal (disponível)
+[POSPRINT](https://github.com/nfephp-org/posprint) Framework para impressão com impressoras térmicas POS (em desenvolvimento)
 
 [SPED GNRE](https://github.com/nfephp-org/sped-gnre) Repositório da classes de GNRE (versão estável)
 
+Além desses outros repositórios estão em construção ou já dispõem de bibliotecas
+
+[SPED EFD](https://github.com/nfephp-org/sped-efinanceira) Repositório da classes de Sped EFD fiscal  (em desenvolvimento)
+
 [SPED RESTFUL](https://github.com/nfephp-org/sped-restful) Aplicativo RestFul para geração de documentos Sped (em desenvolvimento)
 
-[SPED CONSOLE](https://github.com/nfephp-org/sped-console) Conjunto de recursos em linha de comando (desenvolvimento)
+[SPED CONSOLE](https://github.com/nfephp-org/sped-console) Conjunto de recursos em linha de comando (em desenvolvimento)
 
-[SPED DOCS](https://github.com/nfephp-org/sped-docs) Conjunto da documentação dos pacotes NFePHP (parcial)
+[SPED DOCS](https://github.com/nfephp-org/sped-docs) Conjunto da documentação dos pacotes NFePHP (ultrapassado, incompleto e parcial)
 
-[SPED EMISSOR](https://github.com/nfephp-org/sped-emissor) Aplicativo "front-end" para emissão de documentos (desenvolvimento)
+[SPED EMISSOR](https://github.com/nfephp-org/sped-emissor) Aplicativo "front-end" para emissão de documentos (não iniciado)
 
-[SPED eSOCIAL](https://github.com/nfephp-org/sped-esocial) Repositório das classes para eSocial (desenvolvimento)
+[SPED eSOCIAL](https://github.com/nfephp-org/sped-esocial) Repositório das classes para eSocial (apenas documentação)
 
 [SPED SERIALIZER](https://github.com/nfephp-org/sped-esocial) Repositorio de classes para serialização de XML (conceito)
+
+Outros projetos relacionados, mas com finalidade especifica:
+
+[SPED eFINANCEIRA](https://github.com/nfephp-org/sped-efinanceira) Repositório da classes de eFinanceira (versão estável)
+
+[SPED eSFINGE](https://github.com/nfephp-org/sped-esfinge) Framework para integração com o sistema eSfinge do TCE/SC (versão estável)
 
 # CONTRIBUINDO
 
