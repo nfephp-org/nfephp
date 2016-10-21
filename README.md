@@ -41,26 +41,33 @@ Os demais componentes também terão repositórios novos, mas por ora ainda perm
 
 [SPED DA](https://github.com/nfephp-org/sped-da) Novo repositório das classes que geram a impressão dos documentos. 
 
+[SPED MAIL](https://github.com/nfephp-org/sped-mail) Novo repositório das classes que enviam os emails relativos aos projetos SPED. 
 
 Além desses outros repositórios estão em construção ou já dispõem de bibliotecas
 
-[SPED eFINANCEIRA](https://github.com/nfephp-org/sped-efinanceira) Repositório da classes de eFinanceira (versão estável)
+[SPED NFSe](https://github.com/nfephp-org/sped-nfse) Framework para integração com os sistema sdas NFSe das prefeituras (em desenvolvimento)
 
-[SPED EFD](https://github.com/nfephp-org/sped-efinanceira) Repositório da classes de Sped EFD fiscal (disponível)
+[SPED EFD](https://github.com/nfephp-org/sped-efd) Repositório da classes de Sped EFD fiscal (em desenvolvimento)
 
 [SPED GNRE](https://github.com/nfephp-org/sped-gnre) Repositório da classes de GNRE (versão estável)
 
 [SPED RESTFUL](https://github.com/nfephp-org/sped-restful) Aplicativo RestFul para geração de documentos Sped (em desenvolvimento)
 
-[SPED CONSOLE](https://github.com/nfephp-org/sped-console) Conjunto de recursos em linha de comando (desenvolvimento)
+[SPED CONSOLE](https://github.com/nfephp-org/sped-console) Conjunto de recursos em linha de comando (em desenvolvimento)
 
-[SPED DOCS](https://github.com/nfephp-org/sped-docs) Conjunto da documentação dos pacotes NFePHP (parcial)
+[SPED DOCS](https://github.com/nfephp-org/sped-docs) Conjunto da documentação dos pacotes NFePHP (desatualizado parcial)
 
-[SPED EMISSOR](https://github.com/nfephp-org/sped-emissor) Aplicativo "front-end" para emissão de documentos (desenvolvimento)
+[SPED EMISSOR](https://github.com/nfephp-org/sped-emissor) Aplicativo "front-end" para emissão de documentos (não iniciado)
 
-[SPED eSOCIAL](https://github.com/nfephp-org/sped-esocial) Repositório das classes para eSocial (desenvolvimento)
+[SPED eSOCIAL](https://github.com/nfephp-org/sped-esocial) Repositório das classes para eSocial (apenas documentação)
 
 [SPED SERIALIZER](https://github.com/nfephp-org/sped-esocial) Repositorio de classes para serialização de XML (conceito)
+
+Outros projetos relacionados a operações especificas:
+
+[SPED eFINANCEIRA](https://github.com/nfephp-org/sped-efinanceira) Repositório da classes de eFinanceira (versão estável)
+
+[SPED eSFINGE](https://github.com/nfephp-org/sped-esfinge) Framework para integração com eSfinge TCE/SC (versão estável) 
 
 # CONTRIBUINDO
 
@@ -168,8 +175,8 @@ Para mais informações, por favor visite <http://semver.org/>.
 ## Desenvolvimento
 
 Para todo o desenvolvimento, correções de bugs, inclusões e testes deverá ser usada branch `develop`. 
-Na branch `master`estarão os coódigos considerados como estáveis.
-Novas branchs poderão surgir em função das necessidades que se apresentarem, seja para manter versionamentos anteriores seja para estabelecer correções de bugs. Mas apenas essas duas branchs estabelecidas é que serão permanentente mantidas. 
+Na branch `master` estarão os códigos considerados como estáveis.
+Novas branches poderão surgir em função das necessidades que se apresentarem, seja para manter versionamentos anteriores seja para estabelecer correções de bugs. Mas apenas essas duas branches estabelecidas é que serão permanentente mantidas. 
 
 ## Bug tracker
 

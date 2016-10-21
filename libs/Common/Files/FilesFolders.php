@@ -75,7 +75,7 @@ class FilesFolders
                     "Não foi possivel criar o diretorio $folder. Verifique as permissões"
                 );
             }
-        }    
+        }
         return $path;
     }
     

@@ -242,7 +242,7 @@ class ToolsNFe extends BaseTools
                 . $id . '-danfe.pdf';
             $pdf = $danfe->printDANFE($pathPdf, 'F');
         }
-		if ($templateFile != '') {
+        if ($templateFile != '') {
             $mail->setTemplate($templateFile);
         }
         if ($mail->envia($pathXml, $aMails, $comPdf, $pathPdf) === false) {
@@ -1174,7 +1174,7 @@ class ToolsNFe extends BaseTools
         return (string) $retorno;
     }
 
-    	/**
+        /**
      * sefazStatus
      * Verifica o status do serviço da SEFAZ/SVC
      * NOTA : Este serviço será removido no futuro, segundo da Receita/SEFAZ devido
@@ -1198,7 +1198,10 @@ class ToolsNFe extends BaseTools
         //carrega serviço
         $servico = 'NfeStatusServico';
         $this->zLoadServico(
-                'nfe', $servico, $siglaUF, $tpAmb
+            'nfe',
+            $servico,
+            $siglaUF,
+            $tpAmb
         );
         if ($this->urlService == '') {
             $msg = "O status não está disponível na SEFAZ $siglaUF!!!";
@@ -1217,7 +1220,11 @@ class ToolsNFe extends BaseTools
         $body = "<nfeDadosMsg xmlns=\"$this->urlNamespace\">$cons</nfeDadosMsg>";
         //consome o webservice e verifica o retorno do SOAP
         $retorno = $this->oSoap->send(
-                $this->urlService, $this->urlNamespace, $this->urlHeader, $body, $this->urlMethod
+            $this->urlService,
+            $this->urlNamespace,
+            $this->urlHeader,
+            $body,
+            $this->urlMethod
         );
         $lastMsg = $this->oSoap->lastMsg;
         $this->soapDebug = $this->oSoap->soapDebug;

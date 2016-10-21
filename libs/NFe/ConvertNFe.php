@@ -929,7 +929,6 @@ class ConvertNFe
         $this->linhaI50[2] = '';
         $this->linhaI50[3] = '';
         $this->zLinhaI50Entity($this->linhaI50);
-
     }
     
     /**
@@ -1039,7 +1038,6 @@ class ConvertNFe
             $aCampos[3], //nCano
             $aCampos[4] //descr
         );
-        
     }
     
     /**
@@ -2330,7 +2328,6 @@ class ConvertNFe
             $aCampos[1], //pDevol
             $aCampos[2] //vIPIDevol
         );
-        
     }
     
     /**
@@ -2399,7 +2396,6 @@ class ConvertNFe
             $aCampos[11], //$vISSRet
             $aCampos[12] //$cRegTrib
         );
-        
     }
     
     /**
@@ -2432,7 +2428,6 @@ class ConvertNFe
     {
         //X|modFrete|
         $this->make->tagtransp($aCampos[1]);
-        
     }
     
     /**

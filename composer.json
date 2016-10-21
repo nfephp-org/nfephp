@@ -44,29 +44,13 @@
     },
     "autoload": {
         "psr-4": {
-          "nfephp-org\\nfephp\\": "libs/"  
-        },
-        "psr-0": {
-            "": ["libs/", "tests/"]
-        },
-        "classmap": [
-            "./libs/NFe/",
-            "./libs/Common/",
-            "./libs/Common/Base/",
-            "./libs/Common/Certificate/",
-            "./libs/Common/Configure/",
-            "./libs/Common/DateTime/",
-            "./libs/Common/Dom/",
-            "./libs/Common/Exception/",
-            "./libs/Common/Files/",
-            "./libs/Common/Identify/",
-            "./libs/Common/Keys/",
-            "./libs/Common/LotNumber/",
-            "./libs/Common/Modules/",
-            "./libs/Common/Soap/",
-            "./libs/Common/Strings/",
-            "./libs/Extras/"
-        ]
+          "NFePHP\\": "libs/"  
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "NFePHP\\Tests\\": "tests/"
+        }
     },
     "extra": {
         "branch-alias": {

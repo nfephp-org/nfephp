@@ -324,7 +324,6 @@ class Danfce1 extends CommonNFePHP implements DocumentoNFePHP
         $texto = $texto . "\n" . $emitLgr . "," . $emitNro . " " . $emitCpl . "," . $emitBairro
                 . ". CEP:" . $emitCEP . ". " . $emitMun . "-" . $emitUF . $emitFone;
         $this->pTextBox($xRs, $y, $wRs, $h, $texto, $aFont, 'C', $alignEmit, 0, '', false);
-
     }
     
     protected function pCabecalhoSecundarioDANFE($x = 0, $y = 0, $h = 0)
@@ -345,7 +344,6 @@ class Danfce1 extends CommonNFePHP implements DocumentoNFePHP
         $texto = "\nNFC-e não permite aproveitamento de crédito de ICMS";
         $aFont = array('font'=>$this->fontePadrao, 'size'=>7, 'style'=>'');
         $this->pTextBox($x, $yBox2, $w, $hBox2, $texto, $aFont, 'C', 'C', 0, '', false);
-        
     }
     
     protected function pProdutosDANFE($x = 0, $y = 0, $h = 0)
@@ -594,7 +592,6 @@ class Danfce1 extends CommonNFePHP implements DocumentoNFePHP
         $aFont = array('font'=>$this->fontePadrao, 'size'=>7, 'style'=>'B');
         $this->pTextBox($xValor, $yTotalFinal, $wColDir, $hLinha, $texto, $aFont, 'T', 'R', 0, '', false);
          */
-
     }
     
     protected function pPagamentosDANFE($x = 0, $y = 0, $h = 0)
@@ -712,7 +709,6 @@ class Danfce1 extends CommonNFePHP implements DocumentoNFePHP
         $yTex3 = $y + ($hLinha*6);
         $texto = $chNFe;
         $this->pTextBox($x, $yTex3, $w, $hLinha, $texto, $aFontTex, 'C', 'C', 0, '', false);
-        
     }
     
     protected function pConsumidorDANFE($x = 0, $y = 0, $h = 0)
@@ -768,7 +764,6 @@ class Danfce1 extends CommonNFePHP implements DocumentoNFePHP
             $texto = "Consumidor não identificado";
             $this->pTextBox($x, $yTex1, $w, $hLinha, $texto, $aFontTex, 'C', 'C', 0, '', false);
         }
-        
     }
     
     protected function pQRDANFE($x = 0, $y = 0, $h = 0)
@@ -822,7 +817,6 @@ class Danfce1 extends CommonNFePHP implements DocumentoNFePHP
             //aqui pode entrar a rotina de impressão direta
         }
         return $arq;
-
     } //fim função printDANFE
     
     
@@ -969,11 +963,9 @@ class Danfce1 extends CommonNFePHP implements DocumentoNFePHP
 
     public function monta($orientacao = '', $papel = '', $logoAlign = 'C')
     {
-        
     }
 
     public function printDocument($nome = '', $destino = 'I', $printer = '')
     {
-        
     }
 }
