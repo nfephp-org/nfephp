@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<NFe xmlns="http://www.portalfiscal.inf.br/nfe">
+	<infNFe Id="NFe41160817713114000181650020000005701527147215" versao="3.10">
+		<ide>
+			<cUF>41</cUF>
+			<cNF>52714721</cNF>
+			<natOp>VENDA DE PRODUTO AO CONSUMIDOR</natOp>
+			<indPag>0</indPag>
+			<mod>65</mod>
+			<serie>2</serie>
+			<nNF>570</nNF>
+			<dhEmi>2016-08-29T12:30:59-03:00</dhEmi>
+			<tpNF>1</tpNF>
+			<idDest>1</idDest>
+			<cMunFG>4106902</cMunFG>
+			<tpImp>4</tpImp>
+			<tpEmis>1</tpEmis>
+			<cDV>5</cDV>
+			<tpAmb>2</tpAmb>
+			<finNFe>1</finNFe>
+			<indFinal>1</indFinal>
+			<indPres>1</indPres>
+			<procEmi>0</procEmi>
+			<verProc>1.0</verProc>
+		</ide>
+		<emit>
+			<CNPJ>17713114000181</CNPJ>
+			<xNome>HESTILO MODA E ACESSóRIOS MASCULINOS LTDA</xNome>
+			<xFant>HESTILO MODA E ACESSóRIOS MASCULINOS</xFant>
+			<enderEmit>
+				<xLgr>AV. NOSSA SENHORA DE LOURDES</xLgr>
+				<nro>63</nro>
+				<xCpl>AV. NOSSA SENHORA DE LOURDES</xCpl>
+				<xBairro>JARDIM DAS AMéRICAS</xBairro>
+				<cMun>4106902</cMun>
+				<xMun>CURITIBA</xMun>
+				<UF>PR</UF>
+				<CEP>81530020</CEP>
+				<cPais>1058</cPais>
+				<xPais>BRASIL</xPais>
+				<fone>4130293840</fone>
+			</enderEmit>
+			<IE>9062328808</IE>
+			<IM>06618401</IM>
+			<CNAE>4782202</CNAE>
+			<CRT>1</CRT>
+		</emit>
+		<det nItem="1">
+			<prod>
+				<cProd>23501</cProd>
+				<cEAN/>
+				<xProd>LÂMINA WILKINSON C/3</xProd>
+				<NCM>82122010</NCM>
+				<CFOP>5102</CFOP>
+				<uCom>UN</uCom>
+				<qCom>1</qCom>
+				<vUnCom>2.90</vUnCom>
+				<vProd>2.90</vProd>
+				<cEANTrib/>
+				<uTrib>UN</uTrib>
+				<qTrib>1</qTrib>
+				<vUnTrib>2.90</vUnTrib>
+				<indTot>1</indTot>
+			</prod>
+			<imposto>
+				<vTotTrib>1.13</vTotTrib>
+				<ICMS>
+					<ICMSSN102>
+						<orig>0</orig>
+						<CSOSN>103</CSOSN>
+					</ICMSSN102>
+				</ICMS>
+			</imposto>
+		</det>
+		<total>
+			<ICMSTot>
+				<vBC>2.90</vBC>
+				<vICMS>0.00</vICMS>
+				<vICMSDeson>0.00</vICMSDeson>
+				<vBCST>0.00</vBCST>
+				<vST>0.00</vST>
+				<vProd>2.90</vProd>
+				<vFrete>0.00</vFrete>
+				<vSeg>0.00</vSeg>
+				<vDesc>0.00</vDesc>
+				<vII>0.00</vII>
+				<vIPI>0.00</vIPI>
+				<vPIS>0.00</vPIS>
+				<vCOFINS>0.00</vCOFINS>
+				<vOutro>0.00</vOutro>
+				<vNF>2.90</vNF>
+				<vTotTrib>1.13</vTotTrib>
+			</ICMSTot>
+		</total>
+		<transp>
+			<modFrete>9</modFrete>
+		</transp>
+		<pag>
+			<tPag>04</tPag>
+			<vPag>2.90</vPag>
+		</pag>
+	</infNFe>
+	<infNFeSupl>
+		<qrCode>
+			<![CDATA[http://www.dfeportal.fazenda.pr.gov.br/dfe-portal/rest/servico/consultaNFCe?chNFe=41160817713114000181650020000005701527147215&nVersao=100&tpAmb=2&dhEmi=323031362d30382d32395431323a33303a35392d30333a3030&vNF=2.90&vICMS=0.00&digVal=326178484b7356533769634d717239625a4958363447756248746b3d&cIdToken=000001&cHashQRCode=5964A2DE2ED46AB406A329C62EDCB4E3D692A78C]]>
+		</qrCode>
+	</infNFeSupl>
+	<Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
+		<SignedInfo>
+			<CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
+			<SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
+			<Reference URI="#NFe41160817713114000181650020000005701527147215">
+				<Transforms>
+					<Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
+					<Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
+				</Transforms>
+				<DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+				<DigestValue>2axHKsVS7icMqr9bZIX64GubHtk=</DigestValue>
+			</Reference>
+		</SignedInfo>
+		<SignatureValue>Upzblsfc8YnNPFH92qREQi55fGnf2FoEkno3EoLH9zxlQ2ms7+arfnMi9MseTJu87APp0arRoYkj0s+aTr5HBPG+Xmno6P5JjKETKRsoUxkYPxN2OSoPq5/fZDumt03lEWipQUADCbVw5CXqTrl+IjSYQBTdyb3qBponnvbTnDmulkEtKeHvMjv0qRqzKOdEJeVCawq37Ei61p/5cHOhvG5C1LQBnzaFZb7nrtNYa9ttT8yELJRdFdUhyHnDCSDTWAy1lTUUsAOkQqqMn5YK2Zyn/IynPvrKECdkUolxni36+EUvx9rm6+TOJHloAffZ2ti8kVbSq7cxg+zwseIEMg==</SignatureValue>
+		<KeyInfo>
+			<X509Data>
+				<X509Certificate>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</X509Certificate>
+			</X509Data>
+		</KeyInfo>
+	</Signature>
+</NFe>
