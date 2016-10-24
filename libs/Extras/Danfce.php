@@ -32,7 +32,6 @@ use Endroid\QrCode\QrCode;
 use NFePHP\Extras\CommonNFePHP;
 use NFePHP\Extras\DocumentoNFePHP;
 use NFePHP\Extras\DomDocumentNFePHP;
-use NFePHP\NFe\ToolsNFe;
 
 /**
  * Classe DanfceNFePHP
@@ -187,7 +186,9 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
             $this->urlQR = $urlQR;
         }
         $this->qrCode = $this->dom->getElementsByTagName('qrCode')->item(0)->nodeValue;
-        $this->infCpl = $this->dom->getElementsByTagName("infCpl")->item(0)->nodeValue;
+        if (isset($this->dom->getElementsByTagName("infCpl")->item(0)->nodeValue)) {
+            $this->infCpl = $this->dom->getElementsByTagName("infCpl")->item(0)->nodeValue;
+        }
         if (isset($this->dom->getElementsByTagName("infAdFisco")->item(0)->nodeValue)) {
             $this->infAdFisco = $this->dom->getElementsByTagName("infAdFisco")->item(0)->nodeValue;
         }
@@ -301,7 +302,6 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
      */
     public function montaDANFCE($ecoNFCe = true)
     {
-        $toolsNFe = new ToolsNFe('../../config/config.json');
         //DADOS DA NF
         $dhRecbto = $nProt = '';
         if (isset($this->nfeProc)) {
@@ -309,8 +309,8 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
             $dhRecbto  = $this->pSimpleGetValue($this->nfeProc, "dhRecbto");
         }
         $digVal = $this->pSimpleGetValue($this->nfe, "DigestValue");
-        $chNFe = str_replace('NFe', '', $this->infNFe->getAttribute("Id"));
-        $chNFe = $this->pFormat($chNFe, "#### #### #### #### #### #### #### #### #### #### ####");
+        $id = str_replace('NFe', '', $this->infNFe->getAttribute("Id"));
+        $chNFe = $this->pFormat($id, "#### #### #### #### #### #### #### #### #### #### ####");
         $tpAmb = $this->pSimpleGetValue($this->ide, 'tpAmb');
         $tpEmis = $this->pSimpleGetValue($this->ide, 'tpEmis');
         $cUF = $this->pSimpleGetValue($this->ide, 'cUF');
@@ -324,12 +324,7 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
         $vOutro = $this->pSimpleGetValue($this->ICMSTot, "vOutro");
         $vNF = $this->pSimpleGetValue($this->ICMSTot, "vNF");
         $qtdItens = $this->det->length;
-        if ($this->urlQR == '') {
-            //Busca no XML a URL da Consulta
-            $urlQR = $toolsNFe->zGetUrlQR($cUF, $tpAmb);
-        } else {
-            $urlQR = $this->urlQR;
-        }
+        $urlQR = $this->urlQR;
         //DADOS DO EMITENTE
         if (empty($this->logomarca)) {
             $image = $toolsNFe->aConfig['aDocFormat']->pathLogoNFCe;
@@ -559,7 +554,7 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
         }
         
         $this->html .= "</body>\n</html>\n";
-        return $chNFe;
+        return $id;
     }
     
     /**
