@@ -263,7 +263,8 @@ foreach ($aP as $prod) {
     $nFCI = $prod['nFCI'];
     $resp = $nfe->tagprod($nItem, $cProd, $cEAN, $xProd, $NCM, $EXTIPI, $CFOP, $uCom, $qCom, $vUnCom, $vProd, $cEANTrib, $uTrib, $qTrib, $vUnTrib, $vFrete, $vSeg, $vDesc, $vOutro, $indTot, $xPed, $nItemPed, $nFCI);
 }
-
+$nfe->tagCEST(1, '2345');
+$nfe->tagCEST(2, '9999');
 // Informações adicionais na linha do Produto
 /*$nItem = 1; //produtos 1
 $vDesc = 'Barril 30 Litros Chopp Tipo Pilsen - Pedido Nº15';
