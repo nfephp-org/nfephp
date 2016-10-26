@@ -16,3 +16,4 @@ local
 /tests/folder
 .coverage
 xmls
+composer.phar
