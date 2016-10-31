@@ -478,6 +478,13 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
         $this->html .= "<th class=\"tRight\">VALOR PAGO</th>\n";
         $this->html .= "</tr>\n";
         $this->html .= self::pagamento($this->pag);
+        
+        // Valor aproximado dos produtos
+        $this->html .= "<tr><td><td></tr>\n";
+        $this->html .= "<tr>\n";
+        $this->html .= "<td class=\"tLeft\">Valor aproximado dos tributos: R$ ".number_format($vTotTrib, 2, ',', '.')."</td>\n";
+        $this->html .= "</tr>\n";
+        
         $this->html .= "</table>\n";
         
         // -- Divisão V – Área de Mensagem Fiscal
