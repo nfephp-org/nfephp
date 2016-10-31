@@ -708,7 +708,10 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
             $itensHtml .=  "<tr>\n";
             $itensHtml .=  "<td class=\"tLeft\">".htmlspecialchars($nitem)."</td>\n";
             $itensHtml .=  "<td class=\"tLeft\">".htmlspecialchars($cProd)."</td>\n";
-            $itensHtml .=  "<td class=\"tLeft\">".htmlspecialchars($xProd)."</td>\n";
+            $itensHtml .=  "<td class=\"tLeft\" colspan=\"5\">".htmlspecialchars($xProd)."</td>\n";
+            $itensHtml .=  "</tr>\n";
+            $itensHtml .=  "<tr>\n";
+            $itensHtml .=  "<td colspan=\"3\"></td>\n";
             $itensHtml .=  "<td class=\"tRight\">$qCom</td>\n";
             $itensHtml .=  "<td>$uCom</td>\n";
             $itensHtml .=  "<td class=\"tRight\">".htmlspecialchars($vUnCom)."</td>\n";
