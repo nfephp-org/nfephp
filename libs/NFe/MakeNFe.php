@@ -3613,13 +3613,15 @@ class MakeNFe extends BaseMake
                 false,
                 "Tipo de Integração para pagamento"
             );
-            $this->dom->addChild(
-                $card,
-                "CNPJ",
-                $cnpj,
-                true,
-                "CNPJ da Credenciadora de cartão de crédito e/ou débito"
-            );
+            if (!empty($cnpj)){
+                $this->dom->addChild(
+                    $card,
+                    "CNPJ",
+                    $cnpj,
+                    true,
+                    "CNPJ da Credenciadora de cartão de crédito e/ou débito"
+                );
+            }
             $this->dom->addChild(
                 $card,
                 "tBand",
@@ -3627,13 +3629,15 @@ class MakeNFe extends BaseMake
                 true,
                 "Bandeira da operadora de cartão de crédito e/ou débito"
             );
-            $this->dom->addChild(
-                $card,
-                "cAut",
-                $cAut,
-                true,
-                "Número de autorização da operação cartão de crédito e/ou débito"
-            );
+            if (!empty($cAut)){
+                $this->dom->addChild(
+                    $card,
+                    "cAut",
+                    $cAut,
+                    true,
+                    "Número de autorização da operação cartão de crédito e/ou débito"
+                );
+            }
             $this->dom->appChild($this->aPag[count($this->aPag)-1], $card, '');
             return $card;
         }
