@@ -300,7 +300,7 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
      * @param  boolean $ecoNFCe false = Não (NFC-e Completa); true = Sim (NFC-e Simplificada)
      * @return string
      */
-    public function montaDANFCE($ecoNFCe = true)
+    public function montaDANFCE($ecoNFCe = true, $cancelada = false)
     {
         //DADOS DA NF
         $dhRecbto = $nProt = '';
@@ -504,6 +504,12 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
             $this->html .= "<td colspan=\"3\"><strong>".
                     htmlspecialchars("INFORMAÇÕES ADICIONAIS DE INTERESSE DO FISCO")."<strong></td>\n";
             $this->html .= "<td colspan=\"3\">{$this->infAdFisco}</td>\n".
+            $this->html .= "</tr>\n";
+        }
+        
+        if ($cancelada) {
+            $this->html .= "<tr>\n";
+            $this->html .= "<td colspan=\"3\" style=\"color: #F00; font-size: 15pt;\"><strong>NOTA CANCELADA</strong></td>\n";
             $this->html .= "</tr>\n";
         }
         $this->html .= "</table>\n";
