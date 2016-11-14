@@ -2806,8 +2806,8 @@ class MakeNFe extends BaseMake
         $pisst = $this->dom->createElement('PISST');
         $this->dom->addChild($pisst, 'vBC', $vBC, true, "[item $nItem] Valor da Base de Cálculo do PIS");
         $this->dom->addChild($pisst, 'pPIS', $pPIS, true, "[item $nItem] Alíquota do PIS (em percentual)");
-        $this->dom->addChild($pisst, 'qBCProd', $qBCProd, true, "[item $nItem] Quantidade Vendida");
-        $this->dom->addChild($pisst, 'vAliqProd', $vAliqProd, true, "[item $nItem] Alíquota do PIS (em reais)");
+        $this->dom->addChild($pisst, 'qBCProd', $qBCProd, false, "[item $nItem] Quantidade Vendida");
+        $this->dom->addChild($pisst, 'vAliqProd', $vAliqProd, false, "[item $nItem] Alíquota do PIS (em reais)");
         $this->dom->addChild($pisst, 'vPIS', $vPIS, true, "[item $nItem] Valor do PIS");
         $this->aPISST[$nItem] = $pisst;
         return $pisst;
@@ -2915,8 +2915,8 @@ class MakeNFe extends BaseMake
         $cofinsst = $this->dom->createElement("COFINSST");
         $this->dom->addChild($cofinsst, "vBC", $vBC, true, "[item $nItem] Valor da Base de Cálculo da COFINS");
         $this->dom->addChild($cofinsst, "pCOFINS", $pCOFINS, true, "[item $nItem] Alíquota da COFINS (em percentual)");
-        $this->dom->addChild($cofinsst, "qBCProd", $qBCProd, true, "[item $nItem] Quantidade Vendida");
-        $this->dom->addChild($cofinsst, "vAliqProd", $vAliqProd, true, "[item $nItem] Alíquota da COFINS (em reais)");
+        $this->dom->addChild($cofinsst, "qBCProd", $qBCProd, false, "[item $nItem] Quantidade Vendida");
+        $this->dom->addChild($cofinsst, "vAliqProd", $vAliqProd, false, "[item $nItem] Alíquota da COFINS (em reais)");
         $this->dom->addChild($cofinsst, "vCOFINS", $vCOFINS, true, "[item $nItem] Valor da COFINS");
         $this->aCOFINSST[$nItem] = $cofinsst;
         return $cofinsst;
