@@ -3617,7 +3617,7 @@ class MakeNFe extends BaseMake
                 $card,
                 "CNPJ",
                 $cnpj,
-                true,
+                false,
                 "CNPJ da Credenciadora de cartão de crédito e/ou débito"
             );
             $this->dom->addChild(
@@ -3631,7 +3631,7 @@ class MakeNFe extends BaseMake
                 $card,
                 "cAut",
                 $cAut,
-                true,
+                false,
                 "Número de autorização da operação cartão de crédito e/ou débito"
             );
             $this->dom->appChild($this->aPag[count($this->aPag)-1], $card, '');
