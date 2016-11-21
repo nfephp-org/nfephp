@@ -801,9 +801,10 @@ class MakeNFe extends BaseMake
                 $flagNome = false;//marca se xNome é ou não obrigatório
             }
         }
-        if ($this->tpAmb == '2' && $this->mod == '55') {
+        if ($this->tpAmb == '2') {
             $xNome = 'NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL';
             //a exigência do CNPJ 99999999000191 não existe mais
+            //removido modelo 55
         }
         if ($cnpj != '') {
             $this->dom->addChild(
@@ -1272,6 +1273,12 @@ class MakeNFe extends BaseMake
             . "código EAN ou código de barras",
             true
         );
+        
+        if ($this->tpAmb == '2' && $this->mod == '65') {
+            $xProd = 'NOTA FISCAL EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL';
+            // quando for NFCe muda o nome do produto
+        }
+        
         $this->dom->addChild(
             $prod,
             "xProd",
@@ -2799,8 +2806,8 @@ class MakeNFe extends BaseMake
         $pisst = $this->dom->createElement('PISST');
         $this->dom->addChild($pisst, 'vBC', $vBC, true, "[item $nItem] Valor da Base de Cálculo do PIS");
         $this->dom->addChild($pisst, 'pPIS', $pPIS, true, "[item $nItem] Alíquota do PIS (em percentual)");
-        $this->dom->addChild($pisst, 'qBCProd', $qBCProd, true, "[item $nItem] Quantidade Vendida");
-        $this->dom->addChild($pisst, 'vAliqProd', $vAliqProd, true, "[item $nItem] Alíquota do PIS (em reais)");
+        $this->dom->addChild($pisst, 'qBCProd', $qBCProd, false, "[item $nItem] Quantidade Vendida");
+        $this->dom->addChild($pisst, 'vAliqProd', $vAliqProd, false, "[item $nItem] Alíquota do PIS (em reais)");
         $this->dom->addChild($pisst, 'vPIS', $vPIS, true, "[item $nItem] Valor do PIS");
         $this->aPISST[$nItem] = $pisst;
         return $pisst;
@@ -2908,8 +2915,8 @@ class MakeNFe extends BaseMake
         $cofinsst = $this->dom->createElement("COFINSST");
         $this->dom->addChild($cofinsst, "vBC", $vBC, true, "[item $nItem] Valor da Base de Cálculo da COFINS");
         $this->dom->addChild($cofinsst, "pCOFINS", $pCOFINS, true, "[item $nItem] Alíquota da COFINS (em percentual)");
-        $this->dom->addChild($cofinsst, "qBCProd", $qBCProd, true, "[item $nItem] Quantidade Vendida");
-        $this->dom->addChild($cofinsst, "vAliqProd", $vAliqProd, true, "[item $nItem] Alíquota da COFINS (em reais)");
+        $this->dom->addChild($cofinsst, "qBCProd", $qBCProd, false, "[item $nItem] Quantidade Vendida");
+        $this->dom->addChild($cofinsst, "vAliqProd", $vAliqProd, false, "[item $nItem] Alíquota da COFINS (em reais)");
         $this->dom->addChild($cofinsst, "vCOFINS", $vCOFINS, true, "[item $nItem] Valor da COFINS");
         $this->aCOFINSST[$nItem] = $cofinsst;
         return $cofinsst;
@@ -3610,7 +3617,7 @@ class MakeNFe extends BaseMake
                 $card,
                 "CNPJ",
                 $cnpj,
-                true,
+                false,
                 "CNPJ da Credenciadora de cartão de crédito e/ou débito"
             );
             $this->dom->addChild(
@@ -3624,7 +3631,7 @@ class MakeNFe extends BaseMake
                 $card,
                 "cAut",
                 $cAut,
-                true,
+                false,
                 "Número de autorização da operação cartão de crédito e/ou débito"
             );
             $this->dom->appChild($this->aPag[count($this->aPag)-1], $card, '');

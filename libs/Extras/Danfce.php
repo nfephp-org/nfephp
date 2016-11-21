@@ -477,7 +477,14 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
         $this->html .= "<th class=\"tLeft\">FORMA DE PAGAMENTO</th>\n";
         $this->html .= "<th class=\"tRight\">VALOR PAGO</th>\n";
         $this->html .= "</tr>\n";
-        $this->html .= self::pagamento($this->pag);
+        $this->html .= self::pagamento($this->pag);        
+        $this->html .= "</table>\n";
+        
+        // Valor aproximado dos produtos
+        $this->html .= "<table width=\"100%\">\n";
+        $this->html .= "<tr>\n";
+        $this->html .= "<td class=\"tLeft\">Valor aproximado dos tributos: R$ ".number_format($vTotTrib, 2, ',', '.')."</td>\n";
+        $this->html .= "</tr>\n";        
         $this->html .= "</table>\n";
         
         // -- Divisão V – Área de Mensagem Fiscal
@@ -701,7 +708,10 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
             $itensHtml .=  "<tr>\n";
             $itensHtml .=  "<td class=\"tLeft\">".htmlspecialchars($nitem)."</td>\n";
             $itensHtml .=  "<td class=\"tLeft\">".htmlspecialchars($cProd)."</td>\n";
-            $itensHtml .=  "<td class=\"tLeft\">".htmlspecialchars($xProd)."</td>\n";
+            $itensHtml .=  "<td class=\"tLeft\" colspan=\"5\">".htmlspecialchars($xProd)."</td>\n";
+            $itensHtml .=  "</tr>\n";
+            $itensHtml .=  "<tr>\n";
+            $itensHtml .=  "<td colspan=\"3\"></td>\n";
             $itensHtml .=  "<td class=\"tRight\">$qCom</td>\n";
             $itensHtml .=  "<td>$uCom</td>\n";
             $itensHtml .=  "<td class=\"tRight\">".htmlspecialchars($vUnCom)."</td>\n";
