@@ -2422,8 +2422,12 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
         $this->pdf->Line($x+$w3, $y, $x+$w3, $y+$hmax);
         //O/CST
         $x += $w3;
-        $w4 = round($w*0.04, 0);
-        $texto = 'O/CST';
+        $w4 = round($w*0.05, 0);
+        if ($this->pSimpleGetValue($this->emit, 'CRT') == '3'){
+            $texto = 'O/CST'; // SE REGIME NORMAL EXIBE CST
+        }else{
+            $texto = 'O/CSOSN'; // SE REGIME SIMPLES EXIBE CSOSN
+        }
         $aFont = array('font'=>$this->fontePadrao, 'size'=>6, 'style'=>'');
         $this->pTextBox($x, $y, $w4, $h, $texto, $aFont, 'C', 'C', 0, '', false);
         $this->pdf->Line($x+$w4, $y, $x+$w4, $y+$hmax);
