@@ -3604,7 +3604,7 @@ class MakeNFe extends BaseMake
         $tpIntegra = ''
     ) {
         //apenas para modelo 65
-        if ($this->mod == '65' && $tBand != '') {
+        if ($this->mod == '65' && ($tBand != '' || $tpIntegra == '2')) {
             $card = $this->dom->createElement("card");
             $this->dom->addChild(
                 $card,
@@ -3624,7 +3624,7 @@ class MakeNFe extends BaseMake
                 $card,
                 "tBand",
                 $tBand,
-                true,
+                false,
                 "Bandeira da operadora de cartão de crédito e/ou débito"
             );
             $this->dom->addChild(
