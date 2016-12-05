@@ -483,7 +483,8 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
         // Valor aproximado dos produtos
         $this->html .= "<table width=\"100%\">\n";
         $this->html .= "<tr>\n";
-        $this->html .= "<td class=\"tLeft\">Valor aproximado dos tributos: R$ ".number_format($vTotTrib, 2, ',', '.')."</td>\n";
+        $this->html .= "<td class=\"tLeft\">Tributos totais incidentes (Lei Federal 12.741/2012)</td>\n";
+        $this->html .= "<td class=\"tRight\">".number_format($vTotTrib, 2, ',', '.')."</td>\n";
         $this->html .= "</tr>\n";        
         $this->html .= "</table>\n";
         
