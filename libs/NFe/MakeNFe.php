@@ -2297,24 +2297,24 @@ class MakeNFe extends BaseMake
      * tagICMSSN
      * Tributação ICMS pelo Simples Nacional N10c pai N01
      *
-     * @param  type $nItem
-     * @param  type $orig
-     * @param  type $csosn
-     * @param  type $modBC
-     * @param  type $vBC
-     * @param  type $pRedBC
-     * @param  type $pICMS
-     * @param  type $vICMS
-     * @param  type $pCredSN
-     * @param  type $vCredICMSSN
-     * @param  type $modBCST
-     * @param  type $pMVAST
-     * @param  type $pRedBCST
-     * @param  type $vBCST
-     * @param  type $pICMSST
-     * @param  type $vICMSST
-     * @param  type $vBCSTRet
-     * @param  type $vICMSSTRet
+     * @param type $nItem
+     * @param type $orig
+     * @param type $csosn
+     * @param type $modBC
+     * @param type $vBC
+     * @param type $pRedBC
+     * @param type $pICMS
+     * @param type $vICMS
+     * @param type $pCredSN
+     * @param type $vCredICMSSN
+     * @param type $modBCST
+     * @param type $pMVAST
+     * @param type $pRedBCST
+     * @param type $vBCST
+     * @param type $pICMSST
+     * @param type $vICMSST
+     * @param type $vBCSTRet
+     * @param type $vICMSSTRet
      * @return DOMElement
      */
     public function tagICMSSN(
@@ -2348,19 +2348,19 @@ class MakeNFe extends BaseMake
                     true,
                     "[item $nItem] Código de Situação da Operação Simples Nacional"
                 );
-                    $this->dom->addChild(
-                        $icmsSN,
-                        'pCredSN',
-                        $pCredSN,
-                        true,
-                        "[item $nItem] Alíquota aplicável de cálculo do crédito (Simples Nacional)."
-                    );
-                    $this->dom->addChild(
-                        $icmsSN,
-                        'vCredICMSSN',
-                        $vCredICMSSN,
-                        true,
-                        "[item $nItem] Valor crédito do ICMS que pode ser aproveitado nos termos do art. 23 da LC 123 (Simples Nacional)"
+                $this->dom->addChild(
+                    $icmsSN,
+                    'pCredSN',
+                    $pCredSN,
+                    false,
+                    "[item $nItem] Alíquota aplicável de cálculo do crédito (Simples Nacional)."
+                );
+                $this->dom->addChild(
+                    $icmsSN,
+                    'vCredICMSSN',
+                    $vCredICMSSN,
+                    false,
+                    "[item $nItem] Valor crédito do ICMS que pode ser aproveitado nos termos do art. 23 da LC 123 (Simples Nacional)"
                     );
                 break;
             case '102':
@@ -2409,14 +2409,14 @@ class MakeNFe extends BaseMake
                         $icmsSN,
                         'pCredSN',
                         $pCredSN,
-                        true,
+                        false,
                         "[item $nItem] Alíquota aplicável de cálculo do crédito (Simples Nacional)."
                     );
                     $this->dom->addChild(
                         $icmsSN,
                         'vCredICMSSN',
                         $vCredICMSSN,
-                        true,
+                        false,
                         "[item $nItem] Valor crédito do ICMS que pode ser aproveitado nos termos do art. 23 da LC 123 (Simples Nacional)"
                     );
                 break;
@@ -3604,7 +3604,7 @@ class MakeNFe extends BaseMake
         $tpIntegra = ''
     ) {
         //apenas para modelo 65
-        if ($this->mod == '65' && $tBand != '') {
+        if ($this->mod == '65' && ($tBand != '' || $tpIntegra == '2')) {
             $card = $this->dom->createElement("card");
             $this->dom->addChild(
                 $card,
@@ -3624,7 +3624,7 @@ class MakeNFe extends BaseMake
                 $card,
                 "tBand",
                 $tBand,
-                true,
+                false,
                 "Bandeira da operadora de cartão de crédito e/ou débito"
             );
             $this->dom->addChild(
