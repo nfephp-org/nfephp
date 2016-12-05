@@ -31,7 +31,6 @@
         "ext-fileinfo": "*",
         "ext-iconv": "*",
         "ext-mbstring": "*",
-        "zendframework/zend-servicemanager": "^2.5",
         "zendframework/zend-mail": "^2.5",
         "soundasleep/html2text": "~0.2",
         "mpdf/mpdf": "6.0.0",
