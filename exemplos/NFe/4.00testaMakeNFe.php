@@ -388,13 +388,13 @@ $resp = $nfe->tagICMS($nItem, $orig, $cst, $modBC, $pRedBC, $vBC, $pICMS, $vICMS
 
 $vST = $vICMSST; // Total de ICMS ST
 
-//ICMSPart - ICMS em Operações Interestaduais - CST 10
+//ICMSPart - ICMS em Operações Interestaduais - CST 10 e 90 quando possui partilha (com partilha do ICMS entre a UF origem e a UF de destino ou UF definida na legislação)
 //$resp = $nfe->tagICMSPart($nItem, $orig, $cst, $modBC, $vBC, $pRedBC, $pICMS, $vICMS, $modBCST, $pMVAST, $pRedBCST, $vBCST, $pICMSST, $vICMSST, $pBCOp, $ufST);
 
-//ICMSST - Tributação ICMS por Substituição Tributária (ST) - CST 40, 41, 50 e 51
+//ICMSST - Tributação ICMS por Substituição Tributária (ST) - CST 41 (devido para a UF de destino, nas operações interestaduais de produtos que tiveram retenção antecipada de ICMS por ST na UF do remetente)
 //$resp = $nfe->tagICMSST($nItem, $orig, $cst, $vBCSTRet, $vICMSSTRet, $vBCSTDest, $vICMSSTDest);
 
-//ICMSSN - Tributação ICMS pelo Simples Nacional - CST 30
+//ICMSSN - Tributação ICMS pelo Simples Nacional - CRT (Código de Regime Tributário) = 1 
 //$resp = $nfe->tagICMSSN($nItem, $orig, $csosn, $modBC, $vBC, $pRedBC, $pICMS, $vICMS, $pCredSN, $vCredICMSSN, $modBCST, $pMVAST, $pRedBCST, $vBCST, $pICMSST, $vICMSST, $vBCSTRet, $vICMSSTRet);
 
 //IPI - Imposto sobre Produto Industrializado
