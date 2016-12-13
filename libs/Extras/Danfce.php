@@ -137,6 +137,35 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
         </style>";
     protected $imgQRCode;
     protected $urlQR = '';
+    protected $urlConsulta = array(
+        '11' => 'http://www.nfce.sefin.ro.gov.br/',
+        '12' => 'http://sefaznet.ac.gov.br/nfce/consulta.xhtml',
+        '13' => 'http://sistemas.sefaz.am.gov.br/nfceweb/formConsulta.do',
+        '14' => 'https://www.sefaz.rr.gov.br/nfce/servlet/wp_consulta_nfce',
+        '15' => 'https://appnfc.sefa.pa.gov.br/portal/view/consultas/nfce/consultanfce.seam',
+        '16' => 'https://www.sefaz.ap.gov.br/sate/seg/SEGf_AcessarFuncao.jsp?cdFuncao=FIS_1261',
+        '17' => 'http://www.sefaz.to.gov.br/nfce-portal',
+        '21' => 'http://www.nfce.sefaz.ma.gov.br/portal/consultaNFe.do?method=preFilterCupom',
+        '22' => 'http://webas.sefaz.pi.gov.br/nfceweb/',
+        '23' => '', // webservice nfce CE não encontrado
+        '24' => 'http://nfce.set.rn.gov.br/portalDFE/NFCe/ConsultaNFCe.aspx',
+        '25' => 'https://www.receita.pb.gov.br/ser/servirtual/documentos-fiscais/nfc-e/consultar-nfc-e',
+        '26' => 'http://nfce.sefaz.pe.gov.br/nfce-web/entradaConsNfce',
+        '27' => 'http://nfce.sefaz.al.gov.br/consultaNFCe.htm',
+        '28' => 'http://www.nfe.se.gov.br/portal/consultarNFCe.jsp',
+        '29' => 'http://nfe.sefaz.ba.gov.br/servicos/nfce/Modulos/Geral/NFCEC_consulta_chave_acesso.aspx',
+        '31' => '',// webservice nfce MG não encontrado
+        '32' => 'http://app.sefaz.es.gov.br/ConsultaNFCe',
+        '33' => 'http://www4.fazenda.rj.gov.br/consultaDFe/paginas/consultaChaveAcesso.faces',
+        '35' => 'https://www.nfce.fazenda.sp.gov.br/NFCeConsultaPublica/Paginas/ConsultaPublica.aspx',
+        '41' => 'http://www.fazenda.pr.gov.br/',
+        '42' => '', // webservice nfce SC não encontrado
+        '43' => 'https://www.sefaz.rs.gov.br/NFCE/NFCE-COM.aspx',
+        '50' => 'http://www.dfe.ms.gov.br/nfce/',
+        '52' => 'http://www.nfce.go.gov.br/post/ver/214278/consumid',
+        '51' => 'https://www.sefaz.mt.gov.br/nfce/consultanfce',
+        '53' => 'http://dec.fazenda.df.gov.br/NFCE/'
+    );
 
     /**
      * __contruct
@@ -184,6 +213,10 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
         $this->emitToken = $emitToken;
         if ($urlQR != '') {
             $this->urlQR = $urlQR;
+        }else{
+            if (isset($this->urlConsulta[$this->pSimpleGetValue($this->ide, 'cUF')])){
+                $this->urlQR = $this->urlConsulta[$this->pSimpleGetValue($this->ide, 'cUF')];
+            }
         }
         $this->qrCode = $this->dom->getElementsByTagName('qrCode')->item(0)->nodeValue;
         if (isset($this->dom->getElementsByTagName("infCpl")->item(0)->nodeValue)) {
