@@ -1807,6 +1807,11 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
                 $w = 28;
             }
             $increm = 1;
+            if ($this->orientacao == 'P') {
+               $maxDupCont = 6;
+            } else {
+               $maxDupCont = 8;
+            }
             foreach ($this->dup as $k => $d) {
                 $nDup = ! empty($this->dup->item($k)->getElementsByTagName('nDup')->item(0)->nodeValue) ?
                         $this->dup->item($k)->getElementsByTagName('nDup')->item(0)->nodeValue : '';
@@ -1840,11 +1845,6 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
                 $this->pTextBox($x, $y, $w, $h, $vDup, $aFont, 'B', 'R', 0, '');
                 $x += $w+$increm;
                 $dupcont += 1;
-                if ($this->orientacao == 'P') {
-                    $maxDupCont = 6;
-                } else {
-                    $maxDupCont = 8;
-                }
                 if ($dupcont > $maxDupCont) {
                     $y += 9;
                     $x = $oldx;
