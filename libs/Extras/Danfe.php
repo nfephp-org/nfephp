@@ -7,6 +7,7 @@ use NFePHP\Extras\PdfNFePHP;
 use NFePHP\Extras\CommonNFePHP;
 use NFePHP\Extras\DocumentoNFePHP;
 use NFePHP\Extras\DomDocumentNFePHP;
+use NFePHP\NFe\ToolsNFe;
 
 //ajuste do tempo limite de resposta do processo
 //set_time_limit(1800);
@@ -384,6 +385,7 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
         $fonteDANFE = '',
         $mododebug = 2
     ) {
+        $toolsNFe = new ToolsNFe('../../config/config.json');
         //verificacao temporária de segurança apenas para alertar se tentar instanciar
         //a classe com 9 parâmetros, pois o "$exibirPIS" foi removido em 20/08/2014
         // e parametrizado como atributo público para simplificar o construtor
@@ -407,7 +409,16 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
         $this->papel        = $sPapel;
         $this->pdf          = '';
         $this->xml          = $docXML;
-        $this->logomarca    = $sPathLogo;
+        // Caso não tenha sido informado uma logo, utiliza a especifica p/ NF-e ou padrão
+        if (!empty($sPathLogo)) {
+            $this->logomarca = $sPathLogo;
+        } else {
+            if (!empty($toolsNFe->aConfig['aDocFormat']->pathLogoNFe)) {
+                $this->logomarca = $toolsNFe->aConfig['aDocFormat']->pathLogoNFe;   
+            } else {
+                $this->logomarca = $toolsNFe->aConfig['aDocFormat']->pathLogoFile;
+            }
+        }
         $this->destino      = $sDestino;
         $this->pdfDir       = $sDirPDF;
         // verifica se foi passa a fonte a ser usada

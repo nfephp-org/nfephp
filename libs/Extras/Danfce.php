@@ -326,8 +326,13 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
         $qtdItens = $this->det->length;
         $urlQR = $this->urlQR;
         //DADOS DO EMITENTE
+        // Caso não tenha sido informado uma logo, utiliza a especifica p/ NFC-e ou padrão
         if (empty($this->logomarca)) {
-            $image = $toolsNFe->aConfig['aDocFormat']->pathLogoNFCe;
+            if (!empty($toolsNFe->aConfig['aDocFormat']->pathLogoNFCe)) {
+                $image = $toolsNFe->aConfig['aDocFormat']->pathLogoNFCe;
+            } else {
+                $image = $toolsNFe->aConfig['aDocFormat']->pathLogoFile;   
+            }
             $imageData = base64_encode(file_get_contents($image));
             $this->logomarca = "data: ".mime_content_type($image).";base64,{$imageData}";
         }
