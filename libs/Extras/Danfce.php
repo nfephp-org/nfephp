@@ -124,6 +124,9 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
         }
         .menor {
             font-size: 6.5pt;
+        }        
+        .rodape {
+            font-size: 5.5pt;
         }
         .tLeft {
             text-align: left;
@@ -593,6 +596,12 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
             $this->html .= "<br><hr><br>\n";
             $this->html .= $html2via;
         }
+        
+        $this->html .= "<table width=\"100%\" class=\"noBorder\">\n";
+        $this->html .= "<tr>\n";
+        $this->html .= "<td colspan=\"3\" class=\"rodape tCenter\">Powered by NFePHP (GNU/GPLv3 GNU/LGPLv3) © www.nfephp.org</td>\n";
+        $this->html .= "</tr>\n";
+        $this->html .= "</table>\n";
         
         $this->html .= "</body>\n</html>\n";
         return $id;
