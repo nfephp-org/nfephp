@@ -258,7 +258,7 @@ ATENÇÃO!!! Vários endereços destes webservices ainda não foram totalmente
        <NfeConsultaProtocolo method="nfeConsultaNF2" operation="NfeConsulta2" version="3.10">https://homologacao.sefaz.mt.gov.br/nfcews/services/NfeConsulta2</NfeConsultaProtocolo>
        <NfeStatusServico method="nfeStatusServicoNF2" operation="NfeStatusServico2" version="3.10">https://homologacao.sefaz.mt.gov.br/nfcews/services/NfeStatusServico2</NfeStatusServico>
        <RecepcaoEvento  method="nfeRecepcaoEvento" operation="RecepcaoEvento" version="1.00">https://homologacao.sefaz.mt.gov.br/nfcews/services/RecepcaoEvento</RecepcaoEvento>
-       <NfeConsultaQR method="QR-CODE" operation="NfeConsultaQR" version="100">http://homologacao.sefaz.mt.gov.br/nfce/consultanfce</NfeConsultaQR>
+       <NfeConsultaQR method="QR-CODE" operation="NfeConsultaQR" version="100">https://homologacao.sefaz.mt.gov.br/nfce/consultanfce</NfeConsultaQR>
        <NfeConsultaCadastro method="consultaCadastro2" operation="NfeConsultaCadastro" version="3.10"></NfeConsultaCadastro>
        <NfeConsultaDest method="nfeConsultaNFDest" operation="NfeConsultaDest" version="3.10"></NfeConsultaDest>
        <NfeDownloadNF method="nfeDownloadNF" operation="NfeDownloadNF" version="3.10"></NfeDownloadNF>
@@ -272,7 +272,7 @@ ATENÇÃO!!! Vários endereços destes webservices ainda não foram totalmente
        <NfeConsultaProtocolo method="nfeConsultaNF2" operation="NfeConsulta2" version="3.10">https://nfce.sefaz.mt.gov.br/nfcews/services/NfeConsulta2</NfeConsultaProtocolo>
        <NfeStatusServico method="nfeStatusServicoNF2" operation="NfeStatusServico2" version="3.10">https://nfce.sefaz.mt.gov.br/nfcews/services/NfeStatusServico2</NfeStatusServico>
        <RecepcaoEvento  method="nfeRecepcaoEvento" operation="RecepcaoEvento" version="1.00">https://nfce.sefaz.mt.gov.br/nfcews/services/RecepcaoEvento</RecepcaoEvento>
-       <NfeConsultaQR method="QR-CODE" operation="NfeConsultaQR" version="100">http://www.sefaz.mt.gov.br/nfce/consultanfce</NfeConsultaQR>
+       <NfeConsultaQR method="QR-CODE" operation="NfeConsultaQR" version="100">https://www.sefaz.mt.gov.br/nfce/consultanfce</NfeConsultaQR>
        <NfeConsultaCadastro method="consultaCadastro2" operation="NfeConsultaCadastro" version="3.10"></NfeConsultaCadastro>
        <NfeConsultaDest method="nfeConsultaNFDest" operation="NfeConsultaDest" version="3.10"></NfeConsultaDest>
        <NfeDownloadNF method="nfeDownloadNF" operation="NfeDownloadNF" version="3.10"></NfeDownloadNF>
