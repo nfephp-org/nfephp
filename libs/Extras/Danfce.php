@@ -437,6 +437,13 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
          * Refatorado por: Chinnon Santos - 05/2016
         */
         
+        /*
+         * Correções do layout
+         * Versão 4.1
+         * Dezembro 2016
+         * Corrigido por Emerson Diego Feltrin 01/2017
+         */
+        
         $this->html = "";
         $this->html .= "<html>\n";
         $this->html .= "<head>\n";
@@ -460,133 +467,6 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
         $this->html .= "</tr>\n";
         $this->html .= "</table>\n";
         
-        // -- Divisão II – Identificação do DANFE NFC-e
-        $this->html .= "<table width=\"100%\">\n";
-        $this->html .= "<tr>\n";
-        $this->html .= "<td colspan=\"3\" class=\"tCenter\"><strong>".
-                htmlspecialchars("DANFE NFC-e - DOCUMENTO AUXILIAR DA NOTA FISCAL DE CONSUMIDOR ELETRÔNICA")."</strong></td>\n";
-        $this->html .= "</tr>\n";
-        $this->html .= "</table>\n";
-        
-        // -- Divisão III – Informações de detalhes de produtos/serviços
-        if (! $ecoNFCe) {
-            $this->html .= self::itens($this->det);
-        }
-        
-        // -- Divisão IV – Informações de Totais do DANFE NFC-e
-        $this->html .= "<table width=\"100%\">\n";
-        $this->html .= "<tr>\n";
-        $this->html .= "<td class=\"tLeft\">Qtde. Total de Itens</td>\n";
-        $this->html .= "<td class=\"tRight\">{$qtdItens}</td>\n";
-        $this->html .= "</tr>\n";
-        $this->html .= "<tr>\n";
-        $this->html .= "<td class=\"tLeft\">".htmlspecialchars('Valor Total R$')."</td>\n";
-        $this->html .= "<td class=\"tRight\">".number_format($vProd, 2, ',', '.')."</td>\n";
-        $this->html .= "</tr>\n";
-        $this->html .= "<tr>\n";
-        // Acréscimos (frete, seguro e outras despesas)/Desconto R$ (Exibe somente se houver!)
-        $hasAD = false;
-        if ($vDesc != '0.00') {
-            $this->html .= "<tr>\n";
-            $this->html .= "<td class=\"tLeft\">".htmlspecialchars('Desconto R$')."</td>\n";
-            $this->html .= "<td class=\"tRight\">-".number_format($vDesc, 2, ',', '.')."</td>\n";
-            $this->html .= "</tr>\n";
-            $this->html .= "<tr>\n";
-            $hasAD = true;
-        }
-        if ($vOutro != '0.00') {
-            $this->html .= "<tr>\n";
-            $this->html .= "<td class=\"tLeft\">".htmlspecialchars('Acréscimos R$')."</td>\n";
-            $this->html .= "<td class=\"tRight\">".number_format($vOutro, 2, ',', '.')."</td>\n";
-            $this->html .= "</tr>\n";
-            $this->html .= "<tr>\n";
-            $hasAD = true;
-        }
-        // (Total Itens - Descontos + Acréscimos) deve ser impresso apenas se existir acréscimo ou desconto
-        if ($hasAD) {
-            $this->html .= "<tr>\n";
-            $this->html .= "<td class=\"tLeft\">".htmlspecialchars('Valor a Pagar R$')."</td>\n";
-            $this->html .= "<td class=\"tRight\">".number_format($vOutro, 2, ',', '.')."</td>\n";
-            $this->html .= "</tr>\n";
-        }
-        // Formas de Pagamentos
-        $this->html .= "<tr>\n";
-        $this->html .= "<th class=\"tLeft\">FORMA DE PAGAMENTO</th>\n";
-        $this->html .= "<th class=\"tRight\">VALOR PAGO</th>\n";
-        $this->html .= "</tr>\n";
-        $this->html .= self::pagamento($this->pag);        
-        $this->html .= "</table>\n";
-        
-        // Valor aproximado dos produtos
-        $this->html .= "<table width=\"100%\">\n";
-        $this->html .= "<tr>\n";
-        $this->html .= "<td class=\"tLeft\">Tributos totais incidentes (Lei Federal 12.741/2012)</td>\n";
-        $this->html .= "<td class=\"tRight\">".number_format($vTotTrib, 2, ',', '.')."</td>\n";
-        $this->html .= "</tr>\n";        
-        $this->html .= "</table>\n";
-        
-        // -- Divisão V – Área de Mensagem Fiscal
-        $this->html .= "<table width=\"100%\">\n";
-        if ($tpEmis != 1) {
-            $this->html .= "<tr>\n";
-            $this->html .= "<td colspan=\"3\"><strong>".
-                    htmlspecialchars("EMITIDA EM CONTINGÊNCIA")."</strong></td>\n";
-            $this->html .= "</tr>\n";
-        } elseif ($tpAmb == 2) {
-            $this->html .= "<tr>\n";
-            $this->html .= "<td colspan=\"3\"><strong>".
-                    htmlspecialchars("EMITIDA EM AMBIENTE DE HOMOLOGAÇÃO – SEM VALOR FISCAL")."<strong></td>\n";
-            $this->html .= "</tr>\n";
-        } elseif (!empty($this->infAdFisco)) {
-            $this->html .= "<tr>\n";
-            $this->html .= "<td colspan=\"3\"><strong>".
-                    htmlspecialchars("INFORMAÇÕES ADICIONAIS DE INTERESSE DO FISCO")."<strong></td>\n";
-            $this->html .= "<td colspan=\"3\">{$this->infAdFisco}</td>\n".
-            $this->html .= "</tr>\n";
-        }
-        $this->html .= "</table>\n";
-        
-        // -- Divisão VI – Informações de Identificação da NFC-e e do Protocolo de Autorização
-        $this->html .= "<table width=\"100%\">\n";
-        $this->html .= "<tr>\n";
-        $this->html .= "<td colspan=\"3\">".htmlspecialchars($numNF);
-        $this->html .= " ".htmlspecialchars('Série: ')."{$serieNF}";
-        if ($tpEmis == 1) {
-            $this->html .= " ".htmlspecialchars('Emissão: ').date('d/m/y H:i:s', $tsHora)."</td>\n";
-        } else {
-            $this->html .= " ".htmlspecialchars('Emissão: ').date('d/m/y H:i:s', $tsHora);
-            $this->html .= "<br><strong>Via do Consumidor</strong></td>\n";
-        }
-        $this->html .= "</tr>\n";
-        $this->html .= "<tr>\n";
-        $this->html .= "<td colspan=\"3\">Consulte pela Chave de Acesso em <a href=\"$urlQR\">$urlQR</a></td>\n";
-        $this->html .= "</tr>\n";
-        $this->html .= "<tr>\n";
-        $this->html .= "<td colspan=\"3\">Chave de Acesso<br>{$chNFe}</td>\n";
-        $this->html .= "</tr>\n";
-        if ($tpEmis == 1) {
-            $this->html .= "<tr>\n";
-            $this->html .= "<td colspan=\"3\">Protocolo de autorização: {$nProt} - ".date('d/m/y H:i:s', $tsProt)."</td>\n";
-            $this->html .= "</tr>\n";
-        }
-        $this->html .= "</table>\n";
-        
-        // -- Divisão VII – Informações sobre o Consumidor
-        $this->html .= self::consumidor($this->dest);
-        
-        // -- Divisão VIII – Informações da Consulta via QR Code
-        $this->html .= "<table width=\"100%\">\n";
-// -- Divisão I - Informações do Cabeçalho
-        $this->html .= "<table width=\"100%\">\n";
-        $this->html .= "<tr>\n";
-        $this->html .= "<td><img src=\"$this->logomarca\" width=\"82\" ></td>\n";
-        $this->html .= "<td colspan=\"2\">".htmlspecialchars($emitRazao)."<br>CNPJ:$emitCnpj I.E.:$emitIE<br>".
-                htmlspecialchars($emitLgr . ", nº" . $emitNro). "<br>".
-                htmlspecialchars($emitCpl) . "<br>".
-                htmlspecialchars($emitBairro . ", " . $emitMun . ", " . $emitUF) . "<br>CEP: $emitCEP $emitFone</td>\n";
-        $this->html .= "</tr>\n";
-        $this->html .= "</table>\n";
-        
         $this->html .= "<table width=\"100%\">\n";
         $this->html .= "<tr>\n";
         $this->html .= "<td colspan=\"3\" class=\"tCenter\"><strong>".
@@ -595,6 +475,7 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
         $this->html .= "</table>\n";
         
         // -- Divisão VIII – Área de Mensagem Fiscal
+        // -- Essa parte da divisão precisa ficar aqui e antes do QR Code
         if ($tpEmis != 1) {
             $this->html .= "<table width=\"100%\">\n";
             $this->html .= "<tr>\n";
@@ -737,14 +618,14 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
         $this->html .= "<tr>\n";
         $this->html .= "<td colspan=\"3\" class=\"menor tCenter\"><strong>{$this->infCpl}</strong></td>\n";
         $this->html .= "</tr>\n";
-        $this->html .= "</table>\n";
-        
-        $this->html .= "<table width=\"100%\" class=\"noBorder\">\n";
         $this->html .= "<tr>\n";
         $this->html .= "<td colspan=\"3\" class=\"rodape tCenter\">" . str_replace(";", "<br>", $rodape) . "</td>\n";
         $this->html .= "</tr>\n";
         $this->html .= "</table>\n";
         
+        // ***                                            ***//
+        // *** Via do Estabelecimento em Modo Contigência ***//
+        // ***                                            ***//
         if ($tpEmis != 1) {
             $html2via    = str_replace('Via do Consumidor', 'Via do Estabelecimento', $this->html);
             $this->html .= "<br><hr><br>\n";
