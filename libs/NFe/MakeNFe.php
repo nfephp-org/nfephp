@@ -7,7 +7,7 @@ namespace NFePHP\NFe;
  *
  * @category  NFePHP
  * @package   NFePHP\NFe\MakeNFe
- * @copyright Copyright (c) 2008-2015
+ * @copyright Copyright (c) 2008-2017
  * @license   http://www.gnu.org/licenses/lesser.html LGPL v3
  * @author    Roberto L. Machado <linux.rlm at gmail dot com>
  * @link      http://github.com/nfephp-org/nfephp for the canonical source repository
@@ -1273,12 +1273,9 @@ class MakeNFe extends BaseMake
             . "código EAN ou código de barras",
             true
         );
-        
-        if ($this->tpAmb == '2' && $this->mod == '65') {
+        if ($this->tpAmb == '2' && $this->mod == '65' && $nItem == 1) {
             $xProd = 'NOTA FISCAL EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL';
-            // quando for NFCe muda o nome do produto
         }
-        
         $this->dom->addChild(
             $prod,
             "xProd",
