@@ -292,10 +292,10 @@ ATENÇÃO!!! Vários endereços destes webservices ainda não foram totalmente
   <UF>
     <sigla>PB</sigla>
     <homologacao>
-      <NfeConsultaQR method="QR-CODE" operation="NfeConsultaQR" version="100"></NfeConsultaQR>
+      <NfeConsultaQR method="QR-CODE" operation="NfeConsultaQR" version="100">http://www.receita.pb.gov.br/nfcehom</NfeConsultaQR>
     </homologacao>
     <producao>
-      <NfeConsultaQR method="QR-CODE" operation="NfeConsultaQR" version="100"></NfeConsultaQR>
+      <NfeConsultaQR method="QR-CODE" operation="NfeConsultaQR" version="100">http://www.receita.pb.gov.br/nfce</NfeConsultaQR>
     </producao>
   </UF>  
   <UF>
