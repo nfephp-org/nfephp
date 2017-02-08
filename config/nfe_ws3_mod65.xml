@@ -376,10 +376,10 @@ ATENÇÃO!!! Vários endereços destes webservices ainda não foram totalmente
   <UF>
     <sigla>RN</sigla>
     <homologacao>
-       <NfeConsultaQR method="QR-CODE" operation="NfeConsultaQR" version="100">http://www.hom.nfe.rn.gov.br/portal/consultarNFCe.jsp</NfeConsultaQR>
+       <NfeConsultaQR method="QR-CODE" operation="NfeConsultaQR" version="100">http://hom.nfce.set.rn.gov.br/consultarNFCe.aspx</NfeConsultaQR>
     </homologacao>
     <producao>
-       <NfeConsultaQR method="QR-CODE" operation="NfeConsultaQR" version="100">http://www.nfe.rn.gov.br/portal/consultarNFCe.jsp</NfeConsultaQR>
+       <NfeConsultaQR method="QR-CODE" operation="NfeConsultaQR" version="100">http://nfce.set.rn.gov.br/consultarNFCe.aspx</NfeConsultaQR>
     </producao>
   </UF>
   <UF>
