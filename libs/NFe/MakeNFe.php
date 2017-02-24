@@ -1795,7 +1795,7 @@ class MakeNFe extends BaseMake
         $this->dom->addChild($med, "dFab", $dFab, true, "$identificador [item $nItem] Data de fabricação");
         $this->dom->addChild($med, "dVal", $dVal, true, "$identificador [item $nItem] Data de validade");
         $this->dom->addChild($med, "vPMC", $vPMC, true, "$identificador [item $nItem] Preço máximo consumidor");
-        $this->aMed[$nItem] = $med;
+        $this->aMed[$nItem][] = $med;
         return $med;
     }
     
@@ -4096,9 +4096,11 @@ class MakeNFe extends BaseMake
         //insere medicamentos
         if (!empty($this->aMed)) {
             foreach ($this->aMed as $nItem => $child) {
-                $prod = $this->aProd[$nItem];
-                $this->dom->appChild($prod, $child, "Inclusão do node medicamento");
-                $this->aProd[$nItem] = $prod;
+				foreach($child as $grandChild){
+                	$prod = $this->aProd[$nItem];
+                	$this->dom->appChild($prod, $grandChild, "Inclusão do node medicamento");
+                	$this->aProd[$nItem] = $prod;
+				}
             }
         }
         //insere armas
