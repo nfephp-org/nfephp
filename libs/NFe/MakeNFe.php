@@ -4096,11 +4096,11 @@ class MakeNFe extends BaseMake
         //insere medicamentos
         if (!empty($this->aMed)) {
             foreach ($this->aMed as $nItem => $child) {
-				foreach($child as $grandChild){
-                	$prod = $this->aProd[$nItem];
-                	$this->dom->appChild($prod, $grandChild, "Inclusão do node medicamento");
-                	$this->aProd[$nItem] = $prod;
-				}
+                foreach ($child as $grandChild) {
+                    $prod = $this->aProd[$nItem];
+                    $this->dom->appChild($prod, $grandChild, "Inclusão do node medicamento");
+                    $this->aProd[$nItem] = $prod;
+                }
             }
         }
         //insere armas
