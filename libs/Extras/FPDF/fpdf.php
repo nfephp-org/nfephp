@@ -2,7 +2,9 @@
 
 namespace NFePHP\Extras\FPDF;
 
-define('FPDF_VERSION', '1.6');
+if (!defined('FPDF_VERSION')) {
+    define('FPDF_VERSION', '1.6');
+}
 
 class FPDF
 {
