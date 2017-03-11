@@ -70,7 +70,7 @@ class MakeNFe extends BaseMake
     private $compra = ''; //DOMNode
     private $cana = ''; //DOMNode
     // Arrays
-    private $aTotICMSUFDest = array('vFCPUFDest' => '', 'vICMSUFDest' => '', 'vICMSUFRemet' => '');
+    private $aTotICMSUFDest = array('vFCPUFDest' => 0, 'vICMSUFDest' => 0, 'vICMSUFRemet' => 0);
     private $aNFref = array(); //array de DOMNode
     private $aDup = array(); //array de DOMNodes
     private $aPag = array(); //array de DOMNodes
@@ -4096,11 +4096,11 @@ class MakeNFe extends BaseMake
         //insere medicamentos
         if (!empty($this->aMed)) {
             foreach ($this->aMed as $nItem => $child) {
-				foreach($child as $grandChild){
-                	$prod = $this->aProd[$nItem];
-                	$this->dom->appChild($prod, $grandChild, "Inclusão do node medicamento");
-                	$this->aProd[$nItem] = $prod;
-				}
+                foreach($child as $grandChild){
+                    $prod = $this->aProd[$nItem];
+                    $this->dom->appChild($prod, $grandChild, "Inclusão do node medicamento");
+                    $this->aProd[$nItem] = $prod;
+		}
             }
         }
         //insere armas
@@ -4171,11 +4171,9 @@ class MakeNFe extends BaseMake
             $this->total = $this->dom->createElement("total");
         }
         //ajuste de digitos dos campos totalizados
-        if ($this->aTotICMSUFDest['vICMSUFDest'] != '') {
-            $this->aTotICMSUFDest['vICMSUFDest'] = number_format($this->aTotICMSUFDest['vICMSUFDest'], 2, '.', '');
-            $this->aTotICMSUFDest['vICMSUFRemet'] = number_format($this->aTotICMSUFDest['vICMSUFRemet'], 2, '.', '');
-            $this->aTotICMSUFDest['vFCPUFDest'] = number_format($this->aTotICMSUFDest['vFCPUFDest'], 2, '.', '');
-        }
+        $this->aTotICMSUFDest['vICMSUFDest'] = number_format($this->aTotICMSUFDest['vICMSUFDest'], 2, '.', '');
+        $this->aTotICMSUFDest['vICMSUFRemet'] = number_format($this->aTotICMSUFDest['vICMSUFRemet'], 2, '.', '');
+        $this->aTotICMSUFDest['vFCPUFDest'] = number_format($this->aTotICMSUFDest['vFCPUFDest'], 2, '.', '');
     }
     
     /**
