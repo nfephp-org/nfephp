@@ -124,7 +124,10 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
         }
         .menor {
             font-size: 6.5pt;
-        }        
+        }
+        .contingencia {
+            font-size: 9pt;
+        }
         .rodape {
             font-size: 5.5pt;
         }
@@ -142,33 +145,33 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
     protected $urlQR = '';
     protected $urlConsulta = array(
         '11' => 'http://www.nfce.sefin.ro.gov.br/',
-        '12' => 'http://sefaznet.ac.gov.br/nfce/consulta.xhtml',
+        '12' => 'http://www.sefaznet.ac.gov.br/nfce/consulta',
         '13' => 'http://sistemas.sefaz.am.gov.br/nfceweb/formConsulta.do',
         '14' => 'https://www.sefaz.rr.gov.br/nfce/servlet/wp_consulta_nfce',
         '15' => 'https://appnfc.sefa.pa.gov.br/portal/view/consultas/nfce/consultanfce.seam',
         '16' => 'https://www.sefaz.ap.gov.br/sate/seg/SEGf_AcessarFuncao.jsp?cdFuncao=FIS_1261',
-        '17' => 'http://www.sefaz.to.gov.br/nfce-portal',
-        '21' => 'http://www.nfce.sefaz.ma.gov.br/portal/consultaNFe.do?method=preFilterCupom',
-        '22' => 'http://webas.sefaz.pi.gov.br/nfceweb/',
-        '23' => '', // webservice nfce CE não encontrado
-        '24' => 'http://nfce.set.rn.gov.br/portalDFE/NFCe/ConsultaNFCe.aspx',
-        '25' => 'https://www.receita.pb.gov.br/ser/servirtual/documentos-fiscais/nfc-e/consultar-nfc-e',
-        '26' => 'http://nfce.sefaz.pe.gov.br/nfce-web/entradaConsNfce',
+        '17' => '', // não tem webservice nfce para TO
+        '21' => 'http://www.nfce.sefaz.ma.gov.br/portal/consultaNFe.do?method=preFilterCupom&',
+        '22' => 'http://webas.sefaz.pi.gov.br/nfceweb/consultarNFCe.jsf',
+        '23' => '', // não tem webservice nfce para CE
+        '24' => 'http://nfce.set.rn.gov.br/consultarNFCe.aspx',
+        '25' => 'http://www.receita.pb.gov.br/nfce',
+        '26' => '', // não tem webservice nfce para PE
         '27' => 'http://nfce.sefaz.al.gov.br/consultaNFCe.htm',
-        '28' => 'http://www.nfe.se.gov.br/portal/consultarNFCe.jsp',
-        '29' => 'http://nfe.sefaz.ba.gov.br/servicos/nfce/Modulos/Geral/NFCEC_consulta_chave_acesso.aspx',
-        '31' => '',// webservice nfce MG não encontrado
+        '28' => 'http://www.nfce.se.gov.br/portal/portalNoticias.jsp',
+        '29' => 'http://nfe.sefaz.ba.gov.br/servicos/nfce/default.aspx',
+        '31' => '', // não tem webservice nfce para MG
         '32' => 'http://app.sefaz.es.gov.br/ConsultaNFCe',
-        '33' => 'http://www4.fazenda.rj.gov.br/consultaDFe/paginas/consultaChaveAcesso.faces',
+        '33' => 'http://www.nfce.fazenda.rj.gov.br/consulta',
         '35' => 'https://www.nfce.fazenda.sp.gov.br/NFCeConsultaPublica/Paginas/ConsultaPublica.aspx',
-        '41' => 'http://www.fazenda.pr.gov.br/',
-        '42' => '', // webservice nfce SC não encontrado
+        '41' => 'http://www.sped.fazenda.pr.gov.br/modules/conteudo/conteudo.php?conteudo=100',
+        '42' => '', // não tem webservice nfce para SC
         '43' => 'https://www.sefaz.rs.gov.br/NFCE/NFCE-COM.aspx',
-        '50' => 'http://www.dfe.ms.gov.br/nfce/',
-        '52' => 'http://www.nfce.go.gov.br/post/ver/214278/consumid',
-        '51' => 'https://www.sefaz.mt.gov.br/nfce/consultanfce',
+        '50' => 'http://www.dfe.ms.gov.br/nfce',
+        '52' => '', // não tem webservice nfce para GO
+        '51' => 'http://www.sefaz.mt.gov.br/nfce/consultanfce',
         '53' => 'http://dec.fazenda.df.gov.br/NFCE/'
-    );
+    ); // URL's conforme manual DANFE NFC-e 4.1 página 9 item 3.1.4 (site http://nfce.encat.org/consumidor/consulte-sua-nota/)
 
     /**
      * __contruct
@@ -417,7 +420,7 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
             );
         }
         //FORMATAÇÃO DOS CAMPOS
-        $numNF = "Número ".$this->pFormat($nNF, "###.###.###");
+        $numNF = $this->pFormat($nNF, "###.###.###");
         $tsHora = $this->pConvertTime($dhEmi);
         if ($dhRecbto == '') {
             $dhRecbto = $dhEmi;
@@ -433,6 +436,13 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
          * Outubro 2015
          * Refatorado por: Chinnon Santos - 05/2016
         */
+        
+        /*
+         * Correções do layout
+         * Versão 4.1
+         * Dezembro 2016
+         * Corrigido por Emerson Diego Feltrin 01/2017
+         */
         
         $this->html = "";
         $this->html .= "<html>\n";
@@ -457,7 +467,6 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
         $this->html .= "</tr>\n";
         $this->html .= "</table>\n";
         
-        // -- Divisão II – Identificação do DANFE NFC-e
         $this->html .= "<table width=\"100%\">\n";
         $this->html .= "<tr>\n";
         $this->html .= "<td colspan=\"3\" class=\"tCenter\"><strong>".
@@ -465,12 +474,26 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
         $this->html .= "</tr>\n";
         $this->html .= "</table>\n";
         
-        // -- Divisão III – Informações de detalhes de produtos/serviços
+        // -- Divisão VIII – Área de Mensagem Fiscal
+        // -- Essa parte da divisão precisa ficar aqui e antes do QR Code
+        if ($tpEmis != 1) {
+            $this->html .= "<table width=\"100%\">\n";
+            $this->html .= "<tr>\n";
+            $this->html .= "<td colspan=\"3\">\n";
+            $this->html .= "<strong class=\"contingencia\">" . htmlspecialchars("EMITIDA EM CONTINGÊNCIA") . "</strong>\n";
+            $this->html .= "<br>\n";
+            $this->html .= "<strong>" . htmlspecialchars("Pendente de autorização") . "</strong>\n";
+            $this->html .= "</td>\n";
+            $this->html .= "</tr>\n";
+            $this->html .= "</table>\n";
+        }
+        
+        // -- Divisão II – Informações de detalhes de produtos/serviços
         if (! $ecoNFCe) {
             $this->html .= self::itens($this->det);
         }
         
-        // -- Divisão IV – Informações de Totais do DANFE NFC-e
+        // -- Divisão III – Informações de Totais do DANFE NFC-e
         $this->html .= "<table width=\"100%\">\n";
         $this->html .= "<tr>\n";
         $this->html .= "<td class=\"tLeft\">Qtde. Total de Itens</td>\n";
@@ -514,64 +537,71 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
         $this->html .= self::pagamento($this->pag);        
         $this->html .= "</table>\n";
         
-        // Valor aproximado dos produtos
+        // -- Divisão IV – Informações da consulta via chave de acesso
         $this->html .= "<table width=\"100%\">\n";
         $this->html .= "<tr>\n";
-        $this->html .= "<td class=\"tLeft\">Tributos totais incidentes (Lei Federal 12.741/2012)</td>\n";
-        $this->html .= "<td class=\"tRight\">".number_format($vTotTrib, 2, ',', '.')."</td>\n";
-        $this->html .= "</tr>\n";        
+        $this->html .= "<td colspan=\"3\"><strong>Consulte pela Chave de Acesso em</strong></td>\n";
+        $this->html .= "</tr>\n";
+        $this->html .= "<tr>\n";
+        $this->html .= "<td colspan=\"3\"><a href=\"$urlQR\">$urlQR</a></td>\n";
+        $this->html .= "</tr>\n";
+        $this->html .= "<tr>\n";
+        $this->html .= "<td colspan=\"3\">{$chNFe}</td>\n";
+        $this->html .= "</tr>\n";
         $this->html .= "</table>\n";
         
-        // -- Divisão V – Área de Mensagem Fiscal
+        // -- Divisão VI – Informações sobre o Consumidor
+        $this->html .= self::consumidor($this->dest);
+        
+        // -- Divisão VII – Informações de Identificação da NFC-e e do Protocolo de Autorização
+        $this->html .= "<table width=\"100%\">\n";
+        $this->html .= "<tr>\n";
+        $this->html .= "<td colspan=\"3\"><strong>" . htmlspecialchars('NFC-e nº ') . htmlspecialchars($numNF) . '&nbsp;&nbsp;&nbsp;';
+        $this->html .= " " . htmlspecialchars('Série ') . $serieNF . '&nbsp;&nbsp;&nbsp;';
+        $this->html .= " " . date('d/m/Y H:i:s', $tsHora);
+        if ($tpEmis != 1){
+            $this->html .= "<br>Via do Consumidor";
+        }
+        $this->html .= "</strong></td>\n";
+        $this->html .= "</tr>\n";
+        if ($tpEmis == 1) {
+            $this->html .= "<tr>\n";
+            $this->html .= "<td colspan=\"3\"><strong>Protocolo de autorização:</strong> {$nProt}</td>\n";
+            $this->html .= "</tr>\n";
+            $this->html .= "<tr>\n";
+            $this->html .= "<td colspan=\"3\"><strong>Data de autorização:</strong> " . date('d/m/y H:i:s', $tsProt) . "</td>\n";
+            $this->html .= "</tr>\n";
+        }
+        $this->html .= "</table>\n";
+        
+        // -- Divisão VIII – Área de Mensagem Fiscal
         $this->html .= "<table width=\"100%\">\n";
         if ($tpEmis != 1) {
             $this->html .= "<tr>\n";
-            $this->html .= "<td colspan=\"3\"><strong>".
-                    htmlspecialchars("EMITIDA EM CONTINGÊNCIA")."</strong></td>\n";
+            $this->html .= "<td colspan=\"3\">\n";
+            $this->html .= "<strong class=\"contingencia\">" . htmlspecialchars("EMITIDA EM CONTINGÊNCIA") . "</strong>\n";
+            $this->html .= "<br>\n";
+            $this->html .= "<strong>" . htmlspecialchars("Pendente de autorização") . "</strong>\n";
+            $this->html .= "</td>\n";
             $this->html .= "</tr>\n";
         } elseif ($tpAmb == 2) {
             $this->html .= "<tr>\n";
-            $this->html .= "<td colspan=\"3\"><strong>".
-                    htmlspecialchars("EMITIDA EM AMBIENTE DE HOMOLOGAÇÃO – SEM VALOR FISCAL")."<strong></td>\n";
+            $this->html .= "<td colspan=\"3\">\n";
+            $this->html .= "<strong>" . htmlspecialchars("EMITIDA EM AMBIENTE DE HOMOLOGAÇÃO – SEM VALOR FISCAL") . "<strong>\n";
+            $this->html .= "</td>\n";
             $this->html .= "</tr>\n";
         } elseif (!empty($this->infAdFisco)) {
             $this->html .= "<tr>\n";
-            $this->html .= "<td colspan=\"3\"><strong>".
-                    htmlspecialchars("INFORMAÇÕES ADICIONAIS DE INTERESSE DO FISCO")."<strong></td>\n";
-            $this->html .= "<td colspan=\"3\">{$this->infAdFisco}</td>\n".
+            $this->html .= "<td colspan=\"3\">\n";
+            $this->html .= "<strong>" . htmlspecialchars("INFORMAÇÕES ADICIONAIS DE INTERESSE DO FISCO") . "<strong>\n";
+            $this->html .= "<br>\n";
+            $this->html .= $this->infAdFisco;
+            $this->html .= "</td>\n";
             $this->html .= "</tr>\n";
         }
         $this->html .= "</table>\n";
         
-        // -- Divisão VI – Informações de Identificação da NFC-e e do Protocolo de Autorização
-        $this->html .= "<table width=\"100%\">\n";
-        $this->html .= "<tr>\n";
-        $this->html .= "<td colspan=\"3\">".htmlspecialchars($numNF);
-        $this->html .= " ".htmlspecialchars('Série: ')."{$serieNF}";
-        if ($tpEmis == 1) {
-            $this->html .= " ".htmlspecialchars('Emissão: ').date('d/m/y H:i:s', $tsHora)."</td>\n";
-        } else {
-            $this->html .= " ".htmlspecialchars('Emissão: ').date('d/m/y H:i:s', $tsHora);
-            $this->html .= "<br><strong>Via do Consumidor</strong></td>\n";
-        }
-        $this->html .= "</tr>\n";
-        $this->html .= "<tr>\n";
-        $this->html .= "<td colspan=\"3\">Consulte pela Chave de Acesso em <a href=\"$urlQR\">$urlQR</a></td>\n";
-        $this->html .= "</tr>\n";
-        $this->html .= "<tr>\n";
-        $this->html .= "<td colspan=\"3\">Chave de Acesso<br>{$chNFe}</td>\n";
-        $this->html .= "</tr>\n";
-        if ($tpEmis == 1) {
-            $this->html .= "<tr>\n";
-            $this->html .= "<td colspan=\"3\">Protocolo de autorização: {$nProt} - ".date('d/m/y H:i:s', $tsProt)."</td>\n";
-            $this->html .= "</tr>\n";
-        }
-        $this->html .= "</table>\n";
-        
-        // -- Divisão VII – Informações sobre o Consumidor
-        $this->html .= self::consumidor($this->dest);
-        
-        // -- Divisão VIII – Informações da Consulta via QR Code
+        // -- Divisão V – Informações da consulta via QR Code
         $this->html .= "<table width=\"100%\">\n";
         $this->html .= "<tr>\n";
         $this->html .= "<td colspan=\"3\"><img src=\"{$this->imgQRCode}\" ></td>\n";
@@ -579,27 +609,28 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
         $this->html .= "</table>\n";
         
         // -- Divisão IX – Mensagem de Interesse do Contribuinte
+        $this->html .= "<table width=\"100%\">\n";
+        $this->html .= "<tr>\n";
+        $this->html .= "<td colspan=\"3\" class=\"tCenter\">Tributos totais incidentes (Lei Federal 12.741/2012) " . number_format($vTotTrib, 2, ',', '.') . "</td>\n";
+        $this->html .= "</tr>\n";        
+        $this->html .= "</table>\n";
         $this->html .= "<table width=\"100%\" class=\"noBorder\">\n";
         $this->html .= "<tr>\n";
         $this->html .= "<td colspan=\"3\" class=\"menor tCenter\"><strong>{$this->infCpl}</strong></td>\n";
         $this->html .= "</tr>\n";
+        $this->html .= "<tr>\n";
+        $this->html .= "<td colspan=\"3\" class=\"rodape tCenter\">" . str_replace(";", "<br>", $rodape) . "</td>\n";
+        $this->html .= "</tr>\n";
         $this->html .= "</table>\n";
-                
+        
         // ***                                            ***//
         // *** Via do Estabelecimento em Modo Contigência ***//
         // ***                                            ***//
-        
         if ($tpEmis != 1) {
             $html2via    = str_replace('Via do Consumidor', 'Via do Estabelecimento', $this->html);
             $this->html .= "<br><hr><br>\n";
             $this->html .= $html2via;
         }
-        
-        $this->html .= "<table width=\"100%\" class=\"noBorder\">\n";
-        $this->html .= "<tr>\n";
-        $this->html .= "<td colspan=\"3\" class=\"rodape tCenter\">Powered by NFePHP (GNU/GPLv3 GNU/LGPLv3) © www.nfephp.org</td>\n";
-        $this->html .= "</tr>\n";
-        $this->html .= "</table>\n";
         
         $this->html .= "</body>\n</html>\n";
         return $id;
