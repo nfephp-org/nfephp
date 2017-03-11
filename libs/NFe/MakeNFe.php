@@ -70,7 +70,7 @@ class MakeNFe extends BaseMake
     private $compra = ''; //DOMNode
     private $cana = ''; //DOMNode
     // Arrays
-    private $aTotICMSUFDest = array('vFCPUFDest' => '', 'vICMSUFDest' => '', 'vICMSUFRemet' => '');
+    private $aTotICMSUFDest = array('vFCPUFDest' => 0, 'vICMSUFDest' => 0, 'vICMSUFRemet' => 0);
     private $aNFref = array(); //array de DOMNode
     private $aDup = array(); //array de DOMNodes
     private $aPag = array(); //array de DOMNodes
