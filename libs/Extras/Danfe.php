@@ -2338,7 +2338,7 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
         if (isset($med)) {
             $i = 0;
             while ($i < $med->length) {
-                $medTxt .= $this->pSimpleGetValue($med->item($i), 'nLote', ' Lote: ');
+                $medTxt .= $this->pSimpleGetValue($med->item($i), 'nLote', '\n Lote: ');
                 $medTxt .= $this->pSimpleGetValue($med->item($i), 'qLote', ' Quant: ');
                 $medTxt .= $this->pSimpleGetDate($med->item($i), 'dFab', ' Fab: ');
                 $medTxt .= $this->pSimpleGetDate($med->item($i), 'dVal', ' Val: ');
