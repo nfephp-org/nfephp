@@ -8,7 +8,7 @@
 use NFePHP\NFe\ToolsNFe;
 use NFePHP\Common\Exception\RuntimeException;
 
-class ToolsNFeTest extends PHPUnit_Framework_TestCase
+class ToolsNFeTest extends PHPUnit\Framework\TestCase
 {
     public function testeInstanciarCertificadoVencido()
     {
