@@ -6,7 +6,7 @@
  */
 use NFePHP\Common\Certificate\Asn;
 
-class AsnTest extends PHPUnit_Framework_TestCase
+class AsnTest extends PHPUnit\Framework\TestCase
 {
     public function testConsigoPegarCNPJ()
     {

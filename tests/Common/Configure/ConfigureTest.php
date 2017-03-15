@@ -6,7 +6,7 @@
  */
 use NFePHP\Common\Configure\Configure;
 
-class ConfigureTest extends PHPUnit_Framework_TestCase
+class ConfigureTest extends PHPUnit\Framework\TestCase
 {
     public function testeInstanciar()
     {
