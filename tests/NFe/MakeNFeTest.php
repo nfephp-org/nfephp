@@ -7,7 +7,7 @@
  */
 use NFePHP\NFe\MakeNFe;
 
-class MakeNFeTest extends PHPUnit_Framework_TestCase
+class MakeNFeTest extends PHPUnit\Framework\TestCase
 {
     public $nfe;
 

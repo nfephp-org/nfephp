@@ -6,7 +6,7 @@
  */
 use NFePHP\NFe\PrintNFe;
 
-class PrintNFeTest extends PHPUnit_Framework_TestCase
+class PrintNFeTest extends PHPUnit\Framework\TestCase
 {
     public $nfe;
     

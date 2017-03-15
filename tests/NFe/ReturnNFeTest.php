@@ -6,7 +6,7 @@
  */
 use NFePHP\NFe\ReturnNFe;
 
-class ReturnNFeTest extends PHPUnit_Framework_TestCase
+class ReturnNFeTest extends PHPUnit\Framework\TestCase
 {
     public $nfe;
     

@@ -7,7 +7,7 @@
 
 use NFePHP\Common\Soap\CurlSoap;
 
-class CurlSoapTest extends PHPUnit_Framework_TestCase
+class CurlSoapTest extends PHPUnit\Framework\TestCase
 {
     public function testSetProxy()
     {
