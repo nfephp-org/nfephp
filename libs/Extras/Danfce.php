@@ -68,16 +68,13 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
     protected $html;
     protected $css = "<style>
         body {
-            font-family: Times New Roman;
+            font-family: Arial;
             font-size: 8pt;
             background: #FFF none repeat scroll 0 0;
             margin: 8px;
         }
         h5, p {
             margin: 0pt;
-        }
-        table {
-            border-bottom: 1px dashed #000;
         }
         table.items {
             font-size: 8pt;
@@ -122,11 +119,13 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
             vertical-align: middle;
             padding: 0;
         }
+        .contingencia {
+            background-color: #ccc;
+            padding: 5px;
+            font-size: 8pt;
+        }
         .menor {
             font-size: 6.5pt;
-        }
-        .contingencia {
-            font-size: 9pt;
         }
         .rodape {
             font-size: 5.5pt;
@@ -459,30 +458,31 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
         // -- Divisão I - Informações do Cabeçalho
         $this->html .= "<table width=\"100%\">\n";
         $this->html .= "<tr>\n";
-        $this->html .= "<td><img src=\"$this->logomarca\" width=\"82\" ></td>\n";
-        $this->html .= "<td colspan=\"2\">".htmlspecialchars($emitRazao)."<br>CNPJ:$emitCnpj I.E.:$emitIE<br>".
-                htmlspecialchars($emitLgr . ", nº" . $emitNro). "<br>".
-                htmlspecialchars($emitCpl) . "<br>".
-                htmlspecialchars($emitBairro . ", " . $emitMun . ", " . $emitUF) . "<br>CEP: $emitCEP $emitFone</td>\n";
+        $this->html .= "<td><img src=\"$this->logomarca\" width=\"52\" ></td>\n";
+        $this->html .= "<td>CNPJ: " . $emitCnpj . " " . htmlspecialchars($emitRazao) . "<br/>";
+        $this->html .= htmlspecialchars($emitLgr . ", nº " . $emitNro);
+        if (!empty($emitCpl)) {
+            $this->html .= " - " . htmlspecialchars($emitCpl);
+        }
+        $this->html .= "<br>" . htmlspecialchars($emitBairro . " - " . $emitMun . " - " . $emitUF) . "<br>";
+        $this->html .= "Fone: $emitFone</td>\n";
         $this->html .= "</tr>\n";
-        $this->html .= "</table>\n";
-        
-        $this->html .= "<table width=\"100%\">\n";
         $this->html .= "<tr>\n";
-        $this->html .= "<td colspan=\"3\" class=\"tCenter\"><strong>".
-                htmlspecialchars("DANFE NFC-e - DOCUMENTO AUXILIAR DA NOTA FISCAL DE CONSUMIDOR ELETRÔNICA")."</strong></td>\n";
+        $this->html .= "<td colspan=\"3\" class=\"tCenter\">";
+        $this->html .= htmlspecialchars("Documento Auxiliar da Nota Fiscal de Consumidor Eletrônica");
+        $this->html .= "</td>\n";
         $this->html .= "</tr>\n";
         $this->html .= "</table>\n";
         
         // -- Divisão VIII – Área de Mensagem Fiscal
-        // -- Essa parte da divisão precisa ficar aqui e antes do QR Code
+        // -- Segundo a divisão, esse aviso deve ficar logo após o cabeçalho
         if ($tpEmis != 1) {
             $this->html .= "<table width=\"100%\">\n";
             $this->html .= "<tr>\n";
-            $this->html .= "<td colspan=\"3\">\n";
-            $this->html .= "<strong class=\"contingencia\">" . htmlspecialchars("EMITIDA EM CONTINGÊNCIA") . "</strong>\n";
-            $this->html .= "<br>\n";
-            $this->html .= "<strong>" . htmlspecialchars("Pendente de autorização") . "</strong>\n";
+            $this->html .= "<td colspan=\"3\" class=\"contingencia\"><strong>";
+            $this->html .= htmlspecialchars("EMITIDA EM CONTINGÊNCIA");
+            $this->html .= "</strong><br>\n";
+            $this->html .= htmlspecialchars("Pendente de autorização");
             $this->html .= "</td>\n";
             $this->html .= "</tr>\n";
             $this->html .= "</table>\n";
@@ -496,11 +496,11 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
         // -- Divisão III – Informações de Totais do DANFE NFC-e
         $this->html .= "<table width=\"100%\">\n";
         $this->html .= "<tr>\n";
-        $this->html .= "<td class=\"tLeft\">Qtde. Total de Itens</td>\n";
+        $this->html .= "<td class=\"tLeft\">Qtde. total de itens</td>\n";
         $this->html .= "<td class=\"tRight\">{$qtdItens}</td>\n";
         $this->html .= "</tr>\n";
         $this->html .= "<tr>\n";
-        $this->html .= "<td class=\"tLeft\">".htmlspecialchars('Valor Total R$')."</td>\n";
+        $this->html .= "<td class=\"tLeft\">".htmlspecialchars('Valor total R$')."</td>\n";
         $this->html .= "<td class=\"tRight\">".number_format($vProd, 2, ',', '.')."</td>\n";
         $this->html .= "</tr>\n";
         $this->html .= "<tr>\n";
@@ -509,7 +509,7 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
         if ($vDesc != '0.00') {
             $this->html .= "<tr>\n";
             $this->html .= "<td class=\"tLeft\">".htmlspecialchars('Desconto R$')."</td>\n";
-            $this->html .= "<td class=\"tRight\">-".number_format($vDesc, 2, ',', '.')."</td>\n";
+            $this->html .= "<td class=\"tRight\">".number_format($vDesc, 2, ',', '.')."</td>\n";
             $this->html .= "</tr>\n";
             $this->html .= "<tr>\n";
             $hasAD = true;
@@ -525,14 +525,16 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
         // (Total Itens - Descontos + Acréscimos) deve ser impresso apenas se existir acréscimo ou desconto
         if ($hasAD) {
             $this->html .= "<tr>\n";
-            $this->html .= "<td class=\"tLeft\">".htmlspecialchars('Valor a Pagar R$')."</td>\n";
-            $this->html .= "<td class=\"tRight\">".number_format($vOutro, 2, ',', '.')."</td>\n";
+            $this->html .= "<td class=\"tLeft\"><strong>".htmlspecialchars('Valor a Pagar R$')."</strong></td>\n";
+            $this->html .= "<td class=\"tRight\"><strong>".number_format($vNF, 2, ',', '.')."</strong></td>\n";
             $this->html .= "</tr>\n";
         }
         // Formas de Pagamentos
         $this->html .= "<tr>\n";
-        $this->html .= "<th class=\"tLeft\">FORMA DE PAGAMENTO</th>\n";
-        $this->html .= "<th class=\"tRight\">VALOR PAGO</th>\n";
+        $this->html .= "<td class=\"tLeft\">FORMA DE PAGAMENTO</td>\n";
+        $this->html .= "<td class=\"tRight\">";
+        $this->html .= htmlspecialchars("VALOR PAGO R$");
+        $this->html .= "</td>\n";
         $this->html .= "</tr>\n";
         $this->html .= self::pagamento($this->pag);        
         $this->html .= "</table>\n";
@@ -543,10 +545,9 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
         $this->html .= "<td colspan=\"3\"><strong>Consulte pela Chave de Acesso em</strong></td>\n";
         $this->html .= "</tr>\n";
         $this->html .= "<tr>\n";
-        $this->html .= "<td colspan=\"3\"><a href=\"$urlQR\">$urlQR</a></td>\n";
-        $this->html .= "</tr>\n";
-        $this->html .= "<tr>\n";
-        $this->html .= "<td colspan=\"3\">{$chNFe}</td>\n";
+        $this->html .= "<td colspan=\"3\">";
+        $this->html .= $urlQR . "<br>" . $chNFe;
+        $this->html .= "</td>\n";
         $this->html .= "</tr>\n";
         $this->html .= "</table>\n";
         
@@ -566,37 +567,35 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
         $this->html .= "</tr>\n";
         if ($tpEmis == 1) {
             $this->html .= "<tr>\n";
-            $this->html .= "<td colspan=\"3\"><strong>Protocolo de autorização:</strong> {$nProt}</td>\n";
+            $this->html .= "<td colspan=\"3\"><br>Protocolo de autorização</td>";
             $this->html .= "</tr>\n";
             $this->html .= "<tr>\n";
-            $this->html .= "<td colspan=\"3\"><strong>Data de autorização:</strong> " . date('d/m/y H:i:s', $tsProt) . "</td>\n";
+            $this->html .= "<td colspan=\"3\">{$nProt}  ".date('d/m/Y H:i:s', $tsProt)."</td>\n";
+            $this->html .= "</tr>\n";
+        } else {
+            $this->html .= "<tr>\n";
+            $this->html .= "<td colspan=\"3\"><strong><br>";
+            $this->html .= htmlspecialchars("EMITIDA EM CONTINGÊNCIA");
+            $this->html .= "<br>\n";
+            $this->html .= htmlspecialchars("Pendente de autorização");
+            $this->html .= "<br></strong></td>\n";
             $this->html .= "</tr>\n";
         }
         $this->html .= "</table>\n";
         
         // -- Divisão VIII – Área de Mensagem Fiscal
-        $this->html .= "<table width=\"100%\">\n";
-        if ($tpEmis != 1) {
+        if ($tpAmb == 2) {
             $this->html .= "<tr>\n";
-            $this->html .= "<td colspan=\"3\">\n";
-            $this->html .= "<strong class=\"contingencia\">" . htmlspecialchars("EMITIDA EM CONTINGÊNCIA") . "</strong>\n";
-            $this->html .= "<br>\n";
-            $this->html .= "<strong>" . htmlspecialchars("Pendente de autorização") . "</strong>\n";
-            $this->html .= "</td>\n";
-            $this->html .= "</tr>\n";
-        } elseif ($tpAmb == 2) {
-            $this->html .= "<tr>\n";
-            $this->html .= "<td colspan=\"3\">\n";
-            $this->html .= "<strong>" . htmlspecialchars("EMITIDA EM AMBIENTE DE HOMOLOGAÇÃO – SEM VALOR FISCAL") . "<strong>\n";
-            $this->html .= "</td>\n";
+            $this->html .= "<td colspan=\"3\"><strong><br>";
+            $this->html .= htmlspecialchars("EMITIDA EM AMBIENTE DE HOMOLOGAÇÃO – SEM VALOR FISCAL");
+            $this->html .= "<br><strong></td>\n";
             $this->html .= "</tr>\n";
         } elseif (!empty($this->infAdFisco)) {
             $this->html .= "<tr>\n";
-            $this->html .= "<td colspan=\"3\">\n";
-            $this->html .= "<strong>" . htmlspecialchars("INFORMAÇÕES ADICIONAIS DE INTERESSE DO FISCO") . "<strong>\n";
-            $this->html .= "<br>\n";
-            $this->html .= $this->infAdFisco;
-            $this->html .= "</td>\n";
+            $this->html .= "<td colspan=\"3\"><strong><br>";
+            $this->html .= htmlspecialchars("INFORMAÇÕES ADICIONAIS DE INTERESSE DO FISCO");
+            $this->html .= "<br><strong></td>\n";
+            $this->html .= "<td colspan=\"3\">{$this->infAdFisco}</td>\n".
             $this->html .= "</tr>\n";
         }
         $this->html .= "</table>\n";
@@ -611,15 +610,15 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
         // -- Divisão IX – Mensagem de Interesse do Contribuinte
         $this->html .= "<table width=\"100%\">\n";
         $this->html .= "<tr>\n";
-        $this->html .= "<td colspan=\"3\" class=\"tCenter\">Tributos totais incidentes (Lei Federal 12.741/2012) " . number_format($vTotTrib, 2, ',', '.') . "</td>\n";
+        $this->html .= "<td class=\"tCenter\" colspan=\"3\">Tributos Incidentes (Lei Federal 12.741/2012): R$ ";
+        $this->html .= number_format($vTotTrib, 2, ',', '.');
+        $this->html .= "</td>\n";
         $this->html .= "</tr>\n";        
         $this->html .= "</table>\n";
+        
         $this->html .= "<table width=\"100%\" class=\"noBorder\">\n";
         $this->html .= "<tr>\n";
         $this->html .= "<td colspan=\"3\" class=\"menor tCenter\"><strong>{$this->infCpl}</strong></td>\n";
-        $this->html .= "</tr>\n";
-        $this->html .= "<tr>\n";
-        $this->html .= "<td colspan=\"3\" class=\"rodape tCenter\">" . str_replace(";", "<br>", $rodape) . "</td>\n";
         $this->html .= "</tr>\n";
         $this->html .= "</table>\n";
         
@@ -627,7 +626,7 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
         // *** Via do Estabelecimento em Modo Contigência ***//
         // ***                                            ***//
         if ($tpEmis != 1) {
-            $html2via    = str_replace('Via do Consumidor', 'Via do Estabelecimento', $this->html);
+            $html2via    = str_replace('Via Consumidor', 'Via do Estabelecimento', $this->html);
             $this->html .= "<br><hr><br>\n";
             $this->html .= $html2via;
         }
