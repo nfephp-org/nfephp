@@ -2352,25 +2352,28 @@ class ConvertNFe
      */
     protected function w02Entity($aCampos)
     {
-        //W02|vBC|vICMS|vICMSDeson|vBCST|vST|vProd|vFrete|vSeg|vDesc|vII|vIPI
+        //W02|vBC|vICMS|vICMSDeson|vFCPUFDest|vICMSUFDest|vICMSUFRemet|vBCST|vST|vProd|vFrete|vSeg|vDesc|vII|vIPI
         //   |vPIS|vCOFINS|vOutro|vNF|vTotTrib|
         $this->make->tagICMSTot(
             $aCampos[1], //$vBC
             $aCampos[2], //$vICMS
             $aCampos[3], //$vICMSDeson
-            $aCampos[4], //$vBCST
-            $aCampos[5], //$vST
-            $aCampos[6], //$vProd
-            $aCampos[7], //$vFrete
-            $aCampos[8], //$vSeg
-            $aCampos[9], //$vDesc
-            $aCampos[10], //$vII
-            $aCampos[11], //$vIPI
-            $aCampos[12], //$vPIS
-            $aCampos[13], //$vCOFINS
-            $aCampos[14], //$vOutro
-            $aCampos[15], //$vNF
-            $aCampos[16] //$vTotTrib
+            $aCampos[4], //vFCPUFDest
+            $aCampos[5], //vICMSUFDest
+            $aCampos[6], //vICMSUFRemet
+            $aCampos[7], //$vBCST
+            $aCampos[8], //$vST
+            $aCampos[9], //$vProd
+            $aCampos[10], //$vFrete
+            $aCampos[11], //$vSeg
+            $aCampos[12], //$vDesc
+            $aCampos[13], //$vII
+            $aCampos[14], //$vIPI
+            $aCampos[15], //$vPIS
+            $aCampos[16], //$vCOFINS
+            $aCampos[17], //$vOutro
+            $aCampos[18], //$vNF
+            $aCampos[19] //$vTotTrib
         );
     }
     
