@@ -162,4 +162,23 @@ class BaseMake
     {
         return Keys::buildKey($cUF, $ano, $mes, $cnpj, $mod, $serie, $numero, $tpEmis, $codigo);
     }
+    
+    /**
+     * higienizarString
+     * Substitui caracteres acentuados por não acentuados, 
+     * remove acentos e caracateres especiais (exceto ', &, < e >),
+     * troca os caracteres: > (sinal de maior), < (sinal de menor),
+     * & (e-comercial) e ' (sinal de apóstrofe) em HTML,
+     * remove espaços do inicio e final da string.
+     *
+     * @param string $string
+     * @return string
+     */
+    function higienizarString($string)
+    {
+        $string = preg_replace( '/[`^"~]/', NULL, iconv( 'UTF-8', 'ASCII//TRANSLIT', $string ) );
+        $string = htmlspecialchars( $string , ENT_QUOTES);
+        $string = trim( $string );
+        return $string;
+    }
 }
