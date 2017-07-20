@@ -22,8 +22,8 @@
  * <http://www.fsfla.org/svnwiki/trad/LGPLv3>.
  *
  * @package   NFePHP
- * @name      DaEventoNFeNFePHP.class.php
- * @version   0.1.4
+ * @name      DaEvento.php
+ * @version   0.1.5
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license   http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright 2009-2012 &copy; NFePHP
@@ -31,6 +31,7 @@
  * @author    Roberto L. Machado <linux.rlm at gmail dot com>
  *
  *        CONTRIBUIDORES (por ordem alfabetica):
+ *              Fernando Mertins <fernando dot mertins at gmail dot com>
  *              Leandro C. Lopez <leandro dot castoldi at gmail dot com>
  *              Lucas Vaccaro <lucas-vaccaro at outlook dot com>
  *              Roberto Spadim <roberto at spadim dot com dot br>
@@ -43,6 +44,7 @@ use NFePHP\Extras\PdfNFePHP;
 use NFePHP\Extras\CommonNFePHP;
 use NFePHP\Extras\DocumentoNFePHP;
 use NFePHP\Extras\DomDocumentNFePHP;
+use NFePHP\NFe\ToolsNFe;
 
 //definição do caminho para o diretorio com as fontes do FDPF
 if (!defined('FPDF_FONTPATH')) {
@@ -63,10 +65,11 @@ class Daevento extends CommonNFePHP implements DocumentoNFePHP
     protected $errStatus = false; // status de erro TRUE um erro ocorreu FALSE sem erros
     protected $orientacao = 'P'; // orientação da DANFE P-Retrato ou L-Paisagem
     protected $papel = 'A4'; // formato do papel
-    protected $destino = 'I'; // destivo do arquivo pdf I-borwser, S-retorna o arquivo, D-força download, F-salva em arquivo local
+    protected $destino = 'I'; // destino do arquivo pdf I-borwser, S-retorna o arquivo,
+                              //D-força download, F-salva em arquivo local
     protected $pdfDir = ''; // diretorio para salvar o pdf com a opção de destino = F
     protected $fontePadrao = 'Times'; // Nome da Fonte para gerar o DANFE
-    protected $version = '0.1.4';
+    protected $version = '0.1.5';
     protected $wPrint; // largura imprimivel
     protected $hPrint; // comprimento imprimivel
     protected $wCanhoto; // largura do canhoto para a formatação paisagem
@@ -75,6 +78,7 @@ class Daevento extends CommonNFePHP implements DocumentoNFePHP
     public $id;
     public $chNFe;
     public $tpAmb;
+
     protected $cOrgao;
     protected $xCorrecao;
     protected $xCondUso;
@@ -84,6 +88,7 @@ class Daevento extends CommonNFePHP implements DocumentoNFePHP
     protected $xJust;
     protected $CNPJDest = '';
     protected $CPFDest = '';
+    protected $emailDest = '';
     protected $dhRegEvento;
     protected $nProt;
     protected $tpEvento;
@@ -178,6 +183,7 @@ class Daevento extends CommonNFePHP implements DocumentoNFePHP
             $this->errStatus = true;
             return false;
         }
+		$this->emailDest = $this->pSimpleGetValue($this->retEvento, "emailDest");
         $this->id = str_replace('ID', '', $this->infEvento->getAttribute("Id"));
         $this->chNFe = $this->infEvento->getElementsByTagName("chNFe")->item(0)->nodeValue;
         $this->aEnd['CNPJ'] = $this->infEvento->getElementsByTagName("CNPJ")->item(0)->nodeValue;
@@ -201,11 +207,11 @@ class Daevento extends CommonNFePHP implements DocumentoNFePHP
     /**
      * simpleConsistencyCheck
      *
-     * @return bool Retorna se o documenento se parece com um Evento ( condicao necessaria porem nao suficiente )
+     * @return bool Retorna se o documenento se parece com um Evento (condicao necessaria porem nao suficiente)
      */
     public function simpleConsistencyCheck()
     {
-        if ($this->xml == null || $this->infEvento == null || $this->retEvento == null) {
+        if ($this->infEvento == null || $this->retEvento == null) {
             return false;
         }
         return true;
@@ -221,7 +227,7 @@ class Daevento extends CommonNFePHP implements DocumentoNFePHP
      * @param  boolean $classe_pdf
      * @return number
      */
-    public function monta($orientacao = '', $papel = 'A4', $logoAlign = 'C', $situacao_externa = NFEPHP_SITUACAO_EXTERNA_NONE, $classe_pdf = false)
+    public function monta($orientacao = 'P', $papel = 'A4', $logoAlign = 'C', $situacao_externa = NFEPHP_SITUACAO_EXTERNA_NONE, $classe_pdf = false)
     {
         return $this->montaDaEventoNFe($orientacao, $papel, $logoAlign, $situacao_externa, $classe_pdf);
     }
@@ -395,57 +401,86 @@ class Daevento extends CommonNFePHP implements DocumentoNFePHP
             $tw = $w;
         }
 
-        // Nome emitente
-        $aFont = array(
-            'font' => $this->fontePadrao,
-            'size' => 12,
-            'style' => 'B'
-        );
-        $texto = (isset($this->aEnd['razao']) ? $this->aEnd['razao'] : '');
-        $this->pTextBox($x1, $y1, $tw, 8, $texto, $aFont, 'T', 'C', 0, '');
+        if( array_key_exists('razao', $aEnd) ){
+            // mostramos a informação de endereço, caso ela exista
+            // Nome emitente
+            $aFont = array(
+                'font' => $this->fontePadrao,
+                'size' => 12,
+                'style' => 'B'
+            );
+            $texto = $this->aEnd['razao'];
+            $this->pTextBox($x1, $y1, $tw, 8, $texto, $aFont, 'T', 'C', 0, '');
 
-        // endereço
-        $y1 = $y1 + 6;
-        $aFont = array(
-            'font' => $this->fontePadrao,
-            'size' => 8,
-            'style' => ''
-        );
-        $lgr = (isset($this->aEnd['logradouro']) ? $this->aEnd['logradouro'] : '');
-        $nro = (isset($this->aEnd['numero']) ? $this->aEnd['numero'] : '');
-        $cpl = (isset($this->aEnd['complemento']) ? $this->aEnd['complemento'] : '');
-        $bairro = (isset($this->aEnd['bairro']) ? $this->aEnd['bairro'] : '');
-        $CEP = (isset($this->aEnd['CEP']) ? $this->aEnd['CEP'] : '');
-        $CEP = $this->pFormat($CEP, "#####-###");
-        $mun = (isset($this->aEnd['municipio']) ? $this->aEnd['municipio'] : '');
-        $UF = (isset($this->aEnd['UF']) ? $this->aEnd['UF'] : '');
-        $fone = (isset($this->aEnd['telefone']) ? $this->aEnd['telefone'] : '');
-        $email = (isset($this->aEnd['email']) ? $this->aEnd['email'] : '');
-        $foneLen = strlen($fone);
-        if ($foneLen > 0) {
-            $fone2 = substr($fone, 0, $foneLen - 4);
-            $fone1 = substr($fone, 0, $foneLen - 8);
-            $fone = '(' . $fone1 . ') ' . substr($fone2, - 4) . '-' . substr($fone, - 4);
-        } else {
-            $fone = '';
-        }
-        if ($email != '') {
-            $email = 'Email: ' . $email;
-        }
-        $texto = "";
-        $tmp_txt = trim(($lgr != '' ? "$lgr, " : '') . ($nro != 0 ? $nro : "SN") . ($cpl != '' ? " - $cpl" : ''));
-        $tmp_txt = ($tmp_txt == 'SN' ? '' : $tmp_txt);
-        $texto .= ($texto != '' && $tmp_txt != '' ? "\n" : '') . $tmp_txt;
-        $tmp_txt = trim($bairro . ($bairro != '' && $CEP != '' ? " - " : '') . $CEP);
-        $texto .= ($texto != '' && $tmp_txt != '' ? "\n" : '') . $tmp_txt;
-        $tmp_txt = $mun;
-        $tmp_txt .= ($tmp_txt != '' && $UF != '' ? " - " : '') . $UF;
-        $tmp_txt .= ($tmp_txt != '' && $fone != '' ? " " : '') . $fone;
-        $texto .= ($texto != '' && $tmp_txt != '' ? "\n" : '') . $tmp_txt;
-        $tmp_txt = $email;
-        $texto .= ($texto != '' && $tmp_txt != '' ? "\n" : '') . $tmp_txt;
-        $this->pTextBox($x1, $y1 - 2, $tw, 8, $texto, $aFont, 'T', 'C', 0, '');
+            $y1 = $y1 + 5;
+            $aFont = array(
+                'font' => $this->fontePadrao,
+                'size' => 8,
+                'style' => 'B'
+            );
 
+            $texto = $this->pFormat($this->aEnd['CNPJ'], "##.###.###/####-##");
+            $this->pTextBox($x1, $y1, $tw, 8, $texto, $aFont, 'T', 'C', 0, '');
+
+            // endereço
+            $y1 = $y1 + 6;
+            $aFont = array(
+                'font' => $this->fontePadrao,
+                'size' => 8,
+                'style' => ''
+            );
+
+
+            $lgr = (isset($this->aEnd['logradouro']) ? $this->aEnd['logradouro'] : '');
+            $nro = (isset($this->aEnd['numero']) ? $this->aEnd['numero'] : '');
+            $cpl = (isset($this->aEnd['complemento']) ? $this->aEnd['complemento'] : '');
+            $bairro = (isset($this->aEnd['bairro']) ? $this->aEnd['bairro'] : '');
+            $CEP = (isset($this->aEnd['CEP']) ? $this->aEnd['CEP'] : '');
+            $CEP = $this->pFormat($CEP, "#####-###");
+            $mun = (isset($this->aEnd['municipio']) ? $this->aEnd['municipio'] : '');
+            $UF = (isset($this->aEnd['UF']) ? $this->aEnd['UF'] : '');
+            $fone = (isset($this->aEnd['telefone']) ? $this->aEnd['telefone'] : '');
+            $email = (isset($this->aEnd['email']) ? $this->aEnd['email'] : '');
+            $foneLen = strlen($fone);
+            if ($foneLen > 0) {
+                $fone2 = substr($fone, 0, $foneLen - 4);
+                $fone1 = substr($fone, 0, $foneLen - 8);
+                $fone = '(' . $fone1 . ') ' . substr($fone2, - 4) . '-' . substr($fone, - 4);
+            } else {
+                $fone = '';
+            }
+            if ($email != '') {
+                $email = 'Email: ' . $email;
+            }
+            $texto = "";
+            $tmp_txt = trim(($lgr != '' ? "$lgr, " : '') . ($nro != 0 ? $nro : "SN") . ($cpl != '' ? " - $cpl" : ''));
+            $tmp_txt = ($tmp_txt == 'SN' ? '' : $tmp_txt);
+            $texto .= ($texto != '' && $tmp_txt != '' ? "\n" : '') . $tmp_txt;
+            $tmp_txt = trim($bairro . ($bairro != '' && $CEP != '' ? " - " : '') . $CEP);
+            $texto .= ($texto != '' && $tmp_txt != '' ? "\n" : '') . $tmp_txt;
+            $tmp_txt = $mun;
+            $tmp_txt .= ($tmp_txt != '' && $UF != '' ? " - " : '') . $UF;
+            $tmp_txt .= ($tmp_txt != '' && $fone != '' ? " " : '') . $fone;
+            $texto .= ($texto != '' && $tmp_txt != '' ? "\n" : '') . $tmp_txt;
+            $tmp_txt = $email;
+            $texto .= ($texto != '' && $tmp_txt != '' ? "\n" : '') . $tmp_txt;
+            $this->pTextBox($x1, $y1 - 2, $tw, 8, $texto, $aFont, 'T', 'C', 0, '');
+
+        }else{
+            // caso contrário, mostramos o CNPJ do emitente
+            $aFont = array(
+                'font' => $this->fontePadrao,
+                'size' => 18,
+                'style' => 'B'
+            );
+            $texto = "CNPJ: " . $this->pFormat($this->aEnd['CNPJ'], "##.###.###/####-##");
+            $this->pTextBox($x1, $y1, $tw, 8, $texto, $aFont, 'T', 'C', 0, '');
+
+            $texto = "UF: " . ToolsNFe::$cUFlistReversa[substr($this->chNFe, 0, 2)];
+            $aFont['size'] = 13;
+            $this->pTextBox($x1, $y1+10, $tw, 8, $texto, $aFont, 'T', 'C', 0, '');
+
+        }
         // ##################################################
 
         $w2 = round($maxW - $w, 0);
@@ -515,6 +550,9 @@ class Daevento extends CommonNFePHP implements DocumentoNFePHP
         // ############################################
         $x = $oldX;
         $y = $y1;
+        $w3 = 85;
+
+        $texto = ""; // se a SEFAZ não mandar CNPJ nem CPF do destinatário, não imprimimos nada.
         if ($this->CNPJDest != '') {
             $texto = 'CNPJ do Destinatário: ' . $this->pFormat($this->CNPJDest, "##.###.###/####-##");
         }
@@ -526,13 +564,21 @@ class Daevento extends CommonNFePHP implements DocumentoNFePHP
             'size' => 12,
             'style' => 'B'
         );
-        $this->pTextBox($x + 2, $y + 13, $w2, 8, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x + 2, $y + 13, $w3, 8, $texto, $aFont, 'T', 'L', 0, '');
 
         $numNF = substr($this->chNFe, 25, 9);
         $serie = substr($this->chNFe, 22, 3);
         $numNF = $this->pFormat($numNF, "###.###.###");
         $texto = "Nota Fiscal: " . $numNF . '  -   Série: ' . $serie;
-        $this->pTextBox($x + 2, $y + 19, $w2, 8, $texto, $aFont, 'T', 'L', 0, '');
+        $this->pTextBox($x + 2, $y + 19, $w3, 8, $texto, $aFont, 'T', 'L', 0, '');
+
+        if( $this->emailDest != '' ){
+            $this->pTextBox($x + 2,  $y + 25, $w3, 8, "Destinatário: ", $aFont, 'T', 'L', 0, '');
+            $this->pTextBox($x + 27, $y + 25, $w3, 8, $this->emailDest, $aFont, 'T', 'L', 0, '');
+        }
+
+
+        // ###########################################
 
         $bW = 87;
         $bH = 15;
@@ -681,7 +727,7 @@ class Daevento extends CommonNFePHP implements DocumentoNFePHP
      * @param number $x
      * @param number $y
      */
-    private function pFooter($x, $y)
+    protected function pFooter($x, $y)
     {
         $w = $this->wPrint;
         if ($this->tpEvento == '110110') {
