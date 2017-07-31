@@ -1662,7 +1662,7 @@ class MakeNFe extends BaseMake
         $this->dom->addChild($exportInd, "chNFe", $chNFe, true, $identificador . "[item $nItem] Chave de Acesso da NF-e recebida para exportação");
         $this->dom->addChild($exportInd, "qExport", $qExport, true, $identificador . "[item $nItem] Quantidade do item realmente exportado");
         $detExport->appendChild($exportInd);
-        $this->aDetExport[$nItem] = $detExport;
+        $this->aDetExport[$nItem][] = $detExport;
         return $detExport;
     }
     
@@ -4071,21 +4071,23 @@ class MakeNFe extends BaseMake
                 }
                 $this->aProd[$nItem] = $prod;
             }
-        }
+        }        
         //insere detExport
         if (!empty($this->aDetExport)) {
-            foreach ($this->aDetExport as $nItem => $child) {
+            foreach ($this->aDetExport as $nItem => $childs) {
                 $prod = $this->aProd[$nItem];
-                $node = $prod->getElementsByTagName("xPed")->item(0);
-                if (!empty($node)) {
-                    $prod->insertBefore($child, $node);
-                } else {
-                    $this->dom->appChild($prod, $child, "Inclusão do node detExport");
+                foreach($childs AS $child){
+                    $node = $prod->getElementsByTagName("xPed")->item(0);
+                    if (! empty($node)) {
+                        $prod->insertBefore($child, $node);
+                    } else {
+                        $this->dom->appChild($prod, $child, "Inclusão do node detExport");
+                    }
+                    $this->aProd[$nItem] = $prod;
                 }
-                $this->aProd[$nItem] = $prod;
             }
         }
-        //insere veiculo
+	//insere veiculo
         if (!empty($this->aVeicProd)) {
             foreach ($this->aVeicProd as $nItem => $child) {
                 $prod = $this->aProd[$nItem];
