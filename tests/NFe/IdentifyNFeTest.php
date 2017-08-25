@@ -6,7 +6,7 @@
  */
 use NFePHP\NFe\IdentifyNFe;
 
-class IdentifyNFeTest extends PHPUnit_Framework_TestCase
+class IdentifyNFeTest extends PHPUnit\Framework\TestCase
 {
     public function testeIdentificaNFe()
     {

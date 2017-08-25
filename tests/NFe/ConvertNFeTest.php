@@ -6,7 +6,7 @@
  */
 use NFePHP\NFe\ConvertNFe;
 
-class ConvertNFeTest extends PHPUnit_Framework_TestCase
+class ConvertNFeTest extends PHPUnit\Framework\TestCase
 {
     public $nfe;
     

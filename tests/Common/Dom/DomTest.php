@@ -5,7 +5,7 @@
  */
 use NFePHP\Common\Dom\Dom;
 
-class DomTest extends PHPUnit_Framework_TestCase
+class DomTest extends PHPUnit\Framework\TestCase
 {
     public $dom;
     

@@ -7,7 +7,7 @@
 use NFePHP\Common\Certificate\Asn;
 use NFePHP\Common\Certificate\Pkcs12;
 
-class Pkcs12Test extends PHPUnit_Framework_TestCase
+class Pkcs12Test extends PHPUnit\Framework\TestCase
 {
     protected $pubPem = '-----BEGIN CERTIFICATE-----
 MIIEqzCCA5OgAwIBAgIDMTg4MA0GCSqGSIb3DQEBBQUAMIGSMQswCQYDVQQGEwJC

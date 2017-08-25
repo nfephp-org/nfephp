@@ -6,7 +6,7 @@
  */
 use NFePHP\Common\Files\FilesFolders;
 
-class FilesFoldersTest extends PHPUnit_Framework_TestCase
+class FilesFoldersTest extends PHPUnit\Framework\TestCase
 {
     public function testCreateFoldersSuccess()
     {

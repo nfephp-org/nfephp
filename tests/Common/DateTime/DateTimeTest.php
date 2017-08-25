@@ -5,7 +5,7 @@
  */
 use NFePHP\Common\DateTime\DateTime;
 
-class DateTimeTest extends PHPUnit_Framework_TestCase
+class DateTimeTest extends PHPUnit\Framework\TestCase
 {
     public $tstp = 1424196793;
     public $sefTime = '2015-02-17T15:13:13-03:00';
@@ -31,7 +31,6 @@ class DateTimeTest extends PHPUnit_Framework_TestCase
         $seft = DateTime::convertTimestampToSefazTime($this->tstp);
         $this->assertEquals($seft, $this->sefTime);
     }
-
 
     public function testConvertSefazTimeToTimestampEmBranco()
     {

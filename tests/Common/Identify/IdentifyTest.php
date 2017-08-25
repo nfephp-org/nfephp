@@ -6,7 +6,7 @@
  */
 use NFePHP\Common\Identify\Identify;
 
-class IdentifyTest extends PHPUnit_Framework_TestCase
+class IdentifyTest extends PHPUnit\Framework\TestCase
 {
     public function testSetListSchemesId()
     {

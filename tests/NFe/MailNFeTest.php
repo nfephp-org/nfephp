@@ -6,7 +6,7 @@
  */
 use NFePHP\NFe\MailNFe;
 
-class MailNFeTest extends PHPUnit_Framework_TestCase
+class MailNFeTest extends PHPUnit\Framework\TestCase
 {
     public $mail;
     
