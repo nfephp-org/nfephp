@@ -682,7 +682,7 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
         $this->textoAdic .= $this->pGeraInformacoesDasNotasReferenciadas();
         if (isset($this->infAdic)) {
             $i = 0;
-            if ($this->textoAdic != '') {
+            if ($this->textoAdic != '' && substr($this->textoAdic,-4) != "\r\n") {
                 $this->textoAdic .= ". \r\n";
             }
             $this->textoAdic .= ! empty($this->infAdic->getElementsByTagName("infCpl")->item(0)->nodeValue) ?
@@ -718,20 +718,14 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
                     strpos(strtolower(trim($this->textoAdic)), 'imp'));
             $vTotTrib = $this->pSimpleGetValue($this->ICMSTot, 'vTotTrib');
             if ($vTotTrib != '' && !$flagVTT) {
-                $this->textoAdic .= "\n Valor Aproximado dos Tributos : R$ " . number_format($vTotTrib, 2, ",", ".");
+                $this->textoAdic .= "\r\n Valor Aproximado dos Tributos : R$ " . number_format($vTotTrib, 2, ",", ".");
             }
         }
         //fim da alteração NT 2013.003 Lei da Transparência
-        $this->textoAdic = str_replace(";", "\n", $this->textoAdic);
-        $alinhas = explode("\n", $this->textoAdic);
-        $numlinhasdados = 0;
-        foreach ($alinhas as $linha) {
-            $numlinhasdados += $this->pGetNumLines($linha, $this->wAdic, $fontProduto);
-        }
-        $hdadosadic = round(($numlinhasdados+3) * $this->pdf->FontSize, 0);
-        if ($hdadosadic < 10) {
-            $hdadosadic = 10;
-        }
+        $this->textoAdic = str_replace(";", "\r\n", $this->textoAdic);
+        $this->textoAdic = str_replace("\r\n\r\n", "\r\n", $this->textoAdic);
+        
+        
         //altura disponivel para os campos da DANFE
         $hcabecalho = 47;//para cabeçalho
         $hdestinatario = 25;//para destinatario
@@ -741,11 +735,13 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
         $hissqn = 11;// para issqn
         $hfooter = 5;// para rodape
         $hCabecItens = 4;//cabeçalho dos itens
+        $hdadosadicMin = 30; // dados adicionais minimo
+        //
         //alturas disponiveis para os dados
-        $hDispo1 = $this->hPrint - 10 - ($hcabecalho +
+        $hDispo1 = "".($this->hPrint - 10 - ($hcabecalho +
             $hdestinatario + ($linhasDup * $hduplicatas) + $himposto + $htransporte +
-            ($linhaISSQN * $hissqn) + $hdadosadic + $hfooter + $hCabecItens +
-            $this->pSizeExtraTextoFatura());
+            ($linhaISSQN * $hissqn) + $hdadosadicMin + $hfooter + $hCabecItens +
+            $this->pSizeExtraTextoFatura()));
         if ($this->orientacao == 'P') {
             $hDispo1 -= 23 * $this->qCanhoto;//para canhoto
             $w = $this->wPrint;
@@ -757,25 +753,84 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
         //Contagem da altura ocupada para impressão dos itens
         $fontProduto = array('font'=>$this->fontePadrao, 'size'=>7, 'style'=>'');
         $i = 0;
+        $j = 0;
         $numlinhas = 0;
         $hUsado = $hCabecItens;
+        $hUsadoAdic = 5.6;
         $w2 = round($w*0.28, 0);
+        $wCompl = $this->wAdic;
         $hDispo = $hDispo1;
-        $totPag = 1;
-        while ($i < $this->det->length) {
-            $texto = $this->pDescricaoProduto($this->det->item($i));
-            $numlinhas = $this->pGetNumLines($texto, $w2, $fontProduto);
-            $hUsado += round(($numlinhas * $this->pdf->FontSize) + ($numlinhas * 0.5), 2);
-            if ($hUsado > $hDispo) {
-                $totPag++;
-                $hDispo = $hDispo2;
-                $hUsado = $hCabecItens;
-                // Remove canhoto para páginas secundárias em modo paisagem ('L')
-                $w2 = round($this->wPrint*0.28, 0);
-                $i--; // decrementa para readicionar o item que não coube nessa pagina na outra.
+        $hDispoAdic1 = $hdadosadicMin;
+        $totPag = 0;
+        $totItens = $this->det->length;
+        $arrayInfCompl = explode("\r\n",$this->textoAdic);
+        $hDispoItemArray = array();
+        $hDispoInfAdicArray = array();
+        
+        do {
+            $precisaDeMaisPaginas = false;
+            
+            
+            while ($i < $totItens) {
+                $texto = $this->pDescricaoProduto($this->det->item($i));
+                $numlinhas = $this->pGetNumLines($texto, $w2, $fontProduto);
+                $h = round(($numlinhas * $this->pdf->FontSize) + ($numlinhas * 0.5), 2);
+                if (($hUsado + $h) >= $hDispo) {
+                    // Remove canhoto para páginas secundárias em modo paisagem ('L')
+                    $i--; // decrementa para readicionar o item que não coube nessa pagina na outra.
+                    $precisaDeMaisPaginas = true;
+                }
+                $i++;
+                if($precisaDeMaisPaginas) {
+                    break;
+                }
+                $hUsado += $h;
             }
-            $i++;
-        } //fim da soma das areas de itens usadas
+            
+            $hDispoItemArray[] = "".$hDispo;
+            $hDispo = $hDispo - $hUsado + $hDispoAdic1;
+            while ($j <  count($arrayInfCompl)) {
+                $texto = $arrayInfCompl[$j];
+                $numlinhas = $this->pGetNumLines($texto, $wCompl, $fontProduto);
+                $h = ("".round(($numlinhas  * ($this->pdf->FontSize)), 2));
+                if (($hUsadoAdic + $h) >= ($hDispo )) {
+                    
+                    //ultrapassa a capacidade para uma única página
+                    //o restante dos dados serão usados nas proximas paginas
+                    $precisaDeMaisPaginas = true;
+                    $j--; // decrementa para readicionar este item que não coube nesta pagina.
+                }
+                $j++;
+                if($precisaDeMaisPaginas && ($hUsadoAdic + $h) >= $hDispo) {
+                    break;
+                    
+                }
+                $hUsadoAdic += $h;
+            }
+            
+            if ($hUsadoAdic >= $hDispo) {
+                
+                $hDispoItemArray[$totPag] = "".$hUsado; // ajusta o espaço usado dos itens pois precisou liberar espaço para os dados adicionais.
+            }
+            else {
+                $hDispoItemArray[$totPag] -= ("".($totPag == 0 ? ($hUsadoAdic - $hDispoAdic1): $hUsadoAdic)  ); // ajusta o espaço usado dos itens pois precisou liberar espaço para os dados adicionais.
+            }
+            $hDispoInfAdicArray[] = "".$hUsadoAdic ;
+            
+            
+            // reseta os dados, para ir para a próxima pagina
+            $w2 = round($this->wPrint*0.28, 0);
+            $wCompl = $this->wPrint;
+            $hUsado = $hCabecItens;
+            $hUsadoAdic = 0;
+            $hDispoAdic1 = 0;
+            $hDispo = $hDispo2;
+            
+            $totPag++;
+        }while($precisaDeMaisPaginas);
+        
+        
+        //fim da soma das areas de itens usadas
         $qtdeItens = $i; //controle da quantidade de itens no DANFE
         //montagem da primeira página
         $pag = 1;
@@ -804,7 +859,7 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
         $y = $this->pTransporteDANFE($x, $y+1);
         //itens da DANFE
         $nInicial = 0;
-        $y = $this->pItensDANFE($x, $y+1, $nInicial, $hDispo1, $pag, $totPag, $hCabecItens);
+        $y = $this->pItensDANFE($x, $y+1, $nInicial, $hDispoItemArray[$pag - 1], $pag, $totPag, $hCabecItens);
         //coloca os dados do ISSQN
         if ($linhaISSQN == 1) {
             $y = $this->pIssqnDANFE($x, $y+4);
@@ -812,7 +867,8 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
             $y += 4;
         }
         //coloca os dados adicionais da NFe
-        $y = $this->pDadosAdicionaisDANFE($x, $y, $hdadosadic);
+        $nInicioAdc = 0;
+        $y = $this->pDadosAdicionaisDANFE($x, $y, $hDispoInfAdicArray[$pag - 1],$nInicioAdc, $pag, $totPag);
         //coloca o rodapé da página
         if ($this->orientacao == 'P') {
             $this->pRodape($xInic, $y-1);
@@ -835,7 +891,14 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
             //coloca o cabeçalho na página adicional
             $y = $this->pCabecalhoDANFE($x, $y, $n, $totPag);
             //coloca os itens na página adicional
-            $y = $this->pItensDANFE($x, $y+1, $nInicial, $hDispo2, $n, $totPag, $hCabecItens);
+            if($nInicial < $totItens) {
+            $y = $this->pItensDANFE($x, $y+1, $nInicial, $hDispoItemArray[$n - 1], $n, $totPag, $hCabecItens);
+            }
+            //coloca os dados adicionais da NFe
+            //$y = $this->pDadosAdicionaisDANFE($x, $y, $hDispoInfAdicArray[$n -1],$nInicioAdc, $n, $totPag);
+            
+            $y = $this->pContinuacaoInformacoesComplementares($x, $y+2, $hDispoInfAdicArray[$n -1],$nInicioAdc, $n, $totPag);
+            
             //coloca o rodapé da página
             if ($this->orientacao == 'P') {
                 $this->pRodape($xInic, $y + 4);
@@ -2522,7 +2585,6 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
                     if ($hUsado >= $hmax && $i < $totItens) {
                         //ultrapassa a capacidade para uma única página
                         //o restante dos dados serão usados nas proximas paginas
-                        $nInicio = $i;
                         break;
                     }
                 }
@@ -2645,6 +2707,7 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
                 $i++;
             }
         }
+        $nInicio = $i;
         return $oldY+$hmax;
     }
 
@@ -2727,6 +2790,55 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
         $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'B', 'R', 0, '');
         return ($y+$h+1);
     }
+    protected function pContinuacaoInformacoesComplementares($x, $y, $hmax, &$nInicio, $pag = 0, $totpag = 0)
+    {
+        if($hmax > 0) {
+            //##################################################################################
+            //INFORMAÇÕES COMPLEMENTARES
+            $texto = "CONTINUAÇÃO DAS INFORMAÇÕES COMPLEMENTARES";
+            $y += 3;
+            if ($this->orientacao == 'P') {
+                $w = $this->wPrint;
+            } else {
+                $w = $this->wPrint-$this->wCanhoto;
+            }
+            $aFont = array('font'=>$this->fontePadrao, 'size'=>6, 'style'=>'B');
+            $this->pTextBox($x, $y, $w, $hmax + 6 , $texto, $aFont, 'T', 'L', 1, '');
+            //o texto com os dados adicionais foi obtido na função montaDANFE
+            //e carregado em uma propriedade privada da classe
+            //$this->wAdic com a largura do campo
+            //$this->textoAdic com o texto completo do campo
+            $y += 2.5;
+            $aFont = array('font'=>$this->fontePadrao, 'size'=>7, 'style'=>'');
+            $textoInfCompl = $this->textoAdic;
+            $arrayInfCompl = explode("\r\n",$textoInfCompl);
+
+            $i = 0;
+            $hUsado = 0;
+            $totItensAdc = count($arrayInfCompl);
+            foreach ($arrayInfCompl as $texto) {
+                if($i >= $nInicio) {
+
+                    $linhaDescr = $this->pGetNumLines($texto, $w-2, $aFont);
+                    $h = round(($linhaDescr  * ($this->pdf->FontSize)), 2);
+                    if ($pag != $totpag) {
+                        if (($hUsado + $h) >= $hmax   && $i < $totItensAdc) {
+                            //ultrapassa a capacidade para uma única página
+                            //o restante dos dados serão usados nas proximas paginas
+                            $nInicio = $i;
+                            break;
+                        }
+                    }
+                    $this->pTextBox($x, $y+$hUsado , $w-2, $hmax, $texto, $aFont, 'T', 'L', 0, '', false);
+                    $hUsado += $h;
+
+                }
+                $i++;
+            }
+        }
+        return $y+$hmax;
+    }
+    
 
     /**
      *dadosAdicionaisDANFE
@@ -2738,9 +2850,10 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
      * @param  float $h altura do campo
      * @return float Posição vertical final (eixo Y)
      */
-    protected function pDadosAdicionaisDANFE($x, $y, $h)
+    protected function pDadosAdicionaisDANFE($x, $y, $hmax, &$nInicio, $pag = 0, $totpag = 0)
     {
         //##################################################################################
+        $w = $this->wAdic;
         //DADOS ADICIONAIS
         $texto = "DADOS ADICIONAIS";
         if ($this->orientacao == 'P') {
@@ -2752,28 +2865,54 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
         $this->pTextBox($x, $y, $w, 8, $texto, $aFont, 'T', 'L', 0, '');
         //INFORMAÇÕES COMPLEMENTARES
         $texto = "INFORMAÇÕES COMPLEMENTARES";
-        $y += 3;
+        
         $w = $this->wAdic;
         $aFont = array('font'=>$this->fontePadrao, 'size'=>6, 'style'=>'B');
-        $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 1, '');
+        $this->pTextBox($x, $y +3, $w, $hmax, $texto, $aFont, 'T', 'L', 1, '');
         //o texto com os dados adicionais foi obtido na função montaDANFE
         //e carregado em uma propriedade privada da classe
         //$this->wAdic com a largura do campo
         //$this->textoAdic com o texto completo do campo
-        $y += 1;
+        
         $aFont = array('font'=>$this->fontePadrao, 'size'=>7, 'style'=>'');
-        $this->pTextBox($x, $y+2, $w-2, $h-3, $this->textoAdic, $aFont, 'T', 'L', 0, '', false);
+        $textoInfCompl = $this->textoAdic;
+        $arrayInfCompl = explode("\r\n",$textoInfCompl);
+        $i = 0;
+        $hUsado = 5.5;
+        $totItensAdc = count($arrayInfCompl);
+        foreach ($arrayInfCompl as $texto) {
+            if($i >= $nInicio && trim($texto) != "") {
+                $linhaDescr = $this->pGetNumLines($texto, $w, $aFont);
+                $h = round(($linhaDescr  * ($this->pdf->FontSize )), 2);
+                
+                
+                if ($pag != $totpag) {
+                    if (($hUsado +$h )> $hmax && $i < $totItensAdc) {
+                        //ultrapassa a capacidade para uma única página
+                        //o restante dos dados serão usados nas proximas paginas
+                        $nInicio = $i;
+                        break;
+                    }
+                }
+                $this->pTextBox($x, $y+$hUsado , $w -2, $hmax, $texto, $aFont, 'T', 'L', 0, '', false);
+                
+                $hUsado += $h;
+                
+            }
+            $i++;
+        }
+        $y +=  5.5;
         //RESERVADO AO FISCO
         $texto = "RESERVADO AO FISCO";
         $x += $w;
-        $y -= 1;
+        $y -= 2.5;
         if ($this->orientacao == 'P') {
             $w = $this->wPrint-$w;
         } else {
             $w = $this->wPrint-$w-$this->wCanhoto;
         }
         $aFont = array('font'=>$this->fontePadrao, 'size'=>6, 'style'=>'B');
-        $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 1, '');
+        $this->pTextBox($x, $y, $w, $hmax, $texto, $aFont, 'T', 'L', 1, '');
         //inserir texto informando caso de contingência
         // 1 - Normal - emissão normal;
         // 2 - Contingência FS - emissão em contingência com impressão do DANFE em Formulário de Segurança;
@@ -2809,8 +2948,8 @@ class Danfe extends CommonNFePHP implements DocumentoNFePHP
         }
         $y += 2;
         $aFont = array('font'=>$this->fontePadrao, 'size'=>7, 'style'=>'');
-        $this->pTextBox($x, $y, $w-2, $h-3, $texto, $aFont, 'T', 'L', 0, '', false);
-        return $y+$h;
+        $this->pTextBox($x, $y, $w-2, $hmax-3, $texto, $aFont, 'T', 'L', 0, '', false);
+        return $y+$hmax;
     }
 
     /**
