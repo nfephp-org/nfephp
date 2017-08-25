@@ -8,6 +8,8 @@
 [![Latest Unstable Version](https://poser.pugx.org/nfephp-org/nfephp/v/unstable.svg)](https://packagist.org/packages/nfephp-org/nfephp)
 [![Total Downloads](https://poser.pugx.org/nfephp-org/nfephp/downloads)](https://packagist.org/packages/nfephp-org/nfephp)
 
+# ESTA VERSÃO EST DESCONTINUADA (NÃO UTILIZE !!) PREFIRA [sped-nfe](https://github.com/nfephp-org/sped-nfe)
+
 NFePHP é uma API para gerenciamento das comunicações entre o emitente de NFe e os serviços dos SEFAZ estaduais. Inteiramente construído em PHP para rodar sob qualquer sistema operacional.
 Para começar veja [nossas páginas Wiki](https://github.com/nfephp-org/nfephp/wiki).
 
@@ -124,7 +126,7 @@ A API permite que um programa emissor de NFe se comunique com a SEFAZ. A API nã
 
 * composer <https://getcomposer.org/>
 * Apache: <http://httpd.apache.org/>
-* PHP 5.4+: <http://php.net>
+* PHP 5.5+: <http://php.net>
 * Bibliotecas de terceiros
  * FPDF: Provisóriamente usada para gerar os documentos em PDF. Veja <http://www.fpdf.org/>.Deverá ser substituida pela classe ZendPdf (devido ao tendimento dos padrões PSR e ser mais ativamente mantida e distribuida via composer.
  * zendframework/zend-mail (v.2.x) Usada para envio dos emails aos destinátarios dos docuemntos fiscais eletrônicos.
