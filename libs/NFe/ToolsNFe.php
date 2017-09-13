@@ -2221,7 +2221,7 @@ class ToolsNFe extends BaseTools
             $url = $url.'?';
         }
         $seq = $url.$seq;
-        return $seq;
+        return (string) $seq;
     }
 
     /**
