@@ -26,6 +26,8 @@ namespace NFePHP\NFe;
 use NFePHP\Common\DateTime\DateTime;
 use NFePHP\Common\Base\BaseMake;
 use NFePHP\Common\Exception\RuntimeException;
+use NFePHP\Common\Keys\Keys;
+use NFePHP\Common\Strings\Strings;
 use \DOMDocument;
 use \DOMElement;
 
@@ -37,7 +39,7 @@ class MakeNFe extends BaseMake
      *
      * @var string
      */
-    public $versao = '3.10';
+    public $versao = '4.00';
     /**
      * mod
      * modelo da nfe por ser 55-NFe ou 65-NFCe
@@ -107,6 +109,24 @@ class MakeNFe extends BaseMake
     private $aProcRef = array(); //array de DOMNodes
     private $aForDia = array(); //array de DOMNodes
     private $aDeduc = array(); //array de DOMNodes
+    /**
+     * @var DOMElement
+     */
+    protected $infRespTec;
+    /**
+     * @var boolean
+     */
+    protected $replaceAccentedChars = false;
+
+    /**
+     * Set character convertion to ASCII only ou not
+     *
+     * @param bool $option
+     */
+    public function setOnlyAscii($option = false)
+    {
+        $this->replaceAccentedChars = $option;
+    }
 
     /**
      * montaNFe
@@ -167,6 +187,8 @@ class MakeNFe extends BaseMake
         $this->dom->appChild($this->infNFe, $this->compra, 'Falta tag "infNFe"');
         //[50] tag cana (409 ZC01)
         $this->dom->appChild($this->infNFe, $this->cana, 'Falta tag "infNFe"');
+        //Responsável Técnico
+        $this->dom->appChild($this->infNFe, $this->infRespTec, 'Falta tag "infNFe"');
         //[1] tag infNFe (1 A01)
         $this->dom->appChild($this->NFe, $this->infNFe, 'Falta tag "NFe"');
         //[0] tag NFe
@@ -638,13 +660,15 @@ class MakeNFe extends BaseMake
             false,
             $identificador . "Inscrição Municipal do Prestador de Serviço do emitente"
         );
-        $this->dom->addChild(
-            $this->emit,
-            "CNAE",
-            $cnae,
-            false,
-            $identificador . "CNAE fiscal do emitente"
-        );
+        if (!empty($numIM) && !empty($cnae)) {
+            $this->dom->addChild(
+                $this->emit,
+                "CNAE",
+                $cnae,
+                false,
+                $identificador . "CNAE fiscal do emitente"
+            );
+        }
         $this->dom->addChild(
             $this->emit,
             "CRT",
@@ -1007,6 +1031,7 @@ class MakeNFe extends BaseMake
      * tagretirada
      * Identificação do Local de retirada F01 pai A01
      * tag NFe/infNFe/retirada (opcional)
+     * NOTA: ajustado para NT 2018.005
      *
      * @param  string $cnpj
      * @param  string $cpf
@@ -1028,7 +1053,14 @@ class MakeNFe extends BaseMake
         $xBairro = '',
         $cMun = '',
         $xMun = '',
-        $siglaUF = ''
+        $siglaUF = '',
+        $xNome = '',
+        $cep = '',
+        $cPais = '',
+        $xPais = '',
+        $fone = '',
+        $email = '',
+        $IE = ''
     ) {
         $identificador = 'F01 <retirada> - ';
         $this->retirada = $this->dom->createElement("retirada");
@@ -1037,6 +1069,13 @@ class MakeNFe extends BaseMake
         } else {
             $this->dom->addChild($this->retirada, "CPF", $cpf, true, $identificador . "CPF do Cliente da Retirada");
         }
+        $this->dom->addChild(
+            $this->retirada,
+            "xNome",
+            $std->xNome,
+            false,
+            $identificador . "Nome do Cliente da Retirada"
+        );
         $this->dom->addChild(
             $this->retirada,
             "xLgr",
@@ -1086,6 +1125,48 @@ class MakeNFe extends BaseMake
             true,
             $identificador . "Sigla da UF do Endereco do Cliente da Retirada"
         );
+        $this->dom->addChild(
+            $this->retirada,
+            "CEP",
+            $cep,
+            false,
+            $identificador . "CEP do Endereco do Cliente da Retirada"
+        );
+        $this->dom->addChild(
+            $this->retirada,
+            "cPais",
+            $cPais,
+            false,
+            $identificador . "Codigo do Pais do Endereco do Cliente da Retirada"
+        );
+        $this->dom->addChild(
+            $this->retirada,
+            "xPais",
+            $xPais,
+            false,
+            $identificador . "Pais do Endereco do Cliente da Retirada"
+        );
+        $this->dom->addChild(
+            $this->retirada,
+            "fone",
+            $fone,
+            false,
+            $identificador . "Fone do Endereco do Cliente da Retirada"
+        );
+        $this->dom->addChild(
+            $this->retirada,
+            "email",
+            $email,
+            false,
+            $identificador . "Email do Endereco do Cliente da Retirada"
+        );
+        $this->dom->addChild(
+            $this->retirada,
+            "IE",
+            $IE,
+            false,
+            $identificador . "IE do Cliente da Retirada"
+        );
         return $this->retirada;
     }
 
@@ -1093,6 +1174,7 @@ class MakeNFe extends BaseMake
      * tagentrega
      * Identificação do Local de entrega G01 pai A01
      * tag NFe/infNFe/entrega (opcional)
+     * NOTA: ajustado para NT 2018.005
      *
      * @param  string $cnpj
      * @param  string $cpf
@@ -1114,7 +1196,14 @@ class MakeNFe extends BaseMake
         $xBairro = '',
         $cMun = '',
         $xMun = '',
-        $siglaUF = ''
+        $siglaUF = '',
+        $xNome = '',
+        $cep = '',
+        $cPais = '',
+        $xPais = '',
+        $fone = '',
+        $email = '',
+        $IE = ''
     ) {
         $identificador = 'G01 <entrega> - ';
         $this->entrega = $this->dom->createElement("entrega");
@@ -1123,6 +1212,13 @@ class MakeNFe extends BaseMake
         } else {
             $this->dom->addChild($this->entrega, "CPF", $cpf, true, $identificador . "CPF do Cliente da Entrega");
         }
+        $this->dom->addChild(
+            $this->entrega,
+            "xNome",
+            $xNome,
+            false,
+            $identificador . "Nome do Cliente da Entrega"
+        );
         $this->dom->addChild(
             $this->entrega,
             "xLgr",
@@ -1171,6 +1267,48 @@ class MakeNFe extends BaseMake
             $siglaUF,
             true,
             $identificador . "Sigla da UF do Endereco do Cliente da Entrega"
+        );
+        $this->dom->addChild(
+            $this->entrega,
+            "CEP",
+            $cep,
+            false,
+            $identificador . "CEP do Endereco do Cliente da Entrega"
+        );
+        $this->dom->addChild(
+            $this->entrega,
+            "cPais",
+            $std->cPais,
+            false,
+            $identificador . "Codigo do Pais do Endereco do Cliente da Entrega"
+        );
+        $this->dom->addChild(
+            $this->entrega,
+            "xPais",
+            $xPais,
+            false,
+            $identificador . "Pais do Endereco do Cliente da Entrega"
+        );
+        $this->dom->addChild(
+            $this->entrega,
+            "fone",
+            $fone,
+            false,
+            $identificador . "Fone do Endereco do Cliente da Entrega"
+        );
+        $this->dom->addChild(
+            $this->entrega,
+            "email",
+            $email,
+            false,
+            $identificador . "Email do Endereco do Cliente da Entrega"
+        );
+        $this->dom->addChild(
+            $this->entrega,
+            "IE",
+            $IE,
+            false,
+            $identificador . "IE do Cliente da Entrega"
         );
         return $this->entrega;
     }
@@ -1761,6 +1899,7 @@ class MakeNFe extends BaseMake
      * tagmed
      * Detalhamento de medicamentos K01 pai I90
      * tag NFe/infNFe/det[]/prod/med (opcional)
+     * NOTA: Ajustado para NT2018.005
      *
      * @param  string $nItem
      * @param  string $nLote
@@ -2255,6 +2394,7 @@ class MakeNFe extends BaseMake
      * tagICMSST N10b pai N01
      * Grupo de Repasse de ICMS ST retido anteriormente em operações
      * interestaduais com repasses através do Substituto Tributário
+     * NOTA: ajustado NT 2018.005
      *
      * @param  string $nItem
      * @param  string $orig
@@ -3483,6 +3623,46 @@ class MakeNFe extends BaseMake
     }
 
     /**
+     * Campo Vagao X25a pai X01
+     * tag NFe/infNFe/transp/vagao (opcional)
+     * @param stdClass $std
+     */
+    public function tagvagao(\stdClass $std)
+    {
+        $possible = [
+            'vagao'
+        ];
+        $std = $this->equilizeParameters($std, $possible);
+        $this->dom->addChild(
+            $this->transp,
+            "vagao",
+            $std->vagao,
+            false,
+            "Identificação do vagão do Veículo Reboque"
+        );
+    }
+
+    /**
+     * Campo Balsa X25b pai X01
+     * tag NFe/infNFe/transp/balsa (opcional)
+     * @param stdClass $std
+     */
+    public function tagbalsa(\stdClass $std)
+    {
+        $possible = [
+            'balsa'
+        ];
+        $std = $this->equilizeParameters($std, $possible);
+        $this->dom->addChild(
+            $this->transp,
+            "balsa",
+            $std->balsa,
+            false,
+            "Identificação da balsa do Veículo Reboque"
+        );
+    }
+
+    /**
      * tagvol
      * Grupo Volumes X26 pai X01
      * tag NFe/infNFe/transp/vol (opcional)
@@ -4286,5 +4466,237 @@ class MakeNFe extends BaseMake
             $infNFe->setAttribute("Id", "NFe" . $chaveMontada);
             $this->chNFe = $chaveMontada;
         }
+    }
+
+    /**
+     * Grupo de Formas de Pagamento YA01a pai YA01
+     * NOTA: Ajuste NT_2016_002_v1.30
+     * NOTA: Ajuste NT_2016_002_v1 51
+     * tag NFe/infNFe/pag/detPag
+     *
+     * @param stdClass $std
+     * @return DOMElement
+     */
+    public function tagdetPag($std)
+    {
+        $possible = [
+            'indPag',
+            'tPag',
+            'vPag',
+            'CNPJ',
+            'tBand',
+            'cAut',
+            'tpIntegra'
+        ];
+        $std = $this->equilizeParameters($std, $possible);
+        //padrão para layout 4.00
+        $detPag = $this->dom->createElement("detPag");
+        $this->dom->addChild(
+            $detPag,
+            "indPag",
+            $std->indPag,
+            false,
+            "Indicador da Forma de Pagamento"
+        );
+        $this->dom->addChild(
+            $detPag,
+            "tPag",
+            $std->tPag,
+            true,
+            "Forma de pagamento"
+        );
+        $this->dom->addChild(
+            $detPag,
+            "vPag",
+            $this->conditionalNumberFormatting($std->vPag),
+            true,
+            "Valor do Pagamento"
+        );
+        if (!empty($std->tpIntegra)) {
+            $card = $this->dom->createElement("card");
+            $this->dom->addChild(
+                $card,
+                "tpIntegra",
+                $std->tpIntegra,
+                true,
+                "Tipo de Integração para pagamento"
+            );
+            $this->dom->addChild(
+                $card,
+                "CNPJ",
+                !empty($std->CNPJ) ? $std->CNPJ : null,
+                false,
+                "CNPJ da Credenciadora de cartão de crédito e/ou débito"
+            );
+            $this->dom->addChild(
+                $card,
+                "tBand",
+                !empty($std->tBand) ? $std->tBand : null,
+                false,
+                "Bandeira da operadora de cartão de crédito e/ou débito"
+            );
+            $this->dom->addChild(
+                $card,
+                "cAut",
+                !empty($std->cAut) ? $std->cAut : null,
+                false,
+                "Número de autorização da operação cartão de crédito e/ou débito"
+            );
+            $this->dom->appChild($detPag, $card, "Inclusão do node Card");
+        }
+        $node = !empty($this->pag->getElementsByTagName("vTroco")->item(0))
+            ? $this->pag->getElementsByTagName("vTroco")->item(0)
+            : null;
+        if (!empty($node)) {
+            $this->pag->insertBefore($detPag, $node);
+        } else {
+            $this->dom->appChild($this->pag, $detPag, 'Falta tag "Pag"');
+        }
+        return $detPag;
+    }
+
+    /**
+     * Informações suplementares da Nota Fiscal
+     *
+     * @param stdClass $std
+     * @return DOMElement
+     */
+    public function taginfNFeSupl(\stdClass $std)
+    {
+        $possible = ['qrcode', 'urlChave'];
+        $std = $this->equilizeParameters($std, $possible);
+
+        $infNFeSupl = $this->dom->createElement("infNFeSupl");
+        $nodeqr = $infNFeSupl->appendChild($this->dom->createElement('qrCode'));
+        $nodeqr->appendChild($this->dom->createCDATASection($std->qrcode));
+        //incluido no layout 4.00
+        $std->urlChave = !empty($std->urlChave) ? $std->urlChave : null;
+        $this->dom->addChild(
+            $infNFeSupl,
+            "urlChave",
+            $std->urlChave,
+            false,
+            "URL de consulta por chave de acesso a ser impressa no DANFE NFC-e"
+        );
+        $this->infNFeSupl = $infNFeSupl;
+        return $infNFeSupl;
+    }
+
+    /**
+     * Informações do Responsável técnico ZD01 pai A01
+     * tag NFe/infNFe/infRespTec (opcional)
+     *
+     * @param stdClass $std
+     * @return DOMElement
+     * @throws RuntimeException
+     */
+    public function taginfRespTec(\stdClass $std)
+    {
+        $possible = [
+            'CNPJ',
+            'xContato',
+            'email',
+            'fone',
+            'CSRT',
+            'idCSRT'
+        ];
+
+        $std = $this->equilizeParameters($std, $possible);
+        $infRespTec = $this->dom->createElement("infRespTec");
+        $this->dom->addChild(
+            $infRespTec,
+            "CNPJ",
+            $std->CNPJ,
+            true,
+            "Informar o CNPJ da pessoa jurídica responsável pelo sistema "
+            . "utilizado na emissão do documento fiscal eletrônico"
+        );
+        $this->dom->addChild(
+            $infRespTec,
+            "xContato",
+            $std->xContato,
+            true,
+            "Informar o nome da pessoa a ser contatada na empresa desenvolvedora "
+            . "do sistema utilizado na emissão do documento fiscal eletrônico"
+        );
+        $this->dom->addChild(
+            $infRespTec,
+            "email",
+            $std->email,
+            true,
+            "Informar o e-mail da pessoa a ser contatada na empresa "
+            . "desenvolvedora do sistema."
+        );
+        $this->dom->addChild(
+            $infRespTec,
+            "fone",
+            $std->fone,
+            true,
+            "Informar o telefone da pessoa a ser contatada na empresa "
+            . "desenvolvedora do sistema."
+        );
+        if (!empty($std->CSRT) && !empty($std->idCSRT)) {
+            $this->csrt = $std->CSRT;
+            $this->dom->addChild(
+                $infRespTec,
+                "idCSRT",
+                $std->idCSRT,
+                true,
+                "Identificador do CSRT utilizado para montar o hash do CSRT"
+            );
+            $this->dom->addChild(
+                $infRespTec,
+                "hashCSRT",
+                $this->hashCSRT($std->CSRT),
+                true,
+                "hash do CSRT"
+            );
+        }
+        $this->infRespTec = $infRespTec;
+        return $infRespTec;
+    }
+
+    /**
+     * Includes missing or unsupported properties in stdClass
+     * Replace all unsuported chars
+     * @param stdClass $std
+     * @param array $possible
+     * @return stdClass
+     */
+    protected function equilizeParameters(\stdClass $std, $possible)
+    {
+        $arr = get_object_vars($std);
+        foreach ($possible as $key) {
+            if (!array_key_exists($key, $arr)) {
+                $std->$key = null;
+            } else {
+                if (is_string($std->$key)) {
+                    $std->$key = trim(Strings::cleanString($std->$key));
+                    if ($this->replaceAccentedChars) {
+                        $std->$key = Strings::cleanString($std->$key);
+                    }
+                }
+            }
+        }
+        return $std;
+    }
+
+    /**
+     * Calcula hash sha1 retornando Base64Binary
+     * @param string $CSRT
+     * @return string
+     */
+    protected function hashCSRT($CSRT)
+    {
+        $comb = $CSRT . $this->chNFe;
+        return base64_encode(sha1($comb, true));
+    }
+
+    protected function conditionalNumberFormatting($value = null, $decimal = 2)
+    {
+        if (is_numeric($value)) {
+            return number_format($value, $decimal, '.', '');
+        }
+        return null;
     }
 }
