@@ -619,7 +619,7 @@ class Danfce extends CommonNFePHP implements DocumentoNFePHP
         $this->html .= "<td colspan=\"3\" class=\"menor tCenter\"><strong>{$this->infCpl}</strong></td>\n";
         $this->html .= "</tr>\n";
         $this->html .= "<tr>\n";
-        $this->html .= "<td colspan=\"3\" class=\"rodape tCenter\">" . str_replace(";", "<br>", $rodape) . "</td>\n";
+        //$this->html .= "<td colspan=\"3\" class=\"rodape tCenter\">" . str_replace(";", "<br>", $rodape) . "</td>\n";
         $this->html .= "</tr>\n";
         $this->html .= "</table>\n";
         

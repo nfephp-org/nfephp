@@ -606,7 +606,7 @@ class ToolsNFe extends BaseTools
         $digVal = $dom->getValue($signedInfo, 'DigestValue');
         $token = $this->aConfig['tokenNFCe'];
         $idToken = $this->aConfig['tokenNFCeId'];
-        $versao = '100';
+        $versao = '200';
         /*
          *Pega a URL para consulta do QRCode do estado emissor,
          *essa url está em nfe_ws3_mode65.xml, em tese essa url
@@ -632,30 +632,14 @@ class ToolsNFe extends BaseTools
         }
         $url = $this->urlService;
         //usa a função zMakeQRCode para gerar a string da URI
-        $qrcode = $this->zMakeQRCode(
-            $chNFe,
-            $url,
-            $tpAmb,
-            $dhEmi,
-            $vNF,
-            $vICMS,
-            $digVal,
+        $xmlSigned = $this->putQRTag(
+            $dom,
             $token,
-            $cDest,
             $idToken,
-            $versao
+            $versao,
+            $url,
+            $url
         );
-        if ($qrcode == '') {
-            return $dom->saveXML();
-        }
-        //inclui a TAG NFe/infNFeSupl com o qrcode
-        $infNFeSupl = $dom->createElement("infNFeSupl");
-        $nodeqr = $infNFeSupl->appendChild($dom->createElement('qrCode'));
-        $nodeqr->appendChild($dom->createCDATASection($qrcode));
-        $signature = $dom->getElementsByTagName('Signature')->item(0);
-        $nfe->insertBefore($infNFeSupl, $signature);
-        $dom->formatOutput = false;
-        $xmlSigned = $dom->saveXML();
         //salva novamente o xml assinado e agora com o QRCode
         if ($saveFile) {
             $anomes = date(
@@ -2222,6 +2206,151 @@ class ToolsNFe extends BaseTools
         }
         $seq = $url.$seq;
         return $seq;
+    }
+
+    /**
+     * putQRTag
+     * Mount URI for QRCode and create three XML tags in signed xml
+     * NOTE: included Manual_de_Especificações_Técnicas_do_DANFE_NFC-e_QR_Code
+     *       versão 5.0 since fevereiro de 2018
+     * @param DOMDocument $dom NFe
+     * @param string $token CSC number
+     * @param string $idToken CSC identification
+     * @param string $versao version of field
+     * @param string $urlqr URL for search by QRCode
+     * @param string $urichave URL for search by chave layout 4.00 only
+     * @return string
+     * @throws DocumentsException
+     */
+    protected function putQRTag(
+        $dom,
+        $token,
+        $idToken,
+        $versao,
+        $urlqr,
+        $urichave = ''
+    ) {
+        $token = trim($token);
+        $idToken = trim($idToken);
+        $versao = trim($versao);
+        $urlqr = trim($urlqr);
+        $urichave = trim($urichave);
+        /*if (empty($token)) {
+            throw DocumentsException::wrongDocument(9); //Falta o CSC no config.json
+        }
+        if (empty($idToken)) {
+            throw DocumentsException::wrongDocument(10); //Falta o CSCId no config.json
+        }
+        if (empty($urlqr)) {
+            throw DocumentsException::wrongDocument(11); //Falta a URL do serviço NfeConsultaQR
+        }*/
+        if (empty($versao)) {
+            $versao = '200';
+        }
+        $nfe = $dom->getElementsByTagName('NFe')->item(0);
+        $infNFe = $dom->getElementsByTagName('infNFe')->item(0);
+        $layoutver = $infNFe->getAttribute('versao');
+        $ide = $dom->getElementsByTagName('ide')->item(0);
+        $dest = $dom->getElementsByTagName('dest')->item(0);
+        $icmsTot = $dom->getElementsByTagName('ICMSTot')->item(0);
+        $signedInfo = $dom->getElementsByTagName('SignedInfo')->item(0);
+        $chNFe = preg_replace('/[^0-9]/', '', $infNFe->getAttribute("Id"));
+        $tpAmb = $ide->getElementsByTagName('tpAmb')->item(0)->nodeValue;
+        $dhEmi = $ide->getElementsByTagName('dhEmi')->item(0)->nodeValue;
+        $tpEmis = $ide->getElementsByTagName('tpEmis')->item(0)->nodeValue;
+        $cDest = '';
+        if (!empty($dest)) {
+            $cDest = !empty($dest->getElementsByTagName('CNPJ')->item(0)->nodeValue)
+                ? $dest->getElementsByTagName('CNPJ')->item(0)->nodeValue
+                : '';
+            if (empty($cDest)) {
+                $cDest = !empty($dest->getElementsByTagName('CPF')->item(0)->nodeValue)
+                    ? $dest->getElementsByTagName('CPF')->item(0)->nodeValue
+                    : '';
+                if (empty($cDest)) {
+                    $cDest = $dest->getElementsByTagName('idEstrangeiro')->item(0)->nodeValue;
+                }
+            }
+        }
+        $vNF = $icmsTot->getElementsByTagName('vNF')->item(0)->nodeValue;
+        $vICMS = $icmsTot->getElementsByTagName('vICMS')->item(0)->nodeValue;
+        $digVal = $signedInfo->getElementsByTagName('DigestValue')->item(0)->nodeValue;
+        $qrMethod = "getQRCode$versao";
+        $qrcode = $this->$qrMethod(
+            $chNFe,
+            $urlqr,
+            $tpAmb,
+            $dhEmi,
+            $vNF,
+            $vICMS,
+            $digVal,
+            $token,
+            $idToken,
+            $versao,
+            $tpEmis,
+            $cDest
+        );
+        $infNFeSupl = $dom->createElement("infNFeSupl");
+        $infNFeSupl->appendChild($dom->createElement('qrCode', $qrcode));
+        //$nodeqr = $infNFeSupl->appendChild($dom->createElement('qrCode'));
+        //$nodeqr->appendChild($dom->createCDATASection($qrcode));
+        $infNFeSupl->appendChild($dom->createElement('urlChave', $urichave));
+        $signature = $dom->getElementsByTagName('Signature')->item(0);
+        $nfe->insertBefore($infNFeSupl, $signature);
+        $dom->formatOutput = false;
+        return $dom->saveXML();
+    }
+
+    /**
+     * Return a QRCode version 2 string to be used in NFCe layout 4.00
+     * @param  string $chNFe
+     * @param  string $url
+     * @param  string $tpAmb
+     * @param  string $dhEmi
+     * @param  string $vNF
+     * @param  string $vICMS
+     * @param  string $digVal
+     * @param  string $token
+     * @param  string $idToken
+     * @param  string $versao
+     * @param  int    $tpEmis
+     * @param  string $cDest
+     * @return string
+     */
+    protected function getQRCode200(
+        $chNFe,
+        $url,
+        $tpAmb,
+        $dhEmi,
+        $vNF,
+        $vICMS,
+        $digVal,
+        $token,
+        $idToken,
+        $versao,
+        $tpEmis,
+        $cDest
+    ) {
+        $ver = $versao/100;
+        $cscId = (int) $idToken;
+        $csc = $token;
+        if (strpos($url, '?p=') === false) {
+            $url = $url.'?p=';
+        }
+        if ($tpEmis != 9) {
+            //emissão on-line
+            $seq = "$chNFe|$ver|$tpAmb|$cscId";
+            $hash = strtoupper(sha1($seq.$csc));
+            return "$url$seq|$hash";
+        }
+        //emissão off-line
+        $dt = new \DateTime($dhEmi);
+        $dia = $dt->format('d');
+        $valor = number_format($vNF, 2, '.', '');
+        $digHex = self::zStr2Hex($digVal);
+        $seq = "$chNFe|$ver|$tpAmb|$dia|$valor|$digHex|$cscId";
+        $hash = strtoupper(sha1($seq.$csc));
+        return "$url$seq|$hash";
     }
 
     /**
