@@ -743,6 +743,7 @@ class ToolsNFe extends BaseTools
 
         //tratar dados de retorno
         $aRetorno = ReturnNFe::readReturnSefaz($servico, $retorno);
+        $aRetorno['idLote'] = $idLote;
         //caso o envio seja recebido com sucesso mover a NFe da pasta
         //das assinadas para a pasta das enviadas
         return (string) $retorno;
