@@ -7,7 +7,7 @@ CREATE TABLE `tabelacest` (
   `codigo_tbc` int(11) NOT NULL auto_increment COMMENT 'Chave Primaria Auto-Incremento',
   `legal_tbc` int(11) NOT NULL COMMENT 'Código do CEST',
   `ncm_tbc` int(11) NOT NULL COMMENT 'Código do NCM',
-  `descricao_tbc` varchar(300) NOT NULL COMMENT 'Descrição do CEST',
+  `descricao_tbc` text NOT NULL COMMENT 'Descrição do CEST',
   PRIMARY KEY  (`codigo_tbc`),
   KEY `ncm_tbc` (`ncm_tbc`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=971 ;
