@@ -270,6 +270,7 @@ class MakeNFe extends BaseMake
         $finNFe = '',
         $indFinal = '0',
         $indPres = '',
+        $indIntermed = 0,
         $procEmi = '',
         $verProc = '',
         $dhCont = '',
@@ -417,6 +418,13 @@ class MakeNFe extends BaseMake
             $indPres,
             true,
             $identificador . "Indicador de presença do comprador no estabelecimento comercial no momento da operação"
+        );
+        $this->dom->addChild(
+            $ide,
+            "indIntermed",
+            $indIntermed,
+            true,
+            $identificador . "Indicativo de intermediador/marketplace"
         );
         $this->dom->addChild(
             $ide,
