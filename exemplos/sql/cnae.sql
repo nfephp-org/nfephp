@@ -1921,7 +1921,7 @@ INSERT INTO `cnae` (codigo_cnae, desc_cnae) VALUES ('8712-3', 'Atividades de for
 INSERT INTO `cnae` (codigo_cnae, desc_cnae) VALUES ('8712-3/00', 'Atividades de fornecimento de infraestrutura de apoio e assistência a paciente no domicílio química');
 INSERT INTO `cnae` (codigo_cnae, desc_cnae) VALUES ('8720-4', 'Atividades de assistência psicossocial e à saúde a portadores de distúrbios psíquicos, deficiência mental e dependência química');
 INSERT INTO `cnae` (codigo_cnae, desc_cnae) VALUES ('8720-4/01', 'Atividades de centros de assistência psicossocial');
-INSERT INTO `cnae` (codigo_cnae, desc_cnae) VALUES ('8720-4/99me, nte'	'Atividades de assistência psicossocial e à saúde a portadores de distúrbios psíquicos, deficiência mental e dependência química e grupos similares não especificadas anteriormente');
+INSERT INTO `cnae` (codigo_cnae, desc_cnae) VALUES ('8720-4/99',	'Atividades de assistência psicossocial e à saúde a portadores de distúrbios psíquicos, deficiência mental e dependência química e grupos similares não especificadas anteriormente');
 INSERT INTO `cnae` (codigo_cnae, desc_cnae) VALUES ('8730-1', 'Atividades de assistência social prestadas em residências coletivas e particulares');
 INSERT INTO `cnae` (codigo_cnae, desc_cnae) VALUES ('8730-1/01', 'Orfanatos');
 INSERT INTO `cnae` (codigo_cnae, desc_cnae) VALUES ('8730-1/02', 'Albergues assistenciais');
